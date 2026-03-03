@@ -1,0 +1,322 @@
+---
+import Base from '../layouts/Base.astro';
+import ExploreMore from '../components/ExploreMore.astro';
+import { faqSchema, breadcrumbSchema } from '../lib/weapons';
+
+const title = 'CS2 Patch Notes & Update History — All Updates | CSDB.gg';
+const description = 'Complete archive of Counter-Strike 2 patch notes, balance updates, and changelog history. Auto-updated from official Steam sources. Filter by weapon, map, anticheat, economy, and more.';
+
+const breadcrumbs = [
+  { name: 'Home', url: '/' },
+  { name: 'Patch Notes', url: '/patch-notes/' },
+];
+
+const faqs = [
+  {
+    question: "How often does CS2 receive updates?",
+    answer: "CS2 typically receives updates every 1-4 weeks. Balance patches and bug fixes are deployed frequently, while larger content updates with new cases or operations happen less often."
+  },
+  {
+    question: "Where do these patch notes come from?",
+    answer: "These patch notes are pulled automatically from the official Steam News API. They update in real-time whenever Valve publishes a new Counter-Strike 2 announcement."
+  },
+  {
+    question: "How are balance changes decided?",
+    answer: "Valve uses data from millions of matches, professional esports feedback, and community testing to inform balance decisions. Major changes are often tested in limited scenarios before full deployment."
+  },
+  {
+    question: "What's the difference between balance patches and content updates?",
+    answer: "Balance patches adjust weapon stats, economy, or map design. Content updates add new items, cases, operations, or major features. Both types are essential for keeping CS2 fresh."
+  },
+  {
+    question: "Can I get notified about new updates?",
+    answer: "Follow the official Counter-Strike social media accounts, check Steam news, or bookmark this page — it auto-updates from the official Steam feed whenever Valve posts a new update."
+  }
+];
+---
+
+<Base title={title} description={description} currentNav="/">
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema(breadcrumbs))} />
+    <script type="application/ld+json" set:html={JSON.stringify(faqSchema(faqs))} />
+  </Fragment>
+
+<style is:inline>
+  .pn-hero {
+    background: linear-gradient(135deg, #d4956e 0%, #ab47bc 100%);
+    padding: 60px 20px;
+    text-align: center;
+    margin-bottom: 2rem;
+    border-radius: 12px;
+  }
+  .pn-hero h1 { font-size: 2.5em; color: white; margin: 0 0 8px 0; font-weight: 800 }
+  .pn-hero p { font-size: 1.1em; color: rgba(255,255,255,.9); margin: 0 }
+  .pn-live-badge { display: inline-block; background: rgba(76,175,80,.9); color: white; padding: 4px 12px; border-radius: 20px; font-size: .8rem; font-weight: 600; margin-top: 12px }
+  .pn-live-badge::before { content: ''; display: inline-block; width: 8px; height: 8px; background: #fff; border-radius: 50%; margin-right: 6px; animation: pn-pulse 1.5s infinite }
+  @keyframes pn-pulse { 0%,100% { opacity: 1 } 50% { opacity: .4 } }
+
+  .pn-controls { margin-bottom: 2rem }
+  .pn-search {
+    width: 100%; padding: 14px 20px; background: var(--bg2); border: 2px solid var(--border);
+    border-radius: 8px; font-size: 1em; color: var(--text); margin-bottom: 1rem; transition: border-color .3s
+  }
+  .pn-search:focus { outline: none; border-color: var(--accent) }
+  .pn-tags { display: flex; gap: 8px; flex-wrap: wrap }
+  .pn-tag-btn {
+    padding: 6px 14px; background: var(--bg2); border: 1px solid var(--border); color: var(--text2);
+    border-radius: 6px; cursor: pointer; font-size: .85em; transition: all .2s
+  }
+  .pn-tag-btn:hover { border-color: var(--accent); color: var(--text) }
+  .pn-tag-btn.active { background: var(--accent); color: white; border-color: var(--accent) }
+
+  .pn-latest {
+    background: linear-gradient(135deg, #4caf50 0%, #42a5f5 100%);
+    padding: 2rem; border-radius: 12px; margin-bottom: 2rem; color: white
+  }
+  .pn-latest h2 { font-size: 1.2em; margin: 0 0 4px 0; font-weight: 600; opacity: .9 }
+  .pn-latest-title { font-size: 1.8em; font-weight: 800; margin-bottom: .5rem }
+  .pn-latest-date { opacity: .85; font-size: .95em; margin-bottom: 1rem }
+  .pn-latest-changes { list-style: none; padding: 0; margin: 0 }
+  .pn-latest-changes li { padding: 6px 0 6px 20px; position: relative }
+  .pn-latest-changes li::before { content: '▸'; position: absolute; left: 0 }
+  .pn-latest-link { display: inline-block; margin-top: 1rem; color: white; font-weight: 600; text-decoration: underline; opacity: .85 }
+  .pn-latest-link:hover { opacity: 1 }
+
+  .pn-loading { text-align: center; padding: 3rem; color: var(--text2) }
+  .pn-loading-spinner { display: inline-block; width: 32px; height: 32px; border: 3px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: pn-spin .8s linear infinite; margin-bottom: 1rem }
+  @keyframes pn-spin { to { transform: rotate(360deg) } }
+
+  .pn-grid { display: grid; gap: 1.25rem; margin-bottom: 2rem }
+  .pn-card {
+    background: var(--bg2); border: 1px solid var(--border); border-radius: 8px; padding: 1.5rem; transition: all .2s
+  }
+  .pn-card:hover { border-color: var(--accent); box-shadow: 0 4px 16px rgba(212,149,110,.08) }
+  .pn-card-head { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: .75rem; flex-wrap: wrap; gap: .75rem }
+  .pn-card h3 { font-size: 1.25em; margin: 0 0 4px 0; color: var(--text) }
+  .pn-card-date { color: var(--text2); font-size: .9em }
+  .pn-card-tags { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: .75rem }
+  .pn-tag {
+    display: inline-block; padding: 3px 10px; background: var(--bg3); color: var(--text2);
+    border-radius: 4px; font-size: .8em; border: 1px solid var(--border)
+  }
+  .pn-tag.weapon { border-left: 3px solid #42a5f5 }
+  .pn-tag.map { border-left: 3px solid #ab47bc }
+  .pn-tag.economy { border-left: 3px solid #d4956e }
+  .pn-tag.anticheat { border-left: 3px solid #ef5350 }
+  .pn-tag.cosmetics { border-left: 3px solid #e8b992 }
+  .pn-tag.balance { border-left: 3px solid #ff9800 }
+  .pn-tag.competitive { border-left: 3px solid #ef5350 }
+  .pn-tag.bugfix { border-left: 3px solid #4caf50 }
+  .pn-tag.performance { border-left: 3px solid #42a5f5 }
+  .pn-tag.audio { border-left: 3px solid #ab47bc }
+  .pn-tag.server { border-left: 3px solid #ff9800 }
+  .pn-tag.ui { border-left: 3px solid #42a5f5 }
+  .pn-tag.update { border-left: 3px solid var(--accent) }
+
+  .pn-card-changes { border-top: 1px solid var(--border); padding-top: .75rem }
+  .pn-card-changes ul { list-style: none; padding: 0; margin: 0 }
+  .pn-card-changes li { padding: 5px 0 5px 20px; position: relative; color: var(--text2); font-size: .92em }
+  .pn-card-changes li::before { content: '▸'; position: absolute; left: 0; color: var(--accent) }
+  .pn-card-link { display: inline-block; margin-top: .75rem; color: var(--accent); text-decoration: none; font-size: .85em }
+  .pn-card-link:hover { text-decoration: underline }
+
+  .pn-error { text-align: center; padding: 2rem; background: var(--bg2); border: 1px solid var(--border); border-radius: 8px; color: var(--text2); margin-bottom: 2rem }
+  .pn-error-retry { margin-top: 1rem; padding: 8px 20px; background: var(--accent); color: white; border: none; border-radius: 6px; cursor: pointer; font-size: .9em }
+
+  .pn-faq { margin: 2rem 0 }
+  .pn-faq h2 { font-size: 1.5em; margin-bottom: 1.5rem }
+  .pn-faq-grid { display: grid; gap: 1rem }
+  .pn-faq-item { background: var(--bg2); border: 1px solid var(--border); border-radius: 8px; padding: 1.25rem }
+  .pn-faq-item h3 { margin: 0 0 .5rem 0; color: var(--accent); font-size: 1em }
+  .pn-faq-item p { margin: 0; color: var(--text2); line-height: 1.6; font-size: .92em }
+
+  .pn-links { background: var(--bg2); border: 1px solid var(--border); border-radius: 8px; padding: 1.5rem; margin-top: 2rem }
+  .pn-links h2 { font-size: 1.3em; margin: 0 0 1rem 0 }
+  .pn-links-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: .75rem }
+  .pn-links-grid a { display: block; padding: .75rem 1rem; background: var(--bg3); border: 1px solid var(--border); border-radius: 6px; color: var(--accent); text-decoration: none; text-align: center; font-size: .9em; transition: all .2s }
+  .pn-links-grid a:hover { border-color: var(--accent); background: var(--bg) }
+
+  @media (max-width: 768px) {
+    .pn-hero { padding: 40px 16px }
+    .pn-hero h1 { font-size: 1.8em }
+    .pn-card-head { flex-direction: column }
+    .pn-links-grid { grid-template-columns: 1fr 1fr }
+  }
+</style>
+
+  <nav class="breadcrumb">
+    <a href="/">Home</a> / <span>Patch Notes</span>
+  </nav>
+
+  <div class="pn-hero">
+    <h1>CS2 Patch Notes</h1>
+    <p>Auto-updated from official Steam sources</p>
+    <div class="pn-live-badge">Live Feed</div>
+  </div>
+
+  <div class="pn-controls">
+    <input type="text" class="pn-search" placeholder="Search updates..." id="pnSearch" />
+    <div class="pn-tags" id="pnTags">
+      <button class="pn-tag-btn active" data-tag="">All</button>
+      <button class="pn-tag-btn" data-tag="weapon">Weapon</button>
+      <button class="pn-tag-btn" data-tag="map">Map</button>
+      <button class="pn-tag-btn" data-tag="balance">Balance</button>
+      <button class="pn-tag-btn" data-tag="bugfix">Bug Fix</button>
+      <button class="pn-tag-btn" data-tag="cosmetics">Cosmetics</button>
+      <button class="pn-tag-btn" data-tag="competitive">Competitive</button>
+      <button class="pn-tag-btn" data-tag="performance">Performance</button>
+      <button class="pn-tag-btn" data-tag="audio">Audio</button>
+    </div>
+  </div>
+
+  <div id="pnLatest"></div>
+  <div id="pnContent">
+    <div class="pn-loading">
+      <div class="pn-loading-spinner"></div>
+      <p>Fetching latest patch notes from Steam...</p>
+    </div>
+  </div>
+
+  <div class="pn-faq">
+    <h2>Frequently Asked Questions</h2>
+    <div class="pn-faq-grid">
+      {faqs.map(f => (
+        <div class="pn-faq-item">
+          <h3>{f.question}</h3>
+          <p>{f.answer}</p>
+        </div>
+      ))}
+    </div>
+  </div>
+
+  <div class="pn-links">
+    <h2>Related Resources</h2>
+    <div class="pn-links-grid">
+      <a href="/weapons/">Weapon Statistics</a>
+      <a href="/maps/">Map Guide</a>
+      <a href="/guides/">Strategy Guides</a>
+      <a href="/spray-trainer/">Spray Trainer</a>
+      <a href="/skins/">Skin Database</a>
+      <a href="/pro-players/">Pro Player Settings</a>
+      <a href="/tools/">All Tools</a>
+      <a href="/rank-distribution/">Rank Distribution</a>
+    </div>
+  </div>
+
+<ExploreMore context="general" />
+
+<script is:inline>
+(function() {
+  let allUpdates = [];
+  let activeTag = '';
+
+  function formatDate(dateStr) {
+    const d = new Date(dateStr + 'T00:00:00');
+    return d.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+  }
+
+  function escapeHtml(s) {
+    const div = document.createElement('div');
+    div.textContent = s;
+    return div.innerHTML;
+  }
+
+  function renderLatest(update) {
+    const el = document.getElementById('pnLatest');
+    if (!update) { el.innerHTML = ''; return; }
+    el.innerHTML = `
+      <div class="pn-latest">
+        <h2>Latest Update</h2>
+        <div class="pn-latest-title">${escapeHtml(update.title)}</div>
+        <div class="pn-latest-date">${formatDate(update.date)}</div>
+        ${update.changes.length > 0 ? `
+          <ul class="pn-latest-changes">
+            ${update.changes.slice(0, 8).map(c => `<li>${escapeHtml(c)}</li>`).join('')}
+          </ul>
+        ` : ''}
+        ${update.url ? `<a href="${escapeHtml(update.url)}" target="_blank" rel="noopener" class="pn-latest-link">View on Steam →</a>` : ''}
+      </div>
+    `;
+  }
+
+  function renderCards(updates) {
+    const el = document.getElementById('pnContent');
+    if (updates.length === 0) {
+      el.innerHTML = '<div class="pn-error"><p>No updates match your search.</p></div>';
+      return;
+    }
+    el.innerHTML = `<div class="pn-grid">${updates.map(u => `
+      <div class="pn-card" data-tags="${u.tags.join(',')}" data-text="${escapeHtml((u.title + ' ' + u.changes.join(' ')).toLowerCase())}">
+        <div class="pn-card-head">
+          <div>
+            <h3>${escapeHtml(u.title)}</h3>
+            <div class="pn-card-date">${formatDate(u.date)}</div>
+          </div>
+        </div>
+        <div class="pn-card-tags">
+          ${u.tags.map(t => `<span class="pn-tag ${t}">${t}</span>`).join('')}
+        </div>
+        ${u.changes.length > 0 ? `
+          <div class="pn-card-changes">
+            <ul>${u.changes.slice(0, 15).map(c => `<li>${escapeHtml(c)}</li>`).join('')}</ul>
+          </div>
+        ` : ''}
+        ${u.url ? `<a href="${escapeHtml(u.url)}" target="_blank" rel="noopener" class="pn-card-link">View on Steam →</a>` : ''}
+      </div>
+    `).join('')}</div>`;
+  }
+
+  function filterUpdates() {
+    const query = document.getElementById('pnSearch').value.toLowerCase();
+    const filtered = allUpdates.filter(u => {
+      const tagMatch = !activeTag || u.tags.includes(activeTag);
+      const textMatch = !query || (u.title + ' ' + u.changes.join(' ')).toLowerCase().includes(query);
+      return tagMatch && textMatch;
+    });
+    // Skip first one if it's the latest (already shown above)
+    const cardsData = allUpdates.length > 0 && filtered[0] === allUpdates[0] ? filtered.slice(1) : filtered;
+    renderCards(cardsData);
+  }
+
+  // Tag filter buttons
+  document.getElementById('pnTags').addEventListener('click', function(e) {
+    const btn = e.target.closest('.pn-tag-btn');
+    if (!btn) return;
+    document.querySelectorAll('.pn-tag-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    activeTag = btn.dataset.tag || '';
+    filterUpdates();
+  });
+
+  // Search
+  document.getElementById('pnSearch').addEventListener('input', filterUpdates);
+
+  // Fetch from API
+  async function loadPatchNotes() {
+    try {
+      const res = await fetch('/api/patch-notes?count=50');
+      if (!res.ok) throw new Error('API returned ' + res.status);
+      const data = await res.json();
+
+      if (!data.updates || data.updates.length === 0) {
+        throw new Error('No updates returned');
+      }
+
+      allUpdates = data.updates;
+      renderLatest(allUpdates[0]);
+      renderCards(allUpdates.slice(1));
+    } catch (err) {
+      console.warn('Failed to fetch live patch notes:', err);
+      document.getElementById('pnContent').innerHTML = `
+        <div class="pn-error">
+          <p>Could not load live patch notes from Steam. This may be temporary.</p>
+          <button class="pn-error-retry" onclick="location.reload()">Try Again</button>
+        </div>
+      `;
+    }
+  }
+
+  loadPatchNotes();
+})();
+</script>
+</Base>

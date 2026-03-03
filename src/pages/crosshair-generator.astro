@@ -1,0 +1,231 @@
+---
+import Base from '../layouts/Base.astro';
+import ExploreMore from '../components/ExploreMore.astro';
+import { faqSchema, breadcrumbSchema } from '../lib/weapons';
+
+const title = 'CS2 Crosshair Generator — Build & Preview Custom Crosshairs | CSDB.gg';
+const description = 'Create your perfect CS2 crosshair with our visual generator. Real-time preview, pro player presets, and instant console commands. Export your crosshair code with one click.';
+
+const breadcrumbs = [
+  { name: 'Home', url: '/' },
+  { name: 'Tools', url: '/crosshair-generator' },
+  { name: 'Crosshair Generator', url: '/crosshair-generator' },
+];
+
+const faqs = [
+  { question: 'How do I apply a custom crosshair in CS2?', answer: 'Open the console with ~ and paste the crosshair commands. Alternatively, go to Settings → Game → Crosshair and adjust each setting manually. You can also share crosshair codes via the in-game crosshair menu.' },
+  { question: 'What crosshair do most CS2 pros use?', answer: 'Most professionals use small, static crosshairs. The most common setup is: Size 2, Gap -2, Thickness 0, no dot, Style 4 (static), Color 1 (green). However, preferences vary widely — some pros use dot-only crosshairs while others prefer larger crosses.' },
+  { question: 'Should I use a dynamic or static crosshair?', answer: 'Static crosshairs (Style 4 or 5) are preferred by competitive players because they don\'t move during shooting. Dynamic crosshairs expand to show weapon inaccuracy, which can be helpful for beginners learning spray control.' },
+  { question: 'What is the best crosshair color for visibility?', answer: 'Bright green (Color 1) is the most popular because it contrasts well against most map environments. Cyan and yellow are also popular choices. Avoid red and dark colors as they blend into common map textures.' },
+  { question: 'Can I use a dot crosshair in CS2?', answer: 'Yes, set cl_crosshairsize 0 and cl_crosshairdot 1. Many AWPers prefer dot crosshairs for precise positioning. You can adjust dot size with cl_crosshairthickness.' },
+];
+
+const proPresets = [
+  { name: 's1mple', style: 4, size: 2, gap: -2, thickness: 0, dot: false, color: 1, outline: 0, alpha: 255 },
+  { name: 'ZywOo', style: 4, size: 1.5, gap: -3, thickness: 0, dot: false, color: 1, outline: 0, alpha: 255 },
+  { name: 'NiKo', style: 4, size: 1, gap: -3, thickness: 0, dot: false, color: 4, outline: 0, alpha: 255 },
+  { name: 'donk', style: 4, size: 2, gap: -2, thickness: 0, dot: false, color: 1, outline: 1, alpha: 255 },
+  { name: 'ropz', style: 4, size: 2, gap: -2, thickness: 0.5, dot: false, color: 1, outline: 0, alpha: 200 },
+  { name: 'device', style: 5, size: 1, gap: -3, thickness: 0, dot: true, color: 1, outline: 0, alpha: 255 },
+];
+
+const colorMap: Record<number, string> = {
+  0: '#ff0000', 1: '#00ff00', 2: '#ffff00', 3: '#2020ff', 4: '#00ffff',
+};
+
+const toolSchema = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": title,
+  "description": description,
+  "applicationCategory": "UtilityApplication",
+  "operatingSystem": "Web",
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+  "author": { "@type": "Organization", "name": "CSDB.gg", "url": "https://csdb.gg" }
+});
+
+const howToSchema = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "HowTo",
+  "name": "How to Create a Custom CS2 Crosshair",
+  "description": "Use the CSDB.gg Crosshair Generator to design, preview, and export a custom crosshair for Counter-Strike 2.",
+  "step": [
+    { "@type": "HowToStep", "name": "Choose a crosshair style", "text": "Select a crosshair style from the dropdown. Style 4 (Static Classic) and Style 5 (Static 1.6) are recommended for competitive play as they remain fixed during movement and shooting." },
+    { "@type": "HowToStep", "name": "Adjust size, gap, and thickness", "text": "Use the sliders to set crosshair size (arm length), gap (distance from center), and thickness (arm width). Most pros use Size 1-2, Gap -2 to -3, and Thickness 0-0.5." },
+    { "@type": "HowToStep", "name": "Set color and visibility options", "text": "Pick a crosshair color (green is most popular), adjust alpha for transparency, toggle the center dot, and set outline thickness for better contrast." },
+    { "@type": "HowToStep", "name": "Preview your crosshair in real time", "text": "Watch the live preview update as you make changes. You can also load pro player presets (s1mple, ZywOo, NiKo, etc.) to start from a known configuration." },
+    { "@type": "HowToStep", "name": "Copy the console commands", "text": "Click 'Copy Commands' to copy the generated console commands to your clipboard. Paste them into the CS2 console (~) to apply your crosshair in-game." }
+  ]
+});
+---
+
+<Base title={title} description={description} currentNav="/tools/">
+  <script type="application/ld+json" set:html={toolSchema}></script>
+  <script type="application/ld+json" set:html={howToSchema}></script>
+  <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema(breadcrumbs))}></script>
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema(faqs))}></script>
+
+  <nav class="breadcrumb">
+    <a href="/">Home</a> / <a href="/crosshair-generator/">Tools</a> / <span>Crosshair Generator</span>
+  </nav>
+
+  <h1>CS2 Crosshair Generator</h1>
+  <p>Design your ideal crosshair with real-time visual preview. Adjust every parameter, load pro player presets, and copy the console commands instantly.</p>
+
+  <div class="calc-section">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:2rem;align-items:start">
+      <div>
+        <h2 style="margin-top:0">Settings</h2>
+        <div class="calc-row"><label for="chStyle">Style</label><select id="chStyle"><option value="4">4 — Static (Classic)</option><option value="5">5 — Static (1.6 Style)</option><option value="2">2 — Classic Dynamic</option><option value="3">3 — Classic Static Dot</option></select></div>
+        <div class="calc-row"><label for="chSize">Size</label><input type="range" id="chSize" min="0" max="10" step="0.5" value="2"><span id="chSizeVal">2</span></div>
+        <div class="calc-row"><label for="chGap">Gap</label><input type="range" id="chGap" min="-5" max="5" step="0.5" value="-2"><span id="chGapVal">-2</span></div>
+        <div class="calc-row"><label for="chThick">Thickness</label><input type="range" id="chThick" min="0" max="6" step="0.5" value="0"><span id="chThickVal">0</span></div>
+        <div class="calc-row"><label for="chColor">Color</label><select id="chColor"><option value="0">Red</option><option value="1" selected>Green</option><option value="2">Yellow</option><option value="3">Blue</option><option value="4">Cyan</option></select></div>
+        <div class="calc-row"><label for="chDot">Center Dot</label><input type="checkbox" id="chDot"></div>
+        <div class="calc-row"><label for="chOutline">Outline</label><input type="range" id="chOutline" min="0" max="3" step="0.5" value="0"><span id="chOutlineVal">0</span></div>
+        <div class="calc-row"><label for="chAlpha">Alpha</label><input type="range" id="chAlpha" min="0" max="255" step="5" value="255"><span id="chAlphaVal">255</span></div>
+
+        <h3>Pro Player Presets</h3>
+        <div style="display:flex;gap:.5rem;flex-wrap:wrap" id="presetBtns">
+          {proPresets.map(p => (
+            <button class="filter-btn" data-preset={JSON.stringify(p)}>{p.name}</button>
+          ))}
+        </div>
+      </div>
+
+      <div>
+        <h2 style="margin-top:0">Preview</h2>
+        <div id="chPreview" style="width:100%;aspect-ratio:16/9;background:#333;border-radius:8px;position:relative;overflow:hidden;border:1px solid var(--border)">
+          <div id="crosshair" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%)"></div>
+        </div>
+        <div class="result-box" style="margin-top:1rem">
+          <p style="margin:0 0 .5rem;font-weight:700;color:var(--text)">Console Commands</p>
+          <code id="chCommands" style="display:block;background:var(--bg);padding:.75rem;border-radius:6px;font-size:.82rem;color:var(--accent);word-break:break-all;line-height:1.6"></code>
+          <button id="copyBtn" style="margin-top:.75rem;padding:.5rem 1rem;background:var(--accent);color:#000;border:none;border-radius:6px;cursor:pointer;font-weight:700;font-size:.85rem">Copy Commands</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <h2>Understanding Crosshair Parameters</h2>
+  <p>
+    Every CS2 crosshair is defined by a handful of console variables. The <strong>style</strong> (cl_crosshairstyle) determines whether your crosshair expands during movement and shooting — Style 4 and 5 are static, meaning they stay the same size regardless of what you're doing. This is why the vast majority of competitive players choose one of these two styles.
+  </p>
+  <p>
+    <strong>Size</strong> (cl_crosshairsize) controls the length of the four crosshair arms, while <strong>gap</strong> (cl_crosshairgap) sets the distance between the centre point and where the arms begin. Negative gap values create a tight, compact crosshair popular in professional play. The <strong>thickness</strong> (cl_crosshairthickness) adjusts the width of each arm — most pros use 0 or 0.5 for the thinnest possible lines.
+  </p>
+  <p>
+    <strong>Color</strong> and <strong>alpha</strong> affect visibility. Green (Color 1) dominates professional play because it offers strong contrast against the brown, grey, and dark tones of most competitive maps. Alpha controls transparency — 255 is fully opaque, while lower values let you see through the crosshair.
+  </p>
+
+  <div class="internal-links">
+    <strong>Related Tools & Guides:</strong>
+    <a href="/guides/crosshair-guide/">Crosshair Guide</a>
+    <a href="/sensitivity-converter/">Sensitivity Converter</a>
+    <a href="/edpi-calculator/">eDPI Calculator</a>
+    <a href="/autoexec-generator/">Autoexec Generator</a>
+    <a href="/launch-options/">Launch Options</a>
+  </div>
+
+  <h2>Frequently Asked Questions</h2>
+  <dl class="faq">
+    {faqs.map(f => (
+      <Fragment>
+        <dt>{f.question}</dt>
+        <dd>{f.answer}</dd>
+      </Fragment>
+    ))}
+  </dl>
+
+  <ExploreMore context="tools" />
+</Base>
+
+<style>
+  @media(max-width:768px){
+    .calc-section [style*="grid-template-columns:1fr 1fr"]{
+      grid-template-columns:1fr!important;
+    }
+  }
+</style>
+
+<script is:inline>
+(function(){
+  var colorMap={0:'#ff0000',1:'#00ff00',2:'#ffff00',3:'#2020ff',4:'#00ffff'};
+  var els={style:document.getElementById('chStyle'),size:document.getElementById('chSize'),gap:document.getElementById('chGap'),thick:document.getElementById('chThick'),color:document.getElementById('chColor'),dot:document.getElementById('chDot'),outline:document.getElementById('chOutline'),alpha:document.getElementById('chAlpha')};
+
+  function render(){
+    var s=parseFloat(els.size.value);
+    var g=parseFloat(els.gap.value);
+    var t=Math.max(parseFloat(els.thick.value),0.5);
+    var c=colorMap[parseInt(els.color.value)]||'#00ff00';
+    var a=parseInt(els.alpha.value)/255;
+    var ol=parseFloat(els.outline.value);
+    var showDot=els.dot.checked;
+
+    document.getElementById('chSizeVal').textContent=els.size.value;
+    document.getElementById('chGapVal').textContent=els.gap.value;
+    document.getElementById('chThickVal').textContent=els.thick.value;
+    document.getElementById('chOutlineVal').textContent=els.outline.value;
+    document.getElementById('chAlphaVal').textContent=els.alpha.value;
+
+    var px=function(v){return Math.round(v*3)+'px';};
+    var ch=document.getElementById('crosshair');
+    var armLen=px(s*2);
+    var gapPx=Math.round((g+5)*3);
+    var thickPx=Math.max(Math.round(t*2),1);
+    var shadow=ol>0?'0 0 0 '+Math.round(ol)+'px rgba(0,0,0,0.8)':'none';
+
+    ch.innerHTML='';
+    var arms=[
+      {x:-gapPx-s*6,y:-thickPx/2,w:s*6,h:thickPx},
+      {x:gapPx,y:-thickPx/2,w:s*6,h:thickPx},
+      {x:-thickPx/2,y:-gapPx-s*6,w:thickPx,h:s*6},
+      {x:-thickPx/2,y:gapPx,w:thickPx,h:s*6},
+    ];
+    arms.forEach(function(arm){
+      var d=document.createElement('div');
+      d.style.cssText='position:absolute;left:50%;top:50%;background:'+c+';opacity:'+a+';box-shadow:'+shadow+';transform:translate('+arm.x+'px,'+arm.y+'px);width:'+arm.w+'px;height:'+arm.h+'px;';
+      ch.appendChild(d);
+    });
+    if(showDot){
+      var dotEl=document.createElement('div');
+      var dotSize=Math.max(thickPx+2,3);
+      dotEl.style.cssText='position:absolute;left:50%;top:50%;background:'+c+';opacity:'+a+';width:'+dotSize+'px;height:'+dotSize+'px;transform:translate(-50%,-50%);box-shadow:'+shadow;
+      ch.appendChild(dotEl);
+    }
+
+    var cmds='cl_crosshairstyle '+els.style.value+'; cl_crosshairsize '+els.size.value+'; cl_crosshairgap '+els.gap.value+'; cl_crosshairthickness '+els.thick.value+'; cl_crosshaircolor '+els.color.value+'; cl_crosshairdot '+(showDot?1:0)+'; cl_crosshair_outlinethickness '+els.outline.value+'; cl_crosshairalpha '+els.alpha.value+'; cl_crosshair_drawoutline '+(ol>0?1:0);
+    document.getElementById('chCommands').textContent=cmds;
+  }
+
+  Object.values(els).forEach(function(el){
+    el.addEventListener('input',render);
+    el.addEventListener('change',render);
+  });
+
+  document.getElementById('presetBtns').addEventListener('click',function(e){
+    var btn=e.target.closest('[data-preset]');
+    if(!btn)return;
+    var p=JSON.parse(btn.dataset.preset);
+    els.style.value=p.style;
+    els.size.value=p.size;
+    els.gap.value=p.gap;
+    els.thick.value=p.thickness;
+    els.color.value=p.color;
+    els.dot.checked=p.dot;
+    els.outline.value=p.outline;
+    els.alpha.value=p.alpha;
+    render();
+  });
+
+  document.getElementById('copyBtn').addEventListener('click',function(){
+    var text=document.getElementById('chCommands').textContent;
+    navigator.clipboard.writeText(text).then(function(){
+      document.getElementById('copyBtn').textContent='Copied!';
+      setTimeout(function(){document.getElementById('copyBtn').textContent='Copy Commands';},2000);
+    });
+  });
+
+  render();
+})();
+</script>

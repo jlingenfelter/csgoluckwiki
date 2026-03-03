@@ -1,0 +1,1177 @@
+---
+import Base from '../layouts/Base.astro';
+import ExploreMore from '../components/ExploreMore.astro';
+import { SKINS, getLowestPrice, getHighestPrice, RARITY_COLORS, getSkinsByWeapon, getSkinBySlug } from '../lib/skins';
+import { breadcrumbSchema, faqSchema } from '../lib/weapons';
+import { getPlayersWithLoadout } from '../lib/pro-players';
+
+// Weapon slots with example weapons
+const weaponSlots = [
+  { id: 'primary', name: 'Primary Rifle', weapons: ['ak-47', 'm4a4', 'm4a1-s', 'awp', 'galil-ar', 'famas', 'aug', 'sg-553'] },
+  { id: 'secondary', name: 'Secondary (Pistol)', weapons: ['usp-s', 'p250', 'desert-eagle', 'glock-18', 'five-seven', 'tec-9', 'cz75-auto'] },
+  { id: 'smg', name: 'SMG', weapons: ['mp9', 'mac-10', 'mp7', 'ump-45', 'p90', 'mp5-sd', 'pp-bizon'] },
+  { id: 'heavy', name: 'Heavy', weapons: ['nova', 'xm1014', 'mag-7', 'sawed-off', 'm249', 'negev'] },
+  { id: 'knife', name: 'Knife', weapons: ['karambit', 'm9-bayonet', 'butterfly-knife', 'bayonet', 'talon-knife', 'flip-knife', 'gut-knife', 'falchion-knife', 'bowie-knife', 'huntsman-knife', 'shadow-daggers', 'stiletto-knife', 'ursus-knife', 'navaja-knife', 'classic-knife', 'nomad-knife', 'paracord-knife', 'survival-knife', 'skeleton-knife', 'kukri-knife'] },
+  { id: 'gloves', name: 'Gloves', weapons: ['sport-gloves', 'specialist-gloves', 'driver-gloves', 'hand-wraps', 'moto-gloves', 'bloodhound-gloves', 'hydra-gloves', 'broken-fang-gloves'] },
+];
+
+// Build compact skin data for client-side use
+interface CompactSkin {
+  slug: string;
+  name: string;
+  weapon: string;
+  image?: string | null;
+  price: number;
+  rarity: string;
+  color: string;
+}
+
+const buildCompactSkins = (): Record<string, CompactSkin[]> => {
+  const compact: Record<string, CompactSkin[]> = {};
+
+  for (const skin of SKINS) {
+    const weaponSlug = skin.weaponSlug;
+    if (!compact[weaponSlug]) {
+      compact[weaponSlug] = [];
+    }
+
+    const price = getLowestPrice(skin);
+    compact[weaponSlug].push({
+      slug: skin.slug,
+      name: skin.name,
+      weapon: skin.weapon,
+      image: skin.image,
+      price: price,
+      rarity: skin.rarity,
+      color: RARITY_COLORS[skin.rarity] || '#ffffff'
+    });
+  }
+
+  // Sort by price
+  for (const weapon in compact) {
+    compact[weapon].sort((a, b) => a.price - b.price);
+  }
+
+  return compact;
+};
+
+const compactSkins = buildCompactSkins();
+const skinsJson = JSON.stringify(compactSkins);
+
+// Pro player loadouts (top 12 with loadout data)
+const proLoadouts = getPlayersWithLoadout(12).map(p => {
+  const lo = p.loadout!;
+  const slots = [
+    { label: 'Knife', slug: lo.knife },
+    { label: 'Gloves', slug: lo.gloves },
+    { label: 'Rifle', slug: lo.rifle },
+    { label: 'AWP', slug: lo.awp },
+    { label: 'Pistol', slug: lo.pistol },
+  ].filter(s => s.slug).map(s => {
+    const skin = getSkinBySlug(s.slug!);
+    return { label: s.label, skinName: skin ? `${skin.weapon} | ${skin.name}` : s.slug, image: skin?.image || null, slug: s.slug };
+  });
+  return { name: p.name, team: p.team, slug: p.slug, flag: p.flag, slots };
+});
+
+const title = 'CS2 Loadout Builder — Build Your Dream Loadout | CSDB.gg';
+const description = 'Build and share your perfect CS2 loadout. Browse skins for every weapon, calculate total cost, and generate shareable links with your selections. Filter by rarity, weapon type, and price.';
+
+const breadcrumbs = [
+  { name: 'Home', url: '/' },
+  { name: 'Skins', url: '/skins/' },
+  { name: 'Loadout Builder', url: '/loadout-builder/' },
+];
+
+const faqData = [
+  { q: 'What\'s the difference between CT and T side weapons?', a: 'Counter-Terrorists and Terrorists have different starting weapons and some exclusive guns. CTs get M4A4/M4A1-S while Terrorists get the AK-47. Some weapons like the AWP are available to both sides.' },
+  { q: 'How do I load a shared loadout?', a: 'If someone shares a loadout URL with you, simply visit that link. The page will automatically load and display the loadout they selected.' },
+  { q: 'Where can I buy these skins?', a: 'CS2 skins can be purchased from the Steam Community Market, third-party marketplaces like CSGOFloat, Buff, or other trusted skin trading sites. Prices vary by platform and condition.' },
+  { q: 'What if I want a skin that\'s not in the database?', a: 'Our database includes thousands of skins, but if a newly released skin is missing, it may not be indexed yet. New skins are added regularly as they\'re released.' },
+  { q: 'Can I change my loadout after building it?', a: 'Yes! Simply select different skins from the dropdowns. Your loadout updates in real-time. Generate a new share link whenever you\'re happy with your selection.' },
+  { q: 'What rarity levels are there?', a: 'Rarities range from Consumer (common) to Covert (rare). Higher rarities are generally more valuable and harder to find. Color coding helps identify rarity at a glance.' },
+  { q: 'Does the builder save my loadout?', a: 'Your loadout is saved in the URL. Share the link to save and load it elsewhere. Closing the page without sharing will lose your selection.' },
+  { q: 'Can I use factory new skins only?', a: 'The prices shown are for the lowest wear condition available. Use the skin database to see specific wear conditions and prices for each option.' },
+];
+---
+
+<Base title={title} description={description} currentNav="/skins/">
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema(breadcrumbs))} />
+    <script type="application/ld+json" set:html={JSON.stringify(faqSchema(faqData))} />
+  </Fragment>
+<div class="loadout-builder-page">
+  <h1>CS2 Loadout Builder</h1>
+  <p>Design your perfect CS2 loadout. Select skins for each weapon slot, see the total cost, and share your loadout with friends using a generated URL.</p>
+
+  <div class="builder-controls">
+    <div class="team-selector">
+      <label for="team-toggle">Side:</label>
+      <select id="team-toggle">
+        <option value="ct">CT (Counter-Terrorists)</option>
+        <option value="t">T (Terrorists)</option>
+        <option value="any">Both Sides</option>
+      </select>
+    </div>
+    <button id="share-btn" class="btn-primary">Share Loadout</button>
+  </div>
+
+  <div class="loadout-grid" id="loadout-grid">
+    <!-- Dynamically populated -->
+  </div>
+
+  <div class="loadout-summary">
+    <div class="summary-section">
+      <h3>Loadout Summary</h3>
+      <div id="summary-content">
+        <p class="text-muted">No skins selected yet</p>
+      </div>
+    </div>
+
+    <div class="summary-section cost-section">
+      <h3>Total Cost</h3>
+      <div class="cost-display">
+        <span class="currency">$</span>
+        <span class="amount" id="total-cost">0</span>
+      </div>
+      <p class="cost-note">Based on lowest available price</p>
+    </div>
+  </div>
+
+  <!-- Pro Player Loadouts -->
+  {proLoadouts.length > 0 && (
+  <section class="pro-loadouts">
+    <h2>Pro Player Loadouts</h2>
+    <p>See what the pros are using. Click a player to view their full settings and loadout details.</p>
+    <div class="pro-grid">
+      {proLoadouts.map(p => (
+        <a href={`/player/${p.slug}/`} class="pro-card">
+          <div class="pro-header">
+            <span class="pro-flag">{p.flag}</span>
+            <span class="pro-name">{p.name}</span>
+            <span class="pro-team">{p.team}</span>
+          </div>
+          <div class="pro-slots">
+            {p.slots.slice(0, 3).map(s => (
+              <div class="pro-slot">
+                <span class="pro-slot-label">{s.label}</span>
+                <span class="pro-slot-skin">{s.skinName}</span>
+              </div>
+            ))}
+          </div>
+        </a>
+      ))}
+    </div>
+    <div style="text-align:center;margin-top:1rem">
+      <a href="/pro-players/" class="btn-secondary">View All Pro Players →</a>
+    </div>
+  </section>
+  )}
+
+  <section class="faq">
+    <h2>About Loadouts</h2>
+    <dl>
+      <dt>What's the difference between CT and T side weapons?</dt>
+      <dd>Counter-Terrorists and Terrorists have different starting weapons and some exclusive guns. CTs get M4A4/M4A1-S while Terrorists get the AK-47. Some weapons like the AWP are available to both sides.</dd>
+
+      <dt>How do I load a shared loadout?</dt>
+      <dd>If someone shares a loadout URL with you, simply visit that link. The page will automatically load and display the loadout they selected.</dd>
+
+      <dt>Where can I buy these skins?</dt>
+      <dd>CS2 skins can be purchased from the Steam Community Market, third-party marketplaces like CSGOFloat, Buff, or other trusted skin trading sites. Prices vary by platform and condition.</dd>
+
+      <dt>What if I want a skin that's not in the database?</dt>
+      <dd>Our database includes thousands of skins, but if a newly released skin is missing, it may not be indexed yet. New skins are added regularly as they're released.</dd>
+
+      <dt>Can I change my loadout after building it?</dt>
+      <dd>Yes! Simply select different skins from the dropdowns. Your loadout updates in real-time. Generate a new share link whenever you're happy with your selection.</dd>
+
+      <dt>What rarity levels are there?</dt>
+      <dd>Rarities range from Consumer (common) to Covert (rare). Higher rarities are generally more valuable and harder to find. Color coding helps identify rarity at a glance.</dd>
+
+      <dt>Does the builder save my loadout?</dt>
+      <dd>Your loadout is saved in the URL. Share the link to save and load it elsewhere. Closing the page without sharing will lose your selection.</dd>
+
+      <dt>Can I use factory new skins only?</dt>
+      <dd>The prices shown are for the lowest wear condition available. Use the skin database to see specific wear conditions and prices for each option.</dd>
+    </dl>
+  </section>
+
+  <div class="internal-links">
+    <a href="/skins/">Skin Database</a>
+    <a href="/skin-compare/">Compare Skins</a>
+    <a href="/price-tracker/">Price Tracker</a>
+    <a href="/market-trends/">Market Trends</a>
+    <a href="/float-checker/">Float Checker</a>
+    <a href="/tradeup-calculator/">Trade-Up Calculator</a>
+    <a href="/case-simulator/">Case Simulator</a>
+    <a href="/cases/">Cases & Collections</a>
+    <a href="/inventory-lookup/">Inventory Lookup</a>
+    <a href="/weapons/">Weapon Database</a>
+    <a href="/pro-players/">Pro Player Loadouts</a>
+    <a href="/guides/skins-investing-guide/">Investing Guide</a>
+    <a href="/guides/trading-guide/">Trading Guide</a>
+  </div>
+</div>
+
+<div id="share-modal" class="modal hidden">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3>Share Your Loadout</h3>
+      <button class="modal-close" id="modal-close">&times;</button>
+    </div>
+    <div class="modal-body">
+      <p>Copy this link to share your loadout:</p>
+      <div class="share-link-container">
+        <input type="text" id="share-link" class="share-link-input" readonly />
+        <button id="copy-btn" class="btn-small">Copy Link</button>
+      </div>
+      <p class="share-note">Anyone with this link can view and edit your loadout.</p>
+    </div>
+  </div>
+</div>
+
+<script define:vars={{ compactSkinsData: skinsJson, weaponSlotsData: JSON.stringify(weaponSlots) }}>
+  class LoadoutBuilder {
+    constructor() {
+      this.compactSkins = JSON.parse(compactSkinsData);
+      this.weaponSlots = JSON.parse(weaponSlotsData);
+      this.loadout = {};
+      this.teamFilter = 'any';
+
+      this.init();
+    }
+
+    init() {
+      // Load from URL params if available
+      this.loadFromUrl();
+
+      // Setup UI
+      this.renderLoadoutGrid();
+      this.updateSummary();
+
+      // Event listeners
+      document.getElementById('share-btn').addEventListener('click', () => this.showShareModal());
+      document.getElementById('modal-close').addEventListener('click', () => this.hideShareModal());
+      document.getElementById('copy-btn').addEventListener('click', () => this.copyShareLink());
+      document.getElementById('team-toggle').addEventListener('change', (e) => {
+        this.teamFilter = e.target.value;
+        this.renderLoadoutGrid();
+      });
+    }
+
+    loadFromUrl() {
+      const params = new URLSearchParams(window.location.search);
+      for (const slot of this.weaponSlots) {
+        const skinSlug = params.get(slot.id);
+        if (skinSlug) {
+          this.loadout[slot.id] = skinSlug;
+        }
+      }
+    }
+
+    // Build flat skin list for a slot
+    getSlotSkins(slot) {
+      const result = [];
+      for (const weaponSlug of slot.weapons) {
+        const skins = this.compactSkins[weaponSlug] || [];
+        for (const skin of skins) {
+          result.push(skin);
+        }
+      }
+      return result;
+    }
+
+    renderLoadoutGrid() {
+      const grid = document.getElementById('loadout-grid');
+      grid.innerHTML = '';
+
+      for (const slot of this.weaponSlots) {
+        const slotDiv = document.createElement('div');
+        slotDiv.className = 'loadout-slot';
+        const selectedSkinSlug = this.loadout[slot.id];
+
+        // Find selected skin name for display
+        let selectedLabel = '';
+        if (selectedSkinSlug) {
+          const allSkins = this.getSlotSkins(slot);
+          const found = allSkins.find(s => s.slug === selectedSkinSlug);
+          if (found) selectedLabel = `${found.weapon} | ${found.name}`;
+        }
+
+        slotDiv.innerHTML = `
+          <div class="slot-header">
+            <h3>${slot.name}</h3>
+            ${selectedSkinSlug ? '<button class="slot-clear" title="Clear">&times;</button>' : ''}
+          </div>
+          <div class="slot-search-wrap" data-slot="${slot.id}">
+            <input type="text" class="slot-search" placeholder="Search ${slot.name.toLowerCase()} skins..." value="${selectedLabel}" autocomplete="off" />
+            <div class="slot-dropdown"></div>
+          </div>
+          <div class="skin-preview" id="preview-${slot.id}">
+            <div class="preview-placeholder">Select a skin</div>
+          </div>
+        `;
+
+        const searchInput = slotDiv.querySelector('.slot-search');
+        const dropdown = slotDiv.querySelector('.slot-dropdown');
+        const clearBtn = slotDiv.querySelector('.slot-clear');
+        const allSkins = this.getSlotSkins(slot);
+
+        // Show dropdown on focus
+        searchInput.addEventListener('focus', () => {
+          searchInput.select();
+          this.showDropdown(dropdown, allSkins, searchInput.value, slot.id);
+        });
+
+        // Filter on input
+        searchInput.addEventListener('input', () => {
+          this.showDropdown(dropdown, allSkins, searchInput.value, slot.id);
+        });
+
+        // Hide dropdown on blur (delay for click)
+        searchInput.addEventListener('blur', () => {
+          setTimeout(() => { dropdown.classList.remove('open'); }, 200);
+        });
+
+        // Clear button
+        if (clearBtn) {
+          clearBtn.addEventListener('click', () => {
+            this.selectSkin(slot.id, '');
+            searchInput.value = '';
+            this.renderLoadoutGrid();
+          });
+        }
+
+        grid.appendChild(slotDiv);
+
+        // Update preview
+        if (selectedSkinSlug) {
+          this.updateSkinPreview(slot.id, selectedSkinSlug);
+        }
+      }
+    }
+
+    showDropdown(dropdown, allSkins, query, slotId) {
+      const q = query.toLowerCase().trim();
+      const filtered = q
+        ? allSkins.filter(s => s.name.toLowerCase().includes(q) || s.weapon.toLowerCase().includes(q))
+        : allSkins;
+      const shown = filtered.slice(0, 50); // Limit for performance
+
+      dropdown.innerHTML = shown.map(skin => {
+        const priceText = skin.price > 0 ? `$${skin.price.toFixed(2)}` : 'Market';
+        return `<div class="slot-option" data-slug="${skin.slug}">
+          <span class="so-name"><span class="so-weapon">${skin.weapon}</span> ${skin.name}</span>
+          <span class="so-price" style="color:${skin.color}">${priceText}</span>
+        </div>`;
+      }).join('');
+
+      if (shown.length === 0) {
+        dropdown.innerHTML = '<div class="slot-option slot-no-results">No skins found</div>';
+      } else if (filtered.length > 50) {
+        dropdown.innerHTML += `<div class="slot-option slot-no-results">${filtered.length - 50} more — type to narrow</div>`;
+      }
+
+      dropdown.classList.add('open');
+
+      // Attach click handlers
+      dropdown.querySelectorAll('.slot-option[data-slug]').forEach(opt => {
+        opt.addEventListener('mousedown', (e) => {
+          e.preventDefault();
+          const slug = opt.dataset.slug;
+          const skin = allSkins.find(s => s.slug === slug);
+          if (skin) {
+            const input = dropdown.closest('.slot-search-wrap').querySelector('.slot-search');
+            input.value = `${skin.weapon} | ${skin.name}`;
+            dropdown.classList.remove('open');
+            this.selectSkin(slotId, slug);
+            this.renderLoadoutGrid();
+          }
+        });
+      });
+    }
+
+    selectSkin(slotId, skinSlug) {
+      if (skinSlug) {
+        this.loadout[slotId] = skinSlug;
+      } else {
+        delete this.loadout[slotId];
+      }
+
+      this.updateSkinPreview(slotId, skinSlug);
+      this.updateSummary();
+    }
+
+    updateSkinPreview(slotId, skinSlug) {
+      const previewDiv = document.getElementById(`preview-${slotId}`);
+      if (!previewDiv) return;
+
+      if (!skinSlug) {
+        previewDiv.innerHTML = '<div class="preview-placeholder">Select a skin</div>';
+        return;
+      }
+
+      let selectedSkin = null;
+      for (const weapon in this.compactSkins) {
+        const skin = this.compactSkins[weapon].find(s => s.slug === skinSlug);
+        if (skin) {
+          selectedSkin = skin;
+          break;
+        }
+      }
+
+      if (!selectedSkin) return;
+
+      const rarityColor = selectedSkin.color || '#ffffff';
+      let previewHtml = `
+        <div class="skin-card">
+          <div class="skin-image" style="background-color: ${rarityColor}20">
+            ${selectedSkin.image ? `<img src="${selectedSkin.image}" alt="${selectedSkin.name}" />` : '<div class="no-image">No Image</div>'}
+          </div>
+          <div class="skin-info">
+            <div class="skin-name">${selectedSkin.name}</div>
+            <div class="skin-weapon">${selectedSkin.weapon}</div>
+            <div class="skin-rarity" style="color: ${rarityColor}">${selectedSkin.rarity}</div>
+            <div class="skin-price">$${selectedSkin.price.toFixed(2)}</div>
+          </div>
+        </div>
+      `;
+
+      previewDiv.innerHTML = previewHtml;
+    }
+
+    updateSummary() {
+      const summaryDiv = document.getElementById('summary-content');
+      let totalCost = 0;
+      let itemCount = 0;
+
+      let summaryHtml = '<div class="summary-items">';
+      for (const slot of this.weaponSlots) {
+        const skinSlug = this.loadout[slot.id];
+        if (skinSlug) {
+          let skin = null;
+          for (const weapon in this.compactSkins) {
+            const found = this.compactSkins[weapon].find(s => s.slug === skinSlug);
+            if (found) {
+              skin = found;
+              break;
+            }
+          }
+
+          if (skin) {
+            summaryHtml += `
+              <div class="summary-item">
+                <div class="summary-item-name">${skin.name}</div>
+                <div class="summary-item-price">$${skin.price.toFixed(2)}</div>
+              </div>
+            `;
+            totalCost += skin.price;
+            itemCount++;
+          }
+        }
+      }
+      summaryHtml += '</div>';
+
+      if (itemCount === 0) {
+        summaryDiv.innerHTML = '<p class="text-muted">No skins selected yet</p>';
+      } else {
+        summaryDiv.innerHTML = summaryHtml;
+      }
+
+      document.getElementById('total-cost').textContent = totalCost.toFixed(2);
+    }
+
+    generateShareUrl() {
+      const params = new URLSearchParams();
+      for (const [slot, skinSlug] of Object.entries(this.loadout)) {
+        if (skinSlug) {
+          params.append(slot, skinSlug);
+        }
+      }
+
+      const url = new URL(window.location.href);
+      url.search = params.toString();
+      return url.toString();
+    }
+
+    showShareModal() {
+      const modal = document.getElementById('share-modal');
+      const shareLink = document.getElementById('share-link');
+      shareLink.value = this.generateShareUrl();
+      modal.classList.remove('hidden');
+    }
+
+    hideShareModal() {
+      document.getElementById('share-modal').classList.add('hidden');
+    }
+
+    copyShareLink() {
+      const input = document.getElementById('share-link');
+      const btn = document.getElementById('copy-btn');
+      const originalText = btn.textContent;
+
+      navigator.clipboard.writeText(input.value).then(() => {
+        btn.textContent = 'Copied!';
+        setTimeout(() => { btn.textContent = originalText; }, 2000);
+      }).catch(() => {
+        input.select();
+        document.execCommand('copy');
+        btn.textContent = 'Copied!';
+        setTimeout(() => { btn.textContent = originalText; }, 2000);
+      });
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    new LoadoutBuilder();
+  });
+</script>
+
+<ExploreMore context="skins" />
+
+<style is:global>
+  .loadout-builder-page {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+  }
+
+  .builder-controls {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    flex-wrap: wrap;
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1.5rem;
+  }
+
+  .team-selector {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex: 1;
+    min-width: 200px;
+  }
+
+  .team-selector label {
+    font-weight: 600;
+    color: var(--text);
+    white-space: nowrap;
+  }
+
+  .team-selector select {
+    background: var(--bg3);
+    color: var(--text);
+    border: 1px solid var(--border);
+    padding: 0.5rem 0.75rem;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    flex: 1;
+  }
+
+  .team-selector select:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(245, 166, 35, 0.1);
+  }
+
+  .btn-primary {
+    padding: 0.75rem 1.5rem;
+    background: var(--accent);
+    color: #000;
+    border: none;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 0.95rem;
+    font-family: inherit;
+  }
+
+  .btn-primary:hover {
+    background: var(--accent2);
+    transform: translateY(-2px);
+  }
+
+  .btn-small {
+    padding: 0.5rem 1rem;
+    background: var(--accent);
+    color: #000;
+    border: none;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 0.85rem;
+    font-family: inherit;
+  }
+
+  .btn-small:hover {
+    background: var(--accent2);
+  }
+
+  .loadout-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 1.5rem;
+    margin: 2rem 0;
+  }
+
+  .loadout-slot {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+
+  .loadout-slot:hover {
+    border-color: var(--accent);
+    box-shadow: 0 4px 12px rgba(245, 166, 35, 0.15);
+  }
+
+  .slot-header {
+    background: var(--bg3);
+    padding: 1rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .slot-header h3 {
+    margin: 0;
+    font-size: 1rem;
+    color: var(--accent);
+  }
+
+  .slot-search-wrap {
+    position: relative;
+  }
+
+  .slot-search {
+    display: block;
+    width: 100%;
+    padding: 0.75rem;
+    background: var(--bg);
+    color: var(--text);
+    border: none;
+    border-bottom: 1px solid var(--border);
+    font-size: 0.85rem;
+    outline: none;
+    box-sizing: border-box;
+  }
+
+  .slot-search:focus {
+    background: var(--bg3);
+  }
+
+  .slot-search::placeholder {
+    color: var(--text2);
+  }
+
+  .slot-dropdown {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-top: none;
+    border-radius: 0 0 8px 8px;
+    max-height: 280px;
+    overflow-y: auto;
+    z-index: 100;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+  }
+
+  .slot-dropdown.open {
+    display: block;
+  }
+
+  .slot-option {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem 0.75rem;
+    cursor: pointer;
+    font-size: 0.82rem;
+    transition: background 0.1s;
+    gap: 0.5rem;
+  }
+
+  .slot-option:hover {
+    background: var(--bg3);
+  }
+
+  .slot-no-results {
+    color: var(--text2);
+    cursor: default;
+    font-style: italic;
+  }
+
+  .so-name {
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: var(--text);
+  }
+
+  .so-weapon {
+    color: var(--text2);
+    font-size: 0.75rem;
+    margin-right: 0.25rem;
+  }
+
+  .so-price {
+    white-space: nowrap;
+    font-weight: 600;
+    font-size: 0.8rem;
+  }
+
+  .slot-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .slot-clear {
+    background: none;
+    border: none;
+    color: var(--text2);
+    font-size: 1.2rem;
+    cursor: pointer;
+    padding: 0 0.5rem;
+    line-height: 1;
+    transition: color 0.15s;
+  }
+
+  .slot-clear:hover {
+    color: var(--text);
+  }
+
+  .skin-preview {
+    padding: 0.75rem;
+    min-height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .preview-placeholder {
+    text-align: center;
+    color: var(--text2);
+    font-size: 0.85rem;
+  }
+
+  .skin-card {
+    display: flex;
+    gap: 0.75rem;
+    align-items: center;
+    width: 100%;
+  }
+
+  .skin-image {
+    width: 80px;
+    height: 60px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    overflow: hidden;
+  }
+
+  .skin-image img {
+    max-width: 90%;
+    max-height: 90%;
+    object-fit: contain;
+  }
+
+  .no-image {
+    color: var(--text2);
+    font-size: 0.8rem;
+  }
+
+  .skin-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.1rem;
+    flex: 1;
+    min-width: 0;
+  }
+
+  .skin-name {
+    font-weight: 600;
+    color: var(--text);
+    font-size: 0.82rem;
+    line-height: 1.2;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .skin-weapon {
+    font-size: 0.7rem;
+    color: var(--text2);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .skin-rarity {
+    font-size: 0.72rem;
+    font-weight: 600;
+  }
+
+  .skin-price {
+    font-size: 0.82rem;
+    color: var(--green);
+    font-weight: 700;
+    margin-top: 0.25rem;
+  }
+
+  .loadout-summary {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 1.5rem;
+    margin: 2rem 0;
+  }
+
+  .summary-section {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1.5rem;
+  }
+
+  .summary-section h3 {
+    margin-top: 0;
+    color: var(--accent);
+  }
+
+  .summary-items {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .summary-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem;
+    background: var(--bg3);
+    border-radius: 6px;
+    border: 1px solid var(--border);
+  }
+
+  .summary-item-name {
+    flex: 1;
+    font-weight: 500;
+    color: var(--text);
+    font-size: 0.9rem;
+  }
+
+  .summary-item-price {
+    color: var(--green);
+    font-weight: 700;
+    white-space: nowrap;
+    margin-left: 1rem;
+  }
+
+  .text-muted {
+    color: var(--text2);
+  }
+
+  .cost-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .cost-display {
+    font-size: 2.5rem;
+    font-weight: 800;
+    color: var(--green);
+    display: flex;
+    align-items: baseline;
+    gap: 0.25rem;
+  }
+
+  .currency {
+    font-size: 1.5rem;
+  }
+
+  .cost-note {
+    font-size: 0.8rem;
+    color: var(--text2);
+    margin-top: 0.5rem;
+  }
+
+  .modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+  }
+
+  .modal.hidden {
+    display: none;
+  }
+
+  .modal-content {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    max-width: 500px;
+    width: 90%;
+    max-height: 80vh;
+    overflow-y: auto;
+  }
+
+  .modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .modal-header h3 {
+    margin: 0;
+  }
+
+  .modal-close {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    color: var(--text2);
+    cursor: pointer;
+    transition: color 0.2s;
+  }
+
+  .modal-close:hover {
+    color: var(--text);
+  }
+
+  .modal-body {
+    padding: 1.5rem;
+  }
+
+  .modal-body p {
+    margin: 0 0 1rem;
+  }
+
+  .share-link-container {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+  }
+
+  .share-link-input {
+    flex: 1;
+    padding: 0.75rem;
+    background: var(--bg3);
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    font-size: 0.85rem;
+    font-family: monospace;
+  }
+
+  .share-note {
+    font-size: 0.85rem;
+    color: var(--text2);
+  }
+
+  .faq {
+    margin: 2rem 0;
+  }
+
+  .faq dl {
+    display: grid;
+    gap: 1rem;
+  }
+
+  .faq dt {
+    font-weight: 700;
+    color: var(--accent);
+    padding: 0.75rem 0 0.25rem;
+    border-top: 1px solid var(--border);
+  }
+
+  .faq dd {
+    color: var(--text2);
+    padding-bottom: 0.75rem;
+    font-size: 0.92rem;
+    margin: 0;
+  }
+
+  .internal-links {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+    margin: 2rem 0;
+    padding: 1rem;
+    background: var(--bg2);
+    border-radius: 10px;
+    border: 1px solid var(--border);
+  }
+
+  .internal-links a {
+    padding: 0.35rem 0.75rem;
+    background: var(--bg3);
+    border-radius: 6px;
+    font-size: 0.85rem;
+    color: var(--text2);
+    border: 1px solid var(--border);
+    transition: border-color 0.2s, color 0.2s, background-color 0.2s;
+  }
+
+  .internal-links a:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: var(--bg);
+  }
+
+  @media (max-width: 768px) {
+    .loadout-summary {
+      grid-template-columns: 1fr;
+    }
+
+    .loadout-grid {
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    }
+
+    .builder-controls {
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    .team-selector {
+      min-width: auto;
+    }
+
+    .cost-display {
+      font-size: 2rem;
+    }
+  }
+
+  /* Pro Loadouts */
+  .pro-loadouts {
+    margin: 3rem 0;
+    padding: 2rem;
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+  }
+
+  .pro-loadouts h2 {
+    margin: 0 0 0.4rem;
+  }
+
+  .pro-loadouts > p {
+    color: var(--text2);
+    font-size: 0.9rem;
+    margin: 0 0 1.5rem;
+  }
+
+  .pro-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 0.75rem;
+  }
+
+  .pro-card {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 0.85rem 1rem;
+    text-decoration: none;
+    color: inherit;
+    transition: border-color 0.2s, transform 0.15s;
+  }
+
+  .pro-card:hover {
+    border-color: var(--accent);
+    transform: translateY(-2px);
+  }
+
+  .pro-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.6rem;
+  }
+
+  .pro-flag {
+    font-size: 1.1rem;
+  }
+
+  .pro-name {
+    font-weight: 700;
+    font-size: 0.95rem;
+    color: var(--text);
+  }
+
+  .pro-team {
+    margin-left: auto;
+    font-size: 0.75rem;
+    color: var(--text2);
+  }
+
+  .pro-slots {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+  }
+
+  .pro-slot {
+    display: flex;
+    gap: 0.5rem;
+    font-size: 0.78rem;
+  }
+
+  .pro-slot-label {
+    color: var(--text2);
+    min-width: 45px;
+    font-weight: 600;
+  }
+
+  .pro-slot-skin {
+    color: var(--accent);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .btn-secondary {
+    display: inline-block;
+    background: var(--bg3);
+    color: var(--accent);
+    border: 1px solid var(--accent);
+    padding: 0.6rem 1.5rem;
+    border-radius: 8px;
+    font-weight: 700;
+    text-decoration: none;
+    transition: all 0.2s;
+  }
+
+  .btn-secondary:hover {
+    background: var(--accent);
+    color: var(--bg);
+  }
+</style>
+</Base>

@@ -1,0 +1,220 @@
+---
+import Base from '../../layouts/Base.astro';
+import ExploreMore from '../../components/ExploreMore.astro';
+import { breadcrumbSchema, faqSchema } from '../../lib/weapons';
+import { MAP_CALLOUTS } from '../../lib/map-callouts';
+import { MAP_LAYOUTS } from '../../lib/map-layouts';
+
+export function getStaticPaths() {
+  return MAP_CALLOUTS.map((map) => ({
+    params: { slug: map.slug },
+    props: { map },
+  }));
+}
+
+const { map } = Astro.props;
+const layout = MAP_LAYOUTS.find(l => l.slug === map.slug);
+
+const calloutsByArea = {
+  ct: map.callouts.filter((c) => c.area === 'ct'),
+  t: map.callouts.filter((c) => c.area === 't'),
+  mid: map.callouts.filter((c) => c.area === 'mid'),
+};
+
+const breadcrumbs = [
+  { name: 'Home', url: '/' },
+  { name: 'Maps', url: '/maps/' },
+  { name: map.name, url: '/maps/' + map.slug + '/' },
+];
+
+const faqItems = [
+  { question: 'What are the key callouts on ' + map.name + '?', answer: map.name + ' has ' + map.callouts.length + ' major callout positions organized across CT side, T side, and mid areas. Learning these callouts is essential for team communication during competitive matches.' },
+  { question: 'How should CTs defend ' + map.name + '?', answer: 'CT defense on ' + map.name + ' should focus on playing tight angles, gathering early information with utility, and rotating based on T-side executes. Crossfire setups and controlled aggression help maintain site control.' },
+  { question: 'What is the best T-side strategy for ' + map.name + '?', answer: 'The best T-side approach depends on your utility and team coordination. Default setups that gather information before committing to a site are generally safest. Fast executes work best when you have full utility.' },
+  { question: 'How important is mid control on ' + map.name + '?', answer: 'Mid control is crucial on ' + map.name + ' as it provides rotation options and map control for both sides. Teams that control mid gain significant strategic advantage in round planning.' },
+  { question: 'What utility should I prioritize on ' + map.name + '?', answer: 'Prioritize smokes for key choke points, flashbangs for entry support, and molotovs for clearing common positions. Full utility on ' + map.name + ' typically costs around $1000-1500 per player.' },
+];
+
+const pageTitle = map.name + ' Callouts, Strategies & Guide — CS2 Map Guide | CSDB.gg';
+const pageDesc = 'Complete ' + map.name + ' guide for CS2 with ' + map.callouts.length + ' callouts, tactical tips, and strategies for both T and CT sides. Master every position on ' + map.name + '.';
+
+const radarImageUrl = layout ? layout.radarImageUrl : '';
+---
+
+<Base title={pageTitle} description={pageDesc} currentNav="/maps/">
+  <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema(breadcrumbs))}></script>
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema(faqItems))}></script>
+
+  <nav class="breadcrumb"><a href="/">Home</a> / <a href="/maps/">Maps</a> / <span>{map.name}</span></nav>
+
+  <section class="hero">
+    <div class="hero-content">
+      <h1>{map.name}</h1>
+      <p class="description">{map.description}</p>
+      <div class="tags">
+        {map.tags.map((tag) => (
+          <span class="hero-tag">{tag}</span>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Map Radar Section -->
+  <section class="radar-map-section">
+    <h2>Map Radar</h2>
+    <div class="radar-container">
+      {radarImageUrl && <img src={radarImageUrl} alt={map.name + ' radar overview'} class="radar-img" loading="lazy" width="1024" height="1024" />}
+    </div>
+  </section>
+
+  <section class="callouts-section">
+    <h2>All Callouts ({map.callouts.length} positions)</h2>
+
+    {calloutsByArea.ct.length > 0 && (
+      <div class="callout-area">
+        <h3 class="area-title ct-side">CT Side ({calloutsByArea.ct.length})</h3>
+        <div class="callout-grid">
+          {calloutsByArea.ct.map((callout) => (
+            <div class="callout-card ct-card" data-callout={callout.name}>
+              <h4>{callout.name}</h4>
+              <p>{callout.description}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    )}
+
+    {calloutsByArea.t.length > 0 && (
+      <div class="callout-area">
+        <h3 class="area-title t-side">T Side ({calloutsByArea.t.length})</h3>
+        <div class="callout-grid">
+          {calloutsByArea.t.map((callout) => (
+            <div class="callout-card t-card" data-callout={callout.name}>
+              <h4>{callout.name}</h4>
+              <p>{callout.description}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    )}
+
+    {calloutsByArea.mid.length > 0 && (
+      <div class="callout-area">
+        <h3 class="area-title mid-area">Mid Control ({calloutsByArea.mid.length})</h3>
+        <div class="callout-grid">
+          {calloutsByArea.mid.map((callout) => (
+            <div class="callout-card mid-card" data-callout={callout.name}>
+              <h4>{callout.name}</h4>
+              <p>{callout.description}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    )}
+  </section>
+
+  <section class="tips-section">
+    <h2>Tactical Tips</h2>
+    <div class="tips-grid">
+      {map.tips.map((tip, i) => (
+        <div class="tip-item">
+          <span class="tip-num">{i + 1}</span>
+          <p>{tip}</p>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <section class="strategies-section">
+    <h2>Common Strategies</h2>
+    <div class="strat-group">
+      <h3>T-Side Attack</h3>
+      <div class="strat-grid">
+        {map.strategies.filter((s) => s.side === 't').map((s) => (
+          <div class="strat-card t-card">
+            <h4>{s.title}</h4>
+            <p>{s.description}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+    <div class="strat-group">
+      <h3>CT-Side Defense</h3>
+      <div class="strat-grid">
+        {map.strategies.filter((s) => s.side === 'ct').map((s) => (
+          <div class="strat-card ct-card">
+            <h4>{s.title}</h4>
+            <p>{s.description}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <div class="internal-links">
+    <strong>Related:</strong>
+    <a href={'/lineups/' + map.slug + '/'}>{map.name} Lineups</a>
+    <a href="/maps/">All Maps</a>
+    <a href="/practice-config/">Practice Config</a>
+    <a href="/workshop-maps/">Workshop Maps</a>
+    <a href="/weapons/">Weapons</a>
+  </div>
+
+  <h2>Frequently Asked Questions</h2>
+  <dl class="faq">{faqItems.map(f => (<Fragment><dt>{f.question}</dt><dd>{f.answer}</dd></Fragment>))}</dl>
+
+  <ExploreMore context="maps" />
+</Base>
+
+<style>
+  .hero{background:linear-gradient(135deg,var(--bg2) 0%,var(--bg3) 100%);border:1px solid var(--border);border-radius:12px;padding:2.5rem 2rem;margin-bottom:2.5rem;text-align:center}
+  .hero h1{font-size:2.5rem;color:var(--accent);margin-bottom:.75rem}
+  .description{font-size:1rem;color:var(--text2);max-width:700px;margin:0 auto 1rem;line-height:1.7}
+  .tags{display:flex;flex-wrap:wrap;justify-content:center;gap:.5rem}
+  .hero-tag{background:var(--bg);border:1px solid var(--accent);color:var(--accent);padding:.25rem .75rem;border-radius:20px;font-size:.82rem;font-weight:600}
+
+  /* Static Radar Map */
+  .radar-map-section{margin-bottom:3rem}
+  .radar-map-section h2{margin-bottom:1rem}
+  .radar-container{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:1rem;max-width:700px}
+  .radar-img{width:100%;height:auto;display:block;border-radius:8px}
+  #callout-info-panel .ci-desc{color:var(--text2);font-size:.9rem;line-height:1.6;margin:0}
+
+  /* Callout cards */
+  .callouts-section{margin-bottom:2.5rem}
+  .callout-area{margin-bottom:2rem}
+  .area-title{font-size:1.2rem;margin-bottom:1rem;padding-bottom:.5rem;border-bottom:2px solid;font-weight:700}
+  .area-title.ct-side{color:#4a90e2;border-color:#4a90e2}
+  .area-title.t-side{color:var(--accent);border-color:var(--accent)}
+  .area-title.mid-area{color:#7ed321;border-color:#7ed321}
+  .callout-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:.75rem}
+  .callout-card{background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:1rem 1.25rem;transition:all .25s;cursor:pointer}
+  .callout-card:hover,.callout-card.highlighted{transform:translateY(-2px);box-shadow:0 4px 16px rgba(0,0,0,.25)}
+  .callout-card.ct-card:hover,.callout-card.ct-card.highlighted{border-color:#4a90e2;background:rgba(74,144,226,.08)}
+  .callout-card.t-card:hover,.callout-card.t-card.highlighted{border-color:var(--accent);background:rgba(232,162,58,.08)}
+  .callout-card.mid-card:hover,.callout-card.mid-card.highlighted{border-color:#7ed321;background:rgba(126,211,33,.08)}
+  .callout-card h4{margin:0 0 .35rem;font-size:1rem;color:var(--text)}
+  .callout-card p{margin:0;font-size:.88rem;color:var(--text2);line-height:1.5}
+
+  .tips-section{margin-bottom:2.5rem}
+  .tips-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:.75rem}
+  .tip-item{display:flex;gap:.75rem;align-items:flex-start;background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:1rem}
+  .tip-num{min-width:28px;height:28px;display:flex;align-items:center;justify-content:center;background:var(--accent);color:#000;border-radius:50%;font-weight:800;font-size:.82rem;flex-shrink:0}
+  .tip-item p{margin:0;font-size:.88rem;color:var(--text2);line-height:1.5}
+
+  .strategies-section{margin-bottom:2.5rem}
+  .strat-group{margin-bottom:1.5rem}
+  .strat-group h3{font-size:1.1rem;margin-bottom:1rem;padding-bottom:.4rem;border-bottom:1px solid var(--border)}
+  .strat-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:.75rem}
+  .strat-card{background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:1rem 1.25rem;transition:border-color .2s}
+  .strat-card:hover{border-color:var(--accent)}
+  .strat-card h4{margin:0 0 .35rem;font-size:1rem;color:var(--accent)}
+  .strat-card p{margin:0;font-size:.88rem;color:var(--text2);line-height:1.5}
+
+  @media(max-width:768px){
+    .hero h1{font-size:1.8rem}
+    .hero{padding:1.5rem 1rem}
+    .callout-grid,.strat-grid,.tips-grid{grid-template-columns:1fr}
+  }
+</style>
+

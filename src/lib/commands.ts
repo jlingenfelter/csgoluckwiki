@@ -1,0 +1,441 @@
+export interface Command {
+  slug: string;
+  cmd: string;
+  desc: string;
+  def: string;
+  cheat: boolean;
+  category: string;
+  categoryName: string;
+  categoryIcon: string;
+}
+
+export interface CommandCategory {
+  id: string;
+  name: string;
+  icon: string;
+  desc: string;
+  commands: { cmd: string; desc: string; def: string; cheat: boolean }[];
+}
+
+export const COMMAND_CATEGORIES: CommandCategory[] = [
+  {
+    id: 'essential',
+    name: 'Essential Commands',
+    icon: '\u2B50',
+    desc: 'Must-know commands every CS2 player should have in their toolkit.',
+    commands: [
+      { cmd: 'quit', desc: 'Immediately closes CS2', def: '', cheat: false },
+      { cmd: 'disconnect', desc: 'Disconnects from the current server', def: '', cheat: false },
+      { cmd: 'retry', desc: 'Reconnects to the last server', def: '', cheat: false },
+      { cmd: 'exec', desc: 'Executes a config file (e.g. exec autoexec)', def: '', cheat: false },
+      { cmd: 'host_writeconfig', desc: 'Saves current settings to config.cfg', def: '', cheat: false },
+      { cmd: 'bind', desc: 'Binds a key to a command (e.g. bind "f" "+use")', def: '', cheat: false },
+      { cmd: 'unbind', desc: 'Removes a key binding', def: '', cheat: false },
+      { cmd: 'unbindall', desc: 'Removes all key bindings \u2014 use with caution', def: '', cheat: false },
+      { cmd: 'alias', desc: 'Creates a shortcut name for a sequence of commands', def: '', cheat: false },
+      { cmd: 'echo', desc: 'Prints text to the console (useful in configs for labels)', def: '', cheat: false },
+      { cmd: 'clear', desc: 'Clears the console output', def: '', cheat: false },
+      { cmd: 'status', desc: 'Shows server info, connected players, and your SteamID', def: '', cheat: false },
+      { cmd: 'ping', desc: 'Shows your current ping to the server', def: '', cheat: false },
+      { cmd: 'version', desc: 'Shows the current CS2 build version', def: '', cheat: false },
+      { cmd: 'maps', desc: 'Lists all available maps on the server', def: '', cheat: false },
+    ],
+  },
+  {
+    id: 'crosshair',
+    name: 'Crosshair',
+    icon: '\u271B',
+    desc: 'Customize every aspect of your crosshair appearance.',
+    commands: [
+      { cmd: 'cl_crosshairstyle', desc: 'Crosshair style (0 = default, 1 = static classic, 2 = dynamic classic, 3 = dynamic, 4 = static, 5 = legacy)', def: '0', cheat: false },
+      { cmd: 'cl_crosshairsize', desc: 'Length of the crosshair lines', def: '2.5', cheat: false },
+      { cmd: 'cl_crosshairgap', desc: 'Gap between crosshair lines and center (-5 to 5)', def: '0', cheat: false },
+      { cmd: 'cl_crosshairthickness', desc: 'Thickness of the crosshair lines', def: '0.5', cheat: false },
+      { cmd: 'cl_crosshaircolor', desc: 'Crosshair color preset (1=green, 2=yellow, 3=blue, 4=cyan, 5=custom RGB)', def: '1', cheat: false },
+      { cmd: 'cl_crosshaircolor_r', desc: 'Custom crosshair red value (0-255)', def: '50', cheat: false },
+      { cmd: 'cl_crosshaircolor_g', desc: 'Custom crosshair green value (0-255)', def: '250', cheat: false },
+      { cmd: 'cl_crosshaircolor_b', desc: 'Custom crosshair blue value (0-255)', def: '50', cheat: false },
+      { cmd: 'cl_crosshairalpha', desc: 'Crosshair opacity (0-255, 255 = fully opaque)', def: '200', cheat: false },
+      { cmd: 'cl_crosshairdot', desc: 'Show center dot (0 = off, 1 = on)', def: '0', cheat: false },
+      { cmd: 'cl_crosshair_t', desc: 'T-shaped crosshair \u2014 removes top line (0 = off, 1 = on)', def: '0', cheat: false },
+      { cmd: 'cl_crosshair_drawoutline', desc: 'Draw outline around crosshair (0 = off, 1 = on)', def: '0', cheat: false },
+      { cmd: 'cl_crosshair_outlinethickness', desc: 'Thickness of the crosshair outline', def: '1', cheat: false },
+      { cmd: 'cl_crosshair_sniper_width', desc: 'Width of the sniper scope crosshair line', def: '1', cheat: false },
+      { cmd: 'cl_crosshair_sniper_show_normal_inaccuracy', desc: 'Show movement inaccuracy on sniper crosshair', def: '0', cheat: false },
+      { cmd: 'cl_crosshairgap_useweaponvalue', desc: 'Use weapon-specific gap values for dynamic crosshair', def: '0', cheat: false },
+      { cmd: 'cl_crosshair_friendly_warning', desc: 'Crosshair warning when aiming at teammates (0=off, 1=flash, 2=icon)', def: '1', cheat: false },
+      { cmd: 'cl_crosshair_recoil', desc: 'Crosshair follows recoil pattern (0=off, 1=on)', def: '1', cheat: false },
+    ],
+  },
+  {
+    id: 'viewmodel',
+    name: 'Viewmodel & HUD',
+    icon: '\uD83D\uDC41\uFE0F',
+    desc: 'Adjust your weapon viewmodel position and HUD display settings.',
+    commands: [
+      { cmd: 'viewmodel_fov', desc: 'Viewmodel field of view (54-68)', def: '60', cheat: false },
+      { cmd: 'viewmodel_offset_x', desc: 'Viewmodel horizontal offset (-2.5 to 2.5)', def: '2.5', cheat: false },
+      { cmd: 'viewmodel_offset_y', desc: 'Viewmodel depth offset (-2 to 2)', def: '0', cheat: false },
+      { cmd: 'viewmodel_offset_z', desc: 'Viewmodel vertical offset (-2 to 2)', def: '-1.5', cheat: false },
+      { cmd: 'viewmodel_presetpos', desc: 'Viewmodel preset (1=desktop, 2=couch, 3=classic)', def: '1', cheat: false },
+      { cmd: 'cl_righthand', desc: 'Right-hand (1) or left-hand (0) weapon model', def: '1', cheat: false },
+      { cmd: 'cl_bobamt_lat', desc: 'Weapon bob amount \u2014 lateral movement', def: '0.4', cheat: false },
+      { cmd: 'cl_bobamt_vert', desc: 'Weapon bob amount \u2014 vertical movement', def: '0.25', cheat: false },
+      { cmd: 'cl_bob_lower_amt', desc: 'How much the viewmodel lowers when running', def: '21', cheat: false },
+      { cmd: 'cl_bobcycle', desc: 'Bob cycle speed', def: '0.98', cheat: false },
+      { cmd: 'cl_showfps', desc: 'Show FPS counter (0=off, 1=FPS, 2=FPS+frametime)', def: '0', cheat: false },
+      { cmd: 'cl_showpos', desc: 'Show position, velocity, and angles on screen', def: '0', cheat: false },
+      { cmd: 'cq_netgraph', desc: 'Show network graph with ping, loss, and tick info', def: '0', cheat: false },
+      { cmd: 'cl_drawhud', desc: 'Toggle the entire HUD on or off', def: '1', cheat: true },
+      { cmd: 'cl_draw_only_deathnotices', desc: 'Only show kill feed \u2014 hide rest of HUD', def: '0', cheat: true },
+      { cmd: 'hud_scaling', desc: 'HUD scale size (0.5-0.95)', def: '0.85', cheat: false },
+      { cmd: 'cl_hud_color', desc: 'HUD accent color (0-10: default, white, blue, purple, green, etc.)', def: '0', cheat: false },
+      { cmd: 'cl_hud_background_alpha', desc: 'HUD background transparency (0.0-1.0)', def: '0.5', cheat: false },
+      { cmd: 'cl_hud_healthammo_style', desc: 'Health/ammo HUD style (0=default, 1=simple)', def: '0', cheat: false },
+      { cmd: 'cl_hud_playercount_showcount', desc: 'Show player count as number (1) or avatars (0)', def: '0', cheat: false },
+      { cmd: 'cl_hud_playercount_pos', desc: 'Player count position (0=top, 1=bottom)', def: '0', cheat: false },
+      { cmd: 'cl_showloadout', desc: 'Always show weapon loadout panel (0=auto-hide, 1=always)', def: '1', cheat: false },
+      { cmd: 'safezonex', desc: 'Horizontal HUD safe zone (0.85-1.0)', def: '1.0', cheat: false },
+      { cmd: 'safezoney', desc: 'Vertical HUD safe zone (0.85-1.0)', def: '1.0', cheat: false },
+    ],
+  },
+  {
+    id: 'mouse',
+    name: 'Mouse & Sensitivity',
+    icon: '\uD83D\uDDB1\uFE0F',
+    desc: 'Fine-tune mouse input, sensitivity, and acceleration.',
+    commands: [
+      { cmd: 'sensitivity', desc: 'Mouse sensitivity value (typically 0.5-4.0)', def: '2.5', cheat: false },
+      { cmd: 'zoom_sensitivity_ratio', desc: 'Scoped sensitivity multiplier (relative to hip-fire)', def: '1.0', cheat: false },
+      { cmd: 'm_rawinput', desc: 'Use raw mouse input, bypassing OS acceleration (0=off, 1=on)', def: '1', cheat: false },
+      { cmd: 'm_yaw', desc: 'Mouse yaw (horizontal) sensitivity factor', def: '0.022', cheat: false },
+      { cmd: 'm_pitch', desc: 'Mouse pitch (vertical) sensitivity factor', def: '0.022', cheat: false },
+      { cmd: 'm_customaccel', desc: 'Custom mouse acceleration mode (0=off, 1=on)', def: '0', cheat: false },
+      { cmd: 'm_customaccel_exponent', desc: 'Mouse acceleration exponent (if enabled)', def: '1.05', cheat: false },
+    ],
+  },
+  {
+    id: 'movement',
+    name: 'Movement',
+    icon: '\uD83C\uDFC3',
+    desc: 'Commands related to player movement, jumping, and crouching.',
+    commands: [
+      { cmd: '+forward', desc: 'Move forward (default: W)', def: '', cheat: false },
+      { cmd: '+back', desc: 'Move backward (default: S)', def: '', cheat: false },
+      { cmd: '+moveleft', desc: 'Strafe left (default: A)', def: '', cheat: false },
+      { cmd: '+moveright', desc: 'Strafe right (default: D)', def: '', cheat: false },
+      { cmd: '+jump', desc: 'Jump (default: Space)', def: '', cheat: false },
+      { cmd: '+duck', desc: 'Crouch/duck (default: Ctrl)', def: '', cheat: false },
+      { cmd: '+sprint', desc: 'Walk/shift-walk for silent movement (default: Shift)', def: '', cheat: false },
+      { cmd: 'cl_forcepreload', desc: 'Preload all map resources at load time', def: '0', cheat: false },
+      { cmd: 'sv_autobunnyhopping', desc: 'Auto-bunny hop when holding jump (hold space)', def: '0', cheat: true },
+      { cmd: 'sv_enablebunnyhopping', desc: 'Remove bunny hop speed cap', def: '0', cheat: true },
+      { cmd: 'sv_maxspeed', desc: 'Maximum player movement speed', def: '320', cheat: true },
+      { cmd: 'sv_stamina_max', desc: 'Maximum stamina penalty (affects jump height)', def: '80', cheat: true },
+      { cmd: 'sv_stamina_recovery_rate', desc: 'Rate at which stamina recovers', def: '60', cheat: true },
+      { cmd: 'sv_staminajumpcost', desc: 'Stamina cost per jump', def: '0.08', cheat: true },
+      { cmd: 'sv_wateraccelerate', desc: 'Water acceleration speed', def: '10', cheat: true },
+      { cmd: 'cl_showpos', desc: 'Display position and velocity overlay (useful for movement practice)', def: '0', cheat: false },
+    ],
+  },
+  {
+    id: 'radar',
+    name: 'Radar & Minimap',
+    icon: '\uD83D\uDCE1',
+    desc: 'Customize the radar display, zoom, rotation, and icons.',
+    commands: [
+      { cmd: 'cl_radar_scale', desc: 'Radar zoom level (0.25-1.0, lower = more zoomed out)', def: '0.7', cheat: false },
+      { cmd: 'cl_radar_always_centered', desc: 'Keep player centered on radar (0=off gives wider view)', def: '1', cheat: false },
+      { cmd: 'cl_radar_rotate', desc: 'Radar rotates with player view (0=fixed north, 1=rotate)', def: '1', cheat: false },
+      { cmd: 'cl_radar_icon_scale_min', desc: 'Minimum icon size on radar', def: '0.6', cheat: false },
+      { cmd: 'cl_hud_radar_scale', desc: 'Radar HUD element size', def: '1.0', cheat: false },
+      { cmd: 'cl_radar_square_with_scoreboard', desc: 'Show square radar when scoreboard is open', def: '1', cheat: false },
+    ],
+  },
+  {
+    id: 'network',
+    name: 'Network & Connection',
+    icon: '\uD83C\uDF10',
+    desc: 'Optimize your network settings for lower latency and smoother gameplay.',
+    commands: [
+      { cmd: 'rate', desc: 'Max bytes per second from server (786432 = max for 128-tick)', def: '786432', cheat: false },
+      { cmd: 'cl_interp_ratio', desc: 'Interpolation ratio (1 = LAN/good connection, 2 = default)', def: '2', cheat: false },
+      { cmd: 'cl_interp', desc: 'Interpolation amount in seconds (0 = auto-calculate from ratio)', def: '0.03125', cheat: false },
+      { cmd: 'cl_cmdrate', desc: 'Max command packets sent to server per second', def: '128', cheat: false },
+      { cmd: 'cl_updaterate', desc: 'Max update packets received from server per second', def: '128', cheat: false },
+      { cmd: 'mm_dedicated_search_maxping', desc: 'Maximum acceptable ping for matchmaking servers', def: '150', cheat: false },
+      { cmd: 'cl_timeout', desc: 'Seconds before disconnecting from an unresponsive server', def: '30', cheat: false },
+      { cmd: 'net_graph', desc: 'Show network statistics overlay (0=off, 1=on)', def: '0', cheat: false },
+      { cmd: 'net_graphproportionalfont', desc: 'Scale net_graph text proportionally', def: '1', cheat: false },
+      { cmd: 'cl_predict', desc: 'Enable client-side prediction (should always be 1)', def: '1', cheat: false },
+      { cmd: 'cl_lagcompensation', desc: 'Enable lag compensation', def: '1', cheat: false },
+    ],
+  },
+  {
+    id: 'audio',
+    name: 'Audio & Sound',
+    icon: '\uD83D\uDD0A',
+    desc: 'Adjust volume levels, 3D audio, and audio output settings.',
+    commands: [
+      { cmd: 'volume', desc: 'Master volume (0.0-1.0)', def: '1.0', cheat: false },
+      { cmd: 'snd_roundstart_volume', desc: 'Round start music volume (0.0-1.0)', def: '0.04', cheat: false },
+      { cmd: 'snd_roundend_volume', desc: 'Round end music volume (0.0-1.0)', def: '0.04', cheat: false },
+      { cmd: 'snd_deathcamera_volume', desc: 'Death camera music volume', def: '0.0', cheat: false },
+      { cmd: 'snd_mvp_volume', desc: 'MVP anthem volume', def: '0.03', cheat: false },
+      { cmd: 'snd_tensecondwarning_volume', desc: 'Ten-second bomb warning volume', def: '0.05', cheat: false },
+      { cmd: 'snd_menumusic_volume', desc: 'Main menu music volume', def: '0.03', cheat: false },
+      { cmd: 'snd_mapobjective_volume', desc: 'Map objective sound volume (bomb plant/defuse)', def: '0.04', cheat: false },
+      { cmd: 'snd_headphone_pan_exponent', desc: 'Headphone panning curve exponent', def: '1.0', cheat: false },
+      { cmd: 'snd_headphone_pan_radial_weight', desc: 'Headphone spatial weight for radial panning', def: '1.0', cheat: false },
+      { cmd: 'snd_front_headphone_position', desc: 'Front speaker position for headphone virtualization', def: '90.0', cheat: false },
+      { cmd: 'snd_rear_headphone_position', desc: 'Rear speaker position for headphone virtualization', def: '90.0', cheat: false },
+      { cmd: 'snd_mute_losefocus', desc: 'Mute audio when CS2 is not the active window', def: '1', cheat: false },
+      { cmd: 'voice_scale', desc: 'Teammate voice chat volume scale', def: '1.0', cheat: false },
+      { cmd: 'voice_enable', desc: 'Enable voice communication (0=off, 1=on)', def: '1', cheat: false },
+      { cmd: 'voice_modenable', desc: 'Enable open mic mode', def: '1', cheat: false },
+      { cmd: 'cl_mute_enemy_team', desc: 'Mute enemy team voice and text chat', def: '0', cheat: false },
+      { cmd: 'cl_mute_all_but_friends_and_party', desc: 'Only hear friends and party members', def: '0', cheat: false },
+    ],
+  },
+  {
+    id: 'graphics',
+    name: 'Graphics & Performance',
+    icon: '\uD83D\uDDA5\uFE0F',
+    desc: 'Optimize visual settings and FPS performance.',
+    commands: [
+      { cmd: 'fps_max', desc: 'Maximum framerate cap (0 = unlimited)', def: '400', cheat: false },
+      { cmd: 'fps_max_ui', desc: 'Maximum framerate in menus/UI', def: '120', cheat: false },
+      { cmd: 'r_dynamic', desc: 'Enable dynamic lighting (0=off for FPS boost)', def: '1', cheat: false },
+      { cmd: 'r_drawtracers_firstperson', desc: 'Show bullet tracers in first person (0=off)', def: '1', cheat: false },
+      { cmd: 'r_drawparticles', desc: 'Draw particle effects', def: '1', cheat: true },
+      { cmd: 'mat_queue_mode', desc: 'Material threading mode (-1=auto, 0=sync, 2=multi-core)', def: '-1', cheat: false },
+      { cmd: 'cl_forcepreload', desc: 'Force preload all assets at map load', def: '0', cheat: false },
+      { cmd: 'mat_disable_bloom', desc: 'Disable bloom/glow effects', def: '0', cheat: false },
+      { cmd: 'engine_low_latency_sleep_after_client_tick', desc: 'Reduce input latency by sleeping after client tick', def: 'true', cheat: false },
+      { cmd: 'cl_animate_player_models', desc: 'Animate player models in menus', def: '1', cheat: false },
+      { cmd: 'r_fullscreen_gamma', desc: 'Fullscreen gamma value', def: '2.2', cheat: false },
+    ],
+  },
+  {
+    id: 'weapon',
+    name: 'Weapon & Shooting',
+    icon: '\uD83D\uDD2B',
+    desc: 'Weapon behavior, buy commands, and shooting-related settings.',
+    commands: [
+      { cmd: 'cl_autowepswitch', desc: 'Auto-switch to picked up weapons (0=off, 1=on)', def: '1', cheat: false },
+      { cmd: 'cl_use_opens_buy_menu', desc: 'Use key opens buy menu in buy zone (0=off)', def: '1', cheat: false },
+      { cmd: 'closeonbuy', desc: 'Close buy menu after purchasing (0=stay open)', def: '0', cheat: false },
+      { cmd: 'cl_autohelp', desc: 'Show automatic help/hint messages', def: '1', cheat: false },
+      { cmd: 'cl_showhelp', desc: 'Show on-screen help tips', def: '1', cheat: false },
+      { cmd: 'buy', desc: 'Buy a weapon (e.g. buy ak47, buy vesthelm)', def: '', cheat: false },
+      { cmd: 'slot1', desc: 'Switch to primary weapon', def: '', cheat: false },
+      { cmd: 'slot2', desc: 'Switch to secondary weapon (pistol)', def: '', cheat: false },
+      { cmd: 'slot3', desc: 'Switch to knife', def: '', cheat: false },
+      { cmd: 'slot4', desc: 'Switch to grenades', def: '', cheat: false },
+      { cmd: 'slot5', desc: 'Switch to C4 / defuse kit', def: '', cheat: false },
+      { cmd: 'lastinv', desc: 'Switch to last used weapon (quick-switch)', def: '', cheat: false },
+      { cmd: 'invnext', desc: 'Cycle to next weapon in inventory', def: '', cheat: false },
+      { cmd: 'invprev', desc: 'Cycle to previous weapon in inventory', def: '', cheat: false },
+      { cmd: '+reload', desc: 'Reload current weapon', def: '', cheat: false },
+      { cmd: 'drop', desc: 'Drop the currently held weapon', def: '', cheat: false },
+      { cmd: 'cl_crosshair_recoil', desc: 'Crosshair follows recoil (0=static, 1=follows spray)', def: '1', cheat: false },
+    ],
+  },
+  {
+    id: 'practice',
+    name: 'Practice & Training',
+    icon: '\uD83C\uDFAF',
+    desc: 'Commands for private practice servers \u2014 most require sv_cheats 1.',
+    commands: [
+      { cmd: 'sv_cheats', desc: 'Enable cheat-protected commands (0=off, 1=on)', def: '0', cheat: false },
+      { cmd: 'noclip', desc: 'Toggle fly mode \u2014 pass through walls and terrain', def: '', cheat: true },
+      { cmd: 'god', desc: 'Toggle invincibility (god mode)', def: '', cheat: true },
+      { cmd: 'sv_infinite_ammo', desc: 'Infinite ammo (1=infinite reserve, 2=no reload needed)', def: '0', cheat: true },
+      { cmd: 'sv_grenade_trajectory', desc: 'Show grenade flight path lines', def: '0', cheat: true },
+      { cmd: 'sv_grenade_trajectory_time', desc: 'How long trajectory lines stay visible (seconds)', def: '20', cheat: true },
+      { cmd: 'sv_grenade_trajectory_prac_pipreview', desc: 'Show grenade landing preview while holding', def: '0', cheat: true },
+      { cmd: 'sv_grenade_trajectory_prac_trailtime', desc: 'Trail time for practice grenade trajectories', def: '10', cheat: true },
+      { cmd: 'sv_showimpacts', desc: 'Show bullet impact points (1=both, 2=client, 3=server)', def: '0', cheat: true },
+      { cmd: 'sv_showimpacts_time', desc: 'How long impact markers stay visible (seconds)', def: '4', cheat: true },
+      { cmd: 'sv_showbullethits', desc: 'Show bullet hit visualization on players', def: '0', cheat: true },
+      { cmd: 'give', desc: 'Give yourself a weapon or item (e.g. give weapon_ak47)', def: '', cheat: true },
+      { cmd: 'mp_damage_print_enable', desc: 'Print damage dealt and received in console', def: '1', cheat: false },
+      { cmd: 'cl_grenadepreview', desc: 'Show grenade trajectory preview while aiming', def: '0', cheat: true },
+      { cmd: 'sv_rethrow_last_grenade', desc: 'Re-throws the last grenade you threw', def: '', cheat: true },
+      { cmd: 'mp_buy_anywhere', desc: 'Allow buying weapons anywhere on the map (1=on)', def: '0', cheat: false },
+      { cmd: 'mp_buytime', desc: 'Buy time in seconds after round start', def: '20', cheat: false },
+      { cmd: 'mp_startmoney', desc: 'Starting money at the beginning of the match', def: '800', cheat: false },
+      { cmd: 'mp_maxmoney', desc: 'Maximum money a player can hold', def: '16000', cheat: false },
+      { cmd: 'mp_afterroundmoney', desc: 'Money given after every round regardless of outcome', def: '0', cheat: false },
+      { cmd: 'mp_roundtime', desc: 'Round time in minutes', def: '1.92', cheat: false },
+      { cmd: 'mp_roundtime_defuse', desc: 'Round time for defuse maps in minutes', def: '1.92', cheat: false },
+      { cmd: 'mp_freezetime', desc: 'Freeze time at round start in seconds (0 = none)', def: '15', cheat: false },
+      { cmd: 'mp_warmuptime', desc: 'Warmup duration in seconds', def: '90', cheat: false },
+      { cmd: 'mp_warmup_end', desc: 'Immediately end the warmup period', def: '', cheat: false },
+      { cmd: 'mp_restartgame', desc: 'Restart the game after N seconds (e.g. mp_restartgame 1)', def: '', cheat: false },
+      { cmd: 'mp_respawn_on_death_ct', desc: 'CTs auto-respawn on death (1=on)', def: '0', cheat: false },
+      { cmd: 'mp_respawn_on_death_t', desc: 'Terrorists auto-respawn on death (1=on)', def: '0', cheat: false },
+      { cmd: 'mp_respawn_immunitytime', desc: 'Seconds of spawn protection', def: '4', cheat: false },
+      { cmd: 'sv_regeneration_force_on', desc: 'Force health regeneration', def: '0', cheat: true },
+      { cmd: 'ent_fire', desc: 'Fire an entity input (advanced map manipulation)', def: '', cheat: true },
+    ],
+  },
+  {
+    id: 'bot',
+    name: 'Bot Commands',
+    icon: '\uD83E\uDD16',
+    desc: 'Add, remove, and control bots in private/practice matches.',
+    commands: [
+      { cmd: 'bot_add', desc: 'Add a bot to the game (auto team balance)', def: '', cheat: false },
+      { cmd: 'bot_add_t', desc: 'Add a bot to the Terrorist team', def: '', cheat: false },
+      { cmd: 'bot_add_ct', desc: 'Add a bot to the Counter-Terrorist team', def: '', cheat: false },
+      { cmd: 'bot_kick', desc: 'Kick all bots from the server', def: '', cheat: false },
+      { cmd: 'bot_stop', desc: 'Freeze all bots in place (1=frozen, 0=normal)', def: '0', cheat: true },
+      { cmd: 'bot_mimic', desc: 'Bots mimic player movements (1=on)', def: '0', cheat: true },
+      { cmd: 'bot_crouch', desc: 'Force bots to crouch (1=on)', def: '0', cheat: true },
+      { cmd: 'bot_place', desc: 'Place a bot at your crosshair position', def: '', cheat: true },
+      { cmd: 'bot_difficulty', desc: 'Bot difficulty level (0=easy, 1=normal, 2=hard, 3=expert)', def: '1', cheat: false },
+      { cmd: 'bot_dont_shoot', desc: 'Prevent bots from shooting (1=no shooting)', def: '0', cheat: true },
+      { cmd: 'bot_knives_only', desc: 'Bots use only knives (1=on)', def: '0', cheat: true },
+      { cmd: 'bot_zombie', desc: 'Bots stand still and don\'t react (1=on)', def: '0', cheat: true },
+      { cmd: 'bot_quota', desc: 'Maximum number of bots allowed', def: '10', cheat: false },
+      { cmd: 'bot_quota_mode', desc: 'Bot fill mode (normal, fill, match)', def: 'normal', cheat: false },
+    ],
+  },
+  {
+    id: 'server',
+    name: 'Server & Match',
+    icon: '\uD83D\uDDA7',
+    desc: 'Server administration and match settings for private servers.',
+    commands: [
+      { cmd: 'changelevel', desc: 'Change to a different map (e.g. changelevel de_mirage)', def: '', cheat: false },
+      { cmd: 'map', desc: 'Load a map and restart the server (e.g. map de_dust2)', def: '', cheat: false },
+      { cmd: 'game_mode', desc: 'Set game mode (0=casual, 1=competitive, 2=wingman)', def: '0', cheat: false },
+      { cmd: 'game_type', desc: 'Set game type (0=classic, 1=arms race, etc.)', def: '0', cheat: false },
+      { cmd: 'mp_autoteambalance', desc: 'Auto-balance teams (0=off, 1=on)', def: '1', cheat: false },
+      { cmd: 'mp_limitteams', desc: 'Max player imbalance between teams (0=no limit)', def: '2', cheat: false },
+      { cmd: 'mp_timelimit', desc: 'Time limit per map in minutes (0=none)', def: '0', cheat: false },
+      { cmd: 'mp_maxrounds', desc: 'Max rounds per half', def: '30', cheat: false },
+      { cmd: 'mp_overtime_enable', desc: 'Enable overtime in competitive (1=on)', def: '0', cheat: false },
+      { cmd: 'mp_overtime_maxrounds', desc: 'Max rounds in overtime', def: '6', cheat: false },
+      { cmd: 'mp_halftime', desc: 'Enable halftime (1=on)', def: '1', cheat: false },
+      { cmd: 'mp_friendlyfire', desc: 'Enable friendly fire (0=off, 1=on)', def: '1', cheat: false },
+      { cmd: 'mp_solid_teammates', desc: 'Teammates block each other (0=pass through, 1=solid)', def: '1', cheat: false },
+      { cmd: 'mp_autokick', desc: 'Auto-kick idle players and team killers', def: '1', cheat: false },
+      { cmd: 'sv_password', desc: 'Server password (empty = public)', def: '', cheat: false },
+      { cmd: 'sv_lan', desc: 'Run server in LAN mode only (1=LAN)', def: '0', cheat: false },
+      { cmd: 'hostname', desc: 'Set the server name displayed in browser', def: '', cheat: false },
+      { cmd: 'rcon_password', desc: 'Remote console password for server administration', def: '', cheat: false },
+      { cmd: 'rcon', desc: 'Execute a remote console command (e.g. rcon sv_cheats 1)', def: '', cheat: false },
+      { cmd: 'kick', desc: 'Kick a player by name or userid', def: '', cheat: false },
+    ],
+  },
+  {
+    id: 'demo',
+    name: 'Demo & Recording',
+    icon: '\uD83C\uDFAC',
+    desc: 'Record and playback demos for review or content creation.',
+    commands: [
+      { cmd: 'record', desc: 'Start recording a demo (e.g. record mydemo)', def: '', cheat: false },
+      { cmd: 'stop', desc: 'Stop recording the current demo', def: '', cheat: false },
+      { cmd: 'playdemo', desc: 'Play back a recorded demo file', def: '', cheat: false },
+      { cmd: 'demoui', desc: 'Open the demo playback control UI', def: '', cheat: false },
+      { cmd: 'demo_pause', desc: 'Pause demo playback', def: '', cheat: false },
+      { cmd: 'demo_resume', desc: 'Resume demo playback', def: '', cheat: false },
+      { cmd: 'demo_timescale', desc: 'Demo playback speed multiplier (0.25=quarter, 2=double)', def: '1', cheat: false },
+      { cmd: 'demo_goto', desc: 'Skip to a specific tick number in the demo', def: '', cheat: false },
+      { cmd: 'spec_show_xray', desc: 'Toggle X-ray outline view in spectate/demo', def: '0', cheat: false },
+      { cmd: 'cl_draw_only_deathnotices', desc: 'Only show kill feed \u2014 hide HUD (for movie making)', def: '0', cheat: true },
+      { cmd: 'cl_drawhud', desc: 'Hide entire HUD for clean screenshots/recordings', def: '1', cheat: true },
+      { cmd: 'sv_skyname', desc: 'Change the skybox texture (for cinematic shots)', def: '', cheat: true },
+      { cmd: 'fog_override', desc: 'Override fog settings (1=enable custom fog)', def: '0', cheat: true },
+      { cmd: 'fog_enable', desc: 'Enable or disable fog (0=off, 1=on)', def: '1', cheat: true },
+      { cmd: 'screenshot', desc: 'Take a screenshot and save to screenshots folder', def: '', cheat: false },
+    ],
+  },
+  {
+    id: 'communication',
+    name: 'Communication',
+    icon: '\uD83D\uDCAC',
+    desc: 'Voice chat, text chat, and team communication commands.',
+    commands: [
+      { cmd: '+voicerecord', desc: 'Push-to-talk voice chat (bind to a key)', def: '', cheat: false },
+      { cmd: 'say', desc: 'Send a message to all players', def: '', cheat: false },
+      { cmd: 'say_team', desc: 'Send a message to your team only', def: '', cheat: false },
+      { cmd: 'cl_mute_enemy_team', desc: 'Mute all enemy voice and text chat', def: '0', cheat: false },
+      { cmd: 'cl_mute_all_but_friends_and_party', desc: 'Only hear friends and party members', def: '0', cheat: false },
+      { cmd: 'voice_enable', desc: 'Enable or disable voice chat entirely', def: '1', cheat: false },
+      { cmd: 'voice_scale', desc: 'Volume of other players\' voice chat (0.0-1.0)', def: '1.0', cheat: false },
+      { cmd: 'ignoremsg', desc: 'Cycle chat filter (all \u2192 team only \u2192 none \u2192 all)', def: '', cheat: false },
+      { cmd: 'player_ping', desc: 'Ping a location for teammates (default: mouse wheel click)', def: '', cheat: false },
+      { cmd: 'cl_show_clan_in_death_notice', desc: 'Show clan tags in the kill feed', def: '1', cheat: false },
+      { cmd: 'cl_clanid', desc: 'Set your clan tag ID', def: '', cheat: false },
+    ],
+  },
+  {
+    id: 'utility',
+    name: 'Utility & Misc',
+    icon: '\uD83D\uDD27',
+    desc: 'Miscellaneous commands for screenshots, workshop, and other features.',
+    commands: [
+      { cmd: 'cl_downloadfilter', desc: 'Download filter for community servers (all, nosounds, none)', def: 'all', cheat: false },
+      { cmd: 'cl_disablehtmlmotd', desc: 'Disable HTML message of the day on community servers', def: '0', cheat: false },
+      { cmd: 'cl_join_advertise', desc: 'Let friends join your game (0=off, 1=friends, 2=friends+lobby)', def: '1', cheat: false },
+      { cmd: 'gameinstructor_enable', desc: 'Enable in-game tips and tutorials (0=off)', def: '1', cheat: false },
+      { cmd: 'r_cleardecals', desc: 'Remove all bullet holes and blood decals from surfaces', def: '', cheat: false },
+      { cmd: 'cl_color', desc: 'Preferred team color (0=yellow, 1=purple, 2=green, 3=blue, 4=orange)', def: '0', cheat: false },
+      { cmd: 'cl_teammate_colors_show', desc: 'Show unique teammate colors (0=off, 1=on, 2=letters)', def: '1', cheat: false },
+      { cmd: 'con_filter_enable', desc: 'Enable console output filtering (1=highlight, 2=show only matches)', def: '0', cheat: false },
+      { cmd: 'con_filter_text', desc: 'Console filter text \u2014 only show lines containing this string', def: '', cheat: false },
+      { cmd: 'developer', desc: 'Enable developer messages in console (0=off, 1=on, 2=verbose)', def: '0', cheat: false },
+      { cmd: 'map_workshop', desc: 'Load a workshop map by its ID', def: '', cheat: false },
+      { cmd: 'workshop_subscribe', desc: 'Subscribe to a workshop item by ID', def: '', cheat: false },
+      { cmd: 'toggle', desc: 'Toggle a cvar between values (e.g. toggle cl_showfps 0 1)', def: '', cheat: false },
+      { cmd: 'incrementvar', desc: 'Increment a cvar (e.g. incrementvar volume 0 1 0.1)', def: '', cheat: false },
+      { cmd: 'cl_allowdownload', desc: 'Allow downloading resources from servers', def: '1', cheat: false },
+      { cmd: 'cl_allowupload', desc: 'Allow uploading your spray/resources to servers', def: '1', cheat: false },
+    ],
+  },
+];
+
+function generateSlug(cmd: string): string {
+  return cmd
+    .replace(/^\+/, '')
+    .replace(/_/g, '-')
+    .toLowerCase();
+}
+
+export const ALL_COMMANDS: Command[] = COMMAND_CATEGORIES.flatMap((cat) =>
+  cat.commands.map((c) => ({
+    slug: generateSlug(c.cmd),
+    cmd: c.cmd,
+    desc: c.desc,
+    def: c.def,
+    cheat: c.cheat,
+    category: cat.id,
+    categoryName: cat.name,
+    categoryIcon: cat.icon,
+  }))
+);
+
+// Deduplicated commands for individual pages (first occurrence wins)
+const seenSlugs = new Set<string>();
+export const UNIQUE_COMMANDS: Command[] = ALL_COMMANDS.filter((c) => {
+  if (seenSlugs.has(c.slug)) return false;
+  seenSlugs.add(c.slug);
+  return true;
+});
+
+export function getCommandBySlug(slug: string): Command | undefined {
+  return ALL_COMMANDS.find((c) => c.slug === slug);
+}
+
+export function getCommandsByCategory(categoryId: string): Command[] {
+  return ALL_COMMANDS.filter((c) => c.category === categoryId);
+}
+
+export function getRelatedCommands(cmd: Command, limit: number = 8): Command[] {
+  return ALL_COMMANDS
+    .filter((c) => c.category === cmd.category && c.slug !== cmd.slug)
+    .slice(0, limit);
+}

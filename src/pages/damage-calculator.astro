@@ -1,0 +1,453 @@
+---
+import Base from '../layouts/Base.astro';
+import ExploreMore from '../components/ExploreMore.astro';
+import { faqSchema, breadcrumbSchema } from '../lib/weapons';
+
+const title = 'CS2 Damage Calculator';
+const description = 'Calculate damage output for CS2 weapons with armor penetration. Adjust distance, armor type, and weapon selection.';
+
+const weaponData = [
+  { name: 'AK-47', baseDamage: 41, armor: 0.75 },
+  { name: 'M4A4', baseDamage: 33, armor: 0.74 },
+  { name: 'M4A1-S', baseDamage: 38, armor: 0.8 },
+  { name: 'AWP Dragon Lore', baseDamage: 115, armor: 0.85 },
+  { name: 'Deagle', baseDamage: 55, armor: 0.75 },
+  { name: 'USP-S', baseDamage: 33, armor: 0.75 },
+  { name: 'P250', baseDamage: 35, armor: 0.75 },
+  { name: 'Glock-18', baseDamage: 20, armor: 0.65 },
+  { name: 'Famas', baseDamage: 30, armor: 0.63 },
+  { name: 'Galil AR', baseDamage: 33, armor: 0.75 },
+];
+
+const faq = [
+  {
+    question: 'How does armor affect damage in CS2?',
+    answer: 'Armor reduces damage by multiplying the incoming damage by the armor penetration factor of the weapon. Different weapons have different penetration values.'
+  },
+  {
+    question: 'What is armor penetration?',
+    answer: 'Armor penetration is a multiplier applied to weapon damage when hitting armored targets. For example, 0.75 means the weapon deals 75% of its base damage to armored enemies.'
+  },
+  {
+    question: 'Does distance affect damage?',
+    answer: 'Yes, many weapons in CS2 have damage falloff based on distance. Sniper rifles like the AWP maintain full damage at any distance, while rifles and pistols lose damage over range.'
+  }
+];
+
+const schemaData = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faq.map(item => ({
+    '@type': 'Question',
+    name: item.question,
+    acceptedAnswer: {
+      '@type': 'Answer',
+      text: item.answer
+    }
+  }))
+};
+
+const toolSchema = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": title,
+  "description": description,
+  "applicationCategory": "UtilityApplication",
+  "operatingSystem": "Web",
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+  "author": { "@type": "Organization", "name": "CSDB.gg", "url": "https://csdb.gg" }
+});
+---
+
+<Base title={title} description={description}>
+  <div class="calc-container">
+    <h1>CS2 Damage Calculator</h1>
+    <p class="subtitle">Calculate weapon damage with armor penetration</p>
+
+    <div class="calc-section">
+      <div class="calc-row">
+        <div class="input-group">
+          <label for="weapon">Weapon</label>
+          <select id="weapon" class="weapon-select">
+            {weaponData.map(w => <option value={w.name}>{w.name}</option>)}
+          </select>
+        </div>
+
+        <div class="input-group">
+          <label for="distance">Distance (units)</label>
+          <input type="range" id="distance" min="0" max="100" value="50" class="slider">
+          <span id="distanceValue">50</span>
+        </div>
+      </div>
+
+      <div class="calc-row">
+        <div class="input-group armor-toggle">
+          <label>Target Armor</label>
+          <div class="toggle-group">
+            <button class="armor-btn active" data-armor="none">No Armor</button>
+            <button class="armor-btn" data-armor="kevlar">Kevlar</button>
+            <button class="armor-btn" data-armor="helmet">Kevlar + Helmet</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="result-section">
+        <div class="result-box">
+          <h3>Base Damage</h3>
+          <p class="damage-value" id="baseDamage">41</p>
+        </div>
+        <div class="result-box">
+          <h3>Armor Reduction</h3>
+          <p class="damage-value" id="armorReduction">0%</p>
+        </div>
+        <div class="result-box highlight">
+          <h3>Final Damage</h3>
+          <p class="damage-value" id="finalDamage">41</p>
+        </div>
+        <div class="result-box">
+          <h3>Headshot Damage</h3>
+          <p class="damage-value" id="headshotDamage">123</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="info-section">
+      <h2>How It Works</h2>
+      <ul>
+        <li><strong>Base Damage:</strong> The standard damage value for the selected weapon</li>
+        <li><strong>Armor Reduction:</strong> Percentage of damage mitigated by armor</li>
+        <li><strong>Distance Falloff:</strong> Some weapons lose damage over distance</li>
+        <li><strong>Headshot Multiplier:</strong> Headshots deal 3x damage (2.3x with helmet)</li>
+      </ul>
+    </div>
+
+    <div class="faq-section">
+      <h2>Frequently Asked Questions</h2>
+      {faq.map(item => (
+        <div class="faq-item">
+          <h3>{item.question}</h3>
+          <p>{item.answer}</p>
+        </div>
+      ))}
+    </div>
+
+    <div class="links-section">
+      <h2>Related Tools</h2>
+      <ul>
+        <li><a href="/economy-calculator/">Economy Calculator</a></li>
+        <li><a href="/weapon-compare/">Weapon Compare</a></li>
+        <li><a href="/recoil-patterns/">Recoil Patterns</a></li>
+        <li><a href="/spray-trainer/">Spray Trainer</a></li>
+        <li><a href="/sensitivity-converter/">Sensitivity Converter</a></li>
+        <li><a href="/weapons/">Weapon Database</a></li>
+        <li><a href="/pro-players/">Pro Player Settings</a></li>
+        <li><a href="/tools/">All Tools</a></li>
+        <li><a href="/guides/advanced-mechanics-guide/">Advanced Mechanics Guide</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <script type="application/ld+json" set:html={toolSchema}></script>
+  <script type="application/ld+json" set:html={JSON.stringify(schemaData)} />
+
+  <ExploreMore context="tools" />
+</Base>
+
+<style is:inline>
+  .calc-container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 2rem;
+    color: var(--text);
+  }
+
+  h1 {
+    font-size: 2.5rem;
+    margin-bottom: 0.5rem;
+    color: var(--accent);
+  }
+
+  .subtitle {
+    color: var(--text2);
+    font-size: 1.1rem;
+    margin-bottom: 2rem;
+  }
+
+  .calc-section {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+  }
+
+  .calc-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 2rem;
+    margin-bottom: 2rem;
+  }
+
+  .input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  label {
+    font-weight: 600;
+    color: var(--text2);
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  select, input[type="range"] {
+    padding: 0.75rem;
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    color: var(--text);
+    font-size: 1rem;
+  }
+
+  select:hover, input[type="range"]:hover {
+    border-color: var(--accent);
+  }
+
+  select:focus, input[type="range"]:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(212, 149, 110, 0.1);
+  }
+
+  .slider {
+    cursor: pointer;
+  }
+
+  #distanceValue {
+    color: var(--accent);
+    font-weight: 600;
+  }
+
+  .armor-toggle {
+    grid-column: 1 / -1;
+  }
+
+  .toggle-group {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+
+  .armor-btn {
+    padding: 0.75rem 1.5rem;
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    color: var(--text2);
+    cursor: pointer;
+    transition: all 0.2s;
+    font-weight: 500;
+  }
+
+  .armor-btn:hover {
+    border-color: var(--accent);
+    color: var(--text);
+  }
+
+  .armor-btn.active {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: white;
+  }
+
+  .result-section {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+    margin-top: 2rem;
+  }
+
+  .result-box {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1.5rem;
+    text-align: center;
+  }
+
+  .result-box.highlight {
+    border-color: var(--accent);
+    background: rgba(212, 149, 110, 0.1);
+  }
+
+  .result-box h3 {
+    color: var(--text2);
+    font-size: 0.9rem;
+    margin-bottom: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .damage-value {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--accent);
+    margin: 0;
+  }
+
+  .info-section, .faq-section {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+  }
+
+  .info-section h2, .faq-section h2 {
+    color: var(--accent);
+    font-size: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .info-section ul {
+    list-style: none;
+    padding: 0;
+  }
+
+  .info-section li {
+    padding: 0.75rem 0;
+    border-bottom: 1px solid var(--border);
+    color: var(--text2);
+  }
+
+  .info-section li:last-child {
+    border-bottom: none;
+  }
+
+  .faq-item {
+    margin-bottom: 1.5rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .faq-item:last-child {
+    border-bottom: none;
+  }
+
+  .faq-item h3 {
+    color: var(--accent);
+    margin-bottom: 0.5rem;
+  }
+
+  .faq-item p {
+    color: var(--text2);
+    line-height: 1.6;
+  }
+
+  .links-section {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 2rem;
+  }
+
+  .links-section h2 {
+    color: var(--accent);
+    font-size: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .links-section ul {
+    list-style: none;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+  }
+
+  .links-section a {
+    display: block;
+    padding: 0.75rem 1rem;
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    color: var(--accent);
+    text-decoration: none;
+    transition: all 0.2s;
+  }
+
+  .links-section a:hover {
+    background: var(--accent);
+    color: white;
+  }
+</style>
+
+<script>
+  const weaponData = [
+    { name: 'AK-47', baseDamage: 41, armor: 0.75, headMultiplier: 2.02 },
+    { name: 'M4A4', baseDamage: 33, armor: 0.74, headMultiplier: 2.08 },
+    { name: 'M4A1-S', baseDamage: 38, armor: 0.8, headMultiplier: 2.05 },
+    { name: 'AWP Dragon Lore', baseDamage: 115, armor: 0.85, headMultiplier: 1.0 },
+    { name: 'Deagle', baseDamage: 55, armor: 0.75, headMultiplier: 2.1 },
+    { name: 'USP-S', baseDamage: 33, armor: 0.75, headMultiplier: 2.06 },
+    { name: 'P250', baseDamage: 35, armor: 0.75, headMultiplier: 2.07 },
+    { name: 'Glock-18', baseDamage: 20, armor: 0.65, headMultiplier: 2.13 },
+    { name: 'Famas', baseDamage: 30, armor: 0.63, headMultiplier: 2.09 },
+    { name: 'Galil AR', baseDamage: 33, armor: 0.75, headMultiplier: 2.09 },
+  ];
+
+  const weaponSelect = document.getElementById('weapon');
+  const distanceSlider = document.getElementById('distance');
+  const distanceValue = document.getElementById('distanceValue');
+  const armorButtons = document.querySelectorAll('.armor-btn');
+  const baseDamageEl = document.getElementById('baseDamage');
+  const armorReductionEl = document.getElementById('armorReduction');
+  const finalDamageEl = document.getElementById('finalDamage');
+  const headshotDamageEl = document.getElementById('headshotDamage');
+
+  let selectedArmor = 'none';
+
+  function getArmorReduction(armor, armorType) {
+    if (armorType === 'none') return 1;
+    if (armorType === 'kevlar') return armor;
+    if (armorType === 'helmet') return armor * 0.5;
+    return 1;
+  }
+
+  function calculateDamage() {
+    const weapon = weaponData.find(w => w.name === weaponSelect.value);
+    const distance = parseInt(distanceSlider.value);
+    const armorMultiplier = getArmorReduction(weapon.armor, selectedArmor);
+    const distanceFalloff = Math.max(0.5, 1 - distance / 500);
+
+    const base = Math.round(weapon.baseDamage * distanceFalloff);
+    const armored = Math.round(base * armorMultiplier);
+    const reduction = Math.round((1 - armorMultiplier) * 100);
+    const headshot = Math.round(armored * weapon.headMultiplier);
+
+    baseDamageEl.textContent = base;
+    armorReductionEl.textContent = reduction + '%';
+    finalDamageEl.textContent = armored;
+    headshotDamageEl.textContent = headshot;
+  }
+
+  distanceSlider.addEventListener('input', (e) => {
+    distanceValue.textContent = e.target.value;
+    calculateDamage();
+  });
+
+  weaponSelect.addEventListener('change', calculateDamage);
+
+  armorButtons.forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      armorButtons.forEach(b => b.classList.remove('active'));
+      e.target.classList.add('active');
+      selectedArmor = e.target.dataset.armor;
+      calculateDamage();
+    });
+  });
+
+  calculateDamage();
+</script>

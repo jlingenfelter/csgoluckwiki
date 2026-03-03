@@ -1,0 +1,29 @@
+{
+  "slug": "tradeup-calculator",
+  "title": "CS2 Trade-Up Calculator — Expected Value & Probability | CSDB.gg",
+  "description": "Calculate CS2 trade-up contract outcomes, probabilities, expected value, and ROI. Input 10 skins to see possible results, profit margins, and optimal trade-up strategies.",
+  "heading": "CS2 Trade-Up Calculator",
+  "intro": "Plan your trade-up contracts before committing your skins. Calculate expected outcomes, probability-weighted returns, and find profitable trade-up opportunities across CS2 collections.",
+  "faqs": [
+    {
+      "question": "How do CS2 trade-up contracts work?",
+      "answer": "You submit 10 skins of the same rarity tier. The system returns one skin of the next-higher rarity from any of the collections represented in your 10 input skins. The output skin's float value is calculated from the average float of your inputs."
+    },
+    {
+      "question": "How is the output float calculated?",
+      "answer": "The output float is based on the average float of your 10 input skins, scaled to the output skin's float range. Formula: Output Float = (Average Input Float) × (Max Float − Min Float) + Min Float. This means lower-float inputs produce lower-float outputs."
+    },
+    {
+      "question": "What determines which skin I get from a trade-up?",
+      "answer": "Each input skin \"votes\" for its collection's next-rarity skins. If you input 7 skins from Collection A and 3 from Collection B, there's a 70% chance the output comes from Collection A and 30% from Collection B."
+    },
+    {
+      "question": "Can you profit from trade-up contracts?",
+      "answer": "Yes, profitable trade-ups exist when the expected value of outputs exceeds the cost of inputs. The key is finding collections where the next-rarity tier contains high-value skins and manipulating collection ratios to increase odds of expensive outcomes."
+    },
+    {
+      "question": "What is the best rarity for trade-ups?",
+      "answer": "Mil-Spec to Restricted trade-ups have the lowest entry cost. Classified to Covert trade-ups offer the highest potential profit but carry more risk. Industrial to Mil-Spec trade-ups are often overlooked but can be consistently profitable."
+    }
+  ]
+}

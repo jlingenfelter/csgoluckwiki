@@ -1,0 +1,227 @@
+---
+import Base from '../layouts/Base.astro';
+import ExploreMore from '../components/ExploreMore.astro';
+import { faqSchema, breadcrumbSchema } from '../lib/weapons';
+
+const title = 'CS2 Autoexec Generator — Custom Config Builder | CSDB.gg';
+const description = 'Generate a complete CS2 autoexec.cfg with optimised settings for FPS, network, competitive play, and practice. One-click download with full console command explanations.';
+
+const faqs = [
+  { question: 'What is an autoexec.cfg in CS2?', answer: 'An autoexec.cfg is a configuration file that automatically executes console commands every time CS2 launches. It ensures your preferred settings are always applied, even if the game resets them. Place it in your CS2 cfg folder.' },
+  { question: 'Where do I put my autoexec.cfg?', answer: 'Place autoexec.cfg in: Steam/steamapps/common/Counter-Strike Global Offensive/game/csgo/cfg/. Create the file if it doesn\'t exist. The file must be named exactly "autoexec.cfg" and end with the command "host_writeconfig".' },
+  { question: 'Will an autoexec improve my FPS?', answer: 'Yes, FPS-focused commands like disabling unnecessary visual effects (cl_forcepreload 1, r_drawtracers_firstperson 0) and optimizing rendering can improve frame rates by 10-30% depending on your hardware.' },
+  { question: 'Is using an autoexec allowed in competitive?', answer: 'Absolutely. Autoexec files only adjust client-side settings that you could change manually through the console or settings menu. They do not provide any unfair advantage and are used by virtually every professional player.' },
+  { question: 'What commands should every autoexec have?', answer: 'Essential commands include: rate 786432 (max network bandwidth), cl_interp_ratio 1 (network interpolation), sensitivity and crosshair settings, and host_writeconfig at the end to save changes.' },
+];
+
+const presets = [
+  { id: 'fps', name: 'Maximum FPS', icon: '⚡', desc: 'Strip away visual effects for maximum frames per second' },
+  { id: 'competitive', name: 'Competitive', icon: '🏆', desc: 'Optimised for ranked matchmaking with balanced visuals' },
+  { id: 'network', name: 'Low Latency', icon: '🌐', desc: 'Minimize network delay and reduce perceived lag' },
+  { id: 'practice', name: 'Practice/Warmup', icon: '🎯', desc: 'Server commands for aim training and grenade practice' },
+  { id: 'streaming', name: 'Streaming', icon: '📺', desc: 'Balanced performance with clean visuals for content creation' },
+  { id: 'beginner', name: 'Beginner Friendly', icon: '🎮', desc: 'Sensible defaults with helpful visual cues enabled' },
+];
+
+const toolSchema = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": title,
+  "description": description,
+  "applicationCategory": "UtilityApplication",
+  "operatingSystem": "Web",
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+  "author": { "@type": "Organization", "name": "CSDB.gg", "url": "https://csdb.gg" }
+});
+---
+
+<Base title={title} description={description} currentNav="/tools/">
+  <script type="application/ld+json" set:html={toolSchema}></script>
+  <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema([{name:'Home',url:'/'},{name:'Tools',url:'/autoexec-generator'},{name:'Autoexec Generator',url:'/autoexec-generator'}]))}></script>
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema(faqs))}></script>
+
+  <nav class="breadcrumb">
+    <a href="/">Home</a> / <a href="/autoexec-generator/">Tools</a> / <span>Autoexec Generator</span>
+  </nav>
+
+  <h1>CS2 Autoexec Generator</h1>
+  <p>Build a custom autoexec.cfg tailored to your priorities. Choose a preset or tweak individual settings, then download the ready-to-use config file.</p>
+
+  <div class="calc-section">
+    <h2>Choose Your Preset</h2>
+    <div class="card-grid" id="presetGrid">
+      {presets.map(p => (
+        <div class="card" data-preset={p.id} style="cursor:pointer">
+          <div style="font-size:2rem;margin-bottom:.5rem">{p.icon}</div>
+          <h3 style="margin:0">{p.name}</h3>
+          <p style="font-size:.85rem">{p.desc}</p>
+        </div>
+      ))}
+    </div>
+  </div>
+
+  <div class="calc-section">
+    <h2>Customise Settings</h2>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem">
+      <div>
+        <h3>Network</h3>
+        <div class="calc-row"><label>Rate</label><select id="cfgRate"><option value="786432" selected>786432 (Max)</option><option value="524288">524288</option><option value="196608">196608</option></select></div>
+        <div class="calc-row"><label>Interp Ratio</label><select id="cfgInterp"><option value="1" selected>1 (Competitive)</option><option value="2">2 (Default)</option></select></div>
+        <div class="calc-row"><label>Max FPS</label><input type="number" id="cfgFps" value="0" min="0" max="999" step="1"><small style="color:var(--text2);margin-left:.5rem">0 = unlimited</small></div>
+
+        <h3>Audio</h3>
+        <div class="calc-row"><label>Master Volume</label><input type="range" id="cfgVol" min="0" max="1" step="0.05" value="0.5"><span id="cfgVolVal">0.5</span></div>
+        <div class="calc-row"><label>HRTF (3D Audio)</label><select id="cfgHRTF"><option value="1" selected>On</option><option value="0">Off</option></select></div>
+      </div>
+      <div>
+        <h3>Visuals</h3>
+        <div class="calc-row"><label>Show FPS Counter</label><select id="cfgShowFps"><option value="1" selected>On</option><option value="0">Off</option></select></div>
+        <div class="calc-row"><label>First-Person Tracers</label><select id="cfgTracers"><option value="1" selected>On</option><option value="0">Off</option></select></div>
+        <div class="calc-row"><label>Viewmodel</label><select id="cfgViewmodel"><option value="classic">Classic</option><option value="desktop" selected>Desktop</option><option value="couch">Couch</option></select></div>
+
+        <h3>HUD</h3>
+        <div class="calc-row"><label>HUD Scale</label><input type="range" id="cfgHudScale" min="0.5" max="1" step="0.05" value="0.85"><span id="cfgHudScaleVal">0.85</span></div>
+        <div class="calc-row"><label>Net Graph</label><select id="cfgNetGraph"><option value="1" selected>On</option><option value="0">Off</option></select></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="result-box" style="margin:2rem 0">
+    <h2 style="margin-top:0">Generated Autoexec.cfg</h2>
+    <pre id="cfgOutput" style="background:var(--bg);padding:1rem;border-radius:6px;font-size:.82rem;color:var(--accent);overflow-x:auto;white-space:pre-wrap;max-height:400px;line-height:1.6"></pre>
+    <div style="display:flex;gap:1rem;margin-top:1rem">
+      <button id="copyBtn" style="padding:.5rem 1.5rem;background:var(--accent);color:#000;border:none;border-radius:6px;cursor:pointer;font-weight:700">Copy to Clipboard</button>
+      <button id="downloadBtn" style="padding:.5rem 1.5rem;background:var(--bg3);color:var(--text);border:1px solid var(--border);border-radius:6px;cursor:pointer;font-weight:700">Download .cfg</button>
+    </div>
+  </div>
+
+  <h2>What Each Setting Does</h2>
+  <p>
+    <strong>Rate</strong> controls the maximum bytes per second your client requests from the server. Setting this to 786432 (the maximum) ensures you receive the most game data possible — essential on modern internet connections. Lower values were historically needed for slow connections but are rarely beneficial today.
+  </p>
+  <p>
+    <strong>Interp ratio</strong> (cl_interp_ratio) determines how many server ticks of interpolation buffer your client uses. A value of 1 reduces input lag by minimizing the buffer, but requires a stable connection. Use 2 if you experience packet loss or play on high-ping servers.
+  </p>
+  <p>
+    <strong>fps_max</strong> caps your frame rate. Setting it to 0 (unlimited) is generally recommended if your PC can maintain high framerates. Some players cap it slightly above their monitor refresh rate (e.g., fps_max 300 on a 240Hz monitor) to reduce power consumption and heat.
+  </p>
+
+  <div class="internal-links">
+    <strong>Related Tools & Guides:</strong>
+    <a href="/launch-options/">Launch Options</a>
+    <a href="/crosshair-generator/">Crosshair Generator</a>
+    <a href="/bind-generator/">Bind Generator</a>
+    <a href="/practice-config/">Practice Config</a>
+    <a href="/sensitivity-converter/">Sensitivity Converter</a>
+    <a href="/resolution-calculator/">Resolution Calculator</a>
+    <a href="/pro-players/">Pro Player Settings</a>
+    <a href="/tools/">All Tools</a>
+    <a href="/guides/fps-optimization-guide/">FPS Guide</a>
+    <a href="/guides/beginners-guide/">Beginner's Guide</a>
+  </div>
+
+  <h2>Frequently Asked Questions</h2>
+  <dl class="faq">
+    {faqs.map(f => (
+      <Fragment>
+        <dt>{f.question}</dt>
+        <dd>{f.answer}</dd>
+      </Fragment>
+    ))}
+  </dl>
+
+  <ExploreMore context="tools" />
+</Base>
+
+<style>
+  @media(max-width:768px){
+    .calc-section [style*="grid-template-columns:1fr 1fr"]{grid-template-columns:1fr!important;}
+  }
+</style>
+
+<script is:inline>
+(function(){
+  var presets={
+    fps:{rate:'786432',interp:'1',fps:'0',vol:'0.3',hrtf:'0',showFps:'1',tracers:'0',viewmodel:'desktop',hudScale:'0.85',netGraph:'1'},
+    competitive:{rate:'786432',interp:'1',fps:'0',vol:'0.5',hrtf:'1',showFps:'1',tracers:'1',viewmodel:'desktop',hudScale:'0.85',netGraph:'1'},
+    network:{rate:'786432',interp:'1',fps:'0',vol:'0.5',hrtf:'1',showFps:'1',tracers:'1',viewmodel:'desktop',hudScale:'0.85',netGraph:'1'},
+    practice:{rate:'786432',interp:'1',fps:'0',vol:'0.3',hrtf:'0',showFps:'1',tracers:'1',viewmodel:'classic',hudScale:'0.85',netGraph:'0'},
+    streaming:{rate:'786432',interp:'2',fps:'300',vol:'0.4',hrtf:'1',showFps:'0',tracers:'1',viewmodel:'desktop',hudScale:'0.9',netGraph:'0'},
+    beginner:{rate:'786432',interp:'2',fps:'0',vol:'0.6',hrtf:'1',showFps:'0',tracers:'1',viewmodel:'couch',hudScale:'1',netGraph:'0'}
+  };
+  var ids={rate:'cfgRate',interp:'cfgInterp',fps:'cfgFps',vol:'cfgVol',hrtf:'cfgHRTF',showFps:'cfgShowFps',tracers:'cfgTracers',viewmodel:'cfgViewmodel',hudScale:'cfgHudScale',netGraph:'cfgNetGraph'};
+
+  function applyPreset(name){
+    var p=presets[name];if(!p)return;
+    Object.keys(p).forEach(function(k){
+      var el=document.getElementById(ids[k]);
+      if(el){if(el.type==='checkbox')el.checked=p[k]==='1';else el.value=p[k];}
+    });
+    generate();
+  }
+
+  function generate(){
+    document.getElementById('cfgVolVal').textContent=document.getElementById('cfgVol').value;
+    document.getElementById('cfgHudScaleVal').textContent=document.getElementById('cfgHudScale').value;
+    var vm=document.getElementById('cfgViewmodel').value;
+    var vmCmd='';
+    if(vm==='classic')vmCmd='viewmodel_presetpos 1';
+    else if(vm==='desktop')vmCmd='viewmodel_presetpos 2';
+    else vmCmd='viewmodel_presetpos 3';
+
+    var cfg=[
+      '// ═══════════════════════════════════════════════════',
+      '// CS2 Autoexec — Generated by CSDB.gg',
+      '// ═══════════════════════════════════════════════════','',
+      '// ── Network ──────────────────────────────────────',
+      'rate '+document.getElementById('cfgRate').value,
+      'cl_interp_ratio '+document.getElementById('cfgInterp').value,
+      'cl_updaterate 128',
+      'cl_cmdrate 128','',
+      '// ── Performance ──────────────────────────────────',
+      'fps_max '+document.getElementById('cfgFps').value,
+      'cl_showfps '+(document.getElementById('cfgShowFps').value),
+      'net_graph '+document.getElementById('cfgNetGraph').value,
+      'r_drawtracers_firstperson '+document.getElementById('cfgTracers').value,'',
+      '// ── Audio ────────────────────────────────────────',
+      'volume '+document.getElementById('cfgVol').value,
+      'snd_headphone_pan_exponent 1.2',
+      'snd_hrtf_enabled '+document.getElementById('cfgHRTF').value,'',
+      '// ── Viewmodel ───────────────────────────────────',
+      vmCmd,'',
+      '// ── HUD ─────────────────────────────────────────',
+      'hud_scaling '+document.getElementById('cfgHudScale').value,
+      'cl_hud_color 0','',
+      '// ── Save settings ───────────────────────────────',
+      'host_writeconfig','',
+      '// Generated at csdb.gg/autoexec-generator'
+    ].join('\n');
+    document.getElementById('cfgOutput').textContent=cfg;
+    return cfg;
+  }
+
+  document.getElementById('presetGrid').addEventListener('click',function(e){
+    var card=e.target.closest('[data-preset]');
+    if(card)applyPreset(card.dataset.preset);
+  });
+
+  Object.values(ids).forEach(function(id){
+    var el=document.getElementById(id);
+    if(el){el.addEventListener('input',generate);el.addEventListener('change',generate);}
+  });
+
+  document.getElementById('copyBtn').addEventListener('click',function(){
+    navigator.clipboard.writeText(generate()).then(function(){
+      document.getElementById('copyBtn').textContent='Copied!';
+      setTimeout(function(){document.getElementById('copyBtn').textContent='Copy to Clipboard';},2000);
+    });
+  });
+
+  document.getElementById('downloadBtn').addEventListener('click',function(){
+    var blob=new Blob([generate()],{type:'text/plain'});
+    var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='autoexec.cfg';a.click();
+  });
+
+  generate();
+})();
+</script>

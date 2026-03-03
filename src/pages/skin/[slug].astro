@@ -1,0 +1,1651 @@
+---
+import Base from '../../layouts/Base.astro';
+import ExploreMore from '../../components/ExploreMore.astro';
+import { SKINS, RARITY_COLORS, RARITY_BG, MARKETPLACES, getSkinsByWeapon, getSkinBySlug, getLowestPrice, getHighestPrice, getPhaseVariants, getParentSkin } from '../../lib/skins';
+import { getWeaponBySlug, faqSchema, breadcrumbSchema } from '../../lib/weapons';
+import { skinDetailImage, skinRelatedImage } from '../../lib/imageOptimize';
+import { getPlayersUsingSkin } from '../../lib/pro-players';
+import { getCasesForSkin } from '../../lib/cases';
+import { getCollectionImage } from '../../lib/collection-images';
+import { getTradingSiteBySlug } from '../../lib/trading-sites';
+
+export async function getStaticPaths() {
+  return SKINS.map(skin => ({
+    params: { slug: skin.slug },
+    props: { skin },
+  }));
+}
+
+const { skin } = Astro.props;
+const rarityColor = skin.rarityColor || RARITY_COLORS[skin.rarity] || '#fff';
+const rarityBg = RARITY_BG[skin.rarity] || 'rgba(255,255,255,0.05)';
+const lowPrice = getLowestPrice(skin);
+const highPrice = getHighestPrice(skin);
+const weapon = getWeaponBySlug(skin.weaponSlug);
+
+// Related skins from the same weapon
+const relatedSkins = getSkinsByWeapon(skin.weaponSlug)
+  .filter(s => s.slug !== skin.slug && !s.phase) // exclude phase variants from "related"
+  .slice(0, 8);
+
+// Phase data
+const phaseVariants = getPhaseVariants(skin);
+const parentSkin = getParentSkin(skin);
+const isPhaseVariant = !!skin.phase;
+const isDopplerParent = phaseVariants.length > 0;
+// For phase variant pages, get all siblings from parent
+const siblingVariants = parentSkin ? getPhaseVariants(parentSkin) : [];
+
+// Category label
+const categoryLabels: Record<string, string> = {
+  rifle: 'Rifle', pistol: 'Pistol', smg: 'SMG', heavy: 'Heavy',
+  knife: 'Knife', glove: 'Glove', other: 'Weapon',
+};
+const catLabel = categoryLabels[skin.category] || skin.category;
+
+// Pro players using this skin
+const playersUsingSkin = getPlayersUsingSkin(skin.slug);
+
+// Marketplace display info — expanded with all known providers
+const defaultMarketplaces: Record<string, { name: string; color: string; icon: string; domain: string; trustpilot?: number | null }> = {
+  // Tier 1: Major marketplaces
+  'buff163':        { name: 'Buff163',        color: '#d4956e', icon: 'BUFF', domain: 'buff.163.com', trustpilot: null },
+  'buff163_buy':    { name: 'Buff163 Buy',    color: '#d4956e', icon: 'BUFF', domain: 'buff.163.com', trustpilot: null },
+  'steam':          { name: 'Steam Market',   color: '#66c0f4', icon: 'STM', domain: 'store.steampowered.com', trustpilot: null },
+  'skinport':       { name: 'Skinport',       color: '#00a3ff', icon: 'SP', domain: 'skinport.com', trustpilot: 4.9 },
+  'csmoney':        { name: 'CS.Money',       color: '#ffca28', icon: 'CSM', domain: 'cs.money', trustpilot: 4.6 },
+  'csmoneym':       { name: 'CS.Money Bot',   color: '#ffca28', icon: 'CSM', domain: 'cs.money', trustpilot: 4.6 },
+  'dmarket':        { name: 'DMarket',        color: '#6c5ce7', icon: 'DM', domain: 'dmarket.com', trustpilot: 4.0 },
+  'bitskins':       { name: 'BitSkins',       color: '#ff6b35', icon: 'BS', domain: 'bitskins.com', trustpilot: 3.8 },
+  'csfloat':        { name: 'CSFloat',         color: '#1a73e8', icon: 'CSF', domain: 'csfloat.com', trustpilot: 4.8 },
+  'waxpeer':        { name: 'Waxpeer',         color: '#ff9800', icon: 'WP', domain: 'waxpeer.com', trustpilot: 4.0 },
+  'lisskins':       { name: 'LIS-SKINS',      color: '#ff5722', icon: 'LIS', domain: 'lis-skins.com', trustpilot: 4.8 },
+  'skinbaron':      { name: 'SkinBaron',       color: '#e53935', icon: 'SBN', domain: 'skinbaron.de', trustpilot: 4.4 },
+  // Tier 2: Popular marketplaces
+  'csgoempire':     { name: 'CSGOEmpire',     color: '#f0b90b', icon: 'EMP', domain: 'csgoempire.com', trustpilot: 3.5 },
+  'csgoroll':       { name: 'CSGORoll',        color: '#e74c3c', icon: 'ROLL', domain: 'csgoroll.com', trustpilot: 3.4 },
+  'clashgg':        { name: 'Clash.GG',        color: '#f39c12', icon: 'CLG', domain: 'clash.gg', trustpilot: 3.7 },
+  'skinsmonkey':    { name: 'SkinsMonkey',     color: '#27ae60', icon: 'SM', domain: 'skinsmonkey.com', trustpilot: 4.5 },
+  'youpin':         { name: 'Youpin (UU)',     color: '#e91e63', icon: 'YP', domain: 'youpin898.com', trustpilot: null },
+  'uuskins':        { name: 'UUSkins',         color: '#9b59b6', icon: 'UU', domain: 'uuskins.com', trustpilot: 4.1 },
+  'whitemarket':    { name: 'White.Market',    color: '#bdc3c7', icon: 'WM', domain: 'white.market', trustpilot: 4.0 },
+  'ecosteam':       { name: 'Ecosteam',        color: '#2ecc71', icon: 'ECO', domain: 'ecosteam.com', trustpilot: 3.7 },
+  'shadowpay':      { name: 'ShadowPay',      color: '#9c27b0', icon: 'SHP', domain: 'shadowpay.com', trustpilot: 3.7 },
+  'skinswap':       { name: 'SkinSwap',        color: '#8bc34a', icon: 'SW', domain: 'skinswap.com', trustpilot: 3.9 },
+  'gamerpay':       { name: 'GamerPay',        color: '#00c853', icon: 'GP', domain: 'gamerpay.gg', trustpilot: 4.2 },
+  'mannco':         { name: 'Mannco.store',    color: '#795548', icon: 'MC', domain: 'mannco.store', trustpilot: null },
+  'rain':           { name: 'Rain.GG',         color: '#3498db', icon: 'RN', domain: 'rain.gg', trustpilot: null },
+  'pirateswap':     { name: 'PirateSwap',      color: '#e74c3c', icon: 'PS', domain: 'pirateswap.gg', trustpilot: null },
+  'skins':          { name: 'Skins.com',       color: '#8e44ad', icon: 'SKN', domain: 'skins.com', trustpilot: 4.5 },
+  'buffmarket':     { name: 'BuffMarket',      color: '#f5a623', icon: 'BM', domain: 'buffmarket.com', trustpilot: null },
+  // Tier 3: Smaller/niche marketplaces
+  'c5game':         { name: 'C5Game',          color: '#ff6f00', icon: 'C5', domain: 'c5game.com', trustpilot: null },
+  'lootfarm':       { name: 'Loot.Farm',       color: '#ff7043', icon: 'LF', domain: 'loot.farm', trustpilot: 3.8 },
+  'skinflow':       { name: 'SkinFlow',        color: '#1abc9c', icon: 'SF', domain: 'skinflow.gg', trustpilot: null },
+  'haloskins':      { name: 'HaloSkins',       color: '#ab47bc', icon: 'HS', domain: 'haloskins.com', trustpilot: null },
+  'rapidskins':     { name: 'RapidSkins',      color: '#e67e22', icon: 'RS', domain: 'rapidskins.com', trustpilot: null },
+  'tradeit':        { name: 'Tradeit.gg',      color: '#4caf50', icon: 'TI', domain: 'tradeit.gg', trustpilot: 4.8 },
+  'skinbid':        { name: 'SkinBid',         color: '#2196f3', icon: 'SB', domain: 'skinbid.com', trustpilot: null },
+  'marketcsgo':     { name: 'Market.CSGO',     color: '#607d8b', icon: 'MCS', domain: 'market.csgo.com', trustpilot: null },
+  'itrade':         { name: 'iTrade',          color: '#00bcd4', icon: 'IT', domain: 'itrade.gg', trustpilot: null },
+  'cstrade':        { name: 'CSTrade',         color: '#009688', icon: 'CST', domain: 'cs.trade', trustpilot: null },
+  'avanmarket':     { name: 'AvanMarket',      color: '#673ab7', icon: 'AV', domain: 'avanmarket.com', trustpilot: null },
+  'dupefi':         { name: 'Dupe.fi',         color: '#34495e', icon: 'DF', domain: 'dupe.fi', trustpilot: null },
+  'krakatoa':       { name: 'Krakatoa',        color: '#d35400', icon: 'KRK', domain: 'krakatoa.gg', trustpilot: null },
+  'csgo500':        { name: 'CSGO500',         color: '#e74c3c', icon: '500', domain: 'csgo500.com', trustpilot: null },
+  'skinrave':       { name: 'SkinRave',        color: '#e91e63', icon: 'SR', domain: 'skinrave.gg', trustpilot: null },
+  '49skins':        { name: '49Skins',         color: '#3f51b5', icon: '49', domain: '49skins.com', trustpilot: null },
+  'snipeskins':     { name: 'SnipeSkins',      color: '#ff5722', icon: 'SNP', domain: 'snipeskins.com', trustpilot: null },
+  'skinplace':      { name: 'SkinPlace',       color: '#009688', icon: 'SPL', domain: 'skinplace.com', trustpilot: null },
+  'exeskins':       { name: 'ExeSkins',        color: '#607d8b', icon: 'EXE', domain: 'exeskins.com', trustpilot: null },
+  'swap_gg':        { name: 'Swap.gg',         color: '#7c4dff', icon: 'SG', domain: 'swap.gg', trustpilot: 3.5 },
+  'csdeals':        { name: 'CS.Deals',        color: '#26a69a', icon: 'CSD', domain: 'cs.deals', trustpilot: 3.4 },
+  'lootbear':       { name: 'LootBear',        color: '#ffd54f', icon: 'LB', domain: 'lootbear.com', trustpilot: 3.7 },
+  // Tier 4: From providerKeys API
+  'csgoexo':        { name: 'CSGOExo',         color: '#ff7043', icon: 'EXO', domain: 'csgoexo.com', trustpilot: null },
+  'gamdom':         { name: 'Gamdom',           color: '#2ecc71', icon: 'GAM', domain: 'gamdom.com', trustpilot: null },
+  'skinwallet':     { name: 'SkinWallet',      color: '#3498db', icon: 'SWL', domain: 'skinwallet.com', trustpilot: null },
+  'skintrade':      { name: 'SkinTrade',       color: '#e67e22', icon: 'STR', domain: 'skintrade.com', trustpilot: null },
+  'skinthunder':    { name: 'SkinThunder',     color: '#f39c12', icon: 'STH', domain: 'skinthunder.com', trustpilot: null },
+  'skinout':        { name: 'SkinOut',          color: '#1abc9c', icon: 'SO', domain: 'skinout.gg', trustpilot: null },
+  'nerf':           { name: 'Nerf.app',         color: '#e74c3c', icon: 'NRF', domain: 'nerf.app', trustpilot: null },
+  'ggskin':         { name: 'GGSkin',           color: '#9b59b6', icon: 'GGS', domain: 'ggskin.com', trustpilot: null },
+  'cs2go':          { name: 'CS2GO',            color: '#3f51b5', icon: 'C2G', domain: 'cs2go.com', trustpilot: null },
+  'bitskinsp2p':    { name: 'BitSkins P2P',    color: '#ff6b35', icon: 'BSP', domain: 'bitskins.com', trustpilot: 3.8 },
+  'swapmarket':     { name: 'SwapMarket',      color: '#795548', icon: 'SWM', domain: 'swapmarket.com', trustpilot: null },
+  'vmarket':        { name: 'V.Market',         color: '#607d8b', icon: 'VM', domain: 'vmarket.com', trustpilot: null },
+  'itemherald':     { name: 'ItemHerald',      color: '#00bcd4', icon: 'IH', domain: 'itemherald.com', trustpilot: null },
+  'skinswap_cn':    { name: 'SkinSwap CN',     color: '#8bc34a', icon: 'SWC', domain: 'skinswap.cn', trustpilot: null },
+  'gameboost':      { name: 'GameBoost',        color: '#4caf50', icon: 'GB', domain: 'gameboost.com', trustpilot: null },
+  'gsoltrade':      { name: 'GSOL.Trade',       color: '#ff9800', icon: 'GSL', domain: 'gsol.trade', trustpilot: null },
+};
+// Merge: defaultMarketplaces has richer data (domain, trustpilot), so it takes priority
+// MARKETPLACES from skins-data.json fills in any keys not already covered
+const mpInfo: Record<string, any> = { ...MARKETPLACES };
+for (const [key, val] of Object.entries(defaultMarketplaces)) {
+  mpInfo[key] = { ...(mpInfo[key] || {}), ...val };
+}
+
+function getMarketplace(key: string) {
+  return mpInfo[key] || { name: key, color: '#888', icon: key.substring(0, 3).toUpperCase(), domain: '', trustpilot: null };
+}
+
+// ── Deep-link URL builders per marketplace ────────────────────────────────
+// IMPORTANT: Most marketplaces break when the pipe "|" is in the search query.
+// We use "Weapon Name" (no pipe) with "+" for spaces, which works across sites.
+const searchTerm = `${skin.weapon} ${skin.name}`.replace(/\s+/g, '+');
+
+// Waxpeer uses a slug format: "ak-47-redline"
+const waxpeerSlug = `${skin.weapon}-${skin.name}`.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+
+// Build deep-link search URLs for each marketplace
+function getMarketplaceUrl(key: string): string {
+  switch (key) {
+    // ── VERIFIED WORKING ─────────────────────────────────────────────────
+
+    // Steam Community Market — ?q= with appid filter
+    case 'steam':
+      return `https://steamcommunity.com/market/search?appid=730&q=${searchTerm}`;
+
+    // Skinport — /market?search= (NOT /market/cs2)
+    case 'skinport':
+      return `https://skinport.com/market?search=${searchTerm}`;
+
+    // CS.Money — /market/buy/?search=
+    case 'csmoney':
+    case 'csmoneym':
+      return `https://cs.money/market/buy/?search=${searchTerm}`;
+
+    // DMarket — ?title= parameter
+    case 'dmarket':
+      return `https://dmarket.com/ingame-items/item-list/csgo-skins?title=${searchTerm}`;
+
+    // Tradeit.gg — /csgo/store?search=
+    case 'tradeit':
+      return `https://tradeit.gg/csgo/store?search=${searchTerm}`;
+
+    // ShadowPay — /csgo-items?search=
+    case 'shadowpay':
+      return `https://shadowpay.com/csgo-items?search=${searchTerm}`;
+
+    // SkinBaron — /en/csgo?str= (NOT ?search=)
+    case 'skinbaron':
+      return `https://skinbaron.de/en/csgo?str=${searchTerm}`;
+
+    // Waxpeer — slug-based URL like /ak-47-redline/item
+    case 'waxpeer':
+      return `https://waxpeer.com/${waxpeerSlug}/item`;
+
+    // ── LIKELY WORKING (search param, unverified) ────────────────────────
+
+    // Buff163 — market search (Chinese marketplace, hard to verify)
+    case 'buff163':
+    case 'buff163_buy':
+      return `https://buff.163.com/market/csgo#tab=selling&page_num=1&search=${searchTerm}`;
+
+    // SkinSwap — market search
+    case 'skinswap':
+      return `https://skinswap.com/market/cs2?search=${searchTerm}`;
+
+    // Youpin/UU — keyword search
+    case 'youpin':
+      return `https://youpin898.com/search?keyword=${searchTerm}`;
+
+    // LIS-SKINS — market search
+    case 'lisskins':
+      return `https://lis-skins.com/market/?search=${searchTerm}`;
+
+    // SkinBid — acquired by Skinport, link to Skinport instead
+    case 'skinbid':
+      return `https://skinport.com/market?search=${searchTerm}`;
+
+    // Loot.Farm — hash-based (uses pipe format in fragment)
+    case 'lootfarm':
+      return `https://loot.farm/`;
+
+    // Swap.gg — search
+    case 'swap_gg':
+      return `https://swap.gg/csgo?search=${searchTerm}`;
+
+    // Mannco.store — search
+    case 'mannco':
+      return `https://mannco.store/search?q=${searchTerm}`;
+
+    // CS.Deals — market search
+    case 'csdeals':
+      return `https://cs.deals/market/csgo/?search=${searchTerm}`;
+
+    // C5Game — Chinese marketplace
+    case 'c5game':
+      return `https://www.c5game.com/csgo?keyword=${searchTerm}`;
+
+    // IGXE — Chinese marketplace
+    case 'igxe':
+      return `https://www.igxe.cn/csgo?keyword=${searchTerm}`;
+
+    // HaloSkins
+    case 'haloskins':
+      return `https://haloskins.com/market?search=${searchTerm}`;
+
+    // LootBear
+    case 'lootbear':
+      return `https://lootbear.com/en/counter-strike-2?search=${searchTerm}`;
+
+    // ── NO URL SEARCH SUPPORT (link to general market page) ──────────────
+
+    // CSFloat — client-side only, no URL param filtering
+    case 'csfloat':
+      return `https://csfloat.com/`;
+
+    // BitSkins — client-side only, search param doesn't filter
+    case 'bitskins':
+      return `https://bitskins.com/market/cs2`;
+
+    // GamerPay — 404s on search URLs
+    case 'gamerpay':
+      return `https://gamerpay.gg/`;
+
+    // CSGOEmpire — market search
+    case 'csgoempire':
+      return `https://csgoempire.com/withdraw?search=${searchTerm}`;
+
+    // CSGORoll — market search
+    case 'csgoroll':
+      return `https://csgoroll.com/withdraw?search=${searchTerm}`;
+
+    // Clash.GG — market
+    case 'clashgg':
+      return `https://clash.gg/withdraw?search=${searchTerm}`;
+
+    // SkinsMonkey — market
+    case 'skinsmonkey':
+      return `https://skinsmonkey.com/`;
+
+    // UUSkins
+    case 'uuskins':
+      return `https://uuskins.com/`;
+
+    // White.Market — market search
+    case 'whitemarket':
+      return `https://white.market/search?query=${searchTerm}`;
+
+    // Ecosteam
+    case 'ecosteam':
+      return `https://ecosteam.de/market?search=${searchTerm}`;
+
+    // Rain.GG
+    case 'rain':
+      return `https://rain.gg/market?search=${searchTerm}`;
+
+    // PirateSwap
+    case 'pirateswap':
+      return `https://pirateswap.gg/`;
+
+    // Skins.com
+    case 'skins':
+      return `https://skins.com/`;
+
+    // SkinFlow
+    case 'skinflow':
+      return `https://skinflow.gg/`;
+
+    // RapidSkins
+    case 'rapidskins':
+      return `https://rapidskins.com/`;
+
+    // Dupe.fi
+    case 'dupefi':
+      return `https://dupe.fi/`;
+
+    // Default: link nowhere
+    default:
+      return '#';
+  }
+}
+
+// ── Map marketplace keys → trading site review slugs ───────────────────────
+const mpToReviewSlug: Record<string, string> = {
+  'buff163': 'buff163', 'buff163_buy': 'buff163',
+  'skinport': 'skinport', 'csmoney': 'cs-money', 'csmoneym': 'cs-money',
+  'dmarket': 'dmarket', 'bitskins': 'bitskins', 'tradeit': 'tradeit-gg',
+  'shadowpay': 'shadowpay', 'skinbaron': 'skinbaron', 'waxpeer': 'waxpeer',
+  'csfloat': 'csfloat', 'skinswap': 'skinswap', 'gamerpay': 'gamerpay',
+  'lootfarm': 'loot-farm', 'lisskins': 'lis-skins',
+  'swap_gg': 'swap-gg', 'csdeals': 'cs-deals', 'lootbear': 'lootbear',
+  'haloskins': 'haloskins', 'skinbid': 'skinport',
+  'youpin': '', 'c5game': '', 'igxe': '', 'mannco': '', 'steam': '',
+};
+function getReviewUrl(key: string): string {
+  const slug = mpToReviewSlug[key];
+  return slug ? `/trading-site/${slug}/` : '';
+}
+
+// ── Promo code helper — look up promo for a marketplace provider ──
+function getPromoForProvider(key: string): { code: string; slug: string } | null {
+  const reviewSlug = mpToReviewSlug[key];
+  if (!reviewSlug) return null;
+  const site = getTradingSiteBySlug(reviewSlug);
+  if (!site?.promoCode) return null;
+  return { code: site.promoCode, slug: reviewSlug };
+}
+
+// ── Blocked providers (empty — show all marketplaces) ──
+const BLOCKED_PROVIDERS = new Set<string>();
+
+// Compute lowest price per provider across the default wear
+const defaultWearIndex = 0;
+const defaultWear = skin.prices[defaultWearIndex] || null;
+
+// Get all unique providers across all wears
+const allProviders = new Set<string>();
+for (const p of skin.prices) {
+  if (p.providers) {
+    for (const pk of Object.keys(p.providers)) {
+      if (!BLOCKED_PROVIDERS.has(pk)) allProviders.add(pk);
+    }
+  }
+}
+
+// Top 3 cheapest providers for the header cards
+function getTopProviders(wearData: typeof defaultWear) {
+  if (!wearData?.providers) return [];
+  return Object.entries(wearData.providers)
+    .filter(([k, v]) => v > 0 && !BLOCKED_PROVIDERS.has(k))
+    .sort((a, b) => a[1] - b[1])
+    .slice(0, 3);
+}
+
+// ── SEO Title & Description ────────────────────────────────────────────────
+const title = `${skin.weapon} | ${skin.name} — Price, Float, Details | CSDB.gg`;
+const description = `${skin.weapon} | ${skin.name} skin prices from ${allProviders.size}+ marketplaces. Compare Buff163, CS.Money, Skinport and more. ${skin.rarity} ${catLabel} with float range ${skin.minFloat.toFixed(2)}–${skin.maxFloat.toFixed(2)}.`;
+
+// ── Wear condition descriptions (for SEO content) ─────────────────────────
+const wearDescriptions: Record<string, string> = {
+  'Factory New': 'near-perfect condition with minimal scratches, float value between 0.00 and 0.07',
+  'Minimal Wear': 'slight cosmetic wear with minor scratches, float value between 0.07 and 0.15',
+  'Field-Tested': 'moderate wear with visible scratches and marks, float value between 0.15 and 0.38',
+  'Well-Worn': 'significant wear with noticeable scratches and fading, float value between 0.38 and 0.45',
+  'Battle-Scarred': 'heavy wear with major scratches, chips and fading, float value between 0.45 and 1.00',
+};
+
+// ── Price comparison table data ───────────────────────────────────────────
+const priceTable: { wear: string; prices: [string, number][] }[] = skin.prices.map(p => ({
+  wear: p.wear,
+  prices: p.providers
+    ? Object.entries(p.providers).filter(([k, v]) => v > 0 && !BLOCKED_PROVIDERS.has(k)).sort((a, b) => a[1] - b[1])
+    : [],
+}));
+
+// StatTrak price comparison table data
+const stPriceTable: { wear: string; prices: [string, number][] }[] = (skin.statTrakPrices || []).map(p => ({
+  wear: p.wear,
+  prices: p.providers
+    ? Object.entries(p.providers).filter(([k, v]) => v > 0 && !BLOCKED_PROVIDERS.has(k)).sort((a, b) => a[1] - b[1])
+    : [],
+}));
+
+// Cheapest provider per wear
+const cheapestPerWear = skin.prices.map(p => {
+  if (!p.providers) return { wear: p.wear, provider: '', price: p.price };
+  const sorted = Object.entries(p.providers).filter(([k, v]) => v > 0 && !BLOCKED_PROVIDERS.has(k)).sort((a, b) => a[1] - b[1]);
+  return sorted.length > 0
+    ? { wear: p.wear, provider: sorted[0][0], price: sorted[0][1] }
+    : { wear: p.wear, provider: '', price: p.price };
+});
+
+// ── Rarity tier descriptions ──────────────────────────────────────────────
+const rarityDescriptions: Record<string, string> = {
+  'Consumer': 'the most common grade, often found in collections and cases',
+  'Industrial': 'a common grade, slightly rarer than Consumer',
+  'Mil-Spec': 'a mid-tier grade, the baseline for most case drops',
+  'Restricted': 'a mid-high tier grade with a distinctive purple color',
+  'Classified': 'a high-tier grade, identifiable by its pink color',
+  'Covert': 'one of the rarest grades, known for its red color',
+  'Contraband': 'the rarest grade in CS2, reserved for exclusive items',
+  'Extraordinary': 'a special grade reserved for rare gloves and unique items',
+};
+
+// ── Product Schema (schema.org) ───────────────────────────────────────────
+const productSchema = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "Product",
+  "name": `${skin.weapon} | ${skin.name}`,
+  "description": `${skin.weapon} | ${skin.name} is a ${skin.rarity} grade ${catLabel.toLowerCase()} skin in Counter-Strike 2${skin.collection ? ` from the ${skin.collection}` : ''}. Available in ${skin.prices.length} wear condition${skin.prices.length !== 1 ? 's' : ''} with float range ${skin.minFloat.toFixed(2)} to ${skin.maxFloat.toFixed(2)}.`,
+  "image": skin.image || undefined,
+  "brand": { "@type": "Brand", "name": "Counter-Strike 2" },
+  "category": `CS2 ${catLabel} Skins`,
+  "sku": skin.slug,
+  ...(lowPrice > 0 ? {
+    "offers": {
+      "@type": "AggregateOffer",
+      "priceCurrency": "USD",
+      "lowPrice": lowPrice.toFixed(2),
+      "highPrice": highPrice.toFixed(2),
+      "offerCount": allProviders.size,
+      "availability": "https://schema.org/InStock",
+    },
+  } : {}),
+  "additionalProperty": [
+    { "@type": "PropertyValue", "name": "Rarity", "value": skin.rarity },
+    { "@type": "PropertyValue", "name": "Float Range", "value": `${skin.minFloat.toFixed(2)} - ${skin.maxFloat.toFixed(2)}` },
+    { "@type": "PropertyValue", "name": "StatTrak", "value": skin.statTrak ? "Available" : "Not Available" },
+    ...(skin.collection ? [{ "@type": "PropertyValue", "name": "Collection", "value": skin.collection }] : []),
+  ],
+});
+
+// ── FAQs (expanded for SEO) ───────────────────────────────────────────────
+const faqs = [
+  {
+    q: `How much is ${skin.weapon} | ${skin.name}?`,
+    a: skin.prices.length > 0
+      ? `The ${skin.weapon} | ${skin.name} ranges from $${lowPrice.toFixed(2)} to $${highPrice.toFixed(2)} depending on wear condition. ${skin.prices.map(p => `${p.wear} starts at $${p.price.toFixed(2)}`).join(', ')}.`
+      : `The ${skin.weapon} | ${skin.name} is a ${skin.rarity} ${catLabel} skin. Check current marketplace listings for up-to-date pricing.`,
+  },
+  {
+    q: `What rarity is ${skin.weapon} | ${skin.name}?`,
+    a: `${skin.weapon} | ${skin.name} is a ${skin.rarity} grade skin${skin.collection ? ` from the ${skin.collection}` : ''}. ${skin.rarity} is ${rarityDescriptions[skin.rarity] || `a ${skin.rarity} tier`} in CS2.`,
+  },
+  {
+    q: `Where is the cheapest place to buy ${skin.weapon} | ${skin.name}?`,
+    a: cheapestPerWear.length > 0 && cheapestPerWear[0].provider
+      ? `The cheapest listing for ${skin.weapon} | ${skin.name} (${cheapestPerWear[0].wear}) is currently $${cheapestPerWear[0].price.toFixed(2)} on ${getMarketplace(cheapestPerWear[0].provider).name}. Compare prices across all ${allProviders.size} marketplaces above.`
+      : `Compare prices across ${allProviders.size}+ marketplaces above to find the best deal. Prices update regularly from Buff163, CS.Money, Skinport, and other trusted platforms.`,
+  },
+  {
+    q: `What float range does ${skin.weapon} | ${skin.name} have?`,
+    a: `${skin.weapon} | ${skin.name} has a float range of ${skin.minFloat.toFixed(2)} to ${skin.maxFloat.toFixed(2)}. This means it${skin.minFloat === 0 ? ' can drop in Factory New condition' : ` has a minimum float of ${skin.minFloat.toFixed(2)}`}${skin.maxFloat < 1 ? ` and cannot exceed ${skin.maxFloat.toFixed(2)} float value` : ''}.`,
+  },
+  {
+    q: `Is ${skin.weapon} | ${skin.name} available in StatTrak?`,
+    a: skin.statTrak
+      ? `Yes, ${skin.weapon} | ${skin.name} is available in StatTrak versions which track kill counts. StatTrak variants typically cost more than regular versions.`
+      : `No, ${skin.weapon} | ${skin.name} is not available in StatTrak. Only skins obtainable from weapon cases can have StatTrak versions.`,
+  },
+  ...(skin.collection ? [{
+    q: `What collection is ${skin.weapon} | ${skin.name} from?`,
+    a: `${skin.weapon} | ${skin.name} is from the ${skin.collection}. Other skins from this collection can be found on the collection page.`,
+  }] : []),
+  ...(playersUsingSkin.length > 0 ? [{
+    q: `Which pro players use ${skin.weapon} | ${skin.name}?`,
+    a: `${playersUsingSkin.map(p => p.name).join(', ')} ${playersUsingSkin.length === 1 ? 'uses' : 'use'} the ${skin.weapon} | ${skin.name} in their CS2 loadout.`,
+  }] : []),
+];
+
+const crumbs = [
+  { name: 'Home', url: 'https://csdb.gg/' },
+  { name: 'Skins', url: 'https://csdb.gg/skins/' },
+  { name: `${skin.weapon} Skins`, url: `https://csdb.gg/weapon/${skin.weaponSlug}/` },
+  ...(isPhaseVariant && parentSkin ? [{ name: parentSkin.name, url: `https://csdb.gg/skin/${parentSkin.slug}/` }] : []),
+  { name: isPhaseVariant ? skin.phase! : skin.name, url: `https://csdb.gg/skin/${skin.slug}/` },
+];
+
+// ── Related skins from same collection ────────────────────────────────────
+const collectionSkins = skin.collection
+  ? SKINS.filter(s => s.collection === skin.collection && s.slug !== skin.slug).slice(0, 6)
+  : [];
+
+// ── Related skins by similar price ────────────────────────────────────────
+const priceSimilar = SKINS
+  .filter(s => s.slug !== skin.slug && s.category === skin.category)
+  .map(s => ({ skin: s, diff: Math.abs(getHighestPrice(s) - highPrice) }))
+  .sort((a, b) => a.diff - b.diff)
+  .slice(0, 4)
+  .map(s => s.skin);
+
+// ── Containers (which cases contain this skin) ───────────────────────────
+const skinCases = getCasesForSkin(skin.weapon, skin.name);
+
+// ── Collection emblem image (official CS2 collection logos) ──────────────
+const collectionImage = skin.collection ? getCollectionImage(skin.collection) : null;
+
+// ── Rich content data ────────────────────────────────────────────────────
+const totalSkinCount = SKINS.filter(s => s.category === skin.category).length;
+const rarityDropChances: Record<string, string> = {
+  'Consumer': '~79.92%', 'Industrial': '~79.92%', 'Mil-Spec': '~79.92%',
+  'Restricted': '~15.98%', 'Classified': '~3.2%', 'Covert': '~0.64%',
+  'Contraband': '~0.26%', 'Extraordinary': '~0.26%',
+};
+const dropChance = rarityDropChances[skin.rarity] || 'unknown';
+const wearCount = skin.prices.length;
+const hasAllWears = skin.minFloat === 0 && skin.maxFloat >= 1;
+const availableWears = skin.prices.map(p => p.wear);
+
+// Popularity tier based on rank
+const popTier = (skin.rank ?? 999) <= 50 ? 'extremely popular' : (skin.rank ?? 999) <= 200 ? 'very popular' : (skin.rank ?? 999) <= 500 ? 'popular' : (skin.rank ?? 999) <= 1000 ? 'moderately popular' : 'niche';
+const popPercent = totalSkinCount > 0 ? Math.max(1, Math.round(100 - ((skin.rank ?? totalSkinCount) / totalSkinCount * 100))) : 0;
+
+// Availability description
+const listingDesc = (skin.listingCount ?? 0) > 10000 ? 'widely available with high supply' : (skin.listingCount ?? 0) > 1000 ? 'readily available across multiple markets' : (skin.listingCount ?? 0) > 100 ? 'available but with limited supply' : (skin.listingCount ?? 0) > 0 ? 'scarce with very few listings' : 'check individual marketplaces for availability';
+---
+<Base title={title} description={description} currentNav="/skins/" ogImage={skin.image || undefined}>
+<script type="application/ld+json" set:html={JSON.stringify(faqSchema(faqs))} />
+<script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema(crumbs))} />
+<script type="application/ld+json" set:html={productSchema} />
+
+<div class="breadcrumb">
+  <a href="/">Home</a> → <a href="/skins/">Skins</a> → <a href={`/weapon/${skin.weaponSlug}/`}>{skin.weapon}</a>{isPhaseVariant && parentSkin ? <> → <a href={`/skin/${parentSkin.slug}/`}>{parentSkin.name}</a></> : null} → {isPhaseVariant ? skin.phase : skin.name}
+</div>
+
+<!-- Header with title + offer count -->
+<div class="skin-header">
+  <h1 class="skin-title">{skin.weapon} | {skin.name} <span class="skin-wear-label" id="active-wear-label">{defaultWear ? `(${defaultWear.wear})` : ''}</span></h1>
+  {allProviders.size > 0 && <span class="offer-count">{allProviders.size} marketplaces</span>}
+</div>
+
+<div class="skin-page-grid">
+  <!-- LEFT COLUMN: Image + Variants -->
+  <div class="skin-left-col">
+    <!-- Image Box -->
+    <div class="skin-image-box" style={`border-color:${rarityColor}`}>
+      {skin.image ? (
+        <img src={skinDetailImage(skin.image)} alt={`${skin.weapon} | ${skin.name}`} class="skin-detail-img" width="800" height="600" loading="eager" />
+      ) : (
+        <div class="skin-placeholder-large" style={`color:${rarityColor}`}>{skin.weapon.substring(0, 3)}</div>
+      )}
+      <span class="rarity-badge" style={`background:${rarityColor}`}>{skin.rarity}</span>
+    </div>
+
+    <!-- Variants / Wear Selector -->
+    <div class="variants-box">
+      <div class="variants-header">
+        <h2>Variants</h2>
+        <span class="variant-count">{skin.prices.length} variants</span>
+      </div>
+      {skin.prices.length > 0 ? (
+        <div class="variant-list" id="variant-list">
+          {skin.prices.map((p, i) => {
+            const filteredProviders = p.providers ? Object.entries(p.providers).filter(([k, v]) => v > 0 && !BLOCKED_PROVIDERS.has(k)) : [];
+            const cheapest = filteredProviders.length > 0 ? Math.min(...filteredProviders.map(([, v]) => v)) : p.price;
+            const cheapestProvider = filteredProviders.length > 0
+              ? filteredProviders.sort((a, b) => a[1] - b[1])[0][0]
+              : '';
+            const mp = getMarketplace(cheapestProvider);
+            return (
+              <button
+                class={`variant-item ${i === 0 ? 'active' : ''}`}
+                data-wear-index={i}
+                data-wear={p.wear}
+              >
+                <span class="variant-wear">{p.wear}</span>
+                <div class="variant-price-info">
+                  {cheapestProvider && (
+                    <span class="variant-mp-icon" style={`background:${mp.color}`}>
+                      {mp.domain ? <img src={`https://www.google.com/s2/favicons?domain=${mp.domain}&sz=22`} alt={mp.name} loading="lazy" /> : mp.icon}
+                    </span>
+                  )}
+                  <span class="variant-price">${cheapest > 0 ? cheapest.toFixed(2) : p.price.toFixed(2)}</span>
+                </div>
+                <span class="variant-arrow">›</span>
+              </button>
+            );
+          })}
+        </div>
+      ) : (
+        <p class="no-data-msg">No price data available</p>
+      )}
+    </div>
+
+    <!-- Summary Card -->
+    <div class="info-card">
+      <div class="summary-section-header">
+        <h2>Summary</h2>
+      </div>
+      <div class="summary-list">
+        <div class="sum-row"><span class="sum-label"><span class="sum-icon">📦</span> Category</span><span class="sum-value">{skin.category === 'knife' || skin.category === 'glove' ? 'Special' : 'Skin'}</span></div>
+        <div class="sum-row"><span class="sum-label"><span class="sum-icon">🎯</span> Type</span><span class="sum-value">{catLabel}</span></div>
+        <div class="sum-row"><span class="sum-label"><span class="sum-icon">🔫</span> Weapon</span><span class="sum-value"><a href={`/weapon/${skin.weaponSlug}/`}>{skin.weapon}</a></span></div>
+        <div class="sum-row"><span class="sum-label"><span class="sum-icon">🎨</span> Finish</span><span class="sum-value">{skin.name}</span></div>
+        {skin.collection && <div class="sum-row"><span class="sum-label"><span class="sum-icon">📁</span> Collection</span><span class="sum-value">{skin.collection}</span></div>}
+        <div class="sum-row"><span class="sum-label"><span class="sum-icon">💎</span> Rarity</span><span class="sum-value" style={`color:${rarityColor}`}>{skin.rarity}</span></div>
+        <div class="sum-row"><span class="sum-label"><span class="sum-icon">📊</span> Float Range</span><span class="sum-value">{skin.minFloat.toFixed(2)} – {skin.maxFloat.toFixed(2)}</span></div>
+        <div class="sum-row"><span class="sum-label"><span class="sum-icon">📈</span> StatTrak</span><span class="sum-value">{skin.statTrak ? 'Yes' : 'No'}</span></div>
+        <div class="sum-row"><span class="sum-label"><span class="sum-icon">🏆</span> Souvenir</span><span class="sum-value">{skin.souvenir ? 'Yes' : 'No'}</span></div>
+      </div>
+    </div>
+
+    <!-- Item Class Visual -->
+    <div class="info-card">
+      <h2>Item Class</h2>
+      <div class="item-class-row">
+        <span class="item-class-label" style={`color:${rarityColor}`}>{skin.rarity}</span>
+        <span class="item-class-type">{skin.statTrak ? 'StatTrak' : skin.souvenir ? 'Souvenir' : 'Normal'}</span>
+      </div>
+      <div class="rarity-bar">
+        <div class="rarity-bar-fill" style={`background:${rarityColor};width:${skin.rarity === 'Consumer' ? '15%' : skin.rarity === 'Industrial' ? '28%' : skin.rarity === 'Mil-Spec' ? '42%' : skin.rarity === 'Restricted' ? '56%' : skin.rarity === 'Classified' ? '70%' : skin.rarity === 'Covert' ? '85%' : '100%'}`}></div>
+      </div>
+    </div>
+
+    {/* Phases section — shown on Doppler parent pages */}
+    {isDopplerParent && (
+      <div class="phases-box">
+        <div class="phases-header">
+          <h2>Phases</h2>
+          <span class="phases-count">{phaseVariants.length} variants</span>
+        </div>
+        <div class="phase-grid">
+          {phaseVariants.map(pv => {
+            const pvLow = getLowestPrice(pv);
+            return (
+              <a href={`/skin/${pv.slug}/`} class="phase-card">
+                <div class="phase-card-img">
+                  {pv.image
+                    ? <img src={skinRelatedImage(pv.image)} alt={`${pv.weapon} | ${pv.name}`} loading="lazy" width="200" height="150" />
+                    : <div class="phase-card-placeholder">{pv.phase}</div>
+                  }
+                </div>
+                <span class="phase-card-name">{pv.phase}</span>
+                {pvLow > 0 && <span class="phase-card-price">from ${pvLow.toFixed(2)}</span>}
+              </a>
+            );
+          })}
+        </div>
+      </div>
+    )}
+
+    {/* Phases nav — shown on phase variant pages */}
+    {isPhaseVariant && parentSkin && (
+      <div class="phases-box">
+        <div class="phases-header">
+          <h2>Phases</h2>
+        </div>
+        <div class="phase-nav">
+          <a href={`/skin/${parentSkin.slug}/`} class="phase-nav-item">All Phases</a>
+          {siblingVariants.map(pv => (
+            <a href={`/skin/${pv.slug}/`} class={`phase-nav-item ${pv.slug === skin.slug ? 'active' : ''}`}>
+              {pv.phase}
+            </a>
+          ))}
+        </div>
+      </div>
+    )}
+
+    {/* Containers & Collection — in sidebar */}
+    {skinCases.length > 0 && (
+      <div class="origin-box">
+        <h2>Containers</h2>
+        <div class="origin-grid">
+          {skinCases.map(c => (
+            <a href={`/case/${c.id}/`} class="origin-card">
+              <div class="origin-img">
+                <img src={c.image} alt={c.name} loading="lazy" width="120" height="90" />
+              </div>
+              <span class="origin-name">{c.name}</span>
+            </a>
+          ))}
+        </div>
+      </div>
+    )}
+    {skin.collection && (
+      <div class="origin-box">
+        <h2>Collection</h2>
+        <div class="origin-grid">
+          <a href={`/collection/${skin.collection.toLowerCase().replace(/[^a-z0-9]+/g, '-')}/`} class="origin-card">
+            <div class="origin-img">
+              {collectionImage ? (
+                <img src={collectionImage} alt={skin.collection} loading="lazy" width="120" height="90" style="object-fit: contain;" />
+              ) : (
+                <span class="origin-collection-icon" style={`color:${rarityColor}`}>{skin.collection.replace(/^The /, '').substring(0, 2)}</span>
+              )}
+            </div>
+            <span class="origin-name">{skin.collection}</span>
+          </a>
+        </div>
+      </div>
+    )}
+
+  </div>
+
+  <!-- RIGHT COLUMN: Top providers + Full marketplace list -->
+  <div class="skin-right-col">
+    <!-- Top 3 Provider Cards -->
+    {skin.prices.length > 0 && (
+      <div class="top-providers-section" id="top-providers">
+        {skin.prices.map((wearData, wearIdx) => {
+          const topP = getTopProviders(wearData);
+          return (
+            <div class={`top-providers-row ${wearIdx === 0 ? '' : 'hidden'}`} data-wear-row={wearIdx}>
+              {topP.map(([pk, pv]) => {
+                const mp = getMarketplace(pk);
+                return (
+                  <a href={getMarketplaceUrl(pk)} target="_blank" rel="noopener noreferrer nofollow" class="top-provider-card">
+                    <div class="tp-header">
+                      <span class="tp-name">{mp.name}</span>
+                      <span class="tp-icon" style={`background:${mp.color}`}>
+                        {mp.domain ? <img src={`https://www.google.com/s2/favicons?domain=${mp.domain}&sz=28`} alt={mp.name} loading="lazy" /> : mp.icon}
+                      </span>
+                    </div>
+                    <div class="tp-price">${pv.toFixed(2)}</div>
+                  </a>
+                );
+              })}
+            </div>
+          );
+        })}
+      </div>
+    )}
+
+    <!-- Full Marketplace Listing -->
+    {skin.prices.length > 0 && (
+      <div class="marketplace-list" id="marketplace-list">
+        <div class="mp-list-header">
+          <span class="mp-list-title">All Marketplaces</span>
+          <span class="mp-list-subtitle" id="mp-wear-indicator">{defaultWear?.wear || ''}</span>
+        </div>
+        {skin.prices.map((wearData, wearIdx) => {
+          const sorted = wearData.providers
+            ? Object.entries(wearData.providers)
+                .filter(([k, v]) => v > 0 && !BLOCKED_PROVIDERS.has(k))
+                .sort((a, b) => a[1] - b[1])
+            : [];
+          const cheapest = sorted.length > 0 ? sorted[0][1] : 0;
+          return (
+            <div class={`mp-wear-group ${wearIdx === 0 ? '' : 'hidden'}`} data-mp-row={wearIdx}>
+              {sorted.length > 0 ? sorted.map(([pk, pv], idx) => {
+                const mp = getMarketplace(pk);
+                const diff = cheapest > 0 ? Math.round((pv - cheapest) / cheapest * 100) : 0;
+                const reviewUrl = getReviewUrl(pk);
+                const tp = (mp as any).trustpilot as number | null | undefined;
+                const promo = getPromoForProvider(pk);
+                return (
+                  <div class={`mp-row ${idx === 0 ? 'mp-row-best' : ''} ${idx >= 8 ? 'mp-row-overflow' : ''}`}>
+                    <div class="mp-left">
+                      <span class="mp-icon-lg" style={`background:${mp.color}`}>
+                        {mp.domain ? <img src={`https://www.google.com/s2/favicons?domain=${mp.domain}&sz=64`} alt={mp.name} loading="lazy" /> : mp.icon}
+                      </span>
+                      <div class="mp-info">
+                        <span class="mp-name">{mp.name}</span>
+                        <div class="mp-meta">
+                          {tp && (
+                            <span class="mp-tp" title={`${tp} Trustpilot`}>
+                              <span class="mp-tp-star">★</span> {tp.toFixed(1)}
+                            </span>
+                          )}
+                          {reviewUrl && <a href={reviewUrl} class="mp-review-link">Review</a>}
+                          {promo && (
+                            <a href={`/trading-site/${promo.slug}/promo-code/`} class="mp-promo-chip" title={`Use code ${promo.code}`}>
+                              <span class="mp-promo-icon">🏷</span>{promo.code}
+                            </a>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                    <div class="mp-right">
+                      <div class="mp-price-group">
+                        <span class="mp-price-from">from</span>
+                        <span class="mp-price">${pv.toFixed(2)}</span>
+                      </div>
+                      {diff > 0 && <span class="mp-diff mp-diff-up">+{diff}%</span>}
+                      {idx === 0 && <span class="mp-diff mp-diff-best">Best</span>}
+                      <a href={getMarketplaceUrl(pk)} target="_blank" rel="noopener noreferrer nofollow" class="mp-buy-btn">Buy Here →</a>
+                    </div>
+                  </div>
+                );
+              }) : (
+                <p class="no-data-msg">No marketplace data for this wear condition</p>
+              )}
+              {sorted.length > 8 && (
+                <button class="mp-show-more-btn" data-total={sorted.length}>
+                  Show all {sorted.length} marketplaces <span class="mp-show-more-arrow">▾</span>
+                </button>
+              )}
+            </div>
+          );
+        })}
+      </div>
+    )}
+
+    {skin.prices.length === 0 && (
+      <div class="info-card">
+        <p class="no-data-msg">No price data available. Check marketplaces directly for current listings.</p>
+      </div>
+    )}
+
+    {/* Pro Players Using This Skin */}
+    {playersUsingSkin.length > 0 && (
+      <div class="phases-box pro-users-box">
+        <div class="phases-header">
+          <h2>Used by Pros</h2>
+          <span class="phases-count">{playersUsingSkin.length} players</span>
+        </div>
+        <div class="pro-users-grid">
+          {playersUsingSkin.slice(0, 12).map(p => (
+            <a href={`/player/${p.slug}/`} class="pro-user-card">
+              <div class="pro-user-img">
+                {p.image ? (
+                  <img src={p.image} alt={p.name} width="80" height="80" loading="lazy" />
+                ) : (
+                  <span class="pro-user-card-ph">{p.flag || p.name.charAt(0)}</span>
+                )}
+              </div>
+              <span class="pro-user-name">{p.name}</span>
+              <span class="pro-user-team">{p.team}</span>
+            </a>
+          ))}
+        </div>
+        {playersUsingSkin.length > 12 && (
+          <div class="pro-users-more-wrap">
+            <a href="/players/" class="pro-users-more-btn">+{playersUsingSkin.length - 12} more pros →</a>
+          </div>
+        )}
+      </div>
+    )}
+  </div>
+
+  </div>
+</div>
+
+<!-- Trading Sites CTA -->
+<div class="trading-sites-cta">
+  <div class="ts-cta-left">
+    <strong>Looking for the best place to trade?</strong>
+    <span>Compare fees, features, and trust scores across 15+ CS2 trading platforms.</span>
+  </div>
+  <a href="/trading-sites/" class="ts-cta-btn">Compare Trading Sites →</a>
+</div>
+
+
+<!-- Description Grid -->
+<div class="desc-grid">
+  <div class="desc-card">
+    <h3>Popularity</h3>
+    <p>
+      {popPercent > 0 ? `With a popularity of ${popPercent}%, the ` : `The `}{skin.weapon} | {skin.name} is currently {popTier}, {(skin.volume30d ?? 0) > 0 ? `with ${(skin.volume30d!).toLocaleString()} sales in the last 30 days` : 'based on market activity'}.
+      {(skin.liquidity ?? 0) >= 80 ? ' High liquidity means this skin sells quickly when listed.' : (skin.liquidity ?? 0) >= 40 ? ' Moderate liquidity means the skin trades regularly.' : ''}
+    </p>
+  </div>
+  <div class="desc-card">
+    <h3>Rarity</h3>
+    <p>
+      The {skin.weapon} | {skin.name} is one of {totalSkinCount} other {catLabel} skins. The rarity of the skin is {skin.rarity}, {rarityDescriptions[skin.rarity] || ''}{skin.rarity !== 'Consumer' && skin.rarity !== 'Industrial' ? ` with an estimated drop chance of only ${dropChance}` : ''}.
+    </p>
+  </div>
+  <div class="desc-card">
+    <h3>Availability</h3>
+    <p>
+      With a price range between ${lowPrice.toFixed(2)} and ${highPrice.toFixed(2)}, the {skin.weapon} | {skin.name} is {lowPrice < 5 ? 'a very affordable skin' : lowPrice < 50 ? 'a rather affordable skin' : lowPrice < 200 ? 'a mid-range skin' : lowPrice < 1000 ? 'a premium skin' : 'one of the most expensive skins'}. It's currently {listingDesc}{(skin.listingCount ?? 0) > 0 ? ` with ${(skin.listingCount!).toLocaleString()}+ total listings` : ''}.
+    </p>
+  </div>
+  <div class="desc-card">
+    <h3>Versions</h3>
+    <p>
+      The float value of the {skin.weapon} | {skin.name} ranges from {skin.minFloat.toFixed(2)} to {skin.maxFloat.toFixed(2)}, which makes the skin available in {hasAllWears ? 'all exteriors' : `${wearCount} exterior${wearCount !== 1 ? 's' : ''}: ${availableWears.join(', ')}`}.
+      {skin.statTrak ? ' For each exterior, there also exists a StatTrak version.' : ''}
+      {skin.souvenir ? ' Souvenir versions are also available from major tournament drops.' : ''}
+    </p>
+  </div>
+</div>
+
+<!-- Wear Range Visualizer -->
+<div class="wear-range-section">
+  <h2>Float &amp; Wear Range</h2>
+  <div class="wear-range-display">
+    <div class="wear-range-labels">
+      <span>{skin.minFloat.toFixed(2)}</span>
+      <span>{skin.maxFloat.toFixed(2)}</span>
+    </div>
+    <div class="wear-range-track">
+      <div class="wear-range-fill" style={`left:${skin.minFloat * 100}%;width:${(skin.maxFloat - skin.minFloat) * 100}%;background:${rarityColor}`}></div>
+    </div>
+    <div class="wear-range-ticks">
+      <span>0.00 FN</span><span>0.07</span><span>0.15 MW</span><span>0.38 FT</span><span>0.45 WW</span><span>1.00 BS</span>
+    </div>
+  </div>
+  <p class="wear-range-explanation">
+    {skin.weapon} | {skin.name} has a float range of <strong>{skin.minFloat.toFixed(2)} to {skin.maxFloat.toFixed(2)}</strong>.
+    {skin.minFloat === 0 && skin.maxFloat >= 1 ? ' This skin can drop in all wear conditions from Factory New to Battle-Scarred.' :
+     skin.minFloat === 0 && skin.maxFloat < 0.45 ? ` This skin cannot drop in ${skin.maxFloat < 0.38 ? 'Field-Tested, Well-Worn or Battle-Scarred' : skin.maxFloat < 0.45 ? 'Well-Worn or Battle-Scarred' : 'Battle-Scarred'} condition.` :
+     skin.minFloat > 0.07 ? ` This skin cannot drop in Factory New condition.` : ''}
+  </p>
+</div>
+
+<!-- Price History Chart -->
+<div class="price-history-section">
+  <div class="ph-header">
+    <h2>Price History</h2>
+    <div class="ph-controls">
+      <select id="ph-source" class="ph-select">
+        <option value="buff163">Buff163</option>
+        <option value="steam" selected>Steam</option>
+        <option value="skinport">Skinport</option>
+        <option value="csmoney">CS.Money</option>
+        <option value="csfloat">CSFloat</option>
+      </select>
+      <select id="ph-wear" class="ph-select">
+        {skin.prices.map((p, i) => (
+          <option value={p.wear} selected={i === 0}>{p.wear}</option>
+        ))}
+      </select>
+    </div>
+  </div>
+  <div class="ph-chart-wrap">
+    <canvas id="price-history-chart" height="280"></canvas>
+    <div id="ph-loading" class="ph-loading">Loading price history...</div>
+    <div id="ph-error" class="ph-error" style="display:none"><span id="ph-error-msg">Price history not available for this item.</span></div>
+  </div>
+</div>
+
+<!-- Price Comparison Table (SEO-rich content) -->
+{priceTable.length > 0 && priceTable.some(p => p.prices.length > 0) && (
+  <div class="price-compare-section">
+    <h2>{skin.weapon} | {skin.name} Price Comparison</h2>
+    <p class="section-desc">Compare {skin.weapon} | {skin.name} prices across all available marketplaces. Prices are in USD and update regularly.</p>
+    <div class="price-table-wrapper">
+      <table class="price-compare-table">
+        <thead>
+          <tr>
+            <th>Wear Condition</th>
+            <th>Cheapest Price</th>
+            <th>Cheapest Marketplace</th>
+            <th>Avg. Price</th>
+            <th># Listings</th>
+          </tr>
+        </thead>
+        <tbody>
+          {priceTable.map(row => {
+            const cheapestEntry = row.prices.length > 0 ? row.prices[0] : null;
+            const avg = row.prices.length > 0 ? row.prices.reduce((s, [, v]) => s + v, 0) / row.prices.length : 0;
+            return (
+              <tr>
+                <td><strong>{row.wear}</strong></td>
+                <td class="price-cell">{cheapestEntry ? `$${cheapestEntry[1].toFixed(2)}` : '—'}</td>
+                <td>{cheapestEntry ? getMarketplace(cheapestEntry[0]).name : '—'}</td>
+                <td class="price-cell">{avg > 0 ? `$${avg.toFixed(2)}` : '—'}</td>
+                <td>{row.prices.length}</td>
+              </tr>
+            );
+          })}
+        </tbody>
+      </table>
+    </div>
+  </div>
+)}
+
+<!-- StatTrak Price Comparison Table -->
+{skin.statTrak && stPriceTable.length > 0 && stPriceTable.some(p => p.prices.length > 0) && (
+  <div class="price-compare-section stattrak-section">
+    <h2><span class="st-badge">StatTrak™</span> {skin.weapon} | {skin.name} Prices</h2>
+    <p class="section-desc">StatTrak™ versions track confirmed kills and typically cost more than standard versions.</p>
+    <div class="price-table-wrapper">
+      <table class="price-compare-table st-table">
+        <thead>
+          <tr>
+            <th>Wear Condition</th>
+            <th>Cheapest Price</th>
+            <th>Cheapest Marketplace</th>
+            <th>Avg. Price</th>
+            <th>Premium vs Normal</th>
+          </tr>
+        </thead>
+        <tbody>
+          {stPriceTable.map(row => {
+            const cheapestEntry = row.prices.length > 0 ? row.prices[0] : null;
+            const avg = row.prices.length > 0 ? row.prices.reduce((s, [, v]) => s + v, 0) / row.prices.length : 0;
+            const normalRow = priceTable.find(r => r.wear === row.wear);
+            const normalCheapest = normalRow?.prices?.[0]?.[1] || 0;
+            const premium = cheapestEntry && normalCheapest > 0
+              ? Math.round(((cheapestEntry[1] - normalCheapest) / normalCheapest) * 100)
+              : null;
+            return (
+              <tr>
+                <td><strong>{row.wear}</strong></td>
+                <td class="price-cell st-price">{cheapestEntry ? `$${cheapestEntry[1].toFixed(2)}` : '—'}</td>
+                <td>{cheapestEntry ? getMarketplace(cheapestEntry[0]).name : '—'}</td>
+                <td class="price-cell">{avg > 0 ? `$${avg.toFixed(2)}` : '—'}</td>
+                <td class="premium-cell">{premium !== null ? `+${premium}%` : '—'}</td>
+              </tr>
+            );
+          })}
+        </tbody>
+      </table>
+    </div>
+  </div>
+)}
+
+<!-- About Section (unique SEO content per skin) -->
+<div class="about-section">
+  <h2>About {skin.weapon} | {skin.name}</h2>
+  <p>
+    The {skin.weapon} | {skin.name} is a <strong>{skin.rarity}</strong> grade {catLabel.toLowerCase()} skin in Counter-Strike 2{skin.collection ? `, part of the ${skin.collection}` : ''}.
+    {skin.statTrak ? ' StatTrak versions are available, which track your kill count with this weapon.' : ''}
+    {skin.souvenir ? ' This skin is also available as a Souvenir drop from major tournaments.' : ''}
+  </p>
+
+  {skin.prices.length > 0 && (
+    <p>
+      The skin is currently available in {skin.prices.length} wear condition{skin.prices.length !== 1 ? 's' : ''}:
+      {skin.prices.map((p, i) => {
+        const desc = wearDescriptions[p.wear] || '';
+        return `${i > 0 ? (i === skin.prices.length - 1 ? ', and ' : ', ') : ' '}${p.wear} ($${p.price.toFixed(2)})${desc ? ` — ${desc}` : ''}`;
+      }).join('')}.
+    </p>
+  )}
+
+  <p>
+    The float value range for {skin.weapon} | {skin.name} is <strong>{skin.minFloat.toFixed(2)} to {skin.maxFloat.toFixed(2)}</strong>.
+    Lower float values mean less wear on the skin's texture. A float of {skin.minFloat.toFixed(2)} will look the cleanest, while {skin.maxFloat.toFixed(2)} will show the most wear. Use the <a href="/float-checker/">Float Checker</a> to analyze specific float values, or read our <a href="/guides/float-guide/">Float Guide</a> to learn more.
+  </p>
+
+  <p>
+    Looking for the best deal? Use our <a href="/skin-compare/">Skin Compare</a> tool to compare this skin with alternatives, or track price trends on the <a href="/price-tracker/">Price Tracker</a>. You can also check the <a href="/market-trends/">Market Trends</a> page for broader investment insights.
+  </p>
+
+  {weapon && (
+    <p>
+      The <a href={`/weapon/${skin.weaponSlug}/`}>{skin.weapon}</a> is a {weapon.category?.toLowerCase() || catLabel.toLowerCase()} in CS2
+      {weapon.price ? ` that costs $${weapon.price.toLocaleString()} in-game` : ''}.
+      {weapon.damage ? ` It deals ${weapon.damage} base damage` : ''}
+      {weapon.rpm ? ` at ${weapon.rpm} rounds per minute` : ''}.
+      Browse all <a href={`/weapon/${skin.weaponSlug}/`}>{skin.weapon} skins</a> for more options.
+    </p>
+  )}
+</div>
+
+<!-- Collection Skins -->
+{collectionSkins.length > 0 && skin.collection && (
+  <div class="related-section">
+    <h2>More From {skin.collection}</h2>
+    <p class="section-desc">Other skins in the {skin.collection}:</p>
+    <div class="related-grid">
+      {collectionSkins.map(rs => {
+        const rsColor = rs.rarityColor || RARITY_COLORS[rs.rarity] || '#fff';
+        const rsBg = RARITY_BG[rs.rarity] || 'rgba(255,255,255,0.05)';
+        const rsHigh = getHighestPrice(rs);
+        return (
+          <a href={`/skin/${rs.slug}/`} class="related-card" style={`--rc:${rsColor};--rbg:${rsBg}`}>
+            <div class="related-img" style={`background:${rsBg}`}>
+              {rs.image
+                ? <img src={skinRelatedImage(rs.image)} alt={`${rs.weapon} | ${rs.name}`} loading="lazy" width="280" height="210" style="max-width:90%;max-height:80px;object-fit:contain" />
+                : <div style={`font-size:1.5rem;font-weight:900;color:${rsColor};opacity:.3`}>{rs.weapon.substring(0, 2)}</div>
+              }
+            </div>
+            <div class="related-info">
+              <span class="related-weapon">{rs.weapon}</span>
+              <span class="related-name">{rs.name}</span>
+              <span class="related-rarity" style={`color:${rsColor}`}>{rs.rarity}</span>
+              {rsHigh > 0 && <span class="related-price">${rsHigh.toFixed(2)}</span>}
+            </div>
+          </a>
+        );
+      })}
+    </div>
+  </div>
+)}
+
+<!-- Related Skins (same weapon) -->
+{relatedSkins.length > 0 && (
+  <div class="related-section">
+    <h2>More {skin.weapon} Skins</h2>
+    <div class="related-grid">
+      {relatedSkins.map(rs => {
+        const rsColor = rs.rarityColor || RARITY_COLORS[rs.rarity] || '#fff';
+        const rsBg = RARITY_BG[rs.rarity] || 'rgba(255,255,255,0.05)';
+        const rsHigh = getHighestPrice(rs);
+        return (
+          <a href={`/skin/${rs.slug}/`} class="related-card" style={`--rc:${rsColor};--rbg:${rsBg}`}>
+            <div class="related-img" style={`background:${rsBg}`}>
+              {rs.image
+                ? <img src={skinRelatedImage(rs.image)} alt={`${rs.weapon} | ${rs.name}`} loading="lazy" width="280" height="210" style="max-width:90%;max-height:80px;object-fit:contain" />
+                : <div style={`font-size:1.5rem;font-weight:900;color:${rsColor};opacity:.3`}>{rs.weapon.substring(0, 2)}</div>
+              }
+            </div>
+            <div class="related-info">
+              <span class="related-name">{rs.name}</span>
+              <span class="related-rarity" style={`color:${rsColor}`}>{rs.rarity}</span>
+              {rsHigh > 0 && <span class="related-price">${rsHigh.toFixed(2)}</span>}
+            </div>
+          </a>
+        );
+      })}
+    </div>
+  </div>
+)}
+
+<!-- Similar Price Range -->
+{priceSimilar.length > 0 && (
+  <div class="related-section">
+    <h2>Similar {catLabel} Skins by Price</h2>
+    <div class="related-grid">
+      {priceSimilar.map(rs => {
+        const rsColor = rs.rarityColor || RARITY_COLORS[rs.rarity] || '#fff';
+        const rsBg = RARITY_BG[rs.rarity] || 'rgba(255,255,255,0.05)';
+        const rsHigh = getHighestPrice(rs);
+        return (
+          <a href={`/skin/${rs.slug}/`} class="related-card" style={`--rc:${rsColor};--rbg:${rsBg}`}>
+            <div class="related-img" style={`background:${rsBg}`}>
+              {rs.image
+                ? <img src={skinRelatedImage(rs.image)} alt={`${rs.weapon} | ${rs.name}`} loading="lazy" width="280" height="210" style="max-width:90%;max-height:80px;object-fit:contain" />
+                : <div style={`font-size:1.5rem;font-weight:900;color:${rsColor};opacity:.3`}>{rs.weapon.substring(0, 2)}</div>
+              }
+            </div>
+            <div class="related-info">
+              <span class="related-weapon">{rs.weapon}</span>
+              <span class="related-name">{rs.name}</span>
+              <span class="related-rarity" style={`color:${rsColor}`}>{rs.rarity}</span>
+              {rsHigh > 0 && <span class="related-price">${rsHigh.toFixed(2)}</span>}
+            </div>
+          </a>
+        );
+      })}
+    </div>
+  </div>
+)}
+
+<!-- FAQ -->
+<h2>Frequently Asked Questions</h2>
+<dl class="faq">{faqs.map(f => (<><dt>{f.q}</dt><dd>{f.a}</dd></>))}</dl>
+
+<!-- Internal Links -->
+<div class="internal-links">
+  <a href={`/weapon/${skin.weaponSlug}/`}>{skin.weapon} Stats</a>
+  <a href="/skins/">All Skins</a>
+  <a href="/skin-compare/">Compare Skins</a>
+  <a href="/float-checker/">Float Checker</a>
+  <a href="/price-tracker/">Price Tracker</a>
+  <a href="/market-trends/">Market Trends</a>
+  <a href="/tradeup-calculator/">Trade-Up Calculator</a>
+  <a href="/case-odds-calculator/">Case Odds Calculator</a>
+  <a href="/case-simulator/">Case Simulator</a>
+  <a href="/inventory-lookup/">Inventory Lookup</a>
+  <a href="/loadout-builder/">Loadout Builder</a>
+  <a href="/cases/">All Cases</a>
+  <a href="/weapons/">All Weapons</a>
+  <a href="/weapon-compare/">Compare Weapons</a>
+  <a href="/damage-calculator/">Damage Calculator</a>
+  <a href="/guides/float-guide/">Float Guide</a>
+  <a href="/guides/trading-guide/">Trading Guide</a>
+  <a href="/guides/skins-investing-guide/">Investing Guide</a>
+</div>
+
+<ExploreMore context="skins" />
+
+<!-- Client-side wear switching -->
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const variantBtns = document.querySelectorAll('.variant-item');
+  const topRows = document.querySelectorAll('[data-wear-row]');
+  const mpRows = document.querySelectorAll('[data-mp-row]');
+  const wearLabel = document.getElementById('active-wear-label');
+  const mpWearIndicator = document.getElementById('mp-wear-indicator');
+
+  variantBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const idx = btn.getAttribute('data-wear-index');
+      const wear = btn.getAttribute('data-wear');
+
+      // Update active state
+      variantBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+
+      // Update header label
+      if (wearLabel) wearLabel.textContent = `(${wear})`;
+      if (mpWearIndicator) mpWearIndicator.textContent = wear;
+
+      // Show/hide marketplace rows
+      topRows.forEach(r => {
+        r.classList.toggle('hidden', r.getAttribute('data-wear-row') !== idx);
+      });
+      mpRows.forEach(r => {
+        r.classList.toggle('hidden', r.getAttribute('data-mp-row') !== idx);
+      });
+    });
+  });
+
+  // Show More / Show Less toggle for marketplace rows
+  document.querySelectorAll('.mp-show-more-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const group = btn.closest('.mp-wear-group');
+      if (!group) return;
+      const isExpanded = group.classList.toggle('expanded');
+      const total = btn.getAttribute('data-total');
+      btn.innerHTML = isExpanded
+        ? 'Show fewer marketplaces <span class="mp-show-more-arrow" style="transform:rotate(180deg)">▾</span>'
+        : `Show all ${total} marketplaces <span class="mp-show-more-arrow">▾</span>`;
+    });
+  });
+});
+</script>
+
+<!-- Chart.js from CDN -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script define:vars={{ skinWeapon: skin.weapon, skinName: skin.name, skinCategory: skin.category, skinPhase: skin.phase || '' }}>
+(function() {
+  let chart = null;
+
+  async function loadHistory() {
+    const sourceEl = document.getElementById('ph-source');
+    const wearEl = document.getElementById('ph-wear');
+    const loading = document.getElementById('ph-loading');
+    const error = document.getElementById('ph-error');
+    const canvas = document.getElementById('price-history-chart');
+
+    if (!sourceEl || !wearEl || !canvas) return;
+
+    const source = sourceEl.value;
+    const wear = wearEl.value;
+    // Build market hash name: knives/gloves need ★ prefix, phase variants need phase suffix after wear
+    const prefix = (skinCategory === 'knife' || skinCategory === 'glove') ? '★ ' : '';
+    const baseName = skinPhase ? skinName.replace(` - ${skinPhase}`, '') : skinName;
+    const phaseSuffix = skinPhase ? ` - ${skinPhase}` : '';
+    const marketHashName = `${prefix}${skinWeapon} | ${baseName} (${wear})${phaseSuffix}`;
+
+    // Show loading
+    loading.style.display = 'flex';
+    error.style.display = 'none';
+    canvas.style.opacity = '0.3';
+
+    try {
+      const resp = await fetch(`/api/price-history?name=${encodeURIComponent(marketHashName)}&source=${encodeURIComponent(source)}`);
+      if (!resp.ok) {
+        const errBody = await resp.text();
+        throw new Error(errBody || `API error ${resp.status}`);
+      }
+
+      const data = await resp.json();
+
+      // Parse response — handle different formats
+      let points = [];
+      if (Array.isArray(data)) {
+        points = data;
+      } else if (data && typeof data === 'object') {
+        // Could be { [name]: {...} } or { prices: [...] } or { data: [...] }
+        const values = data.prices || data.data || data[marketHashName] || Object.values(data)[0];
+        if (Array.isArray(values)) {
+          points = values;
+        } else if (values && typeof values === 'object') {
+          // Handle { timestamp: price } format (PriceEmpire v3/v4)
+          const entries = Object.entries(values);
+          if (entries.length > 0 && typeof entries[0][1] === 'number') {
+            points = entries.map(([ts, price]) => ({ date: parseInt(ts), price }));
+          }
+        }
+        // If top-level is { timestamp: price } directly (API already extracted item)
+        if (points.length === 0 && !data.error) {
+          const entries = Object.entries(data);
+          if (entries.length > 2 && entries.every(([k, v]) => !isNaN(parseInt(k)) && typeof v === 'number')) {
+            points = entries.map(([ts, price]) => ({ date: parseInt(ts), price }));
+          }
+        }
+      }
+
+      if (!points || points.length === 0) {
+        throw new Error('No data');
+      }
+
+      // Normalize points to { date, price } format
+      const normalized = points.map(p => {
+        const date = p.date || p.timestamp || p.created_at || p.time || p.t;
+        const price = p.price || p.value || p.avg || p.median || p.y;
+        return { date: new Date(typeof date === 'number' ? date : Date.parse(date)), price: typeof price === 'number' ? price : parseFloat(price) };
+      }).filter(p => !isNaN(p.price) && p.date instanceof Date && !isNaN(p.date.getTime()))
+        .sort((a, b) => a.date - b.date);
+
+      if (normalized.length === 0) throw new Error('No valid data points');
+
+      // Server-side API already converts cents to dollars — no client-side conversion needed
+      const labels = normalized.map(p => p.date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }));
+      const prices = normalized.map(p => p.price.toFixed(2));
+
+      // Destroy old chart
+      if (chart) chart.destroy();
+
+      // Create new chart
+      const ctx = canvas.getContext('2d');
+      const gradient = ctx.createLinearGradient(0, 0, 0, 280);
+      gradient.addColorStop(0, 'rgba(255,183,77,0.3)');
+      gradient.addColorStop(1, 'rgba(255,183,77,0)');
+
+      chart = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels,
+          datasets: [{
+            label: `Price (USD) — ${source}`,
+            data: prices,
+            borderColor: '#ffb74d',
+            backgroundColor: gradient,
+            borderWidth: 2,
+            pointRadius: 0,
+            pointHoverRadius: 5,
+            pointHoverBackgroundColor: '#ffb74d',
+            fill: true,
+            tension: 0.3,
+          }],
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          interaction: { mode: 'index', intersect: false },
+          plugins: {
+            legend: { display: false },
+            tooltip: {
+              backgroundColor: 'rgba(30,30,30,0.95)',
+              titleColor: '#fff',
+              bodyColor: '#ffb74d',
+              borderColor: '#444',
+              borderWidth: 1,
+              padding: 10,
+              displayColors: false,
+              callbacks: {
+                label: function(ctx) { return '$' + ctx.parsed.y.toFixed(2); },
+              },
+            },
+          },
+          scales: {
+            x: {
+              grid: { color: 'rgba(255,255,255,0.05)' },
+              ticks: { color: '#888', maxTicksLimit: 8, font: { size: 11 } },
+            },
+            y: {
+              grid: { color: 'rgba(255,255,255,0.05)' },
+              ticks: {
+                color: '#888',
+                font: { size: 11 },
+                callback: function(v) { return '$' + v; },
+              },
+            },
+          },
+        },
+      });
+
+      loading.style.display = 'none';
+      canvas.style.opacity = '1';
+    } catch (err) {
+      loading.style.display = 'none';
+      error.style.display = 'flex';
+      canvas.style.opacity = '0.1';
+      const errMsg = document.getElementById('ph-error-msg');
+      if (errMsg) {
+        try {
+          const parsed = JSON.parse(err.message);
+          errMsg.textContent = parsed.error || 'Price history not available for this item.';
+        } catch(e) {
+          errMsg.textContent = 'Price history not available for this item.';
+        }
+      }
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    const sourceEl = document.getElementById('ph-source');
+    const wearEl = document.getElementById('ph-wear');
+    if (sourceEl) sourceEl.addEventListener('change', loadHistory);
+    if (wearEl) wearEl.addEventListener('change', loadHistory);
+    loadHistory();
+  });
+})();
+</script>
+
+<style is:inline>
+/* ── Page Layout ─────────────────────────────────────────── */
+.skin-header{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.5rem;margin-bottom:1.5rem}
+.skin-title{font-size:1.8rem;font-weight:800;margin:0}
+.skin-wear-label{color:var(--text2);font-weight:600;font-size:1.2rem}
+.offer-count{font-size:.85rem;color:var(--text2);background:var(--bg2);padding:.35rem .8rem;border-radius:6px;border:1px solid var(--border)}
+
+.skin-page-grid{display:grid;grid-template-columns:380px 1fr;gap:1.5rem;margin-bottom:2rem}
+@media(max-width:900px){.skin-page-grid{grid-template-columns:1fr}}
+
+/* ── Left Column ─────────────────────────────────────────── */
+.skin-left-col{display:flex;flex-direction:column;gap:1rem}
+
+.skin-image-box{position:relative;display:flex;align-items:center;justify-content:center;min-height:280px;border-radius:12px;overflow:hidden;background:var(--bg2);border:2px solid var(--border)}
+.skin-detail-img{max-width:90%;max-height:260px;object-fit:contain}
+.skin-placeholder-large{font-size:5rem;font-weight:900;opacity:.2}
+.rarity-badge{position:absolute;bottom:12px;right:12px;padding:.25rem .7rem;border-radius:4px;font-size:.72rem;font-weight:700;color:#000;text-transform:uppercase;letter-spacing:.03em}
+
+/* ── Variants / Wear Selector ───────────────────────────── */
+.variants-box{background:var(--bg2);border:1px solid var(--border);border-radius:10px;overflow:hidden}
+.variants-header{display:flex;align-items:center;justify-content:space-between;padding:.8rem 1rem;border-bottom:1px solid var(--border)}
+.variants-header h2{margin:0;font-size:1rem}
+.variant-count{font-size:.78rem;color:var(--text2);background:var(--bg3);padding:.2rem .5rem;border-radius:4px}
+
+.variant-list{display:flex;flex-direction:column}
+.variant-item{display:flex;align-items:center;gap:.6rem;padding:.7rem 1rem;background:none;border:none;border-bottom:1px solid var(--border);color:var(--text);cursor:pointer;text-align:left;width:100%;transition:background .15s}
+.variant-item:last-child{border-bottom:none}
+.variant-item:hover{background:var(--bg3)}
+.variant-item.active{background:linear-gradient(135deg,rgba(74,222,128,0.12),rgba(52,211,153,0.08));color:var(--text);border-left:3px solid #4ade80;box-shadow:inset 0 0 0 1px rgba(74,222,128,0.2)}
+.variant-item.active .variant-price{color:#4ade80}
+.variant-item.active .variant-wear{color:#4ade80}
+.variant-item.active .variant-mp-icon{border:1px solid rgba(74,222,128,.3)}
+
+.variant-wear{flex:1;font-size:.9rem;font-weight:600}
+.variant-price-info{display:flex;align-items:center;gap:.4rem}
+.variant-mp-icon{width:22px;height:22px;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:.55rem;font-weight:800;color:#fff;overflow:hidden}
+.variant-mp-icon img{width:100%;height:100%;object-fit:contain;object-position:center}
+.variant-price{font-size:.95rem;font-weight:700;color:#4ade80}
+.variant-arrow{font-size:1.2rem;color:var(--text2);margin-left:.3rem}
+.variant-item.active .variant-arrow{color:#4ade80}
+
+/* ── Phases Section ─────────────────────────────────────── */
+.phases-box{background:var(--bg2);border:1px solid var(--border);border-radius:10px;overflow:hidden}
+.phases-header{display:flex;align-items:center;justify-content:space-between;padding:.8rem 1rem;border-bottom:1px solid var(--border)}
+.phases-header h2{margin:0;font-size:1rem}
+.phases-count{font-size:.78rem;color:var(--text2);background:var(--bg3);padding:.2rem .5rem;border-radius:4px}
+
+.phase-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:.5rem;padding:.75rem}
+.phase-card{display:flex;flex-direction:column;align-items:center;gap:.35rem;padding:.6rem .4rem;border-radius:8px;background:var(--bg3);border:1px solid var(--border);text-decoration:none;color:inherit;transition:all .15s}
+.phase-card:hover{border-color:var(--accent);transform:translateY(-2px);box-shadow:0 4px 12px rgba(0,0,0,.2)}
+.phase-card-img{width:100%;aspect-ratio:4/3;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.phase-card-img img{max-width:90%;max-height:100%;object-fit:contain}
+.phase-card-placeholder{font-size:.7rem;color:var(--text2);opacity:.5;font-weight:700}
+.phase-card-name{font-size:.75rem;font-weight:700;color:var(--text);text-align:center}
+.phase-card-price{font-size:.7rem;color:#4ade80;font-weight:600}
+
+.phase-nav{display:flex;flex-wrap:wrap;gap:.4rem;padding:.75rem}
+.phase-nav-item{padding:.4rem .7rem;border-radius:6px;font-size:.78rem;font-weight:600;text-decoration:none;color:var(--text2);background:var(--bg3);border:1px solid var(--border);transition:all .15s;white-space:nowrap}
+.phase-nav-item:hover{color:var(--text);border-color:var(--accent)}
+.phase-nav-item.active{color:var(--accent);border-color:var(--accent);background:rgba(212,149,110,.1)}
+
+/* ── Right Column ────────────────────────────────────────── */
+.skin-right-col{display:flex;flex-direction:column;gap:1rem}
+
+/* ── Top Provider Cards ──────────────────────────────────── */
+.top-providers-section{margin-bottom:.5rem}
+.top-providers-row{display:grid;grid-template-columns:repeat(3,1fr);gap:.8rem}
+.top-providers-row.hidden{display:none}
+
+.top-provider-card{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:1rem;text-decoration:none;color:inherit;transition:all .2s cubic-bezier(.4,0,.2,1)}
+.top-provider-card:hover{border-color:#4ade80;transform:translateY(-2px);box-shadow:0 6px 20px rgba(74,222,128,0.12)}
+.tp-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:.6rem}
+.tp-name{font-size:.85rem;font-weight:600;color:var(--text)}
+.tp-icon{width:28px;height:28px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:.6rem;font-weight:800;color:#fff;overflow:hidden}
+.tp-icon img{width:100%;height:100%;object-fit:contain;object-position:center}
+.tp-price{font-size:1.3rem;font-weight:800;color:var(--text)}
+
+@media(max-width:600px){.top-providers-row{grid-template-columns:1fr 1fr}}
+
+/* ── Marketplace Listings ────────────────────────────────── */
+.marketplace-list{background:var(--bg2);border:1px solid var(--border);border-radius:10px;overflow:hidden}
+
+.mp-list-header{display:flex;align-items:center;justify-content:space-between;padding:.75rem 1.2rem;border-bottom:1px solid var(--border);background:var(--bg3)}
+.mp-list-title{font-size:.88rem;font-weight:700;color:var(--text)}
+.mp-list-subtitle{font-size:.78rem;color:var(--accent);font-weight:600;background:rgba(212,149,110,.12);padding:.2rem .5rem;border-radius:4px}
+
+.mp-wear-group.hidden{display:none}
+
+.mp-row{display:flex;align-items:center;justify-content:space-between;padding:.85rem 1.2rem;border-bottom:1px solid var(--border);transition:background .15s}
+.mp-row:last-child{border-bottom:none}
+.mp-row:hover{background:var(--bg3)}
+.mp-row-best{background:rgba(74,222,128,.03);border-left:3px solid #4ade80}
+
+.mp-left{display:flex;align-items:center;gap:.85rem;min-width:0}
+.mp-icon-lg{width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:.65rem;font-weight:800;color:#fff;flex-shrink:0;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.25);border:1px solid rgba(255,255,255,.06)}
+.mp-icon-lg img{width:100%;height:100%;object-fit:contain;object-position:center;image-rendering:auto}
+.mp-info{display:flex;flex-direction:column;gap:.2rem;min-width:0}
+.mp-name{font-size:.92rem;font-weight:700;color:var(--text);white-space:nowrap}
+.mp-meta{display:flex;align-items:center;gap:.5rem}
+.mp-tp{display:inline-flex;align-items:center;gap:.2rem;font-size:.7rem;font-weight:600;color:#4ade80;white-space:nowrap}
+.mp-tp-star{color:#ffca28;font-size:.72rem}
+.mp-review-link{font-size:.7rem;color:var(--text2);text-decoration:none;padding:.1rem .4rem;border:1px solid var(--border);border-radius:4px;white-space:nowrap;transition:all .15s;font-weight:500;letter-spacing:.01em;width:fit-content}
+.mp-review-link:hover{color:var(--accent);border-color:var(--accent);background:rgba(212,149,110,.08)}
+
+.mp-right{display:flex;align-items:center;gap:.7rem}
+.mp-price-group{display:flex;flex-direction:column;align-items:flex-end;min-width:80px}
+.mp-price-from{font-size:.68rem;color:var(--text2);font-weight:500}
+.mp-price{font-size:1.15rem;font-weight:800;color:var(--text);line-height:1.1}
+.mp-diff{font-size:.72rem;font-weight:700;padding:.2rem .45rem;border-radius:4px;min-width:44px;text-align:center}
+.mp-diff-up{background:rgba(255,82,82,.12);color:#ff5252}
+.mp-diff-best{background:rgba(74,222,128,.15);color:#4ade80;border:1px solid rgba(74,222,128,.2)}
+
+.mp-promo-chip{display:inline-flex;align-items:center;gap:.25rem;padding:.2rem .55rem;background:rgba(74,222,128,.1);color:#4ade80;border:1px solid rgba(74,222,128,.25);border-radius:4px;font-size:.7rem;font-weight:700;text-decoration:none;white-space:nowrap;letter-spacing:.03em;transition:all .15s}
+.mp-promo-chip:hover{background:rgba(74,222,128,.2);border-color:rgba(74,222,128,.4)}
+.mp-promo-icon{font-size:.65rem}
+
+.mp-row-overflow{display:none}
+.mp-wear-group.expanded .mp-row-overflow{display:flex}
+
+.mp-show-more-btn{display:flex;align-items:center;justify-content:center;gap:.4rem;width:100%;padding:.7rem;background:var(--bg3);border:1px solid var(--border);border-radius:0 0 8px 8px;color:var(--text2);font-size:.82rem;font-weight:600;cursor:pointer;transition:all .15s}
+.mp-show-more-btn:hover{background:var(--bg2);color:var(--text)}
+.mp-show-more-arrow{transition:transform .2s}
+.mp-wear-group.expanded .mp-show-more-arrow{transform:rotate(180deg)}
+
+.mp-buy-btn{display:inline-flex;align-items:center;gap:.3rem;padding:.5rem 1.1rem;background:linear-gradient(135deg,#6dd49e,#4db882);color:#0a1a0f;border-radius:20px;font-size:.82rem;font-weight:700;text-decoration:none;transition:all .2s cubic-bezier(.4,0,.2,1);white-space:nowrap;box-shadow:0 2px 8px rgba(77,184,130,0.2);letter-spacing:.01em}
+.mp-buy-btn:hover{transform:translateY(-1px);box-shadow:0 4px 16px rgba(77,184,130,0.35);background:linear-gradient(135deg,#8ee0b5,#6dd49e)}
+
+.trading-sites-cta{display:flex;align-items:center;justify-content:space-between;gap:1rem;background:linear-gradient(135deg,var(--bg3),var(--bg2));border:1px solid var(--border);border-left:4px solid var(--accent);border-radius:8px;padding:1rem 1.25rem;margin:1.5rem 0}
+.ts-cta-left{display:flex;flex-direction:column;gap:.2rem}
+.ts-cta-left strong{color:var(--text);font-size:.92rem}
+.ts-cta-left span{color:var(--text2);font-size:.82rem}
+.ts-cta-btn{white-space:nowrap;background:var(--accent);color:#1a1a2e;padding:.5rem 1.2rem;border-radius:6px;font-size:.85rem;font-weight:700;text-decoration:none;transition:all .2s}
+.ts-cta-btn:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(212,149,110,.3)}
+
+@media(max-width:600px){
+  .mp-row{flex-wrap:wrap;gap:.5rem;padding:.7rem .8rem}
+  .mp-right{margin-left:auto}
+  .mp-diff{display:none}
+  .mp-promo-chip{display:none}
+  .mp-price{font-size:1rem}
+  .mp-buy-btn{padding:.4rem .8rem;font-size:.75rem}
+  .trading-sites-cta{flex-direction:column;text-align:center}
+  .mp-row-best{border-left:2px solid #4ade80}
+}
+
+/* ── Info Cards ──────────────────────────────────────────── */
+.info-card{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:1.2rem}
+.info-card h2{margin:0 0 .8rem;font-size:1rem}
+
+.summary-list{display:flex;flex-direction:column}
+.sum-row{display:flex;align-items:center;justify-content:space-between;padding:.45rem 0;border-bottom:1px solid var(--border)}
+.sum-row:last-child{border-bottom:none}
+.sum-label{font-size:.82rem;color:var(--text2)}
+.sum-value{font-size:.88rem;color:var(--text);font-weight:600;text-align:right}
+.sum-value a{color:var(--accent);text-decoration:none}
+.sum-value a:hover{text-decoration:underline}
+
+.no-data-msg{color:var(--text2);font-size:.9rem;padding:1.5rem;text-align:center;margin:0}
+
+/* ── Summary Section ─────────────────────────────────────── */
+.summary-section-header{display:flex;align-items:center;gap:.5rem;margin-bottom:.8rem}
+.summary-section-header h2{margin:0;font-size:1rem}
+.sum-icon{margin-right:.35rem;font-size:.75rem}
+
+/* ── Item Class Visual ───────────────────────────────────── */
+.item-class-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:.6rem}
+.item-class-label{font-size:.92rem;font-weight:700}
+.item-class-type{font-size:.85rem;color:var(--text2);font-weight:500}
+.rarity-bar{height:6px;background:var(--bg3);border-radius:3px;overflow:hidden}
+.rarity-bar-fill{height:100%;border-radius:3px;transition:width .3s}
+
+/* ── Pro Players Using Skin ─────────────────────────────── */
+.pro-users-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:.5rem;padding:.75rem}
+.pro-user-card{display:flex;flex-direction:column;align-items:center;gap:.3rem;padding:.6rem .4rem;border-radius:8px;background:var(--bg3);border:1px solid var(--border);text-decoration:none;color:inherit;transition:all .15s}
+.pro-user-card:hover{border-color:var(--accent);transform:translateY(-2px);box-shadow:0 4px 12px rgba(0,0,0,.2)}
+.pro-user-img{width:64px;height:64px;border-radius:50%;overflow:hidden;display:flex;align-items:center;justify-content:center;background:var(--bg2)}
+.pro-user-img img{width:100%;height:100%;object-fit:cover}
+.pro-user-card-ph{font-size:1.2rem;color:var(--text2)}
+.pro-user-name{font-size:.78rem;font-weight:700;color:var(--text);text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+.pro-user-team{font-size:.68rem;color:var(--text2);text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+.pro-users-more-wrap{padding:.5rem .75rem .75rem;text-align:center}
+.pro-users-more-btn{display:inline-block;padding:.45rem 1rem;background:var(--bg3);border:1px solid var(--border);border-radius:6px;font-size:.8rem;font-weight:600;color:var(--text2);text-decoration:none;transition:all .15s}
+.pro-users-more-btn:hover{color:var(--accent);border-color:var(--accent);background:rgba(212,149,110,.08)}
+
+/* ── Wear Range ──────────────────────────────────────────── */
+.wear-range-section{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:1.2rem;margin-bottom:2rem}
+.wear-range-section h2{margin:0 0 .8rem;font-size:1rem}
+.wear-range-display{padding:.5rem 0}
+.wear-range-labels{display:flex;justify-content:space-between;font-size:.82rem;color:var(--text2);margin-bottom:.4rem}
+.wear-range-track{height:8px;background:var(--bg3);border-radius:4px;position:relative;overflow:hidden}
+.wear-range-fill{position:absolute;top:0;height:100%;border-radius:4px;opacity:.7}
+.wear-range-ticks{display:flex;justify-content:space-between;font-size:.72rem;color:var(--text2);margin-top:.4rem;font-weight:600}
+
+/* ── Related Skins ───────────────────────────────────────── */
+.related-section{margin:2rem 0}
+.related-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:.8rem;margin-top:1rem}
+@media(max-width:1000px){.related-grid{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:600px){.related-grid{grid-template-columns:repeat(2,1fr)}}
+
+.related-card{background:var(--bg2);border:1px solid var(--border);border-radius:8px;overflow:hidden;text-decoration:none;color:inherit;transition:border-color .2s,transform .2s}
+.related-card:hover{border-color:var(--rc);transform:translateY(-2px)}
+.related-img{display:flex;align-items:center;justify-content:center;min-height:80px;padding:.5rem}
+.related-info{padding:.5rem .7rem .7rem;text-align:center}
+.related-name{display:block;font-weight:700;font-size:.85rem;color:var(--text)}
+.related-rarity{display:block;font-size:.72rem;text-transform:uppercase;font-weight:600;margin-top:.15rem}
+.related-price{display:block;font-size:.85rem;font-weight:700;color:var(--accent);margin-top:.2rem}
+
+/* ── Price Comparison Table ──────────────────────────────── */
+.price-compare-section{margin:2rem 0;background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:1.5rem;overflow:hidden}
+.price-compare-section h2{margin:0 0 .3rem;font-size:1.1rem}
+.section-desc{font-size:.85rem;color:var(--text2);margin-bottom:1.2rem}
+.price-table-wrapper{overflow-x:auto;-webkit-overflow-scrolling:touch;border-radius:8px;border:1px solid var(--border)}
+.price-compare-table{width:100%;border-collapse:collapse;font-size:.88rem}
+.price-compare-table th{background:var(--bg3);color:var(--text);font-weight:700;font-size:.78rem;text-transform:uppercase;letter-spacing:.04em;padding:.75rem 1rem;text-align:left;border-bottom:2px solid var(--accent);white-space:nowrap}
+.price-compare-table td{padding:.7rem 1rem;border-bottom:1px solid var(--border);color:var(--text2)}
+.price-compare-table tbody tr{transition:background .15s}
+.price-compare-table tbody tr:hover td{background:rgba(255,255,255,.02)}
+.price-compare-table tbody tr:last-child td{border-bottom:none}
+.price-compare-table .price-cell{font-weight:800;color:#4ade80;font-size:.95rem}
+
+/* ── StatTrak Section ──────────────────────────────────── */
+.stattrak-section{border-color:#cf6a32}
+.st-badge{display:inline-block;background:linear-gradient(135deg,#cf6a32,#e8a245);color:#fff;font-size:.7rem;font-weight:700;padding:.15rem .5rem;border-radius:4px;text-transform:uppercase;letter-spacing:.04em;vertical-align:middle;margin-right:.3rem}
+.st-table .st-price{color:#e8a245}
+.premium-cell{color:#f59e0b;font-weight:600;font-size:.88rem}
+
+/* ── About Section ──────────────────────────────────────── */
+.about-section{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:1.5rem;margin:2rem 0}
+.about-section h2{margin:0 0 .8rem;font-size:1.15rem}
+.about-section p{font-size:.9rem;color:var(--text2);line-height:1.7;margin-bottom:.8rem}
+.about-section p:last-child{margin-bottom:0}
+.about-section strong{color:var(--text)}
+.about-section a{color:var(--accent)}
+
+/* ── Wear Range Explanation ─────────────────────────────── */
+.wear-range-explanation{font-size:.85rem;color:var(--text2);margin-top:.8rem;line-height:1.6}
+.wear-range-explanation strong{color:var(--text)}
+
+/* ── Related Weapon Tag ─────────────────────────────────── */
+.related-weapon{display:block;font-size:.72rem;color:var(--text2);letter-spacing:.02em}
+
+/* ── Price History Chart ────────────────────────────────── */
+.price-history-section{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:1.2rem;margin-bottom:2rem}
+.ph-header{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.8rem;margin-bottom:1rem}
+.ph-header h2{margin:0;font-size:1rem}
+.ph-controls{display:flex;gap:.5rem}
+.ph-select{background:var(--bg3);color:var(--text);border:1px solid var(--border);border-radius:6px;padding:.4rem .7rem;font-size:.82rem;cursor:pointer;outline:none}
+.ph-select:hover{border-color:var(--accent)}
+.ph-chart-wrap{position:relative;min-height:280px}
+.ph-loading{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:var(--text2);font-size:.9rem;z-index:2}
+.ph-error{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:var(--text2);font-size:.88rem;z-index:2}
+
+/* ── Origin (Containers / Collection) ─────────────────── */
+.origin-section{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:1.5rem;margin:2rem 0}
+.origin-box{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:1.5rem}
+.origin-box h2{margin:0 0 1rem;font-size:1.1rem}
+.origin-grid{display:flex;flex-wrap:wrap;gap:1rem}
+.origin-card{display:flex;flex-direction:column;align-items:center;gap:.5rem;text-decoration:none;color:var(--text);transition:transform .15s}
+.origin-card:hover{transform:translateY(-2px)}
+.origin-img{width:100px;height:75px;display:flex;align-items:center;justify-content:center;border-radius:8px;overflow:hidden;background:var(--bg3);border:1px solid var(--border)}
+.origin-img img{max-width:90%;max-height:90%;object-fit:contain}
+.origin-collection-icon{font-size:1.8rem;font-weight:900;opacity:.6}
+.origin-name{font-size:.8rem;text-align:center;color:var(--text2);max-width:120px;line-height:1.2}
+
+/* ── Description Grid ─────────────────────────────────── */
+.desc-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:1.5rem;margin:2rem 0}
+@media(max-width:768px){.desc-grid{grid-template-columns:1fr}}
+.desc-card{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:1.5rem}
+.desc-card h3{margin:0 0 .6rem;font-size:1rem;color:var(--accent)}
+.desc-card p{margin:0;font-size:.88rem;color:var(--text2);line-height:1.6}
+
+.hidden{display:none!important}
+</style>
+</Base>

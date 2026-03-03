@@ -1,0 +1,14 @@
+node_modules/
+dist/
+.astro/
+.DS_Store
+.claude/
+.env
+.env.*
+
+# SEO tool secrets
+seo-tool/credentials.json
+seo-tool/token.json
+seo-tool/venv/
+seo-tool/data/
+seo-tool/cron.log

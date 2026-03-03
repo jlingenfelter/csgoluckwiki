@@ -1,0 +1,203 @@
+---
+import Base from '../layouts/Base.astro';
+import ExploreMore from '../components/ExploreMore.astro';
+import { faqSchema, breadcrumbSchema } from '../lib/weapons';
+
+const title = 'CS2 cm/360 Calculator — Mouse Distance Per Full Turn | CSDB.gg';
+const description = 'Calculate exactly how many centimetres your mouse needs to travel for a full 360° turn in CS2. Compare cm/360 values across sensitivity settings and pro players.';
+
+const breadcrumbs = [
+  { name: 'Home', url: '/' },
+  { name: 'Tools', url: '/cm360-calculator' },
+  { name: 'cm/360 Calculator', url: '/cm360-calculator' },
+];
+
+const faqs = [
+  { question: 'What is cm/360 in CS2?', answer: 'cm/360 measures how far (in centimetres) you need to move your mouse on your desk to complete a full 360-degree turn in-game. Lower cm/360 means faster turning; higher means more precision.' },
+  { question: 'What is a good cm/360 for CS2?', answer: 'Most CS2 professionals play between 25 cm/360 and 55 cm/360. The sweet spot for most players is 30–45 cm/360. AWPers tend toward the higher end (more precision) while entry fraggers play lower (faster reactions).' },
+  { question: 'How is cm/360 calculated?', answer: 'The formula is: cm/360 = (2.54 × 360) / (DPI × Sensitivity × 0.022). The 0.022 is the CS2 engine sensitivity multiplier (also called yaw value). This gives you centimetres of mouse travel per full revolution.' },
+  { question: 'Why is cm/360 better than eDPI for comparing settings?', answer: 'cm/360 is a physical measurement — it tells you the actual distance your hand needs to travel. This makes it easier to set up consistently across different mice and DPI settings, and directly relates to your mouse pad size requirements.' },
+  { question: 'How big should my mouse pad be for my cm/360?', answer: 'Your mouse pad should be at least as wide as your cm/360 divided by 2 (for a 180° turn). If your cm/360 is 40 cm, you need at least a 20 cm wide pad, but 30+ cm is recommended for comfortable play.' },
+];
+
+const proComparisons = [
+  { name: 's1mple', dpi: 400, sens: 3.09, cm360: 29.3 },
+  { name: 'ZywOo', dpi: 400, sens: 1.6, cm360: 56.8 },
+  { name: 'NiKo', dpi: 400, sens: 1.98, cm360: 45.9 },
+  { name: 'device', dpi: 400, sens: 1.8, cm360: 50.5 },
+  { name: 'ropz', dpi: 400, sens: 1.77, cm360: 51.3 },
+  { name: 'donk', dpi: 800, sens: 0.85, cm360: 53.6 },
+  { name: 'Twistzz', dpi: 400, sens: 1.7, cm360: 53.4 },
+  { name: 'broky', dpi: 400, sens: 1.4, cm360: 64.9 },
+];
+
+const speedCategories = [
+  { label: 'Lightning Fast', range: '< 20 cm', desc: 'Extremely fast turning, wrist-only aiming. Uncommon in competitive play.', color: '#ef5350' },
+  { label: 'Fast', range: '20–30 cm', desc: 'Quick reactions, good for aggressive entry fragging. Requires strong wrist control.', color: '#d4956e' },
+  { label: 'Balanced', range: '30–45 cm', desc: 'Most popular range among professionals. Good balance of speed and accuracy.', color: '#4caf50' },
+  { label: 'Precise', range: '45–60 cm', desc: 'Precise aiming with arm movement. Excellent for AWPers holding angles.', color: '#26a69a' },
+  { label: 'Ultra Precise', range: '> 60 cm', desc: 'Maximum precision. Requires a very large mouse pad and full arm movement.', color: '#42a5f5' },
+];
+
+const breadcrumbSchema_ = breadcrumbSchema(breadcrumbs);
+const faqSchema_ = faqSchema(faqs);
+
+const toolSchema = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": title,
+  "description": description,
+  "applicationCategory": "UtilityApplication",
+  "operatingSystem": "Web",
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+  "author": { "@type": "Organization", "name": "CSDB.gg", "url": "https://csdb.gg" }
+});
+---
+
+<Base title={title} description={description} currentNav="/tools/">
+  <script type="application/ld+json" set:html={toolSchema}></script>
+  <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema_)}></script>
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema_)}></script>
+
+  <nav class="breadcrumb">
+    <a href="/">Home</a> / <a href="/cm360-calculator/">Tools</a> / <span>cm/360 Calculator</span>
+  </nav>
+
+  <h1>CS2 cm/360 Calculator</h1>
+  <p>Find out exactly how far your mouse travels for a complete 360° rotation in Counter-Strike 2. This physical measurement is the most reliable way to compare and replicate sensitivity settings.</p>
+
+  <div class="calc-section">
+    <h2>Calculate Your cm/360</h2>
+    <div class="calc-row">
+      <label for="dpi">Mouse DPI</label>
+      <select id="dpi">
+        <option value="400">400</option>
+        <option value="800" selected>800</option>
+        <option value="1200">1200</option>
+        <option value="1600">1600</option>
+        <option value="3200">3200</option>
+      </select>
+    </div>
+    <div class="calc-row">
+      <label for="sens">In-Game Sensitivity</label>
+      <input type="number" id="sens" min="0.01" max="20" step="0.01" value="1.0" />
+    </div>
+    <div class="result-box">
+      <div class="big" id="cm360Result">45.00 cm</div>
+      <p style="margin:0;color:var(--text2)">Distance per full 360° turn</p>
+      <p id="cm360Category" style="margin:.5rem 0 0;font-weight:600;color:var(--green)">Balanced — Good for most playstyles</p>
+    </div>
+    <div class="stats-grid" style="margin-top:1rem">
+      <div class="stat-card">
+        <div class="val" id="in360">17.72"</div>
+        <div class="label">Inches per 360°</div>
+      </div>
+      <div class="stat-card">
+        <div class="val" id="cm180">22.50 cm</div>
+        <div class="label">cm per 180°</div>
+      </div>
+      <div class="stat-card">
+        <div class="val" id="edpiVal">800</div>
+        <div class="label">eDPI</div>
+      </div>
+      <div class="stat-card">
+        <div class="val" id="minPad">23 cm</div>
+        <div class="label">Min. Pad Width</div>
+      </div>
+    </div>
+  </div>
+
+  <h2>Speed Classification Chart</h2>
+  <p>Understand where your cm/360 falls in the competitive spectrum:</p>
+  <table>
+    <thead><tr><th>Category</th><th>cm/360 Range</th><th>Description</th></tr></thead>
+    <tbody>
+      {speedCategories.map(c => (
+        <tr>
+          <td><span style={`color:${c.color};font-weight:700`}>{c.label}</span></td>
+          <td>{c.range}</td>
+          <td>{c.desc}</td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+
+  <h2>Pro Player cm/360 Comparison</h2>
+  <table>
+    <thead><tr><th>Player</th><th>DPI</th><th>Sensitivity</th><th>cm/360</th></tr></thead>
+    <tbody>
+      {proComparisons.map(p => (
+        <tr>
+          <td style="font-weight:600;color:var(--text)">{p.name}</td>
+          <td>{p.dpi}</td>
+          <td>{p.sens}</td>
+          <td style="font-weight:700;color:var(--accent)">{p.cm360} cm</td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+
+  <h2>Why cm/360 Matters More Than Raw Sensitivity</h2>
+  <p>
+    Raw sensitivity numbers are meaningless without context. A player at 400 DPI with 2.0 sens and a player at 1600 DPI with 0.5 sens have identical crosshair speeds — both travel 45.45 cm per 360° turn. The cm/360 measurement strips away the hardware variable and tells you the physical reality of how your arm needs to move.
+  </p>
+  <p>
+    This becomes critical when switching mice or DPI settings. If you know your cm/360 is 40 cm, you can calculate the exact sensitivity for any DPI: <code>Sensitivity = (2.54 × 360) / (DPI × 0.022 × cm360)</code>. Moving from 400 to 800 DPI? Just halve your sensitivity. Your muscle memory stays perfectly intact.
+  </p>
+
+  <h3>Mouse Pad Size Requirements</h3>
+  <p>
+    Your cm/360 directly determines the minimum mouse pad size you need. For comfortable play, your pad should be at least half your cm/360 (to allow 180° turns). Playing at 50 cm/360 means you need a pad at least 25 cm wide, though 35+ cm gives you room for corrections. Most competitive players use extended pads (80–90 cm wide) for unrestricted arm movement.
+  </p>
+
+  <div class="internal-links">
+    <strong>Related Tools:</strong>
+    <a href="/edpi-calculator/">eDPI Calculator</a>
+    <a href="/sensitivity-converter/">Sensitivity Converter</a>
+    <a href="/resolution-calculator/">Resolution Calculator</a>
+    <a href="/crosshair-generator/">Crosshair Generator</a>
+    <a href="/crosshair-codes/">Crosshair Codes</a>
+    <a href="/pro-players/">Pro Player Settings</a>
+    <a href="/tools/">All Tools</a>
+  </div>
+
+  <h2>Frequently Asked Questions</h2>
+  <dl class="faq">
+    {faqs.map(f => (
+      <Fragment>
+        <dt>{f.question}</dt>
+        <dd>{f.answer}</dd>
+      </Fragment>
+    ))}
+  </dl>
+
+  <ExploreMore context="tools" />
+</Base>
+
+<script is:inline>
+(function(){
+  var dpi=document.getElementById('dpi');
+  var sens=document.getElementById('sens');
+  function calc(){
+    var d=parseFloat(dpi.value)||800;
+    var s=parseFloat(sens.value)||1;
+    var cm=2.54*360/(d*s*0.022);
+    document.getElementById('cm360Result').textContent=cm.toFixed(2)+' cm';
+    document.getElementById('in360').textContent=(cm/2.54).toFixed(2)+'"';
+    document.getElementById('cm180').textContent=(cm/2).toFixed(2)+' cm';
+    document.getElementById('edpiVal').textContent=Math.round(d*s);
+    document.getElementById('minPad').textContent=Math.ceil(cm/2)+' cm';
+    var cat='',col='#4caf50';
+    if(cm<20){cat='Lightning Fast';col='#ef5350';}
+    else if(cm<30){cat='Fast — Quick reactions for entry fragging';col='#d4956e';}
+    else if(cm<45){cat='Balanced — Good for most playstyles';col='#4caf50';}
+    else if(cm<60){cat='Precise — Excellent for AWPers';col='#26a69a';}
+    else{cat='Ultra Precise — Maximum accuracy, big pad required';col='#42a5f5';}
+    var el=document.getElementById('cm360Category');
+    el.textContent=cat;el.style.color=col;
+  }
+  dpi.addEventListener('change',calc);
+  sens.addEventListener('input',calc);
+  calc();
+})();
+</script>

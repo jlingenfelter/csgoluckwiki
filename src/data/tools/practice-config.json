@@ -1,0 +1,29 @@
+{
+  "slug": "practice-config",
+  "title": "CS2 Practice Config Generator — Grenade & Aim Training Commands | CSDB.gg",
+  "description": "Generate CS2 practice configs for grenade lineups, aim training, wallbang spots, and smoke practice. Instant copy-paste commands for offline server setup.",
+  "heading": "CS2 Practice Config Generator",
+  "intro": "Set up the perfect practice environment in seconds. Choose your map, practice mode, and copy the ready-to-paste console commands.",
+  "faqs": [
+    {
+      "question": "How do I start a practice server in CS2?",
+      "answer": "Open console and type: game_mode 0; game_type 0; map [mapname]. This loads a casual game on that map. Then paste your practice config commands to enable unlimited money, grenades, and other training features."
+    },
+    {
+      "question": "How do I get infinite grenades in CS2?",
+      "answer": "Use the commands: sv_infinite_ammo 1 (infinite ammo), mp_buy_anywhere 1, and bind a key to \"give weapon_smokegrenade\" etc. The sv_grenade_trajectory 1 command shows grenade paths."
+    },
+    {
+      "question": "Can I practice smokes offline in CS2?",
+      "answer": "Yes. Start a local server, enable sv_cheats 1, then use sv_grenade_trajectory 1 to see grenade paths, sv_grenade_trajectory_time 10 to keep the trail visible, and noclip to fly around the map."
+    },
+    {
+      "question": "How do I show bullet impact points?",
+      "answer": "Enable sv_showimpacts 1 to see red (server) and blue (client) impact points. Use sv_showimpacts_time 10 to keep them visible longer. This helps identify spray patterns and wallbang spots."
+    },
+    {
+      "question": "What is the best way to practice aim in CS2?",
+      "answer": "Use workshop maps like Aim Botz or Yprac, or set up a local server with bot_add_ct/bot_add_t commands and bot_stop 1 to freeze them. Combine with mp_damage_print_enable 1 to see damage dealt."
+    }
+  ]
+}

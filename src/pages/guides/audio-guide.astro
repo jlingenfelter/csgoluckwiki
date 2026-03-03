@@ -1,0 +1,618 @@
+---
+import Base from '../../layouts/Base.astro';
+import AuthorBox from '../../components/AuthorBox.astro';
+import { faqSchema, breadcrumbSchema } from '../../lib/weapons';
+
+const title = 'Audio & Sound Settings Guide';
+const description = 'Optimize your CS2 audio settings for competitive play — HRTF, volume levels, console commands, and tips for hearing footsteps clearly.';
+
+const breadcrumbs = [
+  { name: 'Home', url: '/' },
+  { name: 'Guides', url: '/guides' },
+  { name: 'Audio & Sound Settings Guide', url: '/guides/audio-guide' },
+];
+
+const faqs = [
+  {
+    question: 'Should I enable HRTF in CS2?',
+    answer: 'Yes. HRTF (Head-Related Transfer Function) provides accurate vertical and directional audio cues in CS2. It allows you to distinguish whether an enemy is above, below, or beside you. Nearly all professional players use HRTF enabled.',
+  },
+  {
+    question: 'What is the best master volume for competitive CS2?',
+    answer: 'Most competitive players set master volume between 20-50% and use a higher system or amplifier volume instead. This keeps the dynamic range manageable so quiet footsteps are audible without gunshots being deafening.',
+  },
+  {
+    question: 'Are headphones or speakers better for CS2?',
+    answer: 'Headphones are significantly better for competitive CS2. They provide isolated audio, better directional accuracy with HRTF, and prevent sound bleed into your microphone. Open-back headphones offer the best soundstage for positional audio.',
+  },
+  {
+    question: 'How do I hear footsteps better in CS2?',
+    answer: 'Lower your music volume to zero, enable HRTF, reduce master volume and boost system volume for better dynamic range, and use quality headphones. Console commands like snd_headphone_pan_exponent 2 and snd_front_headphone_position 1 can further improve directional clarity.',
+  },
+  {
+    question: 'Does CS2 sound propagation differ from CSGO?',
+    answer: 'Yes. CS2 uses an updated sound occlusion system where audio travels through openings realistically rather than passing directly through walls. Sound is muffled by solid surfaces and travels around corners, making positional awareness more skill-based.',
+  },
+];
+
+const breadcrumbSchema_ = breadcrumbSchema(breadcrumbs);
+const faqSchema_ = faqSchema(faqs);
+
+const articleSchema = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": title,
+  "description": description,
+  "author": { "@type": "Person", "name": "Josh Lingenfelter", "url": "https://www.linkedin.com/in/josh-lingenfelter-8157274b/", "jobTitle": "Director", "worksFor": { "@type": "Organization", "name": "Bettor Media" } },
+  "publisher": { "@type": "Organization", "name": "CSDB.gg", "url": "https://csdb.gg" },
+  "mainEntityOfPage": `https://csdb.gg/guides/audio-guide/`,
+  "inLanguage": "en-US"
+});
+---
+
+<Base title={title} description={description}>
+  <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema_)}></script>
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema_)}></script>
+  <script type="application/ld+json" set:html={articleSchema}></script>
+
+  <div class="guide-container">
+    <nav class="breadcrumb">
+      <a href="/">Home</a>
+      <span class="separator">/</span>
+      <a href="/guides">Guides</a>
+      <span class="separator">/</span>
+      <span>Audio Guide</span>
+    </nav>
+
+    <article class="guide-article">
+      <header class="guide-header">
+        <h1>Audio & Sound Settings Guide</h1>
+        <p class="lead">Master your CS2 audio for precise directional awareness and competitive advantage</p>
+      </header>
+
+      <section class="intro-section">
+        <p>
+          Sound is one of the most critical information sources in Counter-Strike 2. Hearing an enemy's footsteps, reload, or weapon switch a fraction of a second earlier can mean the difference between winning and losing a round. CS2 features a revamped audio engine with improved sound occlusion and propagation compared to CSGO. This guide covers everything from optimal in-game settings to hardware recommendations and console commands that give you a competitive edge.
+        </p>
+      </section>
+
+      <section>
+        <h2>Optimal Audio Settings Overview</h2>
+        <p>
+          CS2's audio settings are found under Settings &gt; Audio. Getting these right is the foundation of competitive audio. Here are the recommended baseline settings used by most professional players.
+        </p>
+
+        <h3>Recommended Settings</h3>
+        <ul>
+          <li><strong>Master Volume:</strong> 20-50% (adjust with system volume for comfortable levels)</li>
+          <li><strong>Audio Device:</strong> Match your actual output device (headphones or speakers)</li>
+          <li><strong>EQ Profile:</strong> Crisp (emphasizes higher frequencies where footsteps live)</li>
+          <li><strong>L/R Isolation:</strong> 50-80% for wider stereo imaging</li>
+          <li><strong>Perspective Correction:</strong> Yes (adjusts audio based on camera angle)</li>
+          <li><strong>HRTF:</strong> Enabled (essential for 3D positional audio)</li>
+          <li><strong>Streamlined Push to Talk:</strong> Personal preference</li>
+        </ul>
+
+        <h3>Volume Slider Breakdown</h3>
+        <p>
+          CS2 provides individual volume sliders for different audio categories. Setting these correctly ensures you hear what matters and eliminate distractions.
+        </p>
+        <ul>
+          <li><strong>Main Menu Volume:</strong> Personal preference, does not affect gameplay</li>
+          <li><strong>Round Start Volume:</strong> 0% recommended (the round start music masks early footstep audio)</li>
+          <li><strong>Round Action Volume:</strong> 0% recommended (MVP music is distracting during buy time)</li>
+          <li><strong>Round End Volume:</strong> 0-10% (low enough to hear post-round movement)</li>
+          <li><strong>MVP Volume:</strong> 0% recommended for competitive focus</li>
+          <li><strong>Bomb/Hostage Volume:</strong> 10-20% (bomb timer audio can help with timing, but keep it low)</li>
+          <li><strong>Ten Second Warning:</strong> 10-30% (useful audio cue for bomb timer, keep audible but not overwhelming)</li>
+          <li><strong>Death Camera Volume:</strong> 0% recommended (irrelevant audio after death)</li>
+        </ul>
+        <p>
+          The general principle: minimize all music and non-essential audio so that gameplay sounds like footsteps, reloads, and weapon switches are as prominent as possible.
+        </p>
+      </section>
+
+      <section>
+        <h2>3D Audio & HRTF Explained</h2>
+        <p>
+          HRTF stands for Head-Related Transfer Function. It is a digital signal processing technique that simulates how sound reaches your ears in three-dimensional space. In CS2, enabling HRTF lets you perceive vertical audio cues that standard stereo cannot provide.
+        </p>
+
+        <h3>How HRTF Works</h3>
+        <p>
+          In the real world, sound arriving from different directions is filtered differently by your head, ears, and shoulders before reaching your eardrums. HRTF replicates these natural filters digitally. When enabled in CS2, audio is processed to simulate:
+        </p>
+        <ul>
+          <li><strong>Vertical positioning:</strong> Distinguish sounds above vs. below you (critical on multi-level maps)</li>
+          <li><strong>Front-back differentiation:</strong> Determine if a sound source is in front or behind</li>
+          <li><strong>Distance perception:</strong> More accurate sense of how far away a sound originates</li>
+          <li><strong>Elevation cues:</strong> Hear enemies on catwalks, balconies, or below in tunnels</li>
+        </ul>
+
+        <h3>HRTF Considerations</h3>
+        <p>
+          HRTF processing does slightly alter the overall audio character. Some players report the audio feels slightly "narrower" or more processed initially. This is normal and most players adapt within a few sessions. The directional accuracy gained far outweighs any perceived sound quality trade-off.
+        </p>
+        <ul>
+          <li>HRTF is designed for headphones, not speakers</li>
+          <li>Do not use third-party virtual surround software alongside HRTF (it causes conflicts)</li>
+          <li>Disable any 7.1 surround emulation in your headset software when using HRTF</li>
+          <li>Windows Sonic and Dolby Atmos for Headphones should be turned off</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>Audio Devices for Competitive Play</h2>
+        <p>
+          Your audio hardware has a significant impact on what you can hear in CS2. The right headphones provide accurate spatial audio and clear detail for quiet sounds like distant footsteps.
+        </p>
+
+        <h3>Headphones vs. Speakers</h3>
+        <p>
+          Headphones are the standard for competitive CS2 for several important reasons:
+        </p>
+        <ul>
+          <li><strong>Isolation:</strong> Headphones block external noise and prevent sound bleed into your microphone</li>
+          <li><strong>HRTF compatibility:</strong> CS2's HRTF is specifically designed for headphone output</li>
+          <li><strong>Directional accuracy:</strong> Headphones provide consistent left/right channel separation</li>
+          <li><strong>LAN/tournament requirement:</strong> All competitive events require headphone use</li>
+        </ul>
+
+        <h3>Open-Back vs. Closed-Back Headphones</h3>
+        <ul>
+          <li><strong>Open-back:</strong> Wider soundstage, more natural spatial imaging, better for directional audio in quiet environments. Popular choices among pros include the Sennheiser HD 560S and Audio-Technica ATH-AD700X.</li>
+          <li><strong>Closed-back:</strong> Better noise isolation, stronger bass, preferred in noisy environments or LANs. Common choices include the HyperX Cloud II and Beyerdynamic DT 770 Pro.</li>
+        </ul>
+        <p>
+          For home competitive play, open-back headphones generally provide the best positional audio experience. For LAN events or noisy environments, closed-back headphones are necessary for isolation.
+        </p>
+
+        <h3>DACs and Amplifiers</h3>
+        <p>
+          A dedicated DAC (Digital-to-Analog Converter) and headphone amplifier can improve audio clarity over onboard motherboard audio:
+        </p>
+        <ul>
+          <li><strong>DAC benefits:</strong> Cleaner signal, lower noise floor, better detail retrieval</li>
+          <li><strong>Amplifier benefits:</strong> Proper power for high-impedance headphones, more headroom</li>
+          <li><strong>Combined units:</strong> Products like the FiiO K5 Pro or Schiit Fulla provide both DAC and amp</li>
+          <li><strong>Diminishing returns:</strong> Even a budget USB DAC provides noticeable improvement over most onboard audio</li>
+        </ul>
+
+        <h3>Avoid Virtual Surround</h3>
+        <p>
+          Gaming headsets often include virtual 7.1 surround sound software. Disable this entirely for CS2. Virtual surround processes the audio signal in ways that conflict with CS2's built-in HRTF and degrade directional accuracy. Use stereo output and let CS2's HRTF handle spatial positioning.
+        </p>
+      </section>
+
+      <section>
+        <h2>Sound Propagation in CS2</h2>
+        <p>
+          CS2 uses an advanced sound occlusion and propagation system that simulates how sound travels through the environment. Understanding this system is essential for reading enemy positions through audio.
+        </p>
+
+        <h3>How Sound Travels</h3>
+        <p>
+          Unlike simple distance-based audio, CS2 calculates sound paths through the map geometry:
+        </p>
+        <ul>
+          <li><strong>Direct path:</strong> Sound travels in a straight line if there is no geometry between you and the source</li>
+          <li><strong>Occlusion:</strong> Walls and solid surfaces muffle and attenuate sound, making it quieter and duller</li>
+          <li><strong>Diffraction:</strong> Sound bends around corners and through doorways, arriving from the direction of the opening</li>
+          <li><strong>Pathing:</strong> Sound follows the shortest open path to reach you, which may not be a straight line</li>
+        </ul>
+
+        <h3>Practical Implications</h3>
+        <p>
+          Because sound follows paths through openings, you can determine enemy positions based on the direction audio arrives from:
+        </p>
+        <ul>
+          <li>Sound coming from a doorway means the enemy is somewhere beyond that doorway, even if not visible</li>
+          <li>Muffled sound indicates a wall between you and the enemy</li>
+          <li>Clear, loud footsteps mean a direct or near-direct path exists between you and the source</li>
+          <li>Sound arriving from an unexpected direction may indicate the enemy is taking an alternate route</li>
+        </ul>
+
+        <h3>Map-Specific Audio Awareness</h3>
+        <p>
+          Certain map features affect audio propagation significantly:
+        </p>
+        <ul>
+          <li><strong>Vents and shafts:</strong> Sound travels clearly through open vent systems</li>
+          <li><strong>Thin walls:</strong> Some walls in CS2 allow more sound through than thick concrete</li>
+          <li><strong>Multi-level areas:</strong> Vertical sound travels through floors and ceilings at reduced volume</li>
+          <li><strong>Open areas vs. corridors:</strong> Sound carries farther in enclosed corridors than in open spaces</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>Listening for Footsteps & Audio Cues</h2>
+        <p>
+          Footsteps are the most important audio cue in competitive CS2. Learning to identify and interpret footstep sounds gives you a constant information advantage.
+        </p>
+
+        <h3>Footstep Basics</h3>
+        <ul>
+          <li><strong>Walking (Shift):</strong> Silent to enemies. Use shift-walk when near enemy positions</li>
+          <li><strong>Running:</strong> Audible within approximately 1100 units (roughly 28 meters). Always assume enemies can hear you</li>
+          <li><strong>Jumping/Landing:</strong> Produces a loud landing sound audible at long range. Crouch before landing to reduce noise</li>
+          <li><strong>Crouching:</strong> Moving while crouched is quieter than walking but still produces faint sound at close range</li>
+        </ul>
+
+        <h3>Surface-Specific Sounds</h3>
+        <p>
+          CS2 uses different footstep sounds depending on the surface material. Recognizing these helps you pinpoint enemy locations on specific parts of the map:
+        </p>
+        <ul>
+          <li><strong>Metal:</strong> Distinct metallic clanging (catwalks, vents, metal grating)</li>
+          <li><strong>Wood:</strong> Hollow wooden thuds (wooden floors, crates, pallets)</li>
+          <li><strong>Concrete/Stone:</strong> Standard footstep sound on most map surfaces</li>
+          <li><strong>Dirt/Gravel:</strong> Softer crunching sounds on outdoor terrain</li>
+          <li><strong>Water:</strong> Splashing sounds that are particularly loud and distinctive</li>
+        </ul>
+
+        <h3>Other Critical Audio Cues</h3>
+        <ul>
+          <li><strong>Weapon switch:</strong> Audible to nearby enemies, reveals your weapon type</li>
+          <li><strong>Reloading:</strong> Loud and lengthy for many weapons, punishes poor reload timing</li>
+          <li><strong>Scope zoom:</strong> AWP and Scout scope sounds are audible at close range</li>
+          <li><strong>Pin pull:</strong> Grenade pin-pull sounds reveal utility usage</li>
+          <li><strong>Bomb plant/defuse:</strong> Distinct audio cues with specific timing</li>
+          <li><strong>Dropping weapons:</strong> Weapons hitting the ground produce audible noise</li>
+        </ul>
+
+        <h3>Active Listening Techniques</h3>
+        <p>
+          Improve your audio awareness with deliberate practice:
+        </p>
+        <ul>
+          <li>Hold positions silently and focus on identifying all audio cues during a round</li>
+          <li>Count enemy footsteps to estimate how many players are approaching</li>
+          <li>Use quiet moments (after flashes or smokes) to listen for repositioning</li>
+          <li>Practice on empty servers walking through maps to learn surface sound locations</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>Music Kit & Round Music Settings</h2>
+        <p>
+          CS2 includes various music events during matches. While music kits are cosmetic and fun, competitive players typically minimize all music to keep gameplay audio clear.
+        </p>
+
+        <h3>Music Events in CS2</h3>
+        <ul>
+          <li><strong>Round start music:</strong> Plays at the beginning of each round during freeze time and can overlap with early footstep audio</li>
+          <li><strong>Round end music:</strong> Plays when a round concludes, can mask post-round movement sounds</li>
+          <li><strong>MVP music:</strong> Plays for the MVP player after a round win</li>
+          <li><strong>Ten second warning:</strong> Plays when the bomb timer has approximately ten seconds remaining</li>
+          <li><strong>Bomb planted music:</strong> Background music during bomb countdown</li>
+          <li><strong>Death camera music:</strong> Plays while spectating your killer</li>
+        </ul>
+
+        <h3>Competitive Music Recommendations</h3>
+        <p>
+          For maximum competitive performance, set all music volumes to zero except the ten second warning:
+        </p>
+        <ul>
+          <li>The ten second warning is a genuinely useful gameplay cue that tells you exactly when the bomb timer is critical</li>
+          <li>Keep it at a low but audible level (10-30%) so it does not overwhelm other sounds</li>
+          <li>All other music categories add no competitive value and only mask important gameplay audio</li>
+          <li>If you enjoy music kits casually, create a separate audio config for competitive vs. casual play</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>Console Commands for Audio</h2>
+        <p>
+          CS2 provides several console commands that fine-tune audio behavior beyond the settings menu. These commands can be added to your autoexec.cfg for persistent configuration.
+        </p>
+
+        <h3>Essential Audio Commands</h3>
+        <ul>
+          <li><strong>snd_headphone_pan_exponent 2</strong> - Controls the stereo panning curve for headphones. A value of 2 makes positional audio more pronounced, helping distinguish left from right. Default is 1.</li>
+          <li><strong>snd_front_headphone_position 1</strong> - Adjusts the perceived front speaker position for headphones. A value of 1 places the virtual front speakers closer together, improving front-back distinction.</li>
+          <li><strong>snd_rear_headphone_position 1</strong> - Adjusts the perceived rear speaker position. Setting to 1 tightens the rear audio image.</li>
+          <li><strong>snd_headphone_pan_radial_weight 1</strong> - Controls the weighting of radial panning for headphones. Value of 1 provides more gradual panning transitions.</li>
+          <li><strong>volume 0.3</strong> - Sets master volume via console (0.0 to 1.0). Useful in autoexec configs.</li>
+        </ul>
+
+        <h3>Diagnostic & Utility Commands</h3>
+        <ul>
+          <li><strong>snd_debug_sleep 0</strong> - Prevents audio engine from sleeping, ensuring consistent audio processing</li>
+          <li><strong>snd_mix_async 1</strong> - Enables asynchronous audio mixing for better performance on multi-core CPUs</li>
+          <li><strong>snd_mixahead 0.025</strong> - Sets the audio buffer length in seconds. Lower values reduce audio latency but may cause crackling on slower systems. Default is 0.025.</li>
+          <li><strong>snd_stream 1</strong> - Enables audio streaming from disk. Keep enabled to reduce memory usage.</li>
+        </ul>
+
+        <h3>Voice & Communication Commands</h3>
+        <ul>
+          <li><strong>voice_scale 0.5</strong> - Adjusts teammate voice volume (0.0 to 1.0). Lower this if teammates are too loud relative to game sounds.</li>
+          <li><strong>voice_enable 1</strong> - Enables or disables voice chat. Set to 0 to mute all voice in clutch situations.</li>
+          <li><strong>voice_modenable 1</strong> - Enables voice in the current game mode.</li>
+          <li><strong>cl_mute_enemy_team 1</strong> - Mutes all enemy voice and text chat. Recommended for competitive focus.</li>
+        </ul>
+
+        <h3>Sample Audio Autoexec Configuration</h3>
+        <p>
+          Add these lines to your autoexec.cfg file for an optimized competitive audio setup:
+        </p>
+        <ul>
+          <li><strong>volume 0.35</strong> - Moderate master volume</li>
+          <li><strong>snd_headphone_pan_exponent 2</strong> - Enhanced stereo separation</li>
+          <li><strong>snd_front_headphone_position 1</strong> - Improved front positioning</li>
+          <li><strong>snd_rear_headphone_position 1</strong> - Improved rear positioning</li>
+          <li><strong>snd_headphone_pan_radial_weight 1</strong> - Smooth panning</li>
+          <li><strong>snd_mix_async 1</strong> - Async audio mixing</li>
+          <li><strong>voice_scale 0.6</strong> - Reduced teammate voice volume</li>
+          <li><strong>cl_mute_enemy_team 1</strong> - Mute enemy team</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>Audio EQ Tips for Competitive Play</h2>
+        <p>
+          Equalization (EQ) adjusts the volume of specific frequency ranges. Applying targeted EQ can make footsteps and other critical sounds more prominent without increasing overall volume.
+        </p>
+
+        <h3>Understanding Frequency Ranges</h3>
+        <ul>
+          <li><strong>Sub-bass (20-60 Hz):</strong> Explosions, deep rumble. Not critical for competitive play.</li>
+          <li><strong>Bass (60-250 Hz):</strong> Gunshot body, some footstep weight. Moderate importance.</li>
+          <li><strong>Low-mids (250-500 Hz):</strong> Footstep fundamental frequencies. Important for hearing steps.</li>
+          <li><strong>Mids (500 Hz - 2 kHz):</strong> Weapon sounds, voice communication. Core gameplay audio range.</li>
+          <li><strong>Upper-mids (2-4 kHz):</strong> Footstep detail and attack, weapon reload clicks. Critical range.</li>
+          <li><strong>Treble (4-8 kHz):</strong> Pin pulls, shell casings, high-frequency detail. Important for subtle cues.</li>
+          <li><strong>Air (8-20 kHz):</strong> Ambient shimmer. Minimal competitive value.</li>
+        </ul>
+
+        <h3>Competitive EQ Profile</h3>
+        <p>
+          A competitive EQ curve should emphasize the frequency ranges where critical game sounds exist:
+        </p>
+        <ul>
+          <li>Reduce sub-bass (20-60 Hz) by 3-6 dB to remove distracting rumble</li>
+          <li>Keep bass (60-250 Hz) flat or slightly reduced by 1-2 dB</li>
+          <li>Boost low-mids (250-500 Hz) by 1-3 dB to strengthen footstep presence</li>
+          <li>Keep mids (500 Hz - 2 kHz) flat for natural weapon and voice sounds</li>
+          <li>Boost upper-mids (2-4 kHz) by 2-4 dB for footstep clarity and detail</li>
+          <li>Keep treble (4-8 kHz) flat or slightly boosted by 1-2 dB</li>
+          <li>Reduce air (8+ kHz) slightly if experiencing harshness or fatigue</li>
+        </ul>
+
+        <h3>Where to Apply EQ</h3>
+        <ul>
+          <li><strong>CS2 built-in EQ:</strong> The Crisp preset boosts higher frequencies and is a good starting point</li>
+          <li><strong>Headphone software:</strong> Some headsets include EQ software (SteelSeries Engine, Logitech G Hub)</li>
+          <li><strong>System-wide EQ:</strong> Tools like Equalizer APO (Windows) or eqMac (macOS) allow precise per-frequency adjustments</li>
+          <li><strong>DAC/Amp EQ:</strong> Some DACs include hardware EQ options</li>
+        </ul>
+
+        <h3>EQ Precautions</h3>
+        <p>
+          Be careful not to over-equalize. Aggressive EQ can introduce audio fatigue during long sessions and may distort the natural audio characteristics that help with positional awareness. Start with subtle adjustments and increase gradually. Always test changes in a practice server before using them in competitive matches.
+        </p>
+      </section>
+
+      <section>
+        <h2>Troubleshooting Common Audio Issues</h2>
+
+        <h3>Audio Crackling or Popping</h3>
+        <ul>
+          <li>Increase snd_mixahead value from 0.025 to 0.05</li>
+          <li>Update your audio drivers to the latest version</li>
+          <li>Close background applications that may compete for audio resources</li>
+          <li>Check USB connections if using a USB headset or DAC</li>
+        </ul>
+
+        <h3>Directional Audio Feels Wrong</h3>
+        <ul>
+          <li>Ensure HRTF is enabled in CS2 audio settings</li>
+          <li>Disable all third-party surround sound software (Dolby Atmos, Windows Sonic, headset 7.1)</li>
+          <li>Verify your headphones are on the correct ears (left on left, right on right)</li>
+          <li>Set Windows audio to stereo output, not surround</li>
+        </ul>
+
+        <h3>Footsteps Too Quiet</h3>
+        <ul>
+          <li>Lower all music volume sliders to zero</li>
+          <li>Reduce master volume in CS2 and increase system or amplifier volume</li>
+          <li>Apply the competitive EQ profile described above to boost footstep frequencies</li>
+          <li>Use the snd_headphone_pan_exponent 2 command for better spatial definition</li>
+        </ul>
+
+        <h3>Audio Delay or Desync</h3>
+        <ul>
+          <li>Set snd_mixahead to a lower value (try 0.02) if your system can handle it</li>
+          <li>Enable snd_mix_async 1 for better audio thread performance</li>
+          <li>Ensure your audio sample rate matches between Windows and your DAC (typically 44100 or 48000 Hz)</li>
+          <li>Avoid Bluetooth headphones due to inherent latency in the Bluetooth protocol</li>
+        </ul>
+      </section>
+
+      <section class="faq-section">
+        <h2>Frequently Asked Questions</h2>
+        <div class="faq-items">
+          {faqs.map((faq) => (
+            <div class="faq-item">
+              <h3>{faq.question}</h3>
+              <p>{faq.answer}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <section class="guide-links">
+        <h3>Related Resources</h3>
+        <ul>
+          <li><a href="/guides/">All Guides</a></li>
+          <li><a href="/guides/fps-optimization-guide/">FPS Optimization Guide</a></li>
+          <li><a href="/guides/crosshair-guide/">Crosshair Guide</a></li>
+          <li><a href="/pro-players/">Pro Player Settings</a></li>
+          <li><a href="/console-commands/">Console Commands</a></li>
+          <li><a href="/practice-config/">Practice Config</a></li>
+          <li><a href="/guides/beginners-guide/">Beginner's Guide</a></li>
+          <li><a href="/guides/advanced-mechanics-guide/">Advanced Mechanics Guide</a></li>
+        </ul>
+      </section>
+    </article>
+  </div>
+
+  <style>
+    .guide-container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+
+    .breadcrumb {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 2rem;
+      font-size: 0.95rem;
+      color: var(--text-secondary);
+    }
+
+    .breadcrumb a {
+      color: var(--accent-color);
+      text-decoration: none;
+      transition: color 0.2s ease;
+    }
+
+    .breadcrumb a:hover {
+      color: var(--accent-light);
+    }
+
+    .breadcrumb .separator {
+      color: var(--text-secondary);
+    }
+
+    .guide-article {
+      color: var(--text-primary);
+    }
+
+    .guide-header {
+      margin-bottom: 2rem;
+      border-bottom: 2px solid var(--border-color);
+      padding-bottom: 1.5rem;
+    }
+
+    .guide-header h1 {
+      margin: 0 0 0.5rem 0;
+      font-size: 2.5rem;
+      color: var(--text-primary);
+    }
+
+    .lead {
+      margin: 0;
+      font-size: 1.1rem;
+      color: var(--text-secondary);
+    }
+
+    .intro-section {
+      font-size: 1.05rem;
+      line-height: 1.8;
+      margin-bottom: 2.5rem;
+      padding: 1.5rem;
+      background: var(--bg-secondary);
+      border-left: 4px solid var(--accent-color);
+      border-radius: 4px;
+    }
+
+    section {
+      margin-bottom: 2.5rem;
+    }
+
+    h2 {
+      font-size: 1.8rem;
+      margin: 0 0 1rem 0;
+      color: var(--text-primary);
+      border-bottom: 2px solid var(--border-color);
+      padding-bottom: 0.5rem;
+    }
+
+    h3 {
+      font-size: 1.3rem;
+      margin: 1.5rem 0 0.75rem 0;
+      color: var(--text-primary);
+    }
+
+    p {
+      line-height: 1.7;
+      color: var(--text-secondary);
+      margin-bottom: 1rem;
+    }
+
+    ul {
+      list-style: none;
+      padding: 0;
+      margin: 1rem 0 1.5rem 0;
+    }
+
+    li {
+      padding-left: 1.5rem;
+      margin-bottom: 0.75rem;
+      position: relative;
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+
+    li::before {
+      content: '\25B8';
+      position: absolute;
+      left: 0;
+      color: var(--accent-color);
+    }
+
+    .faq-section {
+      margin-top: 3rem;
+    }
+
+    .faq-items {
+      display: grid;
+      gap: 1.5rem;
+    }
+
+    .faq-item {
+      background: var(--bg-secondary);
+      padding: 1.5rem;
+      border-radius: 8px;
+      border-left: 4px solid var(--accent-color);
+    }
+
+    .faq-item h3 {
+      margin-top: 0;
+      color: var(--text-primary);
+      font-size: 1.1rem;
+    }
+
+    .faq-item p {
+      margin-bottom: 0;
+    }
+
+    .guide-links {
+      background: var(--bg-secondary);
+      padding: 1.5rem;
+      border-radius: 8px;
+      border-top: 2px solid var(--accent-color);
+    }
+
+    .guide-links h3 {
+      margin-top: 0;
+    }
+
+    .guide-links ul {
+      margin: 1rem 0 0 0;
+    }
+
+    .guide-links a {
+      color: var(--accent-color);
+      text-decoration: none;
+      transition: color 0.2s ease;
+    }
+
+    .guide-links a:hover {
+      color: var(--accent-light);
+    }
+  </style>
+  <AuthorBox updated="2026-03-02" />
+</Base>

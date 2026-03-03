@@ -1,0 +1,29 @@
+{
+  "slug": "edpi-calculator",
+  "title": "CS2 eDPI Calculator — Find Your Effective DPI | CSDB.gg",
+  "description": "Calculate your CS2 eDPI (effective DPI) instantly. Compare your eDPI to pro players, find your ideal sensitivity, and understand how DPI and in-game sens work together.",
+  "heading": "CS2 eDPI Calculator",
+  "intro": "Your eDPI (effective dots per inch) is the single number that defines how fast your crosshair moves. Calculate yours below and compare it to the pros.",
+  "faqs": [
+    {
+      "question": "What is eDPI in CS2?",
+      "answer": "eDPI stands for effective dots per inch. It combines your mouse DPI and in-game sensitivity into a single number using the formula: eDPI = DPI × In-Game Sensitivity. This lets you compare sensitivity settings across different hardware configurations."
+    },
+    {
+      "question": "What is a good eDPI for CS2?",
+      "answer": "Most professional CS2 players use an eDPI between 600 and 1200. The average pro eDPI sits around 860. Lower eDPI gives more precision for headshots, while higher eDPI allows faster flick shots and movement."
+    },
+    {
+      "question": "What eDPI do CS2 pros use?",
+      "answer": "Top professionals vary widely: s1mple uses ~1236 eDPI (400 DPI × 3.09), ZywOo uses ~640 eDPI (400 DPI × 1.6), and NiKo uses ~792 eDPI (400 DPI × 1.98). The pro range spans roughly 400–1600 eDPI."
+    },
+    {
+      "question": "Does higher DPI with lower sens give better results?",
+      "answer": "Using higher DPI (like 1600) with proportionally lower sensitivity can reduce pixel skipping and provide smoother cursor movement. However, many pros still prefer 400 or 800 DPI out of habit. The eDPI result is what matters for in-game feel."
+    },
+    {
+      "question": "How do I convert eDPI between CS2 and Valorant?",
+      "answer": "Multiply your CS2 eDPI by 0.314 to get the equivalent Valorant eDPI (or divide Valorant eDPI by 0.314 for CS2). For example, 800 CS2 eDPI ≈ 251 Valorant eDPI."
+    }
+  ]
+}

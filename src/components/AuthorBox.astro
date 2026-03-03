@@ -1,0 +1,52 @@
+---
+/**
+ * AuthorBox — E-E-A-T author attribution component
+ *
+ * Displays author info with structured data markup for Google's E-E-A-T signals.
+ * Use on guides, trading/investing content, and other YMYL pages.
+ */
+
+interface Props {
+  /** Optional date string for "Last updated" display */
+  updated?: string;
+}
+
+const { updated } = Astro.props;
+---
+
+<div class="author-box" itemscope itemtype="https://schema.org/Person">
+  <div class="author-box-inner">
+    <a href="/author/josh-lingenfelter/" class="author-avatar">JL</a>
+    <div class="author-info">
+      <div class="author-name-row">
+        <span class="author-written-by">Written by</span>
+        <a href="/author/josh-lingenfelter/" itemprop="url">
+          <span itemprop="name">Josh Lingenfelter</span>
+        </a>
+      </div>
+      <p class="author-bio" itemprop="description">
+        <span itemprop="jobTitle">Director</span> at
+        <span itemprop="worksFor" itemscope itemtype="https://schema.org/Organization"><span itemprop="name">Bettor Media</span></span>.
+        CS player since 2013 with experience in skin trading, marketplace analysis, and competitive play.
+      </p>
+      {updated && <time class="author-updated" datetime={updated}>Last updated: {new Date(updated).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</time>}
+    </div>
+  </div>
+</div>
+
+<style>
+  .author-box{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:1.2rem;margin:2rem 0}
+  .author-box-inner{display:flex;gap:1rem;align-items:flex-start}
+  .author-avatar{width:48px;height:48px;border-radius:50%;background:var(--accent);color:var(--bg);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:1.1rem;flex-shrink:0}
+  .author-info{flex:1;min-width:0}
+  .author-name-row{display:flex;align-items:center;gap:0.4rem;flex-wrap:wrap}
+  .author-written-by{color:var(--text2);font-size:0.85rem}
+  .author-name-row a{color:var(--accent);font-weight:600;font-size:0.95rem}
+  .author-name-row a:hover{text-decoration:underline}
+  .author-bio{color:var(--text2);font-size:0.85rem;margin-top:0.3rem;line-height:1.5}
+  .author-updated{color:var(--text2);font-size:0.8rem;display:block;margin-top:0.3rem;opacity:0.8}
+  @media(max-width:480px){
+    .author-box{padding:1rem}
+    .author-avatar{width:40px;height:40px;font-size:0.95rem}
+  }
+</style>

@@ -1,0 +1,195 @@
+---
+import Base from '../../layouts/Base.astro';
+import { WEAPONS, WEAPON_CATEGORIES, getWeaponsByCategory, faqSchema, breadcrumbSchema } from '../../lib/weapons';
+import { getSkinsByWeapon, RARITY_COLORS, getLowestPrice } from '../../lib/skins';
+
+export async function getStaticPaths() {
+  return WEAPON_CATEGORIES.map(cat => ({
+    params: { category: cat.slug },
+    props: { category: cat },
+  }));
+}
+
+const { category } = Astro.props;
+const weapons = getWeaponsByCategory(category.slug);
+
+const seoContent: Record<string, { intro: string; meta: string; buyingGuide: string; faqs: { question: string; answer: string }[] }> = {
+  rifle: {
+    meta: 'Complete guide to all CS2 rifles — AK-47, M4A4, M4A1-S, AWP, and more. Compare damage, fire rate, recoil, and prices for every rifle in Counter-Strike 2.',
+    intro: 'Rifles are the backbone of competitive CS2. From the one-tap AK-47 to the devastating AWP, rifle selection defines round outcomes more than any other weapon class. Understanding each rifle\'s strengths, weaknesses, and optimal use cases is fundamental to climbing the ranks.',
+    buyingGuide: 'On T-side, the AK-47 ($2,700) is the default full-buy rifle — its ability to one-shot headshot through helmets makes it the most lethal rifle in the game. The Galil AR ($1,800) serves as the force-buy alternative when funds are tight. On CT-side, choose between the M4A4\'s 30-round magazine for spray-heavy positions or the M4A1-S\'s silenced precision for long-range holds. The AWP ($4,750) is a luxury purchase that pays massive dividends in the right hands, but its $100 kill reward means missed shots are costly.',
+    faqs: [
+      { question: 'What is the best rifle in CS2?', answer: 'The AK-47 is widely considered the best rifle due to its one-shot headshot capability against armored opponents. However, the AWP is the most impactful weapon in skilled hands. For CT-side, the M4A1-S is currently favored in professional play for its accuracy and silenced shots.' },
+      { question: 'AK-47 or M4A4 — which does more damage?', answer: 'The AK-47 deals 36 base damage with 77.5% armor penetration, while the M4A4 deals 33 damage with 70% armor penetration. Critically, the AK-47 can one-shot headshot through helmets (36 × 4 = 144 damage), while the M4A4 cannot (33 × 4 = 132, leaving enemies alive at ~8 HP).' },
+      { question: 'When should I buy the AWP vs a rifle?', answer: 'Buy the AWP when your team economy can sustain the $4,750 cost, when you have a dedicated AWP player, and when the map favors long-range engagements. Never sacrifice your team\'s utility budget for an AWP, and always have a rifle backup plan.' },
+      { question: 'Is the SG 553 worth buying?', answer: 'The SG 553 costs $3,000 (only $300 more than AK-47) and offers a scope, better armor penetration (100%), and one-shot headshot capability. Its scoped accuracy makes it excellent for long-range duels, though many players prefer the AK-47\'s spray pattern.' },
+    ]
+  },
+  smg: {
+    meta: 'All CS2 SMGs compared — MAC-10, MP9, UMP-45, P90, and more. Stats, damage values, kill rewards, and when to buy each SMG in competitive play.',
+    intro: 'SMGs fill a crucial economic niche in CS2. With $600 kill rewards (double that of rifles), they accelerate your team\'s economy while providing viable firepower against unarmored or lightly-armored opponents. The right SMG purchase after a pistol round win can snowball your entire half.',
+    buyingGuide: 'After winning the pistol round, SMGs are the go-to anti-eco weapon. The MAC-10 ($1,050) and MP9 ($1,250) are the cheapest options for T and CT respectively, offering excellent close-range damage and movement speed. The UMP-45 ($1,200) is the most versatile SMG — its damage holds up at medium range and it remains viable even against armored opponents in later rounds. The P90 ($2,350) is a more expensive option with 50 rounds and high fire rate, popular among players who prefer spray-and-pray tactics.',
+    faqs: [
+      { question: 'Which SMG should I buy after winning pistol round?', answer: 'MAC-10 ($1,050) for T-side or MP9 ($1,250) for CT-side are the most popular choices. They are cheap, have high kill rewards ($600), and are lethal against unarmored opponents. The UMP-45 ($1,200) is another solid choice if you expect the enemy to force-buy armor.' },
+      { question: 'Why do SMGs give more kill reward than rifles?', answer: 'SMGs give $600 per kill (vs $300 for rifles) as a balance mechanism. Since SMGs are weaker overall, the higher kill reward incentivizes buying them during anti-eco rounds, rewarding aggressive play and helping teams build economy.' },
+      { question: 'Is the P90 a good weapon in CS2?', answer: 'The P90 is effective in lower ranks and casual play due to its 50-round magazine and manageable recoil. However, at higher levels, its low damage against armor and predictable spray make it inferior to rifles. It costs $2,350 — for $350 more you could get an AK-47.' },
+      { question: 'What is the best SMG for long range?', answer: 'The UMP-45 has the best damage falloff of any SMG, maintaining reasonable damage at medium-to-long range. The MP7 is also decent at range. However, no SMG truly competes with rifles at long distance.' },
+    ]
+  },
+  pistol: {
+    meta: 'Every CS2 pistol compared — Glock, USP-S, Desert Eagle, P250, and more. Damage stats, accuracy, eco round strategies, and pistol round tips.',
+    intro: 'Pistols determine the first two rounds of every half and play a critical role in eco rounds throughout the game. Mastering pistol mechanics — particularly the Desert Eagle\'s one-shot headshot and the starting pistol dynamics — can swing entire matches. A strong pistol round win gives your team a 3-round economic advantage.',
+    buyingGuide: 'The Glock-18 (T-side starting pistol) has a 20-round magazine and burst-fire mode but struggles against armor. The USP-S (CT-side default) has better first-shot accuracy and silenced shots but only 12 rounds. For eco rounds, the P250 ($300) offers one-shot headshot capability at close range against helmets. The Desert Eagle ($700) is the premier eco weapon — its one-shot headshot at any range makes it a round-winner. The CZ75-Auto ($500) provides automatic fire in a pistol slot.',
+    faqs: [
+      { question: 'Which starting pistol is better — Glock or USP-S?', answer: 'The USP-S has better first-shot accuracy and deals more damage per bullet, making it superior in 1v1 pistol duels. The Glock-18 has 20 rounds and burst-fire, making it better for rushing and close-range spam. Most pros slightly favor USP-S/P2000 for CT-side.' },
+      { question: 'Is the Desert Eagle worth $700 on eco rounds?', answer: 'Absolutely — the Deagle is one of the most impactful eco purchases. Its one-shot headshot at any range means you can eliminate a fully-equipped rifler with a single click. The risk is that it requires precise aim and only holds 7 rounds.' },
+      { question: 'P250 vs CZ75-Auto — which is better for eco?', answer: 'The P250 ($300) offers controlled tapping with one-shot headshot potential at close range. The CZ75-Auto ($500) is automatic but has 12 rounds total and a long draw time. P250 is safer and cheaper; CZ75 is higher risk/reward for close ambushes.' },
+      { question: 'Should I buy a pistol on pistol round?', answer: 'It depends. CT-side, many players keep the USP-S and buy Kevlar ($650) instead. T-side, buying a P250 or Tec-9 can help against armored CTs. The most common pistol-round buy is Kevlar + no pistol upgrade for CTs, or Kevlar + Tec-9/P250 for Ts.' },
+    ]
+  },
+  heavy: {
+    meta: 'CS2 heavy weapons guide — all shotguns (Nova, MAG-7, XM1014, Sawed-Off) and machine guns (M249, Negev). Stats, buy scenarios, and positioning tips.',
+    intro: 'Heavy weapons occupy a specialist niche in CS2. Shotguns deliver devastating close-range damage with generous kill rewards ($900), making them powerful anti-eco choices in tight spaces. Machine guns offer suppressive fire with massive magazines. While rarely seen in professional play, heavy weapons can be devastatingly effective when used in the right positions.',
+    buyingGuide: 'The MAG-7 ($1,300, CT-only) is the premier competitive shotgun — its pump-action one-shot capability at close range makes it lethal for holding tight corners on CT-side. The Nova ($1,050) is the budget option with a $900 kill reward, great for boosting economy. The Negev ($1,700) is a suppression tool that becomes perfectly accurate after its initial spray, useful for denying rushes through choke points.',
+    faqs: [
+      { question: 'When should I buy a shotgun in CS2?', answer: 'Shotguns shine on anti-eco rounds in close-quarter positions (like holding B tunnels on Dust 2 or banana on Inferno). They are also viable force-buy options when you need the $900 kill reward to rebuild economy. Never buy shotguns when expecting long-range engagements.' },
+      { question: 'Is the Negev viable in competitive CS2?', answer: 'The Negev is situationally powerful. At $1,700, it provides a 150-round magazine that becomes laser-accurate after the initial spray-up period. It excels at denying narrow choke points and can suppress rushes single-handedly. However, its slow movement and loud audio make rotation difficult.' },
+      { question: 'What is the best shotgun in CS2?', answer: 'The MAG-7 is the best competitive shotgun for CT-side due to its reliable one-shot kill potential and reasonable fire rate. The XM1014 (auto-shotgun) offers the fastest follow-up shots. The Sawed-Off has the tightest spread but is T-side only with very limited range.' },
+      { question: 'Why do shotguns give $900 kill reward?', answer: 'The high kill reward ($900 vs $300 for rifles) compensates for shotguns\' severe range limitations. Valve designed this to incentivize aggressive close-quarter play during anti-eco rounds and to help teams recover economy through risky positioning.' },
+    ]
+  },
+  grenade: {
+    meta: 'Complete CS2 grenade guide — HE grenades, smoke grenades, flashbangs, molotovs, and incendiary grenades. Usage tips, lineups, and competitive strategies.',
+    intro: 'Grenades are the tactical layer that separates CS2 from other shooters. Proper utility usage wins rounds without firing a single bullet. A well-placed smoke blocks sightlines for 18 seconds, a flashbang blinds entire pushes, and molotovs deny positions and force rotations. Teams that master grenade usage gain a massive strategic advantage.',
+    buyingGuide: 'Smoke grenades ($300) are the single most important utility purchase — they block vision for 18 seconds and are essential for executing onto bombsites. Flashbangs ($200, buy two) enable aggressive peeks and site takes. Molotovs ($400 T-side) and Incendiary Grenades ($600 CT-side) deny positions and flush out enemies. HE Grenades ($300) deal area damage — stack them with teammates for devastating combined damage.',
+    faqs: [
+      { question: 'How long does a CS2 smoke grenade last?', answer: 'Smoke grenades last approximately 18 seconds in CS2. They create a spherical smoke cloud that blocks vision. Smokes are the single most important piece of utility — learn at least 3-5 smoke lineups per map you play competitively.' },
+      { question: 'How much damage does an HE grenade do?', answer: 'An HE grenade deals up to 98 damage against unarmored opponents and up to 57 damage against armored players at point-blank range. Damage falls off with distance. Stacking HE grenades with teammates can kill or severely weaken grouped enemies.' },
+      { question: 'What is the best grenade buy for T-side?', answer: 'Standard T-side utility: 1 smoke ($300), 2 flashbangs ($400), 1 molotov ($400). Total: $1,100. This gives you site-execute utility. Adjust based on your role — entry fraggers may prefer 2 flashes and a molotov, while support players carry smokes and HEs.' },
+      { question: 'How do molotovs work in CS2?', answer: 'Molotovs (T-side, $400) and Incendiary Grenades (CT-side, $600) create a fire zone lasting about 7 seconds. They deal 40 damage per second to anyone standing in the fire. They can be extinguished by smoke grenades. Use them to deny positions, delay pushes, or flush enemies from cover.' },
+    ]
+  },
+};
+
+const content = seoContent[category.slug] || seoContent.rifle;
+const title = `CS2 ${category.name} — All ${category.name} Stats, Damage & Skins | CSDB.gg`;
+const description = content.meta;
+
+const breadcrumbs = [
+  { name: 'Home', url: '/' },
+  { name: 'Weapons', url: '/weapons' },
+  { name: category.name, url: `/weapons/${category.slug}` },
+];
+---
+
+<Base title={title} description={description} currentNav="/weapons/">
+  <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema(breadcrumbs))}></script>
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema(content.faqs))}></script>
+
+  <nav class="breadcrumb">
+    <a href="/">Home</a> / <a href="/weapons/">Weapons</a> / <span>{category.name}</span>
+  </nav>
+
+  <div class="cat-header">
+    <h1>CS2 {category.name}</h1>
+    <p>{content.intro}</p>
+    <div class="cat-nav">
+      {WEAPON_CATEGORIES.map(c => (
+        <a href={`/weapons/${c.slug}/`} class:list={['filter-btn', { active: c.slug === category.slug }]}>
+          {c.icon} {c.name}
+        </a>
+      ))}
+    </div>
+  </div>
+
+  <div class="weapons-grid">
+    {weapons.map(w => {
+      const skins = getSkinsByWeapon(w.slug);
+      const skinCount = skins.length;
+      const cheapest = skinCount > 0 ? getLowestPrice(skins[0]) : 0;
+      return (
+        <a href={`/weapon/${w.slug}/`} class="weapon-card">
+          <div class="wc-top">
+            <h2>{w.name}</h2>
+            <span class={`side-badge ${w.team}`}>{w.team === 'ct' ? 'CT' : w.team === 't' ? 'T' : 'Both'}</span>
+          </div>
+          <div class="wc-stats">
+            <div class="ws"><span class="ws-val">${w.price}</span><span class="ws-lbl">Price</span></div>
+            <div class="ws"><span class="ws-val">{w.damage}</span><span class="ws-lbl">Damage</span></div>
+            <div class="ws"><span class="ws-val">{w.rpm}</span><span class="ws-lbl">RPM</span></div>
+            <div class="ws"><span class="ws-val">{w.magSize}/{w.reserveAmmo}</span><span class="ws-lbl">Mag/Reserve</span></div>
+            <div class="ws"><span class="ws-val">{w.armorPen}%</span><span class="ws-lbl">Armor Pen</span></div>
+            <div class="ws"><span class="ws-val">{w.moveSpeed}</span><span class="ws-lbl">Move Speed</span></div>
+          </div>
+          <p class="wc-desc">{w.description}</p>
+          <div class="wc-foot">
+            {skinCount > 0 && <span class="skin-count">{skinCount} skins</span>}
+            <span class="view-link">View Details →</span>
+          </div>
+        </a>
+      );
+    })}
+  </div>
+
+  <section class="buying-section">
+    <h2>Buying Guide: {category.name}</h2>
+    <p>{content.buyingGuide}</p>
+  </section>
+
+  <h2>Frequently Asked Questions</h2>
+  <dl class="faq">
+    {content.faqs.map(f => (
+      <Fragment>
+        <dt>{f.question}</dt>
+        <dd>{f.answer}</dd>
+      </Fragment>
+    ))}
+  </dl>
+
+  <div class="internal-links">
+    <strong>Browse by Category:</strong>
+    {WEAPON_CATEGORIES.map(c => (
+      <a href={`/weapons/${c.slug}/`}>{c.icon} {c.name}</a>
+    ))}
+    <a href="/weapon-compare/">Compare Weapons</a>
+    <a href="/damage-calculator/">Damage Calculator</a>
+    <a href="/recoil-patterns/">Recoil Patterns</a>
+    <a href="/economy-calculator/">Economy Calculator</a>
+    <a href="/skins/">Skin Database</a>
+    <a href="/skin-compare/">Compare Skins</a>
+    <a href="/pro-players/">Pro Player Settings</a>
+    <a href="/tools/">All Tools</a>
+    <a href="/guides/advanced-mechanics-guide/">Advanced Mechanics Guide</a>
+  </div>
+</Base>
+
+<style>
+  .cat-header{text-align:center;margin-bottom:2.5rem;padding-bottom:2rem;border-bottom:1px solid var(--border)}
+  .cat-header h1{margin:0 0 .75rem}
+  .cat-header p{max-width:700px;margin:0 auto 1.5rem;color:var(--text2);line-height:1.7}
+  .cat-nav{display:flex;gap:.5rem;justify-content:center;flex-wrap:wrap}
+  .weapons-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:1.25rem;margin:2rem 0}
+  .weapon-card{display:flex;flex-direction:column;background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:1.25rem;text-decoration:none;color:inherit;transition:border-color .2s,transform .2s}
+  .weapon-card:hover{border-color:var(--accent);transform:translateY(-2px)}
+  .wc-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:.75rem}
+  .wc-top h2{margin:0;font-size:1.15rem}
+  .side-badge{padding:.15rem .5rem;border-radius:4px;font-size:.72rem;font-weight:700;text-transform:uppercase}
+  .side-badge.ct{background:#5d9fd4;color:#fff}
+  .side-badge.t{background:#e6c84c;color:#000}
+  .side-badge.both{background:var(--accent);color:#000}
+  .wc-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:.5rem;background:var(--bg);border-radius:6px;padding:.75rem;margin-bottom:.75rem}
+  .ws{text-align:center}
+  .ws-val{display:block;font-weight:700;color:var(--accent);font-size:.95rem}
+  .ws-lbl{display:block;font-size:.7rem;color:var(--text2);text-transform:uppercase;margin-top:.1rem}
+  .wc-desc{font-size:.85rem;color:var(--text2);line-height:1.5;flex:1;margin:0 0 .75rem}
+  .wc-foot{display:flex;justify-content:space-between;align-items:center;font-size:.82rem}
+  .skin-count{color:var(--text2);background:var(--bg3);padding:.2rem .5rem;border-radius:4px}
+  .view-link{color:var(--accent);font-weight:600}
+  .buying-section{background:var(--bg2);border:1px solid var(--border);border-left:4px solid var(--accent);border-radius:10px;padding:1.5rem;margin:2.5rem 0}
+  .buying-section h2{margin-top:0}
+  .buying-section p{color:var(--text2);line-height:1.7;margin:0}
+  @media(max-width:768px){
+    .weapons-grid{grid-template-columns:1fr}
+    .wc-stats{grid-template-columns:repeat(3,1fr)}
+  }
+</style>

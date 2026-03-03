@@ -1,0 +1,151 @@
+backend:
+  name: github
+  repo: jlingenfelter/CSDB1.gg
+  branch: main
+  base_url: https://csdb.gg
+  auth_endpoint: /api/auth
+
+media_folder: public/uploads
+public_folder: /uploads/
+
+collections:
+  # ═══════════════════════════════════════════════════════════════════════
+  # PRO PLAYERS
+  # ═══════════════════════════════════════════════════════════════════════
+  - name: players
+    label: "Pro Players"
+    label_singular: "Player"
+    folder: src/data/players
+    format: json
+    create: true
+    delete: true
+    slug: "{{slug}}"
+    summary: "{{name}} — {{team}} ({{role}})"
+    sortable_fields: ["name", "team", "role", "edpi"]
+    fields:
+      # Identity
+      - { name: name, label: "Player Name", widget: string, required: true, hint: "In-game name (e.g. s1mple, ZywOo)" }
+      - { name: slug, label: "URL Slug", widget: string, required: true, pattern: ['^[a-z0-9-]+$', 'Lowercase letters, numbers, and hyphens only'], hint: "Used in URL: /player/slug/" }
+      - { name: realName, label: "Real Name", widget: string, required: true }
+      - { name: team, label: "Team", widget: string, required: true }
+      - { name: country, label: "Country", widget: string, required: true }
+      - { name: flag, label: "Country Flag Emoji", widget: string, required: true, hint: "Paste flag emoji like 🇺🇦" }
+      - { name: role, label: "Role", widget: select, options: ["AWPer", "Rifler", "IGL", "Entry Fragger", "Support", "Lurker"], required: true }
+      - { name: age, label: "Age", widget: number, required: false, value_type: int, min: 15, max: 50 }
+      - { name: style, label: "Playing Style", widget: string, required: true, hint: "Short descriptor like 'Aggressive AWPer' or 'Clutch King'" }
+      - { name: bio, label: "Bio", widget: text, required: true, hint: "2-3 sentence biography" }
+
+      # Mouse & Sensitivity
+      - { name: mouse, label: "Mouse", widget: string, required: true }
+      - { name: dpi, label: "DPI", widget: number, required: true, value_type: int, min: 100, max: 6400 }
+      - { name: sens, label: "In-Game Sensitivity", widget: number, required: true, value_type: float, step: 0.01, min: 0.1, max: 10 }
+      - { name: edpi, label: "eDPI", widget: number, required: true, value_type: int, min: 50, max: 10000, hint: "DPI × Sensitivity" }
+      - { name: zoomSens, label: "Zoom Sensitivity", widget: number, required: true, value_type: float, step: 0.1, default: 1.0 }
+      - { name: pollingRate, label: "Polling Rate (Hz)", widget: number, required: true, value_type: int, default: 1000 }
+
+      # Crosshair
+      - { name: crosshairCode, label: "Crosshair Code", widget: string, required: true, hint: "CSGO-xxxxx-xxxxx-xxxxx-xxxxx-xxxxx" }
+      - { name: crosshairColor, label: "Crosshair Color", widget: string, required: true }
+      - { name: crosshairStyle, label: "Crosshair Style", widget: string, required: true, default: "Classic Static" }
+      - { name: crosshairSize, label: "Crosshair Size", widget: number, required: true, value_type: float, step: 0.5 }
+      - { name: crosshairThickness, label: "Crosshair Thickness", widget: number, required: true, value_type: float, step: 0.1 }
+      - { name: crosshairGap, label: "Crosshair Gap", widget: number, required: true, value_type: float, step: 0.5 }
+      - { name: crosshairDot, label: "Crosshair Dot", widget: boolean, default: false }
+      - { name: crosshairOutline, label: "Crosshair Outline", widget: boolean, default: false }
+
+      # Video
+      - { name: res, label: "Resolution", widget: string, required: true, hint: "e.g. 1280x960, 1920x1080" }
+      - { name: aspect, label: "Aspect Ratio", widget: select, options: ["4:3", "16:9", "16:10"], required: true }
+      - { name: stretch, label: "Display Mode", widget: select, options: ["Stretched", "Black Bars", "Native"], required: true }
+      - { name: refreshRate, label: "Refresh Rate (Hz)", widget: number, required: true, value_type: int, min: 60, max: 600 }
+
+      # Viewmodel
+      - { name: vmFov, label: "Viewmodel FOV", widget: number, required: true, value_type: int, default: 68 }
+      - { name: vmX, label: "Viewmodel Offset X", widget: number, required: true, value_type: float, step: 0.5 }
+      - { name: vmY, label: "Viewmodel Offset Y", widget: number, required: true, value_type: float, step: 0.5 }
+      - { name: vmZ, label: "Viewmodel Offset Z", widget: number, required: true, value_type: float, step: 0.5 }
+
+      # Gear
+      - { name: monitor, label: "Monitor", widget: string, required: true }
+      - { name: keyboard, label: "Keyboard", widget: string, required: true }
+      - { name: headset, label: "Headset", widget: string, required: true }
+      - { name: mousepad, label: "Mousepad", widget: string, required: true }
+
+      # Launch Options
+      - { name: launchOptions, label: "Launch Options", widget: string, required: false }
+
+  # ═══════════════════════════════════════════════════════════════════════
+  # TOOL PAGES — Metadata, FAQs, Descriptions
+  # ═══════════════════════════════════════════════════════════════════════
+  - name: tools
+    label: "Tool Pages"
+    label_singular: "Tool"
+    folder: src/data/tools
+    format: json
+    create: false
+    delete: false
+    slug: "{{slug}}"
+    summary: "{{title}}"
+    fields:
+      - { name: slug, label: "Slug", widget: hidden }
+      - { name: title, label: "Page Title", widget: string, required: true }
+      - { name: description, label: "Meta Description", widget: text, required: true, hint: "SEO meta description, 150-160 characters ideal" }
+      - { name: heading, label: "Page Heading (H1)", widget: string, required: true }
+      - { name: intro, label: "Intro Paragraph", widget: text, required: true }
+      - name: faqs
+        label: "FAQs"
+        widget: list
+        summary: "{{fields.question}}"
+        fields:
+          - { name: question, label: "Question", widget: string }
+          - { name: answer, label: "Answer", widget: text }
+
+  # ═══════════════════════════════════════════════════════════════════════
+  # TRADING SITES — Affiliate Links & Promo Codes
+  # ═══════════════════════════════════════════════════════════════════════
+  - name: trading-sites
+    label: "Trading Sites — Affiliates"
+    label_singular: "Trading Site"
+    description: "Manage affiliate referral links, promo codes, and bonuses for each trading site. These values are used on review pages, promo code pages, and skin page CTAs."
+    files:
+      - name: trading-sites-config
+        label: "Trading Sites Config"
+        file: src/lib/trading-sites-affiliate.json
+        fields:
+          - name: sites
+            label: "Sites"
+            widget: list
+            summary: "{{fields.name}} — {{fields.promoCode}}"
+            fields:
+              - { name: slug, label: "Slug (must match trading-sites.ts)", widget: string, required: true, hint: "e.g. skinport, tradeit-gg, cs-money" }
+              - { name: name, label: "Site Name", widget: string, required: true }
+              - { name: referralUrl, label: "Referral URL", widget: string, required: false, hint: "Your affiliate tracking URL, e.g. https://tradeit.gg/?ref=csdb" }
+              - { name: promoCode, label: "Promo Code", widget: string, required: false, hint: "The code users enter, e.g. CSDB" }
+              - { name: promoBonus, label: "Promo Bonus", widget: string, required: false, hint: "What the code gives, e.g. +5% Trade Bonus" }
+              - { name: promoDetails, label: "Promo Details", widget: text, required: false, hint: "Longer description for the promo code page" }
+
+  # ═══════════════════════════════════════════════════════════════════════
+  # GUIDES — Metadata & FAQs
+  # ═══════════════════════════════════════════════════════════════════════
+  - name: guides
+    label: "Guides"
+    label_singular: "Guide"
+    folder: src/data/guides
+    format: json
+    create: false
+    delete: false
+    slug: "{{slug}}"
+    summary: "{{title}}"
+    fields:
+      - { name: slug, label: "Slug", widget: hidden }
+      - { name: title, label: "Full Page Title", widget: string, required: true }
+      - { name: description, label: "Meta Description", widget: text, required: true }
+      - { name: heading, label: "Page Heading (H1)", widget: string, required: true }
+      - { name: intro, label: "Intro Text", widget: text, required: false }
+      - name: faqs
+        label: "FAQs"
+        widget: list
+        summary: "{{fields.question}}"
+        fields:
+          - { name: question, label: "Question", widget: string }
+          - { name: answer, label: "Answer", widget: text }

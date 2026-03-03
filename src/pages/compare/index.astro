@@ -1,0 +1,115 @@
+---
+import Base from '../../layouts/Base.astro';
+import ExploreMore from '../../components/ExploreMore.astro';
+import { getWeaponComparisons, WEAPON_CATEGORIES, breadcrumbSchema, faqSchema } from '../../lib/weapons';
+
+const comparisons = getWeaponComparisons();
+
+// Group by category (use the first weapon's category)
+const grouped: Record<string, typeof comparisons> = {};
+for (const c of comparisons) {
+  const cat = c.w1.category;
+  if (!grouped[cat]) grouped[cat] = [];
+  grouped[cat].push(c);
+}
+
+// Popular comparisons (cross-category + staple matchups)
+const popular = comparisons.filter(c =>
+  c.slug.includes('ak-47-vs-m4a4') || c.slug.includes('ak-47-vs-m4a1-s') ||
+  c.slug.includes('awp-vs-ssg-08') || c.slug.includes('m4a4-vs-m4a1-s') ||
+  c.slug.includes('ump-45-vs-mac-10') || c.slug.includes('desert-eagle-vs-r8-revolver') ||
+  c.slug.includes('p250-vs-cz75-auto') || c.slug.includes('glock-18-vs-usp-s') ||
+  c.w1.category !== c.w2.category
+);
+
+const title = 'CS2 Weapon Comparisons — Side-by-Side Stats | CSDB.gg';
+const description = `Compare ${comparisons.length}+ CS2 weapon matchups side by side. Analyze damage, fire rate, accuracy, price, and recoil for every weapon pair in Counter-Strike 2.`;
+
+const breadcrumbs = [
+  { name: 'Home', url: '/' },
+  { name: 'Weapons', url: '/weapons/' },
+  { name: 'Comparisons', url: '/compare/' },
+];
+
+const faqs = [
+  { question: 'AK-47 or M4A4 — which is better in CS2?', answer: 'The AK-47 deals more damage per shot and can one-shot headshot through helmets. The M4A4 has a larger magazine, easier spray pattern, and is available on CT-side. The AK-47 is generally considered the better weapon statistically.' },
+  { question: 'M4A4 or M4A1-S — which should I use?', answer: 'The M4A1-S offers better accuracy, a silencer, and less recoil. The M4A4 has a 30-round magazine vs 20 and higher fire rate. Most pro players currently prefer the M4A1-S for its accuracy advantage.' },
+  { question: 'Is the AWP worth the price over the SSG 08?', answer: 'The AWP ($4,750) one-shot kills to the body and head. The SSG 08 ($1,700) only one-shots to the head. The AWP is vastly more impactful but costs almost 3x more. Buy the Scout when you cannot afford an AWP or on eco rounds.' },
+];
+---
+
+<Base title={title} description={description} currentNav="/weapons/">
+<script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema(breadcrumbs))} />
+<script type="application/ld+json" set:html={JSON.stringify(faqSchema(faqs))} />
+
+<nav class="breadcrumb">
+  <a href="/">Home</a> / <a href="/weapons/">Weapons</a> / <span>Comparisons</span>
+</nav>
+
+<div class="ch-header">
+  <h1>CS2 Weapon Comparisons</h1>
+  <p>Compare any two weapons side by side. Analyze damage, fire rate, accuracy, cost, and recoil to find the best weapon for your playstyle. {comparisons.length} matchups available.</p>
+</div>
+
+{popular.length > 0 && (
+  <section class="ch-section">
+    <h2>Popular Comparisons</h2>
+    <div class="ch-grid">
+      {popular.slice(0, 12).map(c => (
+        <a href={`/compare/${c.slug}/`} class="ch-card ch-card-hot">
+          <span class="ch-w1">{c.w1.name}</span>
+          <span class="ch-vs">vs</span>
+          <span class="ch-w2">{c.w2.name}</span>
+        </a>
+      ))}
+    </div>
+  </section>
+)}
+
+{WEAPON_CATEGORIES.filter(cat => grouped[cat.slug]?.length).map(cat => (
+  <section class="ch-section">
+    <h2>{cat.name} Comparisons</h2>
+    <div class="ch-grid">
+      {grouped[cat.slug].map(c => (
+        <a href={`/compare/${c.slug}/`} class="ch-card">
+          <span class="ch-w1">{c.w1.name}</span>
+          <span class="ch-vs">vs</span>
+          <span class="ch-w2">{c.w2.name}</span>
+        </a>
+      ))}
+    </div>
+  </section>
+))}
+
+<section class="ch-faq">
+  <h2>Frequently Asked Questions</h2>
+  <dl class="faq">
+    {faqs.map(f => (
+      <Fragment>
+        <dt>{f.question}</dt>
+        <dd>{f.answer}</dd>
+      </Fragment>
+    ))}
+  </dl>
+</section>
+
+<ExploreMore context="weapons" />
+</Base>
+
+<style>
+  .ch-header{margin-bottom:2rem}
+  .ch-header h1{margin:0 0 .75rem;font-size:2rem}
+  .ch-header p{color:var(--text2);line-height:1.7;margin:0}
+  .ch-section{margin-bottom:2.5rem}
+  .ch-section h2{margin:0 0 1rem}
+  .ch-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:.75rem}
+  .ch-card{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:1rem;text-decoration:none;color:inherit;display:flex;align-items:center;justify-content:center;gap:.75rem;transition:border-color .2s,transform .2s}
+  .ch-card:hover{border-color:var(--accent);transform:translateY(-2px)}
+  .ch-card-hot{border-color:rgba(212,149,110,0.3);background:linear-gradient(135deg,var(--bg2),rgba(212,149,110,0.06))}
+  .ch-w1,.ch-w2{font-weight:700;font-size:.9rem}
+  .ch-vs{color:var(--text2);font-size:.75rem;text-transform:uppercase}
+  .ch-faq{margin-bottom:2rem}
+  .ch-faq h2{margin:0 0 1rem}
+  @media(max-width:768px){.ch-grid{grid-template-columns:1fr 1fr}}
+  @media(max-width:480px){.ch-grid{grid-template-columns:1fr}}
+</style>

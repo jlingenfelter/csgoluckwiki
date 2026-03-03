@@ -1,0 +1,116 @@
+---
+import Base from '../../layouts/Base.astro';
+import AuthorBox from '../../components/AuthorBox.astro';
+import { faqSchema, breadcrumbSchema } from '../../lib/weapons';
+
+const title = 'CS2 Float Value Guide — How Wear Conditions Work | CSDB.gg';
+const description = 'Understand CS2 skin float values, wear conditions, and how they affect pricing. Learn float ranges, how floats are determined, and why low-float skins command premium prices.';
+
+const breadcrumbs = [
+  { name: 'Home', url: '/' },
+  { name: 'Guides', url: '/guides' },
+  { name: 'Float Value Guide', url: '/guides/float-guide' },
+];
+
+const faqs = [
+  { question: 'What is a float value in CS2?', answer: 'A float value is a decimal number between 0.00 and 1.00 assigned to every CS2 skin. It determines the visual wear and condition of the skin. Lower float means better condition (less scratches and wear).' },
+  { question: 'What are the CS2 wear conditions?', answer: 'There are five wear tiers: Factory New (0.00-0.07), Minimal Wear (0.07-0.15), Field-Tested (0.15-0.38), Well-Worn (0.38-0.45), Battle-Scarred (0.45-1.00). Each skin has minimum and maximum float caps that may restrict available conditions.' },
+  { question: 'Can a skin exist in all float ranges?', answer: 'No. Each skin has hardcoded minimum and maximum float values. For example, the AK-47 Asiimov has a minimum float of 0.05 and maximum of 0.70, meaning it cannot exist in Factory New (which requires below 0.07) though some rare ones get close.' },
+  { question: 'Does float value affect gameplay?', answer: 'No. Float value is purely cosmetic — it only changes how the skin looks (scratches, fading, paint wear). There is zero gameplay difference between a Factory New and Battle-Scarred version of the same skin.' },
+  { question: 'How do I check a skin float value?', answer: 'Inspect the skin in your inventory and look at the wear rating. For exact float numbers, use third-party tools like CSFloat, Steam Inventory Helper browser extension, or marketplace listings which display exact float values.' },
+];
+
+const articleSchema = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": title,
+  "description": description,
+  "author": { "@type": "Person", "name": "Josh Lingenfelter", "url": "https://www.linkedin.com/in/josh-lingenfelter-8157274b/", "jobTitle": "Director", "worksFor": { "@type": "Organization", "name": "Bettor Media" } },
+  "publisher": { "@type": "Organization", "name": "CSDB.gg", "url": "https://csdb.gg" },
+  "mainEntityOfPage": `https://csdb.gg/guides/float-guide/`,
+  "inLanguage": "en-US"
+});
+
+const wearTiers = [
+  { name: 'Factory New', range: '0.00 – 0.07', abbr: 'FN', color: '#4caf50', desc: 'Near-perfect condition with minimal visible scratches. The most desirable and expensive condition for most skins.' },
+  { name: 'Minimal Wear', range: '0.07 – 0.15', abbr: 'MW', color: '#8bc34a', desc: 'Slight cosmetic wear with minor scratches barely visible during gameplay. Often the best value tier.' },
+  { name: 'Field-Tested', range: '0.15 – 0.38', abbr: 'FT', color: '#d4956e', desc: 'Moderate wear with visible scratches and marks. The most common condition and typically the cheapest useful tier.' },
+  { name: 'Well-Worn', range: '0.38 – 0.45', abbr: 'WW', color: '#ff9800', desc: 'Significant wear with noticeable scratches and fading. Less common than FT due to narrow float range.' },
+  { name: 'Battle-Scarred', range: '0.45 – 1.00', abbr: 'BS', color: '#ef5350', desc: 'Heavy wear with major scratches, chips, and paint fading. Some collectors seek high-float BS skins for their unique look.' },
+];
+---
+
+<Base title={title} description={description} currentNav="/guides/">
+  <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema(breadcrumbs))}></script>
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema(faqs))}></script>
+  <script type="application/ld+json" set:html={articleSchema}></script>
+
+  <nav class="breadcrumb">
+    <a href="/">Home</a> / <a href="/guides/">Guides</a> / <span>Float Value Guide</span>
+  </nav>
+
+  <h1>CS2 Float Value Guide</h1>
+  <p>Float value is the hidden number behind every CS2 skin that determines its visual condition. Understanding floats is essential for anyone buying, selling, or trading skins — the difference between a 0.01 and 0.06 float can mean hundreds of dollars on premium skins.</p>
+
+  <h2>Wear Condition Tiers</h2>
+  <table>
+    <thead><tr><th>Condition</th><th>Float Range</th><th>Description</th></tr></thead>
+    <tbody>
+      {wearTiers.map(t => (
+        <tr>
+          <td><span style={`color:${t.color};font-weight:700`}>{t.name} ({t.abbr})</span></td>
+          <td>{t.range}</td>
+          <td>{t.desc}</td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+
+  <h2>How Float Values Are Determined</h2>
+  <p>
+    When a skin drops from a case opening, random drop, or trade-up contract, the game engine assigns a random float value within the skin's defined range. Each skin in CS2 has a hardcoded minimum and maximum float — for example, the M4A1-S Hyper Beast has a min float of 0.00 and max of 1.00 (all conditions possible), while the AWP Asiimov has a min of 0.18 and max of 0.90 (only Field-Tested through Battle-Scarred).
+  </p>
+  <p>
+    This means some skins physically cannot exist in Factory New condition. The skin's float caps are set by the developers and cannot be changed. When you see a skin listed as "Factory New," its float is guaranteed to be between 0.00 and 0.07 — but it may not be available in FN if the minimum float is above 0.07.
+  </p>
+
+  <h2>Float Value and Pricing</h2>
+  <p>
+    Within the same wear tier, lower floats almost always command higher prices. A Factory New AWP Dragon Lore at 0.01 float might sell for double the price of one at 0.06. This premium becomes even more extreme at the boundaries — the jump from 0.0699 (barely FN) to 0.0701 (just MW) can represent a 30-50% price drop because the condition label changes.
+  </p>
+  <p>
+    The reverse is also true at the high end. Some collectors specifically seek "max float" Battle-Scarred skins (0.99+) for their unique heavily-worn aesthetic. These can sometimes be worth more than lower-float BS versions due to scarcity and collector demand.
+  </p>
+
+  <h2>Float in Trade-Up Contracts</h2>
+  <p>
+    The output float from a trade-up contract is calculated using the average float of your 10 input skins. The formula is: <code>Output Float = Average Input Float × (Max Float − Min Float) + Min Float</code>. By carefully selecting low-float inputs, you can guarantee the output lands in a specific wear condition, which is critical for targeting Factory New results from profitable trade-ups.
+  </p>
+
+  <div class="internal-links">
+    <strong>Related Tools & Guides:</strong>
+    <a href="/float-checker/">Float Checker</a>
+    <a href="/tradeup-calculator/">Trade-Up Calculator</a>
+    <a href="/skins/">Skin Database</a>
+    <a href="/skin-compare/">Compare Skins</a>
+    <a href="/price-tracker/">Price Tracker</a>
+    <a href="/market-trends/">Market Trends</a>
+    <a href="/case-odds-calculator/">Case Odds Calculator</a>
+    <a href="/case-simulator/">Case Simulator</a>
+    <a href="/cases/">Cases & Collections</a>
+    <a href="/inventory-lookup/">Inventory Lookup</a>
+    <a href="/guides/trading-guide/">Trading Guide</a>
+    <a href="/guides/skins-investing-guide/">Skins Investing Guide</a>
+  </div>
+
+  <h2>Frequently Asked Questions</h2>
+  <dl class="faq">
+    {faqs.map(f => (
+      <Fragment>
+        <dt>{f.question}</dt>
+        <dd>{f.answer}</dd>
+      </Fragment>
+    ))}
+  </dl>
+  <AuthorBox updated="2026-03-02" />
+</Base>

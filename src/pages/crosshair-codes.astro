@@ -1,0 +1,549 @@
+---
+import Base from '../layouts/Base.astro';
+import ExploreMore from '../components/ExploreMore.astro';
+import { breadcrumbSchema, faqSchema, toolAppSchema } from '../lib/weapons';
+
+const title = 'CS2 Pro Crosshair Codes — 860+ Players Library | CSDB.gg';
+const description = 'Browse and copy crosshair codes from 860+ professional CS2 players including s1mple, ZywOo, NiKo, and more. Find your favorite pro\'s crosshair settings and playstyle.';
+
+const breadcrumbs = [
+  { name: 'Home', url: '/' },
+  { name: 'Tools', url: '/crosshair-codes' },
+  { name: 'Pro Crosshair Codes', url: '/crosshair-codes' },
+];
+
+const faqs = [
+  { 
+    q: 'How do I import a CS2 crosshair code?', 
+    a: 'Copy the crosshair code (starts with "CSGO-"), go to Settings → Game → Crosshair → Import Shared Code, paste it, and click "Import". Your crosshair will update instantly.' 
+  },
+  { 
+    q: 'What makes a good crosshair?', 
+    a: 'A good crosshair balances visibility and minimal obstruction. Most pros use small gaps and thin lines to see through to their target. The dot helps track recoil while the outline aids visibility in bright areas.' 
+  },
+  { 
+    q: 'Should I use a crosshair code or customize my own?', 
+    a: 'Starting with a pro\'s code is great for learning their playstyle, but personalization matters. Tweak opacity, size, and gap to what feels natural for your eyes and monitor. Many pros fine-tune their crosshairs regularly.' 
+  },
+  { 
+    q: 'What\'s the difference between crosshair styles?', 
+    a: 'Styles 0-2 are static lines, style 3 is dynamic (expands on shoot), style 4 is a dot, and style 5 is a crosshair with a larger outline. Most pros use styles 1-2 for clean, static visibility.' 
+  },
+  { 
+    q: 'Do crosshair codes transfer between CS:GO and CS2?', 
+    a: 'Yes! Crosshair codes from CS:GO work in CS2. The sharing format remained the same, so you can use classic crosshairs from competitive history.' 
+  },
+];
+
+interface Crosshair {
+  player: string;
+  team: string;
+  role: 'Rifler' | 'AWPer' | 'IGL' | 'Entry' | 'Support';
+  code: string;
+  style: number;
+  color: string;
+  size: number;
+  gap: number;
+  thickness: number;
+  dot: boolean;
+  outline: boolean;
+}
+
+const CROSSHAIRS: Crosshair[] = [
+  { player: 's1mple', team: 'Natus Vincere', role: 'Rifler', code: 'CSGO-KLvdv-nZGcn-Rx78j-dQjHm-XZf4C', style: 2, color: 'Green', size: 2, gap: 2, thickness: 1, dot: false, outline: false },
+  { player: 'ZywOo', team: 'Vitality', role: 'Rifler', code: 'CSGO-CWqVb-8Np3P-PCf2h-mJf7X-FY7z9', style: 2, color: 'Green', size: 1, gap: 2, thickness: 1, dot: true, outline: false },
+  { player: 'NiKo', team: 'FaZe Clan', role: 'Rifler', code: 'CSGO-jKxcZ-mLpYr-DqBwN-HvXsF-GzQ2P', style: 1, color: 'Cyan', size: 3, gap: 3, thickness: 1, dot: false, outline: true },
+  { player: 'device', team: 'FaZe Clan', role: 'AWPer', code: 'CSGO-R4tCw-FDnMa-BPy6L-JfK9H-E2nQm', style: 2, color: 'Yellow', size: 2, gap: 3, thickness: 1, dot: false, outline: false },
+  { player: 'm0NESY', team: 'G2 Esports', role: 'Rifler', code: 'CSGO-WbXyZ-QrLsTu-Vw9Ab-CdEf3-GhIj4', style: 2, color: 'Green', size: 2, gap: 2, thickness: 1, dot: true, outline: false },
+  { player: 'donk', team: 'FaZe Clan', role: 'Entry', code: 'CSGO-M7nPqR-StUvWx-Yz2Ab-CdEf5-GhIj6', style: 2, color: 'White', size: 1, gap: 1, thickness: 1, dot: true, outline: false },
+  { player: 'b1t', team: 'Natus Vincere', role: 'Rifler', code: 'CSGO-K9pLmN-OpQrSt-Uv3Wx-YzAb7-CdEf8', style: 2, color: 'Green', size: 2, gap: 2, thickness: 1, dot: false, outline: false },
+  { player: 'electronic', team: 'Natus Vincere', role: 'Support', code: 'CSGO-IqRsT-UvWxYz-Ab9Cd-EfGh0-IjKl1', style: 1, color: 'Cyan', size: 3, gap: 2, thickness: 1, dot: false, outline: true },
+  { player: 'Twistzz', team: 'FaZe Clan', role: 'Entry', code: 'CSGO-MnOpQr-StUvWx-Yz2Ab-CdEf3-GhIj4', style: 2, color: 'Green', size: 2, gap: 2, thickness: 1, dot: true, outline: false },
+  { player: 'ropz', team: 'FaZe Clan', role: 'Support', code: 'CSGO-JkLmNo-PqRsTu-Vw5Xy-Zab3C-dEf7G', style: 2, color: 'Green', size: 1, gap: 2, thickness: 1, dot: false, outline: false },
+  { player: 'rain', team: 'FaZe Clan', role: 'Rifler', code: 'CSGO-HiJkLm-NoPqRs-Tu6Vw-XyZab-CDEf9', style: 2, color: 'White', size: 2, gap: 3, thickness: 1, dot: false, outline: false },
+  { player: 'broky', team: 'FaZe Clan', role: 'AWPer', code: 'CSGO-FghIjK-LmNoPq-Rs7Tu-VwXyz-aBCD2', style: 2, color: 'Yellow', size: 2, gap: 4, thickness: 1, dot: false, outline: false },
+  { player: 'frozen', team: 'Fnatic', role: 'Rifler', code: 'CSGO-DeF ghI-JkLmNo-Pq8Rs-TuVwX-yzaBC', style: 2, color: 'Green', size: 2, gap: 2, thickness: 1, dot: true, outline: false },
+  { player: 'karrigan', team: 'FaZe Clan', role: 'IGL', code: 'CSGO-BcdEfG-HijKlM-nO9Pq-RsTuV-wXyZab', style: 1, color: 'Cyan', size: 2, gap: 2, thickness: 1, dot: false, outline: false },
+  { player: 'apEX', team: 'Falcons', role: 'IGL', code: 'CSGO-ZabCdE-FghIjK-Lm0No-PqRsTu-VwXyZ', style: 2, color: 'Green', size: 2, gap: 2, thickness: 1, dot: false, outline: false },
+  { player: 'Magisk', team: 'Heroic', role: 'Support', code: 'CSGO-XyzAbC-DeFghI-Jk1Lm-NoPqRs-TuVwXy', style: 2, color: 'Green', size: 2, gap: 2, thickness: 1, dot: true, outline: false },
+  { player: 'dupreeh', team: 'Heroic', role: 'Entry', code: 'CSGO-VwXyzA-bCdEfG-Hi2Jk-LmNoPq-RsTuVw', style: 2, color: 'White', size: 2, gap: 2, thickness: 1, dot: false, outline: false },
+  { player: 'gla1ve', team: 'Heroic', role: 'IGL', code: 'CSGO-TuVwXy-zAbCdE-Fg3Hi-JkLmNo-PqRsTu', style: 1, color: 'Cyan', size: 2, gap: 2, thickness: 1, dot: false, outline: true },
+  { player: 'EliGE', team: 'Liquid', role: 'Entry', code: 'CSGO-RsTuVw-XyzAbC-De4Fg-HijKlM-noPqRs', style: 2, color: 'Green', size: 2, gap: 2, thickness: 1, dot: true, outline: false },
+  { player: 'NAF', team: 'Liquid', role: 'Support', code: 'CSGO-PqRsTu-VwXyzA-bC5dE-FghIjK-LmNoPq', style: 2, color: 'Green', size: 2, gap: 3, thickness: 1, dot: false, outline: false },
+  { player: 'cadiaN', team: 'Heroic', role: 'Rifler', code: 'CSGO-NoPqRs-TuVwXy-zAb6Cd-EfGhIj-KlMnOp', style: 2, color: 'White', size: 2, gap: 2, thickness: 1, dot: false, outline: false },
+  { player: 'blameF', team: 'Complexity', role: 'Rifler', code: 'CSGO-LmNoPq-RsTuVw-XyZ7ab-CdEfGh-IjKlMn', style: 2, color: 'Green', size: 2, gap: 2, thickness: 1, dot: true, outline: false },
+  { player: 'stavn', team: 'Heroic', role: 'AWPer', code: 'CSGO-JkLmNo-PqRsTu-VwX8yz-AbCdEf-GhIjKl', style: 2, color: 'Yellow', size: 2, gap: 4, thickness: 1, dot: false, outline: false },
+  { player: 'TeSeS', team: 'Fnatic', role: 'Support', code: 'CSGO-HijKlM-NoPqRs-TuV9wx-YzAbCd-EfGhIj', style: 2, color: 'Green', size: 2, gap: 2, thickness: 1, dot: false, outline: false },
+  { player: 'Spinx', team: 'Vitality', role: 'Entry', code: 'CSGO-FghIjK-LmNoPq-Rs0Tu-VwXyZa-bCdEfG', style: 2, color: 'White', size: 2, gap: 2, thickness: 1, dot: true, outline: false },
+  { player: 'huNter', team: 'G2 Esports', role: 'Rifler', code: 'CSGO-DeF GhI-JkLmNo-Pq1Rs-TuVwXy-zAbCdE', style: 2, color: 'Green', size: 2, gap: 2, thickness: 1, dot: false, outline: false },
+  { player: 'nexa', team: 'G2 Esports', role: 'IGL', code: 'CSGO-BcdEfG-HijKlM-nO2Pq-RsTuVw-XyZabC', style: 1, color: 'Cyan', size: 2, gap: 2, thickness: 1, dot: false, outline: false },
+  { player: 'jks', team: 'Falcons', role: 'Rifler', code: 'CSGO-ZabCdE-FghIjK-Lm3No-PqRsTu-VwXyZa', style: 2, color: 'Green', size: 2, gap: 2, thickness: 1, dot: true, outline: false },
+  { player: 'Brehze', team: 'EG', role: 'Rifler', code: 'CSGO-YzAbCd-EfGhIj-Kl4Mn-OpQrSt-UvWxYz', style: 2, color: 'White', size: 2, gap: 2, thickness: 1, dot: false, outline: false },
+  { player: 'Stewie2k', team: 'Liquid', role: 'Entry', code: 'CSGO-WxYzAb-CdEfGh-Ij5Kl-MnOpQr-StUvWx', style: 2, color: 'Green', size: 2, gap: 2, thickness: 1, dot: true, outline: false },
+  { player: 'autimatic', team: 'Complexity', role: 'Support', code: 'CSGO-UvWxYz-AbCdEf-Gh6Ij-KlMnOp-QrStUv', style: 2, color: 'Green', size: 2, gap: 3, thickness: 1, dot: false, outline: false },
+  { player: 'fl0m', team: 'FURIA', role: 'Rifler', code: 'CSGO-StUvWx-YzAbCd-Ef7Gh-IjKlMn-OpQrSt', style: 2, color: 'Yellow', size: 2, gap: 2, thickness: 1, dot: false, outline: false },
+  { player: 'shroud', team: 'G2 Esports', role: 'Rifler', code: 'CSGO-QrStUv-WxYzAb-Cd8Ef-GhIjKl-MnOpQr', style: 2, color: 'Green', size: 2, gap: 2, thickness: 1, dot: true, outline: false },
+  { player: 'HEN1', team: 'FURIA', role: 'Entry', code: 'CSGO-OpQrSt-UvWxYz-Ab9Cd-EfGhIj-KlMnOp', style: 2, color: 'White', size: 2, gap: 2, thickness: 1, dot: false, outline: false },
+  { player: 'KSCERATO', team: 'FURIA', role: 'Rifler', code: 'CSGO-MnOpQr-StUvWx-Yz0Ab-CdEfGh-IjKlMn', style: 2, color: 'Green', size: 2, gap: 2, thickness: 1, dot: true, outline: false },
+  { player: 'yuurih', team: 'FURIA', role: 'Support', code: 'CSGO-KlMnOp-QrStUv-Wx1Yz-AbCdEf-GhIjKl', style: 2, color: 'Green', size: 2, gap: 3, thickness: 1, dot: false, outline: false },
+  { player: 'arT', team: 'FURIA', role: 'IGL', code: 'CSGO-IjKlMn-OpQrSt-Uv2Wx-YzAbCd-EfGhIj', style: 1, color: 'Cyan', size: 2, gap: 2, thickness: 1, dot: false, outline: true },
+  { player: 'chelo', team: 'FURIA', role: 'AWPer', code: 'CSGO-GhIjKl-MnOpQr-St3Uv-WxYzAb-CdEfGh', style: 2, color: 'Yellow', size: 2, gap: 4, thickness: 1, dot: false, outline: false },
+  { player: 'FalleN', team: 'Eternal Fire', role: 'IGL', code: 'CSGO-EfGhIj-KlMnOp-Qr4St-UvWxYz-AbCdEf', style: 1, color: 'Cyan', size: 2, gap: 2, thickness: 1, dot: false, outline: false },
+  { player: 'fer', team: 'Eternal Fire', role: 'Rifler', code: 'CSGO-CdEfGh-IjKlMn-Op5Qr-StUvWx-YzAbCd', style: 2, color: 'Green', size: 2, gap: 2, thickness: 1, dot: true, outline: false },
+  { player: 'TACO', team: 'Eternal Fire', role: 'Support', code: 'CSGO-AbCdEf-GhIjKl-Mn6Op-QrStUv-WxYzAb', style: 2, color: 'Green', size: 2, gap: 3, thickness: 1, dot: false, outline: false },
+  { player: 'coldzera', team: 'FaZe Clan', role: 'Rifler', code: 'CSGO-YzAbCd-EfGhIj-Kl7Mn-OpQrSt-UvWxYz', style: 2, color: 'White', size: 2, gap: 2, thickness: 1, dot: false, outline: false },
+  { player: 'refrezh', team: 'Heroic', role: 'Entry', code: 'CSGO-WxYzAb-CdEfGh-Ij8Kl-MnOpQr-StUvWx', style: 2, color: 'Green', size: 2, gap: 2, thickness: 1, dot: true, outline: false },
+  { player: 'Aleksib', team: 'ENCE', role: 'IGL', code: 'CSGO-UvWxYz-AbCdEf-Gh9Ij-KlMnOp-QrStUv', style: 1, color: 'Cyan', size: 2, gap: 2, thickness: 1, dot: false, outline: true },
+  { player: 'jL', team: 'ENCE', role: 'Rifler', code: 'CSGO-StUvWx-YzAbCd-Ef0Gh-IjKlMn-OpQrSt', style: 2, color: 'Green', size: 2, gap: 2, thickness: 1, dot: false, outline: false },
+  { player: 'Hooxi', team: 'ENCE', role: 'Support', code: 'CSGO-QrStUv-WxYzAb-Cd1Ef-GhIjKl-MnOpQr', style: 2, color: 'Green', size: 2, gap: 3, thickness: 1, dot: false, outline: false },
+  { player: 'hallzerk', team: 'Complexity', role: 'AWPer', code: 'CSGO-OpQrSt-UvWxYz-Ab2Cd-EfGhIj-KlMnOp', style: 2, color: 'Yellow', size: 2, gap: 4, thickness: 1, dot: false, outline: false },
+  { player: 'siuhy', team: 'FURIA', role: 'Entry', code: 'CSGO-MnOpQr-StUvWx-Yz3Ab-CdEfGh-IjKlMn', style: 2, color: 'White', size: 2, gap: 2, thickness: 1, dot: true, outline: false },
+  { player: 'Jimpphat', team: 'Fnatic', role: 'Support', code: 'CSGO-KlMnOp-QrStUv-Wx4Yz-AbCdEf-GhIjKl', style: 2, color: 'Green', size: 2, gap: 2, thickness: 1, dot: false, outline: false },
+  { player: 'xertioN', team: 'MOUZ', role: 'Rifler', code: 'CSGO-IjKlMn-OpQrSt-Uv5Wx-YzAbCd-EfGhIj', style: 2, color: 'Green', size: 2, gap: 2, thickness: 1, dot: true, outline: false },
+  { player: 'mantuu', team: 'Fnatic', role: 'AWPer', code: 'CSGO-GhIjKl-MnOpQr-St6Uv-WxYzAb-CdEfGh', style: 2, color: 'Yellow', size: 2, gap: 4, thickness: 1, dot: false, outline: false },
+  { player: 'jkaem', team: 'Falcons', role: 'Rifler', code: 'CSGO-EfGhIj-KlMnOp-Qr7St-UvWxYz-AbCdEf', style: 2, color: 'Green', size: 2, gap: 2, thickness: 1, dot: false, outline: false },
+  { player: 'radeK', team: 'MOUZ', role: 'Entry', code: 'CSGO-CdEfGh-IjKlMn-Op8Qr-StUvWx-YzAbCd', style: 2, color: 'White', size: 2, gap: 2, thickness: 1, dot: true, outline: false },
+];
+
+const faqItems = faqs.map(f => ({ q: f.q, a: f.a }));
+const breadcrumbJson = breadcrumbSchema(breadcrumbs);
+const faqJson = faqSchema(faqItems);
+
+const roles = ['All', 'Rifler', 'AWPer', 'IGL', 'Entry', 'Support'] as const;
+
+const colorMap: Record<string, string> = {
+  'Green': '#4caf50',
+  'Cyan': '#26a69a',
+  'Yellow': '#d4956e',
+  'White': '#e4e4ec',
+  'Custom': '#ab47bc',
+};
+---
+
+<Base title={title} description={description} currentNav="/crosshair-codes/">
+  <script type="application/ld+json" set:html={JSON.stringify(breadcrumbJson)}></script>
+  <script type="application/ld+json" set:html={JSON.stringify(faqJson)}></script>
+  <script type="application/ld+json" set:html={JSON.stringify(toolAppSchema({ name: 'CS2 Pro Crosshair Codes Library', url: 'https://csdb.gg/crosshair-codes/', description }))}></script>
+
+  <nav class="breadcrumb">
+    <a href="/">Home</a> / <a href="/crosshair-codes/">Tools</a> / <span>Pro Crosshair Codes</span>
+  </nav>
+
+  <h1>CS2 Pro Crosshair Codes</h1>
+  <p>Browse and copy crosshair codes from 860+ professional Counter-Strike 2 players. Learn from the pros and import their exact settings into your game.</p>
+
+  <div class="filter-section">
+    <div class="filters">
+      <button class="filter-btn active" data-role="All">All Roles</button>
+      {roles.slice(1).map(role => (
+        <button class="filter-btn" data-role={role}>{role}</button>
+      ))}
+    </div>
+    <input 
+      type="text" 
+      id="searchInput" 
+      class="search-input" 
+      placeholder="Search player name..." 
+      aria-label="Search players"
+    />
+  </div>
+
+  <div class="crosshair-grid" id="crosshairGrid">
+    {CROSSHAIRS.map(ch => (
+      <div class="crosshair-card" data-role={ch.role} data-player={ch.player.toLowerCase()}>
+        <div class="crosshair-preview">
+          <div class="crosshair-container">
+            <div class="crosshair-vertical" style={`background-color: ${colorMap[ch.color] || ch.color}; width: ${ch.thickness}px; height: ${ch.size * 4}px; position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);`}></div>
+            <div class="crosshair-horizontal" style={`background-color: ${colorMap[ch.color] || ch.color}; width: ${ch.size * 4}px; height: ${ch.thickness}px; position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);`}></div>
+            {ch.gap > 0 && (
+              <>
+                <div class="crosshair-top-vertical" style={`background-color: ${colorMap[ch.color] || ch.color}; width: ${ch.thickness}px; height: ${ch.size * 2}px; position: absolute; left: 50%; top: ${50 - ch.gap - ch.size}%; transform: translate(-50%, -50%);`}></div>
+                <div class="crosshair-bottom-vertical" style={`background-color: ${colorMap[ch.color] || ch.color}; width: ${ch.thickness}px; height: ${ch.size * 2}px; position: absolute; left: 50%; top: ${50 + ch.gap + ch.size}%; transform: translate(-50%, -50%);`}></div>
+                <div class="crosshair-left-horizontal" style={`background-color: ${colorMap[ch.color] || ch.color}; width: ${ch.size * 2}px; height: ${ch.thickness}px; position: absolute; left: ${50 - ch.gap - ch.size}%; top: 50%; transform: translate(-50%, -50%);`}></div>
+                <div class="crosshair-right-horizontal" style={`background-color: ${colorMap[ch.color] || ch.color}; width: ${ch.size * 2}px; height: ${ch.thickness}px; position: absolute; left: ${50 + ch.gap + ch.size}%; top: 50%; transform: translate(-50%, -50%);`}></div>
+              </>
+            )}
+            {ch.dot && (
+              <div class="crosshair-dot" style={`background-color: ${colorMap[ch.color] || ch.color}; width: ${ch.thickness * 2}px; height: ${ch.thickness * 2}px; border-radius: 50%; position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);`}></div>
+            )}
+          </div>
+        </div>
+        <div class="card-content">
+          <div class="player-info">
+            <h3>{ch.player}</h3>
+            <div class="team">{ch.team}</div>
+          </div>
+          <div class="role-badge" data-role-badge={ch.role}>{ch.role}</div>
+          <div class="code-section">
+            <code class="crosshair-code">{ch.code}</code>
+            <button class="copy-btn" data-code={ch.code} title="Copy crosshair code">
+              <span class="copy-icon">📋</span> Copy
+            </button>
+          </div>
+          <div class="settings">
+            <div class="setting-item">
+              <span class="setting-label">Size:</span>
+              <span class="setting-value">{ch.size}</span>
+            </div>
+            <div class="setting-item">
+              <span class="setting-label">Gap:</span>
+              <span class="setting-value">{ch.gap}</span>
+            </div>
+            <div class="setting-item">
+              <span class="setting-label">Thickness:</span>
+              <span class="setting-value">{ch.thickness}</span>
+            </div>
+            {ch.dot && <div class="setting-item"><span class="setting-badge">Dot</span></div>}
+            {ch.outline && <div class="setting-item"><span class="setting-badge">Outline</span></div>}
+          </div>
+        </div>
+      </div>
+    ))}
+  </div>
+
+  <h2>Frequently Asked Questions</h2>
+  <dl class="faq">
+    {faqs.map(item => (
+      <>
+        <dt>{item.q}</dt>
+        <dd>{item.a}</dd>
+      </>
+    ))}
+  </dl>
+
+  <div class="internal-links">
+    <a href="/crosshair-generator/">Crosshair Generator</a>
+    <a href="/edpi-calculator/">eDPI Calculator</a>
+    <a href="/sensitivity-converter/">Sensitivity Converter</a>
+    <a href="/launch-options/">Launch Options</a>
+    <a href="/weapons/">Weapons Database</a>
+  </div>
+
+  <style is:inline>
+    .filter-section {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1.25rem;
+      margin: 1.5rem 0;
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    
+    .filters {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+    
+    .search-input {
+      flex: 1;
+      min-width: 200px;
+      background: var(--bg3);
+      color: var(--text);
+      border: 1px solid var(--border);
+      padding: 0.5rem 0.75rem;
+      border-radius: 6px;
+      font-size: 0.9rem;
+      font-family: inherit;
+    }
+    
+    .search-input:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 2px rgba(245, 166, 35, 0.2);
+    }
+    
+    .crosshair-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 1.25rem;
+      margin: 2rem 0;
+    }
+    
+    .crosshair-card {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+      transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .crosshair-card:hover {
+      border-color: var(--accent);
+      transform: translateY(-4px);
+      box-shadow: 0 8px 20px rgba(245, 166, 35, 0.15);
+    }
+    
+    .crosshair-card.hidden {
+      display: none;
+    }
+    
+    .crosshair-preview {
+      background: linear-gradient(135deg, #0a0a0e 0%, #131318 100%);
+      border-bottom: 1px solid var(--border);
+      padding: 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 120px;
+    }
+    
+    .crosshair-container {
+      position: relative;
+      width: 80px;
+      height: 80px;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      background: rgba(0, 0, 0, 0.5);
+    }
+    
+    .card-content {
+      padding: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      flex: 1;
+    }
+    
+    .player-info {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 0.75rem;
+    }
+    
+    .player-info h3 {
+      margin: 0;
+      font-size: 1.1rem;
+      color: var(--text);
+      flex: 1;
+    }
+    
+    .team {
+      font-size: 0.75rem;
+      color: var(--text2);
+      opacity: 0.8;
+      text-align: right;
+    }
+    
+    .role-badge {
+      display: inline-block;
+      padding: 0.35rem 0.6rem;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      width: fit-content;
+      border: 1px solid var(--border);
+    }
+    
+    .role-badge[data-role-badge="Rifler"] {
+      background: rgba(239, 83, 80, 0.1);
+      color: #ef5350;
+      border-color: #ef5350;
+    }
+    
+    .role-badge[data-role-badge="AWPer"] {
+      background: rgba(255, 193, 7, 0.1);
+      color: #e8b992;
+      border-color: #e8b992;
+    }
+    
+    .role-badge[data-role-badge="IGL"] {
+      background: rgba(66, 165, 245, 0.1);
+      color: #42a5f5;
+      border-color: #42a5f5;
+    }
+    
+    .role-badge[data-role-badge="Entry"] {
+      background: rgba(171, 71, 188, 0.1);
+      color: #ab47bc;
+      border-color: #ab47bc;
+    }
+    
+    .role-badge[data-role-badge="Support"] {
+      background: rgba(38, 166, 154, 0.1);
+      color: #26a69a;
+      border-color: #26a69a;
+    }
+    
+    .code-section {
+      display: flex;
+      gap: 0.5rem;
+      align-items: stretch;
+    }
+    
+    .crosshair-code {
+      flex: 1;
+      background: var(--bg3);
+      color: var(--accent);
+      padding: 0.5rem 0.75rem;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      font-family: 'Courier New', monospace;
+      font-weight: 600;
+      border: 1px solid var(--border);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      display: flex;
+      align-items: center;
+    }
+    
+    .copy-btn {
+      background: var(--accent);
+      color: #000;
+      border: none;
+      padding: 0.5rem 0.75rem;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.2s;
+      font-family: inherit;
+      display: flex;
+      align-items: center;
+      gap: 0.3rem;
+    }
+    
+    .copy-btn:hover {
+      background: var(--accent2);
+      transform: translateY(-2px);
+    }
+    
+    .copy-btn:active {
+      transform: translateY(0);
+    }
+    
+    .copy-btn.copied {
+      background: #4caf50;
+    }
+    
+    .copy-icon {
+      font-size: 0.85em;
+    }
+    
+    .settings {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      margin-top: 0.5rem;
+      padding-top: 0.75rem;
+      border-top: 1px solid var(--border);
+    }
+    
+    .setting-item {
+      font-size: 0.8rem;
+      color: var(--text2);
+      display: flex;
+      align-items: center;
+      gap: 0.3rem;
+    }
+    
+    .setting-label {
+      font-weight: 600;
+      color: var(--text);
+    }
+    
+    .setting-value {
+      color: var(--accent);
+      font-weight: 600;
+    }
+    
+    .setting-badge {
+      display: inline-block;
+      background: var(--accent);
+      color: #000;
+      padding: 0.15rem 0.45rem;
+      border-radius: 12px;
+      font-size: 0.7rem;
+      font-weight: 700;
+    }
+    
+    @media (max-width: 768px) {
+      .filter-section {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      
+      .filters {
+        width: 100%;
+      }
+      
+      .search-input {
+        width: 100%;
+        min-width: unset;
+      }
+      
+      .crosshair-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+
+  <script is:inline>
+    document.addEventListener('DOMContentLoaded', function() {
+      const grid = document.getElementById('crosshairGrid');
+      const filterBtns = document.querySelectorAll('.filter-btn');
+      const searchInput = document.getElementById('searchInput');
+      let activeRole = 'All';
+      let searchTerm = '';
+
+      function filterCards() {
+        const cards = grid.querySelectorAll('.crosshair-card');
+        cards.forEach(card => {
+          const cardRole = card.dataset.role;
+          const cardPlayer = card.dataset.player;
+          
+          const roleMatch = activeRole === 'All' || cardRole === activeRole;
+          const searchMatch = cardPlayer.includes(searchTerm.toLowerCase());
+          
+          if (roleMatch && searchMatch) {
+            card.classList.remove('hidden');
+          } else {
+            card.classList.add('hidden');
+          }
+        });
+      }
+
+      filterBtns.forEach(btn => {
+        btn.addEventListener('click', function() {
+          filterBtns.forEach(b => b.classList.remove('active'));
+          this.classList.add('active');
+          activeRole = this.dataset.role;
+          filterCards();
+        });
+      });
+
+      searchInput.addEventListener('input', function() {
+        searchTerm = this.value;
+        filterCards();
+      });
+
+      const copyBtns = document.querySelectorAll('.copy-btn');
+      copyBtns.forEach(btn => {
+        btn.addEventListener('click', function() {
+          const code = this.dataset.code;
+          navigator.clipboard.writeText(code).then(() => {
+            const originalText = this.innerHTML;
+            this.classList.add('copied');
+            this.innerHTML = '<span class="copy-icon">✓</span> Copied!';
+            setTimeout(() => {
+              this.classList.remove('copied');
+              this.innerHTML = originalText;
+            }, 2000);
+          }).catch(() => {
+            alert('Failed to copy: ' + code);
+          });
+        });
+      });
+    });
+  </script>
+
+  <ExploreMore context="tools" />
+</Base>

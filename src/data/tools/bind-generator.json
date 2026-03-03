@@ -1,0 +1,29 @@
+{
+  "slug": "bind-generator",
+  "title": "CS2 Bind Generator — Buy Binds, Jump Throw & Utility | CSDB.gg",
+  "description": "Generate CS2 buy binds, jump throw binds, and utility binds instantly. Visual numpad builder, one-click copy, and downloadable .cfg files.",
+  "heading": "CS2 Bind Generator",
+  "intro": "Create buy binds, jump throw binds, and utility binds for CS2. Choose your keys, select weapons, and copy the commands directly to your config.",
+  "faqs": [
+    {
+      "question": "How do I set up buy binds in CS2?",
+      "answer": "You can add buy bind commands to your autoexec.cfg file or enter them in the console. The format is: bind \"KEY\" \"buy weapon_ak47\". Use our generator above to create binds for your preferred keys and weapons, then paste them into your config."
+    },
+    {
+      "question": "Does the jump throw bind still work in CS2?",
+      "answer": "Yes, jump throw binds work in CS2. The alias method (alias +jumpthrow) is the most reliable. CS2 also has a built-in jump throw mechanic, but a bind gives you more consistency and control over the timing."
+    },
+    {
+      "question": "Where do I put CS2 bind commands?",
+      "answer": "Put bind commands in your autoexec.cfg file located in your CS2 config folder (Steam/steamapps/common/Counter-Strike Global Offensive/game/csgo/cfg/). You can also paste them directly into the in-game console."
+    },
+    {
+      "question": "Can I bind multiple commands to one key?",
+      "answer": "Yes, you can chain multiple commands using semicolons. For example: bind \"F1\" \"buy weapon_ak47; buy item_assaultsuit; buy weapon_hegrenade\". This will attempt to buy all items when you press the key."
+    },
+    {
+      "question": "What are the best keys for buy binds?",
+      "answer": "Most players use the numpad (KP_0 through KP_SLASH) since these keys are not used during gameplay. F1-F8 keys are also popular. Avoid binding to keys you use for movement or common actions."
+    }
+  ]
+}

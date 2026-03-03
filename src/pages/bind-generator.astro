@@ -1,0 +1,430 @@
+---
+import Base from '../layouts/Base.astro';
+import ExploreMore from '../components/ExploreMore.astro';
+import { breadcrumbSchema, faqSchema } from '../lib/weapons';
+
+const title = 'CS2 Bind Generator — Buy Binds, Jump Throw & Utility | CSDB.gg';
+const description = 'Generate CS2 buy binds, jump throw binds, and utility binds instantly. Visual numpad builder, one-click copy, and downloadable .cfg files.';
+const crumbs = [{ name: 'Home', url: '/' }, { name: 'Bind Generator', url: '/bind-generator/' }];
+const faqs = [
+  { question: 'How do I set up buy binds in CS2?', answer: 'You can add buy bind commands to your autoexec.cfg file or enter them in the console. The format is: bind "KEY" "buy weapon_ak47". Use our generator above to create binds for your preferred keys and weapons, then paste them into your config.' },
+  { question: 'Does the jump throw bind still work in CS2?', answer: 'Yes, jump throw binds work in CS2. The alias method (alias +jumpthrow) is the most reliable. CS2 also has a built-in jump throw mechanic, but a bind gives you more consistency and control over the timing.' },
+  { question: 'Where do I put CS2 bind commands?', answer: 'Put bind commands in your autoexec.cfg file located in your CS2 config folder (Steam/steamapps/common/Counter-Strike Global Offensive/game/csgo/cfg/). You can also paste them directly into the in-game console.' },
+  { question: 'Can I bind multiple commands to one key?', answer: 'Yes, you can chain multiple commands using semicolons. For example: bind "F1" "buy weapon_ak47; buy item_assaultsuit; buy weapon_hegrenade". This will attempt to buy all items when you press the key.' },
+  { question: 'What are the best keys for buy binds?', answer: 'Most players use the numpad (KP_0 through KP_SLASH) since these keys are not used during gameplay. F1-F8 keys are also popular. Avoid binding to keys you use for movement or common actions.' },
+];
+
+const WEAPONS = {
+  'Rifles': [
+    { name: 'AK-47', cmd: 'weapon_ak47' }, { name: 'M4A4', cmd: 'weapon_m4a1' }, { name: 'M4A1-S', cmd: 'weapon_m4a1_silencer' },
+    { name: 'AWP', cmd: 'weapon_awp' }, { name: 'SSG 08', cmd: 'weapon_ssg08' }, { name: 'Galil AR', cmd: 'weapon_galilar' },
+    { name: 'FAMAS', cmd: 'weapon_famas' }, { name: 'AUG', cmd: 'weapon_aug' }, { name: 'SG 553', cmd: 'weapon_sg556' },
+  ],
+  'SMGs': [
+    { name: 'MAC-10', cmd: 'weapon_mac10' }, { name: 'MP9', cmd: 'weapon_mp9' }, { name: 'UMP-45', cmd: 'weapon_ump45' },
+    { name: 'MP7', cmd: 'weapon_mp7' }, { name: 'P90', cmd: 'weapon_p90' }, { name: 'PP-Bizon', cmd: 'weapon_bizon' },
+  ],
+  'Pistols': [
+    { name: 'USP-S', cmd: 'weapon_usp_silencer' }, { name: 'Glock', cmd: 'weapon_glock' }, { name: 'P250', cmd: 'weapon_p250' },
+    { name: 'Desert Eagle', cmd: 'weapon_deagle' }, { name: 'Five-SeveN', cmd: 'weapon_fiveseven' }, { name: 'Tec-9', cmd: 'weapon_tec9' },
+    { name: 'CZ75-Auto', cmd: 'weapon_cz75a' }, { name: 'Dual Berettas', cmd: 'weapon_elite' }, { name: 'R8 Revolver', cmd: 'weapon_revolver' },
+  ],
+  'Heavy': [
+    { name: 'Nova', cmd: 'weapon_nova' }, { name: 'XM1014', cmd: 'weapon_xm1014' }, { name: 'MAG-7', cmd: 'weapon_mag7' },
+    { name: 'Sawed-Off', cmd: 'weapon_sawedoff' }, { name: 'M249', cmd: 'weapon_m249' }, { name: 'Negev', cmd: 'weapon_negev' },
+  ],
+  'Grenades': [
+    { name: 'HE Grenade', cmd: 'weapon_hegrenade' }, { name: 'Flashbang', cmd: 'weapon_flashbang' },
+    { name: 'Smoke', cmd: 'weapon_smokegrenade' }, { name: 'Molotov', cmd: 'weapon_molotov' },
+    { name: 'Incendiary', cmd: 'weapon_incgrenade' }, { name: 'Decoy', cmd: 'weapon_decoy' },
+  ],
+  'Equipment': [
+    { name: 'Kevlar', cmd: 'item_kevlar' }, { name: 'Kevlar + Helmet', cmd: 'item_assaultsuit' },
+    { name: 'Defuse Kit', cmd: 'item_defuser' }, { name: 'Zeus x27', cmd: 'weapon_taser' },
+  ],
+};
+
+const NUMPAD_KEYS = [
+  { label: 'NUM 7', bind: 'KP_HOME' }, { label: 'NUM 8', bind: 'KP_UPARROW' }, { label: 'NUM 9', bind: 'KP_PGUP' },
+  { label: 'NUM 4', bind: 'KP_LEFTARROW' }, { label: 'NUM 5', bind: 'KP_5' }, { label: 'NUM 6', bind: 'KP_RIGHTARROW' },
+  { label: 'NUM 1', bind: 'KP_END' }, { label: 'NUM 2', bind: 'KP_DOWNARROW' }, { label: 'NUM 3', bind: 'KP_PGDN' },
+  { label: 'NUM 0', bind: 'KP_INS' }, { label: 'NUM .', bind: 'KP_DEL' }, { label: 'NUM +', bind: 'KP_PLUS' },
+  { label: 'NUM -', bind: 'KP_MINUS' }, { label: 'NUM *', bind: 'KP_MULTIPLY' }, { label: 'NUM /', bind: 'KP_SLASH' },
+  { label: 'F1', bind: 'F1' }, { label: 'F2', bind: 'F2' }, { label: 'F3', bind: 'F3' },
+  { label: 'F4', bind: 'F4' }, { label: 'F5', bind: 'F5' }, { label: 'F6', bind: 'F6' },
+];
+
+const PRESETS = [
+  { name: 'Pro Standard', desc: 'AK/M4 + AWP + utility', binds: { KP_HOME: 'weapon_ak47', KP_UPARROW: 'weapon_m4a1', KP_PGUP: 'weapon_awp', KP_LEFTARROW: 'weapon_deagle', KP_5: 'item_assaultsuit', KP_RIGHTARROW: 'item_defuser', KP_END: 'weapon_flashbang', KP_DOWNARROW: 'weapon_smokegrenade', KP_PGDN: 'weapon_hegrenade', KP_INS: 'weapon_molotov', KP_DEL: 'weapon_incgrenade' } },
+  { name: 'Economy Round', desc: 'Budget weapons + pistols', binds: { KP_HOME: 'weapon_galilar', KP_UPARROW: 'weapon_famas', KP_PGUP: 'weapon_ssg08', KP_LEFTARROW: 'weapon_p250', KP_5: 'weapon_deagle', KP_RIGHTARROW: 'item_kevlar', KP_END: 'weapon_flashbang', KP_DOWNARROW: 'weapon_smokegrenade' } },
+  { name: 'Full Buy CT', desc: 'CT-side full buy', binds: { KP_HOME: 'weapon_m4a1', KP_UPARROW: 'weapon_m4a1_silencer', KP_PGUP: 'weapon_awp', KP_LEFTARROW: 'weapon_usp_silencer', KP_5: 'item_assaultsuit', KP_RIGHTARROW: 'item_defuser', KP_END: 'weapon_flashbang', KP_DOWNARROW: 'weapon_smokegrenade', KP_PGDN: 'weapon_hegrenade', KP_INS: 'weapon_incgrenade' } },
+  { name: 'Full Buy T', desc: 'T-side full buy', binds: { KP_HOME: 'weapon_ak47', KP_UPARROW: 'weapon_galilar', KP_PGUP: 'weapon_awp', KP_LEFTARROW: 'weapon_glock', KP_5: 'item_assaultsuit', KP_END: 'weapon_flashbang', KP_DOWNARROW: 'weapon_smokegrenade', KP_PGDN: 'weapon_hegrenade', KP_INS: 'weapon_molotov' } },
+];
+
+const ALL_WEAPONS_FLAT = Object.entries(WEAPONS).flatMap(([cat, items]) => items.map(w => ({ ...w, category: cat })));
+
+const UTIL_KEYS = ['F7','F8','F9','F10','F11','F12','CAPSLOCK','SEMICOLON','INS','DEL','HOME','END','PGUP','PGDN'];
+
+const toolSchema = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": title,
+  "description": description,
+  "applicationCategory": "UtilityApplication",
+  "operatingSystem": "Web",
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+  "author": { "@type": "Organization", "name": "CSDB.gg", "url": "https://csdb.gg" }
+});
+
+const howToSchema = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "HowTo",
+  "name": "How to Create CS2 Buy Binds and Utility Binds",
+  "description": "Use the CSDB.gg Bind Generator to create buy binds, jump throw binds, and utility binds for Counter-Strike 2.",
+  "step": [
+    { "@type": "HowToStep", "name": "Select a key and weapon for buy binds", "text": "Click a numpad or function key in the visual keyboard, then choose a weapon from the dropdown. Repeat for each key you want to bind. You can also load a preset (Pro Standard, Economy Round, Full Buy CT/T) to auto-fill all keys." },
+    { "@type": "HowToStep", "name": "Copy or download your buy binds", "text": "Once your keys are assigned, click 'Copy to Clipboard' to copy the generated bind commands, or 'Download .cfg File' to save them as a config file you can place in your CS2 cfg folder." },
+    { "@type": "HowToStep", "name": "Set up a jump throw bind", "text": "Choose between the Alias method (recommended for consistency) or Simple method, select your preferred key, and copy the generated jump throw bind command." },
+    { "@type": "HowToStep", "name": "Add utility binds", "text": "Configure quality-of-life binds such as clear decals, voice toggle, display damage, volume toggle, crosshair size toggle, and netgraph toggle. Select a key for each and copy the commands." },
+    { "@type": "HowToStep", "name": "Apply binds in CS2", "text": "Paste the copied commands into your CS2 console (~) or add them to your autoexec.cfg file in Steam/steamapps/common/Counter-Strike Global Offensive/game/csgo/cfg/ for persistent binds." }
+  ]
+});
+---
+
+<Base title={title} description={description}>
+  <script type="application/ld+json" set:html={toolSchema}></script>
+  <script type="application/ld+json" set:html={howToSchema}></script>
+  <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema(crumbs))}></script>
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema(faqs))}></script>
+
+  <nav class="breadcrumb"><a href="/">Home</a> / <span>Bind Generator</span></nav>
+  <h1>CS2 Bind Generator</h1>
+  <p>Create buy binds, jump throw binds, and utility binds for CS2. Choose your keys, select weapons, and copy the commands directly to your config.</p>
+
+  <!-- Buy Bind Section -->
+  <section class="bg-section">
+    <h2>Buy Bind Generator</h2>
+    <p style="color:var(--text2);font-size:.9rem">Assign weapons to numpad and function keys. Click a key, then select a weapon from the dropdown.</p>
+
+    <div class="bg-presets">
+      <span style="font-size:.82rem;color:var(--text2);font-weight:700">Presets:</span>
+      {PRESETS.map((p, i) => (
+        <button class="filter-btn" data-preset={i}>{p.name}</button>
+      ))}
+      <button class="filter-btn" id="clear-all-btn">Clear All</button>
+    </div>
+
+    <div class="bg-keyboard">
+      {NUMPAD_KEYS.map(k => (
+        <div class="bg-key" data-bind={k.bind}>
+          <div class="bg-key-label">{k.label}</div>
+          <select class="bg-key-select" data-bind={k.bind}>
+            <option value="">— None —</option>
+            {Object.entries(WEAPONS).map(([cat, items]) => (
+              <optgroup label={cat}>
+                {items.map(w => (
+                  <option value={w.cmd}>{w.name}</option>
+                ))}
+              </optgroup>
+            ))}
+          </select>
+          <div class="bg-key-weapon" data-bind={k.bind}></div>
+        </div>
+      ))}
+    </div>
+
+    <div class="bg-output-section">
+      <h3>Generated Commands</h3>
+      <pre class="bg-output" id="buy-output">// Select weapons above to generate buy binds</pre>
+      <div class="bg-actions">
+        <button class="filter-btn active" id="copy-buy-btn">Copy to Clipboard</button>
+        <button class="filter-btn" id="download-buy-btn">Download .cfg File</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Jump Throw Bind Section -->
+  <section class="bg-section">
+    <h2>Jump Throw Bind</h2>
+    <p style="color:var(--text2);font-size:.9rem;margin-bottom:1rem">A jump throw bind ensures consistent grenade throws by jumping and releasing the grenade simultaneously with a single key press.</p>
+
+    <div class="bg-jt-options">
+      <div class="calc-row">
+        <label>Method:</label>
+        <select id="jt-method">
+          <option value="alias">Alias Method (Recommended)</option>
+          <option value="simple">Simple Method</option>
+        </select>
+      </div>
+      <div class="calc-row">
+        <label>Key:</label>
+        <select id="jt-key">
+          {UTIL_KEYS.map(k => (
+            <option value={k} selected={k === 'F8'}>{k}</option>
+          ))}
+        </select>
+      </div>
+    </div>
+
+    <pre class="bg-output" id="jt-output"></pre>
+    <button class="filter-btn active" id="copy-jt-btn">Copy Jump Throw Bind</button>
+
+    <div style="margin-top:1rem;padding:1rem;background:var(--bg3);border-radius:8px;border:1px solid var(--border)">
+      <p style="margin:0;font-size:.88rem;color:var(--text2)"><strong style="color:var(--accent)">How to use:</strong> Hold your grenade, hold left click to pull the pin, then press your bound key. The bind will jump and release the grenade at the optimal time for a consistent throw arc.</p>
+    </div>
+  </section>
+
+  <!-- Utility Binds Section -->
+  <section class="bg-section">
+    <h2>Utility Binds</h2>
+    <p style="color:var(--text2);font-size:.9rem;margin-bottom:1rem">Essential quality-of-life binds that every CS2 player should have in their config.</p>
+
+    <div class="bg-util-grid">
+      <div class="bg-util-card">
+        <h3>Clear Decals</h3>
+        <p>Removes blood splatter and bullet holes for clearer visibility.</p>
+        <div class="calc-row"><label>Key:</label>
+          <select class="util-key-sel" data-util="decals">
+            {UTIL_KEYS.map(k => <option value={k} selected={k === 'F7'}>{k}</option>)}
+          </select>
+        </div>
+        <pre class="bg-util-output" data-util="decals"></pre>
+        <button class="filter-btn active bg-util-copy" data-util="decals">Copy</button>
+      </div>
+
+      <div class="bg-util-card">
+        <h3>Voice Toggle</h3>
+        <p>Toggle teammate voice chat on/off with one key press.</p>
+        <div class="calc-row"><label>Key:</label>
+          <select class="util-key-sel" data-util="voice">
+            {UTIL_KEYS.map(k => <option value={k} selected={k === 'F9'}>{k}</option>)}
+          </select>
+        </div>
+        <pre class="bg-util-output" data-util="voice"></pre>
+        <button class="filter-btn active bg-util-copy" data-util="voice">Copy</button>
+      </div>
+
+      <div class="bg-util-card">
+        <h3>Display Damage</h3>
+        <p>Show damage dealt to enemies in the console after each round.</p>
+        <div class="calc-row"><label>Key:</label>
+          <select class="util-key-sel" data-util="damage">
+            {UTIL_KEYS.map(k => <option value={k} selected={k === 'F10'}>{k}</option>)}
+          </select>
+        </div>
+        <pre class="bg-util-output" data-util="damage"></pre>
+        <button class="filter-btn active bg-util-copy" data-util="damage">Copy</button>
+      </div>
+
+      <div class="bg-util-card">
+        <h3>Volume Toggle</h3>
+        <p>Quickly toggle game volume between normal and muted.</p>
+        <div class="calc-row"><label>Key:</label>
+          <select class="util-key-sel" data-util="volume">
+            {UTIL_KEYS.map(k => <option value={k} selected={k === 'F11'}>{k}</option>)}
+          </select>
+        </div>
+        <pre class="bg-util-output" data-util="volume"></pre>
+        <button class="filter-btn active bg-util-copy" data-util="volume">Copy</button>
+      </div>
+
+      <div class="bg-util-card">
+        <h3>Crosshair Size Toggle</h3>
+        <p>Switch between two crosshair sizes for different situations.</p>
+        <div class="calc-row"><label>Key:</label>
+          <select class="util-key-sel" data-util="crosshair">
+            {UTIL_KEYS.map(k => <option value={k} selected={k === 'F12'}>{k}</option>)}
+          </select>
+        </div>
+        <pre class="bg-util-output" data-util="crosshair"></pre>
+        <button class="filter-btn active bg-util-copy" data-util="crosshair">Copy</button>
+      </div>
+
+      <div class="bg-util-card">
+        <h3>Netgraph Toggle</h3>
+        <p>Show/hide network stats (ping, FPS, loss) on screen.</p>
+        <div class="calc-row"><label>Key:</label>
+          <select class="util-key-sel" data-util="netgraph">
+            {UTIL_KEYS.map(k => <option value={k} selected={k === 'INS'}>{k}</option>)}
+          </select>
+        </div>
+        <pre class="bg-util-output" data-util="netgraph"></pre>
+        <button class="filter-btn active bg-util-copy" data-util="netgraph">Copy</button>
+      </div>
+    </div>
+  </section>
+
+  <div class="internal-links">
+    <strong>Related Tools:</strong>
+    <a href="/autoexec-generator/">Autoexec Generator</a>
+    <a href="/launch-options/">Launch Options</a>
+    <a href="/crosshair-generator/">Crosshair Generator</a>
+    <a href="/crosshair-codes/">Crosshair Codes</a>
+    <a href="/practice-config/">Practice Config</a>
+    <a href="/sensitivity-converter/">Sensitivity Converter</a>
+    <a href="/resolution-calculator/">Resolution Calculator</a>
+    <a href="/pro-players/">Pro Player Settings</a>
+    <a href="/tools/">All Tools</a>
+    <a href="/guides/economy-guide/">Economy Guide</a>
+    <a href="/guides/beginners-guide/">Beginner's Guide</a>
+  </div>
+
+  <h2>Frequently Asked Questions</h2>
+  <dl class="faq">{faqs.map(f => (<Fragment><dt>{f.question}</dt><dd>{f.answer}</dd></Fragment>))}</dl>
+
+  <ExploreMore context="tools" />
+</Base>
+
+<script is:inline>
+(function(){
+  var presetData = JSON.parse(document.querySelector('[data-presets]')?.textContent || '[]');
+
+  // Presets data embedded
+  var PRESETS = [
+    { binds: { KP_HOME:'weapon_ak47',KP_UPARROW:'weapon_m4a1',KP_PGUP:'weapon_awp',KP_LEFTARROW:'weapon_deagle',KP_5:'item_assaultsuit',KP_RIGHTARROW:'item_defuser',KP_END:'weapon_flashbang',KP_DOWNARROW:'weapon_smokegrenade',KP_PGDN:'weapon_hegrenade',KP_INS:'weapon_molotov',KP_DEL:'weapon_incgrenade' } },
+    { binds: { KP_HOME:'weapon_galilar',KP_UPARROW:'weapon_famas',KP_PGUP:'weapon_ssg08',KP_LEFTARROW:'weapon_p250',KP_5:'weapon_deagle',KP_RIGHTARROW:'item_kevlar',KP_END:'weapon_flashbang',KP_DOWNARROW:'weapon_smokegrenade' } },
+    { binds: { KP_HOME:'weapon_m4a1',KP_UPARROW:'weapon_m4a1_silencer',KP_PGUP:'weapon_awp',KP_LEFTARROW:'weapon_usp_silencer',KP_5:'item_assaultsuit',KP_RIGHTARROW:'item_defuser',KP_END:'weapon_flashbang',KP_DOWNARROW:'weapon_smokegrenade',KP_PGDN:'weapon_hegrenade',KP_INS:'weapon_incgrenade' } },
+    { binds: { KP_HOME:'weapon_ak47',KP_UPARROW:'weapon_galilar',KP_PGUP:'weapon_awp',KP_LEFTARROW:'weapon_glock',KP_5:'item_assaultsuit',KP_END:'weapon_flashbang',KP_DOWNARROW:'weapon_smokegrenade',KP_PGDN:'weapon_hegrenade',KP_INS:'weapon_molotov' } },
+  ];
+
+  var selects = document.querySelectorAll('.bg-key-select');
+
+  function updateBuyOutput(){
+    var lines = [];
+    selects.forEach(function(sel){
+      if(sel.value){
+        lines.push('bind "'+sel.dataset.bind+'" "buy '+sel.value+'"');
+      }
+    });
+    var out = document.getElementById('buy-output');
+    out.textContent = lines.length > 0 ? lines.join('\n') : '// Select weapons above to generate buy binds';
+  }
+
+  selects.forEach(function(sel){
+    sel.addEventListener('change', updateBuyOutput);
+  });
+
+  // Presets
+  document.querySelectorAll('[data-preset]').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var idx = parseInt(btn.dataset.preset);
+      var preset = PRESETS[idx];
+      if(!preset) return;
+      selects.forEach(function(sel){ sel.value = ''; });
+      Object.keys(preset.binds).forEach(function(key){
+        var sel = document.querySelector('.bg-key-select[data-bind="'+key+'"]');
+        if(sel) sel.value = preset.binds[key];
+      });
+      updateBuyOutput();
+    });
+  });
+
+  document.getElementById('clear-all-btn').addEventListener('click', function(){
+    selects.forEach(function(sel){ sel.value = ''; });
+    updateBuyOutput();
+  });
+
+  // Copy buy binds
+  document.getElementById('copy-buy-btn').addEventListener('click', function(){
+    var text = document.getElementById('buy-output').textContent;
+    navigator.clipboard.writeText(text).then(function(){
+      var btn = document.getElementById('copy-buy-btn');
+      btn.textContent = 'Copied!';
+      setTimeout(function(){ btn.textContent = 'Copy to Clipboard'; }, 1500);
+    });
+  });
+
+  // Download
+  document.getElementById('download-buy-btn').addEventListener('click', function(){
+    var text = '// CS2 Buy Binds - Generated by CSDB.gg\n' + document.getElementById('buy-output').textContent;
+    var blob = new Blob([text], { type: 'text/plain' });
+    var a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'buy_binds.cfg';
+    a.click();
+  });
+
+  // Jump Throw
+  function updateJT(){
+    var method = document.getElementById('jt-method').value;
+    var key = document.getElementById('jt-key').value;
+    var out = document.getElementById('jt-output');
+    if(method === 'alias'){
+      out.textContent = 'alias "+jumpthrow" "+jump;-attack"\nalias "-jumpthrow" "-jump"\nbind "'+key+'" "+jumpthrow"';
+    } else {
+      out.textContent = 'bind "'+key+'" "+jump; -attack; -jump"';
+    }
+  }
+  document.getElementById('jt-method').addEventListener('change', updateJT);
+  document.getElementById('jt-key').addEventListener('change', updateJT);
+  updateJT();
+
+  document.getElementById('copy-jt-btn').addEventListener('click', function(){
+    navigator.clipboard.writeText(document.getElementById('jt-output').textContent).then(function(){
+      var btn = document.getElementById('copy-jt-btn');
+      btn.textContent = 'Copied!';
+      setTimeout(function(){ btn.textContent = 'Copy Jump Throw Bind'; }, 1500);
+    });
+  });
+
+  // Utility binds
+  var utilCmds = {
+    decals: function(k){ return 'bind "'+k+'" "r_cleardecals"'; },
+    voice: function(k){ return 'bind "'+k+'" "toggle voice_enable 0 1"'; },
+    damage: function(k){ return 'bind "'+k+'" "clear; con_filter_enable 2; con_filter_text_out \'Damage\'; con_filter_text \'Damage Given\'; developer 1; playvol buttons/blip1 0.5"'; },
+    volume: function(k){ return 'bind "'+k+'" "toggle volume 0.5 0"'; },
+    crosshair: function(k){ return 'bind "'+k+'" "toggle cl_crosshairsize 2 4"'; },
+    netgraph: function(k){ return 'bind "'+k+'" "toggle cl_showfps 0 1"'; },
+  };
+
+  function updateUtil(name){
+    var sel = document.querySelector('.util-key-sel[data-util="'+name+'"]');
+    var out = document.querySelector('.bg-util-output[data-util="'+name+'"]');
+    if(sel && out && utilCmds[name]){
+      out.textContent = utilCmds[name](sel.value);
+    }
+  }
+
+  document.querySelectorAll('.util-key-sel').forEach(function(sel){
+    sel.addEventListener('change', function(){ updateUtil(sel.dataset.util); });
+    updateUtil(sel.dataset.util);
+  });
+
+  document.querySelectorAll('.bg-util-copy').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var out = document.querySelector('.bg-util-output[data-util="'+btn.dataset.util+'"]');
+      if(out){
+        navigator.clipboard.writeText(out.textContent).then(function(){
+          btn.textContent = 'Copied!';
+          setTimeout(function(){ btn.textContent = 'Copy'; }, 1500);
+        });
+      }
+    });
+  });
+})();
+</script>
+
+<style>
+  .bg-section{margin-bottom:3rem}
+  .bg-presets{display:flex;gap:.5rem;align-items:center;flex-wrap:wrap;margin-bottom:1.5rem}
+  .bg-keyboard{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:.6rem;margin-bottom:1.5rem}
+  .bg-key{background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:.75rem;transition:border-color .2s}
+  .bg-key:hover{border-color:var(--accent)}
+  .bg-key-label{font-size:.78rem;font-weight:700;color:var(--text2);margin-bottom:.4rem;text-transform:uppercase;letter-spacing:.04em}
+  .bg-key-select{width:100%;background:var(--bg3);color:var(--text);border:1px solid var(--border);border-radius:4px;padding:.35rem;font-size:.82rem;font-family:inherit}
+  .bg-output-section{margin-top:1.5rem}
+  .bg-output{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:1rem;font-family:'Courier New',monospace;font-size:.85rem;color:var(--accent);overflow-x:auto;white-space:pre;max-height:300px;overflow-y:auto;margin:.75rem 0}
+  .bg-actions{display:flex;gap:.75rem}
+  .bg-jt-options{display:flex;gap:2rem;flex-wrap:wrap;margin-bottom:1rem}
+  .bg-util-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:1rem}
+  .bg-util-card{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:1.25rem}
+  .bg-util-card h3{margin:0 0 .3rem;font-size:1rem}
+  .bg-util-card p{font-size:.85rem;margin:0 0 .75rem;color:var(--text2)}
+  .bg-util-output{background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:.5rem;font-family:'Courier New',monospace;font-size:.78rem;color:var(--accent);margin:.5rem 0;white-space:pre-wrap;word-break:break-all}
+
+  @media(max-width:768px){
+    .bg-keyboard{grid-template-columns:repeat(2,1fr)}
+    .bg-util-grid{grid-template-columns:1fr}
+    .bg-jt-options{flex-direction:column;gap:.75rem}
+  }
+</style>

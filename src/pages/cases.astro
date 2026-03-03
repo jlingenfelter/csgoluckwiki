@@ -1,0 +1,571 @@
+---
+import Base from '../layouts/Base.astro';
+import ExploreMore from '../components/ExploreMore.astro';
+import { breadcrumbSchema, faqSchema } from '../lib/weapons';
+import { caseDatabase } from '../lib/cases';
+import type { CaseData } from '../lib/cases';
+
+interface CaseItem {
+  id: string;
+  name: string;
+  year: number;
+  type: 'weapon' | 'souvenir' | 'collection';
+  keyPrice?: number;
+  notableSkins: string[];
+  releaseDate: string;
+  image?: string;
+  description?: string;
+}
+
+// Build the cases array from caseDatabase, enriched with images, descriptions, and real skin data
+const dbCases: CaseItem[] = Object.values(caseDatabase).map((c: CaseData) => ({
+  id: c.id,
+  name: c.name,
+  year: c.year,
+  type: c.type,
+  keyPrice: c.keyPrice,
+  notableSkins: c.skins
+    .filter((s) => s.rarity === 'covert' || s.rarity === 'classified')
+    .slice(0, 3)
+    .map((s) => `${s.weapon} ${s.name}`),
+  releaseDate: c.releaseDate,
+  image: c.image,
+  description: c.description,
+}));
+
+// IDs already covered by caseDatabase
+const dbIds = new Set(Object.keys(caseDatabase));
+
+// Fallback cases not in caseDatabase (keep them so the page still shows all cases)
+// All cases are now in caseDatabase — no fallback entries needed
+const fallbackCases: CaseItem[] = [];
+
+// Merge and sort by year descending, then by name
+const cases: CaseItem[] = [...dbCases, ...fallbackCases].sort((a, b) => b.year - a.year || a.name.localeCompare(b.name));
+
+const collections: { name: string; year: number; mapName: string }[] = [
+  { name: 'Dust 2 Collection', year: 2024, mapName: 'Dust 2' },
+  { name: 'Inferno Collection', year: 2024, mapName: 'Inferno' },
+  { name: 'Mirage Collection', year: 2024, mapName: 'Mirage' },
+  { name: 'Nuke Collection', year: 2024, mapName: 'Nuke' },
+  { name: 'Anubis Collection', year: 2023, mapName: 'Anubis' },
+  { name: 'Vertigo Collection', year: 2023, mapName: 'Vertigo' },
+  { name: 'Ancient Collection', year: 2023, mapName: 'Ancient' },
+  { name: 'Overpass Collection', year: 2023, mapName: 'Overpass' },
+];
+
+const breadcrumbs = [
+  { name: 'Home', url: '/' },
+  { name: 'Cases & Collections', url: '/cases/' },
+];
+
+const faqData = [
+  { q: 'What is a CS2 case?', a: 'A CS2 case is a container that players can purchase and open with a corresponding key. When opened, you receive a random skin from that case\'s collection, with rarity determining the item\'s quality and value.' },
+  { q: 'How do case odds work?', a: 'Each case has a set drop rate for each rarity tier: Mil-Spec (79.92%), Restricted (15.98%), Classified (3.2%), Covert (0.64%), and Souvenir (0.26%). Use our Case Odds Calculator to analyze profitability.' },
+  { q: 'What\'s the difference between regular and souvenir cases?', a: 'Souvenir cases only drop during competitive matches and cannot be sold on the market in most regions. Items from souvenir cases have match data and team signatures, making them more valuable to collectors.' },
+  { q: 'Are older cases worth less?', a: 'Not necessarily. While key prices may vary, older cases can have valuable discontinued skins. Dragon Lore and other rare skins from early cases (Arms Deal, Bravo) command significant prices on the secondary market.' },
+  { q: 'Is opening cases profitable?', a: 'Statistically, opening cases loses money long-term due to key costs. Try the Case Simulator to see for yourself without spending real money. Most players open cases for skins they love rather than profit.' },
+  { q: 'How do collections differ from cases?', a: 'Collections are curated sets of weapon skins released along with map updates. They don\'t require keys to open but instead are received through drops or purchased directly. Collections typically feature map-themed aesthetics.' },
+  { q: 'What skins are most expensive from cases?', a: 'Covert rarity skins (typically pistols, rifles, and sniper rifles) command the highest prices. Dragon Lore variants are among the most expensive skins ever released and are highly sought by collectors.' },
+  { q: 'Can I still get skins from old cases?', a: 'Yes! Old cases remain in the drop pool and can be purchased from the Steam Community Market. However, key prices are typically lower for older cases, making them sometimes more cost-effective to open than newer cases.' },
+];
+---
+
+<Base
+  title="CS2 Cases & Collections — All Weapon Cases | CSDB.gg"
+  description="Browse all CS2 cases and collections. Filter by type, view drop odds, notable skins, and key prices for every CS2 case from Arms Deal to Kilowatt."
+  currentNav="/skins/"
+>
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema(breadcrumbs))} />
+    <script type="application/ld+json" set:html={JSON.stringify(faqSchema(faqData))} />
+  </Fragment>
+  <div class="cases-header">
+    <h1>CS2 Cases & Collections</h1>
+    <p>Explore all CS2 cases, their contents, drop odds, and market prices. Try our <a href="/case-simulator/" style="color:var(--accent);font-weight:600">Case Simulator</a> to open cases risk-free.</p>
+  </div>
+
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="val">{cases.length}</div>
+      <div class="label">Total Cases</div>
+    </div>
+    <div class="stat-card">
+      <div class="val">{collections.length}</div>
+      <div class="label">Collections</div>
+    </div>
+    <div class="stat-card">
+      <div class="val">2013-2025</div>
+      <div class="label">Years</div>
+    </div>
+    <div class="stat-card">
+      <div class="val">$0-$3K+</div>
+      <div class="label">Item Prices</div>
+    </div>
+  </div>
+
+  <div class="filter-section">
+    <h3>Filter Cases</h3>
+    <div class="filter-buttons">
+      <button class="filter-btn active" data-filter="all">All Cases</button>
+      <button class="filter-btn" data-filter="weapon">Weapon Cases</button>
+      <button class="filter-btn" data-filter="collection">Collections</button>
+    </div>
+  </div>
+
+  <section id="cases-container">
+    <h2>Weapon Cases</h2>
+    <div class="case-grid">
+      {cases.map((caseItem) => (
+        <a href={`/case/${caseItem.id}/`} class="case-card">
+          {caseItem.image && (
+            <div class="case-image">
+              <img src={caseItem.image} alt={caseItem.name} loading="lazy" width="256" height="198" />
+            </div>
+          )}
+          <div class="case-header">
+            <h3>{caseItem.name}</h3>
+            <span class="case-year">{caseItem.year}</span>
+          </div>
+          {caseItem.description && (
+            <p class="case-description">{caseItem.description}</p>
+          )}
+          <div class="case-meta">
+            <span class="case-type">{caseItem.type === 'weapon' ? '🎒 Weapon Case' : '🏆 Special'}</span>
+            <span class="case-date">{caseItem.releaseDate}</span>
+          </div>
+          {caseItem.keyPrice && (
+            <div class="case-price">
+              <span class="label">Key Price:</span>
+              <span class="price">${caseItem.keyPrice}</span>
+            </div>
+          )}
+          <div class="notable-skins">
+            <span class="label">Notable Skins:</span>
+            <div class="skins-list">
+              {caseItem.notableSkins.slice(0, 3).map((skin) => (
+                <span class="skin-name">{skin}</span>
+              ))}
+            </div>
+          </div>
+          <div class="card-cta">View Details →</div>
+        </a>
+      ))}
+    </div>
+  </section>
+
+  <section id="collections-container" style="display:none;">
+    <h2>Collections</h2>
+    <div class="collections-grid">
+      {collections.map((coll) => (
+        <div class="collection-card">
+          <h3>{coll.name}</h3>
+          <p class="collection-map">{coll.mapName}</p>
+          <p class="collection-year">Released {coll.year}</p>
+          <a href={`/maps/${coll.mapName.toLowerCase().replace(/ /g, '-')}/`} class="collection-link">
+            Explore Map →
+          </a>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <section class="faq-section">
+    <h2>CS2 Cases FAQ</h2>
+    <div class="faq">
+      <dt>What is a CS2 case?</dt>
+      <dd>
+        A CS2 case is a container that players can purchase and open with a corresponding key. When opened, you receive a
+        random skin from that case's collection, with rarity determining the item's quality and value.
+      </dd>
+
+      <dt>How do case odds work?</dt>
+      <dd>
+        Each case has a set drop rate for each rarity tier: Mil-Spec (79.92%), Restricted (15.98%), Classified (3.2%),
+        Covert (0.64%), and Souvenir (0.26%). Use our <a href="/case-odds-calculator/">Case Odds Calculator</a> to analyze
+        profitability.
+      </dd>
+
+      <dt>What's the difference between regular and souvenir cases?</dt>
+      <dd>
+        Souvenir cases only drop during competitive matches and cannot be sold on the market in most regions. Items from
+        souvenir cases have match data and team signatures, making them more valuable to collectors.
+      </dd>
+
+      <dt>Are older cases worth less?</dt>
+      <dd>
+        Not necessarily. While key prices may vary, older cases can have valuable discontinued skins. Dragon Lore and other
+        rare skins from early cases (Arms Deal, Bravo) command significant prices on the secondary market.
+      </dd>
+
+      <dt>Is opening cases profitable?</dt>
+      <dd>
+        Statistically, opening cases loses money long-term due to key costs. Try the <a href="/case-simulator/">Case Simulator</a> to see for yourself without spending real money. Most players open cases for skins they love
+        rather than profit. Use our <a href="/tradeup-calculator/">Trade-Up Calculator</a> to find better ROI opportunities, or check the <a href="/market-trends/">Market Trends</a> page for investment timing.
+      </dd>
+
+      <dt>How do collections differ from cases?</dt>
+      <dd>
+        Collections are curated sets of weapon skins released along with map updates. They don't require keys to open but
+        instead are received through drops or purchased directly. Collections typically feature map-themed aesthetics.
+      </dd>
+
+      <dt>What skins are most expensive from cases?</dt>
+      <dd>
+        Covert rarity skins (typically pistols, rifles, and sniper rifles) command the highest prices. Dragon Lore variants
+        are among the most expensive skins ever released and are highly sought by collectors.
+      </dd>
+
+      <dt>Can I still get skins from old cases?</dt>
+      <dd>
+        Yes! Old cases remain in the drop pool and can be purchased from the Steam Community Market. However, key prices are
+        typically lower for older cases, making them sometimes more cost-effective to open than newer cases.
+      </dd>
+    </div>
+  </section>
+
+  <div class="internal-links">
+    <a href="/case-simulator/">Case Simulator</a>
+    <a href="/case-odds-calculator/">Case Odds Calculator</a>
+    <a href="/skins/">Skin Database</a>
+    <a href="/skin-compare/">Skin Compare</a>
+    <a href="/price-tracker/">Price Tracker</a>
+    <a href="/market-trends/">Market Trends</a>
+    <a href="/float-checker/">Float Checker</a>
+    <a href="/tradeup-calculator/">Trade-Up Calculator</a>
+    <a href="/inventory-lookup/">Inventory Lookup</a>
+    <a href="/loadout-builder/">Loadout Builder</a>
+    <a href="/weapons/">Weapon Database</a>
+    <a href="/guides/skins-investing-guide/">Investing Guide</a>
+    <a href="/guides/trading-guide/">Trading Guide</a>
+  </div>
+
+  <ExploreMore context="skins" />
+
+  <style is:inline>
+    .cases-header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    .cases-header h1 {
+      font-size: 2.5rem;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 0.5rem;
+    }
+
+    .cases-header p {
+      font-size: 1.1rem;
+      color: var(--text2);
+    }
+
+    .filter-section {
+      margin: 2rem 0;
+      text-align: center;
+    }
+
+    .filter-buttons {
+      display: flex;
+      gap: 0.5rem;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-top: 1rem;
+    }
+
+    .case-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 1.25rem;
+      margin: 2rem 0;
+    }
+
+    .case-card {
+      display: block;
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1.5rem;
+      text-decoration: none;
+      color: inherit;
+      transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .case-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(245, 166, 35, 0.1), transparent);
+      transition: left 0.5s ease;
+      pointer-events: none;
+    }
+
+    .case-card:hover {
+      border-color: var(--accent);
+      transform: translateY(-4px);
+      box-shadow: 0 12px 32px rgba(245, 166, 35, 0.15);
+    }
+
+    .case-card:hover::before {
+      left: 100%;
+    }
+
+    .case-image {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 0.75rem;
+      margin-bottom: 1rem;
+    }
+
+    .case-image img {
+      max-height: 120px;
+      width: auto;
+      object-fit: contain;
+      display: block;
+      transition: transform 0.3s ease;
+    }
+
+    .case-card:hover .case-image img {
+      transform: scale(1.05);
+    }
+
+    .case-description {
+      color: var(--text2);
+      font-size: 0.85rem;
+      line-height: 1.45;
+      margin: 0 0 0.75rem;
+    }
+
+    .case-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 0.75rem;
+      gap: 1rem;
+    }
+
+    .case-header h3 {
+      margin: 0;
+      font-size: 1.15rem;
+      color: var(--text);
+    }
+
+    .case-year {
+      background: var(--accent);
+      color: #000;
+      padding: 0.2rem 0.5rem;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .case-meta {
+      display: flex;
+      gap: 0.75rem;
+      font-size: 0.85rem;
+      margin-bottom: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .case-type {
+      background: var(--bg3);
+      padding: 0.25rem 0.6rem;
+      border-radius: 4px;
+      color: var(--accent);
+      border: 1px solid var(--border);
+    }
+
+    .case-date {
+      color: var(--text2);
+    }
+
+    .case-price {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.75rem;
+      background: var(--bg3);
+      border-radius: 6px;
+      margin-bottom: 1rem;
+      border: 1px solid var(--border);
+    }
+
+    .case-price .label {
+      color: var(--text2);
+      font-size: 0.85rem;
+    }
+
+    .case-price .price {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: var(--accent);
+    }
+
+    .notable-skins {
+      margin-bottom: 1rem;
+    }
+
+    .notable-skins .label {
+      display: block;
+      color: var(--text2);
+      font-size: 0.85rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .skins-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+
+    .skin-name {
+      padding: 0.4rem 0.6rem;
+      background: var(--bg3);
+      border-radius: 4px;
+      font-size: 0.82rem;
+      color: var(--text);
+      border-left: 3px solid var(--accent);
+    }
+
+    .card-cta {
+      color: var(--accent);
+      font-weight: 600;
+      font-size: 0.9rem;
+      transition: color 0.2s;
+    }
+
+    .case-card:hover .card-cta {
+      color: var(--accent2);
+    }
+
+    .collections-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 1.25rem;
+      margin: 2rem 0;
+    }
+
+    .collection-card {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1.5rem;
+      text-align: center;
+      transition: all 0.3s;
+    }
+
+    .collection-card:hover {
+      border-color: var(--accent);
+      transform: translateY(-4px);
+      box-shadow: 0 12px 32px rgba(245, 166, 35, 0.15);
+    }
+
+    .collection-card h3 {
+      margin: 0 0 0.5rem;
+      color: var(--text);
+    }
+
+    .collection-map {
+      color: var(--accent);
+      font-weight: 600;
+      margin: 0.5rem 0;
+    }
+
+    .collection-year {
+      color: var(--text2);
+      font-size: 0.9rem;
+      margin: 0.5rem 0 1rem;
+    }
+
+    .collection-link {
+      display: inline-block;
+      padding: 0.5rem 1rem;
+      background: var(--accent);
+      color: #000;
+      border-radius: 6px;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+
+    .collection-link:hover {
+      background: var(--accent2);
+      transform: translateX(2px);
+    }
+
+    .faq-section {
+      margin: 3rem 0;
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 2rem;
+    }
+
+    @media (max-width: 768px) {
+      .cases-header h1 {
+        font-size: 1.8rem;
+      }
+
+      .case-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .collections-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .filter-buttons {
+        flex-direction: column;
+      }
+
+      .case-header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .case-year {
+        align-self: flex-start;
+      }
+    }
+  </style>
+
+  <script is:inline>
+    document.addEventListener('DOMContentLoaded', () => {
+      const filterBtns = document.querySelectorAll('.filter-btn');
+      const casesContainer = document.getElementById('cases-container');
+      const collectionsContainer = document.getElementById('collections-container');
+
+      filterBtns.forEach((btn) => {
+        btn.addEventListener('click', () => {
+          filterBtns.forEach((b) => b.classList.remove('active'));
+          btn.classList.add('active');
+
+          const filter = btn.getAttribute('data-filter');
+
+          if (filter === 'all') {
+            casesContainer.style.display = 'block';
+            collectionsContainer.style.display = 'none';
+          } else if (filter === 'weapon') {
+            casesContainer.style.display = 'block';
+            collectionsContainer.style.display = 'none';
+          } else if (filter === 'collection') {
+            casesContainer.style.display = 'none';
+            collectionsContainer.style.display = 'block';
+          }
+        });
+      });
+    });
+  </script>
+</Base>

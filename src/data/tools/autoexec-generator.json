@@ -1,0 +1,29 @@
+{
+  "slug": "autoexec-generator",
+  "title": "CS2 Autoexec Generator — Custom Config Builder | CSDB.gg",
+  "description": "Generate a complete CS2 autoexec.cfg with optimised settings for FPS, network, competitive play, and practice. One-click download with full console command explanations.",
+  "heading": "CS2 Autoexec Generator",
+  "intro": "Build a custom autoexec.cfg tailored to your priorities. Choose a preset or tweak individual settings, then download the ready-to-use config file.",
+  "faqs": [
+    {
+      "question": "What is an autoexec.cfg in CS2?",
+      "answer": "An autoexec.cfg is a configuration file that automatically executes console commands every time CS2 launches. It ensures your preferred settings are always applied, even if the game resets them. Place it in your CS2 cfg folder."
+    },
+    {
+      "question": "Where do I put my autoexec.cfg?",
+      "answer": "Place autoexec.cfg in: Steam/steamapps/common/Counter-Strike Global Offensive/game/csgo/cfg/. Create the file if it doesn't exist. The file must be named exactly \"autoexec.cfg\" and end with the command \"host_writeconfig\"."
+    },
+    {
+      "question": "Will an autoexec improve my FPS?",
+      "answer": "Yes, FPS-focused commands like disabling unnecessary visual effects (cl_forcepreload 1, r_drawtracers_firstperson 0) and optimizing rendering can improve frame rates by 10-30% depending on your hardware."
+    },
+    {
+      "question": "Is using an autoexec allowed in competitive?",
+      "answer": "Absolutely. Autoexec files only adjust client-side settings that you could change manually through the console or settings menu. They do not provide any unfair advantage and are used by virtually every professional player."
+    },
+    {
+      "question": "What commands should every autoexec have?",
+      "answer": "Essential commands include: rate 786432 (max network bandwidth), cl_interp_ratio 1 (network interpolation), sensitivity and crosshair settings, and host_writeconfig at the end to save changes."
+    }
+  ]
+}

@@ -1,0 +1,509 @@
+---
+import Base from '../layouts/Base.astro';
+import ExploreMore from '../components/ExploreMore.astro';
+import { SKINS, RARITY_COLORS, RARITY_BG, getLowestPrice, getHighestPrice, getUniqueWeapons, getUniqueCategories, getWeaponsInCategory, SKINS_SOURCE, SKINS_TOTAL, getCollections, getVolumeLabel, getLiquidityColor, getLiquidityLabel } from '../lib/skins';
+import { WEAPON_CATEGORIES, faqSchema, breadcrumbSchema, getWeaponComparisons } from '../lib/weapons';
+import { skinCardImage } from '../lib/imageOptimize';
+
+const title = 'CS2 Skins Database — Browse All Skins & Prices | CSDB.gg';
+const description = 'Browse all CS2 skins with live market prices. Filter by weapon, rarity, category and price. Find the best deals on AK-47, AWP, M4A4, knife and glove skins.';
+
+const weapons = getUniqueWeapons();
+const categories = getUniqueCategories();
+const sortedSkins = [...SKINS].sort((a, b) => getHighestPrice(b) - getHighestPrice(a));
+
+// Grouped weapons by category for organized filter
+const weaponGroups = [
+  { cat: 'rifle', label: 'Rifles', weapons: getWeaponsInCategory('rifle') },
+  { cat: 'pistol', label: 'Pistols', weapons: getWeaponsInCategory('pistol') },
+  { cat: 'smg', label: 'SMGs', weapons: getWeaponsInCategory('smg') },
+  { cat: 'heavy', label: 'Heavy', weapons: getWeaponsInCategory('heavy') },
+  { cat: 'knife', label: 'Knives', weapons: getWeaponsInCategory('knife') },
+  { cat: 'glove', label: 'Gloves', weapons: getWeaponsInCategory('glove') },
+].filter(g => g.weapons.length > 0);
+
+// Category config with icons, labels, and link targets
+const categoryConfig: Record<string, { label: string; icon: string; link?: string }> = {
+  rifle: { label: 'Rifles', icon: '🔫', link: '/weapons/rifle/' },
+  pistol: { label: 'Pistols', icon: '🔫', link: '/weapons/pistol/' },
+  smg: { label: 'SMGs', icon: '🔧', link: '/weapons/smg/' },
+  heavy: { label: 'Heavy', icon: '🛡️', link: '/weapons/heavy/' },
+  knife: { label: 'Knives', icon: '🔪' },
+  glove: { label: 'Gloves', icon: '🧤' },
+  other: { label: 'Other', icon: '📦' },
+};
+
+const faqs = [
+  { question: 'What are CS2 skin rarities?', answer: 'CS2 skins come in 7 rarity tiers: Consumer Grade (white), Industrial Grade (light blue), Mil-Spec (blue), Restricted (purple), Classified (pink), Covert (red), and Contraband (orange/gold). Higher rarity generally means higher value.' },
+  { question: 'What does Factory New mean in CS2?', answer: 'Factory New (FN) is the best wear condition with float values 0.00-0.07. Skins appear pristine with minimal scratches. Other conditions are Minimal Wear, Field-Tested, Well-Worn, and Battle-Scarred.' },
+  { question: 'What is the most expensive CS2 skin?', answer: 'Some of the most expensive CS2 skins include the AWP Dragon Lore, AK-47 Fire Serpent, and M4A4 Howl (Contraband). Rare knife finishes like Karambit Fade and Butterfly Knife Doppler also command high prices.' },
+  { question: 'How do CS2 skin prices change?', answer: 'CS2 skin prices fluctuate based on supply and demand, game updates, case discontinuations, and community interest. Prices are sourced from Steam Community Market and other marketplaces via PriceEmpire.' },
+];
+
+const crumbs = [
+  { name: 'Home', url: '/' },
+  { name: 'Skins', url: '/skins/' },
+];
+
+const topCollections = getCollections().slice(0, 10);
+const topComparisons = getWeaponComparisons().slice(0, 8);
+---
+<Base title={title} description={description} currentNav="/skins/">
+<script type="application/ld+json" set:html={JSON.stringify(faqSchema(faqs))}></script>
+<script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema(crumbs))}></script>
+
+<nav class="breadcrumb"><a href="/">Home</a> / <span>Skins</span></nav>
+
+<div class="sk-header">
+  <h1>Browse All CS2 Skins</h1>
+  <p>Explore {SKINS_TOTAL} CS2 weapon skins with current market prices. Filter by category or weapon, then click any skin to see full details.</p>
+</div>
+
+<!-- Category Filter Cards -->
+<section class="sk-filter-section">
+  <div class="sk-filter-label">Browse by Category</div>
+  <div class="sk-cat-grid">
+    <button class="sk-cat-card active" data-category="all">
+      <span class="sk-cat-icon">🎮</span>
+      <span class="sk-cat-name">All Skins</span>
+      <span class="sk-cat-count">{SKINS_TOTAL}</span>
+    </button>
+    {categories.map(cat => {
+      const count = sortedSkins.filter(s => s.category === cat).length;
+      const cfg = categoryConfig[cat] || { label: cat, icon: '📦' };
+      return (
+        <button class="sk-cat-card" data-category={cat}>
+          <span class="sk-cat-icon">{cfg.icon}</span>
+          <span class="sk-cat-name">{cfg.label}</span>
+          <span class="sk-cat-count">{count}</span>
+          {cfg.link && (
+            <a href={cfg.link} class="sk-cat-link" onclick="event.stopPropagation()">View all {cfg.label} →</a>
+          )}
+        </button>
+      );
+    })}
+  </div>
+</section>
+
+<!-- Weapon Filter (Grouped by Category) -->
+<section class="sk-filter-section">
+  <div class="sk-filter-label">Filter by Weapon</div>
+  <div class="sk-wep-grouped" id="weapon-filters">
+    <div class="sk-wep-all">
+      <button class="filter-btn active" data-weapon="all">All Weapons</button>
+    </div>
+    {weaponGroups.map(group => (
+      <div class="sk-wep-group">
+        <div class="sk-wep-group-label">{group.label}</div>
+        <div class="sk-wep-group-btns">
+          {group.weapons.map(w => (
+            <button class="filter-btn" data-weapon={w.weapon}>
+              <span>{w.weapon}</span>
+              <span class="sk-wep-ct">{w.count}</span>
+            </button>
+          ))}
+        </div>
+      </div>
+    ))}
+  </div>
+</section>
+
+<!-- Controls Bar -->
+<div class="sk-controls">
+  <div class="sk-count" id="skin-count">Showing {sortedSkins.length} skins</div>
+  <div class="sk-sort">
+    <label for="sk-sort-select">Sort by:</label>
+    <select id="sk-sort-select">
+      <option value="price-desc">Price: High to Low</option>
+      <option value="price-asc">Price: Low to High</option>
+      <option value="name-asc">Name: A-Z</option>
+      <option value="name-desc">Name: Z-A</option>
+    </select>
+  </div>
+</div>
+
+<div class="skin-grid" id="skin-grid">
+{sortedSkins.map((skin, i) => {
+  const low = getLowestPrice(skin);
+  const high = getHighestPrice(skin);
+  const rarityColor = RARITY_COLORS[skin.rarity] || '#fff';
+  const rarityBg = RARITY_BG[skin.rarity] || 'rgba(255,255,255,0.05)';
+  const catLabel = (categoryConfig[skin.category] || { label: skin.category }).label;
+  return (
+    <a href={`/skin/${skin.slug}/`} class={`skin-card${i >= 48 ? ' sk-hidden' : ''}`} data-weapon={skin.weapon} data-category={skin.category} data-rarity={skin.rarity} data-price={high} data-name={skin.name} style={`--rarity-color:${rarityColor};--rarity-bg:${rarityBg}`}>
+      <div class="skin-card-header">
+        <span class="skin-weapon-name">{skin.weapon}</span>
+        <span class="skin-name">{skin.name}</span>
+      </div>
+      <div class="skin-card-badges">
+        <span class="rarity-pill" style={`background:${rarityColor};color:#000`}>{skin.rarity} {catLabel}</span>
+        {skin.statTrak && <span class="stattrak-pill">StatTrak Available</span>}
+        {skin.souvenir && <span class="souvenir-pill">Souvenir Available</span>}
+      </div>
+      {((skin.volume7d && skin.volume7d > 0) || (skin.liquidity && skin.liquidity > 0)) && (
+        <div class="skin-card-trend">
+          {skin.volume7d && skin.volume7d > 0 && <span class="trend-badge trend-volume" title="7-day Steam volume">{getVolumeLabel(skin.volume7d)} vol</span>}
+          {skin.liquidity && skin.liquidity > 0 && <span class="trend-badge trend-liquidity" style={`color:${getLiquidityColor(skin.liquidity)}`} title={`Liquidity: ${getLiquidityLabel(skin.liquidity)}`}>{getLiquidityLabel(skin.liquidity)}</span>}
+        </div>
+      )}
+      <div class="skin-card-image" style={`background:${rarityBg}`}>
+        {skin.image
+          ? <img src={skinCardImage(skin.image)} alt={`${skin.weapon} | ${skin.name}`} loading="lazy" width="400" height="300" style="max-width:90%;max-height:120px;object-fit:contain" />
+          : <div class="skin-placeholder">{skin.weapon.substring(0, 2)}</div>
+        }
+      </div>
+      <div class="skin-card-prices">
+        <span class="skin-price-range">${low.toFixed(2)}{low !== high ? ` – $${high.toFixed(2)}` : ''}</span>
+        {skin.collection && <span class="skin-collection">{skin.collection}</span>}
+      </div>
+      <div class="skin-card-wears">
+        <table class="skin-wear-table">
+          {skin.prices.map(p => (
+            <tr><td class="wear-name">{p.wear}</td><td class="wear-price">${p.price.toFixed(2)}</td></tr>
+          ))}
+        </table>
+      </div>
+      <div class="skin-card-footer">
+        <span class="skin-wears">{skin.prices.length} wear{skin.prices.length !== 1 ? 's' : ''} • Float {skin.minFloat.toFixed(2)} – {skin.maxFloat.toFixed(2)}</span>
+      </div>
+    </a>
+  );
+})}
+</div>
+
+<!-- Pagination Controls -->
+<div class="sk-pagination" id="sk-pagination">
+  <div class="sk-page-info" id="sk-page-info">Page 1 of {Math.ceil(sortedSkins.length / 48)}</div>
+  <div class="sk-page-btns" id="sk-page-btns">
+    <button class="sk-page-btn" id="sk-prev" disabled>← Prev</button>
+    <div class="sk-page-nums" id="sk-page-nums"></div>
+    <button class="sk-page-btn" id="sk-next">Next →</button>
+  </div>
+</div>
+
+<!-- Weapon Category Quick Links for SEO -->
+<section class="sk-quick-links">
+  <h2>Explore Weapon Categories</h2>
+  <p>Dive deeper into specific weapon classes for detailed stats, buying guides, and comparisons.</p>
+  <div class="sk-quick-grid">
+    {WEAPON_CATEGORIES.map(cat => (
+      <a href={`/weapons/${cat.slug}/`} class="sk-quick-card">
+        <span class="sk-quick-icon">{cat.icon}</span>
+        <h3>{cat.name}</h3>
+        <p>{cat.description}</p>
+        <span class="sk-quick-link">Browse {cat.name} →</span>
+      </a>
+    ))}
+  </div>
+</section>
+
+<!-- Browse by Collection -->
+{topCollections.length > 0 && (
+  <section class="sk-browse-section">
+    <h2>Browse by Collection</h2>
+    <div class="sk-browse-grid">
+      {topCollections.map(c => (
+        <a href={`/collection/${c.slug}/`} class="sk-browse-pill">
+          <span class="sk-browse-name">{c.name}</span>
+          <span class="sk-browse-count">{c.skins.length} skins</span>
+        </a>
+      ))}
+    </div>
+  </section>
+)}
+
+<!-- Popular Weapon Comparisons -->
+{topComparisons.length > 0 && (
+  <section class="sk-browse-section">
+    <h2>Popular Weapon Comparisons</h2>
+    <div class="sk-browse-grid">
+      {topComparisons.map(cmp => (
+        <a href={`/compare/${cmp.slug}/`} class="sk-browse-pill">
+          <span class="sk-browse-name">{cmp.weapon1} vs {cmp.weapon2}</span>
+        </a>
+      ))}
+    </div>
+  </section>
+)}
+
+<div class="internal-links">
+  <strong>Related Pages:</strong>
+  <a href="/skin-compare/">Skin Compare</a>
+  <a href="/price-tracker/">Price Tracker</a>
+  <a href="/market-trends/">Market Trends</a>
+  <a href="/float-checker/">Float Checker</a>
+  <a href="/tradeup-calculator/">Trade-Up Calculator</a>
+  <a href="/case-odds-calculator/">Case Odds Calculator</a>
+  <a href="/case-simulator/">Case Simulator</a>
+  <a href="/cases/">All Cases</a>
+  <a href="/inventory-lookup/">Inventory Lookup</a>
+  <a href="/loadout-builder/">Loadout Builder</a>
+  <a href="/weapons/">Weapons Database</a>
+  <a href="/weapon-compare/">Weapon Compare</a>
+  <a href="/damage-calculator/">Damage Calculator</a>
+  <a href="/trading-sites/">Trading Sites</a>
+  <a href="/guides/float-guide/">Float Guide</a>
+  <a href="/guides/trading-guide/">Trading Guide</a>
+  <a href="/guides/skins-investing-guide/">Investing Guide</a>
+</div>
+
+<h2>Frequently Asked Questions</h2>
+<dl class="faq">{faqs.map(f => (<Fragment><dt>{f.question}</dt><dd>{f.answer}</dd></Fragment>))}</dl>
+
+<ExploreMore context="skins" />
+
+<style is:inline>
+/* Header */
+.sk-header{text-align:center;margin-bottom:2rem;padding-bottom:1.5rem;border-bottom:1px solid var(--border)}
+.sk-header h1{margin:0 0 .5rem;font-size:2.2rem}
+.sk-header p{max-width:600px;margin:0 auto;color:var(--text2);line-height:1.6}
+
+/* Filter Sections */
+.sk-filter-section{margin-bottom:1.5rem}
+.sk-filter-label{font-size:.82rem;color:var(--text2);margin-bottom:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em}
+
+/* Category Cards Grid */
+.sk-cat-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:.6rem}
+.sk-cat-card{display:flex;flex-direction:column;align-items:center;gap:.2rem;background:var(--bg2);border:2px solid var(--border);border-radius:10px;padding:.85rem .6rem;cursor:pointer;transition:border-color .2s,transform .15s,box-shadow .2s;font-family:inherit;color:inherit;position:relative}
+.sk-cat-card:hover{border-color:var(--accent);transform:translateY(-2px);box-shadow:0 4px 12px rgba(0,0,0,.2)}
+.sk-cat-card.active{border-color:var(--accent);background:rgba(0,180,255,.06);box-shadow:0 0 0 1px var(--accent)}
+.sk-cat-icon{font-size:1.5rem}
+.sk-cat-name{font-size:.85rem;font-weight:700}
+.sk-cat-count{font-size:.75rem;color:var(--accent);font-weight:600}
+.sk-cat-link{font-size:.68rem;color:var(--accent);text-decoration:none;margin-top:.2rem;opacity:.7;transition:opacity .2s}
+.sk-cat-link:hover{opacity:1;text-decoration:underline}
+
+/* Weapon Filter (Grouped) */
+.sk-wep-grouped{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:.75rem;display:flex;flex-direction:column;gap:.6rem}
+.sk-wep-all{padding-bottom:.5rem;border-bottom:1px solid var(--border)}
+.sk-wep-all .filter-btn{font-weight:700}
+.sk-wep-group{display:flex;gap:.5rem;align-items:flex-start}
+.sk-wep-group-label{font-size:.72rem;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:.06em;min-width:56px;padding-top:.4rem;flex-shrink:0}
+.sk-wep-group-btns{display:flex;flex-wrap:wrap;gap:.3rem;flex:1}
+.sk-wep-group-btns .filter-btn{display:inline-flex;align-items:center;gap:.35rem}
+.sk-wep-ct{font-size:.68rem;color:var(--text2);opacity:.5;font-weight:600}
+.filter-btn.active .sk-wep-ct{color:var(--bg);opacity:.8}
+
+/* Controls Bar */
+.sk-controls{display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;flex-wrap:wrap;gap:.5rem}
+.sk-count{font-size:.88rem;color:var(--text2);font-weight:600}
+.sk-sort{display:flex;align-items:center;gap:.5rem}
+.sk-sort label{font-size:.82rem;color:var(--text2);font-weight:600}
+.sk-sort select{background:var(--bg3);color:var(--text);border:1px solid var(--border);padding:.4rem .7rem;border-radius:6px;font-size:.85rem;font-family:inherit;cursor:pointer}
+.sk-sort select:focus{outline:none;border-color:var(--accent)}
+
+/* Skin Grid */
+.skin-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin:1.5rem 0}
+@media(max-width:1100px){.skin-grid{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:768px){.skin-grid{grid-template-columns:repeat(2,1fr)};.sk-cat-grid{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:480px){.skin-grid{grid-template-columns:1fr};.sk-cat-grid{grid-template-columns:repeat(2,1fr)}}
+
+.skin-card{display:flex;flex-direction:column;background:var(--bg2);border:1px solid var(--border);border-radius:10px;overflow:hidden;text-decoration:none;color:inherit;transition:border-color .2s,transform .2s,box-shadow .2s}
+.skin-card:hover{border-color:var(--rarity-color,var(--accent));transform:translateY(-3px);box-shadow:0 8px 24px rgba(0,0,0,.4)}
+
+.skin-card-header{padding:.9rem 1rem .4rem;text-align:center}
+.skin-weapon-name{display:block;font-size:.78rem;color:var(--text2);letter-spacing:.03em}
+.skin-name{display:block;font-size:1.1rem;font-weight:800;color:var(--text);margin-top:.15rem}
+
+.skin-card-badges{display:flex;flex-direction:column;align-items:center;gap:.35rem;padding:0 .75rem .5rem}
+.rarity-pill{display:inline-block;padding:.2rem .75rem;border-radius:3px;font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.04em;width:100%;text-align:center}
+.stattrak-pill{display:inline-block;padding:.2rem .75rem;border-radius:3px;font-size:.72rem;font-weight:600;background:#cf6d1e;color:#000;width:100%;text-align:center}
+.souvenir-pill{display:inline-block;padding:.2rem .75rem;border-radius:3px;font-size:.72rem;font-weight:600;background:#ffd740;color:#000;width:100%;text-align:center}
+
+.skin-card-trend{display:flex;gap:.35rem;justify-content:center;padding:0 .75rem .25rem;flex-wrap:wrap}
+.trend-badge{font-size:.68rem;font-weight:600;padding:.15rem .5rem;border-radius:3px;background:var(--bg3);letter-spacing:.02em}
+.trend-volume{color:#81c784}
+.skin-card-image{display:flex;align-items:center;justify-content:center;min-height:130px;padding:.75rem;position:relative}
+.skin-placeholder{font-size:2.5rem;font-weight:900;color:var(--rarity-color,var(--text2));opacity:.25}
+
+.skin-card-prices{padding:.6rem 1rem .3rem;text-align:center}
+.skin-price-range{display:block;font-size:1.05rem;font-weight:700;color:var(--text)}
+.skin-collection{display:block;font-size:.72rem;color:var(--text2);margin-top:.25rem}
+
+.skin-card-wears{padding:.3rem .75rem .5rem}
+.skin-wear-table{width:100%;border-collapse:collapse;font-size:.82rem}
+.skin-wear-table td{padding:.25rem .4rem;border-bottom:1px solid var(--border)}
+.wear-name{color:var(--text2)}
+.wear-price{text-align:right;font-weight:700;color:var(--text)}
+
+.skin-card-footer{padding:.5rem .75rem;background:var(--bg3);text-align:center;border-top:1px solid var(--border);margin-top:auto}
+.skin-wears{font-size:.75rem;font-weight:600;color:var(--accent)}
+
+/* Pagination */
+.sk-pagination{display:flex;flex-direction:column;align-items:center;gap:.75rem;margin:2rem 0;padding:1.5rem;background:var(--bg2);border:1px solid var(--border);border-radius:10px}
+.sk-page-info{font-size:.85rem;color:var(--text2);font-weight:600}
+.sk-page-btns{display:flex;align-items:center;gap:.4rem;flex-wrap:wrap;justify-content:center}
+.sk-page-btn{background:var(--bg3);color:var(--text);border:1px solid var(--border);padding:.45rem 1rem;border-radius:6px;cursor:pointer;font-family:inherit;font-size:.85rem;font-weight:600;transition:all .2s}
+.sk-page-btn:hover:not(:disabled){border-color:var(--accent);color:var(--accent);background:rgba(212,149,110,.08)}
+.sk-page-btn:disabled{opacity:.35;cursor:not-allowed}
+.sk-page-btn.active{background:var(--accent);color:var(--bg);border-color:var(--accent)}
+.sk-page-nums{display:flex;gap:.3rem;flex-wrap:wrap;justify-content:center}
+.sk-page-num{background:var(--bg3);color:var(--text2);border:1px solid var(--border);padding:.4rem .7rem;border-radius:6px;cursor:pointer;font-family:inherit;font-size:.82rem;font-weight:600;min-width:36px;text-align:center;transition:all .2s}
+.sk-page-num:hover{border-color:var(--accent);color:var(--accent)}
+.sk-page-num.active{background:var(--accent);color:var(--bg);border-color:var(--accent)}
+.sk-page-ellipsis{padding:.4rem .3rem;color:var(--text2);font-size:.82rem}
+.sk-hidden{display:none}
+
+/* Quick Links Section */
+.sk-quick-links{margin:3rem 0;padding:2rem;background:var(--bg2);border:1px solid var(--border);border-radius:12px}
+.sk-quick-links h2{margin:0 0 .4rem;text-align:center}
+.sk-quick-links>p{text-align:center;color:var(--text2);margin:0 0 1.5rem;font-size:.9rem}
+.sk-quick-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:1rem}
+.sk-quick-card{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:1.25rem;text-decoration:none;color:inherit;transition:border-color .2s,transform .2s;display:flex;flex-direction:column}
+.sk-quick-card:hover{border-color:var(--accent);transform:translateY(-2px)}
+.sk-quick-icon{font-size:1.8rem;margin-bottom:.5rem}
+.sk-quick-card h3{margin:0 0 .3rem;font-size:1rem}
+.sk-quick-card p{margin:0 0 .75rem;font-size:.8rem;color:var(--text2);line-height:1.5;flex:1}
+.sk-quick-link{color:var(--accent);font-weight:700;font-size:.82rem}
+
+.sk-browse-section{margin:2.5rem 0}
+.sk-browse-section h2{margin:0 0 1rem;font-size:1.25rem}
+.sk-browse-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:.6rem}
+.sk-browse-pill{display:flex;align-items:center;gap:.5rem;padding:.6rem 1rem;background:var(--bg2);border:1px solid var(--border);border-radius:8px;text-decoration:none;transition:all .15s;font-size:.88rem}
+.sk-browse-pill:hover{border-color:var(--accent);background:var(--bg3);transform:translateY(-1px)}
+.sk-browse-name{color:var(--text);font-weight:600;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sk-browse-count{color:var(--text2);font-size:.75rem;font-weight:500;background:var(--bg3);padding:.15rem .5rem;border-radius:4px;white-space:nowrap}
+</style>
+
+<script is:inline>
+(function(){
+  var catCards = document.querySelectorAll('.sk-cat-card[data-category]');
+  var wepBtns = document.querySelectorAll('.filter-btn[data-weapon]');
+  var allCards = Array.from(document.querySelectorAll('.skin-card[data-weapon]'));
+  var countEl = document.getElementById('skin-count');
+  var pageInfo = document.getElementById('sk-page-info');
+  var pageNums = document.getElementById('sk-page-nums');
+  var prevBtn = document.getElementById('sk-prev');
+  var nextBtn = document.getElementById('sk-next');
+  var grid = document.getElementById('skin-grid');
+  var activeCat = 'all';
+  var activeWep = 'all';
+  var currentPage = 1;
+  var perPage = 48;
+  var sortMode = 'price-desc';
+
+  function getFilteredCards() {
+    return allCards.filter(function(c) {
+      var catMatch = activeCat === 'all' || c.dataset.category === activeCat;
+      var wepMatch = activeWep === 'all' || c.dataset.weapon === activeWep;
+      return catMatch && wepMatch;
+    });
+  }
+
+  function sortCards(arr) {
+    return arr.slice().sort(function(a, b) {
+      if (sortMode === 'price-desc') return (parseFloat(b.dataset.price) || 0) - (parseFloat(a.dataset.price) || 0);
+      if (sortMode === 'price-asc') return (parseFloat(a.dataset.price) || 0) - (parseFloat(b.dataset.price) || 0);
+      if (sortMode === 'name-asc') return (a.dataset.name || '').localeCompare(b.dataset.name || '');
+      if (sortMode === 'name-desc') return (b.dataset.name || '').localeCompare(a.dataset.name || '');
+      return 0;
+    });
+  }
+
+  function renderPage() {
+    var filtered = sortCards(getFilteredCards());
+    var totalPages = Math.max(1, Math.ceil(filtered.length / perPage));
+    if (currentPage > totalPages) currentPage = totalPages;
+    var start = (currentPage - 1) * perPage;
+    var end = start + perPage;
+    var pageItems = filtered.slice(start, end);
+
+    // Hide all cards first
+    allCards.forEach(function(c) { c.style.display = 'none'; c.classList.add('sk-hidden'); });
+
+    // Show only current page items and re-append them in sorted order
+    pageItems.forEach(function(c) {
+      c.style.display = '';
+      c.classList.remove('sk-hidden');
+      grid.appendChild(c);
+    });
+
+    // Update count
+    if (countEl) {
+      var showStart = start + 1;
+      var showEnd = Math.min(end, filtered.length);
+      countEl.textContent = 'Showing ' + showStart + '–' + showEnd + ' of ' + filtered.length + ' skins';
+    }
+
+    // Update page info
+    if (pageInfo) pageInfo.textContent = 'Page ' + currentPage + ' of ' + totalPages;
+
+    // Update prev/next
+    if (prevBtn) prevBtn.disabled = currentPage <= 1;
+    if (nextBtn) nextBtn.disabled = currentPage >= totalPages;
+
+    // Build page number buttons
+    if (pageNums) {
+      pageNums.innerHTML = '';
+      var pages = [];
+      // Always show first, last, current, and neighbors
+      for (var p = 1; p <= totalPages; p++) {
+        if (p === 1 || p === totalPages || (p >= currentPage - 2 && p <= currentPage + 2)) {
+          pages.push(p);
+        }
+      }
+      var last = 0;
+      pages.forEach(function(p) {
+        if (last && p - last > 1) {
+          var ell = document.createElement('span');
+          ell.className = 'sk-page-ellipsis';
+          ell.textContent = '...';
+          pageNums.appendChild(ell);
+        }
+        var btn = document.createElement('button');
+        btn.className = 'sk-page-num' + (p === currentPage ? ' active' : '');
+        btn.textContent = p;
+        btn.addEventListener('click', function() { currentPage = p; renderPage(); scrollToGrid(); });
+        pageNums.appendChild(btn);
+        last = p;
+      });
+    }
+  }
+
+  function scrollToGrid() {
+    var el = document.getElementById('skin-count');
+    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  // Category filter
+  catCards.forEach(function(card) {
+    card.addEventListener('click', function(e) {
+      if (e.target.closest('.sk-cat-link')) return;
+      catCards.forEach(function(c) { c.classList.remove('active'); });
+      card.classList.add('active');
+      activeCat = card.dataset.category;
+      currentPage = 1;
+      renderPage();
+    });
+  });
+
+  // Weapon filter
+  wepBtns.forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      wepBtns.forEach(function(b) { b.classList.remove('active'); });
+      btn.classList.add('active');
+      activeWep = btn.dataset.weapon;
+      currentPage = 1;
+      renderPage();
+    });
+  });
+
+  // Sort
+  var sortSelect = document.getElementById('sk-sort-select');
+  if (sortSelect) {
+    sortSelect.addEventListener('change', function() {
+      sortMode = sortSelect.value;
+      currentPage = 1;
+      renderPage();
+    });
+  }
+
+  // Prev / Next
+  if (prevBtn) prevBtn.addEventListener('click', function() { if (currentPage > 1) { currentPage--; renderPage(); scrollToGrid(); } });
+  if (nextBtn) nextBtn.addEventListener('click', function() { currentPage++; renderPage(); scrollToGrid(); });
+
+  // Initial render
+  renderPage();
+})();
+</script>
+</Base>

@@ -1,0 +1,326 @@
+---
+import Base from '../../../layouts/Base.astro';
+import { tradingSites, getTradingSiteBySlug, faqSchema, breadcrumbSchema } from '../../../lib/trading-sites';
+
+export async function getStaticPaths() {
+  return tradingSites.map(site => ({
+    params: { slug: site.slug },
+  }));
+}
+
+const { slug } = Astro.params;
+const site = getTradingSiteBySlug(slug);
+
+if (!site) {
+  return Astro.redirect('/trading-sites/');
+}
+
+// Use referralUrl if set, otherwise fall back to plain URL
+const visitUrl = site.referralUrl || site.url;
+const hasPromo = site.promoCode && site.promoCode.length > 0;
+const typeLabel = site.type === 'marketplace' ? 'P2P Marketplace' : site.type === 'trading' ? 'Bot Trading' : 'Marketplace + Bot Trading';
+
+// SEO
+const pageTitle = `${site.name} Promo Code${hasPromo ? ` "${site.promoCode}"` : ''} — ${site.promoBonus || 'Exclusive Bonus'} (${new Date().toLocaleString('en-US', { month: 'long', year: 'numeric' })}) | CSDB.gg`;
+const pageDesc = `Get the latest ${site.name} promo code${hasPromo ? ` "${site.promoCode}"` : ''} for ${site.promoBonus || 'exclusive bonuses'}. Step-by-step guide to claim your bonus on ${site.name}. Updated ${new Date().toLocaleString('en-US', { month: 'long', year: 'numeric' })}.`;
+
+const breadcrumbs = [
+  { name: 'Home', url: '/' },
+  { name: 'Trading Sites', url: '/trading-sites/' },
+  { name: site.name, url: `/trading-site/${site.slug}/` },
+  { name: 'Promo Code', url: `/trading-site/${site.slug}/promo-code/` },
+];
+
+const faqs = [
+  {
+    question: `What is the ${site.name} promo code?`,
+    answer: hasPromo
+      ? `The current ${site.name} promo code is "${site.promoCode}". Use it when signing up or depositing to get ${site.promoBonus}.`
+      : `${site.name} doesn't currently have a public promo code. Check back regularly as we update codes as they become available.`,
+  },
+  {
+    question: `How do I use the ${site.name} promo code?`,
+    answer: `Visit ${site.name} through our link, create an account or log in, then enter the promo code in the designated field (usually found on the deposit page or in account settings). The bonus will be applied automatically.`,
+  },
+  {
+    question: `Does the ${site.name} promo code expire?`,
+    answer: `Promo codes can change or expire at any time. We update our codes regularly. If a code doesn't work, check back here for the latest valid code.`,
+  },
+  {
+    question: `Can I use the ${site.name} promo code more than once?`,
+    answer: `Most promo codes on ${site.name} are limited to one use per account. Some deposit bonuses may be reusable — check the terms on ${site.name}'s website for specifics.`,
+  },
+];
+---
+
+<Base title={pageTitle} description={pageDesc} currentNav="/trading-sites/">
+  <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema(breadcrumbs))}></script>
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema(faqs))}></script>
+
+  <nav class="breadcrumb">
+    <a href="/">Home</a> / <a href="/trading-sites/">Trading Sites</a> / <a href={`/trading-site/${site.slug}/`}>{site.name}</a> / <span>Promo Code</span>
+  </nav>
+
+  <!-- Hero -->
+  <div class="promo-hero">
+    <div class="promo-hero-badge" style={`background:${site.color}30;border-color:${site.color}`}>
+      {site.logo}
+    </div>
+    <h1>{site.name} Promo Code</h1>
+    <p class="promo-subtitle">{hasPromo ? `Use code "${site.promoCode}" to get ${site.promoBonus}` : `Exclusive deals and bonuses for ${site.name}`}</p>
+  </div>
+
+  <!-- Promo Code Card -->
+  <div class="promo-card">
+    {hasPromo ? (
+      <div class="promo-code-display">
+        <div class="promo-label">Your Promo Code</div>
+        <div class="promo-code-box">
+          <span class="promo-code-text" id="promo-code">{site.promoCode}</span>
+          <button class="copy-btn" id="copy-btn" data-code={site.promoCode}>Copy</button>
+        </div>
+        {site.promoBonus && <div class="promo-bonus">{site.promoBonus}</div>}
+      </div>
+    ) : (
+      <div class="promo-code-display">
+        <div class="promo-label">Promo Code</div>
+        <div class="promo-no-code">No active promo code — use our referral link for the best available deal</div>
+      </div>
+    )}
+    <a href={visitUrl} target="_blank" rel="noopener noreferrer nofollow" class="promo-cta-btn">
+      Visit {site.name} {hasPromo ? `with Code →` : `→`}
+    </a>
+  </div>
+
+  <!-- Details -->
+  {site.promoDetails && (
+    <section class="promo-details-section">
+      <h2>About This Offer</h2>
+      <p>{site.promoDetails}</p>
+    </section>
+  )}
+
+  <!-- How to Claim -->
+  <section class="how-to-claim">
+    <h2>How to Claim Your {site.name} Bonus</h2>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-content">
+          <h3>Visit {site.name}</h3>
+          <p>Click our link above to go to <strong>{site.name}</strong>. Using our referral link ensures you're eligible for the bonus.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-content">
+          <h3>Create an Account</h3>
+          <p>Sign up with your Steam account or email. Complete any required verification steps. Enable two-factor authentication for security.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-content">
+          <h3>{hasPromo ? 'Enter the Promo Code' : 'Check for Promotions'}</h3>
+          <p>{hasPromo
+            ? `Navigate to the deposit page or account settings and enter the code "${site.promoCode}" in the promo code field. The bonus will be applied to your account.`
+            : `Check the promotions or deposit page for any active bonuses. New users often get automatic welcome bonuses through referral links.`
+          }</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-content">
+          <h3>Start Trading</h3>
+          <p>{site.type === 'marketplace'
+            ? 'Browse the marketplace, list your skins, or make purchases. Your bonus will be credited according to the promotion terms.'
+            : site.type === 'trading'
+            ? 'Deposit skins and start trading instantly with bots. Your bonus will be applied to your balance.'
+            : 'Choose between marketplace listings or instant bot trades. Your bonus applies to either method.'
+          }</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Platform Quick Info -->
+  <section class="platform-info">
+    <h2>{site.name} at a Glance</h2>
+    <div class="info-grid">
+      <div class="info-item">
+        <span class="info-label">Type</span>
+        <span class="info-value">{typeLabel}</span>
+      </div>
+      <div class="info-item">
+        <span class="info-label">Fees</span>
+        <span class="info-value">{site.fees}</span>
+      </div>
+      {site.trustpilot && (
+        <div class="info-item">
+          <span class="info-label">Trustpilot</span>
+          <span class="info-value">{site.trustpilot}★</span>
+        </div>
+      )}
+      <div class="info-item">
+        <span class="info-label">Founded</span>
+        <span class="info-value">{site.founded}</span>
+      </div>
+    </div>
+    <a href={`/trading-site/${site.slug}/`} class="read-review-link">Read Full {site.name} Review →</a>
+  </section>
+
+  <!-- Terms -->
+  <section class="terms-section">
+    <h2>Terms & Conditions</h2>
+    <ul class="terms-list">
+      <li>Promo codes and bonuses are subject to change without notice.</li>
+      <li>One promo code per account unless otherwise stated.</li>
+      <li>Bonuses may have minimum deposit or trading volume requirements.</li>
+      <li>Check {site.name}'s website for full terms and conditions.</li>
+      <li>CSDB.gg may earn a commission through referral links at no extra cost to you.</li>
+    </ul>
+  </section>
+
+  <!-- FAQ -->
+  <section class="faq-section">
+    <h2>{site.name} Promo Code FAQ</h2>
+    <dl class="faq">
+      {faqs.map(f => (
+        <>
+          <dt>{f.question}</dt>
+          <dd>{f.answer}</dd>
+        </>
+      ))}
+    </dl>
+  </section>
+
+  <!-- Related Promo Pages -->
+  <section class="related-promos">
+    <h2>More CS2 Trading Site Promo Codes</h2>
+    <div class="promo-links-grid">
+      {tradingSites.filter(s => s.slug !== site.slug).slice(0, 6).map(s => (
+        <a href={`/trading-site/${s.slug}/promo-code/`} class="promo-link-card">
+          <span class="plc-logo" style={`background:${s.color}30;border-color:${s.color}`}>{s.logo}</span>
+          <div class="plc-info">
+            <span class="plc-name">{s.name}</span>
+            {s.promoCode ? <span class="plc-code">{s.promoCode}</span> : <span class="plc-no-code">View Deals</span>}
+          </div>
+          <span class="plc-arrow">→</span>
+        </a>
+      ))}
+    </div>
+  </section>
+
+  <!-- Internal Links -->
+  <div class="internal-links">
+    <a href="/trading-sites/">All Trading Sites</a>
+    <a href={`/trading-site/${site.slug}/`}>{site.name} Review</a>
+    <a href="/guides/trading-guide/">Trading Guide</a>
+    <a href="/skins/">Skin Database</a>
+    <a href="/price-tracker/">Price Tracker</a>
+  </div>
+</Base>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const btn = document.getElementById('copy-btn');
+  if (!btn) return;
+  btn.addEventListener('click', () => {
+    const code = btn.getAttribute('data-code') || '';
+    navigator.clipboard.writeText(code).then(() => {
+      btn.textContent = 'Copied!';
+      btn.classList.add('copied');
+      setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 2000);
+    });
+  });
+});
+</script>
+
+<style is:inline>
+.breadcrumb{font-size:.85rem;color:var(--text2);margin-bottom:1.5rem}
+.breadcrumb a{color:var(--accent);text-decoration:none}
+.breadcrumb a:hover{text-decoration:underline}
+
+/* ── Hero ───────────────────────────────────────────────── */
+.promo-hero{text-align:center;padding:2.5rem 1rem 2rem;margin:-1rem -1.5rem 2rem;background:linear-gradient(135deg,rgba(74,222,128,.08),rgba(52,211,153,.04));border-bottom:1px solid var(--border)}
+.promo-hero-badge{width:70px;height:70px;display:inline-flex;align-items:center;justify-content:center;border-radius:14px;font-weight:700;font-size:.85rem;color:var(--text);border:2px solid;margin-bottom:1rem}
+.promo-hero h1{font-size:2rem;margin:0 0 .5rem;background:linear-gradient(135deg,#4ade80,var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.promo-subtitle{color:var(--text2);font-size:1rem;margin:0;max-width:500px;margin-left:auto;margin-right:auto}
+
+/* ── Promo Card ─────────────────────────────────────────── */
+.promo-card{background:var(--bg2);border:2px solid var(--border);border-radius:14px;padding:2rem;text-align:center;margin-bottom:2.5rem;max-width:540px;margin-left:auto;margin-right:auto}
+.promo-label{font-size:.8rem;color:var(--text2);text-transform:uppercase;letter-spacing:.08em;font-weight:600;margin-bottom:.8rem}
+.promo-code-box{display:flex;align-items:center;justify-content:center;gap:.8rem;background:var(--bg3);border:2px dashed var(--accent);border-radius:10px;padding:1rem 1.5rem;margin-bottom:1rem}
+.promo-code-text{font-size:1.8rem;font-weight:900;color:#4ade80;letter-spacing:.12em;font-family:monospace}
+.copy-btn{padding:.5rem 1.2rem;background:var(--accent);color:#1a1a2e;border:none;border-radius:6px;font-weight:700;font-size:.85rem;cursor:pointer;transition:all .2s}
+.copy-btn:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(212,149,110,.3)}
+.copy-btn.copied{background:#4ade80}
+.promo-bonus{font-size:1.1rem;font-weight:700;color:#4ade80;margin-bottom:1.2rem}
+.promo-no-code{color:var(--text2);font-size:.9rem;margin-bottom:1.2rem;line-height:1.5}
+.promo-cta-btn{display:inline-block;padding:.85rem 2rem;background:linear-gradient(135deg,#4ade80,#34d399);color:#0a1a0f;border-radius:8px;font-weight:700;font-size:1rem;text-decoration:none;transition:all .2s;box-shadow:0 4px 16px rgba(74,222,128,.25)}
+.promo-cta-btn:hover{transform:translateY(-2px);box-shadow:0 6px 24px rgba(74,222,128,.35)}
+
+/* ── Details ────────────────────────────────────────────── */
+.promo-details-section{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:1.5rem;margin-bottom:2rem}
+.promo-details-section h2{margin:0 0 .8rem;font-size:1.1rem}
+.promo-details-section p{color:var(--text2);line-height:1.7;margin:0;font-size:.9rem}
+
+/* ── Steps ──────────────────────────────────────────────── */
+.how-to-claim{margin-bottom:2.5rem}
+.how-to-claim h2{margin-bottom:1.5rem}
+.steps{display:flex;flex-direction:column;gap:1rem}
+.step{display:flex;gap:1.2rem;align-items:flex-start;background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:1.2rem 1.5rem;transition:border-color .2s}
+.step:hover{border-color:var(--accent)}
+.step-num{width:36px;height:36px;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#4ade80,#34d399);color:#0a1a0f;border-radius:50%;font-weight:800;font-size:1rem;flex-shrink:0}
+.step-content h3{margin:0 0 .4rem;font-size:.95rem}
+.step-content p{margin:0;font-size:.85rem;color:var(--text2);line-height:1.6}
+
+/* ── Platform Info ──────────────────────────────────────── */
+.platform-info{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:1.5rem;margin-bottom:2rem}
+.platform-info h2{margin:0 0 1rem;font-size:1.1rem}
+.info-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:.8rem;margin-bottom:1rem}
+.info-item{display:flex;flex-direction:column;gap:.2rem;padding:.8rem;background:var(--bg3);border-radius:8px}
+.info-label{font-size:.72rem;color:var(--text2);text-transform:uppercase;letter-spacing:.05em;font-weight:600}
+.info-value{font-size:1rem;font-weight:700;color:var(--accent)}
+.read-review-link{color:var(--accent);font-size:.88rem;font-weight:600;text-decoration:none}
+.read-review-link:hover{text-decoration:underline}
+
+/* ── Terms ──────────────────────────────────────────────── */
+.terms-section{margin-bottom:2rem;padding:1.5rem;background:var(--bg2);border:1px solid var(--border);border-radius:10px}
+.terms-section h2{margin:0 0 1rem;font-size:1rem}
+.terms-list{margin:0;padding-left:1.2rem;color:var(--text2);font-size:.85rem;line-height:1.8}
+
+/* ── FAQ ────────────────────────────────────────────────── */
+.faq-section{margin-bottom:2rem;padding:1.5rem;background:var(--bg2);border:1px solid var(--border);border-radius:10px}
+.faq-section h2{margin:0 0 1rem;font-size:1.1rem;text-align:center}
+.faq{margin:0}
+.faq dt{font-weight:700;color:var(--accent);padding:1rem 0 .4rem;border-top:1px solid var(--border);font-size:.92rem}
+.faq dt:first-child{border-top:none;padding-top:0}
+.faq dd{color:var(--text2);padding:0 0 1rem;margin:0;font-size:.88rem;line-height:1.6}
+
+/* ── Related Promos ─────────────────────────────────────── */
+.related-promos{margin-bottom:2rem}
+.related-promos h2{margin-bottom:1rem}
+.promo-links-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:.8rem}
+.promo-link-card{display:flex;align-items:center;gap:.8rem;padding:.8rem 1rem;background:var(--bg2);border:1px solid var(--border);border-radius:8px;text-decoration:none;color:inherit;transition:all .2s}
+.promo-link-card:hover{border-color:var(--accent);background:var(--bg3)}
+.plc-logo{width:36px;height:36px;display:flex;align-items:center;justify-content:center;border-radius:8px;font-weight:700;font-size:.65rem;border:1.5px solid;flex-shrink:0;color:var(--text)}
+.plc-info{flex:1;min-width:0}
+.plc-name{display:block;font-weight:600;font-size:.88rem;color:var(--text)}
+.plc-code{display:block;font-size:.75rem;color:#4ade80;font-weight:600;font-family:monospace}
+.plc-no-code{display:block;font-size:.75rem;color:var(--text2)}
+.plc-arrow{color:var(--accent);font-weight:700;font-size:1.1rem}
+
+/* ── Internal Links ─────────────────────────────────────── */
+.internal-links{display:flex;gap:.6rem;flex-wrap:wrap;padding:1rem;background:var(--bg2);border-radius:10px;border:1px solid var(--border);justify-content:center;margin-bottom:2rem}
+.internal-links a{padding:.35rem .8rem;background:var(--bg3);border-radius:6px;font-size:.82rem;color:var(--text2);border:1px solid var(--border);transition:all .2s;text-decoration:none}
+.internal-links a:hover{border-color:var(--accent);color:var(--accent)}
+
+@media(max-width:600px){
+  .promo-hero h1{font-size:1.5rem}
+  .promo-code-text{font-size:1.3rem}
+  .promo-code-box{flex-direction:column;gap:.5rem}
+  .promo-links-grid{grid-template-columns:1fr}
+  .info-grid{grid-template-columns:1fr 1fr}
+}
+</style>

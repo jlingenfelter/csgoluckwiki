@@ -1,0 +1,441 @@
+---
+import Base from '../layouts/Base.astro';
+import ExploreMore from '../components/ExploreMore.astro';
+import { faqSchema } from '../lib/weapons';
+import { getAllGear, getGearByType, getTeams, getRoles, getCountries, getGearImageUrl, type GearItem, type GearType } from '../lib/pro-players';
+
+const allGear = getAllGear();
+
+const typeLabels: Record<GearType, string> = {
+  mouse: 'Mice',
+  keyboard: 'Keyboards',
+  headset: 'Headsets',
+  monitor: 'Monitors',
+  mousepad: 'Mousepads',
+};
+const typeIcons: Record<GearType, string> = {
+  mouse: '\u{1F5B1}\uFE0F',
+  keyboard: '\u2328\uFE0F',
+  headset: '\u{1F3A7}',
+  monitor: '\u{1F5A5}\uFE0F',
+  mousepad: '\u{1F3AF}',
+};
+const typeSingular: Record<GearType, string> = {
+  mouse: 'Mouse',
+  keyboard: 'Keyboard',
+  headset: 'Headset',
+  monitor: 'Monitor',
+  mousepad: 'Mousepad',
+};
+
+const GEAR_TYPES: GearType[] = ['mouse', 'keyboard', 'headset', 'monitor', 'mousepad'];
+
+// Per-type counts
+const typeCounts = GEAR_TYPES.map(t => ({
+  type: t,
+  label: typeLabels[t],
+  icon: typeIcons[t],
+  singular: typeSingular[t],
+  count: getGearByType(t).length,
+  totalPlayers: getGearByType(t).reduce((s, g) => s + g.players.length, 0),
+}));
+
+// Top 5 per type for analysis
+const topPerType = GEAR_TYPES.map(t => ({
+  type: t,
+  label: typeLabels[t],
+  items: getGearByType(t).slice(0, 5),
+}));
+
+const title = 'CS2 Pro Gear — Mice, Keyboards, Monitors & More | CSDB.gg';
+const description = `Browse ${allGear.length} gear items used by CS2 pros. Filter by mice, keyboards, headsets, monitors, and mousepads. See which peripherals the best players trust.`;
+
+const faqs = [
+  { question: 'What mouse do most CS2 pros use?', answer: `The most popular mice among CS2 professionals are lightweight wireless options. The top choices include the ${getGearByType('mouse')[0]?.name} (${getGearByType('mouse')[0]?.players.length} pros) and ${getGearByType('mouse')[1]?.name} (${getGearByType('mouse')[1]?.players.length} pros). Lightweight mice under 80g have become the standard for competitive play.` },
+  { question: 'Does expensive gear make you better at CS2?', answer: 'While pro-grade peripherals offer real advantages (higher polling rates, better sensors, lighter weight), they won\'t substitute for practice and game sense. A good mouse and 240Hz+ monitor provide the biggest competitive edge. Keyboard and headset choice is mostly personal preference.' },
+  { question: 'What monitor refresh rate do CS2 pros use?', answer: `Most CS2 professionals use 240Hz or 360Hz monitors. The ${getGearByType('monitor')[0]?.name} is the most popular choice. Higher refresh rates reduce input lag and provide smoother visuals, which is critical for tracking fast-moving targets.` },
+  { question: 'Should I buy the same gear as my favorite pro?', answer: 'Pro gear is a solid reference point, but comfort matters most. Mice depend on hand size and grip style. Keyboards are largely preference. Headsets need to fit your head comfortably. Use pro choices as a shortlist, then pick what feels best for you.' },
+];
+
+// Browse sections
+const topTeams = getTeams().slice(0, 8);
+const topRoles = getRoles();
+const topCountries = getCountries().slice(0, 8);
+---
+
+<Base {title} {description}>
+<Fragment slot="head">
+<script type="application/ld+json" set:html={JSON.stringify(faqSchema(faqs))} />
+<script type="application/ld+json" set:html={JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://csdb.gg/" },
+    { "@type": "ListItem", "position": 2, "name": "Pro Players", "item": "https://csdb.gg/pro-players/" },
+    { "@type": "ListItem", "position": 3, "name": "Gear" }
+  ]
+})} />
+</Fragment>
+
+<nav class="breadcrumb">
+  <a href="/">Home</a> <span>/</span>
+  <a href="/pro-players/">Pro Players</a> <span>/</span>
+  <span>Gear</span>
+</nav>
+
+<section class="gh-hero">
+  <h1>CS2 Pro Gear</h1>
+  <p>Browse {allGear.length} peripherals used by professional CS2 players. Filter by type, search by name, and see which gear the best players trust.</p>
+  <div class="gh-hero-stats">
+    {typeCounts.map(tc => (
+      <div class="gh-hstat">
+        <span class="gh-hicon">{tc.icon}</span>
+        <span class="gh-hval">{tc.count}</span>
+        <span class="gh-hlbl">{tc.label}</span>
+      </div>
+    ))}
+  </div>
+</section>
+
+<!-- Filters -->
+<section class="gh-filters">
+  <div class="gh-filter-row">
+    <div class="gh-type-btns">
+      <button class="gh-type-btn active" data-type="all">All ({allGear.length})</button>
+      {typeCounts.map(tc => (
+        <button class="gh-type-btn" data-type={tc.type}>
+          <span class="gh-btn-icon">{tc.icon}</span> {tc.label} ({tc.count})
+        </button>
+      ))}
+    </div>
+    <div class="gh-search">
+      <input type="text" id="gearSearch" placeholder="Search gear..." />
+    </div>
+  </div>
+  <div class="gh-filter-row-2">
+    <div class="gh-sort-group">
+      <span class="gh-flabel">Sort:</span>
+      <select id="gearSort">
+        <option value="popular">Most Popular</option>
+        <option value="name-az">Name A–Z</option>
+        <option value="name-za">Name Z–A</option>
+      </select>
+    </div>
+    <div class="gh-result-count"><span id="visibleCount">{allGear.length}</span> of {allGear.length} items shown</div>
+  </div>
+</section>
+
+<!-- Gear Cards -->
+<section class="gh-grid" id="ghGrid">
+  {allGear.map((g, i) => (
+    <a href={`/gear/${g.slug}/`} class={`gh-card${i >= 48 ? ' gh-paginated' : ''}`}
+       data-name={g.name.toLowerCase()} data-type={g.type}
+       data-players={g.players.length} data-idx={i}>
+      <div class="gh-card-top">
+        {getGearImageUrl(g.name) ? (
+          <img class="gh-card-img" src={getGearImageUrl(g.name)} alt={g.name} width="48" height="48" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display=''" />
+          <span class="gh-card-icon" style="display:none">{typeIcons[g.type]}</span>
+        ) : (
+          <span class="gh-card-icon">{typeIcons[g.type]}</span>
+        )}
+        <div class="gh-card-info">
+          <h3 class="gh-card-name">{g.name}</h3>
+          <span class="gh-card-type">{typeSingular[g.type]}</span>
+        </div>
+        <span class="gh-card-count">{g.players.length} pro{g.players.length !== 1 ? 's' : ''}</span>
+      </div>
+
+      <div class="gh-card-players">
+        {g.players.slice(0, 4).map(p => (
+          <span class="gh-player-tag">{p.flag} {p.name}</span>
+        ))}
+        {g.players.length > 4 && <span class="gh-player-more">+{g.players.length - 4} more</span>}
+      </div>
+
+      <div class="gh-card-footer">View Details &rarr;</div>
+    </a>
+  ))}
+</section>
+
+<div class="gh-loadmore-wrap" id="loadMoreWrap">
+  <button class="gh-loadmore-btn" id="loadMoreBtn">Load More Gear <span id="loadMoreCount"></span></button>
+</div>
+
+<!-- Analysis: Top Gear per Type -->
+<section class="gh-analysis">
+  <h2>Most Popular Gear by Type</h2>
+  <div class="gh-analysis-grid">
+    {topPerType.map(tp => (
+      <div class="gh-acard">
+        <h3>Top {tp.label}</h3>
+        {tp.items.map(g => (
+          <div class="gh-bar-row">
+            <a href={`/gear/${g.slug}/`} class="gh-bar-name">{g.name}</a>
+            <div class="gh-bar-fill" style={`width:${Math.round((g.players.length / (tp.items[0]?.players.length || 1)) * 100)}%`}></div>
+            <span class="gh-bar-pct">{g.players.length}</span>
+          </div>
+        ))}
+      </div>
+    ))}
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="gh-section">
+  <h2>Frequently Asked Questions</h2>
+  <dl class="faq">
+    {faqs.map(f => (
+      <>
+        <dt>{f.question}</dt>
+        <dd>{f.answer}</dd>
+      </>
+    ))}
+  </dl>
+</section>
+
+<!-- Browse by Team -->
+<section class="gh-browse-section">
+  <h2>Browse by Team</h2>
+  <div class="gh-browse-grid">
+    {topTeams.map(t => (
+      <a href={`/team/${t.slug}/`} class="gh-browse-pill">
+        <span class="gh-browse-name">{t.name}</span>
+        <span class="gh-browse-count">{t.players.length}</span>
+      </a>
+    ))}
+  </div>
+</section>
+
+<!-- Browse by Role -->
+<section class="gh-browse-section">
+  <h2>Browse by Role</h2>
+  <div class="gh-browse-grid">
+    {topRoles.map(r => (
+      <a href={`/players/role/${r.slug}/`} class="gh-browse-pill">
+        <span class="gh-browse-name">{r.name}</span>
+        <span class="gh-browse-count">{r.players.length}</span>
+      </a>
+    ))}
+  </div>
+</section>
+
+<!-- Browse by Country -->
+<section class="gh-browse-section">
+  <h2>Browse by Country</h2>
+  <div class="gh-browse-grid">
+    {topCountries.map(c => (
+      <a href={`/players/country/${c.slug}/`} class="gh-browse-pill">
+        <span class="gh-browse-flag">{c.flag}</span>
+        <span class="gh-browse-name">{c.name}</span>
+        <span class="gh-browse-count">{c.players.length}</span>
+      </a>
+    ))}
+  </div>
+</section>
+
+<ExploreMore context="general" />
+
+<div class="internal-links">
+  <a href="/pro-players/">All Pro Players</a>
+  <a href="/teams/">Teams</a>
+  <a href="/crosshair-codes/">Crosshair Codes</a>
+  <a href="/sensitivity-converter/">Sensitivity Converter</a>
+  <a href="/edpi-calculator/">eDPI Calculator</a>
+  <a href="/weapons/">Weapon Stats</a>
+</div>
+
+</Base>
+
+<style>
+/* Hero */
+.gh-hero{background:linear-gradient(135deg,var(--bg2),var(--bg3));border:1px solid var(--border);border-radius:12px;padding:2rem;margin-bottom:2rem}
+.gh-hero h1{font-size:2.2rem;margin:0 0 .75rem}
+.gh-hero>p{color:var(--text2);font-size:1.05rem;margin:0 0 1.5rem}
+.gh-hero-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:.75rem}
+.gh-hstat{background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:.75rem;text-align:center}
+.gh-hicon{display:block;font-size:1.4rem;margin-bottom:.25rem}
+.gh-hval{display:block;font-size:1.4rem;font-weight:800;color:var(--accent)}
+.gh-hlbl{display:block;font-size:.75rem;color:var(--text2);margin-top:.15rem}
+
+/* Filters */
+.gh-filters{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:1.25rem;margin-bottom:1.5rem}
+.gh-filter-row{display:flex;gap:1rem;flex-wrap:wrap;align-items:center;margin-bottom:.75rem}
+.gh-type-btns{display:flex;gap:.4rem;flex-wrap:wrap}
+.gh-type-btn{background:var(--bg3);color:var(--text2);border:1px solid var(--border);padding:.4rem .75rem;border-radius:6px;font-size:.82rem;font-weight:600;cursor:pointer;transition:all .15s;font-family:inherit;white-space:nowrap}
+.gh-type-btn:hover{border-color:var(--accent);color:var(--text)}
+.gh-type-btn.active{background:var(--accent);color:#000;border-color:var(--accent)}
+.gh-btn-icon{font-size:.85rem}
+.gh-search{flex:1;min-width:180px}
+#gearSearch{width:100%;background:var(--bg3);color:var(--text);border:1px solid var(--border);padding:.5rem .75rem;border-radius:6px;font-size:.9rem;font-family:inherit}
+#gearSearch:focus{border-color:var(--accent);outline:none}
+.gh-filter-row-2{display:flex;gap:1rem;align-items:center;flex-wrap:wrap}
+.gh-sort-group{display:flex;gap:.5rem;align-items:center}
+.gh-flabel{font-size:.85rem;font-weight:600;color:var(--text)}
+#gearSort{background:var(--bg3);color:var(--text);border:1px solid var(--border);padding:.4rem .6rem;border-radius:6px;font-size:.85rem;font-family:inherit}
+.gh-result-count{font-size:.82rem;color:var(--text2);margin-left:auto}
+
+/* Card Grid */
+.gh-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:1rem;margin-bottom:1rem}
+.gh-card{display:block;text-decoration:none;color:inherit;background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:1.25rem;transition:border-color .2s,transform .2s,box-shadow .2s}
+.gh-card:hover{border-color:var(--accent);transform:translateY(-2px);box-shadow:0 4px 16px rgba(212,149,110,.1)}
+.gh-card.hidden{display:none}
+
+.gh-card-top{display:flex;align-items:center;gap:.75rem;margin-bottom:.75rem}
+.gh-card-icon{font-size:1.5rem;flex-shrink:0}
+.gh-card-img{width:48px;height:48px;object-fit:contain;flex-shrink:0;border-radius:6px;background:var(--bg1)}
+.gh-card-info{flex:1;min-width:0}
+.gh-card-name{margin:0;font-size:1.05rem;font-weight:800;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.gh-card-type{font-size:.75rem;color:var(--text2);text-transform:uppercase;font-weight:600;letter-spacing:.03em}
+.gh-card-count{font-size:.78rem;font-weight:700;background:var(--accent);color:#000;padding:.2rem .6rem;border-radius:4px;white-space:nowrap}
+
+.gh-card-players{display:flex;flex-wrap:wrap;gap:.3rem;margin-bottom:.75rem}
+.gh-player-tag{font-size:.75rem;color:var(--text2);background:var(--bg);border:1px solid var(--border);padding:.12rem .4rem;border-radius:4px}
+.gh-player-more{font-size:.72rem;color:var(--text2);padding:.12rem .3rem}
+
+.gh-card-footer{text-align:center;color:var(--accent);font-size:.82rem;font-weight:700;padding-top:.5rem;border-top:1px solid var(--border)}
+
+/* Load More */
+.gh-loadmore-wrap{text-align:center;padding:1.5rem 0}
+.gh-loadmore-btn{background:var(--accent);color:#000;border:none;padding:.75rem 2rem;border-radius:8px;font-size:1rem;font-weight:700;cursor:pointer;font-family:inherit;transition:opacity .2s,transform .2s}
+.gh-loadmore-btn:hover{opacity:.9;transform:translateY(-1px)}
+.gh-loadmore-btn span{font-weight:400;opacity:.8}
+.gh-paginated{display:none}
+.gh-card.gh-paginated.gh-revealed{display:block}
+
+/* Analysis */
+.gh-analysis{margin-bottom:3rem}
+.gh-analysis h2{margin-bottom:1.25rem}
+.gh-analysis-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.25rem}
+.gh-acard{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:1.25rem}
+.gh-acard h3{margin:0 0 .75rem;font-size:1.05rem}
+
+.gh-bar-row{display:flex;align-items:center;gap:.5rem;margin-bottom:.5rem}
+.gh-bar-name{min-width:110px;font-size:.82rem;color:var(--accent);font-weight:600;text-decoration:none;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex-shrink:0}
+.gh-bar-name:hover{text-decoration:underline}
+.gh-bar-fill{height:20px;background:var(--accent);border-radius:3px;min-width:4px;opacity:.7;flex:1}
+.gh-bar-pct{font-size:.78rem;color:var(--text2);font-weight:600;min-width:24px;text-align:right}
+
+/* Sections */
+.gh-section{margin-bottom:2.5rem}
+.gh-section h2{margin-bottom:1rem}
+
+/* Browse pills */
+.gh-browse-section{margin:2.5rem 0}
+.gh-browse-section h2{margin:0 0 1rem;font-size:1.25rem}
+.gh-browse-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:.6rem}
+.gh-browse-pill{display:flex;align-items:center;gap:.5rem;padding:.6rem 1rem;background:var(--bg2);border:1px solid var(--border);border-radius:8px;text-decoration:none;transition:all .15s;font-size:.88rem}
+.gh-browse-pill:hover{border-color:var(--accent);background:var(--bg3);transform:translateY(-1px)}
+.gh-browse-flag{font-size:1.1rem}
+.gh-browse-name{color:var(--text);font-weight:600;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.gh-browse-count{color:var(--text2);font-size:.75rem;font-weight:500;background:var(--bg3);padding:.15rem .5rem;border-radius:4px;white-space:nowrap}
+
+/* Responsive */
+@media(max-width:768px){
+  .gh-hero h1{font-size:1.6rem}
+  .gh-hero-stats{grid-template-columns:repeat(3,1fr)}
+  .gh-grid{grid-template-columns:1fr}
+  .gh-filter-row{flex-direction:column}
+  .gh-search{width:100%}
+  .gh-type-btns{width:100%;overflow-x:auto;flex-wrap:nowrap;padding-bottom:.5rem}
+  .gh-browse-grid{grid-template-columns:repeat(2,1fr)}
+  .gh-bar-name{min-width:80px}
+}
+</style>
+
+<script is:inline>
+(function(){
+  var typeBtns = document.querySelectorAll('.gh-type-btn');
+  var search = document.getElementById('gearSearch');
+  var sortSel = document.getElementById('gearSort');
+  var grid = document.getElementById('ghGrid');
+  var cards = Array.from(document.querySelectorAll('.gh-card'));
+  var countEl = document.getElementById('visibleCount');
+  var loadMoreBtn = document.getElementById('loadMoreBtn');
+  var loadMoreWrap = document.getElementById('loadMoreWrap');
+  var loadMoreCount = document.getElementById('loadMoreCount');
+
+  var BATCH = 48;
+  var isFiltering = false;
+  var activeType = 'all';
+
+  function updateLoadMore() {
+    if (isFiltering) {
+      loadMoreWrap.style.display = 'none';
+      return;
+    }
+    var paginated = document.querySelectorAll('.gh-card.gh-paginated:not(.gh-revealed)');
+    if (paginated.length === 0) {
+      loadMoreWrap.style.display = 'none';
+    } else {
+      loadMoreWrap.style.display = 'block';
+      loadMoreCount.textContent = '(' + paginated.length + ' remaining)';
+    }
+  }
+
+  function filterAndSort() {
+    var q = search.value.toLowerCase().trim();
+    var sortBy = sortSel.value;
+    isFiltering = q !== '' || activeType !== 'all';
+
+    var visible = [];
+    cards.forEach(function(c) {
+      var nameMatch = !q || c.dataset.name.indexOf(q) > -1;
+      var typeMatch = activeType === 'all' || c.dataset.type === activeType;
+      c._match = nameMatch && typeMatch;
+      if (c._match) visible.push(c);
+    });
+
+    // Sort
+    visible.sort(function(a, b) {
+      switch (sortBy) {
+        case 'name-az': return a.dataset.name.localeCompare(b.dataset.name);
+        case 'name-za': return b.dataset.name.localeCompare(a.dataset.name);
+        default: return Number(b.dataset.players) - Number(a.dataset.players);
+      }
+    });
+
+    // Re-append in sorted order
+    cards.forEach(function(c) { c.style.display = 'none'; });
+    visible.forEach(function(c) {
+      grid.appendChild(c);
+      if (isFiltering) {
+        c.style.display = '';
+      } else {
+        var isPaginated = c.classList.contains('gh-paginated') && !c.classList.contains('gh-revealed');
+        c.style.display = isPaginated ? 'none' : '';
+      }
+    });
+
+    countEl.textContent = visible.length;
+    updateLoadMore();
+  }
+
+  // Type filter buttons
+  typeBtns.forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      typeBtns.forEach(function(b) { b.classList.remove('active'); });
+      btn.classList.add('active');
+      activeType = btn.dataset.type;
+      filterAndSort();
+    });
+  });
+
+  loadMoreBtn.addEventListener('click', function() {
+    var hidden = document.querySelectorAll('.gh-card.gh-paginated:not(.gh-revealed)');
+    var count = 0;
+    hidden.forEach(function(c) {
+      if (count < BATCH) {
+        c.classList.add('gh-revealed');
+        if (c._match !== false) c.style.display = '';
+        count++;
+      }
+    });
+    updateLoadMore();
+  });
+
+  search.addEventListener('input', filterAndSort);
+  sortSel.addEventListener('change', filterAndSort);
+
+  updateLoadMore();
+})();
+</script>

@@ -1,0 +1,232 @@
+---
+import Base from '../../layouts/Base.astro';
+import ExploreMore from '../../components/ExploreMore.astro';
+import { breadcrumbSchema, faqSchema } from '../../lib/weapons';
+import { allRanks } from '../../lib/ranks';
+
+export function getStaticPaths() {
+  return allRanks.map(r => ({
+    params: { slug: r.slug },
+    props: { rankData: r },
+  }));
+}
+
+const { rankData } = Astro.props;
+const rank = rankData;
+const ranks = allRanks;
+
+const title = `${rank.rank} (${rank.abbr}) — CS2 Rank Stats & Tips | CSDB.gg`;
+const description = `Everything about ${rank.rank} in CS2. ${rank.percentile} of players, Premier rating ${rank.premierRange}, average stats, tips to rank up, and detailed breakdown.`;
+
+const faqs = [
+  { question: `What percentile is ${rank.rank} in CS2?`, answer: `${rank.rank} (${rank.abbr}) represents approximately ${rank.percentile} of the CS2 player base, with about ${rank.percentage}% of players at this exact rank.` },
+  { question: `What Premier rating is ${rank.rank}?`, answer: `${rank.rank} roughly corresponds to a Premier rating of ${rank.premierRange}. The exact mapping varies as Valve adjusts rating boundaries.` },
+  { question: `How do I rank up from ${rank.rank}?`, answer: `To rank up from ${rank.rank}, focus on winning consecutive matches, improving your K/D ratio and ADR, and playing consistently. The tips section on this page provides specific advice for your skill level.` },
+  { question: `What are typical stats for ${rank.rank}?`, answer: `Typical stats at ${rank.rank}: K/D ratio of ${rank.avgKD}, Average Damage per Round (ADR) of ${rank.avgADR}, and headshot percentage of ${rank.avgHS}.` },
+];
+
+const breadcrumbs = [
+  { name: 'Home', url: '/' },
+  { name: 'Rank Distribution', url: '/rank-distribution/' },
+  { name: rank.rank, url: `/rank/${rank.slug}/` },
+];
+
+// Calculate cumulative percentile
+let cumulativeBelow = 0;
+for (const r of ranks) {
+  if (r.slug === rank.slug) break;
+  cumulativeBelow += r.percentage;
+}
+const cumulativePercentile = cumulativeBelow + rank.percentage;
+---
+
+<Base title={title} description={description} currentNav="ranks">
+  <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema(breadcrumbs))}></script>
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema(faqs))}></script>
+
+  <nav class="breadcrumb">
+    <a href="/">Home</a> / <a href="/rank-distribution/">Rank Distribution</a> / <span>{rank.rank}</span>
+  </nav>
+
+  <div class="rk-hero" style={`--rank-color:${rank.color}`}>
+    <div class="rk-hero-badge" style={`background:${rank.color};color:#1a1a2e`}>{rank.abbr}</div>
+    <div>
+      <h1>{rank.rank}</h1>
+      <p class="rk-hero-sub">{rank.tier} Tier &middot; {rank.percentile} &middot; Premier {rank.premierRange}</p>
+    </div>
+  </div>
+
+  <!-- Stats Overview -->
+  <div class="stats-grid" style="margin-bottom:2rem">
+    <div class="stat-card">
+      <div class="val" style={`color:${rank.color}`}>{rank.percentage}%</div>
+      <div class="label">Player Base</div>
+    </div>
+    <div class="stat-card">
+      <div class="val">{rank.percentile}</div>
+      <div class="label">Percentile</div>
+    </div>
+    <div class="stat-card">
+      <div class="val">{rank.premierRange}</div>
+      <div class="label">Premier Rating</div>
+    </div>
+    <div class="stat-card">
+      <div class="val">{rank.avgKD}</div>
+      <div class="label">Avg K/D</div>
+    </div>
+  </div>
+
+  <!-- Description -->
+  <div class="calc-section">
+    <h2>About {rank.rank}</h2>
+    <p>{rank.description}</p>
+
+    <div class="rk-stats-detail">
+      <h3>Typical Stats at {rank.abbr}</h3>
+      <table>
+        <thead><tr><th>Metric</th><th>Range</th></tr></thead>
+        <tbody>
+          <tr><td>K/D Ratio</td><td><strong>{rank.avgKD}</strong></td></tr>
+          <tr><td>Average Damage per Round (ADR)</td><td><strong>{rank.avgADR}</strong></td></tr>
+          <tr><td>Headshot Percentage</td><td><strong>{rank.avgHS}</strong></td></tr>
+          <tr><td>Premier Rating Range</td><td><strong>{rank.premierRange}</strong></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Distribution Bar -->
+  <div class="calc-section">
+    <h2>Where {rank.abbr} Falls in the Distribution</h2>
+    <div class="rk-distro-bar">
+      {ranks.map(r => (
+        <div
+          class={`rk-distro-segment ${r.slug === rank.slug ? 'active' : ''}`}
+          style={`width:${Math.max(r.percentage, 1.5)}%;background:${r.color}`}
+          title={`${r.abbr}: ${r.percentage}%`}
+        >
+          {r.percentage >= 4 && <span class="rk-distro-label">{r.abbr}</span>}
+        </div>
+      ))}
+    </div>
+    <p style="color:var(--text2);font-size:.85rem;margin-top:.5rem;text-align:center">
+      <span style={`color:${rank.color};font-weight:700`}>{rank.abbr}</span> — {rank.percentage}% of players ({rank.percentile})
+    </p>
+  </div>
+
+  <!-- Tips to Rank Up -->
+  <div class="calc-section">
+    <h2>{rank.nextRank ? `How to Rank Up from ${rank.rank}` : `Maintaining ${rank.rank}`}</h2>
+    <div class="rk-tips">
+      {rank.tips.map((tip, i) => (
+        <div class="rk-tip">
+          <span class="rk-tip-num" style={`background:${rank.color};color:#1a1a2e`}>{i + 1}</span>
+          <p>{tip}</p>
+        </div>
+      ))}
+    </div>
+  </div>
+
+  <!-- Navigation -->
+  <div class="rk-nav">
+    {rank.prevRank && (
+      <a href={`/rank/${rank.prevRank}/`} class="rk-nav-btn rk-nav-prev">
+        <span class="rk-nav-arrow">&larr;</span>
+        <span>Previous Rank</span>
+      </a>
+    )}
+    <a href="/rank-distribution/" class="rk-nav-btn rk-nav-all">All Ranks</a>
+    {rank.nextRank && (
+      <a href={`/rank/${rank.nextRank}/`} class="rk-nav-btn rk-nav-next">
+        <span>Next Rank</span>
+        <span class="rk-nav-arrow">&rarr;</span>
+      </a>
+    )}
+  </div>
+
+  <!-- All Ranks Quick Links -->
+  <div class="calc-section">
+    <h2>All CS2 Ranks</h2>
+    <div class="rk-all-grid">
+      {ranks.map(r => (
+        <a href={`/rank/${r.slug}/`} class={`rk-all-card ${r.slug === rank.slug ? 'current' : ''}`} style={`--rc:${r.color}`}>
+          <span class="rk-all-badge" style={`background:${r.color};color:#1a1a2e`}>{r.abbr}</span>
+          <span class="rk-all-name">{r.rank}</span>
+          <span class="rk-all-pct">{r.percentage}%</span>
+        </a>
+      ))}
+    </div>
+  </div>
+
+  <!-- FAQ -->
+  <h2>Frequently Asked Questions</h2>
+  <dl class="faq">
+    {faqs.map(f => (
+      <Fragment>
+        <dt>{f.question}</dt>
+        <dd>{f.answer}</dd>
+      </Fragment>
+    ))}
+  </dl>
+
+  <!-- Internal Links -->
+  <div class="internal-links">
+    <strong>Related Resources:</strong>
+    <a href="/rank-distribution/">Rank Distribution</a>
+    <a href="/guides/ranks-guide/">Ranking System Guide</a>
+    <a href="/guides/beginners-guide/">Beginner's Guide</a>
+    <a href="/spray-trainer/">Spray Trainer</a>
+    <a href="/recoil-patterns/">Recoil Patterns</a>
+    <a href="/crosshair-generator/">Crosshair Generator</a>
+    <a href="/sensitivity-converter/">Sensitivity Converter</a>
+    <a href="/pro-players/">Pro Player Settings</a>
+    <a href="/practice-config/">Practice Config</a>
+    <a href="/cs2-commands/">Console Commands</a>
+    <a href="/damage-calculator/">Damage Calculator</a>
+    <a href="/maps/">Map Callouts</a>
+    <a href="/tools/">All Tools</a>
+  </div>
+
+  <ExploreMore context="guides" />
+</Base>
+
+<style is:inline>
+.rk-hero{display:flex;align-items:center;gap:1.25rem;background:linear-gradient(135deg,var(--bg2),var(--bg3));border:1px solid var(--border);border-radius:12px;padding:1.5rem 2rem;margin-bottom:2rem;border-left:5px solid var(--rank-color)}
+.rk-hero-badge{width:64px;height:64px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.5rem;font-weight:900;flex-shrink:0}
+.rk-hero h1{margin:0;font-size:1.8rem}
+.rk-hero-sub{margin:.3rem 0 0;color:var(--text2);font-size:.95rem}
+
+.rk-stats-detail{margin-top:1.5rem}
+.rk-stats-detail h3{margin:0 0 .75rem;font-size:1rem}
+
+.rk-distro-bar{display:flex;height:40px;border-radius:8px;overflow:hidden;border:1px solid var(--border)}
+.rk-distro-segment{display:flex;align-items:center;justify-content:center;transition:all .2s;opacity:.5}
+.rk-distro-segment.active{opacity:1;box-shadow:0 0 0 2px #fff,0 0 0 4px currentColor}
+.rk-distro-label{font-size:.6rem;font-weight:700;color:#1a1a2e}
+
+.rk-tips{display:flex;flex-direction:column;gap:.75rem}
+.rk-tip{display:flex;gap:.75rem;align-items:flex-start}
+.rk-tip-num{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.8rem;flex-shrink:0}
+.rk-tip p{margin:0;font-size:.92rem;color:var(--text2);line-height:1.5;padding-top:.2rem}
+
+.rk-nav{display:flex;gap:.75rem;justify-content:center;margin:2rem 0;flex-wrap:wrap}
+.rk-nav-btn{display:flex;align-items:center;gap:.4rem;background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:.6rem 1.2rem;color:var(--text);text-decoration:none;font-size:.88rem;font-weight:600;transition:all .2s}
+.rk-nav-btn:hover{border-color:var(--accent);transform:translateY(-1px)}
+.rk-nav-arrow{font-size:1.2rem}
+.rk-nav-all{background:var(--accent);color:#1a1a2e;border-color:var(--accent)}
+
+.rk-all-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:.5rem}
+.rk-all-card{display:flex;align-items:center;gap:.5rem;padding:.5rem .75rem;background:var(--bg3);border:1px solid var(--border);border-radius:6px;text-decoration:none;color:var(--text);font-size:.82rem;transition:all .15s}
+.rk-all-card:hover{border-color:var(--rc);transform:translateX(3px)}
+.rk-all-card.current{border-color:var(--rc);background:rgba(255,255,255,.03);box-shadow:inset 3px 0 0 var(--rc)}
+.rk-all-badge{width:28px;height:28px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:.7rem;font-weight:800;flex-shrink:0}
+.rk-all-name{flex:1;font-weight:600}
+.rk-all-pct{color:var(--text2);font-size:.75rem}
+
+@media(max-width:768px){
+  .rk-hero{flex-direction:column;text-align:center;padding:1.25rem}
+  .rk-hero h1{font-size:1.4rem}
+  .rk-all-grid{grid-template-columns:1fr 1fr}
+  .rk-nav{flex-direction:column}
+}
+</style>

@@ -1,0 +1,435 @@
+---
+import Base from '../layouts/Base.astro';
+import ExploreMore from '../components/ExploreMore.astro';
+import { faqSchema, breadcrumbSchema } from '../lib/weapons';
+import { COMMAND_CATEGORIES, ALL_COMMANDS } from '../lib/commands';
+
+const title = 'CS2 Console Commands — Complete List & Reference | CSDB.gg';
+const description = 'The complete CS2 console commands reference. Search 300+ commands across all categories — movement, weapons, HUD, network, practice, server, graphics, crosshair, audio, and more. One-click copy.';
+
+const faqs = [
+  { question: 'How do I open the console in CS2?', answer: 'Open Settings → Game → Enable Developer Console (~) → set to "Yes". Then press the tilde key (~) during a game to open the console. You can type any command directly into the console.' },
+  { question: 'What is the difference between a command and a cvar?', answer: 'Commands execute an action immediately (like "quit" or "noclip"). Cvars (console variables) store a value that changes a setting (like "sensitivity 2.5" or "cl_showfps 1"). Cvars persist between sessions if saved with host_writeconfig.' },
+  { question: 'Do console commands work in competitive matchmaking?', answer: 'Most client-side commands (cl_, hud_, crosshair) work everywhere. Server-side commands (sv_, mp_) only work on servers where you have admin access or in offline/private matches. Commands requiring sv_cheats 1 are blocked in competitive.' },
+  { question: 'How do I save my console settings permanently?', answer: 'Create an autoexec.cfg file in your CS2 cfg folder (Steam/steamapps/common/Counter-Strike Global Offensive/game/csgo/cfg/) and add your commands there. End the file with host_writeconfig. These commands run automatically every time CS2 launches.' },
+  { question: 'What does sv_cheats 1 do?', answer: 'sv_cheats 1 enables cheat-protected commands on the server. This is required for practice commands like noclip, god mode, and grenade trajectory. It only works in private/offline matches and disables achievements while active.' },
+  { question: 'Can I get banned for using console commands?', answer: 'No. Console commands are a built-in feature of CS2. You cannot get VAC banned for using any console command. Cheat-protected commands simply won\'t execute on official servers.' },
+];
+
+const categories = COMMAND_CATEGORIES;
+const totalCommands = categories.reduce((sum, cat) => sum + cat.commands.length, 0);
+---
+
+<Base title={title} description={description} currentNav="/tools/">
+  <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema([{name:'Home',url:'/'},{name:'Tools',url:'/tools/'},{name:'Console Commands',url:'/cs2-commands/'}]))}></script>
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema(faqs))}></script>
+
+  <nav class="breadcrumb">
+    <a href="/">Home</a> / <a href="/tools/">Tools</a> / <span>Console Commands</span>
+  </nav>
+
+  <div class="cmd-hero">
+    <h1>CS2 Console Commands</h1>
+    <p>Complete reference of <strong>{totalCommands}</strong> CS2 console commands and variables across <strong>{categories.length}</strong> categories. Search, filter, and copy any command instantly.</p>
+  </div>
+
+  <!-- Search & Filters -->
+  <div class="cmd-controls">
+    <input type="text" id="cmdSearch" placeholder="Search commands... (e.g. crosshair, fps, grenade)" class="cmd-search" />
+    <div class="cmd-filters">
+      <button class="filter-btn active" data-filter="all">All Commands</button>
+      <button class="filter-btn" data-filter="safe">Multiplayer Safe</button>
+      <button class="filter-btn" data-filter="cheat">sv_cheats Required</button>
+    </div>
+    <div class="cmd-cat-pills" id="catPills">
+      {categories.map(cat => (
+        <button class="cat-pill" data-cat={cat.id}>{cat.icon} {cat.name}</button>
+      ))}
+    </div>
+  </div>
+
+  <!-- Stats bar -->
+  <div class="cmd-stats" id="cmdStats">
+    Showing <strong id="visibleCount">{totalCommands}</strong> of {totalCommands} commands
+  </div>
+
+  <!-- How to Enable Console -->
+  <div class="cmd-howto">
+    <h2>How to Open the Console</h2>
+    <div class="howto-steps">
+      <div class="howto-step">
+        <span class="step-num">1</span>
+        <div>
+          <strong>Open Settings</strong>
+          <p>Click the gear icon in the top-left corner of the CS2 main menu.</p>
+        </div>
+      </div>
+      <div class="howto-step">
+        <span class="step-num">2</span>
+        <div>
+          <strong>Enable Console</strong>
+          <p>Go to <em>Game</em> tab → find <em>Enable Developer Console (~)</em> → set to <em>Yes</em>.</p>
+        </div>
+      </div>
+      <div class="howto-step">
+        <span class="step-num">3</span>
+        <div>
+          <strong>Press Tilde (~)</strong>
+          <p>In-game, press the <code>~</code> key (above Tab) to open the console. Type any command and press Enter.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Command Categories -->
+  {categories.map(cat => (
+    <section class="cmd-category" data-catid={cat.id}>
+      <div class="cmd-cat-head">
+        <span class="cmd-cat-icon">{cat.icon}</span>
+        <div>
+          <h2 id={cat.id}><a href={'/commands/' + cat.id + '/'}>{cat.name}</a></h2>
+          <p>{cat.desc}</p>
+        </div>
+        <span class="cmd-cat-count">{cat.commands.length}</span>
+      </div>
+      <div class="cmd-table-wrap">
+        <table class="cmd-table">
+          <thead>
+            <tr>
+              <th>Command</th>
+              <th>Description</th>
+              <th>Default</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            {cat.commands.map(c => (
+              <tr class="cmd-row" id={c.cmd.toLowerCase().replace(/[^a-z0-9_]/g, '_')} data-cmd={c.cmd.toLowerCase()} data-desc={c.desc.toLowerCase()} data-cheat={c.cheat ? '1' : '0'}>
+                <td class="cmd-name">
+                  <a href={'/command/' + c.cmd.replace(/^\+/, '').replace(/_/g, '-').toLowerCase() + '/'}><code>{c.cmd}</code></a>
+                  {c.cheat && <span class="cheat-badge" title="Requires sv_cheats 1">SV</span>}
+                </td>
+                <td class="cmd-desc">{c.desc}</td>
+                <td class="cmd-default">{c.def || '—'}</td>
+                <td class="cmd-copy"><button class="copy-btn" data-copy={c.cmd} title="Copy command">📋</button></td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </section>
+  ))}
+
+  <!-- No Results -->
+  <div id="noResults" class="no-results" style="display:none">
+    <p>No commands found matching your search. Try a different keyword or clear your filters.</p>
+  </div>
+
+  <!-- Quick Copy Configs -->
+  <div class="cmd-configs">
+    <h2>Quick Copy Configs</h2>
+    <p>Common command combinations ready to paste into your console or autoexec.cfg.</p>
+    <div class="config-grid">
+      <div class="config-card">
+        <h3>Practice Server Setup</h3>
+        <pre><code>sv_cheats 1
+sv_infinite_ammo 1
+sv_grenade_trajectory 1
+sv_grenade_trajectory_time 10
+sv_showimpacts 1
+mp_warmup_end
+mp_freezetime 0
+mp_roundtime_defuse 60
+mp_buy_anywhere 1
+mp_buytime 9999
+mp_maxmoney 65535
+mp_startmoney 65535
+mp_respawn_on_death_ct 1
+mp_respawn_on_death_t 1
+bot_kick</code></pre>
+        <button class="copy-config-btn">Copy Config</button>
+      </div>
+      <div class="config-card">
+        <h3>FPS Optimization</h3>
+        <pre><code>fps_max 0
+fps_max_ui 120
+r_drawtracers_firstperson 0
+cl_forcepreload 1
+cl_animate_player_models 0
+engine_low_latency_sleep_after_client_tick true
+gameinstructor_enable 0
+cl_autohelp 0
+cl_showhelp 0</code></pre>
+        <button class="copy-config-btn">Copy Config</button>
+      </div>
+      <div class="config-card">
+        <h3>Competitive Network</h3>
+        <pre><code>rate 786432
+cl_interp_ratio 1
+cl_interp 0
+cl_cmdrate 128
+cl_updaterate 128
+mm_dedicated_search_maxping 80</code></pre>
+        <button class="copy-config-btn">Copy Config</button>
+      </div>
+      <div class="config-card">
+        <h3>Clean HUD for Content</h3>
+        <pre><code>cl_drawhud 0
+cl_draw_only_deathnotices 1
+sv_skyname vertigoblue_hdr
+fog_override 1
+fog_enable 0
+r_drawparticles 0</code></pre>
+        <button class="copy-config-btn">Copy Config</button>
+      </div>
+      <div class="config-card">
+        <h3>Pro Radar Settings</h3>
+        <pre><code>cl_radar_scale 0.35
+cl_radar_always_centered 0
+cl_radar_rotate 1
+cl_radar_icon_scale_min 0.5
+cl_hud_radar_scale 1.15
+cl_radar_square_with_scoreboard 1</code></pre>
+        <button class="copy-config-btn">Copy Config</button>
+      </div>
+      <div class="config-card">
+        <h3>Audio Optimization</h3>
+        <pre><code>volume 0.4
+snd_roundstart_volume 0
+snd_roundend_volume 0
+snd_deathcamera_volume 0
+snd_mvp_volume 0
+snd_menumusic_volume 0
+snd_tensecondwarning_volume 0.1
+snd_mute_losefocus 1
+voice_scale 0.7</code></pre>
+        <button class="copy-config-btn">Copy Config</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- FAQ -->
+  <section class="cmd-faq">
+    <h2>Frequently Asked Questions</h2>
+    <dl class="faq">
+      {faqs.map(f => (
+        <>
+          <dt>{f.question}</dt>
+          <dd>{f.answer}</dd>
+        </>
+      ))}
+    </dl>
+  </section>
+
+  <!-- Internal Links -->
+  <div class="internal-links">
+    <strong>Related Resources:</strong>
+    <a href="/autoexec-generator/">Autoexec Generator</a>
+    <a href="/bind-generator/">Bind Generator</a>
+    <a href="/launch-options/">Launch Options</a>
+    <a href="/practice-config/">Practice Config</a>
+    <a href="/crosshair-generator/">Crosshair Generator</a>
+    <a href="/crosshair-codes/">Crosshair Codes</a>
+    <a href="/sensitivity-converter/">Sensitivity Converter</a>
+    <a href="/damage-calculator/">Damage Calculator</a>
+    <a href="/economy-calculator/">Economy Calculator</a>
+    <a href="/pro-players/">Pro Player Settings</a>
+    <a href="/guides/beginners-guide/">Beginner's Guide</a>
+    <a href="/guides/fps-optimization-guide/">FPS Optimization Guide</a>
+    <a href="/tools/">All Tools</a>
+  </div>
+
+  <ExploreMore context="tools" />
+</Base>
+
+<style is:inline>
+.cmd-hero{background:linear-gradient(135deg,var(--bg2),var(--bg3));border:1px solid var(--border);border-radius:12px;padding:2rem;margin-bottom:2rem}
+.cmd-hero h1{font-size:2.2rem;margin:0 0 .75rem}
+.cmd-hero p{color:var(--text2);font-size:1.05rem;margin:0;line-height:1.6}
+
+.cmd-controls{margin-bottom:1.5rem}
+.cmd-search{width:100%;background:var(--bg2);color:var(--text);border:1px solid var(--border);padding:.75rem 1rem;border-radius:8px;font-size:1rem;font-family:inherit;margin-bottom:1rem}
+.cmd-search:focus{border-color:var(--accent);outline:none;box-shadow:0 0 0 3px rgba(212,149,110,.15)}
+
+.cmd-filters{display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:.75rem}
+.filter-btn{background:var(--bg2);color:var(--text2);border:1px solid var(--border);padding:.4rem .8rem;border-radius:6px;font-size:.85rem;cursor:pointer;transition:all .2s}
+.filter-btn:hover{border-color:var(--accent);color:var(--text)}
+.filter-btn.active{background:var(--accent);color:#1a1a2e;border-color:var(--accent);font-weight:600}
+
+.cmd-cat-pills{display:flex;gap:.4rem;flex-wrap:wrap}
+.cat-pill{background:var(--bg2);color:var(--text2);border:1px solid var(--border);padding:.3rem .65rem;border-radius:16px;font-size:.78rem;cursor:pointer;transition:all .2s;white-space:nowrap}
+.cat-pill:hover{border-color:var(--accent);color:var(--text)}
+.cat-pill.active{background:var(--accent);color:#1a1a2e;border-color:var(--accent)}
+
+.cmd-stats{color:var(--text2);font-size:.88rem;margin-bottom:1.5rem;padding:.5rem 0;border-bottom:1px solid var(--border)}
+
+.cmd-howto{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:1.5rem;margin-bottom:2rem}
+.cmd-howto h2{margin:0 0 1rem;font-size:1.2rem}
+.howto-steps{display:flex;gap:1rem;flex-wrap:wrap}
+.howto-step{display:flex;gap:.75rem;flex:1;min-width:200px}
+.step-num{width:32px;height:32px;background:var(--accent);color:#1a1a2e;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.9rem;flex-shrink:0}
+.howto-step p{margin:.25rem 0 0;font-size:.85rem;color:var(--text2)}
+.howto-step strong{font-size:.95rem}
+
+.cmd-category{margin-bottom:2rem}
+.cmd-category.hidden{display:none}
+.cmd-cat-head{display:flex;gap:1rem;align-items:center;margin-bottom:1rem}
+.cmd-cat-icon{font-size:1.8rem;width:44px;height:44px;display:flex;align-items:center;justify-content:center;background:var(--bg2);border:1px solid var(--border);border-radius:10px;flex-shrink:0}
+.cmd-cat-head h2{margin:0;font-size:1.25rem;color:var(--text)}
+.cmd-cat-head p{margin:.2rem 0 0;font-size:.88rem;color:var(--text2)}
+.cmd-cat-count{margin-left:auto;background:var(--bg2);border:1px solid var(--border);border-radius:6px;padding:.2rem .5rem;font-size:.78rem;color:var(--text2);flex-shrink:0}
+
+.cmd-table-wrap{overflow-x:auto;border:1px solid var(--border);border-radius:10px;background:var(--bg2)}
+.cmd-table{width:100%;border-collapse:collapse;font-size:.88rem}
+.cmd-table thead{background:var(--bg3)}
+.cmd-table th{padding:.6rem .8rem;text-align:left;font-weight:600;font-size:.8rem;text-transform:uppercase;letter-spacing:.5px;color:var(--text2);border-bottom:1px solid var(--border)}
+.cmd-table td{padding:.55rem .8rem;border-bottom:1px solid var(--border)}
+.cmd-table tr:last-child td{border-bottom:none}
+.cmd-table tr:hover{background:rgba(212,149,110,.04)}
+.cmd-table tr.hidden{display:none}
+
+.cmd-name{white-space:nowrap;display:flex;align-items:center;gap:.4rem}
+.cmd-name code{color:var(--accent);font-weight:600;font-size:.88rem}
+.cheat-badge{display:inline-flex;align-items:center;justify-content:center;background:rgba(255,107,107,.15);color:#ff6b6b;font-size:.6rem;font-weight:700;padding:.1rem .3rem;border-radius:3px;letter-spacing:.5px}
+.cmd-desc{color:var(--text2);max-width:400px}
+.cmd-default{color:var(--text2);font-family:monospace;font-size:.82rem;white-space:nowrap}
+.cmd-copy{text-align:center}
+.copy-btn{background:none;border:none;cursor:pointer;font-size:.9rem;opacity:.5;transition:opacity .2s;padding:.2rem}
+.copy-btn:hover{opacity:1}
+.copy-btn.copied{opacity:1}
+
+.no-results{text-align:center;padding:3rem;color:var(--text2)}
+
+.cmd-configs{margin:2.5rem 0}
+.cmd-configs h2{margin:0 0 .5rem;font-size:1.3rem}
+.cmd-configs>p{color:var(--text2);margin:0 0 1.25rem;font-size:.95rem}
+.config-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:1rem}
+.config-card{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:1.25rem;position:relative}
+.config-card h3{margin:0 0 .75rem;font-size:1rem;color:var(--text)}
+.config-card pre{background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:.75rem;overflow-x:auto;margin:0 0 .75rem;font-size:.78rem;line-height:1.5}
+.config-card code{color:var(--text)}
+.copy-config-btn{width:100%;background:var(--accent);color:#1a1a2e;border:none;padding:.5rem;border-radius:6px;font-weight:600;font-size:.85rem;cursor:pointer;transition:opacity .2s}
+.copy-config-btn:hover{opacity:.85}
+.copy-config-btn.copied{background:#4caf50;color:#fff}
+
+.cmd-faq{margin-top:3rem;padding:1.5rem;background:var(--bg2);border:1px solid var(--border);border-radius:10px}
+.cmd-faq h2{margin:0 0 1rem;font-size:1.3rem}
+
+@media(max-width:768px){
+  .cmd-hero h1{font-size:1.6rem}
+  .cmd-table{font-size:.8rem}
+  .cmd-desc{max-width:200px}
+  .howto-steps{flex-direction:column}
+  .config-grid{grid-template-columns:1fr}
+  .cmd-cat-head{flex-wrap:wrap}
+}
+</style>
+
+<script is:inline>
+(function(){
+  var search = document.getElementById('cmdSearch');
+  var rows = document.querySelectorAll('.cmd-row');
+  var cats = document.querySelectorAll('.cmd-category');
+  var filterBtns = document.querySelectorAll('.cmd-filters .filter-btn');
+  var catPills = document.querySelectorAll('.cat-pill');
+  var noRes = document.getElementById('noResults');
+  var visibleCount = document.getElementById('visibleCount');
+  var currentFilter = 'all';
+  var activeCat = null;
+
+  function applyFilters() {
+    var q = search.value.toLowerCase().trim();
+    var visible = 0;
+
+    rows.forEach(function(row) {
+      var matchText = !q || row.dataset.cmd.indexOf(q) > -1 || row.dataset.desc.indexOf(q) > -1;
+      var matchFilter = currentFilter === 'all' ||
+        (currentFilter === 'cheat' && row.dataset.cheat === '1') ||
+        (currentFilter === 'safe' && row.dataset.cheat === '0');
+      var matchCat = !activeCat || row.closest('.cmd-category').dataset.catid === activeCat;
+
+      var show = matchText && matchFilter && matchCat;
+      row.classList.toggle('hidden', !show);
+      if (show) visible++;
+    });
+
+    // Hide empty categories
+    cats.forEach(function(cat) {
+      var visCmds = cat.querySelectorAll('.cmd-row:not(.hidden)');
+      cat.classList.toggle('hidden', visCmds.length === 0);
+      // Update category count
+      var countEl = cat.querySelector('.cmd-cat-count');
+      if (countEl) countEl.textContent = visCmds.length;
+    });
+
+    noRes.style.display = visible === 0 ? 'block' : 'none';
+    visibleCount.textContent = visible;
+  }
+
+  search.addEventListener('input', applyFilters);
+
+  filterBtns.forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      filterBtns.forEach(function(b) { b.classList.remove('active'); });
+      btn.classList.add('active');
+      currentFilter = btn.dataset.filter;
+      applyFilters();
+    });
+  });
+
+  catPills.forEach(function(pill) {
+    pill.addEventListener('click', function() {
+      if (activeCat === pill.dataset.cat) {
+        activeCat = null;
+        pill.classList.remove('active');
+      } else {
+        catPills.forEach(function(p) { p.classList.remove('active'); });
+        activeCat = pill.dataset.cat;
+        pill.classList.add('active');
+      }
+      applyFilters();
+    });
+  });
+
+  // Copy individual commands
+  document.querySelectorAll('.copy-btn').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      var cmd = btn.dataset.copy;
+      navigator.clipboard.writeText(cmd).then(function() {
+        btn.textContent = '✓';
+        btn.classList.add('copied');
+        setTimeout(function() {
+          btn.textContent = '📋';
+          btn.classList.remove('copied');
+        }, 1500);
+      });
+    });
+  });
+
+  // Copy config blocks
+  document.querySelectorAll('.copy-config-btn').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      var pre = btn.previousElementSibling;
+      var code = pre.querySelector('code');
+      var text = code ? code.textContent : pre.textContent;
+      navigator.clipboard.writeText(text.trim()).then(function() {
+        btn.textContent = 'Copied!';
+        btn.classList.add('copied');
+        setTimeout(function() {
+          btn.textContent = 'Copy Config';
+          btn.classList.remove('copied');
+        }, 1500);
+      });
+    });
+  });
+
+  // Keyboard shortcut — focus search with /
+  document.addEventListener('keydown', function(e) {
+    if (e.key === '/' && document.activeElement !== search) {
+      e.preventDefault();
+      search.focus();
+    }
+  });
+})();
+</script>
+</Base>

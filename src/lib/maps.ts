@@ -1,0 +1,203 @@
+export interface GameMap {
+  slug: string;
+  name: string;
+  pool: 'active' | 'reserve' | 'wingman';
+  mode: 'defusal' | 'hostage';
+  description: string;
+  callouts: { name: string; side: 'ct' | 't' | 'mid'; description: string }[];
+  ctTips: string[];
+  tTips: string[];
+  meta: string;
+  tags: string[];
+}
+
+export const MAPS: GameMap[] = [
+  {
+    slug: 'dust2', name: 'Dust II', pool: 'active', mode: 'defusal',
+    description: 'The most iconic map in Counter-Strike history. A simple three-lane layout with long sightlines and fast-paced gameplay. T-sided map that rewards aggressive play and AWP duels.',
+    callouts: [
+      { name: 'Long A', side: 'ct', description: 'Long corridor from T spawn to A site with doors and a corner (Long Corner)' },
+      { name: 'Short A (Catwalk)', side: 'mid', description: 'Elevated path from mid to A site via the catwalk' },
+      { name: 'A Site', side: 'ct', description: 'Bomb site A with the large platform, goose, and car positions' },
+      { name: 'Goose', side: 'ct', description: 'Corner behind the A site platform, named after graffiti' },
+      { name: 'A Car', side: 'ct', description: 'Car position on A site — common afterplant spot' },
+      { name: 'Mid', side: 'mid', description: 'Central corridor connecting T spawn to both bombsites' },
+      { name: 'Mid Doors', side: 'mid', description: 'Double doors in mid — famous AWP battle spot at round start' },
+      { name: 'B Tunnels (Upper)', side: 't', description: 'Upper tunnel path leading directly to B site' },
+      { name: 'B Tunnels (Lower)', side: 't', description: 'Lower tunnel connecting T spawn to upper B tunnels' },
+      { name: 'B Site', side: 'ct', description: 'Bomb site B enclosed area with window, back platform, and car' },
+      { name: 'B Window', side: 'ct', description: 'Window room overlooking B tunnels entrance — strong CT position' },
+      { name: 'B Car', side: 'ct', description: 'Car on B site used for cover during retakes' },
+      { name: 'CT Spawn', side: 'ct', description: 'Counter-Terrorist spawn area connecting A site and B site' },
+      { name: 'T Spawn', side: 't', description: 'Terrorist spawn area with paths to long, mid, and tunnels' },
+      { name: 'Pit', side: 't', description: 'Lowered area at the end of Long A — strong afterplant position' },
+      { name: 'Xbox', side: 'mid', description: 'Box in mid used for boosting onto short/catwalk' },
+    ],
+    ctTips: ['AWP mid doors for early picks', 'Play one A, one B, one mid — rotate quickly', 'Smoke long crossing to deny T vision', 'Molotov long corner to delay pushes'],
+    tTips: ['Smoke mid doors to cross safely', 'Split A with long and short players', 'B tunnels smoke + flash for fast B take', 'Use xbox smoke to get onto short safely'],
+    meta: 'T-sided map. Aggressive plays from T-side are rewarded. AWP duels at mid doors are iconic. Fast rotations through CT spawn make retakes possible.',
+    tags: ['classic', 'competitive', 't-sided', 'aim-heavy'],
+  },
+  {
+    slug: 'mirage', name: 'Mirage', pool: 'active', mode: 'defusal',
+    description: 'One of the most played competitive maps. Three-lane layout with strong mid control being the key to success. Balanced for both sides with emphasis on utility usage.',
+    callouts: [
+      { name: 'A Site', side: 'ct', description: 'Open bombsite with default plant spot, triple box, and CT ramp' },
+      { name: 'A Ramp', side: 't', description: 'Main T approach to A site from T spawn' },
+      { name: 'Palace', side: 't', description: 'Indoor path from T spawn to A site — elevated position' },
+      { name: 'Jungle', side: 'ct', description: 'Connector area between CT spawn and A site' },
+      { name: 'Connector', side: 'mid', description: 'Path from mid to A short/jungle' },
+      { name: 'Window', side: 'mid', description: 'Window room overlooking mid from CT side' },
+      { name: 'Top Mid', side: 'mid', description: 'T-side entrance to mid area' },
+      { name: 'Mid', side: 'mid', description: 'Central area of the map — crucial for map control' },
+      { name: 'Underpass', side: 'mid', description: 'Underground passage from mid to B short/apartments' },
+      { name: 'B Site', side: 'ct', description: 'Enclosed bombsite B with van, bench, and short push' },
+      { name: 'B Apartments', side: 't', description: 'Indoor path from T spawn to B site entrance' },
+      { name: 'B Short', side: 'mid', description: 'Short path from mid/underpass to B site' },
+      { name: 'Kitchen', side: 'ct', description: 'Room behind B site connecting to CT spawn' },
+      { name: 'Ticket Booth', side: 'ct', description: 'Position on A site behind the booth' },
+      { name: 'Triple Box', side: 'ct', description: 'Stack of three boxes on A site — common holding spot' },
+    ],
+    ctTips: ['Hold window with AWP for mid control', 'Aggressive B apartments push for info', 'Stack A with utility and play retake B', 'Molotov A ramp and palace to delay'],
+    tTips: ['Control mid to split A or B', 'Default: 2 mid, 1 palace, 2 apps', 'A execute needs: window smoke, jungle smoke, CT smoke', 'B execute needs: apartment flash, short smoke'],
+    meta: 'Balanced map. Mid control is the most important factor. Heavy utility usage is required for both sides. One of the most strategically deep maps.',
+    tags: ['classic', 'competitive', 'balanced', 'utility-heavy'],
+  },
+  {
+    slug: 'inferno', name: 'Inferno', pool: 'active', mode: 'defusal',
+    description: 'Tight corridors and narrow chokepoints define Inferno. CT-sided map where utility usage is paramount. Banana control is the key battleground for B site.',
+    callouts: [
+      { name: 'A Site', side: 'ct', description: 'Open bombsite with pit, graveyard, and library positions' },
+      { name: 'Apartments', side: 't', description: 'Multi-level building path to A site from T side' },
+      { name: 'Pit', side: 'ct', description: 'Lowered area on A site — strong holding position' },
+      { name: 'Library', side: 'ct', description: 'Room connecting A site to CT spawn with bookshelves' },
+      { name: 'Arch', side: 'ct', description: 'Archway connecting CT spawn to A site' },
+      { name: 'Mid', side: 'mid', description: 'Central area between A and B with the T connector' },
+      { name: 'Banana', side: 't', description: 'Curved corridor leading from mid to B site — key battleground' },
+      { name: 'B Site', side: 'ct', description: 'Enclosed bombsite with fountain, dark spot, and new box positions' },
+      { name: 'CT Spawn', side: 'ct', description: 'CT spawn connecting to both sites and providing rotation paths' },
+      { name: 'Second Mid', side: 'mid', description: 'Area between T spawn and alt-mid, connecting to B apartments' },
+      { name: 'Top Banana', side: 't', description: 'T-side entrance to banana — first contact point' },
+      { name: 'Car (Banana)', side: 'mid', description: 'Car position halfway down banana — holding spot for both sides' },
+      { name: 'Graveyard', side: 'ct', description: 'Area behind A site with gravestones' },
+      { name: 'Dark Spot', side: 'ct', description: 'Shadow position in B site corner' },
+      { name: 'Construction', side: 'ct', description: 'Area behind B site connecting to CT spawn' },
+    ],
+    ctTips: ['Control banana with utility — molotov + smoke', 'Play aggressive apartments early for info', 'Crossfire on B site from dark and new box', 'Use pit for strong A site hold'],
+    tTips: ['Fight for banana control with utility trades', 'A split: apartments + arch side', 'B execute: smoke CT, molotov dark, flash over', 'Default with 2 banana, 2 mid, 1 apps'],
+    meta: 'CT-sided map. Banana is the most contested area. Utility usage is extremely important for both sides. Tight corridors reward good crosshair placement.',
+    tags: ['classic', 'competitive', 'ct-sided', 'utility-heavy', 'tight-angles'],
+  },
+  {
+    slug: 'nuke', name: 'Nuke', pool: 'active', mode: 'defusal',
+    description: 'Unique two-level map with A site on top and B site below. CT-sided with fast rotations. Outside yard is the key area for T-side aggression.',
+    callouts: [
+      { name: 'A Site', side: 'ct', description: 'Upper bombsite on the roof of the building — open area with hut and main' },
+      { name: 'B Site', side: 'ct', description: 'Lower bombsite inside the reactor room — tight with vents and ramp' },
+      { name: 'Ramp', side: 't', description: 'Main indoor path from T side to B site' },
+      { name: 'Outside (Yard)', side: 'mid', description: 'Large outdoor area — key for T-side aggression toward A' },
+      { name: 'Secret', side: 't', description: 'Hidden path from outside to B site through the back' },
+      { name: 'Hut', side: 'ct', description: 'Small structure on A site providing cover' },
+      { name: 'Heaven', side: 'ct', description: 'Elevated platform above A site — strong CT position' },
+      { name: 'Hell', side: 'ct', description: 'Lower area below heaven — connects A to vents' },
+      { name: 'Vents', side: 'mid', description: 'Ventilation shaft connecting A site to B site vertically' },
+      { name: 'Lobby', side: 't', description: 'Indoor area connecting T spawn to ramp and radio' },
+      { name: 'Silo', side: 'mid', description: 'Outside structure that can be climbed for A site access' },
+      { name: 'Main', side: 'ct', description: 'Main entrance to A site from inside the building' },
+    ],
+    ctTips: ['Fast rotations through vents — abuse vertical play', 'Hold outside with AWP from heaven/roof', 'B retakes through secret and ramp simultaneously', 'Smoke main and hut to delay A takes'],
+    tTips: ['Control outside to threaten A and secret to B', 'Split B: ramp + secret simultaneously', 'Flash over roof for A site takes', 'Vents drop for fast rotations'],
+    meta: 'CT-sided map. Vertical gameplay with two levels. Fast CT rotations through vents. Outside control is crucial for T-side.',
+    tags: ['competitive', 'ct-sided', 'vertical', 'unique-layout'],
+  },
+  {
+    slug: 'overpass', name: 'Overpass', pool: 'active', mode: 'defusal',
+    description: 'Complex map with multiple levels and creative utility usage. Relatively balanced with strong emphasis on map control and information gathering.',
+    callouts: [
+      { name: 'A Site', side: 'ct', description: 'Bombsite on top of the overpass structure — truck, bank, and stairs positions' },
+      { name: 'B Site', side: 'ct', description: 'Lower bombsite in the canal area — water, pillar, and heaven' },
+      { name: 'Long A', side: 't', description: 'Long approach to A site from T spawn area' },
+      { name: 'Short A (Toilets)', side: 't', description: 'Short path to A through the bathroom area' },
+      { name: 'Connector', side: 'mid', description: 'Connector area between A site and B site' },
+      { name: 'Monster', side: 't', description: 'Underground tunnel from T spawn to B site area' },
+      { name: 'Water/Canal', side: 'mid', description: 'Water canal area leading to B site' },
+      { name: 'Heaven (B)', side: 'ct', description: 'Elevated position above B site — strong CT hold' },
+      { name: 'Bank', side: 'ct', description: 'Building on A site with strong holding angles' },
+      { name: 'Playground', side: 't', description: 'Open area near T spawn used for early aggression' },
+      { name: 'Truck', side: 'ct', description: 'Truck on A site used for boost positions' },
+      { name: 'Fountain', side: 'mid', description: 'Fountain area in the middle connector' },
+    ],
+    ctTips: ['Hold heaven for B site control', 'Aggressive monster pushes for information', 'Use A site verticality — play bank and truck', 'Rotate through connector quickly'],
+    tTips: ['Monster control for B site access', 'Long + short A split is very effective', 'Water execute needs: heaven smoke, pillar molotov', 'Default: 2 long, 1 toilets, 2 monster'],
+    meta: 'Balanced map. Creative utility usage rewarded. Multiple levels of play. B site executes require coordinated utility.',
+    tags: ['competitive', 'balanced', 'complex', 'multi-level'],
+  },
+  {
+    slug: 'anubis', name: 'Anubis', pool: 'active', mode: 'defusal',
+    description: 'Egyptian-themed map added to the active duty pool. Mid control is crucial with water-based connectors. Features unique gameplay with canal rotations.',
+    callouts: [
+      { name: 'A Site', side: 'ct', description: 'Bombsite A on elevated temple platform' },
+      { name: 'B Site', side: 'ct', description: 'Bombsite B in the lower canal area' },
+      { name: 'Mid', side: 'mid', description: 'Central area connecting both bombsites — crucial for control' },
+      { name: 'Canal', side: 'mid', description: 'Water canal area used for rotations and B site access' },
+      { name: 'A Main', side: 't', description: 'Primary T approach to A site' },
+      { name: 'A Connector', side: 'mid', description: 'Path connecting mid to A site' },
+      { name: 'B Main', side: 't', description: 'Primary T approach to B site' },
+      { name: 'Palace', side: 't', description: 'Elevated path leading toward A site' },
+      { name: 'Bridge', side: 'mid', description: 'Bridge crossing in mid area' },
+      { name: 'Ruins', side: 'ct', description: 'Broken structures near A site providing cover' },
+    ],
+    ctTips: ['Mid control is essential — play aggressive mid early', 'Use canal for fast rotations between sites', 'Hold A from elevated positions', 'Smoke bridge to cut off mid control'],
+    tTips: ['Take mid control for splits to either site', 'A execute through palace and main', 'B main requires utility to clear common spots', 'Use water sounds to mask rotations'],
+    meta: 'Newer map in active pool. Mid control is paramount. Water canal provides unique rotation paths. Still evolving meta.',
+    tags: ['competitive', 'newer', 'mid-control', 'water-theme'],
+  },
+  {
+    slug: 'ancient', name: 'Ancient', pool: 'active', mode: 'defusal',
+    description: 'Aztec-themed map set in jungle ruins. Features tight corridors and a central mid area. CT-sided with emphasis on holding chokepoints.',
+    callouts: [
+      { name: 'A Site', side: 'ct', description: 'Open bombsite with temple steps and rock positions' },
+      { name: 'B Site', side: 'ct', description: 'Bombsite in the ruin area with pillar and back site positions' },
+      { name: 'Mid', side: 'mid', description: 'Central cave system connecting sides of the map' },
+      { name: 'A Main', side: 't', description: 'Main approach corridor to A site' },
+      { name: 'Donut', side: 'mid', description: 'Circular room in mid connecting to A site' },
+      { name: 'B Ramp', side: 't', description: 'Ramped approach to B site from T side' },
+      { name: 'Cave', side: 'mid', description: 'Cave area in mid section of map' },
+      { name: 'Elbow', side: 'mid', description: 'Corner area connecting mid to B site' },
+      { name: 'Temple', side: 'ct', description: 'Temple structure near A site' },
+      { name: 'Jaguar', side: 'ct', description: 'Jaguar statue position on A site' },
+    ],
+    ctTips: ['Hold A main from elevation near temple', 'Aggressive mid cave push for info', 'Use donut for crossfires on A site', 'Molotov B ramp to delay T pushes'],
+    tTips: ['Mid control opens up both site executes', 'A main smoke + flash for site entry', 'B ramp requires clearing cave/elbow first', 'Split A through donut and A main'],
+    meta: 'CT-sided map. Tight corridors favor CT defense. Mid cave control enables both site executes. Utility-heavy.',
+    tags: ['competitive', 'ct-sided', 'jungle-theme', 'tight-corridors'],
+  },
+  {
+    slug: 'vertigo', name: 'Vertigo', pool: 'active', mode: 'defusal',
+    description: 'Set on top of a skyscraper under construction. Multi-level vertical map with unique gameplay. A site is on the upper level, B site on the lower scaffolding.',
+    callouts: [
+      { name: 'A Site', side: 'ct', description: 'Upper level bombsite on the building rooftop' },
+      { name: 'B Site', side: 'ct', description: 'Lower level bombsite on scaffolding' },
+      { name: 'A Ramp', side: 't', description: 'Ramp leading up to A site from T spawn' },
+      { name: 'B Stairs', side: 't', description: 'Staircase from T spawn down to B site area' },
+      { name: 'Mid', side: 'mid', description: 'Central area connecting both levels' },
+      { name: 'Scaffold', side: 'ct', description: 'Scaffolding structure around B site' },
+      { name: 'Headshot (A)', side: 'ct', description: 'Elevated headshot angle on A site' },
+      { name: 'Default (A)', side: 'ct', description: 'Default plant position on A site' },
+      { name: 'CT (B)', side: 'ct', description: 'CT rotation path to B site' },
+      { name: 'Elevator', side: 'mid', description: 'Elevator shaft area connecting levels' },
+    ],
+    ctTips: ['A ramp is the key area to defend — hold with utility', 'B scaffolding offers many angles', 'Use elevation advantage on A site', 'Rotate quickly through mid between levels'],
+    tTips: ['A ramp execute with smokes and flashes', 'B stairs push requires clearing scaffold', 'Use verticality to your advantage', 'Boost spots are very powerful on Vertigo'],
+    meta: 'Unique vertical map. Multiple levels of gameplay. A ramp is the most contested area. Boost spots and creative utility are important.',
+    tags: ['competitive', 'vertical', 'skyscraper', 'unique-layout'],
+  },
+];
+
+export function getMapBySlug(slug: string): GameMap | undefined {
+  return MAPS.find(m => m.slug === slug);
+}
+
+export function getActiveMaps(): GameMap[] {
+  return MAPS.filter(m => m.pool === 'active');
+}

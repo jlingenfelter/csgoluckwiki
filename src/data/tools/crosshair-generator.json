@@ -1,0 +1,29 @@
+{
+  "slug": "crosshair-generator",
+  "title": "CS2 Crosshair Generator — Build & Preview Custom Crosshairs | CSDB.gg",
+  "description": "Create your perfect CS2 crosshair with our visual generator. Real-time preview, pro player presets, and instant console commands. Export your crosshair code with one click.",
+  "heading": "CS2 Crosshair Generator",
+  "intro": "Design your ideal crosshair with real-time visual preview. Adjust every parameter, load pro player presets, and copy the console commands instantly.",
+  "faqs": [
+    {
+      "question": "How do I apply a custom crosshair in CS2?",
+      "answer": "Open the console with ~ and paste the crosshair commands. Alternatively, go to Settings → Game → Crosshair and adjust each setting manually. You can also share crosshair codes via the in-game crosshair menu."
+    },
+    {
+      "question": "What crosshair do most CS2 pros use?",
+      "answer": "Most professionals use small, static crosshairs. The most common setup is: Size 2, Gap -2, Thickness 0, no dot, Style 4 (static), Color 1 (green). However, preferences vary widely — some pros use dot-only crosshairs while others prefer larger crosses."
+    },
+    {
+      "question": "Should I use a dynamic or static crosshair?",
+      "answer": "Static crosshairs (Style 4 or 5) are preferred by competitive players because they don't move during shooting. Dynamic crosshairs expand to show weapon inaccuracy, which can be helpful for beginners learning spray control."
+    },
+    {
+      "question": "What is the best crosshair color for visibility?",
+      "answer": "Bright green (Color 1) is the most popular because it contrasts well against most map environments. Cyan and yellow are also popular choices. Avoid red and dark colors as they blend into common map textures."
+    },
+    {
+      "question": "Can I use a dot crosshair in CS2?",
+      "answer": "Yes, set cl_crosshairsize 0 and cl_crosshairdot 1. Many AWPers prefer dot crosshairs for precise positioning. You can adjust dot size with cl_crosshairthickness."
+    }
+  ]
+}

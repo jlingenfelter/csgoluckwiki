@@ -1,0 +1,524 @@
+---
+import Base from '../../layouts/Base.astro';
+import AuthorBox from '../../components/AuthorBox.astro';
+import { faqSchema, breadcrumbSchema } from '../../lib/weapons';
+
+const title = 'Economy Management Guide';
+const description = 'Master buy rounds, eco rounds, force buys, and strategic money management to optimize your team\'s purchasing power.';
+
+const breadcrumbs = [
+  { name: 'Home', url: '/' },
+  { name: 'Guides', url: '/guides' },
+  { name: 'Economy Management Guide', url: '/guides/economy-guide' },
+];
+
+const faqs = [
+  {
+    question: 'How much money do you start with each round?',
+    answer: '$800 base amount. Add round bonuses: $2,900 for win, $1,400-$3,400 for loss (increases each loss). You also earn $300 per kill.',
+  },
+  {
+    question: 'What\'s the difference between a full buy and a half buy?',
+    answer: 'Full buy: $4,000-5,000 per player for primary weapon + armor + utility. Half buy: $2,000-3,000 with SMGs or basic rifles. Use based on your economy situation.',
+  },
+  {
+    question: 'When should we force buy?',
+    answer: 'Force buy when you have $4,000-5,000 total and need momentum. It\'s risky but can secure crucial rounds if you win, leading to full buys and map control.',
+  },
+  {
+    question: 'How do I manage economy after losing pistol round?',
+    answer: 'Save aggressively for 2-3 rounds. Buy minimal items (armor only), then execute a full buy on round 4 when bonuses accumulate. Avoid forcing prematurely.',
+  },
+  {
+    question: 'What\'s a stack buy strategy?',
+    answer: 'Concentrate purchases on 2-3 players while others eco. Useful for executing specific bomb site strategies with overwhelming firepower in one area.',
+  },
+];
+
+const breadcrumbSchema_ = breadcrumbSchema(breadcrumbs);
+const faqSchema_ = faqSchema(faqs);
+
+const articleSchema = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": title,
+  "description": description,
+  "author": { "@type": "Person", "name": "Josh Lingenfelter", "url": "https://www.linkedin.com/in/josh-lingenfelter-8157274b/", "jobTitle": "Director", "worksFor": { "@type": "Organization", "name": "Bettor Media" } },
+  "publisher": { "@type": "Organization", "name": "CSDB.gg", "url": "https://csdb.gg" },
+  "mainEntityOfPage": `https://csdb.gg/guides/economy-guide/`,
+  "inLanguage": "en-US"
+});
+---
+
+<Base title={title} description={description}>
+  <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema_)}></script>
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema_)}></script>
+  <script type="application/ld+json" set:html={articleSchema}></script>
+
+  <div class="guide-container">
+    <nav class="breadcrumb">
+      <a href="/">Home</a>
+      <span class="separator">/</span>
+      <a href="/guides">Guides</a>
+      <span class="separator">/</span>
+      <span>Economy Guide</span>
+    </nav>
+
+    <article class="guide-article">
+      <header class="guide-header">
+        <h1>Economy Management Guide</h1>
+        <p class="lead">Master strategic money management for consistent team success</p>
+      </header>
+
+      <section class="intro-section">
+        <p>
+          Economy is the foundation of Counter-Strike 2 strategy. Teams win not just through better aim, but through superior economic planning. Understanding buy cycles, eco rounds, and force buy strategies separates competitive teams from casual players. This guide teaches you how to manage your team's finances for maximum impact.
+        </p>
+      </section>
+
+      <section>
+        <h2>Understanding the Money System</h2>
+        <p>
+          Every player starts with $800 per round. Money is earned through kills, bomb plant/defuse, and round outcomes. Strategic spending ensures your team has optimal weapons and utility throughout match.
+        </p>
+
+        <h3>Money Sources</h3>
+        <ul>
+          <li><strong>Round Win:</strong> $2,900 to each player</li>
+          <li><strong>Round Loss:</strong> $1,400-$3,400 loss bonus (increases per consecutive loss)</li>
+          <li><strong>Kill:</strong> $300 per elimination</li>
+          <li><strong>Bomb Plant (T):</strong> $300 bonus</li>
+          <li><strong>Bomb Defuse (CT):</strong> $300 bonus</li>
+          <li><strong>Base Amount:</strong> $800 per round</li>
+        </ul>
+
+        <h3>Loss Bonus System</h3>
+        <p>
+          The loss bonus increases with each consecutive loss to prevent snowballing:
+        </p>
+        <ul>
+          <li>Round 1 loss: $1,400</li>
+          <li>Round 2 loss: $1,900</li>
+          <li>Round 3 loss: $2,400</li>
+          <li>Round 4+ loss: $3,400 (capped)</li>
+        </ul>
+        <p>
+          This system allows teams to recover economically after losses. Plan purchases knowing your loss bonus increases.
+        </p>
+      </section>
+
+      <section>
+        <h2>Buy Rounds Strategy</h2>
+        <p>
+          A buy round is when your team invests heavily in weapons and utility to maximize round win probability. Proper buy rounds secure the economy for future rounds.
+        </p>
+
+        <h3>Full Buy Setup</h3>
+        <p>
+          Spend $4,000-5,000 per player for maximum loadout:
+        </p>
+        <ul>
+          <li><strong>Primary Weapon:</strong> $1,500-2,100 (AK-47, M4A4, or similar)</li>
+          <li><strong>Pistol Secondary:</strong> $500</li>
+          <li><strong>Armor:</strong> $650</li>
+          <li><strong>Utility:</strong> $1,000-1,500 (grenades, smokes, flashes)</li>
+          <li><strong>Remaining:</strong> Save for future rounds or adjust utility</li>
+        </ul>
+
+        <h3>Half Buy Strategy</h3>
+        <p>
+          Use when you have less total economy ($15,000-20,000 team total). Each player buys:
+        </p>
+        <ul>
+          <li><strong>Secondary Weapon:</strong> SMG like MP9 or MAC-10 ($500-800)</li>
+          <li><strong>Armor:</strong> $650</li>
+          <li><strong>Light Utility:</strong> $500-800</li>
+          <li><strong>Total per player:</strong> $2,000-2,500</li>
+        </ul>
+        <p>
+          Half buys work best on maps where close-range encounters dominate or when you need to preserve economy.
+        </p>
+
+        <h3>Full Buy Guidelines</h3>
+        <ul>
+          <li>Execute full buys after winning the previous round</li>
+          <li>Ensure your team has $15,000+ total before committing</li>
+          <li>Prioritize armor—unarmored players are vulnerable</li>
+          <li>Always have utility for site executes</li>
+          <li>Consider weapon consistency (all riflers should have similar guns)</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>Economy Rounds & Saving</h2>
+        <p>
+          Economy rounds (often called "eco" or "save" rounds) are crucial for long-term success. These rounds sacrifice immediate offensive power to build funds for future rounds.
+        </p>
+
+        <h3>Light Buy Eco Round</h3>
+        <p>
+          Spend $500-1,500 total per player:
+        </p>
+        <ul>
+          <li>Pistol with armor ($800-1,000)</li>
+          <li>Maybe one smoke or utility item</li>
+          <li>Focus on surviving and getting picks</li>
+          <li>Save most money for next round</li>
+        </ul>
+        <p>
+          Light buys work when you're close to full buy next round and don't want economy interruption.
+        </p>
+
+        <h3>Full Eco/Force Eco</h3>
+        <p>
+          Spend minimum ($800 base) on weapons, keep $0 utility:
+        </p>
+        <ul>
+          <li>Drop armor, buy only pistols</li>
+          <li>Focus on avoiding deaths and securing picks</li>
+          <li>Win rounds through superior positioning</li>
+          <li>Maximum savings for next round buy</li>
+        </ul>
+        <p>
+          Full ecos are high-risk but maximize future buying power. Execute only when you need rapid economic recovery.
+        </p>
+
+        <h3>When to Eco</h3>
+        <ul>
+          <li>After losing a round you couldn't have won with full buy</li>
+          <li>When team total is $8,000-12,000 short of full buy</li>
+          <li>To set up a guaranteed next-round full buy</li>
+          <li>When waiting for loss bonuses to stack</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>Force Buy Strategy</h2>
+        <p>
+          Force buys (aggressive buys despite low economy) are calculated risks that can shift match momentum. Execute them strategically for maximum impact.
+        </p>
+
+        <h3>When to Force Buy</h3>
+        <ul>
+          <li>Team has $4,000-5,000 and needs a confidence round</li>
+          <li>Momentum is strongly against you (0-3 down)</li>
+          <li>Opponents are likely in their own eco</li>
+          <li>Map control is critical at this stage</li>
+        </ul>
+
+        <h3>Force Buy Setup</h3>
+        <p>
+          Each player buys $3,500-4,000:
+        </p>
+        <ul>
+          <li>Rifle (AK or M4) with some money remaining</li>
+          <li>Armor</li>
+          <li>Limited utility</li>
+          <li>Leave team with minimal reserve</li>
+        </ul>
+
+        <h3>Force Buy Execution</h3>
+        <p>
+          Force buys succeed through superior setup and utility usage. Concentrate forces to overwhelm opponents in key areas rather than spreading thin.
+        </p>
+
+        <h3>Force Buy Risk Assessment</h3>
+        <ul>
+          <li><strong>High Success:</strong> Opponents are ecoing, you have momentum</li>
+          <li><strong>Medium Risk:</strong> Even economy, outcome depends on execution</li>
+          <li><strong>High Risk:</strong> Opponents have full buy, pistols, or superior position</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>Multi-Round Economy Planning</h2>
+        <p>
+          Competitive teams plan economy over multiple rounds. Understanding economy cycles prevents unexpected financial crises.
+        </p>
+
+        <h3>Win Round Economy</h3>
+        <p>
+          <strong>Round 1:</strong> Full buy (rifles, armor, utility)<br>
+          <strong>Round 2:</strong> Full buy (restock utility)<br>
+          <strong>Rounds 3+:</strong> Full buys continue with adjustments as needed
+        </p>
+
+        <h3>Loss Round Economy</h3>
+        <p>
+          <strong>After Loss:</strong> Determine economy recovery plan<br>
+          <strong>If poor:</strong> Save 2 rounds, then full buy<br>
+          <strong>If decent:</strong> Light buy, progress to full buy next round<br>
+          <strong>Decision point:</strong> Risk force buy or guarantee recovery?
+        </p>
+
+        <h3>Pistol Round Economy</h3>
+        <p>
+          <strong>Round 1 (Pistol):</strong> All players buy pistol + utility<br>
+          <strong>Possible outcomes:</strong>
+        </p>
+        <ul>
+          <li><strong>Pistol Win:</strong> Full buy round 2, then full buys + restock</li>
+          <li><strong>Pistol Loss:</strong> Save rounds 2-3, full buy round 4</li>
+        </ul>
+
+        <h3>Sample 5-Round Economy Scenario</h3>
+        <p>
+          <strong>Round 1:</strong> Pistol buy (lose)<br>
+          <strong>Round 2:</strong> Eco/light buy (lose)<br>
+          <strong>Round 3:</strong> Light buy (lose, but getting loss bonus)<br>
+          <strong>Round 4:</strong> Full buy (now you can afford it)<br>
+          <strong>Round 5:</strong> Depends on round 4 outcome
+        </p>
+      </section>
+
+      <section>
+        <h2>Advanced Economy Tactics</h2>
+
+        <h3>Stack Buy Strategy</h3>
+        <p>
+          Concentrate purchases on 2-3 players while others eco. Useful when one bomb site is the primary target:
+        </p>
+        <ul>
+          <li>Stack A site with full buys</li>
+          <li>B site players buy armor and pistols only</li>
+          <li>Bomb site stack executes with superior firepower</li>
+          <li>Works best in predictable economy phases</li>
+        </ul>
+
+        <h3>Floating Economy</h3>
+        <p>
+          Keep team total within optimal range ($10,000-20,000) by making individual adjustments:
+        </p>
+        <ul>
+          <li>Rich players buy full utility and armor</li>
+          <li>Mid-economy players buy weapons and light utility</li>
+          <li>Poor players eco and save</li>
+          <li>Balance team purchases for cohesive strength</li>
+        </ul>
+
+        <h3>Utility Spacing</h3>
+        <p>
+          Distribute utility efficiently:
+        </p>
+        <ul>
+          <li>Site entry players carry flashes and smokes</li>
+          <li>Support players carry utility for site setup</li>
+          <li>Rotators carry defensive utility</li>
+          <li>Avoid duplicate utility purchases</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>Economy Communication</h2>
+        <p>
+          Effective economy management requires team communication. Establish clear money callouts and buying protocols.
+        </p>
+
+        <h3>Money Callouts</h3>
+        <ul>
+          <li>"I have $2,400" - Clear personal money status</li>
+          <li>"We're at $15k total" - Team economy status</li>
+          <li>"Buying next round" - Your buying intention</li>
+          <li>"Eco this round" - Team strategy confirmation</li>
+        </ul>
+
+        <h3>Pre-Round Buying Discussion</h3>
+        <ul>
+          <li>Determine strategy before the round begins</li>
+          <li>Confirm who's buying what weapons</li>
+          <li>Plan utility distribution</li>
+          <li>Adjust based on unexpected kills/losses</li>
+        </ul>
+      </section>
+
+      <section class="faq-section">
+        <h2>Frequently Asked Questions</h2>
+        <div class="faq-items">
+          {faqs.map((faq) => (
+            <div class="faq-item">
+              <h3>{faq.question}</h3>
+              <p>{faq.answer}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <section class="guide-links">
+        <h3>Related Resources</h3>
+        <ul>
+          <li><a href="/guides/">All Guides</a></li>
+          <li><a href="/economy-calculator/">Economy Calculator</a></li>
+          <li><a href="/damage-calculator/">Damage Calculator</a></li>
+          <li><a href="/weapons/">Weapon Database</a></li>
+          <li><a href="/weapon-compare/">Weapon Compare</a></li>
+          <li><a href="/pro-players/">Pro Player Settings</a></li>
+          <li><a href="/tools/">All Tools</a></li>
+          <li><a href="/guides/beginners-guide/">Beginner's Guide</a></li>
+          <li><a href="/guides/ranks-guide/">Ranking System Guide</a></li>
+          <li><a href="/guides/advanced-mechanics-guide/">Advanced Mechanics Guide</a></li>
+          <li><a href="/maps/">Map Callouts</a></li>
+        </ul>
+      </section>
+    </article>
+  </div>
+
+  <style>
+    .guide-container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+
+    .breadcrumb {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 2rem;
+      font-size: 0.95rem;
+      color: var(--text-secondary);
+    }
+
+    .breadcrumb a {
+      color: var(--accent-color);
+      text-decoration: none;
+      transition: color 0.2s ease;
+    }
+
+    .breadcrumb a:hover {
+      color: var(--accent-light);
+    }
+
+    .breadcrumb .separator {
+      color: var(--text-secondary);
+    }
+
+    .guide-article {
+      color: var(--text-primary);
+    }
+
+    .guide-header {
+      margin-bottom: 2rem;
+      border-bottom: 2px solid var(--border-color);
+      padding-bottom: 1.5rem;
+    }
+
+    .guide-header h1 {
+      margin: 0 0 0.5rem 0;
+      font-size: 2.5rem;
+      color: var(--text-primary);
+    }
+
+    .lead {
+      margin: 0;
+      font-size: 1.1rem;
+      color: var(--text-secondary);
+    }
+
+    .intro-section {
+      font-size: 1.05rem;
+      line-height: 1.8;
+      margin-bottom: 2.5rem;
+      padding: 1.5rem;
+      background: var(--bg-secondary);
+      border-left: 4px solid var(--accent-color);
+      border-radius: 4px;
+    }
+
+    section {
+      margin-bottom: 2.5rem;
+    }
+
+    h2 {
+      font-size: 1.8rem;
+      margin: 0 0 1rem 0;
+      color: var(--text-primary);
+      border-bottom: 2px solid var(--border-color);
+      padding-bottom: 0.5rem;
+    }
+
+    h3 {
+      font-size: 1.3rem;
+      margin: 1.5rem 0 0.75rem 0;
+      color: var(--text-primary);
+    }
+
+    p {
+      line-height: 1.7;
+      color: var(--text-secondary);
+      margin-bottom: 1rem;
+    }
+
+    ul {
+      list-style: none;
+      padding: 0;
+      margin: 1rem 0 1.5rem 0;
+    }
+
+    li {
+      padding-left: 1.5rem;
+      margin-bottom: 0.75rem;
+      position: relative;
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+
+    li::before {
+      content: '▸';
+      position: absolute;
+      left: 0;
+      color: var(--accent-color);
+    }
+
+    .faq-section {
+      margin-top: 3rem;
+    }
+
+    .faq-items {
+      display: grid;
+      gap: 1.5rem;
+    }
+
+    .faq-item {
+      background: var(--bg-secondary);
+      padding: 1.5rem;
+      border-radius: 8px;
+      border-left: 4px solid var(--accent-color);
+    }
+
+    .faq-item h3 {
+      margin-top: 0;
+      color: var(--text-primary);
+      font-size: 1.1rem;
+    }
+
+    .faq-item p {
+      margin-bottom: 0;
+    }
+
+    .guide-links {
+      background: var(--bg-secondary);
+      padding: 1.5rem;
+      border-radius: 8px;
+      border-top: 2px solid var(--accent-color);
+    }
+
+    .guide-links h3 {
+      margin-top: 0;
+    }
+
+    .guide-links ul {
+      margin: 1rem 0 0 0;
+    }
+
+    .guide-links a {
+      color: var(--accent-color);
+      text-decoration: none;
+      transition: color 0.2s ease;
+    }
+
+    .guide-links a:hover {
+      color: var(--accent-light);
+    }
+  </style>
+  <AuthorBox updated="2026-03-02" />
+</Base>

@@ -1,0 +1,29 @@
+{
+  "slug": "fps-optimization-guide",
+  "title": "CS2 FPS Optimization Guide — Maximum Performance Settings | CSDB.gg",
+  "description": "Squeeze every frame out of CS2 with our complete FPS optimization guide. In-game settings, launch options, Windows tweaks, and hardware recommendations for peak performance.",
+  "heading": "CS2 FPS Optimization Guide",
+  "intro": "Frame rate directly affects your competitive performance in CS2. Higher FPS means lower input latency, smoother crosshair tracking, and faster reaction times. This guide walks through every optimization available — from in-game settings to OS-level tweaks.",
+  "faqs": [
+    {
+      "question": "What gives the biggest FPS boost in CS2?",
+      "answer": "Lowering resolution provides the largest single improvement (20-40%+). After that: reducing shader quality (15-25%), disabling MSAA (10-20%), and lowering shadow quality (5-15%). Also ensure VSync is off and fps_max is set to 0."
+    },
+    {
+      "question": "Why does CS2 run worse than CS:GO?",
+      "answer": "CS2 uses the Source 2 engine with improved lighting, physics, and rendering that require more GPU and CPU power. Performance improves with each update as Valve optimizes the engine. Upgrading to 16GB RAM and an SSD helps significantly."
+    },
+    {
+      "question": "Does lowering resolution help FPS in CS2?",
+      "answer": "Yes, dramatically. Switching from 1920x1080 to 1280x960 can improve FPS by 30-50%. Many professional players use 1280x960 stretched for a wider player model appearance and higher framerates."
+    },
+    {
+      "question": "What Windows settings improve CS2 performance?",
+      "answer": "Disable Game Mode, disable Hardware-Accelerated GPU Scheduling if unstable, set CS2 to High Priority in Task Manager, disable unnecessary startup programs, and keep Windows power plan on High Performance. Update GPU drivers regularly."
+    },
+    {
+      "question": "Is 128 FPS enough for CS2?",
+      "answer": "For 60Hz monitors, 128 FPS is more than sufficient. For 144Hz monitors, aim for 200+ FPS. For 240Hz+ monitors, target 300+ FPS. Higher FPS reduces input latency even above your monitor refresh rate."
+    }
+  ]
+}

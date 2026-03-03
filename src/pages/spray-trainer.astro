@@ -1,0 +1,907 @@
+---
+import Base from '../layouts/Base.astro';
+import ExploreMore from '../components/ExploreMore.astro';
+import { breadcrumbSchema, faqSchema, toolAppSchema } from '../lib/weapons';
+
+const title = 'CS2 Spray Pattern Trainer — Practice Recoil Control | CSDB.gg';
+const description = 'Interactive spray pattern trainer for Counter-Strike 2. Learn and practice recoil control for AK-47, M4A4, M4A1-S, Galil AR, FAMAS, SG 553, and AUG. Master your spray patterns with real-time feedback and difficulty settings.';
+
+const breadcrumbs = [
+  { name: 'Home', url: '/' },
+  { name: 'Tools', url: '/tools/' },
+  { name: 'Spray Trainer', url: '/spray-trainer/' },
+];
+
+const faqData = [
+  { q: 'How long does it take to master spray patterns?', a: 'Most players need 50-100 hours of dedicated practice to develop solid spray control. Muscle memory takes time to develop, but consistent practice shows results within weeks.' },
+  { q: 'Should I practice on all weapons or just the AK-47?', a: 'Start with the AK-47 if you play T-side, or M4A4 if you play CT-side. Once you master one, learning other weapons is easier since the fundamentals transfer.' },
+  { q: 'Is spray control or single-tap accuracy more important?', a: 'Single-tap accuracy at long range is more important than spraying. Learn to tap first, spray second. Spraying is primarily for close-to-mid range fights.' },
+  { q: 'Why is the AK-47 spray so hard?', a: 'The AK-47 spray is unpredictable because it moves left and right inconsistently. This by design — it\'s harder to learn but rewards consistent practice.' },
+  { q: 'Can I use a spray pattern crosshair code to help?', a: 'Yes! Many players use spray pattern crosshair codes that overlay the pattern. However, relying too much on visual aids can slow down learning. Balance visual learning with pattern practice.' },
+  { q: 'What is counter-strafing and why is it important?', a: 'Counter-strafing is pressing the opposite movement key to stop moving. It resets your velocity quickly, allowing you to take accurate shots without waiting. Essential for peeking angles.' },
+  { q: 'Should I spray or burst fire at range?', a: 'At range, single-tap and short bursts are more accurate than spraying. Reserve full sprays for close-to-mid range where you\'re confident in your pattern.' },
+  { q: 'How do I know if I\'m improving?', a: 'Track your accuracy percentage and score over time. Improving accuracy and hitting more targets consistently indicates better spray control. Recording demos and reviewing them helps identify weak areas.' },
+];
+---
+
+<Base title={title} description={description} currentNav="/weapons/">
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema(breadcrumbs))} />
+    <script type="application/ld+json" set:html={JSON.stringify(faqSchema(faqData))} />
+    <script type="application/ld+json" set:html={JSON.stringify(toolAppSchema({ name: 'CS2 Spray Pattern Trainer', url: 'https://csdb.gg/spray-trainer/', description }))} />
+  </Fragment>
+<div class="spray-trainer-page">
+  <h1>CS2 Spray Pattern Trainer</h1>
+  <p>Master recoil control by practicing weapon spray patterns. Watch targets follow the spray pattern and click to match them perfectly. Available for the most commonly used weapons.</p>
+
+  <div class="trainer-container">
+    <div class="trainer-controls">
+      <div class="control-group">
+        <label for="weapon-select">Select Weapon:</label>
+        <select id="weapon-select">
+          <option value="ak-47">AK-47 (T-Side)</option>
+          <option value="m4a4">M4A4 (CT-Side)</option>
+          <option value="m4a1-s">M4A1-S (CT-Side)</option>
+          <option value="galil-ar">Galil AR (T-Side)</option>
+          <option value="famas">FAMAS (CT-Side)</option>
+          <option value="sg-553">SG 553 (T-Side)</option>
+          <option value="aug">AUG (CT-Side)</option>
+        </select>
+      </div>
+
+      <div class="control-group">
+        <label for="mode-select">Mode:</label>
+        <select id="mode-select">
+          <option value="practice">Practice Mode (Track Targets)</option>
+          <option value="learn">Learn Mode (Show Pattern)</option>
+        </select>
+      </div>
+
+      <div class="control-group">
+        <label for="speed-select">Difficulty:</label>
+        <select id="speed-select">
+          <option value="slow">Slow (50% speed)</option>
+          <option value="medium" selected>Medium (100% speed)</option>
+          <option value="fast">Fast (150% speed)</option>
+        </select>
+      </div>
+
+      <div class="control-group">
+        <label>
+          <input type="checkbox" id="show-pattern" />
+          Show Ideal Pattern Overlay
+        </label>
+      </div>
+
+      <button id="start-btn" class="btn-primary">Start Practice</button>
+      <button id="reset-btn" class="btn-secondary">Reset Stats</button>
+    </div>
+
+    <div class="canvas-container">
+      <canvas id="spray-canvas" width="600" height="400"></canvas>
+      <div id="canvas-hint">Click on targets following the spray pattern</div>
+    </div>
+
+    <div class="trainer-stats">
+      <div class="stat">
+        <span class="stat-label">Accuracy</span>
+        <span class="stat-value" id="stat-accuracy">0%</span>
+      </div>
+      <div class="stat">
+        <span class="stat-label">Score</span>
+        <span class="stat-value" id="stat-score">0</span>
+      </div>
+      <div class="stat">
+        <span class="stat-label">Hits</span>
+        <span class="stat-value" id="stat-hits">0/0</span>
+      </div>
+      <div class="stat">
+        <span class="stat-label">Elapsed Time</span>
+        <span class="stat-value" id="stat-time">0s</span>
+      </div>
+    </div>
+  </div>
+
+  <section class="tips-section">
+    <h2>Spray Control Tips</h2>
+    <ul class="tip-list">
+      <li><strong>Learn First 10 Bullets:</strong> The first 10 bullets of any spray are the most important. Master these before attempting full sprays.</li>
+      <li><strong>Pull Down Initially:</strong> Most weapons require pulling your crosshair down initially. The AK-47 spray starts by pulling down and slightly left.</li>
+      <li><strong>Muscle Memory:</strong> Practice the same weapon repeatedly until the spray pattern becomes muscle memory. Your hands should know where to go.</li>
+      <li><strong>Distance Matters:</strong> Spray patterns behave differently at different ranges. Practice at multiple distances.</li>
+      <li><strong>Counter-Strafe for Accuracy:</strong> Stop moving briefly before spraying for better accuracy. Use counter-strafing (press opposite direction key) to reset position quickly.</li>
+      <li><strong>Spray Transfers:</strong> Practice moving your spray from one target to another smoothly. This is crucial in multi-enemy situations.</li>
+      <li><strong>Short Bursts:</strong> In many situations, 3-4 bullet bursts are more efficient than full sprays. Control becomes easier with fewer shots.</li>
+      <li><strong>One-Tap at Range:</strong> At long range, take time between shots rather than spraying. One precise headshot beats a wild spray.</li>
+    </ul>
+  </section>
+
+  <section class="weapon-details">
+    <h2>Weapon Spray Patterns</h2>
+
+    <div class="weapon-info">
+      <h3>AK-47 (T-Side)</h3>
+      <p><strong>Difficulty:</strong> Hard | <strong>Damage:</strong> 36 (one-tap headshot) | <strong>Fire Rate:</strong> 600 RPM</p>
+      <p>The iconic T-side rifle with high damage but challenging recoil. The spray goes up, then left, then right in an inverted-T shape. Mastering the AK-47 spray is essential for competitive play.</p>
+      <ul class="weapon-tips">
+        <li>First 4 bullets: Pull down smoothly and slightly left</li>
+        <li>Bullets 5-10: Recoil moves left, adjust by pulling right</li>
+        <li>Bullets 11+: Spray becomes harder to control, avoid spraying more than 15 bullets</li>
+        <li>One-shot headshot potential at any range makes aiming crucial</li>
+      </ul>
+    </div>
+
+    <div class="weapon-info">
+      <h3>M4A4 (CT-Side)</h3>
+      <p><strong>Difficulty:</strong> Medium | <strong>Damage:</strong> 33 | <strong>Fire Rate:</strong> 666 RPM | <strong>Magazine:</strong> 30 rounds</p>
+      <p>The standard CT rifle with a more forgiving spray pattern than the AK-47. The spray is tighter and more vertical, making it easier to control at range.</p>
+      <ul class="weapon-tips">
+        <li>Spray is tighter and more vertical than the AK</li>
+        <li>First 10 bullets: Pull down steadily</li>
+        <li>After 10 bullets: Slight horizontal adjustment needed</li>
+        <li>30-round magazine allows for spray transfers and multi-target engagement</li>
+      </ul>
+    </div>
+
+    <div class="weapon-info">
+      <h3>M4A1-S (CT-Side)</h3>
+      <p><strong>Difficulty:</strong> Medium | <strong>Damage:</strong> 38 | <strong>Fire Rate:</strong> 600 RPM | <strong>Magazine:</strong> 20 rounds</p>
+      <p>The silenced alternative to the M4A4. Slightly more controllable spray due to lower fire rate, but only 20 rounds per magazine demands precision.</p>
+      <ul class="weapon-tips">
+        <li>Lower fire rate (600 vs 666) makes spray slightly easier</li>
+        <li>Smaller magazine requires more accuracy</li>
+        <li>Silencer hides bullet tracers and muffles sound</li>
+        <li>Better first-shot accuracy than M4A4</li>
+      </ul>
+    </div>
+
+    <div class="weapon-info">
+      <h3>Galil AR (T-Side)</h3>
+      <p><strong>Difficulty:</strong> Easy-Medium | <strong>Damage:</strong> 30 | <strong>Fire Rate:</strong> 666 RPM | <strong>Cost:</strong> $1800</p>
+      <p>Budget T-side rifle with a relatively forgiving spray pattern. Good for force-buy rounds when the AK is too expensive.</p>
+      <ul class="weapon-tips">
+        <li>Similar spray to M4A4 but slightly more unpredictable at range</li>
+        <li>Good for close-to-mid range engagements</li>
+        <li>30-round magazine provides ample ammunition</li>
+        <li>Much cheaper than AK-47, making it ideal for eco-rounds</li>
+      </ul>
+    </div>
+
+    <div class="weapon-info">
+      <h3>FAMAS (CT-Side)</h3>
+      <p><strong>Difficulty:</strong> Easy-Medium | <strong>Damage:</strong> 30 | <strong>Fire Rate:</strong> 666 RPM | <strong>Cost:</strong> $2050</p>
+      <p>Budget CT rifle with optional burst-fire mode. The spray is manageable but has more horizontal spread than the M4s.</p>
+      <ul class="weapon-tips">
+        <li>Spray has significant horizontal spread at range</li>
+        <li>Burst-fire mode useful for long-range engagements</li>
+        <li>25-round magazine is limiting compared to M4A4</li>
+        <li>Good force-buy option when M4 is too expensive</li>
+      </ul>
+    </div>
+
+    <div class="weapon-info">
+      <h3>SG 553 (T-Side)</h3>
+      <p><strong>Difficulty:</strong> Hard | <strong>Damage:</strong> 30 | <strong>Fire Rate:</strong> 666 RPM | <strong>100% Armor Pen</strong></p>
+      <p>Scoped T-side rifle with unique diagonal spray pattern and perfect armor penetration. Expensive and underused but very powerful.</p>
+      <ul class="weapon-tips">
+        <li>Diagonal spray pattern — learn this specific pattern</li>
+        <li>Scoped and unscoped spray patterns are different</li>
+        <li>100% armor penetration makes it efficient against armor</li>
+        <li>More expensive than AK ($3000) so use in strong economies</li>
+      </ul>
+    </div>
+
+    <div class="weapon-info">
+      <h3>AUG (CT-Side)</h3>
+      <p><strong>Difficulty:</strong> Medium | <strong>Damage:</strong> 28 | <strong>Fire Rate:</strong> 600 RPM | <strong>High Armor Pen</strong></p>
+      <p>Scoped CT rifle with high armor penetration. Spray patterns differ between scoped and unscoped modes.</p>
+      <ul class="weapon-tips">
+        <li>Scoped and unscoped spray patterns are different</li>
+        <li>Scope provides advantage in long-range fights</li>
+        <li>Higher armor penetration than M4A4 and M4A1-S</li>
+        <li>More expensive than M4A4 ($3300) — use in full buys</li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="faq">
+    <h2>Frequently Asked Questions</h2>
+    <dl>
+      <dt>How long does it take to master spray patterns?</dt>
+      <dd>Most players need 50-100 hours of dedicated practice to develop solid spray control. Muscle memory takes time to develop, but consistent practice shows results within weeks.</dd>
+
+      <dt>Should I practice on all weapons or just the AK-47?</dt>
+      <dd>Start with the AK-47 if you play T-side, or M4A4 if you play CT-side. Once you master one, learning other weapons is easier since the fundamentals transfer.</dd>
+
+      <dt>Is spray control or single-tap accuracy more important?</dt>
+      <dd>Single-tap accuracy at long range is more important than spraying. Learn to tap first, spray second. Spraying is primarily for close-to-mid range fights.</dd>
+
+      <dt>Why is the AK-47 spray so hard?</dt>
+      <dd>The AK-47 spray is unpredictable because it moves left and right inconsistently. This by design — it's harder to learn but rewards consistent practice.</dd>
+
+      <dt>Can I use a spray pattern crosshair code to help?</dt>
+      <dd>Yes! Many players use spray pattern crosshair codes that overlay the pattern. However, relying too much on visual aids can slow down learning. Balance visual learning with pattern practice.</dd>
+
+      <dt>What is counter-strafing and why is it important?</dt>
+      <dd>Counter-strafing is pressing the opposite movement key to stop moving. It resets your velocity quickly, allowing you to take accurate shots without waiting. Essential for peeking angles.</dd>
+
+      <dt>Should I spray or burst fire at range?</dt>
+      <dd>At range, single-tap and short bursts are more accurate than spraying. Reserve full sprays for close-to-mid range where you're confident in your pattern.</dd>
+
+      <dt>How do I know if I'm improving?</dt>
+      <dd>Track your accuracy percentage and score over time. Improving accuracy and hitting more targets consistently indicates better spray control. Recording demos and reviewing them helps identify weak areas.</dd>
+    </dl>
+  </section>
+
+  <div class="internal-links">
+    <a href="/recoil-patterns/">Recoil Pattern Charts</a>
+    <a href="/damage-calculator/">Damage Calculator</a>
+    <a href="/weapons/">Weapon Database</a>
+    <a href="/weapon-compare/">Compare Weapons</a>
+    <a href="/sensitivity-converter/">Sensitivity Converter</a>
+    <a href="/crosshair-generator/">Crosshair Generator</a>
+    <a href="/aim-training/">Aim Training</a>
+    <a href="/pro-players/">Pro Player Settings</a>
+    <a href="/tools/">All Tools</a>
+    <a href="/guides/advanced-mechanics-guide/">Advanced Mechanics Guide</a>
+  </div>
+</div>
+
+<script is:inline>
+  class SprayTrainer {
+    constructor() {
+      this.canvas = document.getElementById('spray-canvas');
+      this.ctx = this.canvas.getContext('2d');
+      this.isRunning = false;
+      this.mode = 'practice';
+      this.currentWeapon = 'ak-47';
+      this.difficulty = 'medium';
+      this.showPattern = false;
+      this.sprayPatterns = {
+        'ak-47': [
+          {x:300,y:150},{x:300,y:170},{x:299,y:190},{x:298,y:210},
+          {x:297,y:230},{x:290,y:250},{x:280,y:265},{x:270,y:275},
+          {x:260,y:282},{x:250,y:285},{x:240,y:283},{x:230,y:278},
+          {x:225,y:270},{x:223,y:260},{x:225,y:250},{x:230,y:242},
+          {x:240,y:238},{x:255,y:235},{x:270,y:237},{x:285,y:242},
+          {x:300,y:250},{x:315,y:258},{x:330,y:262},{x:345,y:260},
+          {x:355,y:255},{x:360,y:248},{x:358,y:240},{x:350,y:235},
+          {x:340,y:232},{x:328,y:234}
+        ],
+        'm4a4': [
+          {x:300,y:150},{x:300,y:170},{x:300,y:190},{x:300,y:210},
+          {x:300,y:230},{x:300,y:250},{x:298,y:270},{x:295,y:285},
+          {x:292,y:298},{x:290,y:305},{x:292,y:310},{x:295,y:312},
+          {x:300,y:310},{x:305,y:305},{x:310,y:298},{x:312,y:290},
+          {x:310,y:282},{x:305,y:276},{x:298,y:272},{x:290,y:270},
+          {x:283,y:272},{x:278,y:278},{x:275,y:286},{x:274,y:294},
+          {x:276,y:302},{x:280,y:308},{x:286,y:312},{x:294,y:314},
+          {x:302,y:312},{x:308,y:308}
+        ],
+        'm4a1-s': [
+          {x:300,y:150},{x:300,y:170},{x:300,y:190},{x:300,y:210},
+          {x:300,y:230},{x:299,y:250},{x:298,y:268},{x:296,y:282},
+          {x:294,y:292},{x:292,y:298},{x:294,y:302},{x:298,y:300},
+          {x:304,y:295},{x:308,y:288},{x:310,y:280},{x:308,y:274},
+          {x:304,y:270},{x:298,y:268},{x:292,y:270},{x:288,y:275}
+        ],
+        'galil-ar': [
+          {x:300,y:150},{x:300,y:170},{x:300,y:190},{x:299,y:210},
+          {x:298,y:230},{x:297,y:250},{x:295,y:268},{x:293,y:283},
+          {x:291,y:295},{x:289,y:303},{x:291,y:310},{x:295,y:312},
+          {x:300,y:310},{x:305,y:305},{x:310,y:298},{x:312,y:290},
+          {x:310,y:283},{x:306,y:278},{x:300,y:276},{x:294,y:278},
+          {x:290,y:283},{x:288,y:290},{x:288,y:298},{x:290,y:305},
+          {x:294,y:310},{x:300,y:312},{x:306,y:310},{x:310,y:305},
+          {x:312,y:298},{x:310,y:292},{x:306,y:288},{x:300,y:286},
+          {x:294,y:288},{x:290,y:292},{x:288,y:298}
+        ],
+        'famas': [
+          {x:300,y:150},{x:300,y:170},{x:300,y:190},{x:299,y:210},
+          {x:297,y:230},{x:295,y:250},{x:290,y:268},{x:285,y:283},
+          {x:280,y:295},{x:280,y:305},{x:285,y:310},{x:292,y:310},
+          {x:300,y:308},{x:308,y:304},{x:314,y:298},{x:316,y:290},
+          {x:314,y:282},{x:308,y:276},{x:300,y:274},{x:292,y:276},
+          {x:286,y:282},{x:284,y:290},{x:286,y:298},{x:292,y:304},
+          {x:300,y:306}
+        ],
+        'sg-553': [
+          {x:300,y:150},{x:298,y:170},{x:296,y:190},{x:294,y:210},
+          {x:292,y:230},{x:290,y:250},{x:288,y:268},{x:286,y:283},
+          {x:284,y:295},{x:282,y:305},{x:280,y:312},{x:282,y:315},
+          {x:286,y:315},{x:292,y:312},{x:298,y:308},{x:304,y:302},
+          {x:310,y:296},{x:314,y:290},{x:316,y:284},{x:314,y:278},
+          {x:310,y:274},{x:304,y:272},{x:298,y:274},{x:292,y:278},
+          {x:288,y:284},{x:286,y:292},{x:288,y:300},{x:292,y:306},
+          {x:298,y:310},{x:304,y:310}
+        ],
+        'aug': [
+          {x:300,y:150},{x:300,y:170},{x:300,y:190},{x:299,y:210},
+          {x:298,y:230},{x:297,y:250},{x:296,y:268},{x:295,y:283},
+          {x:294,y:295},{x:293,y:305},{x:295,y:312},{x:298,y:310},
+          {x:302,y:305},{x:306,y:298},{x:308,y:290},{x:306,y:282},
+          {x:302,y:276},{x:296,y:274},{x:290,y:276},{x:286,y:282},
+          {x:284,y:290},{x:286,y:298},{x:290,y:304},{x:296,y:308},
+          {x:302,y:308},{x:306,y:304},{x:308,y:298},{x:306,y:292},
+          {x:302,y:288},{x:298,y:288}
+        ]
+      };
+
+      this.stats = {
+        hits: 0,
+        total: 0,
+        score: 0,
+        startTime: 0,
+        accuracy: 0
+      };
+
+      this.speedMultipliers = { slow: 0.5, medium: 1, fast: 1.5 };
+      this.targets = [];
+      this.patternIndex = 0;
+      this.animationFrameId = null;
+
+      this.setupEventListeners();
+    }
+
+    setupEventListeners() {
+      document.getElementById('start-btn').addEventListener('click', () => this.togglePractice());
+      document.getElementById('reset-btn').addEventListener('click', () => this.resetStats());
+      document.getElementById('weapon-select').addEventListener('change', (e) => {
+        this.currentWeapon = e.target.value;
+        this.patternIndex = 0;
+        if (this.isRunning) { this.targets = []; }
+      });
+      document.getElementById('mode-select').addEventListener('change', (e) => this.mode = e.target.value);
+      document.getElementById('speed-select').addEventListener('change', (e) => this.difficulty = e.target.value);
+      document.getElementById('show-pattern').addEventListener('change', (e) => this.showPattern = e.target.checked);
+      this.canvas.addEventListener('click', (e) => this.handleCanvasClick(e));
+
+      // Handle responsive canvas sizing
+      this.resizeCanvas();
+      window.addEventListener('resize', () => this.resizeCanvas());
+    }
+
+    resizeCanvas() {
+      const container = this.canvas.parentElement;
+      const w = Math.min(600, container.clientWidth);
+      const h = Math.round(w * (400 / 600));
+      this.canvas.width = 600;
+      this.canvas.height = 400;
+      this.canvas.style.width = w + 'px';
+      this.canvas.style.height = h + 'px';
+      this.scaleX = 600 / w;
+      this.scaleY = 400 / h;
+    }
+
+    togglePractice() {
+      this.isRunning = !this.isRunning;
+      const btn = document.getElementById('start-btn');
+
+      if (this.isRunning) {
+        btn.textContent = 'Stop Practice';
+        btn.classList.add('active');
+        this.stats.startTime = Date.now();
+        this.patternIndex = 0;
+        this.targets = [];
+        this.animate();
+      } else {
+        btn.textContent = 'Start Practice';
+        btn.classList.remove('active');
+        cancelAnimationFrame(this.animationFrameId);
+      }
+    }
+
+    resetStats() {
+      this.stats = {
+        hits: 0,
+        total: 0,
+        score: 0,
+        startTime: this.isRunning ? Date.now() : 0,
+        accuracy: 0
+      };
+      this.patternIndex = 0;
+      this.targets = [];
+      this.updateStats();
+    }
+
+    animate() {
+      this.draw();
+      const speedMult = this.speedMultipliers[this.difficulty];
+      const pattern = this.sprayPatterns[this.currentWeapon];
+
+      if (this.mode === 'practice' && this.isRunning && this.patternIndex < pattern.length) {
+        const targetPos = pattern[this.patternIndex];
+        if (this.targets.length === 0 || this.targets[this.targets.length - 1].clicked) {
+          this.targets.push({
+            x: targetPos.x,
+            y: targetPos.y,
+            index: this.patternIndex,
+            clicked: false,
+            created: Date.now()
+          });
+          this.stats.total++;
+        }
+
+        const timeSinceCreation = (Date.now() - this.targets[this.targets.length - 1].created) / 1000;
+        if (timeSinceCreation > (3 / speedMult)) {
+          if (!this.targets[this.targets.length - 1].clicked) {
+            this.patternIndex++;
+          }
+        }
+      }
+
+      if (this.mode === 'learn' && this.isRunning) {
+        const pattern = this.sprayPatterns[this.currentWeapon];
+        const currentStep = (Date.now() - this.stats.startTime) / 200 * speedMult;
+        this.patternIndex = Math.min(Math.floor(currentStep), pattern.length - 1);
+      }
+
+      this.updateStats();
+      this.animationFrameId = requestAnimationFrame(() => this.animate());
+    }
+
+    draw() {
+      this.ctx.fillStyle = '#0e0e12';
+      this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+
+      const pattern = this.sprayPatterns[this.currentWeapon];
+
+      if (this.showPattern) {
+        this.drawPatternOverlay(pattern);
+      }
+
+      if (this.mode === 'practice') {
+        this.drawTargets();
+      } else {
+        this.drawLearnMode(pattern);
+      }
+
+      this.drawCrosshair();
+    }
+
+    drawPatternOverlay(pattern) {
+      this.ctx.strokeStyle = 'rgba(245, 166, 35, 0.3)';
+      this.ctx.lineWidth = 2;
+      this.ctx.beginPath();
+
+      for (let i = 0; i < pattern.length; i++) {
+        if (i === 0) {
+          this.ctx.moveTo(pattern[i].x, pattern[i].y);
+        } else {
+          this.ctx.lineTo(pattern[i].x, pattern[i].y);
+        }
+      }
+      this.ctx.stroke();
+
+      this.ctx.fillStyle = 'rgba(245, 166, 35, 0.2)';
+      for (let i = 0; i < pattern.length; i++) {
+        this.ctx.beginPath();
+        this.ctx.arc(pattern[i].x, pattern[i].y, 4, 0, Math.PI * 2);
+        this.ctx.fill();
+      }
+    }
+
+    drawTargets() {
+      for (const target of this.targets) {
+        if (target.clicked) {
+          this.ctx.fillStyle = '#4caf50';
+          this.ctx.globalAlpha = 0.8;
+        } else {
+          this.ctx.fillStyle = '#ef5350';
+          this.ctx.globalAlpha = 1;
+        }
+
+        this.ctx.beginPath();
+        this.ctx.arc(target.x, target.y, 15, 0, Math.PI * 2);
+        this.ctx.fill();
+
+        this.ctx.globalAlpha = 1;
+        this.ctx.strokeStyle = target.clicked ? '#4caf50' : '#ef5350';
+        this.ctx.lineWidth = 2;
+        this.ctx.beginPath();
+        this.ctx.arc(target.x, target.y, 20, 0, Math.PI * 2);
+        this.ctx.stroke();
+
+        this.ctx.fillStyle = '#fff';
+        this.ctx.font = 'bold 12px monospace';
+        this.ctx.textAlign = 'center';
+        this.ctx.textBaseline = 'middle';
+        this.ctx.fillText(target.index + 1, target.x, target.y);
+      }
+    }
+
+    drawLearnMode(pattern) {
+      const activeIndex = this.patternIndex;
+
+      this.ctx.strokeStyle = 'rgba(245, 166, 35, 0.5)';
+      this.ctx.lineWidth = 2;
+      this.ctx.beginPath();
+
+      for (let i = 0; i <= activeIndex && i < pattern.length; i++) {
+        if (i === 0) {
+          this.ctx.moveTo(pattern[i].x, pattern[i].y);
+        } else {
+          this.ctx.lineTo(pattern[i].x, pattern[i].y);
+        }
+      }
+      this.ctx.stroke();
+
+      for (let i = 0; i <= activeIndex && i < pattern.length; i++) {
+        if (i === activeIndex) {
+          this.ctx.fillStyle = '#d4956e';
+        } else {
+          this.ctx.fillStyle = 'rgba(245, 166, 35, 0.5)';
+        }
+
+        this.ctx.beginPath();
+        this.ctx.arc(pattern[i].x, pattern[i].y, i === activeIndex ? 10 : 6, 0, Math.PI * 2);
+        this.ctx.fill();
+      }
+
+      this.ctx.fillStyle = '#d4956e';
+      this.ctx.font = 'bold 14px monospace';
+      this.ctx.textAlign = 'center';
+      this.ctx.textBaseline = 'top';
+      this.ctx.fillText(`Bullet ${activeIndex + 1}`, 50, 20);
+    }
+
+    drawCrosshair() {
+      this.ctx.strokeStyle = '#42a5f5';
+      this.ctx.lineWidth = 2;
+      const cx = this.canvas.width / 2;
+      const cy = this.canvas.height / 2;
+      const size = 20;
+
+      this.ctx.beginPath();
+      this.ctx.moveTo(cx - size, cy);
+      this.ctx.lineTo(cx + size, cy);
+      this.ctx.stroke();
+
+      this.ctx.beginPath();
+      this.ctx.moveTo(cx, cy - size);
+      this.ctx.lineTo(cx, cy + size);
+      this.ctx.stroke();
+
+      this.ctx.beginPath();
+      this.ctx.arc(cx, cy, 4, 0, Math.PI * 2);
+      this.ctx.strokeStyle = '#42a5f5';
+      this.ctx.stroke();
+    }
+
+    handleCanvasClick(e) {
+      if (!this.isRunning || this.mode !== 'practice') return;
+
+      const rect = this.canvas.getBoundingClientRect();
+      const x = (e.clientX - rect.left) * (this.scaleX || 1);
+      const y = (e.clientY - rect.top) * (this.scaleY || 1);
+
+      for (let i = this.targets.length - 1; i >= 0; i--) {
+        const target = this.targets[i];
+        if (target.clicked) continue;
+
+        const dx = x - target.x;
+        const dy = y - target.y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+
+        if (dist < 20) {
+          target.clicked = true;
+          this.stats.hits++;
+          this.stats.score += Math.max(10, 50 - Math.floor(dist / 2));
+          break;
+        }
+      }
+    }
+
+    updateStats() {
+      const accuracy = this.stats.total > 0 ? Math.round((this.stats.hits / this.stats.total) * 100) : 0;
+      const elapsed = this.isRunning ? Math.floor((Date.now() - this.stats.startTime) / 1000) : 0;
+
+      document.getElementById('stat-accuracy').textContent = accuracy + '%';
+      document.getElementById('stat-score').textContent = this.stats.score;
+      document.getElementById('stat-hits').textContent = `${this.stats.hits}/${this.stats.total}`;
+      document.getElementById('stat-time').textContent = elapsed + 's';
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    new SprayTrainer();
+  });
+</script>
+
+<ExploreMore context="tools" />
+
+<style>
+  .spray-trainer-page {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+  }
+
+  .trainer-container {
+    display: grid;
+    grid-template-columns: 1fr 1.5fr;
+    gap: 2rem;
+    margin: 2rem 0;
+  }
+
+  .trainer-controls {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1.5rem;
+  }
+
+  .control-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .control-group label {
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: var(--text);
+  }
+
+  .control-group select {
+    background: var(--bg3);
+    color: var(--text);
+    border: 1px solid var(--border);
+    padding: 0.5rem 0.75rem;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+
+  .control-group select:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(245, 166, 35, 0.1);
+  }
+
+  .control-group input[type="checkbox"] {
+    accent-color: var(--accent);
+    cursor: pointer;
+    width: 18px;
+    height: 18px;
+  }
+
+  .control-group label:has(input[type="checkbox"]) {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-direction: row;
+  }
+
+  .btn-primary, .btn-secondary {
+    padding: 0.75rem 1rem;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    border: none;
+    font-size: 0.95rem;
+    font-family: inherit;
+  }
+
+  .btn-primary {
+    background: var(--accent);
+    color: #000;
+  }
+
+  .btn-primary:hover {
+    background: var(--accent2);
+    transform: translateY(-2px);
+  }
+
+  .btn-primary.active {
+    background: #ef5350;
+  }
+
+  .btn-secondary {
+    background: var(--bg3);
+    color: var(--text2);
+    border: 1px solid var(--border);
+  }
+
+  .btn-secondary:hover {
+    background: var(--accent);
+    color: #000;
+    border-color: var(--accent);
+  }
+
+  .canvas-container {
+    position: relative;
+    background: var(--bg);
+    border: 2px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+
+  #spray-canvas {
+    display: block;
+    width: 100%;
+    max-width: 600px;
+    background: linear-gradient(135deg, #0a0a0e 0%, #12121a 100%);
+  }
+
+  #canvas-hint {
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+    font-size: 0.85rem;
+    color: var(--text2);
+    background: rgba(0, 0, 0, 0.7);
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+  }
+
+  .trainer-stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+    margin-top: 1rem;
+  }
+
+  .stat {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1rem;
+    text-align: center;
+  }
+
+  .stat-label {
+    display: block;
+    font-size: 0.85rem;
+    color: var(--text2);
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .stat-value {
+    display: block;
+    font-size: 1.8rem;
+    font-weight: 800;
+    color: var(--accent);
+  }
+
+  .tips-section {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1.5rem;
+  }
+
+  .weapon-details {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+    margin: 2rem 0;
+  }
+
+  .weapon-info {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1.5rem;
+  }
+
+  .weapon-info h3 {
+    margin-top: 0;
+    color: var(--accent);
+  }
+
+  .weapon-info p {
+    font-size: 0.9rem;
+    margin: 0.5rem 0;
+  }
+
+  .weapon-tips {
+    list-style: none;
+    padding: 0;
+    margin: 1rem 0 0;
+  }
+
+  .weapon-tips li {
+    padding: 0.4rem 0 0.4rem 1.5rem;
+    position: relative;
+    font-size: 0.85rem;
+    color: var(--text2);
+  }
+
+  .weapon-tips li::before {
+    content: '→';
+    position: absolute;
+    left: 0;
+  }
+
+  .faq {
+    margin: 2rem 0;
+  }
+
+  .faq dl {
+    display: grid;
+    gap: 1rem;
+  }
+
+  .faq dt {
+    font-weight: 700;
+    color: var(--accent);
+    padding: 0.75rem 0 0.25rem;
+    border-top: 1px solid var(--border);
+  }
+
+  .faq dd {
+    color: var(--text2);
+    padding-bottom: 0.75rem;
+    font-size: 0.92rem;
+    margin: 0;
+  }
+
+  .internal-links {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+    margin: 2rem 0;
+    padding: 1rem;
+    background: var(--bg2);
+    border-radius: 10px;
+    border: 1px solid var(--border);
+  }
+
+  .internal-links a {
+    padding: 0.35rem 0.75rem;
+    background: var(--bg3);
+    border-radius: 6px;
+    font-size: 0.85rem;
+    color: var(--text2);
+    border: 1px solid var(--border);
+    transition: border-color 0.2s, color 0.2s, background-color 0.2s;
+  }
+
+  .internal-links a:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: var(--bg);
+  }
+
+  @media (max-width: 968px) {
+    .trainer-container {
+      grid-template-columns: 1fr;
+    }
+
+    .trainer-controls {
+      order: 2;
+    }
+
+    .canvas-container {
+      order: 1;
+    }
+
+    .weapon-details {
+      grid-template-columns: 1fr;
+    }
+
+    .trainer-stats {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (max-width: 600px) {
+    .trainer-stats {
+      grid-template-columns: 1fr;
+    }
+
+    #spray-canvas {
+      max-width: 100%;
+    }
+  }
+</style>
+</Base>

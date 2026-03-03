@@ -1,0 +1,693 @@
+---
+import Base from '../../layouts/Base.astro';
+import ExploreMore from '../../components/ExploreMore.astro';
+import { getWeaponComparisons, WEAPON_CATEGORIES, type WeaponComparison } from '../../lib/weapons';
+import { breadcrumbSchema, faqSchema } from '../../lib/weapons';
+
+export async function getStaticPaths() {
+  return getWeaponComparisons().map(c => ({
+    params: { slug: c.slug },
+    props: { comparison: c }
+  }));
+}
+
+interface Props { comparison: WeaponComparison }
+const { comparison } = Astro.props;
+const { w1, w2 } = comparison;
+
+// ── SEO ─────────────────────────────────────────────────────────────────────
+const title = `${w1.name} vs ${w2.name} CS2 — Stats & Comparison | CSDB.gg`;
+const description = `Compare ${w1.name} vs ${w2.name} in CS2. Side-by-side stats including damage, fire rate, price, and accuracy. Find out which weapon is better for your playstyle.`;
+
+// ── Breadcrumbs ─────────────────────────────────────────────────────────────
+const breadcrumbs = [
+  { name: 'Home', url: '/' },
+  { name: 'Weapons', url: '/weapons/' },
+  { name: `${w1.name} vs ${w2.name}`, url: `/compare/${comparison.slug}/` }
+];
+
+// ── Category info ───────────────────────────────────────────────────────────
+const categoryInfo = WEAPON_CATEGORIES.find(c => c.slug === w1.category);
+const categoryLabel = categoryInfo?.name || w1.category.charAt(0).toUpperCase() + w1.category.slice(1);
+
+// ── DPS & TTK calculations ──────────────────────────────────────────────────
+const dps1 = Math.round((w1.damage * w1.rpm) / 60);
+const dps2 = Math.round((w2.damage * w2.rpm) / 60);
+
+// Time between shots in ms
+const shotInterval1 = w1.rpm > 0 ? (60000 / w1.rpm) : Infinity;
+const shotInterval2 = w2.rpm > 0 ? (60000 / w2.rpm) : Infinity;
+
+// TTK helper — shots needed and time to reach that many shots (first shot is instant)
+function calcTTK(damage: number, armorPen: number, interval: number, hp: number) {
+  const armoredDmg = Math.floor(damage * (armorPen / 100));
+  const shotsNeeded = Math.ceil(hp / armoredDmg);
+  const timeMs = Math.round((shotsNeeded - 1) * interval);
+  return { shots: shotsNeeded, timeMs };
+}
+
+const hpThresholds = [100, 125, 150]; // 100 = no helmet armor, 125 = helmet, 150 = heavy
+const ttk1 = hpThresholds.map(hp => ({ hp, ...calcTTK(w1.damage, w1.armorPen, shotInterval1, hp) }));
+const ttk2 = hpThresholds.map(hp => ({ hp, ...calcTTK(w2.damage, w2.armorPen, shotInterval2, hp) }));
+
+// ── Stat comparison definitions ─────────────────────────────────────────────
+type StatDef = {
+  label: string;
+  key: string;
+  v1: number;
+  v2: number;
+  unit?: string;
+  prefix?: string;
+  lowerBetter?: boolean;
+  precision?: number;
+};
+
+const stats: StatDef[] = [
+  { label: 'Price', key: 'price', v1: w1.price, v2: w2.price, prefix: '$', lowerBetter: true },
+  { label: 'Kill Reward', key: 'killReward', v1: w1.killReward, v2: w2.killReward, prefix: '$' },
+  { label: 'Damage', key: 'damage', v1: w1.damage, v2: w2.damage },
+  { label: 'Armor Penetration', key: 'armorPen', v1: w1.armorPen, v2: w2.armorPen, unit: '%' },
+  { label: 'Fire Rate (RPM)', key: 'rpm', v1: w1.rpm, v2: w2.rpm },
+  { label: 'Magazine Size', key: 'magSize', v1: w1.magSize, v2: w2.magSize },
+  { label: 'Reserve Ammo', key: 'reserveAmmo', v1: w1.reserveAmmo, v2: w2.reserveAmmo },
+  { label: 'Reload Time', key: 'reloadTime', v1: w1.reloadTime, v2: w2.reloadTime, unit: 's', lowerBetter: true, precision: 2 },
+  { label: 'Move Speed', key: 'moveSpeed', v1: w1.moveSpeed, v2: w2.moveSpeed, unit: ' u/s' },
+  { label: 'Range Modifier', key: 'rangeModifier', v1: w1.rangeModifier, v2: w2.rangeModifier, precision: 2 },
+  { label: 'Wall Penetration', key: 'penetration', v1: w1.penetration, v2: w2.penetration },
+  { label: 'Headshot Multiplier', key: 'headshotMult', v1: w1.headshotMult, v2: w2.headshotMult, unit: 'x', precision: 2 },
+  { label: 'DPS (Raw)', key: 'dps', v1: dps1, v2: dps2 },
+];
+
+function getWinner(s: StatDef): 'w1' | 'w2' | 'tie' {
+  if (s.v1 === s.v2) return 'tie';
+  if (s.lowerBetter) return s.v1 < s.v2 ? 'w1' : 'w2';
+  return s.v1 > s.v2 ? 'w1' : 'w2';
+}
+
+function formatVal(s: StatDef, val: number): string {
+  const formatted = s.precision !== undefined ? val.toFixed(s.precision) : val.toLocaleString();
+  return `${s.prefix || ''}${formatted}${s.unit || ''}`;
+}
+
+// Count wins for quick verdict
+let w1Wins = 0, w2Wins = 0;
+stats.forEach(s => { const w = getWinner(s); if (w === 'w1') w1Wins++; else if (w === 'w2') w2Wins++; });
+
+const verdictLine = w1Wins > w2Wins
+  ? `The ${w1.name} leads in ${w1Wins} of ${stats.length} stats, offering a statistical edge over the ${w2.name}.`
+  : w2Wins > w1Wins
+    ? `The ${w2.name} leads in ${w2Wins} of ${stats.length} stats, giving it an overall advantage over the ${w1.name}.`
+    : `Both weapons are closely matched, each leading in ${w1Wins} stats — the better choice depends on your playstyle.`;
+
+// ── Key Differences ─────────────────────────────────────────────────────────
+const differences: string[] = [];
+
+if (w1.price !== w2.price) {
+  const cheaper = w1.price < w2.price ? w1 : w2;
+  const pricier = w1.price < w2.price ? w2 : w1;
+  differences.push(`The ${cheaper.name} is $${Math.abs(w1.price - w2.price).toLocaleString()} cheaper than the ${pricier.name}, making it a better budget option.`);
+}
+if (w1.damage !== w2.damage) {
+  const stronger = w1.damage > w2.damage ? w1 : w2;
+  differences.push(`The ${stronger.name} deals ${Math.abs(w1.damage - w2.damage)} more base damage per shot.`);
+}
+if (w1.rpm !== w2.rpm) {
+  const faster = w1.rpm > w2.rpm ? w1 : w2;
+  differences.push(`The ${faster.name} has a higher fire rate at ${faster.rpm} RPM vs ${(faster === w1 ? w2 : w1).rpm} RPM.`);
+}
+if (dps1 !== dps2) {
+  const higherDps = dps1 > dps2 ? w1 : w2;
+  differences.push(`The ${higherDps.name} delivers more raw DPS (${Math.max(dps1, dps2)} vs ${Math.min(dps1, dps2)}), meaning faster kills on paper.`);
+}
+if (w1.magSize !== w2.magSize) {
+  const biggerMag = w1.magSize > w2.magSize ? w1 : w2;
+  differences.push(`The ${biggerMag.name} has a larger magazine (${biggerMag.magSize} rounds vs ${(biggerMag === w1 ? w2 : w1).magSize}), giving more sustained fire before reloading.`);
+}
+if (w1.moveSpeed !== w2.moveSpeed) {
+  const faster = w1.moveSpeed > w2.moveSpeed ? w1 : w2;
+  differences.push(`Players move faster with the ${faster.name} (${faster.moveSpeed} u/s vs ${(faster === w1 ? w2 : w1).moveSpeed} u/s).`);
+}
+if (w1.armorPen !== w2.armorPen) {
+  const better = w1.armorPen > w2.armorPen ? w1 : w2;
+  differences.push(`The ${better.name} has higher armor penetration (${better.armorPen}% vs ${(better === w1 ? w2 : w1).armorPen}%), making it stronger against armored opponents.`);
+}
+
+// ── When to Use Each ────────────────────────────────────────────────────────
+function generateAdvice(w: typeof w1, other: typeof w2): string[] {
+  const advice: string[] = [];
+  if (w.price < other.price) advice.push(`Choose the ${w.name} on eco or semi-buy rounds when your team has limited funds.`);
+  if (w.price > other.price) advice.push(`Buy the ${w.name} on full-buy rounds when economy allows, since it costs more.`);
+  if (w.damage > other.damage) advice.push(`The ${w.name} excels at holding long angles where each shot counts due to its higher per-bullet damage.`);
+  if (w.rpm > other.rpm) advice.push(`The ${w.name}'s faster fire rate makes it effective in close-range duels and spray-downs.`);
+  if (w.moveSpeed > other.moveSpeed) advice.push(`Use the ${w.name} for aggressive play or rotations — its higher move speed lets you reposition quickly.`);
+  if (w.magSize > other.magSize) advice.push(`The ${w.name}'s larger magazine is ideal for holding rushes or clearing multiple enemies without reloading.`);
+  if (w.killReward > other.killReward) advice.push(`If the round looks favorable, the ${w.name}'s higher kill reward helps build economy faster.`);
+  if (w.armorPen > other.armorPen) advice.push(`The ${w.name} is the better pick against fully-armored opponents due to its superior armor penetration.`);
+  if (advice.length === 0) advice.push(`The ${w.name} is a solid all-round choice — pick it when you're comfortable with its recoil and playstyle.`);
+  return advice;
+}
+
+const w1Advice = generateAdvice(w1, w2);
+const w2Advice = generateAdvice(w2, w1);
+
+// ── Related Comparisons ─────────────────────────────────────────────────────
+const allComparisons = getWeaponComparisons();
+const relatedComparisons = allComparisons
+  .filter(c => c.slug !== comparison.slug && (c.w1.slug === w1.slug || c.w2.slug === w1.slug || c.w1.slug === w2.slug || c.w2.slug === w2.slug))
+  .slice(0, 8);
+
+// ── FAQ ─────────────────────────────────────────────────────────────────────
+const faqs = [
+  {
+    question: `Is the ${w1.name} better than the ${w2.name} in CS2?`,
+    answer: `It depends on the situation. The ${w1.name} ${w1.damage > w2.damage ? 'deals more damage per shot' : 'has a lower price point'}, while the ${w2.name} ${w2.rpm > w1.rpm ? 'fires faster' : 'offers different strengths'}. ${verdictLine}`
+  },
+  {
+    question: `When should I buy the ${w1.name} over the ${w2.name}?`,
+    answer: `Buy the ${w1.name} when ${w1.price < w2.price ? `your economy is tight — it saves you $${w2.price - w1.price}` : `you can afford the full buy and want ${w1.damage > w2.damage ? 'higher damage output' : 'its unique advantages'}`}. Consider the ${w2.name} when ${w2.price < w1.price ? `budget is a concern` : `the round calls for ${w2.rpm > w1.rpm ? 'faster fire rate' : 'a different approach'}`}.`
+  },
+  {
+    question: `Which has more DPS: ${w1.name} or ${w2.name}?`,
+    answer: `The ${dps1 > dps2 ? w1.name : dps2 > dps1 ? w2.name : 'both are equal in'} has ${dps1 === dps2 ? 'the same' : 'higher'} raw DPS. ${dps1 !== dps2 ? `${dps1 > dps2 ? w1.name : w2.name}: ${Math.max(dps1, dps2)} DPS vs ${dps1 > dps2 ? w2.name : w1.name}: ${Math.min(dps1, dps2)} DPS.` : `Both deliver ${dps1} DPS.`} Keep in mind raw DPS doesn't account for accuracy or recoil.`
+  },
+  {
+    question: `What is the TTK for ${w1.name} vs ${w2.name}?`,
+    answer: `Against a 100 HP armored target, the ${w1.name} needs ${ttk1[0].shots} shots (${ttk1[0].timeMs}ms) while the ${w2.name} needs ${ttk2[0].shots} shots (${ttk2[0].timeMs}ms). Real TTK varies with accuracy, headshots, and distance.`
+  }
+];
+---
+
+<Base title={title} description={description} currentNav="/weapons/">
+  <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema(breadcrumbs))}></script>
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema(faqs))}></script>
+
+  <!-- Breadcrumb -->
+  <nav class="breadcrumb">
+    <a href="/">Home</a> / <a href="/weapons/">Weapons</a> / <span>{w1.name} vs {w2.name}</span>
+  </nav>
+
+  <!-- 1. Hero -->
+  <section class="cmp-hero">
+    <span class="cmp-badge">{categoryLabel}</span>
+    <h1>{w1.name} <span class="cmp-vs">vs</span> {w2.name}</h1>
+    <p class="cmp-verdict">{verdictLine}</p>
+  </section>
+
+  <!-- 2. Side-by-Side Stat Comparison Table -->
+  <section class="cmp-section">
+    <h2>Side-by-Side Stat Comparison</h2>
+    <div class="cmp-table-wrap">
+      <table class="cmp-table">
+        <thead>
+          <tr>
+            <th class="cmp-th-stat">Stat</th>
+            <th class="cmp-th-w">{w1.name}</th>
+            <th class="cmp-th-w">{w2.name}</th>
+          </tr>
+        </thead>
+        <tbody>
+          {stats.map(s => {
+            const winner = getWinner(s);
+            return (
+              <tr>
+                <td class="cmp-stat-name">{s.label}</td>
+                <td class:list={['cmp-val', { 'cmp-win': winner === 'w1', 'cmp-lose': winner === 'w2' }]}>{formatVal(s, s.v1)}</td>
+                <td class:list={['cmp-val', { 'cmp-win': winner === 'w2', 'cmp-lose': winner === 'w1' }]}>{formatVal(s, s.v2)}</td>
+              </tr>
+            );
+          })}
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- 3. DPS & TTK Section -->
+  <section class="cmp-section">
+    <h2>DPS & Time to Kill</h2>
+    <p class="cmp-section-desc">DPS is calculated as <code>damage x RPM / 60</code>. TTK assumes consecutive body shots against armored targets.</p>
+
+    <div class="cmp-dps-grid">
+      <div class="cmp-dps-card">
+        <div class="cmp-dps-name">{w1.name}</div>
+        <div class="cmp-dps-val">{dps1}</div>
+        <div class="cmp-dps-label">Raw DPS</div>
+      </div>
+      <div class="cmp-dps-card">
+        <div class="cmp-dps-name">{w2.name}</div>
+        <div class="cmp-dps-val">{dps2}</div>
+        <div class="cmp-dps-label">Raw DPS</div>
+      </div>
+    </div>
+
+    <h3>Time to Kill (Armored Body Shots)</h3>
+    <div class="cmp-table-wrap">
+      <table class="cmp-table cmp-table-ttk">
+        <thead>
+          <tr>
+            <th>Target HP</th>
+            <th>{w1.name} Shots</th>
+            <th>{w1.name} TTK</th>
+            <th>{w2.name} Shots</th>
+            <th>{w2.name} TTK</th>
+          </tr>
+        </thead>
+        <tbody>
+          {hpThresholds.map((hp, i) => {
+            const faster = ttk1[i].timeMs < ttk2[i].timeMs ? 'w1' : ttk2[i].timeMs < ttk1[i].timeMs ? 'w2' : 'tie';
+            return (
+              <tr>
+                <td class="cmp-stat-name">{hp} HP</td>
+                <td class:list={['cmp-val', { 'cmp-win': faster === 'w1' }]}>{ttk1[i].shots}</td>
+                <td class:list={['cmp-val', { 'cmp-win': faster === 'w1' }]}>{ttk1[i].timeMs}ms</td>
+                <td class:list={['cmp-val', { 'cmp-win': faster === 'w2' }]}>{ttk2[i].shots}</td>
+                <td class:list={['cmp-val', { 'cmp-win': faster === 'w2' }]}>{ttk2[i].timeMs}ms</td>
+              </tr>
+            );
+          })}
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- 4. Key Differences -->
+  {differences.length > 0 && (
+    <section class="cmp-section">
+      <h2>Key Differences</h2>
+      <ul class="cmp-diff-list">
+        {differences.map(d => (
+          <li>{d}</li>
+        ))}
+      </ul>
+    </section>
+  )}
+
+  <!-- 5. When to Use Each -->
+  <section class="cmp-section">
+    <h2>When to Use Each Weapon</h2>
+    <div class="cmp-advice-grid">
+      <div class="cmp-advice-card">
+        <h3>{w1.name}</h3>
+        <ul>
+          {w1Advice.map(a => <li>{a}</li>)}
+        </ul>
+      </div>
+      <div class="cmp-advice-card">
+        <h3>{w2.name}</h3>
+        <ul>
+          {w2Advice.map(a => <li>{a}</li>)}
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6. Related Comparisons -->
+  {relatedComparisons.length > 0 && (
+    <section class="cmp-section">
+      <h2>Related Comparisons</h2>
+      <div class="cmp-related-grid">
+        {relatedComparisons.map(rc => (
+          <a href={`/compare/${rc.slug}/`} class="cmp-related-card">
+            <span class="cmp-related-names">{rc.w1.name} vs {rc.w2.name}</span>
+            <span class="cmp-related-cat">{WEAPON_CATEGORIES.find(c => c.slug === rc.w1.category)?.name || rc.w1.category}</span>
+          </a>
+        ))}
+      </div>
+    </section>
+  )}
+
+  <!-- 7. FAQ -->
+  <section class="cmp-section">
+    <h2>Frequently Asked Questions</h2>
+    <dl class="faq">
+      {faqs.map(f => (
+        <Fragment>
+          <dt>{f.question}</dt>
+          <dd>{f.answer}</dd>
+        </Fragment>
+      ))}
+    </dl>
+  </section>
+
+  <!-- 8. Internal Links -->
+  <div class="internal-links">
+    <strong>Related:</strong>
+    <a href={`/weapon/${w1.slug}/`}>{w1.name} Stats</a>
+    <a href={`/weapon/${w2.slug}/`}>{w2.name} Stats</a>
+    <a href={`/weapons/${w1.category}/`}>All {categoryLabel}</a>
+    <a href="/weapon-compare/">Weapon Compare Tool</a>
+    <a href="/damage-calculator/">Damage Calculator</a>
+    <a href="/recoil-patterns/">Recoil Patterns</a>
+    <a href="/economy-calculator/">Economy Calculator</a>
+    <a href="/weapons/">Weapons Database</a>
+    <a href="/tools/">All Tools</a>
+  </div>
+
+  <!-- 9. ExploreMore -->
+  <ExploreMore context="weapons" />
+</Base>
+
+<style>
+  /* ── Hero ─────────────────────────────────────────────────────────── */
+  .cmp-hero {
+    text-align: center;
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 2.5rem 2rem;
+    margin-bottom: 2rem;
+  }
+  .cmp-badge {
+    display: inline-block;
+    padding: .25rem .8rem;
+    border-radius: 4px;
+    font-size: .78rem;
+    font-weight: 600;
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    color: var(--text2);
+    margin-bottom: .75rem;
+    text-transform: uppercase;
+    letter-spacing: .05em;
+  }
+  .cmp-hero h1 {
+    font-size: 2.4rem;
+    margin: 0 0 .75rem;
+    line-height: 1.2;
+  }
+  .cmp-vs {
+    color: var(--text2);
+    font-weight: 400;
+    font-size: 1.6rem;
+  }
+  .cmp-verdict {
+    color: var(--text2);
+    font-size: 1rem;
+    max-width: 640px;
+    margin: 0 auto;
+    line-height: 1.6;
+  }
+
+  /* ── Sections ────────────────────────────────────────────────────── */
+  .cmp-section {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+  }
+  .cmp-section h2 {
+    margin: 0 0 1rem;
+    font-size: 1.4rem;
+  }
+  .cmp-section h3 {
+    margin: 1.5rem 0 .75rem;
+    font-size: 1.1rem;
+  }
+  .cmp-section-desc {
+    font-size: .9rem;
+    color: var(--text2);
+    margin-bottom: 1.5rem;
+  }
+  .cmp-section-desc code {
+    background: var(--bg3);
+    padding: .15rem .4rem;
+    border-radius: 3px;
+    font-size: .85rem;
+    color: var(--accent);
+  }
+
+  /* ── Comparison Table ────────────────────────────────────────────── */
+  .cmp-table-wrap {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  .cmp-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--bg);
+    border-radius: 8px;
+    overflow: hidden;
+    margin: 0;
+  }
+  .cmp-table th,
+  .cmp-table td {
+    padding: .85rem 1rem;
+    border-bottom: 1px solid var(--border);
+    text-align: center;
+  }
+  .cmp-table th {
+    background: var(--bg3);
+    color: var(--text2);
+    font-weight: 600;
+    font-size: .82rem;
+    text-transform: uppercase;
+    letter-spacing: .05em;
+  }
+  .cmp-th-stat {
+    text-align: left !important;
+    width: 30%;
+  }
+  .cmp-th-w {
+    width: 35%;
+    color: var(--accent) !important;
+  }
+  .cmp-stat-name {
+    text-align: left !important;
+    font-weight: 600;
+    color: var(--text);
+  }
+  .cmp-val {
+    font-weight: 500;
+    color: var(--text2);
+    font-size: .95rem;
+    font-variant-numeric: tabular-nums;
+  }
+  .cmp-win {
+    color: var(--green);
+    font-weight: 700;
+    background: rgba(92, 184, 92, 0.08);
+  }
+  .cmp-lose {
+    color: var(--text2);
+    opacity: .7;
+  }
+  .cmp-table tr:last-child td {
+    border-bottom: none;
+  }
+
+  /* TTK table */
+  .cmp-table-ttk th,
+  .cmp-table-ttk td {
+    font-size: .88rem;
+    padding: .7rem .65rem;
+  }
+
+  /* ── DPS Cards ───────────────────────────────────────────────────── */
+  .cmp-dps-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  .cmp-dps-card {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1.25rem;
+    text-align: center;
+    transition: border-color .2s;
+  }
+  .cmp-dps-card:hover {
+    border-color: var(--accent);
+  }
+  .cmp-dps-name {
+    font-size: .85rem;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: .4rem;
+  }
+  .cmp-dps-val {
+    font-size: 2rem;
+    font-weight: 800;
+    color: var(--accent);
+    line-height: 1.1;
+  }
+  .cmp-dps-label {
+    font-size: .75rem;
+    color: var(--text2);
+    margin-top: .25rem;
+    text-transform: uppercase;
+    letter-spacing: .05em;
+  }
+
+  /* ── Key Differences ─────────────────────────────────────────────── */
+  .cmp-diff-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  .cmp-diff-list li {
+    padding: .65rem 0 .65rem 1.5rem;
+    position: relative;
+    font-size: .92rem;
+    color: var(--text2);
+    border-bottom: 1px solid var(--border);
+    line-height: 1.6;
+  }
+  .cmp-diff-list li:last-child {
+    border-bottom: none;
+  }
+  .cmp-diff-list li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: .95rem;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--accent);
+    opacity: .6;
+  }
+
+  /* ── When to Use Each ────────────────────────────────────────────── */
+  .cmp-advice-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+  }
+  .cmp-advice-card {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1.5rem;
+  }
+  .cmp-advice-card h3 {
+    margin: 0 0 .75rem;
+    font-size: 1.1rem;
+    color: var(--accent);
+  }
+  .cmp-advice-card ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  .cmp-advice-card li {
+    padding: .45rem 0 .45rem 1.25rem;
+    position: relative;
+    font-size: .88rem;
+    color: var(--text2);
+    line-height: 1.55;
+  }
+  .cmp-advice-card li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: .7rem;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--green);
+    opacity: .7;
+  }
+
+  /* ── Related Comparisons ─────────────────────────────────────────── */
+  .cmp-related-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: .75rem;
+  }
+  .cmp-related-card {
+    display: flex;
+    flex-direction: column;
+    gap: .3rem;
+    padding: .85rem 1rem;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    text-decoration: none;
+    transition: border-color .2s, transform .2s;
+  }
+  .cmp-related-card:hover {
+    border-color: var(--accent);
+    transform: translateY(-2px);
+  }
+  .cmp-related-names {
+    font-weight: 600;
+    color: var(--text);
+    font-size: .9rem;
+  }
+  .cmp-related-card:hover .cmp-related-names {
+    color: var(--accent);
+  }
+  .cmp-related-cat {
+    font-size: .75rem;
+    color: var(--text2);
+  }
+
+  /* ── Responsive ──────────────────────────────────────────────────── */
+  @media (max-width: 768px) {
+    .cmp-hero {
+      padding: 1.5rem 1rem;
+    }
+    .cmp-hero h1 {
+      font-size: 1.6rem;
+    }
+    .cmp-vs {
+      font-size: 1.1rem;
+    }
+    .cmp-section {
+      padding: 1.25rem;
+    }
+
+    /* Stack comparison table vertically on mobile */
+    .cmp-table-wrap {
+      margin: 0 -.25rem;
+    }
+    .cmp-table th,
+    .cmp-table td {
+      padding: .6rem .5rem;
+      font-size: .82rem;
+    }
+    .cmp-th-stat {
+      width: auto;
+      min-width: 100px;
+    }
+    .cmp-th-w {
+      width: auto;
+    }
+
+    /* TTK table smaller */
+    .cmp-table-ttk th,
+    .cmp-table-ttk td {
+      font-size: .78rem;
+      padding: .5rem .35rem;
+    }
+
+    /* DPS grid stays 2-col but smaller */
+    .cmp-dps-grid {
+      gap: .75rem;
+    }
+    .cmp-dps-val {
+      font-size: 1.5rem;
+    }
+
+    /* Advice cards stack */
+    .cmp-advice-grid {
+      grid-template-columns: 1fr;
+    }
+
+    /* Related comparisons 2-col on mobile */
+    .cmp-related-grid {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .cmp-related-grid {
+      grid-template-columns: 1fr;
+    }
+    .cmp-dps-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

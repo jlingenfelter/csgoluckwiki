@@ -1,0 +1,127 @@
+---
+import Base from '../../layouts/Base.astro';
+import AuthorBox from '../../components/AuthorBox.astro';
+import { faqSchema, breadcrumbSchema } from '../../lib/weapons';
+
+const title = 'CS2 Advanced Mechanics Guide — Movement, Peeking & Game Sense | CSDB.gg';
+const description = 'Master advanced CS2 mechanics including counter-strafing, jiggle peeking, shoulder peeking, spray transfers, crosshair placement, and positioning fundamentals.';
+
+const breadcrumbs = [
+  { name: 'Home', url: '/' },
+  { name: 'Guides', url: '/guides' },
+  { name: 'Advanced Mechanics Guide', url: '/guides/advanced-mechanics-guide' },
+];
+
+const articleSchema = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": title,
+  "description": description,
+  "author": { "@type": "Person", "name": "Josh Lingenfelter", "url": "https://www.linkedin.com/in/josh-lingenfelter-8157274b/", "jobTitle": "Director", "worksFor": { "@type": "Organization", "name": "Bettor Media" } },
+  "publisher": { "@type": "Organization", "name": "CSDB.gg", "url": "https://csdb.gg" },
+  "mainEntityOfPage": `https://csdb.gg/guides/advanced-mechanics-guide/`,
+  "inLanguage": "en-US"
+});
+
+const faqs = [
+  { question: 'What is counter-strafing in CS2?', answer: 'Counter-strafing is tapping the opposite movement key to instantly stop your character momentum. When moving right (D), quickly tap left (A) to reach zero velocity faster than just releasing D. This allows you to shoot accurately sooner after moving.' },
+  { question: 'How do I jiggle peek in CS2?', answer: 'Jiggle peeking is quickly strafing in and out of an angle to bait shots or gather information. Press A or D briefly to expose yourself for a fraction of a second, then immediately counter-strafe back to cover. The goal is to peek and return before the enemy can react.' },
+  { question: 'What is crosshair placement?', answer: 'Crosshair placement means keeping your crosshair at head level and pre-aimed at common enemy positions. Instead of looking at the ground or center mass, always position your crosshair where an enemy head would appear. This reduces the distance you need to flick when engaging targets.' },
+  { question: 'How do spray transfers work?', answer: 'A spray transfer is continuing your spray pattern while moving your aim from one enemy to another. Instead of stopping and re-spraying, you keep tracking the recoil pattern while shifting horizontally to the next target. This requires mastering the full spray pattern of your weapon.' },
+  { question: 'What is the difference between wide peeking and shoulder peeking?', answer: 'Wide peeking fully commits to swinging past an angle with your full body exposed — good for surprising enemies or taking duels on favorable terms. Shoulder peeking exposes only your shoulder model to bait out shots, then you fall back without committing to the fight.' },
+];
+---
+
+<Base title={title} description={description} currentNav="/guides/">
+  <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema(breadcrumbs))}></script>
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema(faqs))}></script>
+  <script type="application/ld+json" set:html={articleSchema}></script>
+
+  <nav class="breadcrumb">
+    <a href="/">Home</a> / <a href="/guides/">Guides</a> / <span>Advanced Mechanics Guide</span>
+  </nav>
+
+  <h1>CS2 Advanced Mechanics Guide</h1>
+  <p>Raw aim is only part of the equation in high-level CS2. Understanding movement mechanics, peeking techniques, and positioning concepts separates good aimers from effective players. This guide covers the mechanics that define competitive play.</p>
+
+  <h2>Movement Mechanics</h2>
+  <h3>Counter-Strafing</h3>
+  <p>
+    CS2 rifles are only accurate when standing still. Counter-strafing — tapping the opposite movement key to instantly brake — is the fundamental technique that allows you to shoot accurately while maintaining mobility. Without counter-strafing, you have to wait for natural deceleration (about 100ms), which is an eternity in a gunfight.
+  </p>
+  <p>
+    Practice this by running sideways and tapping the opposite key at the exact moment you want to shoot. Your velocity drops to zero within one game tick, making your first bullet accurate. The timing needs to become muscle memory — you should counter-strafe without thinking about it.
+  </p>
+
+  <h3>Air Strafing & Bunny Hopping</h3>
+  <p>
+    Air strafing lets you change direction mid-air by moving your mouse in the direction you want to turn while holding the corresponding strafe key (A for left, D for right). Do not hold W during air strafes. Combined with well-timed jumps, this enables bunny hopping — chaining consecutive jumps to maintain or build speed above the normal running velocity.
+  </p>
+  <p>
+    While bunny hopping is inconsistent in matchmaking (the 64-tick server makes timing harder), the movement principles transfer to practical situations: jumping around corners, air-strafing through smokes, and navigating the map faster.
+  </p>
+
+  <h2>Peeking Techniques</h2>
+  <h3>Jiggle Peeking</h3>
+  <p>
+    Jiggle peeking is your primary information-gathering tool. Strafe briefly past an angle to check if an enemy is holding it, then immediately strafe back. You expose yourself for roughly 100-200ms — fast enough that most players cannot react. Use this to scout positions before committing to a peek.
+  </p>
+  <h3>Shoulder Peeking</h3>
+  <p>
+    Shoulder peeking exposes just the edge of your character model to bait out AWP shots. After the AWP fires, you have roughly 1.5 seconds before they can fire again — enough time to wide-peek and take the fight with your rifle. This is the single most effective counter to AWP players.
+  </p>
+  <h3>Wide Peeking</h3>
+  <p>
+    Wide peeking means fully committing to swinging past an angle at maximum speed. This is effective when you have information about the enemy position and want to take an aggressive duel. The speed of your swing makes you harder to hit, but you are fully exposed and committed to the fight.
+  </p>
+  <h3>Ferrari Peek</h3>
+  <p>
+    A Ferrari peek (or dry peek) is wide peeking at maximum velocity without pre-aiming the angle. The goal is to cross the angle so fast that the enemy misses their first shot, giving you time to spot them on your screen and react. Used when you expect an AWP or when you need to cross a dangerous sightline.
+  </p>
+
+  <h2>Crosshair Placement</h2>
+  <p>
+    The single highest-impact skill improvement for most players is crosshair placement. Keep your crosshair at head level at all times — not at the ground, not at chest level. Pre-aim common positions as you move through the map. When rounding a corner, your crosshair should already be positioned where the most likely enemy head would be.
+  </p>
+  <p>
+    Good crosshair placement reduces the distance you need to flick by 50-90%. Against a head-level crosshair holder, an enemy appearing at a common angle requires only a minor adjustment. Against poor crosshair placement, you need to flick both horizontally and vertically — a much harder shot.
+  </p>
+
+  <h2>Positioning Fundamentals</h2>
+  <p>
+    <strong>Off-angles:</strong> Instead of holding the obvious default position, shift slightly to an unexpected position. This forces the enemy to adjust their crosshair placement, buying you precious milliseconds.
+  </p>
+  <p>
+    <strong>Distance advantage:</strong> When defending, fight from the furthest distance possible. Your head appears smaller to the enemy, and their recoil is harder to control at range. Use rifles at long range and SMGs/shotguns at close range to exploit weapon strengths.
+  </p>
+  <p>
+    <strong>Isolation:</strong> Never take fights against multiple enemies simultaneously. Use map geometry and utility to isolate 1v1 engagements. If you see two enemies, reposition to where you can only be seen by one at a time.
+  </p>
+
+  <div class="internal-links">
+    <strong>Related Tools & Guides:</strong>
+    <a href="/damage-calculator/">Damage Calculator</a>
+    <a href="/recoil-patterns/">Recoil Patterns</a>
+    <a href="/weapon-compare/">Weapon Compare</a>
+    <a href="/crosshair-generator/">Crosshair Generator</a>
+    <a href="/sensitivity-converter/">Sensitivity Converter</a>
+    <a href="/economy-calculator/">Economy Calculator</a>
+    <a href="/weapons/">Weapon Database</a>
+    <a href="/pro-players/">Pro Player Settings</a>
+    <a href="/tools/">All Tools</a>
+    <a href="/guides/beginners-guide/">Beginner's Guide</a>
+    <a href="/guides/economy-guide/">Economy Guide</a>
+    <a href="/maps/">Map Callouts</a>
+  </div>
+
+  <h2>Frequently Asked Questions</h2>
+  <dl class="faq">
+    {faqs.map(f => (
+      <Fragment>
+        <dt>{f.question}</dt>
+        <dd>{f.answer}</dd>
+      </Fragment>
+    ))}
+  </dl>
+  <AuthorBox updated="2026-03-02" />
+</Base>

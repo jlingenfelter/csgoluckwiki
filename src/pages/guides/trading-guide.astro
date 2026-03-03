@@ -1,0 +1,128 @@
+---
+import Base from '../../layouts/Base.astro';
+import AuthorBox from '../../components/AuthorBox.astro';
+import { faqSchema, breadcrumbSchema } from '../../lib/weapons';
+
+const title = 'CS2 Skin Trading Guide — How to Trade Safely & Profitably | CSDB.gg';
+const description = 'Master CS2 skin trading with our comprehensive guide. Learn marketplace comparison, scam prevention, pricing strategies, and how to build your inventory profitably.';
+
+const breadcrumbs = [
+  { name: 'Home', url: '/' },
+  { name: 'Guides', url: '/guides' },
+  { name: 'Trading Guide', url: '/guides/trading-guide' },
+];
+
+const articleSchema = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": title,
+  "description": description,
+  "author": { "@type": "Person", "name": "Josh Lingenfelter", "url": "https://www.linkedin.com/in/josh-lingenfelter-8157274b/", "jobTitle": "Director", "worksFor": { "@type": "Organization", "name": "Bettor Media" } },
+  "publisher": { "@type": "Organization", "name": "CSDB.gg", "url": "https://csdb.gg" },
+  "mainEntityOfPage": `https://csdb.gg/guides/trading-guide/`,
+  "inLanguage": "en-US"
+});
+
+const faqs = [
+  { question: 'What is the safest way to trade CS2 skins?', answer: 'Use established marketplaces like Buff163, Skinport, or the Steam Community Market. Always verify trade offers match what was agreed upon. Never trade outside of official platforms or click suspicious links.' },
+  { question: 'Which CS2 marketplace has the lowest fees?', answer: 'Buff163 has the lowest fees at 2.5%. Skinport charges 5-12%, DMarket 3-7%, and the Steam Community Market takes 15%. Lower fees mean more profit when selling and better prices when buying.' },
+  { question: 'How do I avoid CS2 trading scams?', answer: 'Never click links in Steam chat or trade messages. Always verify the other person profile. Use official marketplace escrow systems. Check that trade offers contain the correct items. Enable Steam Guard Mobile Authenticator for trade confirmations.' },
+  { question: 'What CS2 skins hold their value best?', answer: 'Knife skins, glove skins, and Covert-tier rifle skins from popular collections tend to hold value best. Limited-edition items from operations and discontinued drops appreciate over time. High-demand skins like AK-47 Fire Serpent and AWP Dragon Lore are considered blue-chip investments.' },
+  { question: 'How do I price my CS2 skins?', answer: 'Check prices across multiple marketplaces (Buff163, Skinport, Steam Market) and use the lowest price as your baseline. Factor in float value, sticker quality, and special patterns. Price slightly below the lowest listing for quick sales.' },
+];
+---
+
+<Base title={title} description={description} currentNav="/guides/">
+  <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema(breadcrumbs))}></script>
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema(faqs))}></script>
+  <script type="application/ld+json" set:html={articleSchema}></script>
+
+  <nav class="breadcrumb">
+    <a href="/">Home</a> / <a href="/guides/">Guides</a> / <span>Trading Guide</span>
+  </nav>
+
+  <h1>CS2 Skin Trading Guide</h1>
+  <p>Whether you are looking to build your dream loadout or turn a profit, understanding the CS2 skin trading ecosystem is essential. This guide covers everything from choosing the right marketplace to avoiding scams and maximising your returns.</p>
+
+  <h2>Choosing a Marketplace</h2>
+  <p>
+    The marketplace you trade on directly impacts your bottom line. The Steam Community Market is the most convenient option — it integrates directly with your Steam inventory — but its 15% combined fee (13% Steam tax + 2% CS2 tax) makes it the most expensive platform for sellers. For serious traders, third-party marketplaces offer significantly lower fees.
+  </p>
+  <p>
+    <strong>Buff163</strong> dominates the international market with a 2.5% seller fee, making it the most cost-effective platform. The tradeoff is that it primarily serves the Chinese market, so listings are in CNY and require a Chinese payment method for deposits (though third-party balance services exist). <strong>Skinport</strong> and <strong>SkinBaron</strong> are the leading European alternatives with fees ranging from 5-12%, and they accept standard payment methods.
+  </p>
+  <p>
+    <strong>DMarket</strong> and <strong>CS.Money</strong> offer bot-based instant trading where you deposit skins and receive credit to buy others. These are convenient for quick swaps but typically have wider spreads (the difference between buy and sell prices). <strong>Tradeit.gg</strong> operates similarly with a focus on instant trades.
+  </p>
+
+  <h2>Marketplace Fee Comparison</h2>
+  <table>
+    <thead><tr><th>Marketplace</th><th>Seller Fee</th><th>Payment Methods</th><th>Best For</th></tr></thead>
+    <tbody>
+      <tr><td>Buff163</td><td style="color:#4caf50;font-weight:700">2.5%</td><td>Alipay, WeChat, Bank Transfer</td><td>Lowest fees, highest volume</td></tr>
+      <tr><td>Skinport</td><td style="color:#d4956e;font-weight:700">5-12%</td><td>Cards, PayPal, Bank Transfer</td><td>European buyers/sellers</td></tr>
+      <tr><td>SkinBaron</td><td style="color:#d4956e;font-weight:700">5-15%</td><td>Cards, PayPal, Sofort</td><td>German/EU market</td></tr>
+      <tr><td>DMarket</td><td style="color:#d4956e;font-weight:700">3-7%</td><td>Cards, Crypto, Balance</td><td>Instant trades</td></tr>
+      <tr><td>Steam Market</td><td style="color:#ef5350;font-weight:700">15%</td><td>Steam Wallet</td><td>Convenience</td></tr>
+    </tbody>
+  </table>
+
+  <h2>Understanding Skin Pricing</h2>
+  <p>
+    Skin prices are driven by supply, demand, rarity, and condition. A skin listed at $50 on one marketplace might sell for $45 on another — these price discrepancies create arbitrage opportunities for attentive traders. Always cross-reference prices across at least three platforms before buying or selling.
+  </p>
+  <p>
+    <strong>Float value</strong> has a major impact on price within the same wear tier. A Factory New AK-47 Redline with a 0.01 float commands a significant premium over one at 0.06 float, even though both are technically the same condition. Skins with float values near the boundary of a higher tier (e.g., 0.0699 FN vs 0.0701 MW) can have a dramatic price difference.
+  </p>
+  <p>
+    <strong>Special patterns</strong> — like the Case Hardened blue gem pattern (#661) — can multiply a skin's value by 10-100x over the standard price. Learn the pattern IDs for popular skins to spot underpriced listings. Similarly, <strong>sticker combinations</strong> add value, particularly Katowice 2014 holos, which can add thousands of dollars to a skin.
+  </p>
+
+  <h2>Scam Prevention</h2>
+  <p>
+    The CS2 trading scene has sophisticated scams targeting both new and experienced traders. The most common include: fake marketplace websites with domains that look like real sites (skinnport.com instead of skinport.com), Steam impersonation where scammers copy a trusted trader profile, and "middleman" scams where someone offers to hold items during a trade.
+  </p>
+  <p>
+    Protect yourself by enabling Steam Guard Mobile Authenticator, never clicking links sent in trade chat, always navigating to marketplaces by typing the URL directly, and checking trade offer details carefully before confirming. If a deal seems too good to be true, it invariably is.
+  </p>
+
+  <h2>Building a Trading Strategy</h2>
+  <p>
+    Successful skin trading requires patience and market knowledge. Start small with $10-50 in skins and practice buying underpriced items on one marketplace and selling them higher on another. Track your profits in a spreadsheet and aim for 5-10% margins after fees on each trade.
+  </p>
+  <p>
+    Look for market events that create price swings: major tournament sticker sales (prices drop during sales, recover after), operation releases (new skin drops crash existing prices temporarily), and game updates that change weapon meta (AWP price changes when AWP mechanics are updated).
+  </p>
+
+  <div class="internal-links">
+    <strong>Related Tools & Guides:</strong>
+    <a href="/skins/">Skin Database</a>
+    <a href="/skin-compare/">Compare Skins</a>
+    <a href="/price-tracker/">Price Tracker</a>
+    <a href="/market-trends/">Market Trends</a>
+    <a href="/float-checker/">Float Checker</a>
+    <a href="/tradeup-calculator/">Trade-Up Calculator</a>
+    <a href="/case-odds-calculator/">Case Odds Calculator</a>
+    <a href="/case-simulator/">Case Simulator</a>
+    <a href="/cases/">Cases & Collections</a>
+    <a href="/inventory-lookup/">Inventory Lookup</a>
+    <a href="/loadout-builder/">Loadout Builder</a>
+    <a href="/guides/float-guide/">Float Value Guide</a>
+    <a href="/guides/skins-investing-guide/">Skins Investing Guide</a>
+  </div>
+
+  <h2>Frequently Asked Questions</h2>
+  <dl class="faq">
+    {faqs.map(f => (
+      <Fragment>
+        <dt>{f.question}</dt>
+        <dd>{f.answer}</dd>
+      </Fragment>
+    ))}
+  </dl>
+  <AuthorBox updated="2026-03-02" />
+</Base>
+
+<style>
+  .guide-container{max-width:900px}
+</style>

@@ -1,0 +1,499 @@
+---
+import Base from '../layouts/Base.astro';
+import ExploreMore from '../components/ExploreMore.astro';
+import { faqSchema, breadcrumbSchema, toolAppSchema } from '../lib/weapons';
+
+const title = 'CS2 Recoil Patterns';
+const description = 'Master CS2 weapon recoil patterns. View spray patterns for rifles, SMGs, and pistols with detailed descriptions.';
+
+const weapons = [
+  { 
+    name: 'AK-47',
+    category: 'Rifle',
+    recoilDesc: 'Moderate upward climb with slight rightward drift. Requires counter-strafing and crosshair placement.',
+    sprayTips: 'First 5 shots are predictable, then becomes erratic. Use burst fire or single fire.',
+    difficulty: 'Hard'
+  },
+  {
+    name: 'M4A4',
+    category: 'Rifle',
+    recoilDesc: 'Very predictable with consistent upward pattern. Slight left-to-right movement.',
+    sprayTips: 'Easy to control. Can spray full magazine with practice. Mirror AK-47 for opposite spray.',
+    difficulty: 'Easy'
+  },
+  {
+    name: 'M4A1-S',
+    category: 'Rifle',
+    recoilDesc: 'Even more controlled than M4A4. Very vertical with minimal horizontal deviation.',
+    sprayTips: 'Best precision weapon. Pull down consistently for spray control.',
+    difficulty: 'Easy'
+  },
+  {
+    name: 'Galil AR',
+    category: 'Rifle',
+    recoilDesc: 'Moderate recoil with slight upward pull and right drift.',
+    sprayTips: 'Pull down and left for control. Good eco weapon.',
+    difficulty: 'Medium'
+  },
+  {
+    name: 'Famas',
+    category: 'Rifle',
+    recoilDesc: 'Tight spray pattern but requires perfect counter-strafing.',
+    sprayTips: 'Best used in semi-auto or short bursts. Very mobile weapon.',
+    difficulty: 'Medium'
+  },
+  {
+    name: 'AWP Dragon Lore',
+    category: 'Sniper',
+    recoilDesc: 'No spray pattern - one shot, one kill. High recoil between shots.',
+    sprayTips: 'Pre-aim and relocate. Crosshair placement is everything.',
+    difficulty: 'Medium'
+  },
+  {
+    name: 'UMP-45',
+    category: 'SMG',
+    recoilDesc: 'Moderate upward recoil with slight rightward drift.',
+    sprayTips: 'Good at close range. Vertical pull for spray control.',
+    difficulty: 'Easy'
+  },
+  {
+    name: 'MP9',
+    category: 'SMG',
+    recoilDesc: 'Very manageable, mostly vertical with minimal spread.',
+    sprayTips: 'Fast fire rate makes it predictable. Good for eco rounds.',
+    difficulty: 'Easy'
+  },
+  {
+    name: 'Deagle',
+    category: 'Pistol',
+    recoilDesc: 'Extremely high recoil. Requires spacing between shots.',
+    sprayTips: 'Single fire only. Tap fire with crosshair placement.',
+    difficulty: 'Hard'
+  },
+  {
+    name: 'P250',
+    category: 'Pistol',
+    recoilDesc: 'Moderate recoil. Decent accuracy for a pistol.',
+    sprayTips: 'Eco weapon. Use in bursts at medium range.',
+    difficulty: 'Medium'
+  }
+];
+
+const faq = [
+  {
+    question: 'What is recoil in CS2?',
+    answer: 'Recoil is the upward/downward movement of your crosshair when firing a weapon. Different weapons have different recoil patterns that must be learned and controlled.'
+  },
+  {
+    question: 'How do I control spray recoil?',
+    answer: 'Spray control involves pulling your mouse in the opposite direction of the recoil pattern. Practice in aim maps to develop muscle memory.'
+  },
+  {
+    question: 'What is counter-strafing?',
+    answer: 'Counter-strafing is pressing the opposite movement key while moving to instantly stop. Combined with recoil control, it\'s essential for accurate spraying.'
+  },
+  {
+    question: 'Is spray control necessary?',
+    answer: 'For professional play, yes. For casual play, burst firing and tapping are often more effective than trying to control full sprays.'
+  }
+];
+
+const schemaData = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faq.map(item => ({
+    '@type': 'Question',
+    name: item.question,
+    acceptedAnswer: {
+      '@type': 'Answer',
+      text: item.answer
+    }
+  }))
+};
+---
+
+<Base title={title} description={description}>
+  <script type="application/ld+json" set:html={JSON.stringify(toolAppSchema({ name: 'CS2 Recoil Patterns', url: 'https://csdb.gg/recoil-patterns/', description }))}></script>
+  <div class="calc-container">
+    <h1>CS2 Recoil Patterns</h1>
+    <p class="subtitle">Master weapon recoil and spray control</p>
+
+    <div class="weapons-grid">
+      {weapons.map(weapon => (
+        <div class="weapon-card">
+          <div class="weapon-header">
+            <h2>{weapon.name}</h2>
+            <span class="category-badge">{weapon.category}</span>
+          </div>
+
+          <div class="difficulty-bar">
+            <span class="difficulty-label">Difficulty</span>
+            <div class={`difficulty ${weapon.difficulty.toLowerCase()}`}>
+              {weapon.difficulty}
+            </div>
+          </div>
+
+          <div class="weapon-info">
+            <div class="info-section">
+              <h4>Recoil Pattern</h4>
+              <p>{weapon.recoilDesc}</p>
+            </div>
+
+            <div class="info-section">
+              <h4>Spray Tips</h4>
+              <p>{weapon.sprayTips}</p>
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
+
+    <div class="recoil-guide">
+      <h2>Recoil Control Techniques</h2>
+      
+      <div class="technique-section">
+        <h3>Tap Firing</h3>
+        <p>Single shot then release. Most accurate method. Used for long-range engagements.</p>
+      </div>
+
+      <div class="technique-section">
+        <h3>Burst Firing</h3>
+        <p>3-4 shots in quick succession. Balance between fire rate and accuracy. Ideal for medium range.</p>
+      </div>
+
+      <div class="technique-section">
+        <h3>Spray Control</h3>
+        <p>Hold down fire and counter the recoil pattern. Requires practice and muscle memory. Best at close range.</p>
+      </div>
+
+      <div class="technique-section">
+        <h3>Counter-Strafing</h3>
+        <p>Press opposite movement key to stop instantly while maintaining accuracy. Essential for advanced play.</p>
+      </div>
+    </div>
+
+    <div class="practice-guide">
+      <h2>Practice Tips</h2>
+      <ul>
+        <li>Use aim maps in community servers to practice spray control without pressure</li>
+        <li>Record demos and review your spray patterns to identify inconsistencies</li>
+        <li>Practice with one weapon at a time to build muscle memory</li>
+        <li>Start with burst firing before attempting full spray control</li>
+        <li>Focus on crosshair placement first, spray control second</li>
+        <li>Play death match to get comfortable with recoil in real matches</li>
+        <li>Most importantly: counter-strafe to stabilize before spraying</li>
+      </ul>
+    </div>
+
+    <div class="faq-section">
+      <h2>Frequently Asked Questions</h2>
+      {faq.map(item => (
+        <div class="faq-item">
+          <h3>{item.question}</h3>
+          <p>{item.answer}</p>
+        </div>
+      ))}
+    </div>
+
+    <div class="links-section">
+      <h2>Related Tools</h2>
+      <ul>
+        <li><a href="/weapon-compare/">Weapon Compare</a></li>
+        <li><a href="/damage-calculator/">Damage Calculator</a></li>
+        <li><a href="/spray-trainer/">Spray Trainer</a></li>
+        <li><a href="/sensitivity-converter/">Sensitivity Converter</a></li>
+        <li><a href="/crosshair-generator/">Crosshair Generator</a></li>
+        <li><a href="/economy-calculator/">Economy Calculator</a></li>
+        <li><a href="/weapons/">Weapon Database</a></li>
+        <li><a href="/pro-players/">Pro Player Settings</a></li>
+        <li><a href="/tools/">All Tools</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <script type="application/ld+json" set:html={JSON.stringify(schemaData)} />
+
+  <ExploreMore context="weapons" />
+</Base>
+
+<style is:inline>
+  .calc-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+    color: var(--text);
+  }
+
+  h1 {
+    font-size: 2.5rem;
+    margin-bottom: 0.5rem;
+    color: var(--accent);
+  }
+
+  .subtitle {
+    color: var(--text2);
+    font-size: 1.1rem;
+    margin-bottom: 2rem;
+  }
+
+  .weapons-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 3rem;
+  }
+
+  .weapon-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.5rem;
+    transition: all 0.3s;
+  }
+
+  .weapon-card:hover {
+    border-color: var(--accent);
+    box-shadow: 0 0 20px rgba(212, 149, 110, 0.15);
+  }
+
+  .weapon-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+  }
+
+  .weapon-header h2 {
+    font-size: 1.5rem;
+    color: var(--accent);
+    margin: 0;
+  }
+
+  .category-badge {
+    background: var(--bg3);
+    color: var(--text2);
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .difficulty-bar {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .difficulty-label {
+    font-size: 0.85rem;
+    color: var(--text2);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .difficulty {
+    padding: 0.3rem 0.8rem;
+    border-radius: 4px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .difficulty.easy {
+    background: rgba(92, 184, 92, 0.2);
+    color: var(--green);
+  }
+
+  .difficulty.medium {
+    background: rgba(232, 201, 110, 0.2);
+    color: var(--gold);
+  }
+
+  .difficulty.hard {
+    background: rgba(224, 112, 112, 0.2);
+    color: var(--red);
+  }
+
+  .weapon-info {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .info-section {
+    border-top: 1px solid var(--border);
+    padding-top: 1rem;
+  }
+
+  .info-section:first-child {
+    border-top: none;
+    padding-top: 0;
+  }
+
+  .info-section h4 {
+    color: var(--accent);
+    font-size: 0.95rem;
+    margin-bottom: 0.5rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .info-section p {
+    color: var(--text2);
+    margin: 0;
+    line-height: 1.6;
+    font-size: 0.95rem;
+  }
+
+  .recoil-guide {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+  }
+
+  .recoil-guide h2 {
+    color: var(--accent);
+    font-size: 1.8rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .technique-section {
+    background: var(--bg);
+    border-left: 4px solid var(--accent);
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+    border-radius: 6px;
+  }
+
+  .technique-section h3 {
+    color: var(--accent);
+    margin-bottom: 0.5rem;
+    margin-top: 0;
+  }
+
+  .technique-section p {
+    color: var(--text2);
+    margin: 0;
+    line-height: 1.6;
+  }
+
+  .practice-guide {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+  }
+
+  .practice-guide h2 {
+    color: var(--accent);
+    font-size: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .practice-guide ul {
+    list-style: none;
+    padding: 0;
+  }
+
+  .practice-guide li {
+    padding: 0.75rem 0 0.75rem 2rem;
+    position: relative;
+    color: var(--text2);
+    border-bottom: 1px solid var(--border);
+    line-height: 1.6;
+  }
+
+  .practice-guide li:last-child {
+    border-bottom: none;
+  }
+
+  .practice-guide li::before {
+    content: '';
+    position: absolute;
+    left: 0.5rem;
+    top: 1rem;
+    width: 6px;
+    height: 6px;
+    background: var(--accent);
+    border-radius: 50%;
+  }
+
+  .faq-section {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+  }
+
+  .faq-section h2 {
+    color: var(--accent);
+    font-size: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .faq-item {
+    margin-bottom: 1.5rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .faq-item:last-child {
+    border-bottom: none;
+  }
+
+  .faq-item h3 {
+    color: var(--accent);
+    margin-bottom: 0.5rem;
+  }
+
+  .faq-item p {
+    color: var(--text2);
+    line-height: 1.6;
+  }
+
+  .links-section {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 2rem;
+  }
+
+  .links-section h2 {
+    color: var(--accent);
+    font-size: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .links-section ul {
+    list-style: none;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+  }
+
+  .links-section a {
+    display: block;
+    padding: 0.75rem 1rem;
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    color: var(--accent);
+    text-decoration: none;
+    transition: all 0.2s;
+  }
+
+  .links-section a:hover {
+    background: var(--accent);
+    color: white;
+  }
+</style>

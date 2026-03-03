@@ -1,0 +1,234 @@
+---
+import Base from '../layouts/Base.astro';
+import ExploreMore from '../components/ExploreMore.astro';
+import { breadcrumbSchema } from '../lib/weapons';
+
+const title = 'CS2 Guides — Master Every Aspect of Counter-Strike 2 | CSDB.gg';
+const description = 'Comprehensive Counter-Strike 2 guides covering gameplay, trading, settings, FPS optimization, and advanced mechanics. From beginner to pro.';
+
+const guides = [
+  { slug: 'beginners-guide', title: "Beginner's Guide", description: 'Start your CS2 journey with fundamental concepts — movement, shooting mechanics, economy basics, and map callouts.', icon: '🎮' },
+  { slug: 'crosshair-guide', title: 'Crosshair Guide', description: 'Master crosshair settings, pro player configs, console commands, and customization tips for better aim.', icon: '🎯' },
+  { slug: 'economy-guide', title: 'Economy Guide', description: 'Buy rounds, eco rounds, force buys, and strategic money management to maximize your team purchasing power.', icon: '💰' },
+  { slug: 'ranks-guide', title: 'Ranking System Guide', description: 'Competitive ranks, Premier rating, and proven strategies to climb from Silver to Global Elite.', icon: '🏆' },
+  { slug: 'trading-guide', title: 'Skin Trading Guide', description: 'Marketplace comparison, scam prevention, pricing strategies, and building your inventory profitably.', icon: '🔄' },
+  { slug: 'float-guide', title: 'Float Value Guide', description: 'How float values determine wear conditions, affect pricing, and work in trade-up contracts.', icon: '📊' },
+  { slug: 'skins-investing-guide', title: 'Skins Investing Guide', description: 'Which skins appreciate, investment timing, portfolio strategies, and risk management for skin investors.', icon: '📈' },
+  { slug: 'fps-optimization-guide', title: 'FPS Optimization Guide', description: 'In-game settings, launch options, Windows tweaks, and hardware picks for maximum frame rates.', icon: '⚡' },
+  { slug: 'advanced-mechanics-guide', title: 'Advanced Mechanics', description: 'Counter-strafing, jiggle peeking, spray transfers, crosshair placement, and positioning fundamentals.', icon: '⚔️' },
+  { slug: 'movement-guide', title: 'Movement Guide', description: 'Counter-strafing, bunny hopping, surfing, air strafing, and jiggle peeking techniques for competitive play.', icon: '🏃' },
+  { slug: 'grenade-guide', title: 'Grenades & Utility', description: 'Smoke lineups, flash techniques, molotov usage, grenade binds, and practice commands for utility mastery.', icon: '💣' },
+  { slug: 'audio-guide', title: 'Audio & Sound Settings', description: 'Optimize HRTF, volume levels, console commands, and audio settings for hearing footsteps and positional cues.', icon: '🔊' },
+  { slug: 'config-guide', title: 'Config & Settings', description: 'Autoexec setup, video settings, network optimization, launch options, and configuration file management.', icon: '⚙️' },
+  { slug: 'demo-guide', title: 'Demo & Replay', description: 'Download, watch, and analyze CS2 demos with playback controls, console commands, and review techniques.', icon: '🎬' },
+  { slug: 'case-hardened-guide', title: 'Case Hardened & Blue Gems', description: 'Pattern seeds, blue gem tiers, gold gems, and pricing for AK-47, knives, Five-SeveN, and more.', icon: '💎' },
+];
+
+const breadcrumbs = [
+  { name: 'Home', url: '/' },
+  { name: 'Guides', url: '/guides/' },
+];
+
+const itemListSchema = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "ItemList",
+  "name": "CS2 Guides",
+  "description": "Comprehensive Counter-Strike 2 guides covering gameplay, trading, settings, FPS optimization, and advanced mechanics.",
+  "numberOfItems": guides.length,
+  "itemListElement": guides.map((guide, i) => ({
+    "@type": "ListItem",
+    "position": i + 1,
+    "name": guide.title,
+    "description": guide.description,
+    "url": `https://csdb.gg/guides/${guide.slug}/`
+  }))
+});
+---
+
+<Base title={title} description={description}>
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema(breadcrumbs))} />
+    <script type="application/ld+json" set:html={itemListSchema} />
+  </Fragment>
+  <div class="guides-container">
+    <header class="guides-header">
+      <h1>Counter-Strike 2 Guides</h1>
+      <p class="subtitle">Master the fundamentals and advanced strategies</p>
+    </header>
+
+    <div class="guides-grid">
+      {guides.map((guide) => (
+        <article class="guide-card">
+          <div class="guide-icon">{guide.icon}</div>
+          <h2>
+            <a href={`/guides/${guide.slug}`}>{guide.title}</a>
+          </h2>
+          <p class="guide-description">{guide.description}</p>
+          <a href={`/guides/${guide.slug}`} class="guide-link">Read Guide →</a>
+        </article>
+      ))}
+    </div>
+
+    <section class="guides-intro">
+      <h2>Learning Path</h2>
+      <p>
+        We recommend starting with the Beginner's Guide to understand fundamental mechanics, then progressing through the other guides based on your interests and skill level. Each guide is designed to be comprehensive yet accessible.
+      </p>
+      <ol class="learning-steps">
+        <li>Read the <a href="/guides/beginners-guide">Beginner's Guide</a> for fundamentals</li>
+        <li>Learn <a href="/guides/economy-guide">Economy Management</a> for team coordination</li>
+        <li>Customize your <a href="/guides/crosshair-guide">Crosshair</a> for better aim</li>
+        <li>Climb the ranks with <a href="/guides/ranks-guide">Ranking System knowledge</a></li>
+      </ol>
+    </section>
+
+    <ExploreMore context="guides" />
+  </div>
+
+  <style>
+    .guides-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+
+    .guides-header {
+      text-align: center;
+      margin-bottom: 3rem;
+    }
+
+    .guides-header h1 {
+      font-size: 2.5rem;
+      margin-bottom: 0.5rem;
+      color: var(--text-primary);
+    }
+
+    .subtitle {
+      font-size: 1.1rem;
+      color: var(--text-secondary);
+      margin: 0;
+    }
+
+    .guides-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 2rem;
+      margin-bottom: 3rem;
+    }
+
+    .guide-card {
+      background: var(--bg-secondary);
+      padding: 2rem;
+      border-radius: 8px;
+      border: 1px solid var(--border-color);
+      transition: all 0.3s ease;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .guide-card:hover {
+      transform: translateY(-4px);
+      border-color: var(--accent-color);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+    }
+
+    .guide-icon {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .guide-card h2 {
+      margin: 0 0 1rem 0;
+      font-size: 1.3rem;
+    }
+
+    .guide-card a {
+      color: var(--accent-color);
+      text-decoration: none;
+      transition: color 0.2s ease;
+    }
+
+    .guide-card a:hover {
+      color: var(--accent-light);
+    }
+
+    .guide-description {
+      flex-grow: 1;
+      color: var(--text-secondary);
+      line-height: 1.6;
+      margin-bottom: 1.5rem;
+    }
+
+    .guide-link {
+      color: var(--accent-color);
+      text-decoration: none;
+      font-weight: 600;
+      transition: color 0.2s ease;
+      align-self: flex-start;
+    }
+
+    .guide-link:hover {
+      color: var(--accent-light);
+    }
+
+    .guides-intro {
+      background: var(--bg-secondary);
+      padding: 2rem;
+      border-radius: 8px;
+      border-left: 4px solid var(--accent-color);
+    }
+
+    .guides-intro h2 {
+      margin-top: 0;
+      color: var(--text-primary);
+    }
+
+    .guides-intro p {
+      color: var(--text-secondary);
+      line-height: 1.7;
+      margin-bottom: 1.5rem;
+    }
+
+    .learning-steps {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      counter-reset: step;
+    }
+
+    .learning-steps li {
+      counter-increment: step;
+      margin-bottom: 1rem;
+      padding-left: 2rem;
+      position: relative;
+      color: var(--text-secondary);
+    }
+
+    .learning-steps li::before {
+      content: counter(step);
+      position: absolute;
+      left: 0;
+      top: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 1.5rem;
+      height: 1.5rem;
+      background: var(--accent-color);
+      color: var(--bg-primary);
+      border-radius: 50%;
+      font-weight: bold;
+      font-size: 0.9rem;
+    }
+
+    .learning-steps a {
+      color: var(--accent-color);
+      text-decoration: none;
+      transition: color 0.2s ease;
+    }
+
+    .learning-steps a:hover {
+      color: var(--accent-light);
+    }
+  </style>
+</Base>

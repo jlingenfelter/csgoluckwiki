@@ -1,0 +1,785 @@
+---
+import Base from '../layouts/Base.astro';
+import ExploreMore from '../components/ExploreMore.astro';
+import { faqSchema, breadcrumbSchema } from '../lib/weapons';
+
+const title = 'CS2 Steam Inventory Value Calculator | CSDB.gg';
+const description = 'Check your Steam inventory CS2 skin value instantly. Get total inventory worth, item breakdown by category, and find your most valuable skins. Free steam inventory value checker for Counter-Strike 2.';
+
+const breadcrumbs = [
+  { name: 'Home', url: '/' },
+  { name: 'Skins', url: '/skins/' },
+  { name: 'Inventory Lookup', url: '/inventory-lookup/' },
+];
+
+const faqs = [
+  {
+    question: 'How do I find my Steam ID?',
+    answer: 'You can find your Steam ID in several ways: (1) Visit your Steam profile, copy the URL (you\'ll see /profiles/XXXXX or /id/vanityname), (2) Use a Steam ID lookup tool, (3) In the lookup form, you can paste your full profile URL or just your username. Our tool accepts all three formats.'
+  },
+  {
+    question: 'Is my inventory information private?',
+    answer: 'Your inventory must be set to public for us to access it via the Steam Web API. The lookup is done entirely client-side — we don\'t store any of your data. You can make your inventory private again after checking your value.'
+  },
+  {
+    question: 'Why can\'t I see all my items?',
+    answer: 'This can happen if: (1) Your inventory is set to private, (2) You have too many items (Steam limits API returns), (3) Your profile is not public. Make sure your profile and inventory are both set to public in your Steam privacy settings.'
+  },
+  {
+    question: 'How often are prices updated?',
+    answer: 'Prices are pulled from current market data and reflect the latest available pricing information. For the most accurate current values, check the individual skin listing on our Skin Database or PriceEmpire.'
+  },
+  {
+    question: 'What counts toward inventory value?',
+    answer: 'Only CS2 weapon skins, knives, gloves, and agent skins count toward your inventory value. Cases, keys, stickers, music kits, and other non-weapon items are not included in the total value calculation.'
+  },
+  {
+    question: 'Can I compare my inventory to other players?',
+    answer: 'Yes! Look up anyone\'s Steam ID to see their public inventory value. You can use this to compare collections with friends or research what top collectors own.'
+  },
+];
+---
+
+<Base title={title} description={description} currentNav="/skins/">
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema(breadcrumbs))} />
+    <script type="application/ld+json" set:html={JSON.stringify(faqSchema(faqs))} />
+  </Fragment>
+
+  <!-- Breadcrumb -->
+  <nav class="breadcrumb">
+    <a href="/">Home</a> / <a href="/skins/">Skins</a> / <span>Inventory Lookup</span>
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="hero-section">
+    <h1>CS2 Steam Inventory Value Calculator</h1>
+    <p>Instantly calculate your total inventory value and break down your collection by weapon category. Look up any public Steam inventory.</p>
+  </section>
+
+  <!-- Lookup Form -->
+  <section class="calc-section">
+    <h2>Look Up Inventory</h2>
+    <p>Enter your Steam ID, profile URL, or vanity username to analyze your inventory value.</p>
+
+    <div class="lookup-form">
+      <div class="form-group">
+        <label for="steamInput">Steam ID / Profile URL / Username:</label>
+        <input
+          type="text"
+          id="steamInput"
+          placeholder="e.g., 76561198000000000 or username or https://steamcommunity.com/id/username"
+          autocomplete="off"
+        >
+        <small>Your inventory must be set to public in Steam privacy settings</small>
+      </div>
+      <button id="lookupBtn" class="lookup-button">Look Up Inventory</button>
+    </div>
+
+    <!-- Loading State -->
+    <div id="loadingState" class="loading-state" style="display:none">
+      <div class="spinner"></div>
+      <p>Fetching your inventory...</p>
+    </div>
+
+    <!-- Error State -->
+    <div id="errorState" class="error-state" style="display:none">
+      <p id="errorMessage"></p>
+    </div>
+
+    <!-- Results Section -->
+    <div id="resultsSection" class="results-section" style="display:none">
+      <!-- Summary Stats -->
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="val" id="totalValue">$0.00</div>
+          <div class="label">Total Value</div>
+        </div>
+        <div class="stat-card">
+          <div class="val" id="itemCount">0</div>
+          <div class="label">Items</div>
+        </div>
+        <div class="stat-card">
+          <div class="val" id="mostValuableItem">—</div>
+          <div class="label">Most Valuable</div>
+        </div>
+        <div class="stat-card">
+          <div class="val" id="avgPrice">$0.00</div>
+          <div class="label">Avg Price</div>
+        </div>
+      </div>
+
+      <!-- Portfolio Grade -->
+      <div class="portfolio-grade" id="portfolioGrade" style="display:none">
+        <div class="grade-badge" id="gradeBadge">-</div>
+        <div class="grade-info">
+          <div class="grade-label">Portfolio Grade</div>
+          <div class="grade-desc" id="gradeDesc">-</div>
+        </div>
+      </div>
+
+      <!-- Category Breakdown -->
+      <h3>Inventory by Category</h3>
+      <div class="breakdown-grid" id="categoryBreakdown"></div>
+
+      <!-- Rarity Breakdown -->
+      <div id="raritySection" style="display:none">
+        <h3>Price Tier Distribution</h3>
+        <div class="rarity-breakdown" id="rarityBreakdown"></div>
+      </div>
+
+      <!-- Top Items -->
+      <h3>Most Valuable Items</h3>
+      <div class="items-grid" id="topItems"></div>
+
+      <!-- Actions -->
+      <div class="inv-actions">
+        <button class="inv-action-btn" id="copyValueBtn">Copy Total Value</button>
+        <a href="/skins/" class="inv-action-btn">Browse All Skins</a>
+        <a href="/market-trends/" class="inv-action-btn">Market Trends</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- How to Find Steam ID -->
+  <section class="guide-section">
+    <h2>How to Find Your Steam ID</h2>
+    <div class="card-grid">
+      <div class="card">
+        <h3>Method 1: From Profile URL</h3>
+        <p>Visit your Steam profile and look at the URL bar. Your Steam ID is the long number after /profiles/ or your username after /id/</p>
+        <code style="background: var(--bg3); padding: 0.5rem; border-radius: 4px; display: block; margin: 0.5rem 0; font-size: 0.8rem;">https://steamcommunity.com/profiles/76561198000000000</code>
+      </div>
+
+      <div class="card">
+        <h3>Method 2: Vanity Username</h3>
+        <p>If you set a custom URL, use just your username. We'll convert it to your numeric Steam ID automatically.</p>
+        <code style="background: var(--bg3); padding: 0.5rem; border-radius: 4px; display: block; margin: 0.5rem 0; font-size: 0.8rem;">https://steamcommunity.com/id/myusername</code>
+      </div>
+
+      <div class="card">
+        <h3>Method 3: SteamID Tools</h3>
+        <p>Use online SteamID lookup tools if you don't have your ID handy. Search "SteamID finder" to find your numeric ID in seconds.</p>
+      </div>
+
+      <div class="card">
+        <h3>Privacy Settings</h3>
+        <p>Make sure your profile is public and your inventory is visible. Go to Profile → Privacy Settings and set both to Public, then try again.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Related Tools -->
+  <section class="related-section">
+    <h2>Related Tools & Resources</h2>
+    <div class="internal-links">
+      <a href="/skins/">Skin Database</a>
+      <a href="/skin-compare/">Compare Skins</a>
+      <a href="/price-tracker/">Price Tracker</a>
+      <a href="/market-trends/">Market Trends</a>
+      <a href="/float-checker/">Float Checker</a>
+      <a href="/tradeup-calculator/">Trade-Up Calculator</a>
+      <a href="/case-odds-calculator/">Case Odds Calculator</a>
+      <a href="/case-simulator/">Case Simulator</a>
+      <a href="/cases/">Cases & Collections</a>
+      <a href="/loadout-builder/">Loadout Builder</a>
+      <a href="/weapons/">Weapon Database</a>
+      <a href="/guides/trading-guide/">Trading Guide</a>
+      <a href="/guides/float-guide/">Float Guide</a>
+      <a href="/guides/skins-investing-guide/">Investing Guide</a>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="faq-section">
+    <h2>Frequently Asked Questions</h2>
+    <dl class="faq">
+      {faqs.map(f => (
+        <Fragment>
+          <dt>{f.question}</dt>
+          <dd>{f.answer}</dd>
+        </Fragment>
+      ))}
+    </dl>
+  </section>
+
+  <ExploreMore context="skins" />
+</Base>
+
+<style>
+  .hero-section {
+    background: linear-gradient(135deg, rgba(212,149,110,0.15) 0%, rgba(255,200,87,0.1) 100%);
+    border-radius: 12px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+    border: 1px solid var(--border);
+  }
+
+  .hero-section h1 {
+    margin-top: 0;
+  }
+
+  .lookup-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin: 1.5rem 0;
+  }
+
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .form-group label {
+    font-weight: 600;
+    color: var(--text);
+  }
+
+  .form-group input {
+    background: var(--bg3);
+    color: var(--text);
+    border: 1px solid var(--border);
+    padding: 0.75rem 1rem;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    font-family: inherit;
+  }
+
+  .form-group input:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(245, 166, 35, 0.1);
+  }
+
+  .form-group small {
+    font-size: 0.8rem;
+    color: var(--text2);
+  }
+
+  .lookup-button {
+    background: var(--accent);
+    color: #000;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    font-weight: 700;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    align-self: flex-start;
+  }
+
+  .lookup-button:hover {
+    background: var(--accent2);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(245, 166, 35, 0.3);
+  }
+
+  .lookup-button:active {
+    transform: translateY(0);
+  }
+
+  .loading-state {
+    text-align: center;
+    padding: 2rem;
+  }
+
+  .spinner {
+    width: 40px;
+    height: 40px;
+    border: 3px solid var(--bg3);
+    border-top-color: var(--accent);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    margin: 0 auto 1rem;
+  }
+
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+
+  .error-state {
+    background: rgba(239, 83, 80, 0.1);
+    border: 1px solid rgba(239, 83, 80, 0.5);
+    border-radius: 8px;
+    padding: 1rem;
+    margin: 1rem 0;
+    color: #ffb3ad;
+  }
+
+  .results-section {
+    margin-top: 2rem;
+  }
+
+  .breakdown-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 1rem;
+    margin: 1.5rem 0;
+  }
+
+  .category-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1.25rem;
+    text-align: center;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+
+  .category-card:hover {
+    border-color: var(--accent);
+    box-shadow: 0 4px 12px rgba(245, 166, 35, 0.15);
+  }
+
+  .category-card .category-name {
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 0.5rem;
+  }
+
+  .category-card .category-count {
+    font-size: 1.3rem;
+    font-weight: 800;
+    color: var(--accent);
+    margin-bottom: 0.25rem;
+  }
+
+  .category-card .category-value {
+    font-size: 0.9rem;
+    color: var(--text2);
+  }
+
+  .items-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 1.5rem;
+    margin: 1.5rem 0;
+  }
+
+  .item-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
+  }
+
+  .item-card:hover {
+    border-color: var(--accent);
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px rgba(245, 166, 35, 0.2);
+  }
+
+  .item-image {
+    width: 100%;
+    height: 160px;
+    background: linear-gradient(135deg, var(--bg3) 0%, var(--bg) 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text2);
+    font-size: 0.8rem;
+  }
+
+  .item-info {
+    padding: 1rem;
+  }
+
+  .item-name {
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 0.5rem;
+    font-size: 0.95rem;
+    line-height: 1.3;
+  }
+
+  .item-meta {
+    display: flex;
+    justify-content: space-between;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+    font-size: 0.8rem;
+  }
+
+  .item-wear {
+    color: var(--text2);
+  }
+
+  .item-float {
+    color: var(--accent);
+    font-weight: 600;
+  }
+
+  .item-price {
+    font-size: 1.1rem;
+    font-weight: 800;
+    color: var(--accent);
+  }
+
+  .portfolio-grade {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+    background: var(--bg2);
+    border: 2px solid var(--border);
+    border-radius: 12px;
+    padding: 1.25rem 1.5rem;
+    margin: 1.5rem 0;
+  }
+
+  .grade-badge {
+    font-size: 2rem;
+    font-weight: 900;
+    width: 60px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px;
+    background: var(--bg3);
+    border: 2px solid var(--border);
+    flex-shrink: 0;
+  }
+
+  .grade-label {
+    font-size: 0.82rem;
+    color: var(--text2);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-weight: 700;
+    margin-bottom: 0.25rem;
+  }
+
+  .grade-desc {
+    font-size: 0.9rem;
+    color: var(--text);
+    line-height: 1.4;
+  }
+
+  .rarity-breakdown {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin: 1rem 0 2rem;
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1.25rem;
+  }
+
+  .tier-row {
+    display: grid;
+    grid-template-columns: 100px 1fr 80px;
+    gap: 0.75rem;
+    align-items: center;
+  }
+
+  .tier-label {
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--text);
+  }
+
+  .tier-bar-wrap {
+    height: 22px;
+    background: var(--bg3);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+
+  .tier-bar {
+    height: 100%;
+    border-radius: 4px;
+    transition: width 0.3s ease;
+  }
+
+  .tier-count {
+    font-size: 0.82rem;
+    font-weight: 700;
+    text-align: right;
+  }
+
+  .inv-actions {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+    margin: 2rem 0;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border);
+  }
+
+  .inv-action-btn {
+    background: var(--bg3);
+    color: var(--text);
+    border: 1px solid var(--border);
+    padding: 0.6rem 1.25rem;
+    border-radius: 8px;
+    font-size: 0.88rem;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.2s;
+    font-family: inherit;
+  }
+
+  .inv-action-btn:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  .guide-section {
+    margin: 3rem 0 2rem;
+  }
+
+  .related-section {
+    margin: 3rem 0 2rem;
+  }
+
+  .faq-section {
+    margin: 3rem 0;
+  }
+
+  @media (max-width: 768px) {
+    .lookup-form {
+      flex-direction: column;
+    }
+
+    .lookup-button {
+      width: 100%;
+    }
+
+    .breakdown-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    .items-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .stats-grid {
+      grid-template-columns: repeat(2, 1fr) !important;
+    }
+  }
+</style>
+
+<script is:inline>
+  (function() {
+    const steamInput = document.getElementById('steamInput');
+    const lookupBtn = document.getElementById('lookupBtn');
+    const loadingState = document.getElementById('loadingState');
+    const errorState = document.getElementById('errorState');
+    const errorMessage = document.getElementById('errorMessage');
+    const resultsSection = document.getElementById('resultsSection');
+
+    lookupBtn.addEventListener('click', performLookup);
+    steamInput.addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') performLookup();
+    });
+
+    async function performLookup() {
+      const input = steamInput.value.trim();
+      if (!input) {
+        showError('Please enter a Steam ID, profile URL, or username');
+        return;
+      }
+
+      loadingState.style.display = 'block';
+      errorState.style.display = 'none';
+      resultsSection.style.display = 'none';
+
+      try {
+        // Parse input to get steamid
+        let steamid = parseSteamInput(input);
+
+        if (!steamid) {
+          throw new Error('Could not parse Steam ID. Please check your input format.');
+        }
+
+        // Fetch inventory data
+        const response = await fetch(`/api/inventory?steamid=${encodeURIComponent(steamid)}`);
+        const contentType = response.headers.get('content-type') || '';
+        if (!contentType.includes('application/json')) {
+          throw new Error('The inventory API is currently unavailable. Please try again later.');
+        }
+        const data = await response.json();
+
+        if (!response.ok || data.error) {
+          throw new Error(data.error || 'Failed to fetch inventory');
+        }
+
+        displayResults(data);
+      } catch (err) {
+        showError(err.message);
+      } finally {
+        loadingState.style.display = 'none';
+      }
+    }
+
+    function parseSteamInput(input) {
+      // Check if it's a numeric Steam ID
+      if (/^\d{17}$/.test(input)) {
+        return input;
+      }
+
+      // Check if it's a profile URL
+      const profileMatch = input.match(/\/profiles\/(\d+)/);
+      if (profileMatch) {
+        return profileMatch[1];
+      }
+
+      // Check if it's a vanity URL
+      const vanityMatch = input.match(/\/id\/([a-zA-Z0-9_-]+)/);
+      if (vanityMatch) {
+        // In production, you'd need to resolve the vanity name to a numeric ID
+        // For now, return the vanity name and let the API handle it
+        return vanityMatch[1];
+      }
+
+      // Assume it's a username if it looks reasonable
+      if (/^[a-zA-Z0-9_-]{3,}$/.test(input)) {
+        return input;
+      }
+
+      return null;
+    }
+
+    function displayResults(data) {
+      // Update stat cards
+      document.getElementById('totalValue').textContent = '$' + data.totalValue.toFixed(2);
+      document.getElementById('itemCount').textContent = data.items.length;
+      document.getElementById('avgPrice').textContent = data.items.length > 0 ? '$' + (data.totalValue / data.items.length).toFixed(2) : '$0.00';
+
+      // Most valuable item
+      if (data.items.length > 0) {
+        var mostValuable = data.items.reduce(function(a, b) { return (a.price || 0) > (b.price || 0) ? a : b; });
+        document.getElementById('mostValuableItem').textContent = '$' + (mostValuable.price || 0).toFixed(2);
+      }
+
+      // Portfolio grade
+      var gradeEl = document.getElementById('portfolioGrade');
+      var gradeBadge = document.getElementById('gradeBadge');
+      var gradeDesc = document.getElementById('gradeDesc');
+      var grade = calculateGrade(data.totalValue, data.items.length, data.items);
+      gradeBadge.textContent = grade.letter;
+      gradeBadge.style.color = grade.color;
+      gradeBadge.style.borderColor = grade.color;
+      gradeDesc.textContent = grade.description;
+      gradeEl.style.display = 'flex';
+
+      // Category breakdown
+      var categories = {};
+      data.items.forEach(function(item) {
+        var cat = item.category || 'Other';
+        if (!categories[cat]) categories[cat] = { count: 0, value: 0 };
+        categories[cat].count++;
+        categories[cat].value += item.price || 0;
+      });
+
+      var categoryBreakdown = document.getElementById('categoryBreakdown');
+      categoryBreakdown.innerHTML = '';
+      Object.entries(categories).sort(function(a, b) { return b[1].value - a[1].value; }).forEach(function(entry) {
+        var cat = entry[0], info = entry[1];
+        var pct = data.totalValue > 0 ? ((info.value / data.totalValue) * 100).toFixed(0) : 0;
+        var card = document.createElement('div');
+        card.className = 'category-card';
+        card.innerHTML = '<div class="category-count">' + info.count + '</div>' +
+          '<div class="category-name">' + cat + '</div>' +
+          '<div class="category-value">$' + info.value.toFixed(2) + ' (' + pct + '%)</div>';
+        categoryBreakdown.appendChild(card);
+      });
+
+      // Price tier breakdown
+      var tiers = [
+        { label: '$500+', min: 500, max: Infinity, color: '#e53935' },
+        { label: '$100-500', min: 100, max: 500, color: '#d81b60' },
+        { label: '$20-100', min: 20, max: 100, color: '#8e24aa' },
+        { label: '$5-20', min: 5, max: 20, color: '#5c6bc0' },
+        { label: 'Under $5', min: 0, max: 5, color: '#78909c' },
+      ];
+      var tierCounts = tiers.map(function(t) {
+        return { label: t.label, color: t.color, count: data.items.filter(function(i) { return (i.price || 0) >= t.min && (i.price || 0) < t.max; }).length };
+      });
+      var maxTier = Math.max.apply(null, tierCounts.map(function(t) { return t.count; }));
+      var raritySection = document.getElementById('raritySection');
+      var rarityBreakdown = document.getElementById('rarityBreakdown');
+      rarityBreakdown.innerHTML = '';
+      if (data.items.length > 0) {
+        raritySection.style.display = 'block';
+        tierCounts.forEach(function(t) {
+          var barW = maxTier > 0 ? ((t.count / maxTier) * 100) : 0;
+          var row = document.createElement('div');
+          row.className = 'tier-row';
+          row.innerHTML = '<div class="tier-label">' + t.label + '</div>' +
+            '<div class="tier-bar-wrap"><div class="tier-bar" style="width:' + barW + '%;background:' + t.color + '"></div></div>' +
+            '<div class="tier-count" style="color:' + t.color + '">' + t.count + ' items</div>';
+          rarityBreakdown.appendChild(row);
+        });
+      }
+
+      // Top 12 items with skin link
+      var topItems = document.getElementById('topItems');
+      topItems.innerHTML = '';
+      data.items.sort(function(a, b) { return (b.price || 0) - (a.price || 0); }).slice(0, 12).forEach(function(item) {
+        var skinSlug = itemNameToSlug(item.name);
+        var card = document.createElement('a');
+        card.href = skinSlug ? '/skin/' + skinSlug + '/' : '/skins/';
+        card.className = 'item-card';
+        card.innerHTML = '<div class="item-image">' + escapeHtml(item.name.split('|')[0] || '') + '</div>' +
+          '<div class="item-info">' +
+          '<div class="item-name">' + escapeHtml(item.name) + '</div>' +
+          '<div class="item-meta"><span class="item-wear">' + (item.wear || '-') + '</span></div>' +
+          '<div class="item-price">$' + (item.price || 0).toFixed(2) + '</div></div>';
+        topItems.appendChild(card);
+      });
+
+      // Copy button
+      var copyBtn = document.getElementById('copyValueBtn');
+      if (copyBtn) {
+        copyBtn.onclick = function() {
+          navigator.clipboard.writeText('$' + data.totalValue.toFixed(2)).then(function() {
+            copyBtn.textContent = 'Copied!';
+            setTimeout(function() { copyBtn.textContent = 'Copy Total Value'; }, 2000);
+          });
+        };
+      }
+
+      resultsSection.style.display = 'block';
+      resultsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    function calculateGrade(totalValue, itemCount, items) {
+      var hasKnifeOrGlove = items.some(function(i) { return i.category === 'Knives' || i.category === 'Gloves'; });
+      var highValueCount = items.filter(function(i) { return (i.price || 0) >= 50; }).length;
+
+      if (totalValue >= 10000) return { letter: 'S', color: '#ffd740', description: 'Elite collector inventory. Top-tier portfolio with exceptional value.' };
+      if (totalValue >= 5000) return { letter: 'A+', color: '#69f0ae', description: 'Premium portfolio. Strong collection with high-value items.' };
+      if (totalValue >= 2000 || (totalValue >= 1000 && hasKnifeOrGlove)) return { letter: 'A', color: '#4fc3f7', description: 'Great collection with solid value. Well-rounded inventory.' };
+      if (totalValue >= 500 || highValueCount >= 3) return { letter: 'B+', color: '#81c784', description: 'Good portfolio with growing value. Keep collecting!' };
+      if (totalValue >= 200) return { letter: 'B', color: '#aed581', description: 'Decent collection. A few more premium skins would level you up.' };
+      if (totalValue >= 50) return { letter: 'C', color: '#ffb74d', description: 'Starter collection. Check our Market Trends for good value picks.' };
+      return { letter: 'D', color: '#ef9a9a', description: 'Just getting started. Browse our Best Value skins to build your collection.' };
+    }
+
+    function itemNameToSlug(name) {
+      if (!name) return '';
+      var clean = name.replace(/\s*\(.*?\)\s*$/, '').replace(/^StatTrak\u2122\s+/, '').replace(/^Souvenir\s+/, '');
+      return clean.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+    }
+
+    function escapeHtml(str) {
+      var d = document.createElement('div');
+      d.textContent = str;
+      return d.innerHTML;
+    }
+
+    function showError(message) {
+      errorMessage.textContent = message;
+      errorState.style.display = 'block';
+      resultsSection.style.display = 'none';
+    }
+  })();
+</script>

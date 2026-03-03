@@ -1,0 +1,889 @@
+---
+import Base from '../layouts/Base.astro';
+import ExploreMore from '../components/ExploreMore.astro';
+import { breadcrumbSchema, faqSchema } from '../lib/weapons';
+
+const title = 'CS2 Pattern/Seed Database — Find Blue Gems, Fades & Rare Patterns | CSDB.gg';
+const description = 'Explore CS2 paint seed patterns for Case Hardened, Fade, Marble Fade, and Crimson Web skins. Learn which seeds produce blue gems, full fades, and other high-value patterns worth thousands.';
+
+const breadcrumbs = [
+  { name: 'Home', url: '/' },
+  { name: 'Skins', url: '/skins/' },
+  { name: 'Pattern Database', url: '/pattern-database/' },
+];
+
+const faqs = [
+  {
+    question: 'What is a paint seed in CS2?',
+    answer: 'A paint seed (also called pattern index) is a number between 0 and 999 assigned to every skin when it drops or is unboxed. This seed determines exactly how the skin texture is mapped onto the weapon model, controlling the placement of colors and patterns. The seed is permanent and cannot be changed.'
+  },
+  {
+    question: 'How do I check my skin\'s paint seed?',
+    answer: 'You can check your paint seed by inspecting the item in-game through your inventory and looking at the item details. For a more reliable method, use CSFloat\'s inspect link tool or the CSFloat Market extension, which displays the exact seed number along with float value and other details.'
+  },
+  {
+    question: 'What is a Blue Gem AK-47 Case Hardened?',
+    answer: 'A Blue Gem refers to an AK-47 Case Hardened skin where the paint seed produces a pattern with a large amount of bright blue color on the top of the weapon. Seed 661 is considered the #1 pattern with the most blue coverage. Blue Gems are extremely valuable and can sell for thousands or even tens of thousands of dollars depending on wear condition.'
+  },
+  {
+    question: 'Why are some patterns worth more than others?',
+    answer: 'Pattern value depends on visual appeal and rarity. For Case Hardened skins, more blue coverage means higher value. For Fade knives, a higher fade percentage (closer to 100%) is more desirable. Since each seed produces a fixed pattern and some patterns are objectively more attractive, supply and demand drive prices up for the best seeds.'
+  },
+  {
+    question: 'Do paint seeds affect all skins equally?',
+    answer: 'No. Most skins have patterns that look nearly identical regardless of seed. Pattern seeds only significantly affect value for specific finishes like Case Hardened, Fade, Marble Fade, Crimson Web, and a few others where the texture mapping creates visually distinct variations between seeds.'
+  },
+  {
+    question: 'Can I get a specific pattern seed from a case opening?',
+    answer: 'No, the pattern seed is randomly assigned when a skin drops or is unboxed. There is no way to influence or predict which seed you will receive. The only way to obtain a specific seed is to buy it on the Steam Community Market or a third-party trading platform from someone who already owns it.'
+  },
+  {
+    question: 'What is a full fade vs. a low fade?',
+    answer: 'For Fade finish knives, the paint seed determines the fade percentage, which refers to how much of the color spectrum appears on the blade. A full fade (95-100%) shows all three colors (yellow, pink/red, and purple) prominently. A low fade (80-85%) may be missing the purple entirely. Higher fade percentages command significant price premiums.'
+  },
+  {
+    question: 'How many possible pattern seeds are there?',
+    answer: 'There are exactly 1,000 possible paint seeds, numbered 0 through 999. Each seed produces a unique pattern placement for every skin finish. Since the same seed produces a different visual result on different weapon models, a seed that is valuable on an AK-47 Case Hardened may look completely different on a Five-SeveN Case Hardened.'
+  }
+];
+
+const notablePatterns = [
+  {
+    category: 'AK-47 | Case Hardened',
+    weapon: 'AK-47',
+    finish: 'Case Hardened',
+    link: '/skins/rifles/',
+    patterns: [
+      { name: 'Blue Gem (#1 Pattern)', seed: 661, description: 'The most famous CS skin pattern. Nearly full blue top with minimal gold. Considered the holy grail of Case Hardened patterns and has sold for record-breaking prices.', tier: 'legendary', bluePercent: '95%+' },
+      { name: 'Reverse Scar', seed: 670, description: 'Second most sought-after AK Case Hardened pattern. Features heavy blue coverage on the top with a distinctive reverse scar pattern. Extremely valuable in any condition.', tier: 'legendary', bluePercent: '90%+' },
+      { name: 'Gold Gem', seed: 784, description: 'A highly golden pattern with minimal blue, prized for its clean and consistent gold appearance across the entire body. Popular among collectors seeking a unique alternative to blue.', tier: 'rare', bluePercent: '5%' },
+      { name: 'Honorable Mention', seed: 387, description: 'Strong blue top with clean coverage. Sits in the tier below 661 and 670 but still commands a large premium over market price.', tier: 'high-tier', bluePercent: '85%+' },
+    ]
+  },
+  {
+    category: 'Butterfly Knife | Fade',
+    weapon: 'Butterfly Knife',
+    finish: 'Fade',
+    link: '/skins/knives/',
+    patterns: [
+      { name: 'Full Fade (100%)', seed: 665, description: 'Maximum fade percentage with all three colors — yellow, pink, and purple — fully visible and vibrant. The purple tip is fully saturated and extends well down the blade.', tier: 'legendary', fadePercent: '100%' },
+      { name: '95% Fade', seed: 458, description: 'Near-perfect fade with excellent purple visibility. Only slightly less saturated than a true full fade. Still commands a significant premium over average fades.', tier: 'high-tier', fadePercent: '95%' },
+      { name: '90% Fade', seed: 72, description: 'Good fade with visible purple but not fully saturated at the tip. A popular choice for players who want a strong fade without paying full-fade premiums.', tier: 'mid-tier', fadePercent: '90%' },
+    ]
+  },
+  {
+    category: 'Karambit | Case Hardened',
+    weapon: 'Karambit',
+    finish: 'Case Hardened',
+    link: '/skins/knives/',
+    patterns: [
+      { name: 'Blue Gem (Playside)', seed: 387, description: 'The most iconic Karambit Case Hardened. Full blue playside that is instantly recognizable. One of the most expensive CS2 skins in existence, with FN versions reaching six figures.', tier: 'legendary', bluePercent: '95%+' },
+      { name: 'Partial Blue Gem', seed: 442, description: 'Strong blue coverage on the playside with some gold mixed in. Still highly valuable but more accessible than seed 387.', tier: 'high-tier', bluePercent: '80%+' },
+      { name: 'Blue Ring', seed: 868, description: 'Features a distinctive blue ring around the Karambit hole. While the blade may not be fully blue, the ring is a unique and desirable feature.', tier: 'rare', bluePercent: '60%+' },
+    ]
+  },
+  {
+    category: 'Karambit | Marble Fade',
+    weapon: 'Karambit',
+    finish: 'Marble Fade',
+    link: '/skins/knives/',
+    patterns: [
+      { name: 'Fire & Ice', seed: 412, description: 'The most desirable Marble Fade pattern. Only red and blue colors visible with no yellow present on the playside. True Fire & Ice patterns command massive premiums.', tier: 'legendary', note: 'No yellow' },
+      { name: 'Fake Fire & Ice', seed: 253, description: 'Very close to a true Fire & Ice but with a tiny sliver of yellow visible near the blade spine. Significantly cheaper than true F&I but visually very similar.', tier: 'high-tier', note: 'Minimal yellow' },
+      { name: 'Tricolor', seed: 152, description: 'Standard Marble Fade with all three colors — red, blue, and yellow — clearly visible. The baseline pattern that most Marble Fades display.', tier: 'mid-tier', note: 'All colors' },
+    ]
+  }
+];
+
+const patternDependentSkins = [
+  { name: 'Case Hardened', weapons: 'AK-47, Five-SeveN, Knives', description: 'Blue/gold/purple color distribution varies dramatically. Blue Gems are the most valuable patterns in CS2.', importance: 'Critical' },
+  { name: 'Fade', weapons: 'All Fade Knives', description: 'Fade percentage (80-100%) determined by seed. Full fades with complete color spectrum are worth significantly more.', importance: 'High' },
+  { name: 'Marble Fade', weapons: 'Knives (Karambit, Bayonet, etc.)', description: 'Determines Fire & Ice, Fake Fire & Ice, or Tricolor patterns. True Fire & Ice is the rarest and most expensive.', importance: 'High' },
+  { name: 'Crimson Web', weapons: 'Knives (Karambit, M9 Bayonet, etc.)', description: 'Controls the placement of web patterns on the blade. Centered, large webs on the playside are most valuable.', importance: 'Medium' },
+  { name: 'Slaughter', weapons: 'Knives', description: 'Determines placement of diamond, heart, phoenix, and other shapes on the blade. Centered diamonds are most prized.', importance: 'Medium' },
+  { name: 'Gamma Doppler', weapons: 'Knives', description: 'Affects the exact distribution of green coloring. Emerald phase patterns and max green patterns are most sought after.', importance: 'Medium' },
+];
+---
+
+<Base title={title} description={description}>
+  <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema(breadcrumbs))}></script>
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema(faqs))}></script>
+
+  <!-- Breadcrumb -->
+  <nav class="breadcrumb">
+    <a href="/">Home</a> / <a href="/skins/">Skins</a> / <span>Pattern Database</span>
+  </nav>
+
+  <!-- Hero -->
+  <section class="hero">
+    <h1>CS2 Pattern / Seed Database</h1>
+    <p>Every CS2 skin has a paint seed from 0 to 999 that controls its pattern. For skins like Case Hardened, Fade, and Marble Fade, the right seed can mean the difference between a $10 skin and a $100,000 collectible. Explore the most valuable patterns and learn how seeds work.</p>
+  </section>
+
+  <!-- Quick Stats -->
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="val">1,000</div>
+      <div class="label">Possible Seeds (0–999)</div>
+    </div>
+    <div class="stat-card">
+      <div class="val">6+</div>
+      <div class="label">Pattern-Dependent Finishes</div>
+    </div>
+    <div class="stat-card">
+      <div class="val">#661</div>
+      <div class="label">Most Famous Seed (AK Blue Gem)</div>
+    </div>
+    <div class="stat-card">
+      <div class="val">$100K+</div>
+      <div class="label">Top Pattern Sale Prices</div>
+    </div>
+  </div>
+
+  <!-- What Are Paint Seeds -->
+  <section class="info-section">
+    <h2>What Are Paint Seeds?</h2>
+    <p>In Counter-Strike 2, every skin is assigned a <strong>paint seed</strong> (also called a pattern index) — a number between 0 and 999. This number determines exactly how the skin's texture is mapped onto the 3D weapon model. Think of it as an offset that shifts the texture image around, deciding which part of the pattern artwork lands on which part of the gun or knife.</p>
+    <p>For most skins, the pattern difference between seeds is barely noticeable. A Redline AK-47 looks essentially the same regardless of seed. But for certain finishes — especially <strong>Case Hardened</strong>, <strong>Fade</strong>, <strong>Marble Fade</strong>, and <strong>Crimson Web</strong> — the seed dramatically changes the skin's appearance and, consequently, its market value.</p>
+
+    <div class="key-points">
+      <div class="key-point">
+        <h3>How Seeds Work</h3>
+        <p>The game takes the skin's texture image and uses the paint seed to determine an X/Y offset for how that texture wraps onto the weapon model. Different seeds shift the texture to different positions, resulting in different visible patterns. The same seed always produces the same pattern on the same weapon.</p>
+      </div>
+      <div class="key-point">
+        <h3>Why They Matter</h3>
+        <p>For pattern-dependent skins, the visual difference between seeds directly translates to price. An AK-47 Case Hardened with seed 661 (Blue Gem) can be worth hundreds of times more than the same skin with a random seed, because the blue color placement is objectively more desirable to collectors.</p>
+      </div>
+      <div class="key-point">
+        <h3>Seed vs. Float</h3>
+        <p>Paint seed and <a href="/float-checker/">float value</a> are independent properties. Float controls wear/condition (Factory New to Battle-Scarred), while seed controls pattern placement. A skin's value depends on both — a low-float Blue Gem is the ultimate collectible.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Pattern-Dependent Skins -->
+  <section class="dependent-section">
+    <h2>Which Skins Are Pattern-Dependent?</h2>
+    <p>Only a handful of skin finishes produce meaningfully different patterns across seeds. Here are the finishes where your paint seed actually matters for value:</p>
+
+    <div class="dependent-table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Finish</th>
+            <th>Weapons</th>
+            <th>Why It Matters</th>
+            <th>Impact</th>
+          </tr>
+        </thead>
+        <tbody>
+          {patternDependentSkins.map(skin => (
+            <tr>
+              <td><strong>{skin.name}</strong></td>
+              <td>{skin.weapons}</td>
+              <td>{skin.description}</td>
+              <td><span class={`impact-badge impact-${skin.importance.toLowerCase()}`}>{skin.importance}</span></td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- How to Check Your Seed -->
+  <section class="check-section">
+    <h2>How to Check Your Pattern Seed</h2>
+    <p>Knowing your skin's paint seed is essential for understanding its true value. Here are the most reliable methods:</p>
+
+    <div class="card-grid">
+      <div class="card method-card">
+        <h3>In-Game Inspection</h3>
+        <p>Open your CS2 inventory, right-click the skin, and select "Inspect in Game." While this shows the visual pattern, it does not directly display the seed number. You'll need to copy the inspect link for external tools.</p>
+        <div class="method-tag">Built-in</div>
+      </div>
+      <div class="card method-card">
+        <h3>CSFloat / Float DB</h3>
+        <p>Use <strong>CSFloat's inspect tool</strong> by pasting a Steam inspect link. It returns the exact paint seed, float value, and sticker details. CSFloat also maintains a searchable database of patterns.</p>
+        <div class="method-tag">Recommended</div>
+      </div>
+      <div class="card method-card">
+        <h3>Steam Market Inspect</h3>
+        <p>When browsing the Steam Community Market, use browser extensions like CSFloat Market Checker to automatically display paint seeds and float values on every listing without manual inspection.</p>
+        <div class="method-tag">Extension</div>
+      </div>
+      <div class="card method-card">
+        <h3>Third-Party Markets</h3>
+        <p>Trading platforms like Buff163, Skinport, and CS.MONEY display paint seed information on their listings. This makes it easier to search for and purchase specific patterns directly.</p>
+        <div class="method-tag">Marketplace</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Pattern Lookup Tool (Placeholder) -->
+  <section class="calc-section" id="pattern-lookup">
+    <h2>Pattern Lookup</h2>
+    <p>Enter a skin name and paint seed to look up pattern information. This tool will be expanded with CSFloat API integration in a future update.</p>
+
+    <div class="lookup-form">
+      <div class="calc-row">
+        <label for="skinName">Skin Name</label>
+        <input type="text" id="skinName" placeholder="e.g. AK-47 | Case Hardened" autocomplete="off" />
+      </div>
+      <div class="calc-row">
+        <label for="seedInput">Paint Seed</label>
+        <input type="number" id="seedInput" min="0" max="999" step="1" placeholder="0–999" />
+      </div>
+      <div class="calc-row">
+        <button class="lookup-btn" id="lookupBtn">Look Up Pattern</button>
+      </div>
+    </div>
+
+    <div class="result-box" id="lookupResult" style="display:none;">
+      <div id="lookupMessage"></div>
+    </div>
+  </section>
+
+  <!-- Notable Patterns Gallery -->
+  <section class="gallery-section">
+    <h2>Notable Patterns Gallery</h2>
+    <p>These are some of the most sought-after and valuable pattern seeds in CS2. Patterns are grouped by weapon and finish.</p>
+
+    {notablePatterns.map(group => (
+      <div class="pattern-group">
+        <h3 class="pattern-group-title">
+          <a href={group.link}>{group.category}</a>
+        </h3>
+        <div class="pattern-cards">
+          {group.patterns.map(pattern => (
+            <div class={`pattern-card tier-${pattern.tier}`}>
+              <div class="pattern-header">
+                <span class="pattern-name">{pattern.name}</span>
+                <span class="pattern-seed">Seed #{pattern.seed}</span>
+              </div>
+              <p class="pattern-desc">{pattern.description}</p>
+              <div class="pattern-meta">
+                <span class={`tier-badge ${pattern.tier}`}>{pattern.tier.replace('-', ' ')}</span>
+                {pattern.bluePercent && <span class="meta-tag">Blue: {pattern.bluePercent}</span>}
+                {pattern.fadePercent && <span class="meta-tag">Fade: {pattern.fadePercent}</span>}
+                {pattern.note && <span class="meta-tag">{pattern.note}</span>}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    ))}
+  </section>
+
+  <!-- Pattern Value Factors -->
+  <section class="value-section">
+    <h2>What Determines Pattern Value?</h2>
+    <div class="card-grid">
+      <div class="card">
+        <h3>Color Distribution</h3>
+        <p>For Case Hardened, more blue coverage equals higher value. For Marble Fade, the absence of yellow (Fire & Ice) is most desirable. The specific color placement on visible surfaces matters most.</p>
+      </div>
+      <div class="card">
+        <h3>Playside vs. Backside</h3>
+        <p>On knives, the playside (visible when holding the knife normally) is far more important than the backside. A playside Blue Gem is worth many times more than a backside-only Blue Gem with the same blue percentage.</p>
+      </div>
+      <div class="card">
+        <h3>Fade Percentage</h3>
+        <p>For Fade knives, the seed determines how much of the full color spectrum is visible. A 100% fade shows all colors including deep purple at the tip, while lower percentages show less color variety.</p>
+      </div>
+      <div class="card">
+        <h3>Web Placement</h3>
+        <p>For Crimson Web knives, centered webs on the playside are most valuable. Multiple large, well-placed webs can multiply the skin's value compared to seeds with webs on edges or the backside only.</p>
+      </div>
+      <div class="card">
+        <h3>Rarity & Demand</h3>
+        <p>Some seeds produce patterns that are objectively rare — very few seeds out of 1,000 create true Blue Gems or full fades. Limited supply combined with high collector demand drives prices to extreme levels.</p>
+      </div>
+      <div class="card">
+        <h3>Combined with Float</h3>
+        <p>Pattern value multiplies with float value. A Blue Gem in Factory New is worth far more than the same seed in Battle-Scarred. The best combination of seed + float creates the ultimate high-value skin.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Pattern Trading Tips -->
+  <section class="tips-section">
+    <h2>Pattern Trading Tips</h2>
+    <ul class="tip-list">
+      <li><strong>Always verify the seed number</strong> before purchasing a pattern-dependent skin. Use CSFloat or inspect links — do not rely on screenshots alone, as they can be misleading or faked.</li>
+      <li><strong>Learn the tier lists</strong> for each finish. Case Hardened patterns are well-documented with community tier rankings. Familiarize yourself with the top seeds for the specific weapon you are trading.</li>
+      <li><strong>Check both sides</strong> on knives. A knife listed as a "Blue Gem" might only have blue on the backside. Inspect carefully and confirm which side the desirable pattern is on.</li>
+      <li><strong>Compare against known references</strong>. Pattern database websites and community guides maintain curated lists of seed screenshots. Cross-reference before making expensive purchases.</li>
+      <li><strong>Factor in wear condition</strong>. The same Blue Gem seed in Factory New vs. Battle-Scarred can have a 10x or greater price difference. Consider your budget and whether you are buying to keep or to trade.</li>
+      <li><strong>Be patient when selling</strong>. Rare patterns take time to find the right buyer. Listing at the correct price and waiting will yield better results than panic-selling to quick-buy bots.</li>
+    </ul>
+  </section>
+
+  <!-- FAQ Section -->
+  <section class="faq-section">
+    <h2>Frequently Asked Questions</h2>
+    <dl class="faq">
+      {faqs.map(faq => (
+        <>
+          <dt>{faq.question}</dt>
+          <dd>{faq.answer}</dd>
+        </>
+      ))}
+    </dl>
+  </section>
+
+  <!-- Internal Links -->
+  <section class="related-section">
+    <h2>Related Pages</h2>
+    <div class="internal-links">
+      <a href="/skins/">Skin Database</a>
+      <a href="/float-checker/">Float Checker</a>
+      <a href="/skin-compare/">Compare Skins</a>
+      <a href="/price-tracker/">Price Tracker</a>
+      <a href="/market-trends/">Market Trends</a>
+      <a href="/tradeup-calculator/">Trade-Up Calculator</a>
+      <a href="/inventory-lookup/">Inventory Lookup</a>
+      <a href="/loadout-builder/">Loadout Builder</a>
+      <a href="/cases/">Cases & Collections</a>
+      <a href="/guides/float-guide/">Float Value Guide</a>
+      <a href="/guides/trading-guide/">Trading Guide</a>
+      <a href="/guides/skins-investing-guide/">Investing Guide</a>
+    </div>
+  </section>
+
+  <ExploreMore context="skins" />
+</Base>
+
+<style>
+  /* Hero */
+  .hero {
+    text-align: center;
+    padding: 3rem 1.5rem;
+    background: linear-gradient(135deg, var(--bg2) 0%, var(--bg3) 100%);
+    border-radius: 10px;
+    margin-bottom: 2rem;
+    border: 1px solid var(--border);
+  }
+
+  .hero h1 {
+    color: var(--accent);
+    font-size: 2.4rem;
+    margin-bottom: 1rem;
+  }
+
+  .hero p {
+    color: var(--text2);
+    font-size: 1.05rem;
+    max-width: 720px;
+    margin: 0 auto;
+    line-height: 1.7;
+  }
+
+  /* Info Section */
+  .info-section {
+    margin: 2.5rem 0;
+  }
+
+  .key-points {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1rem;
+    margin-top: 1.5rem;
+  }
+
+  .key-point {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1.25rem;
+    border-left: 3px solid var(--accent);
+    transition: border-color 0.2s, transform 0.2s;
+  }
+
+  .key-point:hover {
+    border-color: var(--accent);
+    transform: translateY(-2px);
+  }
+
+  .key-point h3 {
+    margin: 0 0 0.5rem;
+    font-size: 1rem;
+    color: var(--accent);
+  }
+
+  .key-point p {
+    margin: 0;
+    font-size: 0.9rem;
+    color: var(--text2);
+    line-height: 1.6;
+  }
+
+  .key-point a {
+    color: var(--accent);
+  }
+
+  .key-point a:hover {
+    color: var(--accent2);
+  }
+
+  /* Pattern-Dependent Table */
+  .dependent-section {
+    margin: 2.5rem 0;
+  }
+
+  .dependent-table-wrap {
+    overflow-x: auto;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+  }
+
+  .dependent-table-wrap table {
+    margin: 0;
+    min-width: 640px;
+  }
+
+  .impact-badge {
+    display: inline-block;
+    padding: 0.2rem 0.6rem;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+  }
+
+  .impact-critical {
+    background: rgba(224, 112, 112, 0.15);
+    color: var(--red);
+    border: 1px solid rgba(224, 112, 112, 0.3);
+  }
+
+  .impact-high {
+    background: rgba(212, 149, 110, 0.15);
+    color: var(--accent);
+    border: 1px solid rgba(212, 149, 110, 0.3);
+  }
+
+  .impact-medium {
+    background: rgba(109, 179, 232, 0.15);
+    color: var(--blue);
+    border: 1px solid rgba(109, 179, 232, 0.3);
+  }
+
+  /* Check Seed Section */
+  .check-section {
+    margin: 2.5rem 0;
+  }
+
+  .method-card {
+    position: relative;
+    padding-bottom: 2.5rem !important;
+  }
+
+  .method-tag {
+    position: absolute;
+    bottom: 1rem;
+    left: 1.25rem;
+    display: inline-block;
+    padding: 0.2rem 0.6rem;
+    border-radius: 20px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    background: var(--bg3);
+    color: var(--accent);
+    border: 1px solid var(--border);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
+  /* Pattern Lookup */
+  .lookup-form {
+    margin-top: 1rem;
+  }
+
+  .lookup-form input[type="text"],
+  .lookup-form input[type="number"] {
+    background: var(--bg3);
+    color: var(--text);
+    border: 1px solid var(--border);
+    padding: 0.5rem 0.75rem;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    font-family: inherit;
+    width: 100%;
+    max-width: 360px;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+
+  .lookup-form input[type="text"]:focus,
+  .lookup-form input[type="number"]:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(212, 149, 110, 0.1);
+  }
+
+  .lookup-btn {
+    background: var(--accent);
+    color: var(--bg);
+    border: none;
+    padding: 0.55rem 1.5rem;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    font-weight: 700;
+    font-family: inherit;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.2s;
+  }
+
+  .lookup-btn:hover {
+    background: var(--accent2);
+    transform: translateY(-1px);
+  }
+
+  #lookupResult {
+    margin-top: 1rem;
+  }
+
+  #lookupMessage {
+    font-size: 0.92rem;
+    line-height: 1.6;
+  }
+
+  #lookupMessage strong {
+    color: var(--accent);
+  }
+
+  /* Notable Patterns Gallery */
+  .gallery-section {
+    margin: 2.5rem 0;
+  }
+
+  .pattern-group {
+    margin-bottom: 2rem;
+  }
+
+  .pattern-group-title {
+    font-size: 1.15rem;
+    font-weight: 700;
+    margin: 1.5rem 0 0.75rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid var(--border);
+  }
+
+  .pattern-group-title a {
+    color: var(--accent);
+    text-decoration: none;
+  }
+
+  .pattern-group-title a:hover {
+    color: var(--accent2);
+  }
+
+  .pattern-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1rem;
+  }
+
+  .pattern-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1.25rem;
+    transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
+  }
+
+  .pattern-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+  }
+
+  .pattern-card.tier-legendary {
+    border-left: 3px solid var(--gold);
+  }
+
+  .pattern-card.tier-legendary:hover {
+    border-color: var(--gold);
+  }
+
+  .pattern-card.tier-high-tier {
+    border-left: 3px solid var(--accent);
+  }
+
+  .pattern-card.tier-high-tier:hover {
+    border-color: var(--accent);
+  }
+
+  .pattern-card.tier-rare {
+    border-left: 3px solid var(--purple);
+  }
+
+  .pattern-card.tier-rare:hover {
+    border-color: var(--purple);
+  }
+
+  .pattern-card.tier-mid-tier {
+    border-left: 3px solid var(--blue);
+  }
+
+  .pattern-card.tier-mid-tier:hover {
+    border-color: var(--blue);
+  }
+
+  .pattern-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+    gap: 0.5rem;
+  }
+
+  .pattern-name {
+    font-weight: 700;
+    font-size: 0.95rem;
+    color: var(--text);
+  }
+
+  .pattern-seed {
+    font-family: 'Inter', monospace;
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: var(--accent);
+    background: var(--bg3);
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
+    white-space: nowrap;
+  }
+
+  .pattern-desc {
+    font-size: 0.88rem;
+    color: var(--text2);
+    margin: 0.5rem 0;
+    line-height: 1.6;
+  }
+
+  .pattern-meta {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    margin-top: 0.75rem;
+  }
+
+  .tier-badge {
+    display: inline-block;
+    padding: 0.15rem 0.5rem;
+    border-radius: 20px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
+  .tier-badge.legendary {
+    background: rgba(232, 201, 110, 0.15);
+    color: var(--gold);
+    border: 1px solid rgba(232, 201, 110, 0.3);
+  }
+
+  .tier-badge.high-tier {
+    background: rgba(212, 149, 110, 0.15);
+    color: var(--accent);
+    border: 1px solid rgba(212, 149, 110, 0.3);
+  }
+
+  .tier-badge.rare {
+    background: rgba(176, 124, 198, 0.15);
+    color: var(--purple);
+    border: 1px solid rgba(176, 124, 198, 0.3);
+  }
+
+  .tier-badge.mid-tier {
+    background: rgba(109, 179, 232, 0.15);
+    color: var(--blue);
+    border: 1px solid rgba(109, 179, 232, 0.3);
+  }
+
+  .meta-tag {
+    display: inline-block;
+    padding: 0.15rem 0.5rem;
+    border-radius: 20px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    background: var(--bg3);
+    color: var(--text2);
+    border: 1px solid var(--border);
+  }
+
+  /* Value Section */
+  .value-section {
+    margin: 2.5rem 0;
+  }
+
+  /* Tips Section */
+  .tips-section {
+    background: linear-gradient(135deg, var(--bg2) 0%, var(--bg3) 100%);
+    padding: 1.5rem;
+    border-radius: 10px;
+    margin: 2.5rem 0;
+    border: 1px solid var(--border);
+  }
+
+  .tips-section h2 {
+    margin-top: 0;
+  }
+
+  /* FAQ */
+  .faq-section {
+    margin: 2.5rem 0;
+  }
+
+  .faq dt {
+    font-weight: bold;
+    color: var(--accent);
+    padding: 0.75rem 1rem;
+    background: var(--bg2);
+    border-radius: 6px;
+    cursor: default;
+    transition: background 0.2s;
+    border-top: none;
+  }
+
+  .faq dt:hover {
+    background: var(--bg3);
+  }
+
+  .faq dd {
+    margin: 0 0 0.75rem 0;
+    padding: 0.75rem 1rem;
+    background: var(--bg3);
+    border-left: 4px solid var(--accent2);
+    border-radius: 4px;
+    color: var(--text2);
+    font-size: 0.92rem;
+    line-height: 1.6;
+  }
+
+  /* Related */
+  .related-section {
+    margin: 2.5rem 0;
+  }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .hero h1 {
+      font-size: 1.8rem;
+    }
+
+    .hero p {
+      font-size: 0.95rem;
+    }
+
+    .pattern-cards {
+      grid-template-columns: 1fr;
+    }
+
+    .key-points {
+      grid-template-columns: 1fr;
+    }
+
+    .pattern-header {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+  }
+</style>
+
+<script is:inline>
+  document.addEventListener('DOMContentLoaded', function () {
+    var lookupBtn = document.getElementById('lookupBtn');
+    var skinNameInput = document.getElementById('skinName');
+    var seedInput = document.getElementById('seedInput');
+    var resultBox = document.getElementById('lookupResult');
+    var resultMessage = document.getElementById('lookupMessage');
+
+    // Notable seeds lookup table
+    var knownPatterns = {
+      'ak-47 | case hardened': {
+        661: 'Blue Gem (#1 Pattern) — the most famous and valuable AK-47 Case Hardened pattern with ~95%+ blue top coverage.',
+        670: 'Reverse Scar (#2 Pattern) — second most sought-after pattern with ~90%+ blue top coverage.',
+        387: 'Honorable Mention — strong blue top with ~85%+ coverage, highly valued.',
+        784: 'Gold Gem — clean gold pattern with minimal blue, popular among collectors.'
+      },
+      'karambit | case hardened': {
+        387: 'Blue Gem (Playside) — full blue playside, one of the most expensive CS2 skins.',
+        442: 'Partial Blue Gem — strong blue playside coverage (~80%+).',
+        868: 'Blue Ring — distinctive blue ring around the Karambit hole.'
+      },
+      'butterfly knife | fade': {
+        665: 'Full Fade (100%) — maximum fade with full purple tip visibility.',
+        458: '95% Fade — near-perfect fade with excellent color distribution.',
+        72: '90% Fade — good fade with visible but not fully saturated purple.'
+      },
+      'karambit | marble fade': {
+        412: 'Fire & Ice — only red and blue visible, no yellow. Most desirable pattern.',
+        253: 'Fake Fire & Ice — tiny yellow sliver, visually close to true F&I.',
+        152: 'Tricolor — standard pattern with all three colors visible.'
+      }
+    };
+
+    if (lookupBtn) {
+      lookupBtn.addEventListener('click', function () {
+        var skinName = (skinNameInput.value || '').trim();
+        var seed = parseInt(seedInput.value, 10);
+
+        if (!skinName && isNaN(seed)) {
+          resultBox.style.display = 'block';
+          resultMessage.innerHTML = '<strong>Enter a skin name and seed number above.</strong><br>For example, try "AK-47 | Case Hardened" with seed 661.';
+          return;
+        }
+
+        if (!skinName) {
+          resultBox.style.display = 'block';
+          resultMessage.innerHTML = '<strong>Please enter a skin name.</strong><br>Try names like "AK-47 | Case Hardened", "Karambit | Marble Fade", or "Butterfly Knife | Fade".';
+          return;
+        }
+
+        if (isNaN(seed) || seed < 0 || seed > 999) {
+          resultBox.style.display = 'block';
+          resultMessage.innerHTML = '<strong>Please enter a valid seed (0–999).</strong>';
+          return;
+        }
+
+        var skinKey = skinName.toLowerCase().trim();
+        var found = false;
+
+        for (var key in knownPatterns) {
+          if (skinKey.indexOf(key) !== -1 || key.indexOf(skinKey) !== -1) {
+            if (knownPatterns[key][seed]) {
+              resultBox.style.display = 'block';
+              resultMessage.innerHTML = '<strong>' + skinName + ' — Seed #' + seed + '</strong><br>' + knownPatterns[key][seed] + '<br><br><span style="color:var(--text2);font-size:0.85rem;">This is a well-known pattern. For detailed screenshots and current pricing, check CSFloat or Buff163.</span>';
+              found = true;
+            } else {
+              resultBox.style.display = 'block';
+              resultMessage.innerHTML = '<strong>' + skinName + ' — Seed #' + seed + '</strong><br>This seed is not in our notable patterns list, but it may still have value depending on the specific color distribution.' + '<br><br><span style="color:var(--text2);font-size:0.85rem;">For a full visual inspection, paste the item\'s inspect link into CSFloat. Full pattern database integration with the CSFloat API is planned as a future feature.</span>';
+              found = true;
+            }
+            break;
+          }
+        }
+
+        if (!found) {
+          resultBox.style.display = 'block';
+          resultMessage.innerHTML = '<strong>' + skinName + ' — Seed #' + seed + '</strong><br>Pattern seeds primarily affect value for Case Hardened, Fade, Marble Fade, and Crimson Web finishes. For other skin types, the pattern difference between seeds is minimal.' + '<br><br><span style="color:var(--text2);font-size:0.85rem;">Full pattern database with CSFloat API integration is coming soon. In the meantime, use CSFloat\'s inspect tool for detailed pattern analysis.</span>';
+        }
+      });
+    }
+
+    // Allow Enter key to trigger lookup
+    if (seedInput) {
+      seedInput.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter') lookupBtn.click();
+      });
+    }
+    if (skinNameInput) {
+      skinNameInput.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter') lookupBtn.click();
+      });
+    }
+  });
+</script>

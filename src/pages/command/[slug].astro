@@ -1,0 +1,271 @@
+---
+import Base from '../../layouts/Base.astro';
+import ExploreMore from '../../components/ExploreMore.astro';
+import { breadcrumbSchema, faqSchema } from '../../lib/weapons';
+import { ALL_COMMANDS, UNIQUE_COMMANDS, COMMAND_CATEGORIES, getRelatedCommands } from '../../lib/commands';
+
+export function getStaticPaths() {
+  return UNIQUE_COMMANDS.map((cmd) => ({
+    params: { slug: cmd.slug },
+    props: { command: cmd },
+  }));
+}
+
+const { command } = Astro.props;
+const related = getRelatedCommands(command, 8);
+const category = COMMAND_CATEGORIES.find(c => c.id === command.category);
+
+const title = `${command.cmd} — CS2 Console Command | CSDB.gg`;
+const description = `What does ${command.cmd} do in CS2? ${command.desc}. ${command.def ? 'Default: ' + command.def + '. ' : ''}Category: ${command.categoryName}. Complete guide with usage and examples.`;
+
+const faqs = [
+  { question: `What does ${command.cmd} do in CS2?`, answer: command.desc },
+  ...(command.def ? [{ question: `What is the default value for ${command.cmd}?`, answer: `The default value for ${command.cmd} is ${command.def}. You can reset it to this value at any time by typing "${command.cmd} ${command.def}" in the console.` }] : []),
+  { question: `Does ${command.cmd} require sv_cheats?`, answer: command.cheat ? `Yes, ${command.cmd} requires sv_cheats 1 to be enabled. You can only use it on private servers, offline matches, or servers where you have admin access. It will not work in competitive matchmaking.` : `No, ${command.cmd} does not require sv_cheats. You can use it freely in any game mode, including competitive matchmaking and official Valve servers.` },
+  { question: `Can I use ${command.cmd} in competitive?`, answer: command.cheat ? `No, ${command.cmd} is blocked in competitive matchmaking because it requires sv_cheats 1. You can only use it in private servers or offline practice modes.` : `Yes, ${command.cmd} works in competitive matchmaking and all other game modes. It is a client-side command that does not require sv_cheats.` },
+];
+
+const breadcrumbs = [
+  { name: 'Home', url: '/' },
+  { name: 'CS2 Commands', url: '/cs2-commands/' },
+  { name: command.categoryName, url: `/commands/${command.category}/` },
+  { name: command.cmd, url: `/command/${command.slug}/` },
+];
+
+// Smart internal links based on category
+const categoryLinks: Record<string, { href: string; label: string }[]> = {
+  crosshair: [
+    { href: '/crosshair-generator/', label: 'Crosshair Generator' },
+    { href: '/crosshair-codes/', label: 'Crosshair Codes' },
+    { href: '/guides/crosshair-guide/', label: 'Crosshair Guide' },
+  ],
+  practice: [
+    { href: '/practice-config/', label: 'Practice Config' },
+    { href: '/workshop-maps/', label: 'Workshop Maps' },
+    { href: '/guides/grenade-guide/', label: 'Grenade Guide' },
+  ],
+  mouse: [
+    { href: '/sensitivity-converter/', label: 'Sensitivity Converter' },
+    { href: '/edpi-calculator/', label: 'eDPI Calculator' },
+  ],
+  audio: [
+    { href: '/guides/audio-guide/', label: 'Audio Guide' },
+  ],
+  network: [
+    { href: '/guides/fps-optimization/', label: 'FPS Optimization Guide' },
+  ],
+  viewmodel: [
+    { href: '/guides/config-guide/', label: 'Config Guide' },
+  ],
+  graphics: [
+    { href: '/guides/fps-optimization/', label: 'FPS Optimization Guide' },
+  ],
+  movement: [
+    { href: '/guides/movement-guide/', label: 'Movement Guide' },
+  ],
+  weapon: [
+    { href: '/damage-calculator/', label: 'Damage Calculator' },
+    { href: '/weapon-compare/', label: 'Weapon Compare' },
+  ],
+  demo: [
+    { href: '/guides/demo-guide/', label: 'Demo Guide' },
+  ],
+  bot: [
+    { href: '/practice-config/', label: 'Practice Config' },
+  ],
+  server: [
+    { href: '/practice-config/', label: 'Practice Config' },
+  ],
+  essential: [
+    { href: '/guides/config-guide/', label: 'Config Guide' },
+    { href: '/bind-generator/', label: 'Bind Generator' },
+  ],
+  radar: [
+    { href: '/guides/config-guide/', label: 'Config Guide' },
+  ],
+  communication: [],
+  utility: [
+    { href: '/bind-generator/', label: 'Bind Generator' },
+    { href: '/guides/config-guide/', label: 'Config Guide' },
+  ],
+};
+
+const smartLinks = categoryLinks[command.category] || [];
+---
+
+<Base title={title} description={description} currentNav="/tools/">
+  <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema(breadcrumbs))}></script>
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema(faqs))}></script>
+
+  <nav class="breadcrumb">
+    <a href="/">Home</a> / <a href="/cs2-commands/">CS2 Commands</a> / <a href={`/commands/${command.category}/`}>{command.categoryName}</a> / <span>{command.cmd}</span>
+  </nav>
+
+  <!-- Hero -->
+  <div class="cmd-hero">
+    <code class="cmd-name">{command.cmd}</code>
+    <div class="cmd-badges">
+      <span class="cmd-badge cmd-badge-cat">{command.categoryIcon} {command.categoryName}</span>
+      {command.cheat ? (
+        <span class="cmd-badge cmd-badge-cheat">sv_cheats Required</span>
+      ) : (
+        <span class="cmd-badge cmd-badge-safe">Multiplayer Safe</span>
+      )}
+    </div>
+  </div>
+
+  <!-- Command Details -->
+  <div class="calc-section">
+    <h2>Command Details</h2>
+    <div class="cmd-detail-card">
+      <div class="cmd-detail-row">
+        <span class="cmd-detail-label">Description</span>
+        <span class="cmd-detail-value">{command.desc}</span>
+      </div>
+      {command.def && (
+        <div class="cmd-detail-row">
+          <span class="cmd-detail-label">Default Value</span>
+          <span class="cmd-detail-value"><code>{command.def}</code></span>
+        </div>
+      )}
+      <div class="cmd-detail-row">
+        <span class="cmd-detail-label">Category</span>
+        <span class="cmd-detail-value"><a href={`/commands/${command.category}/`}>{command.categoryIcon} {command.categoryName}</a></span>
+      </div>
+      <div class="cmd-detail-row">
+        <span class="cmd-detail-label">sv_cheats</span>
+        <span class="cmd-detail-value">{command.cheat ? 'Required' : 'Not required'}</span>
+      </div>
+    </div>
+
+    <h3>Syntax</h3>
+    <div class="cmd-syntax-wrap">
+      <code class="cmd-syntax">{command.cmd} {command.def || '<value>'}</code>
+      <button class="copy-btn" data-cmd={`${command.cmd} ${command.def || '<value>'}`}>Copy</button>
+    </div>
+
+    <h3>How to Use</h3>
+    <div class="cmd-steps">
+      <div class="cmd-step">
+        <span class="cmd-step-num">1</span>
+        <p>Open the developer console by pressing the tilde key <code>~</code>. If it does not open, enable it in Settings &rarr; Game &rarr; Enable Developer Console.</p>
+      </div>
+      <div class="cmd-step">
+        <span class="cmd-step-num">2</span>
+        <p>Type <code>{command.cmd}{command.def ? ' ' + command.def : ''}</code> into the console and press Enter.</p>
+      </div>
+      <div class="cmd-step">
+        <span class="cmd-step-num">3</span>
+        <p>{command.desc}. {command.cheat ? 'This command requires sv_cheats 1 to be enabled first.' : 'This command works in all game modes including competitive.'}{command.def ? ` The default value is ${command.def}.` : ''}</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Related Commands -->
+  {related.length > 0 && (
+    <div class="calc-section">
+      <h2>Related {command.categoryName} Commands</h2>
+      <div class="related-grid">
+        {related.map((rel) => (
+          <a href={`/command/${rel.slug}/`} class="related-card">
+            <code class="related-cmd">{rel.cmd}</code>
+            <p class="related-desc">{rel.desc}</p>
+            <div class="related-meta">
+              {rel.def && <span class="related-def">Default: {rel.def}</span>}
+              {rel.cheat && <span class="related-cheat">sv_cheats</span>}
+            </div>
+          </a>
+        ))}
+      </div>
+      <div style="text-align:center;margin-top:1.25rem">
+        <a href={`/commands/${command.category}/`} class="cmd-browse-link">Browse all {command.categoryName} commands &rarr;</a>
+      </div>
+    </div>
+  )}
+
+  <!-- Smart Internal Links -->
+  <div class="internal-links">
+    <strong>Related Resources:</strong>
+    <a href="/cs2-commands/">All Console Commands</a>
+    <a href={`/commands/${command.category}/`}>{command.categoryName}</a>
+    {smartLinks.map((link) => (
+      <a href={link.href}>{link.label}</a>
+    ))}
+    <a href="/practice-config/">Practice Config</a>
+    <a href="/tools/">All Tools</a>
+  </div>
+
+  <!-- FAQ -->
+  <h2>Frequently Asked Questions</h2>
+  <dl class="faq">
+    {faqs.map(f => (
+      <Fragment>
+        <dt>{f.question}</dt>
+        <dd>{f.answer}</dd>
+      </Fragment>
+    ))}
+  </dl>
+
+  <ExploreMore context="tools" />
+</Base>
+
+<script is:inline>
+document.querySelectorAll('.copy-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    navigator.clipboard.writeText(btn.dataset.cmd);
+    btn.textContent = 'Copied!';
+    setTimeout(() => btn.textContent = 'Copy', 1500);
+  });
+});
+</script>
+
+<style is:inline>
+.cmd-hero{text-align:center;background:linear-gradient(135deg,var(--bg2),var(--bg3));border:1px solid var(--border);border-radius:12px;padding:2.5rem 2rem;margin-bottom:2rem}
+.cmd-name{font-size:2.4rem;font-weight:800;color:var(--accent);font-family:'Courier New',Courier,monospace;display:block;margin-bottom:1rem;word-break:break-all}
+.cmd-badges{display:flex;gap:.5rem;justify-content:center;flex-wrap:wrap}
+.cmd-badge{display:inline-flex;align-items:center;gap:.35rem;padding:.35rem .8rem;border-radius:20px;font-size:.8rem;font-weight:600}
+.cmd-badge-cat{background:var(--bg3);border:1px solid var(--border);color:var(--text)}
+.cmd-badge-cheat{background:rgba(239,68,68,.15);border:1px solid rgba(239,68,68,.3);color:#f87171}
+.cmd-badge-safe{background:rgba(34,197,94,.12);border:1px solid rgba(34,197,94,.25);color:#4ade80}
+
+.cmd-detail-card{background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:1.25rem;margin-bottom:1.5rem}
+.cmd-detail-row{display:flex;gap:1rem;padding:.65rem 0;border-bottom:1px solid var(--border)}
+.cmd-detail-row:last-child{border-bottom:none}
+.cmd-detail-label{width:130px;flex-shrink:0;color:var(--text2);font-size:.85rem;font-weight:600}
+.cmd-detail-value{color:var(--text);font-size:.92rem;flex:1}
+.cmd-detail-value code{background:var(--bg2);padding:.15rem .4rem;border-radius:4px;font-size:.85rem;color:var(--accent)}
+.cmd-detail-value a{color:var(--accent);text-decoration:none}
+.cmd-detail-value a:hover{text-decoration:underline}
+
+.cmd-syntax-wrap{display:flex;align-items:center;gap:.75rem;background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:.75rem 1rem;margin-bottom:1.5rem}
+.cmd-syntax{flex:1;font-family:'Courier New',Courier,monospace;font-size:.95rem;color:var(--accent);word-break:break-all}
+.copy-btn{background:var(--accent);color:#1a1a2e;border:none;border-radius:6px;padding:.4rem .85rem;font-size:.78rem;font-weight:700;cursor:pointer;flex-shrink:0;transition:opacity .15s}
+.copy-btn:hover{opacity:.85}
+
+.cmd-steps{display:flex;flex-direction:column;gap:.75rem}
+.cmd-step{display:flex;gap:.75rem;align-items:flex-start}
+.cmd-step-num{width:28px;height:28px;background:var(--accent);color:#1a1a2e;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.8rem;font-weight:700;flex-shrink:0}
+.cmd-step p{margin:0;font-size:.92rem;color:var(--text2);line-height:1.55;padding-top:.15rem}
+.cmd-step code{background:var(--bg3);padding:.1rem .35rem;border-radius:3px;font-size:.82rem;color:var(--accent)}
+
+.related-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:.75rem}
+.related-card{display:block;background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:1rem;text-decoration:none;transition:all .15s}
+.related-card:hover{border-color:var(--accent);transform:translateY(-2px)}
+.related-cmd{font-family:'Courier New',Courier,monospace;font-size:.9rem;color:var(--accent);font-weight:700;display:block;margin-bottom:.35rem}
+.related-desc{margin:0;font-size:.82rem;color:var(--text2);line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.related-meta{display:flex;gap:.5rem;margin-top:.5rem;flex-wrap:wrap}
+.related-def{font-size:.72rem;color:var(--text2);background:var(--bg2);padding:.15rem .4rem;border-radius:4px}
+.related-cheat{font-size:.72rem;color:#f87171;background:rgba(239,68,68,.1);padding:.15rem .4rem;border-radius:4px}
+
+.cmd-browse-link{color:var(--accent);text-decoration:none;font-weight:600;font-size:.9rem}
+.cmd-browse-link:hover{text-decoration:underline}
+
+@media(max-width:768px){
+  .cmd-hero{padding:1.5rem 1rem}
+  .cmd-name{font-size:1.6rem}
+  .cmd-detail-row{flex-direction:column;gap:.25rem}
+  .cmd-detail-label{width:auto}
+  .related-grid{grid-template-columns:1fr}
+  .cmd-syntax-wrap{flex-direction:column;align-items:stretch}
+}
+</style>

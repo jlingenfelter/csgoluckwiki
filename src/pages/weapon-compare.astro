@@ -1,0 +1,714 @@
+---
+import Base from '../layouts/Base.astro';
+import ExploreMore from '../components/ExploreMore.astro';
+import { faqSchema, breadcrumbSchema, toolAppSchema } from '../lib/weapons';
+
+const title = 'CS2 Weapon Compare';
+const description = 'Compare CS2 weapons side-by-side. View damage, accuracy, fire rate, cost, and more.';
+
+const weaponStats = [
+  { 
+    name: 'AK-47',
+    cost: 2700,
+    damage: 41,
+    range: 3000,
+    fireRate: 600,
+    accuracy: 65,
+    recoil: 85,
+    armor: 0.75
+  },
+  {
+    name: 'M4A4',
+    cost: 3100,
+    damage: 33,
+    range: 3500,
+    fireRate: 666,
+    accuracy: 75,
+    recoil: 50,
+    armor: 0.74
+  },
+  {
+    name: 'M4A1-S',
+    cost: 2900,
+    damage: 38,
+    range: 3500,
+    fireRate: 600,
+    accuracy: 85,
+    recoil: 45,
+    armor: 0.8
+  },
+  {
+    name: 'AWP Dragon Lore',
+    cost: 4750,
+    damage: 115,
+    range: 5000,
+    fireRate: 41,
+    accuracy: 99,
+    recoil: 120,
+    armor: 0.85
+  },
+  {
+    name: 'Deagle',
+    cost: 700,
+    damage: 55,
+    range: 2000,
+    fireRate: 111,
+    accuracy: 70,
+    recoil: 95,
+    armor: 0.75
+  },
+  {
+    name: 'Galil AR',
+    cost: 1800,
+    damage: 33,
+    range: 3000,
+    fireRate: 667,
+    accuracy: 73,
+    recoil: 65,
+    armor: 0.75
+  }
+];
+
+const faq = [
+  {
+    question: 'What is the best CS2 weapon?',
+    answer: 'There is no universally "best" weapon - it depends on your play style, economy, and situation. The AK-47 is popular for T-side aggression, while the M4 weapons are favored for CT-side defense.'
+  },
+  {
+    question: 'Should I use AK-47 or M4A4?',
+    answer: 'AK-47 is more rewarding at long range but harder to control. M4A4 is more accurate and consistent. M4A1-S is even more accurate but has lower magazine capacity. Choose based on your aim and engagement range.'
+  },
+  {
+    question: 'When should I buy the AWP?',
+    answer: 'Buy the AWP when the team has full economy (over $16,000 total). Never force buy it alone. AWP requires good positioning and map knowledge to be effective.'
+  }
+];
+
+const schemaData = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faq.map(item => ({
+    '@type': 'Question',
+    name: item.question,
+    acceptedAnswer: {
+      '@type': 'Answer',
+      text: item.answer
+    }
+  }))
+};
+---
+
+<Base title={title} description={description}>
+  <script type="application/ld+json" set:html={JSON.stringify(toolAppSchema({ name: 'CS2 Weapon Compare', url: 'https://csdb.gg/weapon-compare/', description }))}></script>
+  <div class="calc-container">
+    <h1>CS2 Weapon Compare</h1>
+    <p class="subtitle">Compare weapons side-by-side to find the best choice</p>
+
+    <div class="calc-section">
+      <div class="compare-controls">
+        <div class="input-group">
+          <label for="weapon1">Weapon 1</label>
+          <select id="weapon1" class="weapon-select">
+            {weaponStats.map(w => <option value={w.name} selected={w.name === 'AK-47'}>{w.name}</option>)}
+          </select>
+        </div>
+
+        <div class="input-group">
+          <label for="weapon2">Weapon 2</label>
+          <select id="weapon2" class="weapon-select">
+            {weaponStats.map(w => <option value={w.name} selected={w.name === 'M4A4'}>{w.name}</option>)}
+          </select>
+        </div>
+      </div>
+
+      <div class="comparison-table">
+        <table id="comparisonTable">
+          <thead>
+            <tr>
+              <th>Stat</th>
+              <th id="weapon1Header">AK-47</th>
+              <th id="weapon2Header">M4A4</th>
+              <th class="comparison">Difference</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="stat-name">Cost</td>
+              <td id="cost1">$2,700</td>
+              <td id="cost2">$3,100</td>
+              <td id="costDiff" class="comparison">-$400</td>
+            </tr>
+            <tr>
+              <td class="stat-name">Damage</td>
+              <td id="damage1">41</td>
+              <td id="damage2">33</td>
+              <td id="damageDiff" class="comparison">+8</td>
+            </tr>
+            <tr>
+              <td class="stat-name">Accuracy</td>
+              <td id="accuracy1">65%</td>
+              <td id="accuracy2">75%</td>
+              <td id="accuracyDiff" class="comparison">-10%</td>
+            </tr>
+            <tr>
+              <td class="stat-name">Fire Rate</td>
+              <td id="fireRate1">600 RPM</td>
+              <td id="fireRate2">666 RPM</td>
+              <td id="fireRateDiff" class="comparison">-66 RPM</td>
+            </tr>
+            <tr>
+              <td class="stat-name">Recoil</td>
+              <td id="recoil1">85</td>
+              <td id="recoil2">50</td>
+              <td id="recoilDiff" class="comparison">+35</td>
+            </tr>
+            <tr>
+              <td class="stat-name">Armor Penetration</td>
+              <td id="armor1">75%</td>
+              <td id="armor2">74%</td>
+              <td id="armorDiff" class="comparison">+1%</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="stat-charts">
+        <div class="chart">
+          <h4>Damage Comparison</h4>
+          <div class="bar-chart">
+            <div class="bar-row">
+              <span class="label" id="chartLabel1">AK-47</span>
+              <div class="bar">
+                <div class="fill" id="damageBar1" style="width: 36%"></div>
+              </div>
+              <span class="value" id="damageValue1">41</span>
+            </div>
+            <div class="bar-row">
+              <span class="label" id="chartLabel2">M4A4</span>
+              <div class="bar">
+                <div class="fill" id="damageBar2" style="width: 29%"></div>
+              </div>
+              <span class="value" id="damageValue2">33</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="chart">
+          <h4>Accuracy Comparison</h4>
+          <div class="bar-chart">
+            <div class="bar-row">
+              <span class="label" id="accuracyLabel1">AK-47</span>
+              <div class="bar">
+                <div class="fill" id="accuracyBar1" style="width: 65%"></div>
+              </div>
+              <span class="value" id="accuracyValue1">65%</span>
+            </div>
+            <div class="bar-row">
+              <span class="label" id="accuracyLabel2">M4A4</span>
+              <div class="bar">
+                <div class="fill" id="accuracyBar2" style="width: 75%"></div>
+              </div>
+              <span class="value" id="accuracyValue2">75%</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="weapon-categories">
+      <h2>Weapon Categories</h2>
+      
+      <div class="category">
+        <h3>Rifles</h3>
+        <div class="weapon-list">
+          <div class="weapon-item">
+            <span>AK-47</span>
+            <small>$2,700</small>
+          </div>
+          <div class="weapon-item">
+            <span>M4A4 / M4A1-S</span>
+            <small>$2,900-$3,100</small>
+          </div>
+          <div class="weapon-item">
+            <span>Galil AR</span>
+            <small>$1,800</small>
+          </div>
+        </div>
+      </div>
+
+      <div class="category">
+        <h3>Sniper Rifles</h3>
+        <div class="weapon-list">
+          <div class="weapon-item">
+            <span>AWP Dragon Lore</span>
+            <small>$4,750</small>
+          </div>
+        </div>
+      </div>
+
+      <div class="category">
+        <h3>Pistols</h3>
+        <div class="weapon-list">
+          <div class="weapon-item">
+            <span>Deagle</span>
+            <small>$700</small>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="faq-section">
+      <h2>Frequently Asked Questions</h2>
+      {faq.map(item => (
+        <div class="faq-item">
+          <h3>{item.question}</h3>
+          <p>{item.answer}</p>
+        </div>
+      ))}
+    </div>
+
+    <div class="links-section">
+      <h2>Related Tools</h2>
+      <ul>
+        <li><a href="/damage-calculator/">Damage Calculator</a></li>
+        <li><a href="/recoil-patterns/">Recoil Patterns</a></li>
+        <li><a href="/economy-calculator/">Economy Calculator</a></li>
+        <li><a href="/skin-compare/">Compare Skins</a></li>
+        <li><a href="/sensitivity-converter/">Sensitivity Converter</a></li>
+        <li><a href="/crosshair-generator/">Crosshair Generator</a></li>
+        <li><a href="/weapons/">Weapon Database</a></li>
+        <li><a href="/skins/">Skin Database</a></li>
+        <li><a href="/pro-players/">Pro Player Settings</a></li>
+        <li><a href="/tools/">All Tools</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <script type="application/ld+json" set:html={JSON.stringify(schemaData)} />
+
+  <ExploreMore context="weapons" />
+</Base>
+
+<style is:inline>
+  .calc-container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 2rem;
+    color: var(--text);
+  }
+
+  h1 {
+    font-size: 2.5rem;
+    margin-bottom: 0.5rem;
+    color: var(--accent);
+  }
+
+  .subtitle {
+    color: var(--text2);
+    font-size: 1.1rem;
+    margin-bottom: 2rem;
+  }
+
+  .calc-section {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+  }
+
+  .compare-controls {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+  }
+
+  .input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  label {
+    font-weight: 600;
+    color: var(--text2);
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .weapon-select {
+    padding: 0.75rem;
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    color: var(--text);
+    font-size: 1rem;
+  }
+
+  .weapon-select:hover {
+    border-color: var(--accent);
+  }
+
+  .weapon-select:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(212, 149, 110, 0.1);
+  }
+
+  .comparison-table {
+    margin-bottom: 2rem;
+    overflow-x: auto;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--bg);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+
+  th, td {
+    padding: 1rem;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+  }
+
+  th {
+    background: var(--bg3);
+    color: var(--text2);
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    letter-spacing: 0.05em;
+  }
+
+  th.comparison {
+    text-align: center;
+  }
+
+  td {
+    color: var(--text2);
+  }
+
+  .stat-name {
+    font-weight: 600;
+    color: var(--text);
+  }
+
+  td.comparison {
+    text-align: center;
+    color: var(--accent);
+    font-weight: 600;
+  }
+
+  tr:last-child td {
+    border-bottom: none;
+  }
+
+  .stat-charts {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    margin-top: 2rem;
+  }
+
+  .chart {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1.5rem;
+  }
+
+  .chart h4 {
+    color: var(--accent);
+    margin-bottom: 1.5rem;
+  }
+
+  .bar-chart {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .bar-row {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .label {
+    width: 80px;
+    color: var(--text2);
+    font-size: 0.9rem;
+    font-weight: 500;
+  }
+
+  .bar {
+    flex: 1;
+    height: 30px;
+    background: var(--bg2);
+    border-radius: 4px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+  }
+
+  .bar .fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent), rgba(212, 149, 110, 0.6));
+    transition: width 0.3s ease;
+  }
+
+  .value {
+    width: 50px;
+    text-align: right;
+    color: var(--accent);
+    font-weight: 600;
+  }
+
+  .weapon-categories {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+  }
+
+  .weapon-categories h2 {
+    color: var(--accent);
+    font-size: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .category {
+    margin-bottom: 2rem;
+  }
+
+  .category:last-child {
+    margin-bottom: 0;
+  }
+
+  .category h3 {
+    color: var(--accent);
+    font-size: 1.1rem;
+    margin-bottom: 1rem;
+  }
+
+  .weapon-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1rem;
+  }
+
+  .weapon-item {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .weapon-item span {
+    color: var(--text);
+    font-weight: 600;
+  }
+
+  .weapon-item small {
+    color: var(--text2);
+    font-size: 0.9rem;
+  }
+
+  .faq-section {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+  }
+
+  .faq-section h2 {
+    color: var(--accent);
+    font-size: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .faq-item {
+    margin-bottom: 1.5rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .faq-item:last-child {
+    border-bottom: none;
+  }
+
+  .faq-item h3 {
+    color: var(--accent);
+    margin-bottom: 0.5rem;
+  }
+
+  .faq-item p {
+    color: var(--text2);
+    line-height: 1.6;
+  }
+
+  .links-section {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 2rem;
+  }
+
+  .links-section h2 {
+    color: var(--accent);
+    font-size: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .links-section ul {
+    list-style: none;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+  }
+
+  .links-section a {
+    display: block;
+    padding: 0.75rem 1rem;
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    color: var(--accent);
+    text-decoration: none;
+    transition: all 0.2s;
+  }
+
+  .links-section a:hover {
+    background: var(--accent);
+    color: white;
+  }
+</style>
+
+<script>
+  const weaponStats = [
+    { 
+      name: 'AK-47',
+      cost: 2700,
+      damage: 41,
+      range: 3000,
+      fireRate: 600,
+      accuracy: 65,
+      recoil: 85,
+      armor: 0.75
+    },
+    {
+      name: 'M4A4',
+      cost: 3100,
+      damage: 33,
+      range: 3500,
+      fireRate: 666,
+      accuracy: 75,
+      recoil: 50,
+      armor: 0.74
+    },
+    {
+      name: 'M4A1-S',
+      cost: 2900,
+      damage: 38,
+      range: 3500,
+      fireRate: 600,
+      accuracy: 85,
+      recoil: 45,
+      armor: 0.8
+    },
+    {
+      name: 'AWP Dragon Lore',
+      cost: 4750,
+      damage: 115,
+      range: 5000,
+      fireRate: 41,
+      accuracy: 99,
+      recoil: 120,
+      armor: 0.85
+    },
+    {
+      name: 'Deagle',
+      cost: 700,
+      damage: 55,
+      range: 2000,
+      fireRate: 111,
+      accuracy: 70,
+      recoil: 95,
+      armor: 0.75
+    },
+    {
+      name: 'Galil AR',
+      cost: 1800,
+      damage: 33,
+      range: 3000,
+      fireRate: 667,
+      accuracy: 73,
+      recoil: 65,
+      armor: 0.75
+    }
+  ];
+
+  const weapon1Select = document.getElementById('weapon1');
+  const weapon2Select = document.getElementById('weapon2');
+
+  function updateComparison() {
+    const w1 = weaponStats.find(w => w.name === weapon1Select.value);
+    const w2 = weaponStats.find(w => w.name === weapon2Select.value);
+
+    document.getElementById('weapon1Header').textContent = w1.name;
+    document.getElementById('weapon2Header').textContent = w2.name;
+
+    document.getElementById('cost1').textContent = '$' + w1.cost.toLocaleString();
+    document.getElementById('cost2').textContent = '$' + w2.cost.toLocaleString();
+    document.getElementById('costDiff').textContent = (w1.cost > w2.cost ? '-$' : '+$') + Math.abs(w1.cost - w2.cost).toLocaleString();
+
+    document.getElementById('damage1').textContent = w1.damage;
+    document.getElementById('damage2').textContent = w2.damage;
+    document.getElementById('damageDiff').textContent = (w1.damage > w2.damage ? '+' : '') + (w1.damage - w2.damage);
+
+    document.getElementById('accuracy1').textContent = w1.accuracy + '%';
+    document.getElementById('accuracy2').textContent = w2.accuracy + '%';
+    document.getElementById('accuracyDiff').textContent = (w1.accuracy > w2.accuracy ? '+' : '') + (w1.accuracy - w2.accuracy) + '%';
+
+    document.getElementById('fireRate1').textContent = w1.fireRate + ' RPM';
+    document.getElementById('fireRate2').textContent = w2.fireRate + ' RPM';
+    document.getElementById('fireRateDiff').textContent = (w1.fireRate > w2.fireRate ? '+' : '') + (w1.fireRate - w2.fireRate) + ' RPM';
+
+    document.getElementById('recoil1').textContent = w1.recoil;
+    document.getElementById('recoil2').textContent = w2.recoil;
+    document.getElementById('recoilDiff').textContent = (w1.recoil > w2.recoil ? '+' : '') + (w1.recoil - w2.recoil);
+
+    document.getElementById('armor1').textContent = (w1.armor * 100).toFixed(0) + '%';
+    document.getElementById('armor2').textContent = (w2.armor * 100).toFixed(0) + '%';
+    document.getElementById('armorDiff').textContent = (w1.armor > w2.armor ? '+' : '') + ((w1.armor - w2.armor) * 100).toFixed(0) + '%';
+
+    document.getElementById('chartLabel1').textContent = w1.name;
+    document.getElementById('chartLabel2').textContent = w2.name;
+    document.getElementById('damageValue1').textContent = w1.damage;
+    document.getElementById('damageValue2').textContent = w2.damage;
+    document.getElementById('damageBar1').style.width = (w1.damage / 115 * 100) + '%';
+    document.getElementById('damageBar2').style.width = (w2.damage / 115 * 100) + '%';
+
+    document.getElementById('accuracyLabel1').textContent = w1.name;
+    document.getElementById('accuracyLabel2').textContent = w2.name;
+    document.getElementById('accuracyValue1').textContent = w1.accuracy + '%';
+    document.getElementById('accuracyValue2').textContent = w2.accuracy + '%';
+    document.getElementById('accuracyBar1').style.width = w1.accuracy + '%';
+    document.getElementById('accuracyBar2').style.width = w2.accuracy + '%';
+  }
+
+  weapon1Select.addEventListener('change', updateComparison);
+  weapon2Select.addEventListener('change', updateComparison);
+
+  updateComparison();
+</script>

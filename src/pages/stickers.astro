@@ -1,0 +1,940 @@
+---
+import Base from '../layouts/Base.astro';
+import ExploreMore from '../components/ExploreMore.astro';
+import { breadcrumbSchema, faqSchema } from '../lib/weapons';
+import {
+  STICKERS,
+  STICKERS_TOTAL,
+  ALL_TOURNAMENTS,
+  ALL_VARIANTS,
+  ALL_TEAMS,
+  getVariantColor,
+  getVariantBg,
+  VARIANT_COLORS,
+  VARIANT_BG,
+} from '../lib/stickers';
+
+const title = 'CS2 Sticker Database — All Stickers & Prices | CSDB.gg';
+const description = 'Complete Counter-Strike 2 sticker database. Browse tournament, team, and community stickers with pricing info, rarity variants, and investment potential.';
+
+// Compute stats
+const totalStickers = STICKERS_TOTAL;
+const stickersWithPrices = STICKERS.filter(s => s.price > 0).length;
+const tournamentCount = ALL_TOURNAMENTS.length;
+const teamCount = ALL_TEAMS.length;
+const variantCount = ALL_VARIANTS.length;
+
+// STICKERS are already sorted price desc from the JSON build step.
+// Build compact JSON for client-side search/filter — only stickers with price > 0 or with images
+const clientStickers = STICKERS
+  .filter(s => s.price > 0 || s.image)
+  .map(s => ({
+    s: s.slug,
+    n: s.name,
+    i: s.image || '',
+    v: s.variant,
+    t: s.tournament || '',
+    m: s.team || '',
+    y: s.type,
+    p: s.price,
+    vol: s.volume7d || 0,
+  }));
+
+const stickersData = JSON.stringify(clientStickers);
+
+// Server-side: first 60 most expensive stickers for initial render
+const initialStickers = STICKERS.filter(s => s.price > 0 && s.image).slice(0, 60);
+
+const breadcrumbs = [
+  { name: 'Home', url: '/' },
+  { name: 'Skins', url: '/skins/' },
+  { name: 'Stickers', url: '/stickers/' },
+];
+
+const faqData = [
+  { q: 'What are the different sticker rarity types?', a: 'CS2 stickers come in six variants: Paper (most common), Holo (holographic), Glitter (sparkle effect), Foil (metallic reflective), Gold (rarest tournament variant), and Lenticular (newest, with a 3D depth effect). Each variant has different visual effects and value.' },
+  { q: 'Can I remove stickers from weapons?', a: 'Stickers can be scraped off weapons, but they are destroyed in the process and cannot be recovered. Each scrape removes about 20% of the sticker. Think carefully before applying expensive stickers to weapon skins!' },
+  { q: 'How often are new sticker capsules released?', a: 'New capsules are typically released during major tournaments. CS2 Majors happen roughly twice per year, and each event introduces new tournament and team stickers. Community operations also release special capsules periodically.' },
+  { q: 'Which stickers are the best investment?', a: 'Older major stickers, especially from Katowice 2014 and early tournaments, have historically appreciated significantly. Limited rarity variants (especially Holo and Foil from older majors) tend to hold and gain value better than common Paper stickers.' },
+  { q: 'How much do stickers cost?', a: 'Sticker prices range from under $0.10 for common Paper stickers to thousands of dollars for rare Holo/Foil stickers from early majors. Tournament capsules typically cost around $1-2 to open, but the stickers inside can vary wildly in value.' },
+  { q: 'Are there signed stickers from pro players?', a: 'Yes! Every major tournament releases autograph capsules containing stickers signed by professional players. These come in Paper, Holo, Glitter, Foil, and Gold variants. Autographs from legendary players command premium prices.' },
+  { q: 'What is the difference between Paper and Holo stickers?', a: 'Paper stickers have a flat matte finish. Holo stickers feature a holographic rainbow effect that shifts with viewing angle. Holos are significantly rarer and more valuable. The rarity progression goes: Paper, Holo, Glitter, Foil, Gold, Lenticular.' },
+  { q: 'Can sticker prices drop?', a: 'Yes, sticker prices can fluctuate based on supply and demand, game updates, and market conditions. Newer stickers often drop in price after the initial hype fades. However, stickers from discontinued tournaments tend to appreciate over time as supply decreases.' },
+];
+
+// Variant display info for filter buttons
+const variantFilters = ALL_VARIANTS.map(v => ({
+  name: v,
+  color: getVariantColor(v),
+  bg: getVariantBg(v),
+}));
+---
+
+<Base title={title} description={description} currentNav="/skins/">
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema(breadcrumbs))} />
+    <script type="application/ld+json" set:html={JSON.stringify(faqSchema(faqData))} />
+  </Fragment>
+
+  <nav class="breadcrumb">
+    <a href="/">Home</a> / <a href="/skins/">Skins</a> / <span>Stickers</span>
+  </nav>
+
+  <div class="hero-section">
+    <div class="hero-content">
+      <h1>CS2 Sticker Database</h1>
+      <p>Explore the complete collection of Counter-Strike 2 stickers. Browse {totalStickers.toLocaleString()} stickers from {tournamentCount} tournaments and {teamCount} teams with real-time pricing data.</p>
+      <div class="hero-stats">
+        <div class="stat">
+          <span class="stat-value">{totalStickers.toLocaleString()}</span>
+          <span class="stat-label">Total Stickers</span>
+        </div>
+        <div class="stat">
+          <span class="stat-value">{stickersWithPrices.toLocaleString()}</span>
+          <span class="stat-label">With Prices</span>
+        </div>
+        <div class="stat">
+          <span class="stat-value">{variantCount}</span>
+          <span class="stat-label">Variants</span>
+        </div>
+        <div class="stat">
+          <span class="stat-value">{tournamentCount}</span>
+          <span class="stat-label">Tournaments</span>
+        </div>
+      </div>
+    </div>
+    <div class="hero-gradient"></div>
+  </div>
+
+  <!-- Search & Filters -->
+  <section class="filter-section">
+    <div class="filter-row">
+      <div class="search-wrap">
+        <input type="text" id="stickerSearch" placeholder="Search stickers by name or team..." class="search-input" autocomplete="off" />
+      </div>
+      <div class="sort-wrap">
+        <label for="stickerSort">Sort:</label>
+        <select id="stickerSort" class="sort-select">
+          <option value="price-desc">Price: High to Low</option>
+          <option value="price-asc">Price: Low to High</option>
+          <option value="name-asc">Name: A-Z</option>
+          <option value="volume">Volume (7d)</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="filter-group">
+      <div class="filter-label">Variant</div>
+      <div class="filter-buttons" id="variantFilters">
+        <button class="filter-btn active" data-variant="all">All</button>
+        {variantFilters.map(v => (
+          <button
+            class="filter-btn variant-filter-btn"
+            data-variant={v.name}
+            style={`--vf-color:${v.color};--vf-bg:${v.bg}`}
+          >
+            {v.name}
+          </button>
+        ))}
+      </div>
+    </div>
+
+    <div class="filter-group">
+      <div class="filter-label">Type</div>
+      <div class="filter-buttons" id="typeFilters">
+        <button class="filter-btn active" data-type="all">All</button>
+        <button class="filter-btn" data-type="tournament">Tournament</button>
+        <button class="filter-btn" data-type="community">Community</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Results Count -->
+  <div class="results-bar">
+    <span id="resultsCount">Showing 60 of {stickersWithPrices.toLocaleString()} stickers</span>
+  </div>
+
+  <!-- Sticker Grid -->
+  <div class="sticker-grid" id="stickerGrid">
+    {initialStickers.map(s => {
+      const vColor = getVariantColor(s.variant);
+      const vBg = getVariantBg(s.variant);
+      const displayName = s.tournament
+        ? s.name.replace(new RegExp(`\\s*\\|?\\s*${s.tournament.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\s*\\(?\\d{4}\\)?`, 'i'), '').replace(/^\s*\|\s*/, '').trim() || s.name
+        : s.name;
+      return (
+        <a href={`/sticker/${s.slug}/`} class="sticker-card">
+          <div class="sticker-img-wrap">
+            {s.image && <img src={s.image} alt={s.name} loading="lazy" width="200" height="200" />}
+          </div>
+          <div class="sticker-body">
+            <h3 class="sticker-name">{displayName}</h3>
+            <span class="variant-badge" style={`color:${vColor};background:${vBg}`}>{s.variant}</span>
+            {s.tournament && <span class="tournament-tag">{s.tournament}</span>}
+            <span class="sticker-price">${s.price.toFixed(2)}</span>
+          </div>
+        </a>
+      );
+    })}
+  </div>
+
+  <!-- Load More -->
+  <div class="load-more-wrap" id="loadMoreWrap">
+    <button class="load-more-btn" id="loadMoreBtn">Show More Stickers</button>
+  </div>
+
+  <!-- Sticker Investing Section -->
+  <section class="investing-section">
+    <h2>Sticker Investing & Price Trends</h2>
+    <div class="investing-grid">
+      <div class="investing-card">
+        <h3>Why Stickers Appreciate</h3>
+        <ul>
+          <li>Limited supply from tournament operations</li>
+          <li>Discontinued capsules become rarer over time</li>
+          <li>Holo/Foil/Gold variants command premium prices</li>
+          <li>Historic major stickers are highly collectible</li>
+          <li>Professional player signed stickers are ultra-rare</li>
+        </ul>
+      </div>
+      <div class="investing-card">
+        <h3>High-Value Categories</h3>
+        <ul>
+          <li><strong>Katowice 2014</strong> — Historic, extremely limited supply</li>
+          <li><strong>Legends/Challengers</strong> — Vintage major stickers</li>
+          <li><strong>Gold Stickers</strong> — Rarest variant from majors</li>
+          <li><strong>Team Autographs</strong> — Signed by pro players</li>
+          <li><strong>Operation Exclusive</strong> — No longer obtainable</li>
+        </ul>
+      </div>
+      <div class="investing-card">
+        <h3>Investment Tips</h3>
+        <ul>
+          <li>Focus on old majors (pre-2020) for long-term growth</li>
+          <li>Holo variants hold better value than paper</li>
+          <li>Capsule stickers appreciate after discontinuation</li>
+          <li>Monitor 7-day trading volume for market activity</li>
+          <li>Team organization changes can affect sticker value</li>
+        </ul>
+      </div>
+    </div>
+    <div class="investing-link">
+      <a href="/guides/skins-investing-guide/">Full Investing Guide</a>
+    </div>
+  </section>
+
+  <!-- FAQ Section -->
+  <section class="faq-section">
+    <h2>Sticker FAQ</h2>
+    <dl class="faq">
+      {faqData.map((item, i) => (
+        <>
+          <dt>{item.q}</dt>
+          <dd>{item.a}</dd>
+        </>
+      ))}
+    </dl>
+  </section>
+
+  <!-- Related Links -->
+  <section class="related-section">
+    <h2>Related Resources</h2>
+    <div class="internal-links">
+      <a href="/skins/">Skin Database</a>
+      <a href="/cases/">Cases & Collections</a>
+      <a href="/guides/skins-investing-guide/">Skins Investing Guide</a>
+      <a href="/price-tracker/">Price Tracker</a>
+      <a href="/guides/trading-guide/">Trading Guide</a>
+    </div>
+  </section>
+
+  <ExploreMore context="skins" />
+</Base>
+
+<style>
+  .breadcrumb {
+    font-size: 0.85rem;
+    color: var(--text2);
+    margin-bottom: 1.5rem;
+  }
+
+  .breadcrumb a {
+    color: var(--accent);
+  }
+
+  /* Hero */
+  .hero-section {
+    position: relative;
+    margin: -2rem -1.5rem 3rem;
+    padding: 3rem 1.5rem;
+    background: linear-gradient(135deg, rgba(245, 166, 35, 0.1) 0%, rgba(42, 165, 245, 0.05) 100%);
+    border-bottom: 2px solid var(--border);
+    overflow: hidden;
+  }
+
+  .hero-gradient {
+    position: absolute;
+    top: 0;
+    right: -200px;
+    width: 600px;
+    height: 600px;
+    background: radial-gradient(circle, rgba(245, 166, 35, 0.08) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .hero-content {
+    position: relative;
+    z-index: 1;
+    max-width: 900px;
+  }
+
+  .hero-content h1 {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+    background: linear-gradient(135deg, var(--accent) 0%, var(--accent2) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .hero-content > p {
+    font-size: 1.05rem;
+    color: var(--text2);
+    margin-bottom: 2rem;
+    max-width: 700px;
+  }
+
+  .hero-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 1.5rem;
+    margin-top: 2rem;
+  }
+
+  .stat {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+  }
+
+  .stat-value {
+    font-size: 1.8rem;
+    font-weight: 800;
+    color: var(--accent);
+  }
+
+  .stat-label {
+    font-size: 0.85rem;
+    color: var(--text2);
+  }
+
+  /* Filter Section */
+  .filter-section {
+    margin: 0 0 1.5rem;
+    padding: 1.5rem;
+    background: var(--bg2);
+    border-radius: 10px;
+    border: 1px solid var(--border);
+  }
+
+  .filter-row {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1.25rem;
+    flex-wrap: wrap;
+  }
+
+  .search-wrap {
+    flex: 1;
+    min-width: 200px;
+  }
+
+  .search-input {
+    width: 100%;
+    padding: 0.6rem 1rem;
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    color: var(--text);
+    font-size: 0.9rem;
+    font-family: inherit;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  .search-input:focus {
+    border-color: var(--accent);
+  }
+
+  .search-input::placeholder {
+    color: var(--text2);
+  }
+
+  .sort-wrap {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-shrink: 0;
+  }
+
+  .sort-wrap label {
+    font-size: 0.85rem;
+    color: var(--text2);
+    white-space: nowrap;
+  }
+
+  .sort-select {
+    padding: 0.6rem 0.75rem;
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    color: var(--text);
+    font-size: 0.85rem;
+    font-family: inherit;
+    cursor: pointer;
+    outline: none;
+  }
+
+  .filter-group {
+    margin-top: 1rem;
+  }
+
+  .filter-label {
+    font-size: 0.8rem;
+    color: var(--text2);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+  }
+
+  .filter-buttons {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+
+  .filter-btn {
+    background: var(--bg3);
+    color: var(--text2);
+    border: 1px solid var(--border);
+    padding: 0.4rem 0.85rem;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.8rem;
+    font-weight: 500;
+    font-family: inherit;
+    transition: all 0.2s;
+  }
+
+  .filter-btn:hover {
+    border-color: var(--accent);
+    color: var(--text);
+  }
+
+  .filter-btn.active {
+    background: var(--accent);
+    color: #000;
+    border-color: var(--accent);
+  }
+
+  .variant-filter-btn.active {
+    background: var(--vf-bg);
+    color: var(--vf-color);
+    border-color: var(--vf-color);
+  }
+
+  /* Results Bar */
+  .results-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+    padding: 0.5rem 0;
+  }
+
+  #resultsCount {
+    font-size: 0.85rem;
+    color: var(--text2);
+  }
+
+  /* Sticker Grid */
+  .sticker-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-bottom: 2rem;
+  }
+
+  .sticker-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    transition: all 0.2s;
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .sticker-card:hover {
+    border-color: var(--accent);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(245, 166, 35, 0.1);
+  }
+
+  .sticker-img-wrap {
+    aspect-ratio: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    background: var(--bg3);
+  }
+
+  .sticker-img-wrap img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+  }
+
+  .sticker-body {
+    padding: 0.75rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    flex: 1;
+  }
+
+  .sticker-name {
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin: 0;
+    line-height: 1.3;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .variant-badge {
+    display: inline-block;
+    padding: 0.15rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    width: fit-content;
+  }
+
+  .tournament-tag {
+    font-size: 0.7rem;
+    color: var(--text2);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .sticker-price {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--green);
+    margin-top: auto;
+  }
+
+  /* Load More */
+  .load-more-wrap {
+    text-align: center;
+    margin: 1rem 0 3rem;
+  }
+
+  .load-more-btn {
+    padding: 0.75rem 2.5rem;
+    background: var(--bg3);
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    font-family: inherit;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .load-more-btn:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: var(--bg2);
+  }
+
+  .load-more-wrap.hidden {
+    display: none;
+  }
+
+  /* Investing */
+  .investing-section {
+    margin: 3rem 0;
+    padding: 2rem;
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+  }
+
+  .investing-section h2 {
+    margin: 0 0 1.5rem;
+    text-align: center;
+  }
+
+  .investing-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .investing-card {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1.25rem;
+    transition: all 0.2s;
+  }
+
+  .investing-card:hover {
+    border-color: var(--accent);
+  }
+
+  .investing-card h3 {
+    margin: 0 0 1rem;
+    font-size: 1rem;
+  }
+
+  .investing-card ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .investing-card li {
+    padding: 0.35rem 0;
+    color: var(--text2);
+    font-size: 0.9rem;
+    line-height: 1.5;
+  }
+
+  .investing-card li strong {
+    color: var(--accent);
+  }
+
+  .investing-link {
+    text-align: center;
+    margin-top: 1.5rem;
+  }
+
+  .investing-link a {
+    display: inline-block;
+    padding: 0.5rem 1.5rem;
+    background: var(--accent);
+    color: #000;
+    border-radius: 6px;
+    font-weight: 600;
+    transition: all 0.2s;
+    text-decoration: none;
+  }
+
+  .investing-link a:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(245, 166, 35, 0.3);
+  }
+
+  /* FAQ */
+  .faq-section {
+    margin: 3rem 0;
+    padding: 2rem;
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+  }
+
+  .faq-section h2 {
+    margin: 0 0 1.5rem;
+    text-align: center;
+  }
+
+  .faq {
+    margin: 0;
+  }
+
+  .faq dt {
+    font-weight: 700;
+    color: var(--accent);
+    padding: 1rem 0 0.5rem;
+    border-top: 1px solid var(--border);
+    font-size: 0.95rem;
+  }
+
+  .faq dt:first-of-type {
+    border-top: none;
+    padding-top: 0;
+  }
+
+  .faq dd {
+    color: var(--text2);
+    padding: 0 0 1.25rem;
+    margin: 0;
+    font-size: 0.9rem;
+    line-height: 1.6;
+  }
+
+  /* Related */
+  .related-section {
+    margin: 3rem 0;
+  }
+
+  .related-section h2 {
+    text-align: center;
+    margin-bottom: 1.5rem;
+  }
+
+  .internal-links {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+    padding: 1rem;
+    background: var(--bg2);
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    justify-content: center;
+  }
+
+  .internal-links a {
+    padding: 0.4rem 1rem;
+    background: var(--bg3);
+    border-radius: 6px;
+    font-size: 0.85rem;
+    color: var(--text2);
+    border: 1px solid var(--border);
+    transition: all 0.2s;
+  }
+
+  .internal-links a:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: var(--bg);
+  }
+
+  /* Mobile */
+  @media (max-width: 768px) {
+    .hero-content h1 {
+      font-size: 1.8rem;
+    }
+
+    .hero-section {
+      margin-left: -1rem;
+      margin-right: -1rem;
+      padding: 2rem 1rem;
+    }
+
+    .hero-stats {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1rem;
+    }
+
+    .filter-row {
+      flex-direction: column;
+    }
+
+    .sort-wrap {
+      width: 100%;
+    }
+
+    .sort-select {
+      flex: 1;
+    }
+
+    .sticker-grid {
+      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+      gap: 0.75rem;
+    }
+
+    .sticker-name {
+      font-size: 0.78rem;
+    }
+
+    .sticker-body {
+      padding: 0.6rem;
+    }
+
+    .investing-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .filter-btn {
+      font-size: 0.75rem;
+      padding: 0.35rem 0.65rem;
+    }
+  }
+</style>
+
+<script is:inline define:vars={{ stickersData }}>
+  document.addEventListener('DOMContentLoaded', function() {
+    var allStickers = JSON.parse(stickersData);
+    var PAGE_SIZE = 60;
+    var currentPage = 1;
+    var filteredStickers = allStickers;
+
+    var grid = document.getElementById('stickerGrid');
+    var countEl = document.getElementById('resultsCount');
+    var loadMoreWrap = document.getElementById('loadMoreWrap');
+    var loadMoreBtn = document.getElementById('loadMoreBtn');
+    var searchInput = document.getElementById('stickerSearch');
+    var sortSelect = document.getElementById('stickerSort');
+
+    var activeVariant = 'all';
+    var activeType = 'all';
+    var searchQuery = '';
+
+    // Variant color maps (passed as constants)
+    var VARIANT_COLORS = {
+      'Paper': '#b0c3d9',
+      'Holo': '#4b69ff',
+      'Glitter': '#8847ff',
+      'Foil': '#d32ce6',
+      'Gold': '#e4ae39',
+      'Lenticular': '#eb4b4b'
+    };
+    var VARIANT_BG = {
+      'Paper': 'rgba(176,195,217,0.15)',
+      'Holo': 'rgba(75,105,255,0.15)',
+      'Glitter': 'rgba(136,71,255,0.15)',
+      'Foil': 'rgba(211,44,230,0.15)',
+      'Gold': 'rgba(228,174,57,0.15)',
+      'Lenticular': 'rgba(235,75,75,0.15)'
+    };
+
+    // --- Variant filter buttons ---
+    var variantBtns = document.querySelectorAll('#variantFilters .filter-btn');
+    variantBtns.forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        variantBtns.forEach(function(b) { b.classList.remove('active'); });
+        btn.classList.add('active');
+        activeVariant = btn.getAttribute('data-variant');
+        currentPage = 1;
+        applyFilters();
+      });
+    });
+
+    // --- Type filter buttons ---
+    var typeBtns = document.querySelectorAll('#typeFilters .filter-btn');
+    typeBtns.forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        typeBtns.forEach(function(b) { b.classList.remove('active'); });
+        btn.classList.add('active');
+        activeType = btn.getAttribute('data-type');
+        currentPage = 1;
+        applyFilters();
+      });
+    });
+
+    // --- Search ---
+    var searchTimer = null;
+    searchInput.addEventListener('input', function() {
+      clearTimeout(searchTimer);
+      searchTimer = setTimeout(function() {
+        searchQuery = searchInput.value.toLowerCase().trim();
+        currentPage = 1;
+        applyFilters();
+      }, 250);
+    });
+
+    // --- Sort ---
+    sortSelect.addEventListener('change', function() {
+      currentPage = 1;
+      applyFilters();
+    });
+
+    // --- Load More ---
+    loadMoreBtn.addEventListener('click', function() {
+      currentPage++;
+      renderPage();
+    });
+
+    function applyFilters() {
+      var q = searchQuery;
+      filteredStickers = allStickers.filter(function(s) {
+        if (activeVariant !== 'all' && s.v !== activeVariant) return false;
+        if (activeType !== 'all' && s.y !== activeType) return false;
+        if (q && s.n.toLowerCase().indexOf(q) === -1 && s.m.toLowerCase().indexOf(q) === -1) return false;
+        return true;
+      });
+
+      // Sort
+      var sortVal = sortSelect.value;
+      if (sortVal === 'price-desc') {
+        filteredStickers.sort(function(a, b) { return b.p - a.p; });
+      } else if (sortVal === 'price-asc') {
+        filteredStickers.sort(function(a, b) { return a.p - b.p; });
+      } else if (sortVal === 'name-asc') {
+        filteredStickers.sort(function(a, b) { return a.n.localeCompare(b.n); });
+      } else if (sortVal === 'volume') {
+        filteredStickers.sort(function(a, b) { return (b.vol || 0) - (a.vol || 0); });
+      }
+
+      renderPage();
+    }
+
+    function renderPage() {
+      var shown = currentPage * PAGE_SIZE;
+      var visible = filteredStickers.slice(0, shown);
+      var total = filteredStickers.length;
+
+      var html = '';
+      for (var i = 0; i < visible.length; i++) {
+        var s = visible[i];
+        var vColor = VARIANT_COLORS[s.v] || '#b0c3d9';
+        var vBg = VARIANT_BG[s.v] || 'rgba(176,195,217,0.15)';
+        var displayName = s.n;
+        if (s.t) {
+          // Try to strip tournament name from display
+          var tEscaped = s.t.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+          var tRegex = new RegExp('\\s*\\|?\\s*' + tEscaped + '\\s*\\(?\\d{4}\\)?', 'i');
+          var stripped = displayName.replace(tRegex, '').replace(/^\s*\|\s*/, '').trim();
+          if (stripped) displayName = stripped;
+        }
+        var priceStr = s.p > 0 ? '$' + s.p.toFixed(2) : '';
+
+        html += '<a href="/sticker/' + s.s + '/" class="sticker-card">';
+        html += '<div class="sticker-img-wrap">';
+        if (s.i) {
+          html += '<img src="' + s.i + '" alt="' + s.n.replace(/"/g, '&quot;') + '" loading="lazy" width="200" height="200" />';
+        }
+        html += '</div>';
+        html += '<div class="sticker-body">';
+        html += '<h3 class="sticker-name">' + escapeHtml(displayName) + '</h3>';
+        html += '<span class="variant-badge" style="color:' + vColor + ';background:' + vBg + '">' + escapeHtml(s.v) + '</span>';
+        if (s.t) {
+          html += '<span class="tournament-tag">' + escapeHtml(s.t) + '</span>';
+        }
+        if (priceStr) {
+          html += '<span class="sticker-price">' + priceStr + '</span>';
+        }
+        html += '</div></a>';
+      }
+
+      grid.innerHTML = html;
+      countEl.textContent = 'Showing ' + visible.length + ' of ' + total.toLocaleString() + ' stickers';
+
+      if (shown >= total) {
+        loadMoreWrap.classList.add('hidden');
+      } else {
+        loadMoreWrap.classList.remove('hidden');
+      }
+    }
+
+    function escapeHtml(str) {
+      var div = document.createElement('div');
+      div.textContent = str;
+      return div.innerHTML;
+    }
+  });
+</script>

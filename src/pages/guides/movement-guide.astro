@@ -1,0 +1,645 @@
+---
+import Base from '../../layouts/Base.astro';
+import AuthorBox from '../../components/AuthorBox.astro';
+import { faqSchema, breadcrumbSchema } from '../../lib/weapons';
+
+const title = 'Movement Mechanics Guide';
+const description = 'Master CS2 movement — counter-strafing, bunny hopping, surfing, jiggle peeking, and air strafing techniques for competitive play.';
+
+const breadcrumbs = [
+  { name: 'Home', url: '/' },
+  { name: 'Guides', url: '/guides' },
+  { name: 'Movement Mechanics Guide', url: '/guides/movement-guide' },
+];
+
+const faqs = [
+  {
+    question: 'What is counter-strafing and why is it important?',
+    answer: 'Counter-strafing is pressing the opposite movement key to instantly stop your character. In CS2, your shots are inaccurate while moving. By tapping the opposite direction key, you reach zero velocity faster than simply releasing the key, allowing you to fire accurately sooner during a peek.',
+  },
+  {
+    question: 'Is bunny hopping still possible in CS2?',
+    answer: 'Yes, but it is significantly harder than in CS:GO due to stricter speed caps. CS2 limits bunny hop speed to roughly 300 units per second. You can still chain a few hops for slight speed advantages, but consistent cross-map bhop chains are not viable in competitive matches without scripts.',
+  },
+  {
+    question: 'How do I find surf or KZ servers in CS2?',
+    answer: 'Open the server browser in CS2 by enabling the developer console and typing "connect" followed by a server IP. You can find community surf and KZ server lists on sites like surf.kz-climb.com, kz-climb.com, or by browsing the CS2 community server browser and filtering by tags such as "surf" or "kz".',
+  },
+  {
+    question: 'Does walking (shift) affect accuracy in CS2?',
+    answer: 'Walking with shift significantly reduces movement speed and noise but does not make you fully accurate. You still have slightly reduced accuracy compared to standing still. For precise shots, you should always fully stop before firing.',
+  },
+  {
+    question: 'What is the fastest way to improve movement in CS2?',
+    answer: 'Practice on KZ (climb) maps and surf maps to build mouse-keyboard coordination. Use prefire and aim training maps for counter-strafing. Play deathmatch focusing on movement rather than kills. Consistent daily practice on community movement servers is the most effective method.',
+  },
+];
+
+const breadcrumbSchema_ = breadcrumbSchema(breadcrumbs);
+const faqSchema_ = faqSchema(faqs);
+
+const articleSchema = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": title,
+  "description": description,
+  "author": { "@type": "Person", "name": "Josh Lingenfelter", "url": "https://www.linkedin.com/in/josh-lingenfelter-8157274b/", "jobTitle": "Director", "worksFor": { "@type": "Organization", "name": "Bettor Media" } },
+  "publisher": { "@type": "Organization", "name": "CSDB.gg", "url": "https://csdb.gg" },
+  "mainEntityOfPage": "https://csdb.gg/guides/movement-guide/",
+  "inLanguage": "en-US"
+});
+---
+
+<Base title={title} description={description}>
+  <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema_)}></script>
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema_)}></script>
+  <script type="application/ld+json" set:html={articleSchema}></script>
+
+  <div class="guide-container">
+    <nav class="breadcrumb">
+      <a href="/">Home</a>
+      <span class="separator">/</span>
+      <a href="/guides">Guides</a>
+      <span class="separator">/</span>
+      <span>Movement Guide</span>
+    </nav>
+
+    <article class="guide-article">
+      <header class="guide-header">
+        <h1>Movement Mechanics Guide</h1>
+        <p class="lead">Master every movement technique in CS2 from counter-strafing to surfing</p>
+      </header>
+
+      <section class="intro-section">
+        <p>
+          Movement is one of the most underrated skills in Counter-Strike 2. While aim gets the spotlight, elite movement is what separates high-ranked players from everyone else. Proper movement lets you peek angles safely, dodge bullets, traverse the map faster, and land shots that would otherwise be impossible. This guide covers every movement mechanic in CS2 — from the fundamentals to advanced techniques like bunny hopping, surfing, and air strafing.
+        </p>
+      </section>
+
+      <section>
+        <h2>Basic Movement Fundamentals</h2>
+        <p>
+          Before diving into advanced techniques, you need a solid foundation. CS2 movement revolves around the WASD keys, crouching, walking, and jumping. Understanding how each input affects your speed, accuracy, and sound profile is critical for competitive play.
+        </p>
+
+        <h3>WASD Movement</h3>
+        <p>
+          The default movement keys are W (forward), A (left), S (backward), and D (right). Moving diagonally by holding two keys simultaneously increases your speed slightly. Your base movement speed depends on the weapon you are carrying — a knife lets you move fastest, while heavy weapons like the AWP slow you down.
+        </p>
+        <ul>
+          <li><strong>Forward/Backward (W/S):</strong> Standard directional movement at weapon-dependent speed</li>
+          <li><strong>Strafe Left/Right (A/D):</strong> Essential for peeking, dodging, and counter-strafing</li>
+          <li><strong>Diagonal Movement:</strong> Holding W+A or W+D moves you slightly faster than a single key</li>
+          <li><strong>Backward Speed:</strong> Moving backward is slower than forward — avoid backpedaling in fights</li>
+        </ul>
+
+        <h3>Walking (Shift)</h3>
+        <p>
+          Holding shift reduces your speed to approximately 34% of your normal running speed and silences your footsteps. Walking is essential for lurking, rotating quietly, and approaching enemies without giving away your position. However, walking does not make you fully accurate — you must still stop to achieve maximum accuracy.
+        </p>
+        <ul>
+          <li><strong>Silent Footsteps:</strong> Enemies cannot hear you within normal audio range</li>
+          <li><strong>Reduced Speed:</strong> Roughly 34% of running speed</li>
+          <li><strong>Accuracy Penalty:</strong> Still less accurate than standing still, though the penalty is small</li>
+          <li><strong>Use Cases:</strong> Lurking, quiet rotations, sneaking behind enemy lines</li>
+        </ul>
+
+        <h3>Crouching (Ctrl)</h3>
+        <p>
+          Crouching lowers your player model, improves accuracy slightly, and changes your hitbox position. In CS2, crouching is useful for holding tight angles, spraying at close range, and dodging headshots. However, crouching makes you slower and is often a bad habit if overused — crouch-peeking exposes you for longer than a standing peek.
+        </p>
+        <ul>
+          <li><strong>Accuracy Bonus:</strong> Slight improvement to first-shot accuracy and spray control</li>
+          <li><strong>Lower Hitbox:</strong> Ducks under headshot-level crosshair placement</li>
+          <li><strong>Speed Penalty:</strong> Significantly slower than walking — avoid crouch-peeking long angles</li>
+          <li><strong>Crouch Fatigue:</strong> CS2 has crouch stamina — rapid crouch spam slows down progressively</li>
+        </ul>
+
+        <h3>Jumping (Space)</h3>
+        <p>
+          Jumping is used for reaching elevated positions, crossing gaps, and certain advanced techniques. While airborne, your accuracy drops to near zero for most weapons. Jump height in CS2 is approximately 54 units, and you can reach higher surfaces by crouch-jumping (jumping + crouching at the peak).
+        </p>
+        <ul>
+          <li><strong>Standard Jump:</strong> Press space to jump approximately 54 units high</li>
+          <li><strong>Crouch Jump:</strong> Jump + crouch (Ctrl) at peak to reach surfaces up to about 65 units</li>
+          <li><strong>No Air Accuracy:</strong> Nearly all weapons are extremely inaccurate midair</li>
+          <li><strong>Landing Penalty:</strong> Brief accuracy and speed penalty upon landing</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>Counter-Strafing</h2>
+        <p>
+          Counter-strafing is the single most important advanced movement technique in CS2. It is the act of pressing the opposite movement key to instantly decelerate to zero velocity, allowing you to fire accurately as quickly as possible after a peek. Without counter-strafing, your character takes longer to slow down, and your shots will be inaccurate.
+        </p>
+
+        <h3>How Counter-Strafing Works</h3>
+        <p>
+          When you move with the A key (strafe left) and then tap D (strafe right), the opposing input cancels your momentum nearly instantly. This brings your velocity to zero much faster than simply releasing the A key, which would let natural deceleration slow you down gradually. The moment you hit zero velocity, your accuracy resets to its standing value.
+        </p>
+        <ul>
+          <li><strong>Step 1:</strong> Strafe in one direction (e.g., hold A to move left)</li>
+          <li><strong>Step 2:</strong> Release A and immediately tap D to counteract your momentum</li>
+          <li><strong>Step 3:</strong> Fire your shot the instant you feel the stop — your accuracy is now at maximum</li>
+          <li><strong>Step 4:</strong> Strafe back the other way and repeat</li>
+        </ul>
+
+        <h3>CS2 vs CS:GO Counter-Strafing</h3>
+        <p>
+          CS2 introduced subtick networking, which changed the feel of counter-strafing compared to CS:GO. The game now registers your inputs at the exact subtick moment they happen rather than on fixed 64-tick intervals. In practice, counter-strafing in CS2 is slightly more forgiving — the window where your shot is accurate after stopping is marginally wider. However, the fundamental technique remains the same.
+        </p>
+
+        <h3>Practice Drills</h3>
+        <ul>
+          <li><strong>Wall Shooting:</strong> Strafe left and right in front of a wall, counter-strafe, and fire single shots — check the bullet holes to verify accuracy</li>
+          <li><strong>Bot Practice:</strong> Use <code>sv_cheats 1; bot_stop 1</code> to freeze bots and practice peeking corners with counter-strafes</li>
+          <li><strong>Deathmatch Focus:</strong> Play deathmatch and consciously counter-strafe before every shot, even if you die more initially</li>
+          <li><strong>Prefire Maps:</strong> Workshop prefire maps force you to counter-strafe at each angle</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>Bunny Hopping (Bhop)</h2>
+        <p>
+          Bunny hopping is a movement technique where you chain consecutive jumps while air strafing to maintain or build speed. In CS2, a speed cap limits bhop effectiveness in competitive play, but the technique is still useful for short bursts and is extremely popular in community servers.
+        </p>
+
+        <h3>How Bunny Hopping Works</h3>
+        <p>
+          The basic concept is to jump the exact frame you land, then use air strafes (A/D keys combined with mouse movement) to gain speed. In CS2, the default <code>sv_maxspeed</code> and stamina system cap your speed at roughly 300 units per second, making sustained high-speed bhop chains very difficult without server modifications.
+        </p>
+        <ul>
+          <li><strong>Scroll Wheel Jump:</strong> Bind jump to mouse scroll for more precise landing timing — <code>bind mwheeldown +jump</code></li>
+          <li><strong>Timing:</strong> Jump the instant you touch the ground — too early or too late loses speed</li>
+          <li><strong>Air Strafing:</strong> While airborne, hold A or D and move your mouse smoothly in that direction</li>
+          <li><strong>Speed Cap:</strong> CS2 enforces a ~300 u/s cap in competitive, limiting bhop effectiveness</li>
+        </ul>
+
+        <h3>Practice Commands</h3>
+        <p>
+          Use these console commands on a private server to practice bunny hopping:
+        </p>
+        <ul>
+          <li><code>sv_cheats 1</code> — Enable cheats on your private server</li>
+          <li><code>sv_enablebunnyhopping 1</code> — Remove speed cap for practice</li>
+          <li><code>sv_autobunnyhopping 1</code> — Auto-jump when holding space (for learning air strafes first)</li>
+          <li><code>sv_staminalandcost 0</code> — Remove landing stamina penalty</li>
+          <li><code>sv_staminajumpcost 0</code> — Remove jump stamina cost</li>
+          <li><code>cl_showpos 1</code> — Display your current velocity on screen</li>
+        </ul>
+
+        <h3>Competitive Bhop Tips</h3>
+        <p>
+          In real competitive matches, bunny hopping is unreliable but can still provide small advantages:
+        </p>
+        <ul>
+          <li>Chain 2-3 hops to cross open areas slightly faster</li>
+          <li>Use bhops to reach off-angles before opponents expect it</li>
+          <li>Never bhop when you need to stop and shoot — the timing is unpredictable</li>
+          <li>Bhop away from danger after a kill to reposition faster</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>Surfing</h2>
+        <p>
+          Surfing is a community-created movement mode where players glide along angled ramps (surf ramps) using air strafing. While not used in competitive matches, surfing is one of the most popular community activities in CS2 and is an excellent way to develop mouse control and air strafing skills.
+        </p>
+
+        <h3>How Surfing Works</h3>
+        <p>
+          Surf maps feature angled surfaces (ramps) that you glide along by pressing into them with the A or D key while controlling your trajectory with mouse movement. You never press W while surfing — forward movement comes entirely from the ramp angle and your air strafing inputs.
+        </p>
+        <ul>
+          <li><strong>On a Left Ramp:</strong> Hold D to press into the ramp, move mouse to steer</li>
+          <li><strong>On a Right Ramp:</strong> Hold A to press into the ramp, move mouse to steer</li>
+          <li><strong>Never Press W:</strong> Forward key kills your surf momentum</li>
+          <li><strong>Mouse Control:</strong> Smooth, gradual mouse movements maintain speed — jerky movements kill it</li>
+          <li><strong>Landing:</strong> When leaving a ramp, air strafe to the next ramp or landing zone</li>
+        </ul>
+
+        <h3>Finding Surf Servers</h3>
+        <p>
+          CS2 has a thriving surf community. To find servers:
+        </p>
+        <ul>
+          <li>Open the CS2 community server browser and search for "surf"</li>
+          <li>Visit community sites like surf.kz-climb.com for curated server lists</li>
+          <li>Look for servers running popular maps like surf_beginner, surf_mesa, or surf_utopia</li>
+          <li>Start with Tier 1-2 maps as a beginner, then progress to harder tiers</li>
+        </ul>
+
+        <h3>Surf Difficulty Tiers</h3>
+        <ul>
+          <li><strong>Tier 1:</strong> Wide ramps, gentle angles — perfect for learning the basics</li>
+          <li><strong>Tier 2:</strong> Narrower ramps, sharper turns — requires decent mouse control</li>
+          <li><strong>Tier 3-4:</strong> Technical sections, tight gaps — intermediate skill required</li>
+          <li><strong>Tier 5-6:</strong> Expert-level maps with extreme precision requirements</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>Air Strafing</h2>
+        <p>
+          Air strafing is the technique of gaining speed and changing direction while airborne. It is the foundation of bunny hopping, surfing, and many other advanced movement techniques. In CS2, air strafing uses the Source 2 engine's air acceleration mechanics.
+        </p>
+
+        <h3>How to Air Strafe</h3>
+        <p>
+          While in the air, release W and hold A or D while simultaneously moving your mouse in the same direction. The key is synchronizing your mouse movement with your strafe key — hold A and move your mouse left to curve left, hold D and move your mouse right to curve right.
+        </p>
+        <ul>
+          <li><strong>Release W:</strong> Do not hold forward while air strafing — it limits your ability to gain speed</li>
+          <li><strong>Sync Mouse + Keys:</strong> A + mouse left, or D + mouse right</li>
+          <li><strong>Smooth Mouse Movement:</strong> Gradual arcs gain more speed than sharp snaps</li>
+          <li><strong>Alternate Sides:</strong> Switch between A-left and D-right strafes to gain maximum speed</li>
+        </ul>
+
+        <h3>Air Strafe Applications</h3>
+        <ul>
+          <li><strong>Bhop Chains:</strong> Air strafes between jumps are what build and maintain bhop speed</li>
+          <li><strong>Surf Ramps:</strong> All surf navigation relies on air strafe mechanics</li>
+          <li><strong>Gap Jumping:</strong> Air strafe around corners or across gaps that are too wide for a straight jump</li>
+          <li><strong>Post-Jump Positioning:</strong> Adjust your landing position midair to reach specific spots</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>Jiggle Peeking and Shoulder Peeking</h2>
+        <p>
+          Jiggle peeking and shoulder peeking are defensive movement techniques used to gather information, bait shots, and create advantageous duels. Both techniques rely on quick, precise strafe movements around corners.
+        </p>
+
+        <h3>Jiggle Peeking</h3>
+        <p>
+          Jiggle peeking involves rapidly strafing in and out of an angle to bait an enemy into shooting or to gather visual information. You expose yourself for the minimum possible time — just enough to see the angle or force a reaction.
+        </p>
+        <ul>
+          <li><strong>Quick Tap A/D:</strong> Tap the strafe key briefly, then immediately counter-strafe back behind cover</li>
+          <li><strong>Purpose:</strong> Bait AWP shots, spot enemy positions, clear angles safely</li>
+          <li><strong>Timing:</strong> Each jiggle should expose you for less than 200 milliseconds</li>
+          <li><strong>Repeat:</strong> Multiple jiggle peeks can drain an AWPer's patience or trigger a shot you can punish</li>
+        </ul>
+
+        <h3>Shoulder Peeking</h3>
+        <p>
+          Shoulder peeking is a more controlled variation where you expose only a sliver of your character model (the shoulder) to trigger an enemy's reaction without exposing enough of your body to be hit. This is especially effective against AWP players.
+        </p>
+        <ul>
+          <li><strong>Minimal Exposure:</strong> Show just enough of your model to appear on the enemy's screen</li>
+          <li><strong>Bait the Shot:</strong> Force the AWPer to fire, then wide peek during their rechamber time</li>
+          <li><strong>Information Gathering:</strong> See if the angle is held and by what weapon</li>
+          <li><strong>Counter-Strafe Back:</strong> Immediately reverse direction after the peek</li>
+        </ul>
+
+        <h3>When to Use Each Technique</h3>
+        <ul>
+          <li><strong>Jiggle Peek:</strong> Against AWPs, holding aggressive angles, or when you suspect a pre-aimed position</li>
+          <li><strong>Shoulder Peek:</strong> Against known AWP positions, before committing to a wide peek</li>
+          <li><strong>Wide Peek:</strong> After baiting the shot, or when you have a teammate ready to trade</li>
+          <li><strong>Avoid Jiggling:</strong> Against multiple enemies who can crossfire you during the peek</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>Jump Throws and Run Boosts</h2>
+        <p>
+          Jump throws are utility lineups that require you to jump and release a grenade simultaneously. Run boosts involve one player jumping on top of another to reach elevated positions. Both techniques are important parts of competitive CS2.
+        </p>
+
+        <h3>Jump Throw Bind</h3>
+        <p>
+          A jump throw bind ensures you jump and release a grenade on the exact same tick for consistent lineup results. In CS2, you can create an alias or use a simple bind:
+        </p>
+        <ul>
+          <li><code>alias "+jumpthrow" "+jump; -attack"</code></li>
+          <li><code>alias "-jumpthrow" "-jump"</code></li>
+          <li><code>bind "x" "+jumpthrow"</code> — Replace "x" with your preferred key</li>
+          <li>This bind holds jump and releases the grenade simultaneously when pressed</li>
+        </ul>
+        <p>
+          With CS2's subtick system, jump throws are more consistent than in CS:GO. The bind ensures frame-perfect execution every time, which is critical for smoke lineups that need to land in precise locations.
+        </p>
+
+        <h3>Run Boost</h3>
+        <p>
+          A run boost is when one player stands on another player's head and then both players move together. The player on top can reach positions normally inaccessible and gains a temporary speed boost. Run boosts are used in competitive play for unexpected peeks and creative angles.
+        </p>
+        <ul>
+          <li><strong>Setup:</strong> One player crouches, another jumps on their head</li>
+          <li><strong>Execution:</strong> The bottom player runs while the top player rides and jumps off at the desired moment</li>
+          <li><strong>Speed Advantage:</strong> The top player inherits the bottom player's movement speed plus their own jump momentum</li>
+          <li><strong>Common Uses:</strong> Boosting over walls, reaching elevated sightlines, surprising opponents from unexpected angles</li>
+        </ul>
+
+        <h3>Self-Boost Spots</h3>
+        <p>
+          Many map positions allow you to reach elevated surfaces by crouch-jumping onto props, ledges, or terrain features. Learning self-boost spots on each map gives you access to off-angles that opponents do not expect:
+        </p>
+        <ul>
+          <li>Crouch-jump onto boxes, barrels, and ledges for elevation advantages</li>
+          <li>Some boosts require a running start followed by a crouch-jump at the edge</li>
+          <li>Practice boosts in private servers before using them in competitive matches</li>
+          <li>Check community boost guides for map-specific positions</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>KZ (Climb) Maps</h2>
+        <p>
+          KZ (short for Kreedz Climbing) maps are community-made obstacle courses designed to test and develop movement skills. KZ is one of the best ways to improve your overall movement in CS2, building muscle memory for strafing, jumping, and mouse control.
+        </p>
+
+        <h3>What KZ Teaches You</h3>
+        <ul>
+          <li><strong>Precise Strafing:</strong> Landing on narrow platforms requires exact air strafe control</li>
+          <li><strong>Consistent Jumping:</strong> KZ builds timing for perfect bhop and longjump sequences</li>
+          <li><strong>Mouse Smoothness:</strong> Smooth mouse arcs are rewarded — jerky movements cause you to miss platforms</li>
+          <li><strong>Spatial Awareness:</strong> Judging distances and angles becomes second nature</li>
+          <li><strong>Speed Control:</strong> Learning when to go fast and when to slow down for precision</li>
+        </ul>
+
+        <h3>Getting Started with KZ</h3>
+        <ul>
+          <li>Search for "kz" in the CS2 community server browser</li>
+          <li>Start with maps rated Easy or Tier 1 (e.g., kz_beginnerblock, kz_easy)</li>
+          <li>Use the <code>!checkpoint</code> or <code>!cp</code> command on most servers to set save points</li>
+          <li>Use <code>!teleport</code> or <code>!tp</code> to return to your last checkpoint</li>
+          <li>Progress to harder tiers as your skills improve</li>
+        </ul>
+
+        <h3>KZ Difficulty Tiers</h3>
+        <ul>
+          <li><strong>Tier 1 (Very Easy):</strong> Basic jumps and strafes — anyone can complete these</li>
+          <li><strong>Tier 2 (Easy):</strong> Slightly longer jumps, basic bhop sections</li>
+          <li><strong>Tier 3 (Medium):</strong> Requires solid air strafing and consistent timing</li>
+          <li><strong>Tier 4 (Hard):</strong> Technical sections with precise movement requirements</li>
+          <li><strong>Tier 5 (Very Hard):</strong> Expert movement with little room for error</li>
+          <li><strong>Tier 6-7 (Extreme/Death):</strong> Only the most skilled KZ players can complete these</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>Movement Speed by Weapon</h2>
+        <p>
+          Your movement speed in CS2 depends on the weapon you currently have equipped. Knowing speed values helps you decide when to switch to your knife for faster rotations or which weapon to hold while peeking.
+        </p>
+
+        <h3>Speed Values (Units Per Second)</h3>
+        <ul>
+          <li><strong>Knife / C4:</strong> 250 u/s — fastest movement, use for rotations</li>
+          <li><strong>Pistols (most):</strong> 240 u/s — nearly as fast as knife</li>
+          <li><strong>Desert Eagle:</strong> 230 u/s — slightly slower than other pistols</li>
+          <li><strong>SMGs:</strong> 230-245 u/s — fast enough for aggressive plays</li>
+          <li><strong>Shotguns:</strong> 215-225 u/s — moderate speed</li>
+          <li><strong>AK-47:</strong> 215 u/s — standard rifle speed</li>
+          <li><strong>M4A4 / M4A1-S:</strong> 225 u/s — slightly faster than AK</li>
+          <li><strong>AWP:</strong> 200 u/s — slowest common weapon, switch to knife to rotate</li>
+          <li><strong>Machine Guns (Negev, M249):</strong> 195 u/s — slowest weapons in the game</li>
+        </ul>
+
+        <h3>Practical Speed Tips</h3>
+        <ul>
+          <li>Always switch to knife when rotating between bombsites — the speed difference is significant over long distances</li>
+          <li>Pistol rounds are faster-paced because pistol movement speed is nearly at knife speed</li>
+          <li>AWP players should pre-position rather than rotate, since AWP running speed is very slow</li>
+          <li>Use SMGs on anti-eco rounds — their high movement speed pairs well with aggressive pushes</li>
+          <li>The M4A1-S and M4A4 give CT players a speed advantage over T-side AK-47 users</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>Practice Tips and Workshop Maps</h2>
+        <p>
+          Consistent practice is the fastest path to better movement. Use a combination of community servers, workshop maps, and focused drills to build and maintain your movement skills.
+        </p>
+
+        <h3>Recommended Workshop Maps</h3>
+        <ul>
+          <li><strong>Prefire Practice Maps:</strong> Practice counter-strafing at every common angle on competitive maps</li>
+          <li><strong>Aim Botz:</strong> Classic aim training map — focus on strafing between shots rather than standing still</li>
+          <li><strong>YPrac Maps:</strong> Prefire and utility practice for all competitive maps with built-in counter-strafe training</li>
+          <li><strong>Surf Beginner Maps:</strong> surf_beginner, surf_mesa — develop air strafe and mouse control</li>
+          <li><strong>KZ Beginner Maps:</strong> kz_beginnerblock, kz_easy — build fundamental movement precision</li>
+          <li><strong>Movement Training Maps:</strong> Search workshop for "movement training" for dedicated obstacle courses</li>
+        </ul>
+
+        <h3>Practice Console Commands</h3>
+        <ul>
+          <li><code>cl_showpos 1</code> — Display velocity, position, and angle on screen</li>
+          <li><code>sv_cheats 1</code> — Required for many practice commands below</li>
+          <li><code>sv_infinite_ammo 1</code> — Unlimited ammo for extended practice sessions</li>
+          <li><code>bot_kick</code> — Remove bots from the server</li>
+          <li><code>mp_roundtime_defuse 60</code> — Extend round time for uninterrupted practice</li>
+          <li><code>mp_warmup_end</code> — End warmup immediately to start practicing</li>
+          <li><code>noclip</code> — Fly around the map to scout positions and boost spots</li>
+          <li><code>host_timescale 0.5</code> — Slow down game speed to practice timing at reduced pace</li>
+        </ul>
+
+        <h3>Daily Practice Routine</h3>
+        <ul>
+          <li><strong>5 Minutes:</strong> Counter-strafe drills against a wall — strafe, stop, shoot, check accuracy</li>
+          <li><strong>10 Minutes:</strong> Deathmatch with conscious counter-strafing on every engagement</li>
+          <li><strong>10 Minutes:</strong> KZ or surf server for air strafe and mouse control</li>
+          <li><strong>5 Minutes:</strong> Prefire map run-through to combine movement with angle clearing</li>
+          <li><strong>Ongoing:</strong> During competitive matches, focus on one technique per session until it becomes automatic</li>
+        </ul>
+
+        <h3>Common Movement Mistakes</h3>
+        <ul>
+          <li><strong>Crouching Too Much:</strong> Crouching slows you down and makes you an easy target — only crouch during spray transfers or tight angles</li>
+          <li><strong>Running and Shooting:</strong> Always counter-strafe before firing, even in close-range fights</li>
+          <li><strong>Holding W Into Fights:</strong> Use A/D strafing when peeking — pressing W into an angle gives you no counter-strafe option</li>
+          <li><strong>Ignoring Knife Speed:</strong> Failing to switch to knife during rotations costs seconds that can lose rounds</li>
+          <li><strong>Overcommitting Peeks:</strong> Wide peeking without purpose exposes you to multiple angles — use shoulder and jiggle peeks first</li>
+        </ul>
+      </section>
+
+      <section class="faq-section">
+        <h2>Frequently Asked Questions</h2>
+        <div class="faq-items">
+          {faqs.map((faq) => (
+            <div class="faq-item">
+              <h3>{faq.question}</h3>
+              <p>{faq.answer}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <section class="guide-links">
+        <h3>Related Resources</h3>
+        <ul>
+          <li><a href="/guides/">All Guides</a></li>
+          <li><a href="/guides/advanced-mechanics-guide/">Advanced Mechanics Guide</a></li>
+          <li><a href="/workshop-maps/">Workshop Maps</a></li>
+          <li><a href="/practice-config/">Practice Config</a></li>
+          <li><a href="/guides/beginners-guide/">Beginner's Guide</a></li>
+          <li><a href="/weapons/">Weapons Database</a></li>
+          <li><a href="/sensitivity-converter/">Sensitivity Converter</a></li>
+          <li><a href="/pro-players/">Pro Player Settings</a></li>
+        </ul>
+      </section>
+    </article>
+  </div>
+
+  <style>
+    .guide-container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+
+    .breadcrumb {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 2rem;
+      font-size: 0.95rem;
+      color: var(--text-secondary);
+    }
+
+    .breadcrumb a {
+      color: var(--accent-color);
+      text-decoration: none;
+      transition: color 0.2s ease;
+    }
+
+    .breadcrumb a:hover {
+      color: var(--accent-light);
+    }
+
+    .breadcrumb .separator {
+      color: var(--text-secondary);
+    }
+
+    .guide-article {
+      color: var(--text-primary);
+    }
+
+    .guide-header {
+      margin-bottom: 2rem;
+      border-bottom: 2px solid var(--border-color);
+      padding-bottom: 1.5rem;
+    }
+
+    .guide-header h1 {
+      margin: 0 0 0.5rem 0;
+      font-size: 2.5rem;
+      color: var(--text-primary);
+    }
+
+    .lead {
+      margin: 0;
+      font-size: 1.1rem;
+      color: var(--text-secondary);
+    }
+
+    .intro-section {
+      font-size: 1.05rem;
+      line-height: 1.8;
+      margin-bottom: 2.5rem;
+      padding: 1.5rem;
+      background: var(--bg-secondary);
+      border-left: 4px solid var(--accent-color);
+      border-radius: 4px;
+    }
+
+    section {
+      margin-bottom: 2.5rem;
+    }
+
+    h2 {
+      font-size: 1.8rem;
+      margin: 0 0 1rem 0;
+      color: var(--text-primary);
+      border-bottom: 2px solid var(--border-color);
+      padding-bottom: 0.5rem;
+    }
+
+    h3 {
+      font-size: 1.3rem;
+      margin: 1.5rem 0 0.75rem 0;
+      color: var(--text-primary);
+    }
+
+    p {
+      line-height: 1.7;
+      color: var(--text-secondary);
+      margin-bottom: 1rem;
+    }
+
+    ul {
+      list-style: none;
+      padding: 0;
+      margin: 1rem 0 1.5rem 0;
+    }
+
+    li {
+      padding-left: 1.5rem;
+      margin-bottom: 0.75rem;
+      position: relative;
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+
+    li::before {
+      content: '▸';
+      position: absolute;
+      left: 0;
+      color: var(--accent-color);
+    }
+
+    .faq-section {
+      margin-top: 3rem;
+    }
+
+    .faq-items {
+      display: grid;
+      gap: 1.5rem;
+    }
+
+    .faq-item {
+      background: var(--bg-secondary);
+      padding: 1.5rem;
+      border-radius: 8px;
+      border-left: 4px solid var(--accent-color);
+    }
+
+    .faq-item h3 {
+      margin-top: 0;
+      color: var(--text-primary);
+      font-size: 1.1rem;
+    }
+
+    .faq-item p {
+      margin-bottom: 0;
+    }
+
+    .guide-links {
+      background: var(--bg-secondary);
+      padding: 1.5rem;
+      border-radius: 8px;
+      border-top: 2px solid var(--accent-color);
+    }
+
+    .guide-links h3 {
+      margin-top: 0;
+    }
+
+    .guide-links ul {
+      margin: 1rem 0 0 0;
+    }
+
+    .guide-links a {
+      color: var(--accent-color);
+      text-decoration: none;
+      transition: color 0.2s ease;
+    }
+
+    .guide-links a:hover {
+      color: var(--accent-light);
+    }
+  </style>
+  <AuthorBox updated="2026-03-02" />
+</Base>

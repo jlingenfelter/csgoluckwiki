@@ -1,0 +1,860 @@
+---
+import Base from '../layouts/Base.astro';
+import ExploreMore from '../components/ExploreMore.astro';
+import { SKINS, getLowestPrice, getHighestPrice, RARITY_COLORS, RARITY_BG, getTopByVolume, getTopByLiquidity, getMostTraded, getMostListings, getVolumeLabel, getLiquidityColor, getLiquidityLabel } from '../lib/skins';
+import { faqSchema, breadcrumbSchema } from '../lib/weapons';
+
+const title = 'CS2 Skin Market Trends — Price Movers & Analysis | CSDB.gg';
+const description = 'Analyze CS2 skin market trends. Discover most expensive skins, best value deals, price distribution, and rarity breakdown. Investment tips for CS2 skins.';
+
+// Build-time computed sections
+
+// 1. Most Expensive Skins (top 10 by highest price)
+const mostExpensiveSkins = [...SKINS]
+  .sort((a, b) => getHighestPrice(b) - getHighestPrice(a))
+  .slice(0, 10);
+
+// 2. Best Value Skins (cheapest skins with good rarity: Classified/Covert under $20)
+const bestValueSkins = SKINS.filter(s => {
+  const rarity = s.rarity;
+  const high = getHighestPrice(s);
+  return (rarity === 'Classified' || rarity === 'Covert') && high < 20;
+})
+  .sort((a, b) => getLowestPrice(a) - getLowestPrice(b))
+  .slice(0, 10);
+
+// 3. Knife & Glove Market
+const knifeGloveSkins = SKINS.filter(s => s.category === 'knife' || s.category === 'glove')
+  .sort((a, b) => getHighestPrice(b) - getHighestPrice(a))
+  .slice(0, 12);
+
+// 4. Price Distribution
+const priceBrackets = [
+  { min: 0, max: 5, label: '$0 - $5' },
+  { min: 5, max: 20, label: '$5 - $20' },
+  { min: 20, max: 100, label: '$20 - $100' },
+  { min: 100, max: 500, label: '$100 - $500' },
+  { min: 500, max: Infinity, label: '$500+' }
+];
+
+const priceDistribution = priceBrackets.map(bracket => {
+  const count = SKINS.filter(s => {
+    const high = getHighestPrice(s);
+    return high >= bracket.min && high < bracket.max;
+  }).length;
+  return { ...bracket, count };
+});
+
+const maxCount = Math.max(...priceDistribution.map(d => d.count));
+
+// 5. Rarity Breakdown
+const rarityStats: Record<string, number> = {};
+SKINS.forEach(s => {
+  rarityStats[s.rarity] = (rarityStats[s.rarity] || 0) + 1;
+});
+
+const rarityOrder = ['Consumer', 'Industrial', 'Mil-Spec', 'Restricted', 'Classified', 'Covert', 'Contraband', 'Extraordinary'];
+const rarityCounts = rarityOrder
+  .filter(r => rarityStats[r])
+  .map(r => ({ rarity: r, count: rarityStats[r] }));
+
+// 6. Most Traded Skins (by 7-day trades)
+const mostTradedSkins = getMostTraded(12);
+
+// 7. Highest Volume Skins (by 7-day Steam volume)
+const highestVolumeSkins = getTopByVolume(12);
+
+// 8. Most Liquid Skins (by liquidity score)
+const mostLiquidSkins = getTopByLiquidity(12);
+
+// 9. Most Listed Skins (by current listing count)
+const mostListedSkins = getMostListings(12);
+
+// Check if trend data is available
+const hasTrendData = mostTradedSkins.length > 0 || highestVolumeSkins.length > 0;
+
+// FAQs
+const faqs = [
+  {
+    question: 'How often do CS2 skin prices change?',
+    answer: 'CS2 skin prices update daily based on market supply and demand. Major fluctuations occur when skins are added/removed from cases, during Steam sales, or after significant game updates.'
+  },
+  {
+    question: 'What causes CS2 skin prices to rise?',
+    answer: 'Prices rise when a skin is removed from case rotation (supply decreases), community hype increases, pro players use the skin, or during off-season periods. Rare finishes and StatTrak variants command premium prices.'
+  },
+  {
+    question: 'Are CS2 skins good investments?',
+    answer: 'Some skins appreciate in value over time, especially rare finishes and discontinued cases. However, the market is volatile. Invest only in skins you understand and can hold long-term. Avoid hype-driven purchases.'
+  },
+  {
+    question: 'Where can I buy CS2 skins at the best price?',
+    answer: 'Prices vary across Steam Community Market, third-party marketplaces, and trading sites. Compare prices before buying. Consider fees and withdrawal restrictions. Use reputable sites only.'
+  },
+  {
+    question: 'What is a "price spike"?',
+    answer: 'A price spike is a sudden rapid increase in a skin\'s value, often triggered by case discontinuation, content creator hype, or major esports events. Spikes can be temporary or signal sustained value growth.'
+  },
+  {
+    question: 'How do I track skin price history?',
+    answer: 'Use our Price Tracker tool to monitor your favorite skins. Chart historical prices, set alerts, and compare across marketplaces. Historical data helps identify trends and investment opportunities.'
+  }
+];
+
+const crumbs = [
+  { name: 'Home', url: '/' },
+  { name: 'Skins', url: '/skins/' },
+  { name: 'Market Trends', url: '/market-trends/' }
+];
+---
+
+<Base title={title} description={description} currentNav="/skins/">
+<script type="application/ld+json" set:html={JSON.stringify(faqSchema(faqs))}></script>
+<script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema(crumbs))}></script>
+
+<nav class="breadcrumb"><a href="/">Home</a> / <a href="/skins/">Skins</a> / <span>Market Trends</span></nav>
+
+<div class="hero">
+  <h1>CS2 Skin Market Trends</h1>
+  <p>Analyze pricing patterns, discover valuable skins, and understand market dynamics. Real-time insights for skin traders and collectors.</p>
+</div>
+
+<!-- Most Expensive Skins -->
+<section class="trend-section">
+  <h2>Most Expensive Skins</h2>
+  <p>Top 10 skins by highest price across all wear conditions.</p>
+  <div class="trend-grid">
+    {mostExpensiveSkins.map((skin, idx) => {
+      const high = getHighestPrice(skin);
+      const low = getLowestPrice(skin);
+      const rarityColor = RARITY_COLORS[skin.rarity] || '#fff';
+      const rarityBg = RARITY_BG[skin.rarity] || 'rgba(255,255,255,0.05)';
+      return (
+        <a href={`/skin/${skin.slug}/`} class="trend-card rank-{idx + 1}" style={`--rarity-color:${rarityColor};--rarity-bg:${rarityBg}`}>
+          <div class="rank-badge">#{idx + 1}</div>
+          <div class="trend-card-content">
+            <div class="trend-weapon">{skin.weapon}</div>
+            <div class="trend-name">{skin.name}</div>
+            <div class="trend-rarity" style={`color:${rarityColor}`}>{skin.rarity}</div>
+          </div>
+          <div class="trend-price">
+            <div class="price-label">Up to</div>
+            <div class="price-value">${high.toFixed(2)}</div>
+            {low !== high && <div class="price-range">from ${low.toFixed(2)}</div>}
+          </div>
+        </a>
+      );
+    })}
+  </div>
+</section>
+
+<!-- Best Value Skins -->
+<section class="trend-section">
+  <h2>Best Value Skins</h2>
+  <p>High-rarity skins (Classified/Covert) under $20 — great deals for collectors.</p>
+  <div class="trend-grid">
+    {bestValueSkins.map(skin => {
+      const low = getLowestPrice(skin);
+      const high = getHighestPrice(skin);
+      const rarityColor = RARITY_COLORS[skin.rarity] || '#fff';
+      const rarityBg = RARITY_BG[skin.rarity] || 'rgba(255,255,255,0.05)';
+      return (
+        <a href={`/skin/${skin.slug}/`} class="value-card" style={`--rarity-color:${rarityColor};--rarity-bg:${rarityBg}`}>
+          <div class="value-badge">Value Pick</div>
+          <div class="trend-card-content">
+            <div class="trend-weapon">{skin.weapon}</div>
+            <div class="trend-name">{skin.name}</div>
+            <div class="trend-rarity" style={`color:${rarityColor}`}>{skin.rarity}</div>
+          </div>
+          <div class="trend-price">
+            <div class="price-range">${low.toFixed(2)} – ${high.toFixed(2)}</div>
+          </div>
+        </a>
+      );
+    })}
+  </div>
+</section>
+
+<!-- Knife & Glove Market -->
+<section class="trend-section">
+  <h2>Knife & Glove Market</h2>
+  <p>Premium items with the highest market values. Top knives and gloves trending now.</p>
+  <div class="trend-grid knife-grid">
+    {knifeGloveSkins.map(skin => {
+      const high = getHighestPrice(skin);
+      const low = getLowestPrice(skin);
+      const rarityColor = RARITY_COLORS[skin.rarity] || '#fff';
+      const rarityBg = RARITY_BG[skin.rarity] || 'rgba(255,255,255,0.05)';
+      const isKnife = skin.category === 'knife';
+      return (
+        <a href={`/skin/${skin.slug}/`} class="premium-card" style={`--rarity-color:${rarityColor};--rarity-bg:${rarityBg}`}>
+          <div class="premium-badge">{isKnife ? '🔪 Knife' : '🧤 Glove'}</div>
+          <div class="trend-card-content">
+            <div class="trend-weapon">{skin.weapon}</div>
+            <div class="trend-name">{skin.name}</div>
+            <div class="trend-rarity" style={`color:${rarityColor}`}>{skin.rarity}</div>
+          </div>
+          <div class="trend-price">
+            <div class="price-label">Market Value</div>
+            <div class="price-value">${high.toFixed(2)}</div>
+          </div>
+        </a>
+      );
+    })}
+  </div>
+</section>
+
+{hasTrendData && (
+<>
+<!-- Most Traded Skins -->
+{mostTradedSkins.length > 0 && (
+<section class="trend-section">
+  <h2>Most Traded Skins (7 Days)</h2>
+  <p>Skins with the highest number of trades in the past 7 days — the most actively bought and sold items.</p>
+  <div class="trend-grid movers-grid">
+    {mostTradedSkins.map((skin, idx) => {
+      const low = getLowestPrice(skin);
+      const rarityColor = RARITY_COLORS[skin.rarity] || '#fff';
+      const rarityBg = RARITY_BG[skin.rarity] || 'rgba(255,255,255,0.05)';
+      return (
+        <a href={`/skin/${skin.slug}/`} class="mover-card" style={`--rarity-color:${rarityColor};--rarity-bg:${rarityBg}`}>
+          <div class="mover-rank">#{idx + 1}</div>
+          <div class="mover-img-wrap">
+            {skin.image && <img src={skin.image} alt={`${skin.weapon} | ${skin.name}`} loading="lazy" width="120" height="90" />}
+          </div>
+          <div class="mover-info">
+            <div class="trend-weapon">{skin.weapon}</div>
+            <div class="trend-name">{skin.name}</div>
+            <div class="mover-stats">
+              <span class="mover-stat trades">{getVolumeLabel(skin.trades7d || 0)} trades</span>
+              {low > 0 && <span class="mover-stat price">from ${low.toFixed(2)}</span>}
+            </div>
+          </div>
+        </a>
+      );
+    })}
+  </div>
+</section>
+)}
+
+<!-- Highest Volume Skins -->
+{highestVolumeSkins.length > 0 && (
+<section class="trend-section">
+  <h2>Highest Volume Skins (7 Days)</h2>
+  <p>Skins with the highest Steam market volume over the past week — strong indicators of market demand.</p>
+  <div class="trend-grid movers-grid">
+    {highestVolumeSkins.map((skin, idx) => {
+      const low = getLowestPrice(skin);
+      const rarityColor = RARITY_COLORS[skin.rarity] || '#fff';
+      const rarityBg = RARITY_BG[skin.rarity] || 'rgba(255,255,255,0.05)';
+      return (
+        <a href={`/skin/${skin.slug}/`} class="mover-card" style={`--rarity-color:${rarityColor};--rarity-bg:${rarityBg}`}>
+          <div class="mover-rank">#{idx + 1}</div>
+          <div class="mover-img-wrap">
+            {skin.image && <img src={skin.image} alt={`${skin.weapon} | ${skin.name}`} loading="lazy" width="120" height="90" />}
+          </div>
+          <div class="mover-info">
+            <div class="trend-weapon">{skin.weapon}</div>
+            <div class="trend-name">{skin.name}</div>
+            <div class="mover-stats">
+              <span class="mover-stat volume">{getVolumeLabel(skin.volume7d || 0)} volume</span>
+              {low > 0 && <span class="mover-stat price">from ${low.toFixed(2)}</span>}
+            </div>
+          </div>
+        </a>
+      );
+    })}
+  </div>
+</section>
+)}
+
+<!-- Most Liquid Skins -->
+{mostLiquidSkins.length > 0 && (
+<section class="trend-section">
+  <h2>Most Liquid Skins</h2>
+  <p>Skins with the highest liquidity scores — easy to buy and sell quickly at fair market value.</p>
+  <div class="trend-grid movers-grid">
+    {mostLiquidSkins.map((skin, idx) => {
+      const low = getLowestPrice(skin);
+      const rarityColor = RARITY_COLORS[skin.rarity] || '#fff';
+      const rarityBg = RARITY_BG[skin.rarity] || 'rgba(255,255,255,0.05)';
+      const liqColor = getLiquidityColor(skin.liquidity || 0);
+      const liqLabel = getLiquidityLabel(skin.liquidity || 0);
+      return (
+        <a href={`/skin/${skin.slug}/`} class="mover-card" style={`--rarity-color:${rarityColor};--rarity-bg:${rarityBg}`}>
+          <div class="mover-rank">#{idx + 1}</div>
+          <div class="mover-img-wrap">
+            {skin.image && <img src={skin.image} alt={`${skin.weapon} | ${skin.name}`} loading="lazy" width="120" height="90" />}
+          </div>
+          <div class="mover-info">
+            <div class="trend-weapon">{skin.weapon}</div>
+            <div class="trend-name">{skin.name}</div>
+            <div class="mover-stats">
+              <span class="mover-stat liquidity" style={`color:${liqColor}`}>{liqLabel} ({skin.liquidity}%)</span>
+              {low > 0 && <span class="mover-stat price">from ${low.toFixed(2)}</span>}
+            </div>
+          </div>
+        </a>
+      );
+    })}
+  </div>
+</section>
+)}
+
+<!-- Most Listed Skins -->
+{mostListedSkins.length > 0 && (
+<section class="trend-section">
+  <h2>Most Listed Skins</h2>
+  <p>Skins with the highest number of active marketplace listings — reflects current market supply.</p>
+  <div class="trend-grid movers-grid">
+    {mostListedSkins.map((skin, idx) => {
+      const low = getLowestPrice(skin);
+      const rarityColor = RARITY_COLORS[skin.rarity] || '#fff';
+      const rarityBg = RARITY_BG[skin.rarity] || 'rgba(255,255,255,0.05)';
+      return (
+        <a href={`/skin/${skin.slug}/`} class="mover-card" style={`--rarity-color:${rarityColor};--rarity-bg:${rarityBg}`}>
+          <div class="mover-rank">#{idx + 1}</div>
+          <div class="mover-img-wrap">
+            {skin.image && <img src={skin.image} alt={`${skin.weapon} | ${skin.name}`} loading="lazy" width="120" height="90" />}
+          </div>
+          <div class="mover-info">
+            <div class="trend-weapon">{skin.weapon}</div>
+            <div class="trend-name">{skin.name}</div>
+            <div class="mover-stats">
+              <span class="mover-stat listings">{getVolumeLabel(skin.listingCount || 0)} listings</span>
+              {low > 0 && <span class="mover-stat price">from ${low.toFixed(2)}</span>}
+            </div>
+          </div>
+        </a>
+      );
+    })}
+  </div>
+</section>
+)}
+</>
+)}
+
+<!-- Price Distribution -->
+<section class="trend-section">
+  <h2>Price Distribution</h2>
+  <p>How CS2 skins are distributed across price brackets.</p>
+  <div class="distribution-container">
+    {priceDistribution.map(bracket => {
+      const percentage = (bracket.count / SKINS.length) * 100;
+      const barWidth = (bracket.count / maxCount) * 100;
+      return (
+        <div class="distribution-row">
+          <div class="dist-label">
+            <span class="bracket-label">{bracket.label}</span>
+            <span class="dist-count">{bracket.count} skins</span>
+          </div>
+          <div class="dist-bar-wrapper">
+            <div class="dist-bar" style={`width:${barWidth}%`}></div>
+          </div>
+          <div class="dist-percentage">{percentage.toFixed(1)}%</div>
+        </div>
+      );
+    })}
+  </div>
+</section>
+
+<!-- Rarity Breakdown -->
+<section class="trend-section">
+  <h2>Rarity Breakdown</h2>
+  <p>Total skins available per rarity tier.</p>
+  <div class="rarity-stats">
+    {rarityCounts.map(item => {
+      const percentage = (item.count / SKINS.length) * 100;
+      const color = RARITY_COLORS[item.rarity] || '#fff';
+      return (
+        <div class="stat-card" style={`--stat-color:${color}`}>
+          <div class="stat-value">{item.count}</div>
+          <div class="stat-label">{item.rarity}</div>
+          <div class="stat-percent">{percentage.toFixed(1)}% of all skins</div>
+        </div>
+      );
+    })}
+  </div>
+</section>
+
+<!-- Quick Links -->
+<div class="quick-nav">
+  <h3>Explore More</h3>
+  <div class="quick-links">
+    <a href="/skins/">Browse All Skins</a>
+    <a href="/price-tracker/">Price Tracker</a>
+    <a href="/cases/">View Cases</a>
+    <a href="/inventory-lookup/">Inventory Lookup</a>
+  </div>
+</div>
+
+<!-- FAQ -->
+<h2>Frequently Asked Questions</h2>
+<dl class="faq">
+  {faqs.map(f => (
+    <>
+      <dt>{f.question}</dt>
+      <dd>{f.answer}</dd>
+    </>
+  ))}
+</dl>
+
+<div class="internal-links">
+  <strong>Related Resources:</strong>
+  <a href="/skins/">Skin Database</a>
+  <a href="/skin-compare/">Compare Skins</a>
+  <a href="/price-tracker/">Price Tracker</a>
+  <a href="/float-checker/">Float Checker</a>
+  <a href="/tradeup-calculator/">Trade-Up Calculator</a>
+  <a href="/case-odds-calculator/">Case Odds Calculator</a>
+  <a href="/case-simulator/">Case Simulator</a>
+  <a href="/cases/">Cases & Collections</a>
+  <a href="/inventory-lookup/">Inventory Lookup</a>
+  <a href="/loadout-builder/">Loadout Builder</a>
+  <a href="/weapons/">Weapon Database</a>
+  <a href="/guides/skins-investing-guide/">Investing Guide</a>
+  <a href="/guides/trading-guide/">Trading Guide</a>
+  <a href="/guides/float-guide/">Float Guide</a>
+</div>
+
+<ExploreMore context="skins" />
+
+<style is:inline>
+.hero {
+  text-align: center;
+  padding: 2rem 0;
+  margin-bottom: 2rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.hero h1 {
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 0.5rem;
+  font-size: 2.5rem;
+}
+
+.hero p {
+  max-width: 600px;
+  margin: 0 auto;
+  color: var(--text2);
+  font-size: 1.05rem;
+}
+
+.trend-section {
+  margin: 3rem 0;
+}
+
+.trend-section h2 {
+  margin-bottom: 0.5rem;
+}
+
+.trend-section > p {
+  color: var(--text2);
+  margin-bottom: 1.5rem;
+  font-size: 0.95rem;
+}
+
+.trend-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 1rem;
+  margin: 1.5rem 0;
+}
+
+.knife-grid {
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+}
+
+.trend-card,
+.value-card,
+.premium-card {
+  display: flex;
+  flex-direction: column;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 1.25rem;
+  text-decoration: none;
+  color: inherit;
+  transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
+  position: relative;
+  overflow: hidden;
+}
+
+.trend-card:hover,
+.value-card:hover,
+.premium-card:hover {
+  border-color: var(--rarity-color);
+  transform: translateY(-3px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3), inset 0 1px 0 var(--rarity-color);
+}
+
+.rank-badge,
+.value-badge,
+.premium-badge {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+  background: var(--rarity-color);
+  color: #000;
+  padding: 0.35rem 0.6rem;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.premium-badge {
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-transform: none;
+}
+
+.trend-card-content {
+  margin-bottom: 1rem;
+}
+
+.trend-weapon {
+  font-size: 0.78rem;
+  color: var(--text2);
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+.trend-name {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: var(--text);
+  margin: 0.35rem 0;
+}
+
+.trend-rarity {
+  font-size: 0.82rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.trend-price {
+  margin-top: auto;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border);
+}
+
+.price-label {
+  font-size: 0.75rem;
+  color: var(--text2);
+  margin-bottom: 0.25rem;
+}
+
+.price-value {
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: var(--accent);
+}
+
+.price-range {
+  font-size: 0.85rem;
+  color: var(--text2);
+  margin-top: 0.25rem;
+}
+
+/* Distribution Section */
+.distribution-container {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 1.5rem;
+  margin: 1.5rem 0;
+}
+
+.distribution-row {
+  display: grid;
+  grid-template-columns: 120px 1fr 80px;
+  gap: 1rem;
+  align-items: center;
+  margin-bottom: 1.25rem;
+}
+
+.distribution-row:last-child {
+  margin-bottom: 0;
+}
+
+.dist-label {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.bracket-label {
+  font-weight: 700;
+  color: var(--text);
+  font-size: 0.9rem;
+}
+
+.dist-count {
+  font-size: 0.75rem;
+  color: var(--text2);
+  margin-top: 0.25rem;
+}
+
+.dist-bar-wrapper {
+  height: 28px;
+  background: var(--bg3);
+  border-radius: 6px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+}
+
+.dist-bar {
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent), var(--accent2));
+  border-radius: 6px;
+  transition: width 0.3s ease;
+}
+
+.dist-percentage {
+  font-weight: 700;
+  color: var(--accent);
+  font-size: 0.9rem;
+  text-align: right;
+}
+
+/* Rarity Stats Grid */
+.rarity-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 1rem;
+  margin: 1.5rem 0;
+}
+
+.stat-card {
+  background: var(--bg2);
+  border: 2px solid var(--border);
+  border-radius: 10px;
+  padding: 1.25rem;
+  text-align: center;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.stat-card:hover {
+  border-color: var(--stat-color);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2), inset 0 1px 0 var(--stat-color);
+}
+
+.stat-value {
+  font-size: 2rem;
+  font-weight: 800;
+  color: var(--stat-color);
+  margin-bottom: 0.5rem;
+}
+
+.stat-label {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 0.5rem;
+}
+
+.stat-percent {
+  font-size: 0.78rem;
+  color: var(--text2);
+}
+
+/* Quick Nav */
+.quick-nav {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 1.5rem;
+  margin: 2rem 0;
+}
+
+.quick-nav h3 {
+  margin: 0 0 1rem;
+}
+
+.quick-links {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.quick-links a {
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  transition: border-color 0.2s, color 0.2s;
+}
+
+.quick-links a:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+@media (max-width: 1000px) {
+  .trend-grid {
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  }
+
+  .knife-grid {
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  }
+
+  .distribution-row {
+    grid-template-columns: 100px 1fr 70px;
+  }
+
+  .rarity-stats {
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  }
+}
+
+@media (max-width: 700px) {
+  .hero h1 {
+    font-size: 1.8rem;
+  }
+
+  .trend-grid,
+  .knife-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .rarity-stats {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .distribution-row {
+    grid-template-columns: 1fr;
+    gap: 0.5rem;
+  }
+
+  .dist-label {
+    flex-direction: row;
+    justify-content: space-between;
+  }
+
+  .quick-links {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .quick-links a {
+    display: block;
+    text-align: center;
+  }
+}
+
+/* Market Movers Grid */
+.movers-grid {
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+}
+
+.mover-card {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 0.75rem 1rem;
+  text-decoration: none;
+  color: inherit;
+  transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
+  position: relative;
+}
+
+.mover-card:hover {
+  border-color: var(--rarity-color);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3), inset 0 1px 0 var(--rarity-color);
+}
+
+.mover-rank {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  background: var(--bg3);
+  color: var(--text2);
+  padding: 0.15rem 0.4rem;
+  border-radius: 4px;
+  font-size: 0.7rem;
+  font-weight: 700;
+}
+
+.mover-img-wrap {
+  flex-shrink: 0;
+  width: 80px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg3);
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.mover-img-wrap img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+.mover-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.mover-info .trend-weapon {
+  font-size: 0.7rem;
+}
+
+.mover-info .trend-name {
+  font-size: 0.95rem;
+  margin: 0.15rem 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.mover-stats {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  margin-top: 0.25rem;
+}
+
+.mover-stat {
+  font-size: 0.78rem;
+  font-weight: 600;
+}
+
+.mover-stat.trades { color: #4fc3f7; }
+.mover-stat.volume { color: #81c784; }
+.mover-stat.listings { color: #ffb74d; }
+.mover-stat.price { color: var(--text2); font-weight: 400; }
+
+@media (max-width: 480px) {
+  .trend-grid,
+  .knife-grid,
+  .rarity-stats {
+    grid-template-columns: 1fr;
+  }
+
+  .movers-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .hero h1 {
+    font-size: 1.5rem;
+  }
+}
+</style>
+
+</Base>

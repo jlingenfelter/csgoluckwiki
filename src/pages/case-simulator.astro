@@ -1,0 +1,842 @@
+---
+import Base from '../layouts/Base.astro';
+import ExploreMore from '../components/ExploreMore.astro';
+import { caseDatabase } from '../lib/cases';
+import { SKINS } from '../lib/skins';
+import { breadcrumbSchema, toolAppSchema } from '../lib/weapons';
+
+// Build image lookup from existing skin database
+// Match by weapon + skin name to get Steam CDN image URLs
+const imageMap: Record<string, string> = {};
+for (const skin of SKINS) {
+  const key = `${skin.weapon}|${skin.name}`.toLowerCase();
+  if (skin.image) imageMap[key] = skin.image;
+}
+
+// Common knife/glove finishes to add as special rarity items per case
+const KNIFE_FINISHES = ['Fade', 'Doppler', 'Crimson Web', 'Slaughter', 'Tiger Tooth', 'Marble Fade'];
+const GLOVE_FINISHES = ['Fade', 'Crimson Kimono', 'Emerald Web', 'Superconductor', 'Vice', 'Mogul'];
+
+function getSpecialSkins(knifeField: string): { name: string; rarity: 'special'; weapon: string }[] {
+  const isGloves = knifeField.toLowerCase().includes('glove');
+  const finishes = isGloves ? GLOVE_FINISHES : KNIFE_FINISHES;
+
+  // Parse the knife/glove types from the field (some have multiple separated by /)
+  const types = knifeField
+    .replace(/\s*\([^)]+\)\s*/g, '') // strip parenthetical like "(Chroma)"
+    .split('/')
+    .map(t => t.trim())
+    .filter(Boolean);
+
+  // Use the first type as the weapon name, add a few finishes
+  const weapon = types[0] || knifeField;
+  const prefix = isGloves ? '★' : '★';
+  return finishes.slice(0, 3).map(finish => ({
+    name: finish,
+    rarity: 'special' as const,
+    weapon: `${prefix} ${weapon}`,
+  }));
+}
+
+// Enrich case skins with images and add special (knife/glove) items
+const enrichedCases: Record<string, any> = {};
+for (const [id, caseData] of Object.entries(caseDatabase)) {
+  // Check if case already has special rarity skins
+  const hasSpecials = caseData.skins.some(s => s.rarity === 'special');
+  const specials = hasSpecials ? [] : getSpecialSkins(caseData.knife);
+  const allSkins = [...caseData.skins, ...specials];
+
+  enrichedCases[id] = {
+    ...caseData,
+    skins: allSkins.map(s => {
+      const key = `${s.weapon}|${s.name}`.toLowerCase();
+      return { ...s, image: imageMap[key] || null };
+    }),
+  };
+}
+
+const casesJson = JSON.stringify(enrichedCases);
+
+const breadcrumbs = [
+  { name: 'Home', url: '/' },
+  { name: 'Skins', url: '/skins/' },
+  { name: 'Case Simulator', url: '/case-simulator/' },
+];
+---
+
+<Base title="Case Simulator — Open CS2 Cases" description="Free CS2 case opening simulator with realistic roulette animation. Open Kilowatt, Gallery, Revolution and more cases. Track your luck and stats!" currentNav="/skins/">
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema(breadcrumbs))} />
+    <script type="application/ld+json" set:html={JSON.stringify(toolAppSchema({ name: 'CS2 Case Opening Simulator', url: 'https://csdb.gg/case-simulator/', description: 'Free CS2 case opening simulator with realistic roulette animation. Open Kilowatt, Gallery, Revolution and more cases. Track your luck and stats!' }))} />
+  </Fragment>
+<div class="cs-page">
+  <div class="breadcrumb">
+    <a href="/">Home</a> / <a href="/cases/">Cases</a> / Case Simulator
+  </div>
+
+  <h1>Case Simulator</h1>
+  <p class="cs-subtitle">Open cases with realistic roulette animations. Track your stats and see if you'd profit!</p>
+
+  <div class="cs-layout">
+    <!-- Left: Case selector -->
+    <div class="cs-sidebar">
+      <h2 class="cs-sidebar-title">Select a Case</h2>
+      <div class="cs-case-list" id="caseList"></div>
+    </div>
+
+    <!-- Center: Roulette area -->
+    <div class="cs-main">
+      <!-- Welcome state -->
+      <div id="welcomeState" class="cs-welcome">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="cs-welcome-icon">
+          <rect x="2" y="4" width="20" height="16" rx="2"/>
+          <line x1="2" y1="10" x2="22" y2="10"/>
+        </svg>
+        <h3>Choose a case to begin</h3>
+        <p>Select any case from the list on the left</p>
+      </div>
+
+      <!-- Active case state -->
+      <div id="activeState" class="cs-active hidden">
+        <div class="cs-case-header">
+          <div>
+            <h3 id="caseName" class="cs-case-name"></h3>
+            <p id="caseInfo" class="cs-case-info"></p>
+          </div>
+          <button id="backBtn" class="cs-back-btn" title="Pick different case">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </button>
+        </div>
+
+        <!-- Roulette reels container -->
+        <div class="cs-reels-container" id="reelsContainer">
+          <div class="cs-roulette-wrap">
+            <div class="cs-pointer"></div>
+            <div class="cs-roulette" id="roulette">
+              <div class="cs-strip" id="strip"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Controls -->
+        <div class="cs-controls">
+          <div class="cs-spin-options">
+            <button class="cs-spin-count active" data-count="1">×1</button>
+            <button class="cs-spin-count" data-count="3">×3</button>
+            <button class="cs-spin-count" data-count="5">×5</button>
+            <button class="cs-spin-count" data-count="10">×10</button>
+          </div>
+          <button id="openBtn" class="cs-open-btn">
+            Open Case
+          </button>
+        </div>
+
+        <!-- Result (shown after spin) -->
+        <div id="resultArea" class="cs-result hidden"></div>
+
+        <!-- Case contents -->
+        <div class="cs-contents">
+          <h4>Case Contents</h4>
+          <div id="caseContents" class="cs-contents-grid"></div>
+        </div>
+
+        <!-- Odds -->
+        <div class="cs-odds">
+          <span><i class="dot mil-spec"></i>Mil-Spec 79.92%</span>
+          <span><i class="dot restricted"></i>Restricted 15.98%</span>
+          <span><i class="dot classified"></i>Classified 3.20%</span>
+          <span><i class="dot covert"></i>Covert 0.64%</span>
+          <span><i class="dot special"></i>Knife/Gloves 0.26%</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right: Stats -->
+    <div class="cs-stats">
+      <h2 class="cs-stats-title">Session Stats</h2>
+      <div class="cs-stat-cards">
+        <div class="cs-stat-card">
+          <div class="cs-stat-val" id="statOpened">0</div>
+          <div class="cs-stat-lbl">Opened</div>
+        </div>
+        <div class="cs-stat-card">
+          <div class="cs-stat-val">$<span id="statSpent">0.00</span></div>
+          <div class="cs-stat-lbl">Spent</div>
+        </div>
+      </div>
+
+      <div class="cs-profit-card">
+        <div class="cs-profit-val neutral" id="statProfit">$0.00</div>
+        <div class="cs-profit-lbl">Profit / Loss</div>
+      </div>
+      <div class="cs-stat-cards">
+        <div class="cs-stat-card">
+          <div class="cs-stat-val">$<span id="statValue">0.00</span></div>
+          <div class="cs-stat-lbl">Items Value</div>
+        </div>
+        <div class="cs-stat-card">
+          <div class="cs-stat-val" id="statROI">0%</div>
+          <div class="cs-stat-lbl">ROI</div>
+        </div>
+      </div>
+
+      <h3 class="cs-stats-sub">Rarity Breakdown</h3>
+      <div class="cs-rarity-list">
+        <div class="cs-rarity-row"><i class="dot mil-spec"></i><span>Mil-Spec</span><b id="rMilspec">0</b></div>
+        <div class="cs-rarity-row"><i class="dot restricted"></i><span>Restricted</span><b id="rRestricted">0</b></div>
+        <div class="cs-rarity-row"><i class="dot classified"></i><span>Classified</span><b id="rClassified">0</b></div>
+        <div class="cs-rarity-row"><i class="dot covert"></i><span>Covert</span><b id="rCovert">0</b></div>
+        <div class="cs-rarity-row"><i class="dot special"></i><span>Knife/Gloves</span><b id="rSpecial">0</b></div>
+      </div>
+
+      <h3 class="cs-stats-sub">Best Pull</h3>
+      <div class="cs-best-pull" id="bestPull">
+        <p class="cs-empty">No pulls yet</p>
+      </div>
+
+      <h3 class="cs-stats-sub">Recent Pulls</h3>
+      <div class="cs-recent" id="recentPulls">
+        <p class="cs-empty">No pulls yet</p>
+      </div>
+
+      <button id="resetBtn" class="cs-reset-btn">Reset Stats</button>
+    </div>
+  </div>
+
+  <div class="internal-links" style="display:flex;flex-wrap:wrap;gap:.5rem;margin-top:2rem;padding:1rem;background:var(--bg2);border:1px solid var(--border);border-radius:10px">
+    <strong style="width:100%;margin-bottom:.25rem">Related Resources:</strong>
+    <a href="/cases/">Cases & Collections</a>
+    <a href="/case-odds-calculator/">Case Odds Calculator</a>
+    <a href="/skins/">Skin Database</a>
+    <a href="/skin-compare/">Compare Skins</a>
+    <a href="/price-tracker/">Price Tracker</a>
+    <a href="/market-trends/">Market Trends</a>
+    <a href="/float-checker/">Float Checker</a>
+    <a href="/tradeup-calculator/">Trade-Up Calculator</a>
+    <a href="/inventory-lookup/">Inventory Lookup</a>
+    <a href="/loadout-builder/">Loadout Builder</a>
+    <a href="/weapons/">Weapon Database</a>
+    <a href="/guides/skins-investing-guide/">Investing Guide</a>
+    <a href="/guides/trading-guide/">Trading Guide</a>
+    <a href="/guides/float-guide/">Float Guide</a>
+  </div>
+</div>
+
+<ExploreMore context="skins" />
+
+<style is:inline>
+  .cs-page{display:flex;flex-direction:column}
+  .breadcrumb{font-size:.85rem;color:var(--text2);margin-bottom:1rem}
+  .breadcrumb a{color:var(--accent);text-decoration:none}
+  .breadcrumb a:hover{text-decoration:underline}
+  .cs-page h1{font-size:2rem;font-weight:800;margin-bottom:.25rem;color:var(--text)}
+  .cs-subtitle{color:var(--text2);margin-bottom:2rem;font-size:.95rem}
+
+  .cs-layout{display:grid;grid-template-columns:240px minmax(0,1fr) 260px;gap:1rem;min-height:calc(100vh - 280px)}
+
+  /* Sidebar */
+  .cs-sidebar{display:flex;flex-direction:column;gap:.75rem}
+  .cs-sidebar-title{font-size:1.1rem;margin:0;color:var(--text)}
+  .cs-case-list{display:flex;flex-direction:column;gap:.5rem;max-height:calc(100vh - 240px);overflow-y:auto;padding-right:.25rem}
+  .cs-case-list::-webkit-scrollbar{width:4px}
+  .cs-case-list::-webkit-scrollbar-thumb{background:var(--border);border-radius:4px}
+
+  .cs-case-card{background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:.7rem .9rem;cursor:pointer;transition:all .15s;display:flex;justify-content:space-between;align-items:center}
+  .cs-case-card:hover{border-color:var(--accent);background:var(--bg3);transform:translateX(3px)}
+  .cs-case-card.active{border-color:#4ade80;background:rgba(74,222,128,.06);box-shadow:0 0 0 1px rgba(74,222,128,.15)}
+  .cs-case-card-name{font-weight:600;font-size:.85rem;color:var(--text)}
+  .cs-case-card-meta{font-size:.7rem;color:var(--text2);margin-top:.15rem}
+  .cs-case-card-price{color:var(--accent);font-weight:700;font-size:.8rem;white-space:nowrap}
+
+  /* Main area */
+  .cs-main{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:1.25rem;display:flex;flex-direction:column;min-height:400px;min-width:0;overflow:hidden}
+
+  .cs-welcome{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
+  .cs-welcome-icon{width:56px;height:56px;stroke:var(--accent);opacity:.5;margin-bottom:1rem}
+  .cs-welcome h3{font-size:1.2rem;margin:0 0 .4rem;color:var(--text)}
+  .cs-welcome p{margin:0;color:var(--text2);font-size:.9rem}
+
+  .hidden{display:none!important}
+
+  .cs-active{display:flex;flex-direction:column;gap:1rem}
+  .cs-case-header{display:flex;justify-content:space-between;align-items:flex-start}
+  .cs-case-name{margin:0;font-size:1.15rem;color:var(--text)}
+  .cs-case-info{margin:.15rem 0 0;font-size:.8rem;color:var(--text2)}
+  .cs-back-btn{background:none;border:none;color:var(--text2);cursor:pointer;padding:.4rem;border-radius:6px;transition:all .15s}
+  .cs-back-btn:hover{color:var(--accent);background:var(--bg3)}
+
+  /* Roulette */
+  .cs-reels-container{display:flex;flex-direction:column;gap:.5rem;margin:.5rem 0}
+  .cs-roulette-wrap{position:relative}
+  .cs-pointer{position:absolute;top:0;left:50%;transform:translateX(-50%);width:0;height:0;border-left:10px solid transparent;border-right:10px solid transparent;border-top:14px solid #4ade80;z-index:5;filter:drop-shadow(0 2px 4px rgba(74,222,128,.4))}
+  .cs-roulette{background:var(--bg);border:2px solid var(--border);border-radius:8px;overflow:hidden;height:120px;display:flex;align-items:center;position:relative;width:100%}
+  .cs-reels-container.multi .cs-roulette{height:90px}
+  .cs-reels-container.multi .cs-item{width:80px;height:80px}
+  .cs-reels-container.multi .cs-item-img{width:48px;height:36px}
+  .cs-reels-container.multi .cs-item-weapon{font-size:.6rem}
+  .cs-reels-container.multi .cs-item-skin{font-size:.5rem}
+  .cs-roulette::before,.cs-roulette::after{content:'';position:absolute;top:0;bottom:0;width:60px;z-index:3;pointer-events:none}
+  .cs-roulette::before{left:0;background:linear-gradient(to right,var(--bg),transparent)}
+  .cs-roulette::after{right:0;background:linear-gradient(to left,var(--bg),transparent)}
+  .cs-strip{display:flex;gap:8px;padding:0 8px;will-change:transform}
+  .cs-strip.animating{transition:transform 4s cubic-bezier(.15,.3,.2,1)}
+  .cs-reel-label{position:absolute;left:8px;top:50%;transform:translateY(-50%);background:rgba(0,0,0,.6);color:var(--text2);font-size:.6rem;font-weight:700;padding:.15rem .4rem;border-radius:4px;z-index:4}
+
+  .cs-item{flex-shrink:0;width:100px;height:100px;border-radius:6px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:.3rem;border:2px solid;position:relative;overflow:hidden}
+  .cs-item-img{width:60px;height:45px;object-fit:contain;margin-bottom:.1rem;filter:drop-shadow(0 2px 4px rgba(0,0,0,.3))}
+  .cs-item-placeholder{width:50px;height:38px;display:flex;align-items:center;justify-content:center;font-size:1.4rem;margin-bottom:.1rem;opacity:.7}
+  .cs-item.mil-spec{background:rgba(75,105,255,.1);border-color:rgba(75,105,255,.4)}
+  .cs-item.restricted{background:rgba(136,71,255,.1);border-color:rgba(136,71,255,.4)}
+  .cs-item.classified{background:rgba(211,44,230,.1);border-color:rgba(211,44,230,.4)}
+  .cs-item.covert{background:rgba(235,75,75,.1);border-color:rgba(235,75,75,.4)}
+  .cs-item.special{background:rgba(228,174,57,.12);border-color:#e4ae39;box-shadow:0 0 8px rgba(228,174,57,.3)}
+  .cs-item.special.winner{box-shadow:0 0 25px rgba(228,174,57,.6),0 0 50px rgba(228,174,57,.3)!important;border-color:#ffd700!important;animation:goldPulse 1s ease-in-out infinite alternate!important}
+  @keyframes goldPulse{from{box-shadow:0 0 20px rgba(228,174,57,.4),0 0 40px rgba(228,174,57,.15)}to{box-shadow:0 0 35px rgba(255,215,0,.6),0 0 60px rgba(228,174,57,.3)}}
+  .cs-item-weapon{font-weight:700;font-size:.7rem;color:var(--text);margin-bottom:.15rem}
+  .cs-item-skin{font-size:.6rem;color:var(--text2);line-height:1.2}
+  .cs-item.winner{box-shadow:0 0 20px rgba(74,222,128,.4);border-color:#4ade80!important;animation:winPulse 1s ease-in-out infinite alternate}
+  @keyframes winPulse{from{box-shadow:0 0 15px rgba(74,222,128,.3)}to{box-shadow:0 0 30px rgba(74,222,128,.6)}}
+
+  /* Controls */
+  .cs-controls{display:flex;align-items:center;gap:1rem;justify-content:center;flex-wrap:wrap}
+  .cs-spin-options{display:flex;gap:.35rem}
+  .cs-spin-count{background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:.35rem .65rem;font-size:.8rem;font-weight:600;color:var(--text2);cursor:pointer;transition:all .15s;font-family:inherit}
+  .cs-spin-count:hover{border-color:var(--text2)}
+  .cs-spin-count.active{background:rgba(74,222,128,.1);border-color:#4ade80;color:#4ade80}
+  .cs-open-btn{background:linear-gradient(135deg,#4ade80,#34d399);color:#0a1a0f;border:none;border-radius:8px;padding:.6rem 2rem;font-size:.95rem;font-weight:700;cursor:pointer;transition:all .2s;font-family:inherit;box-shadow:0 4px 12px rgba(74,222,128,.25)}
+  .cs-open-btn:hover:not(:disabled){transform:translateY(-1px);box-shadow:0 6px 18px rgba(74,222,128,.35)}
+  .cs-open-btn:active:not(:disabled){transform:translateY(0)}
+  .cs-open-btn:disabled{opacity:.5;cursor:not-allowed}
+
+  /* Results */
+  .cs-result{display:flex;flex-wrap:wrap;gap:.75rem;justify-content:center;padding:.75rem 0}
+  .cs-result-card{border:2px solid;border-radius:10px;padding:1rem 1.25rem;text-align:center;min-width:160px;animation:resultPop .4s cubic-bezier(.34,1.56,.64,1)}
+  @keyframes resultPop{from{opacity:0;transform:scale(.85)}to{opacity:1;transform:scale(1)}}
+  .cs-result-card.mil-spec{border-color:#4b69ff;box-shadow:0 0 20px rgba(75,105,255,.2)}
+  .cs-result-card.restricted{border-color:#8847ff;box-shadow:0 0 20px rgba(136,71,255,.2)}
+  .cs-result-card.classified{border-color:#d32ce6;box-shadow:0 0 20px rgba(211,44,230,.2)}
+  .cs-result-card.covert{border-color:#eb4b4b;box-shadow:0 0 25px rgba(235,75,75,.3)}
+  .cs-result-card.special{border-color:#ffd700;box-shadow:0 0 30px rgba(228,174,57,.4),0 0 60px rgba(255,215,0,.15);background:linear-gradient(135deg,rgba(228,174,57,.08),rgba(255,215,0,.04));position:relative;overflow:hidden}
+  .cs-result-card.special::before{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:conic-gradient(from 0deg,transparent,rgba(255,215,0,.08),transparent,rgba(228,174,57,.08),transparent);animation:goldSpin 4s linear infinite}
+  @keyframes goldSpin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+  .cs-result-img{width:80px;height:60px;object-fit:contain;margin:.4rem 0;filter:drop-shadow(0 4px 8px rgba(0,0,0,.4))}
+  .cs-result-rarity{font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin-bottom:.3rem}
+  .cs-result-rarity.mil-spec{color:#4b69ff}.cs-result-rarity.restricted{color:#8847ff}.cs-result-rarity.classified{color:#d32ce6}.cs-result-rarity.covert{color:#eb4b4b}.cs-result-rarity.special{color:#e4ae39}
+  .cs-result-weapon{font-size:1rem;font-weight:800;color:var(--text);margin-bottom:.15rem}
+  .cs-result-skin{font-size:.85rem;color:var(--text2)}
+  .cs-result-price{font-size:.85rem;font-weight:700;margin-top:.3rem}
+  .cs-result-price.profit{color:#4ade80}
+  .cs-result-price.loss{color:#ef4444}
+  .cs-result-price.neutral{color:var(--text2)}
+
+  /* Case contents */
+  .cs-contents{margin-top:.5rem}
+  .cs-contents h4{font-size:.9rem;color:var(--text);margin:0 0 .6rem}
+  .cs-contents-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:.4rem;width:100%}
+  .cs-content-item{background:var(--bg3);border-radius:5px;padding:.4rem .55rem;font-size:.7rem;display:flex;align-items:center;gap:.4rem;border-left:3px solid}
+  .cs-content-item.mil-spec{border-left-color:#4b69ff}
+  .cs-content-item.restricted{border-left-color:#8847ff}
+  .cs-content-item.classified{border-left-color:#d32ce6}
+  .cs-content-item.covert{border-left-color:#eb4b4b}
+  .cs-content-item .ci-img{width:32px;height:24px;object-fit:contain;flex-shrink:0}
+  .cs-content-item .ci-weapon{font-weight:600;color:var(--text);white-space:nowrap}
+  .cs-content-item .ci-skin{color:var(--text2)}
+  .cs-content-item .ci-price{color:var(--accent);font-weight:600;font-size:.65rem;margin-left:auto;white-space:nowrap}
+
+  /* Odds */
+  .cs-odds{display:flex;flex-wrap:wrap;gap:.6rem 1.2rem;justify-content:center;font-size:.75rem;color:var(--text2);padding:.5rem 0}
+  .cs-odds span{display:flex;align-items:center;gap:.3rem}
+  .dot{width:8px;height:8px;border-radius:50%;display:inline-block;flex-shrink:0}
+  .dot.mil-spec{background:#4b69ff}.dot.restricted{background:#8847ff}.dot.classified{background:#d32ce6}.dot.covert{background:#eb4b4b}.dot.special{background:#ffd700;box-shadow:0 0 4px rgba(255,215,0,.5)}
+
+  /* Stats panel */
+  .cs-stats{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:1rem;position:sticky;top:90px;height:fit-content;max-height:calc(100vh - 110px);overflow-y:auto;display:flex;flex-direction:column;gap:.6rem;min-width:0}
+  .cs-stats::-webkit-scrollbar{width:4px}
+  .cs-stats::-webkit-scrollbar-thumb{background:var(--border);border-radius:4px}
+  .cs-stats-title{font-size:1.1rem;margin:0;color:var(--text)}
+  .cs-stats-sub{font-size:.85rem;margin:0;color:var(--text)}
+  .cs-stat-cards{display:grid;grid-template-columns:1fr 1fr;gap:.5rem}
+  .cs-stat-card{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:.7rem;text-align:center}
+  .cs-stat-val{font-size:1.3rem;font-weight:800;color:var(--accent)}
+  .cs-stat-lbl{font-size:.65rem;color:var(--text2);text-transform:uppercase;letter-spacing:.04em;margin-top:.2rem}
+  .cs-rarity-list{display:flex;flex-direction:column;gap:.4rem}
+  .cs-rarity-row{display:flex;align-items:center;gap:.5rem;font-size:.8rem;color:var(--text2)}
+  .cs-rarity-row b{margin-left:auto;color:var(--accent);font-size:.85rem}
+  .cs-best-pull,.cs-recent{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:.75rem;min-height:50px}
+  .cs-empty{color:var(--text2);font-size:.8rem;margin:0;text-align:center}
+  .cs-recent{max-height:150px;overflow-y:auto}
+  .cs-recent-item{font-size:.75rem;padding:.25rem 0;border-bottom:1px solid var(--border);display:flex;justify-content:space-between}
+  .cs-recent-item:last-child{border:none}
+  .cs-profit-card{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:.75rem;text-align:center}
+  .cs-profit-val{font-size:1.3rem;font-weight:800}
+  .cs-profit-val.profit{color:#4ade80}
+  .cs-profit-val.loss{color:#ef4444}
+  .cs-profit-lbl{font-size:.65rem;color:var(--text2);text-transform:uppercase;letter-spacing:.04em;margin-top:.2rem}
+  .cs-reset-btn{background:var(--bg3);border:1px solid var(--border);color:var(--text2);border-radius:8px;padding:.5rem;font-size:.8rem;cursor:pointer;transition:all .15s;font-family:inherit;width:100%}
+  .cs-reset-btn:hover{border-color:var(--accent);color:var(--text)}
+
+  .bp-rarity{font-size:.6rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;margin-bottom:.15rem}
+  .bp-weapon{font-size:.9rem;font-weight:700;color:var(--text)}
+  .bp-skin{font-size:.75rem;color:var(--text2)}
+
+  /* Responsive */
+  @media(max-width:1200px){
+    .cs-layout{grid-template-columns:1fr;gap:1rem}
+    .cs-sidebar{order:1}
+    .cs-case-list{max-height:none;display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:.5rem}
+    .cs-main{order:2}
+    .cs-stats{order:3;position:static;max-height:none}
+  }
+  @media(max-width:600px){
+    .cs-case-list{grid-template-columns:1fr 1fr}
+    .cs-item{width:85px;height:85px;font-size:.55rem}
+    .cs-roulette{height:105px}
+    .cs-contents-grid{grid-template-columns:1fr 1fr}
+  }
+</style>
+
+<script define:vars={{ casesJson }}>
+  const cases = JSON.parse(casesJson);
+
+  // State
+  let currentCase = null;
+  let spinCount = 1;
+  let isSpinning = false;
+  let stats = { opened: 0, spent: 0, value: 0, milspec: 0, restricted: 0, classified: 0, covert: 0, special: 0, bestPull: null, recent: [] };
+
+  // Skin prices cache (fetched from API)
+  let skinPrices = {};
+
+  // DOM refs
+  const caseListEl = document.getElementById('caseList');
+  const welcomeEl = document.getElementById('welcomeState');
+  const activeEl = document.getElementById('activeState');
+  const caseNameEl = document.getElementById('caseName');
+  const caseInfoEl = document.getElementById('caseInfo');
+  const reelsContainer = document.getElementById('reelsContainer');
+  const openBtn = document.getElementById('openBtn');
+  const resultArea = document.getElementById('resultArea');
+  const caseContentsEl = document.getElementById('caseContents');
+
+  const ITEM_W = 100;
+  const ITEM_W_MULTI = 80;
+  const GAP = 8;
+  const STRIP_COUNT = 70;
+  const WINNER_INDEX = 55;
+
+  const rarityOrder = { 'mil-spec': 0, 'restricted': 1, 'classified': 2, 'covert': 3, 'special': 4 };
+  const rarityColors = { 'mil-spec': '#4b69ff', 'restricted': '#8847ff', 'classified': '#d32ce6', 'covert': '#eb4b4b', 'special': '#e4ae39' };
+  const rarityEmoji = { 'mil-spec': '', 'restricted': '', 'classified': '', 'covert': '', 'special': '🔪' };
+
+  // Normalize key for image/price matching
+  function normalizeKey(weapon, name) {
+    return `${weapon}|${name}`.toLowerCase().replace(/[^a-z0-9|]/g, '');
+  }
+
+  // Get item image HTML — either real image or styled placeholder
+  function getItemImgHtml(skin, imgClass) {
+    if (skin.image) {
+      return `<img class="${imgClass}" src="${skin.image}" alt="${skin.weapon} ${skin.name}" loading="lazy" onerror="this.parentElement.querySelector('.${imgClass}')?.remove();this.remove()">`;
+    }
+    if (skin.rarity === 'special') {
+      return `<div class="cs-item-placeholder">🔪</div>`;
+    }
+    return '';
+  }
+
+  // Get price for a skin
+  function getSkinPrice(skin) {
+    const key1 = `${skin.weapon}|${skin.name}`.toLowerCase();
+    if (skinPrices[key1]) return skinPrices[key1];
+    const key2 = normalizeKey(skin.weapon, skin.name);
+    if (skinPrices[key2]) return skinPrices[key2];
+    return null;
+  }
+
+  function formatPrice(cents) {
+    if (!cents) return null;
+    return '$' + (cents / 100).toFixed(2);
+  }
+
+  // Build case list
+  Object.values(cases).forEach(c => {
+    const el = document.createElement('button');
+    el.className = 'cs-case-card';
+    el.dataset.id = c.id;
+    el.innerHTML = `<div><div class="cs-case-card-name">${c.name}</div><div class="cs-case-card-meta">${c.year} · ${c.knife}</div></div><span class="cs-case-card-price">$${c.keyPrice.toFixed(2)}</span>`;
+    el.addEventListener('click', () => selectCase(c));
+    caseListEl.appendChild(el);
+  });
+
+  // Select case
+  function selectCase(c) {
+    currentCase = c;
+    document.querySelectorAll('.cs-case-card').forEach(el => el.classList.toggle('active', el.dataset.id === c.id));
+    welcomeEl.classList.add('hidden');
+    activeEl.classList.remove('hidden');
+    caseNameEl.textContent = c.name;
+    caseInfoEl.textContent = `${c.year} · $${c.keyPrice.toFixed(2)} per open · ${c.knife}`;
+    resultArea.classList.add('hidden');
+    resultArea.innerHTML = '';
+    resetReels();
+    buildContents();
+    openBtn.disabled = false;
+  }
+
+  // Build case contents display
+  function buildContents() {
+    caseContentsEl.innerHTML = '';
+    const sorted = [...currentCase.skins].sort((a, b) => rarityOrder[b.rarity] - rarityOrder[a.rarity]);
+    sorted.forEach(s => {
+      const el = document.createElement('div');
+      el.className = `cs-content-item ${s.rarity}`;
+      const imgHtml = s.image
+        ? `<img class="ci-img" src="${s.image}" alt="" loading="lazy" onerror="this.style.display='none'">`
+        : (s.rarity === 'special' ? '<span style="font-size:1rem;margin-right:.2rem">🔪</span>' : '');
+      const price = getSkinPrice(s);
+      const priceHtml = price ? `<span class="ci-price">${formatPrice(price)}</span>` : '';
+      el.innerHTML = `${imgHtml}<span class="ci-weapon">${s.weapon}</span><span class="ci-skin">${s.name}</span>${priceHtml}`;
+      caseContentsEl.appendChild(el);
+    });
+  }
+
+  // Pick winner by official odds
+  function pickWinner() {
+    const rand = Math.random() * 100;
+    let rarity;
+    if (rand < 79.92) rarity = 'mil-spec';
+    else if (rand < 95.90) rarity = 'restricted';
+    else if (rand < 99.10) rarity = 'classified';
+    else if (rand < 99.74) rarity = 'covert';
+    else rarity = 'special';
+    const pool = currentCase.skins.filter(s => s.rarity === rarity);
+    if (pool.length === 0) {
+      const fallback = currentCase.skins.filter(s => s.rarity === 'mil-spec');
+      return fallback[Math.floor(Math.random() * fallback.length)];
+    }
+    return pool[Math.floor(Math.random() * pool.length)];
+  }
+
+  // Reset reels container to single default reel
+  function resetReels() {
+    reelsContainer.classList.remove('multi');
+    reelsContainer.innerHTML = `<div class="cs-roulette-wrap">
+      <div class="cs-pointer"></div>
+      <div class="cs-roulette"><div class="cs-strip"></div></div>
+    </div>`;
+    buildStripIn(reelsContainer.querySelector('.cs-strip'), null, false);
+  }
+
+  // Build strip items into a given strip element
+  function buildStripIn(stripEl, winner, isMulti) {
+    stripEl.innerHTML = '';
+    stripEl.classList.remove('animating');
+    stripEl.style.transform = 'translateX(0)';
+
+    const weights = { 'mil-spec': 80, 'restricted': 16, 'classified': 3, 'covert': 1, 'special': 1 };
+    const pool = [];
+    currentCase.skins.forEach(s => {
+      const w = weights[s.rarity] || 1;
+      for (let i = 0; i < w; i++) pool.push(s);
+    });
+
+    for (let i = 0; i < STRIP_COUNT; i++) {
+      let skin = (winner && i === WINNER_INDEX) ? winner : pool[Math.floor(Math.random() * pool.length)];
+      const el = document.createElement('div');
+      el.className = `cs-item ${skin.rarity}`;
+      const imgClass = isMulti ? 'cs-item-img' : 'cs-item-img';
+      el.innerHTML = `${getItemImgHtml(skin, 'cs-item-img')}<div class="cs-item-weapon">${skin.weapon}</div><div class="cs-item-skin">${skin.name}</div>`;
+      stripEl.appendChild(el);
+    }
+  }
+
+  // Animate a single reel strip
+  function animateStrip(stripEl, rouletteEl, isMulti) {
+    return new Promise(resolve => {
+      const itemW = isMulti ? ITEM_W_MULTI : ITEM_W;
+      const itemTotal = itemW + GAP;
+      const containerW = rouletteEl.offsetWidth;
+      const stopX = (WINNER_INDEX * itemTotal) - (containerW / 2) + (itemW / 2) + (Math.random() * 40 - 20);
+
+      void stripEl.offsetHeight;
+      stripEl.classList.add('animating');
+      stripEl.style.transform = `translateX(-${stopX}px)`;
+
+      setTimeout(() => {
+        const items = stripEl.children;
+        if (items[WINNER_INDEX]) items[WINNER_INDEX].classList.add('winner');
+        resolve();
+      }, 4100);
+    });
+  }
+
+  // Open case(s)
+  openBtn.addEventListener('click', async () => {
+    if (isSpinning || !currentCase) return;
+    isSpinning = true;
+    openBtn.disabled = true;
+    resultArea.classList.add('hidden');
+    resultArea.innerHTML = '';
+
+    const winners = [];
+    for (let i = 0; i < spinCount; i++) {
+      winners.push(pickWinner());
+    }
+
+    const isMulti = spinCount > 1;
+    reelsContainer.classList.toggle('multi', isMulti);
+
+    // Build all reel wraps
+    reelsContainer.innerHTML = '';
+    const stripEls = [];
+    const rouletteEls = [];
+
+    for (let i = 0; i < spinCount; i++) {
+      const wrap = document.createElement('div');
+      wrap.className = 'cs-roulette-wrap';
+      wrap.innerHTML = `<div class="cs-pointer"></div>
+        <div class="cs-roulette"><div class="cs-strip"></div></div>
+        ${isMulti ? `<div class="cs-reel-label">#${i + 1}</div>` : ''}`;
+      reelsContainer.appendChild(wrap);
+
+      const stripEl = wrap.querySelector('.cs-strip');
+      const rouletteEl = wrap.querySelector('.cs-roulette');
+      buildStripIn(stripEl, winners[i], isMulti);
+      stripEls.push(stripEl);
+      rouletteEls.push(rouletteEl);
+    }
+
+    // Animate all reels with staggered start (150ms apart)
+    const animPromises = stripEls.map((stripEl, i) => {
+      return new Promise(resolve => {
+        setTimeout(() => {
+          animateStrip(stripEl, rouletteEls[i], isMulti).then(resolve);
+        }, i * 150);
+      });
+    });
+
+    await Promise.all(animPromises);
+
+    // Record stats
+    winners.forEach(w => {
+      stats.opened++;
+      stats.spent += currentCase.keyPrice;
+      const price = getSkinPrice(w);
+      if (price) stats.value += price / 100;
+      const key = w.rarity === 'mil-spec' ? 'milspec' : w.rarity;
+      stats[key] = (stats[key] || 0) + 1;
+      if (!stats.bestPull || rarityOrder[w.rarity] > rarityOrder[stats.bestPull.rarity]) {
+        stats.bestPull = w;
+      }
+      stats.recent.unshift({ ...w, price });
+      if (stats.recent.length > 20) stats.recent.pop();
+    });
+
+    updateStats();
+    showResults(winners);
+
+    isSpinning = false;
+    openBtn.disabled = false;
+  });
+
+  // Show results
+  function showResults(winners) {
+    resultArea.classList.remove('hidden');
+    resultArea.innerHTML = winners.map(w => {
+      const price = getSkinPrice(w);
+      const priceDollars = price ? price / 100 : 0;
+      const profit = priceDollars - currentCase.keyPrice;
+      const priceClass = !price ? 'neutral' : profit >= 0 ? 'profit' : 'loss';
+      const priceHtml = price
+        ? `<div class="cs-result-price ${priceClass}">${formatPrice(price)} (${profit >= 0 ? '+' : ''}$${profit.toFixed(2)})</div>`
+        : '';
+      const rarityLabel = w.rarity === 'special'
+        ? '🔪 Special'
+        : w.rarity === 'mil-spec' ? 'Mil-Spec'
+        : w.rarity.charAt(0).toUpperCase() + w.rarity.slice(1);
+      return `<div class="cs-result-card ${w.rarity}">
+        <div class="cs-result-rarity ${w.rarity}">${rarityLabel}</div>
+        ${getItemImgHtml(w, 'cs-result-img')}
+        <div class="cs-result-weapon">${w.weapon}</div>
+        <div class="cs-result-skin">${w.name}</div>
+        ${priceHtml}
+      </div>`;
+    }).join('');
+  }
+
+  // Update stats
+  function updateStats() {
+    document.getElementById('statOpened').textContent = stats.opened;
+    document.getElementById('statSpent').textContent = stats.spent.toFixed(2);
+    document.getElementById('rMilspec').textContent = stats.milspec;
+    document.getElementById('rRestricted').textContent = stats.restricted;
+    document.getElementById('rClassified').textContent = stats.classified;
+    document.getElementById('rCovert').textContent = stats.covert;
+    document.getElementById('rSpecial').textContent = stats.special;
+
+    // Profit/loss
+    const profit = stats.value - stats.spent;
+    const profitEl = document.getElementById('statProfit');
+    profitEl.textContent = `${profit >= 0 ? '+' : ''}$${profit.toFixed(2)}`;
+    profitEl.className = `cs-profit-val ${profit >= 0 ? 'profit' : 'loss'}`;
+
+    document.getElementById('statValue').textContent = stats.value.toFixed(2);
+    const roi = stats.spent > 0 ? ((stats.value / stats.spent - 1) * 100).toFixed(1) : '0';
+    document.getElementById('statROI').textContent = `${roi}%`;
+
+    // Best pull
+    const bp = document.getElementById('bestPull');
+    if (stats.bestPull) {
+      const bpEmoji = stats.bestPull.rarity === 'special' ? '🔪 ' : '';
+      bp.innerHTML = `<div class="bp-rarity" style="color:${rarityColors[stats.bestPull.rarity]}">${bpEmoji}${stats.bestPull.rarity}</div><div class="bp-weapon">${stats.bestPull.weapon}</div><div class="bp-skin">${stats.bestPull.name}</div>`;
+    }
+
+    // Recent
+    const rp = document.getElementById('recentPulls');
+    if (stats.recent.length) {
+      rp.innerHTML = stats.recent.slice(0, 10).map(w => {
+        const priceStr = w.price ? ` · ${formatPrice(w.price)}` : '';
+        const emoji = w.rarity === 'special' ? '🔪 ' : '';
+        return `<div class="cs-recent-item">
+          <span style="color:${rarityColors[w.rarity]}">${emoji}${w.weapon}</span>
+          <span>${w.name}${priceStr}</span>
+        </div>`;
+      }).join('');
+    }
+  }
+
+  // Spin count buttons
+  document.querySelectorAll('.cs-spin-count').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.cs-spin-count').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      spinCount = parseInt(btn.dataset.count);
+    });
+  });
+
+  // Back button
+  document.getElementById('backBtn').addEventListener('click', () => {
+    currentCase = null;
+    document.querySelectorAll('.cs-case-card').forEach(el => el.classList.remove('active'));
+    welcomeEl.classList.remove('hidden');
+    activeEl.classList.add('hidden');
+  });
+
+  // Reset
+  document.getElementById('resetBtn').addEventListener('click', () => {
+    stats = { opened: 0, spent: 0, value: 0, milspec: 0, restricted: 0, classified: 0, covert: 0, special: 0, bestPull: null, recent: [] };
+    updateStats();
+    document.getElementById('statProfit').textContent = '$0.00';
+    document.getElementById('statProfit').className = 'cs-profit-val neutral';
+    document.getElementById('statValue').textContent = '0.00';
+    document.getElementById('statROI').textContent = '0%';
+    document.getElementById('bestPull').innerHTML = '<p class="cs-empty">No pulls yet</p>';
+    document.getElementById('recentPulls').innerHTML = '<p class="cs-empty">No pulls yet</p>';
+  });
+
+  // Strip wear condition and prefixes from API keys to get base skin key
+  function stripWear(key) {
+    return key
+      .toLowerCase()
+      .replace(/^stattrak™?\s*/i, '')
+      .replace(/^souvenir\s*/i, '')
+      .replace(/\s*\([^)]+\)\s*$/, '')  // strip (Factory New), (Field-Tested), etc.
+      .replace(/\s*\|\s*/g, '|');        // normalize pipe spacing
+  }
+
+  // Fetch runtime images from PriceEmpire API
+  (async function fetchSkinImages() {
+    try {
+      const res = await fetch('/api/skin-images');
+      if (!res.ok) return;
+      const data = await res.json();
+      if (!data?.images) return;
+      let enriched = 0;
+
+      // Build a base-skin lookup: strip wear/prefixes so "ak-47|inheritance (FT)" → "ak-47|inheritance"
+      const baseSkinImages = {};
+      for (const [k, v] of Object.entries(data.images)) {
+        const baseKey = stripWear(k);
+        if (!baseSkinImages[baseKey]) baseSkinImages[baseKey] = v;
+        const normKey = baseKey.replace(/[^a-z0-9|]/g, '');
+        if (!baseSkinImages[normKey]) baseSkinImages[normKey] = v;
+      }
+
+      for (const c of Object.values(cases)) {
+        for (const skin of c.skins) {
+          if (!skin.image) {
+            const key1 = `${skin.weapon}|${skin.name}`.toLowerCase();
+            const key2 = normalizeKey(skin.weapon, skin.name);
+            const img = baseSkinImages[key1] || baseSkinImages[key2];
+            if (img) { skin.image = img; enriched++; }
+          }
+        }
+      }
+      if (enriched > 0 && currentCase) { buildContents(); resetReels(); }
+    } catch (e) { /* images are optional */ }
+  })();
+
+  // Estimated prices by rarity (in cents) — used as fallback when API prices unavailable
+  const RARITY_PRICES = {
+    'mil-spec': 15,       // ~$0.15
+    'restricted': 75,     // ~$0.75
+    'classified': 450,    // ~$4.50
+    'covert': 2500,       // ~$25.00
+    'special': 15000,     // ~$150.00
+  };
+
+  // Apply fallback rarity prices for any skins without API prices
+  function applyFallbackPrices() {
+    for (const c of Object.values(cases)) {
+      for (const skin of c.skins) {
+        const key1 = `${skin.weapon}|${skin.name}`.toLowerCase();
+        const key2 = normalizeKey(skin.weapon, skin.name);
+        if (!skinPrices[key1] && !skinPrices[key2]) {
+          const est = RARITY_PRICES[skin.rarity] || 10;
+          skinPrices[key1] = est;
+          skinPrices[key2] = est;
+        }
+      }
+    }
+  }
+
+  // Fetch skin prices from PriceEmpire
+  (async function fetchSkinPrices() {
+    try {
+      const res = await fetch('/api/skin-prices');
+      if (!res.ok) { applyFallbackPrices(); if (currentCase) buildContents(); return; }
+      const data = await res.json();
+      if (!data?.prices || Object.keys(data.prices).length === 0) {
+        applyFallbackPrices();
+        if (currentCase) buildContents();
+        return;
+      }
+      // Store prices keyed by base skin name (strip wear conditions)
+      for (const [name, priceData] of Object.entries(data.prices)) {
+        const baseKey = stripWear(name);
+        const parts = baseKey.split('|');
+        if (parts.length >= 2) {
+          const key1 = parts.map(p => p.trim()).join('|');
+          const key2 = key1.replace(/[^a-z0-9|]/g, '');
+          const price = typeof priceData === 'number' ? priceData :
+            (priceData.buff163 || priceData.steam || priceData.skinport || Object.values(priceData)[0] || 0);
+          // Keep the highest price across wears for a given base skin
+          if (price > 0) {
+            if (!skinPrices[key1] || price < skinPrices[key1]) {
+              skinPrices[key1] = price;
+              skinPrices[key2] = price;
+            }
+          }
+        }
+      }
+      // Fill in any remaining skins with fallback prices
+      applyFallbackPrices();
+      // Refresh contents if a case is selected
+      if (currentCase) buildContents();
+    } catch (e) {
+      applyFallbackPrices();
+      if (currentCase) buildContents();
+    }
+  })();
+</script>
+</Base>

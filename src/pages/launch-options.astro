@@ -1,0 +1,172 @@
+---
+import Base from '../layouts/Base.astro';
+import ExploreMore from '../components/ExploreMore.astro';
+import { faqSchema, breadcrumbSchema, toolAppSchema } from '../lib/weapons';
+
+const title = 'CS2 Launch Options Optimizer — Best Settings for Performance | CSDB.gg';
+const description = 'Optimize your CS2 launch options for maximum FPS, reduced input lag, and stable performance. Choose from presets or build a custom launch string for your hardware.';
+
+const faqs = [
+  { question: 'How do I set launch options in CS2?', answer: 'Right-click CS2 in your Steam Library → Properties → General tab → Launch Options. Paste your launch options string in the text field. Changes take effect next time you start the game.' },
+  { question: 'What are the best CS2 launch options?', answer: 'For most players: -novid -high -tickrate 128. Add -threads [your CPU threads] on older hardware. Avoid deprecated options like -nojoy or -lv which no longer do anything in CS2.' },
+  { question: 'Does -high actually help in CS2?', answer: 'The -high flag sets CS2 to high process priority, which can improve performance on systems running background applications. On dedicated gaming PCs with nothing else running, the difference is minimal.' },
+  { question: 'What launch options reduce input lag?', answer: 'The most impactful options for input lag are -high (priority), -d3d9ex (DirectX optimization), and disabling VSync in-game. The -tickrate 128 flag ensures offline practice matches run at full tick rate.' },
+  { question: 'Are there launch options that hurt performance?', answer: 'Yes. Options like -fullscreen (forces exclusive fullscreen which can cause issues), too many -threads, or outdated CS:GO options that don\'t exist in CS2 can cause instability or have no effect.' },
+];
+
+const options = [
+  { flag: '-novid', desc: 'Skips the intro video on startup', category: 'startup', impact: 'Faster launch', recommended: true },
+  { flag: '-high', desc: 'Sets CS2 to high CPU priority', category: 'performance', impact: '+5-15 FPS on busy systems', recommended: true },
+  { flag: '-tickrate 128', desc: 'Sets offline server tick rate to 128', category: 'network', impact: 'Better offline practice', recommended: true },
+  { flag: '-threads N', desc: 'Sets number of CPU threads (replace N)', category: 'performance', impact: 'Can improve multi-core usage', recommended: false },
+  { flag: '-nojoy', desc: 'Disables joystick support (legacy)', category: 'startup', impact: 'Marginal memory save', recommended: false },
+  { flag: '-d3d9ex', desc: 'DirectX 9 optimization for alt-tabbing', category: 'performance', impact: 'Faster alt-tab', recommended: true },
+  { flag: '-freq N', desc: 'Forces monitor refresh rate (replace N)', category: 'display', impact: 'Ensures correct Hz', recommended: false },
+  { flag: '-w N -h N', desc: 'Forces resolution width and height', category: 'display', impact: 'Custom resolution', recommended: false },
+  { flag: '+fps_max 0', desc: 'Uncaps FPS from launch', category: 'performance', impact: 'Immediate unlimited FPS', recommended: true },
+  { flag: '-console', desc: 'Opens console on game start', category: 'startup', impact: 'Quick access to commands', recommended: false },
+  { flag: '-language english', desc: 'Forces English language', category: 'startup', impact: 'Override system language', recommended: false },
+];
+
+const presetOptions = [
+  { name: 'Low-End PC', flags: '-novid -high -threads 4 -d3d9ex +fps_max 0 -nojoy', desc: 'Squeeze every frame from older hardware' },
+  { name: 'Mid-Range', flags: '-novid -high -tickrate 128 -d3d9ex +fps_max 0', desc: 'Balanced performance for modern systems' },
+  { name: 'High-End', flags: '-novid -tickrate 128 +fps_max 0', desc: 'Clean and simple for powerful PCs' },
+  { name: 'Competitive', flags: '-novid -high -tickrate 128 -d3d9ex +fps_max 0', desc: 'Optimized for ranked play' },
+  { name: 'Minimal Input Lag', flags: '-novid -high -d3d9ex +fps_max 0 +engine_low_latency_sleep_after_client_tick true', desc: 'Absolute minimum delay' },
+  { name: 'Streaming', flags: '-novid -tickrate 128 +fps_max 300', desc: 'Capped FPS for smooth encoding' },
+];
+---
+
+<Base title={title} description={description} currentNav="/tools/">
+  <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema([{name:'Home',url:'/'},{name:'Tools',url:'/launch-options'},{name:'Launch Options',url:'/launch-options'}]))}></script>
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema(faqs))}></script>
+  <script type="application/ld+json" set:html={JSON.stringify(toolAppSchema({ name: 'CS2 Launch Options Optimizer', url: 'https://csdb.gg/launch-options/', description }))}></script>
+
+  <nav class="breadcrumb">
+    <a href="/">Home</a> / <a href="/launch-options/">Tools</a> / <span>Launch Options Optimizer</span>
+  </nav>
+
+  <h1>CS2 Launch Options Optimizer</h1>
+  <p>Configure your Steam launch options for optimal CS2 performance. Select individual flags or start from a hardware-matched preset.</p>
+
+  <div class="calc-section">
+    <h2>Quick Presets</h2>
+    <div class="card-grid">
+      {presetOptions.map(p => (
+        <div class="card" data-flags={p.flags} style="cursor:pointer">
+          <h3 style="margin:0">{p.name}</h3>
+          <p style="font-size:.85rem">{p.desc}</p>
+          <code style="display:block;margin-top:.5rem;font-size:.78rem;color:var(--accent);word-break:break-all">{p.flags}</code>
+        </div>
+      ))}
+    </div>
+  </div>
+
+  <div class="calc-section">
+    <h2>Build Custom Launch Options</h2>
+    <div id="optionsList">
+      {options.map(o => (
+        <label style="display:flex;gap:.75rem;align-items:flex-start;padding:.6rem 0;border-bottom:1px solid var(--border);cursor:pointer">
+          <input type="checkbox" class="lo-check" data-flag={o.flag} checked={o.recommended} style="margin-top:.3rem;accent-color:var(--accent)" />
+          <div>
+            <code style="color:var(--accent);font-weight:700">{o.flag}</code>
+            <span style="color:var(--text2);font-size:.88rem;margin-left:.5rem">{o.desc}</span>
+            <span class="tag" style="margin-left:.5rem">{o.impact}</span>
+          </div>
+        </label>
+      ))}
+    </div>
+  </div>
+
+  <div class="result-box" style="margin:2rem 0">
+    <h2 style="margin-top:0">Your Launch Options</h2>
+    <code id="launchString" style="display:block;font-size:1rem;color:var(--accent);word-break:break-all;padding:.5rem 0"></code>
+    <button id="copyBtn" style="margin-top:1rem;padding:.5rem 1.5rem;background:var(--accent);color:#000;border:none;border-radius:6px;cursor:pointer;font-weight:700">Copy to Clipboard</button>
+  </div>
+
+  <h2>Launch Options Reference</h2>
+  <table>
+    <thead><tr><th>Flag</th><th>Category</th><th>Description</th><th>Impact</th></tr></thead>
+    <tbody>
+      {options.map(o => (
+        <tr>
+          <td><code style="color:var(--accent)">{o.flag}</code></td>
+          <td class="tag">{o.category}</td>
+          <td>{o.desc}</td>
+          <td>{o.impact}</td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+
+  <h2>How Launch Options Affect Performance</h2>
+  <p>
+    Launch options are command-line arguments passed to the CS2 executable before the engine initializes. This means they configure low-level behaviour that cannot be changed from the in-game settings menu. The most universally beneficial options are <code>-novid</code> (saves 3-5 seconds per launch) and <code>-tickrate 128</code> (ensures your local server runs at competition-grade tick rate).
+  </p>
+  <p>
+    The <code>-high</code> flag tells Windows to give CS2 priority access to CPU resources. On systems running Discord, Chrome, streaming software, or other background processes, this can meaningfully improve frame consistency. On dedicated gaming machines with nothing else running, the benefit is negligible.
+  </p>
+  <p>
+    Avoid cargo-culting long lists of options from outdated guides. Many flags from CS:GO (like <code>-lv</code>, <code>-processheap</code>, or <code>-nod3d9ex</code>) no longer exist in CS2 and will either be ignored or cause unexpected behaviour. Keep your launch options minimal and purposeful.
+  </p>
+
+  <div class="internal-links">
+    <strong>Related Tools & Guides:</strong>
+    <a href="/autoexec-generator/">Autoexec Generator</a>
+    <a href="/crosshair-generator/">Crosshair Generator</a>
+    <a href="/bind-generator/">Bind Generator</a>
+    <a href="/practice-config/">Practice Config</a>
+    <a href="/sensitivity-converter/">Sensitivity Converter</a>
+    <a href="/resolution-calculator/">Resolution Calculator</a>
+    <a href="/pro-players/">Pro Player Settings</a>
+    <a href="/tools/">All Tools</a>
+    <a href="/guides/fps-optimization-guide/">FPS Optimization Guide</a>
+    <a href="/guides/beginners-guide/">Beginner's Guide</a>
+  </div>
+
+  <h2>Frequently Asked Questions</h2>
+  <dl class="faq">
+    {faqs.map(f => (
+      <Fragment>
+        <dt>{f.question}</dt>
+        <dd>{f.answer}</dd>
+      </Fragment>
+    ))}
+  </dl>
+
+  <ExploreMore context="tools" />
+</Base>
+
+<script is:inline>
+(function(){
+  function buildString(){
+    var checks=document.querySelectorAll('.lo-check');
+    var flags=[];
+    checks.forEach(function(c){if(c.checked)flags.push(c.dataset.flag);});
+    var str=flags.join(' ');
+    document.getElementById('launchString').textContent=str;
+    return str;
+  }
+  document.querySelectorAll('.lo-check').forEach(function(c){c.addEventListener('change',buildString);});
+  document.querySelectorAll('[data-flags]').forEach(function(card){
+    card.addEventListener('click',function(){
+      var flags=card.dataset.flags.split(/\s+/);
+      document.querySelectorAll('.lo-check').forEach(function(c){c.checked=false;});
+      flags.forEach(function(f){
+        document.querySelectorAll('.lo-check').forEach(function(c){
+          if(c.dataset.flag===f||f.startsWith(c.dataset.flag.split(' ')[0]))c.checked=true;
+        });
+      });
+      document.getElementById('launchString').textContent=card.dataset.flags;
+    });
+  });
+  document.getElementById('copyBtn').addEventListener('click',function(){
+    navigator.clipboard.writeText(document.getElementById('launchString').textContent).then(function(){
+      document.getElementById('copyBtn').textContent='Copied!';
+      setTimeout(function(){document.getElementById('copyBtn').textContent='Copy to Clipboard';},2000);
+    });
+  });
+  buildString();
+})();
+</script>

@@ -1,0 +1,541 @@
+---
+import Base from '../layouts/Base.astro';
+import ExploreMore from '../components/ExploreMore.astro';
+import { faqSchema, breadcrumbSchema } from '../lib/weapons';
+
+const title = 'CS2 Economy Calculator';
+const description = 'Calculate team economy and money per round based on round wins, losses, and kills. Plan your buy strategy.';
+
+const faq = [
+  {
+    question: 'What is economy in CS2?',
+    answer: 'Economy refers to the team\'s total money available for purchasing weapons and equipment. Managing economy is crucial for executing strategies and eco rounds.'
+  },
+  {
+    question: 'What is a full buy?',
+    answer: 'A full buy is when the entire team has enough money to purchase rifles, armor, and utility. Typically requires $16,000+ team economy.'
+  },
+  {
+    question: 'What is an eco/save round?',
+    answer: 'An eco round is when the team saves money by buying minimal equipment. This sacrifices the current round to build economy for the next round.'
+  },
+  {
+    question: 'How much money do you get per kill?',
+    answer: 'Players earn $300 for killing an enemy, regardless of whether the team wins or loses the round.'
+  }
+];
+
+const schemaData = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faq.map(item => ({
+    '@type': 'Question',
+    name: item.question,
+    acceptedAnswer: {
+      '@type': 'Answer',
+      text: item.answer
+    }
+  }))
+};
+
+const toolSchema = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": title,
+  "description": description,
+  "applicationCategory": "UtilityApplication",
+  "operatingSystem": "Web",
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+  "author": { "@type": "Organization", "name": "CSDB.gg", "url": "https://csdb.gg" }
+});
+---
+
+<Base title={title} description={description}>
+  <div class="calc-container">
+    <h1>CS2 Economy Calculator</h1>
+    <p class="subtitle">Plan your team's buy strategy round by round</p>
+
+    <div class="calc-section">
+      <div class="calc-row">
+        <div class="input-group">
+          <label for="roundNum">Current Round</label>
+          <input type="number" id="roundNum" min="1" max="30" value="1" class="input-field">
+        </div>
+
+        <div class="input-group">
+          <label for="prevTeamMoney">Previous Round Money</label>
+          <input type="number" id="prevTeamMoney" min="0" value="0" class="input-field">
+        </div>
+
+        <div class="input-group">
+          <label for="roundResult">Round Result</label>
+          <select id="roundResult" class="input-field">
+            <option value="win">Round Won</option>
+            <option value="loss">Round Lost</option>
+            <option value="bomb">Bomb Plant</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="calc-row">
+        <div class="input-group">
+          <label for="teamKills">Team Kills</label>
+          <input type="number" id="teamKills" min="0" value="0" class="input-field">
+        </div>
+
+        <div class="input-group">
+          <label for="assistKills">Assist Kills</label>
+          <input type="number" id="assistKills" min="0" value="0" class="input-field">
+        </div>
+
+        <div class="input-group">
+          <label for="deaths">Deaths</label>
+          <input type="number" id="deaths" min="0" value="0" class="input-field">
+        </div>
+      </div>
+
+      <div class="result-section">
+        <div class="result-box">
+          <h3>Killed Bonus</h3>
+          <p class="money-value" id="killedBonus">$0</p>
+        </div>
+        <div class="result-box">
+          <h3>Round Win Bonus</h3>
+          <p class="money-value" id="winBonus">$0</p>
+        </div>
+        <div class="result-box">
+          <h3>Utility Cost</h3>
+          <p class="money-value" id="utilityCost">$0</p>
+          <input type="number" id="utilityInput" min="0" value="0" placeholder="Optional" style="margin-top: 0.5rem; padding: 0.3rem; font-size: 0.8rem;">
+        </div>
+        <div class="result-box highlight">
+          <h3>Total Economy</h3>
+          <p class="money-value" id="totalEconomy">$0</p>
+        </div>
+      </div>
+
+      <div class="economy-table">
+        <h3>Round Progression</h3>
+        <table id="economyTable">
+          <thead>
+            <tr>
+              <th>Round</th>
+              <th>Result</th>
+              <th>Bonus</th>
+              <th>Total</th>
+              <th>Buy Suggestion</th>
+            </tr>
+          </thead>
+          <tbody id="tableBody">
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="buy-guide">
+      <h2>Buy Strategy Guide</h2>
+      <div class="buy-rows">
+        <div class="buy-item">
+          <h4>Full Buy ($16,000+)</h4>
+          <p>Rifles, armor, grenades, and utility for the entire team</p>
+        </div>
+        <div class="buy-item">
+          <h4>Half Buy ($10,000-$15,999)</h4>
+          <p>Some rifles, armor for critical players, limited utility</p>
+        </div>
+        <div class="buy-item">
+          <h4>Eco Round ($2,000-$9,999)</h4>
+          <p>Save money with pistols and minimal utility. Anti-eco with upgrades is also possible</p>
+        </div>
+        <div class="buy-item">
+          <h4>Full Eco ($0-$1,999)</h4>
+          <p>Minimum purchases to preserve maximum money for next round</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="info-section">
+      <h2>Economy Rules</h2>
+      <ul>
+        <li><strong>Round Win:</strong> $3,250 base + $500 per consecutive win</li>
+        <li><strong>Round Loss:</strong> $1,900 base + $500 per consecutive loss</li>
+        <li><strong>Plant Bonus:</strong> +$800 if bomb is planted</li>
+        <li><strong>Kill Reward:</strong> $300 per kill</li>
+        <li><strong>Assist Reward:</strong> $300 per assist</li>
+        <li><strong>Max Economy:</strong> $16,000 per player</li>
+      </ul>
+    </div>
+
+    <div class="faq-section">
+      <h2>Frequently Asked Questions</h2>
+      {faq.map(item => (
+        <div class="faq-item">
+          <h3>{item.question}</h3>
+          <p>{item.answer}</p>
+        </div>
+      ))}
+    </div>
+
+    <div class="links-section">
+      <h2>Related Tools</h2>
+      <ul>
+        <li><a href="/damage-calculator/">Damage Calculator</a></li>
+        <li><a href="/weapon-compare/">Weapon Compare</a></li>
+        <li><a href="/recoil-patterns/">Recoil Patterns</a></li>
+        <li><a href="/sensitivity-converter/">Sensitivity Converter</a></li>
+        <li><a href="/weapons/">Weapon Database</a></li>
+        <li><a href="/pro-players/">Pro Player Settings</a></li>
+        <li><a href="/tools/">All Tools</a></li>
+        <li><a href="/guides/economy-guide/">Economy Guide</a></li>
+        <li><a href="/guides/advanced-mechanics-guide/">Advanced Mechanics Guide</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <script type="application/ld+json" set:html={toolSchema}></script>
+  <script type="application/ld+json" set:html={JSON.stringify(schemaData)} />
+
+  <ExploreMore context="tools" />
+</Base>
+
+<style is:inline>
+  .calc-container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 2rem;
+    color: var(--text);
+  }
+
+  h1 {
+    font-size: 2.5rem;
+    margin-bottom: 0.5rem;
+    color: var(--accent);
+  }
+
+  .subtitle {
+    color: var(--text2);
+    font-size: 1.1rem;
+    margin-bottom: 2rem;
+  }
+
+  .calc-section {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+  }
+
+  .calc-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 2rem;
+    margin-bottom: 2rem;
+  }
+
+  .input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  label {
+    font-weight: 600;
+    color: var(--text2);
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .input-field, select {
+    padding: 0.75rem;
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    color: var(--text);
+    font-size: 1rem;
+  }
+
+  .input-field:hover, select:hover {
+    border-color: var(--accent);
+  }
+
+  .input-field:focus, select:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(212, 149, 110, 0.1);
+  }
+
+  .result-section {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+    margin-top: 2rem;
+  }
+
+  .result-box {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1.5rem;
+    text-align: center;
+  }
+
+  .result-box.highlight {
+    border-color: var(--accent);
+    background: rgba(212, 149, 110, 0.1);
+  }
+
+  .result-box h3 {
+    color: var(--text2);
+    font-size: 0.9rem;
+    margin-bottom: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .money-value {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--green);
+    margin: 0;
+  }
+
+  .economy-table {
+    margin-top: 2rem;
+    overflow-x: auto;
+  }
+
+  .economy-table h3 {
+    color: var(--accent);
+    margin-bottom: 1rem;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--bg);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+
+  th, td {
+    padding: 1rem;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+  }
+
+  th {
+    background: var(--bg3);
+    color: var(--text2);
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    letter-spacing: 0.05em;
+  }
+
+  td {
+    color: var(--text2);
+  }
+
+  tr:last-child td {
+    border-bottom: none;
+  }
+
+  .buy-guide {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+  }
+
+  .buy-guide h2 {
+    color: var(--accent);
+    font-size: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .buy-rows {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .buy-item {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1.5rem;
+  }
+
+  .buy-item h4 {
+    color: var(--accent);
+    margin-bottom: 0.5rem;
+  }
+
+  .buy-item p {
+    color: var(--text2);
+    margin: 0;
+    line-height: 1.5;
+  }
+
+  .info-section, .faq-section {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+  }
+
+  .info-section h2, .faq-section h2 {
+    color: var(--accent);
+    font-size: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .info-section ul {
+    list-style: none;
+    padding: 0;
+  }
+
+  .info-section li {
+    padding: 0.75rem 0;
+    border-bottom: 1px solid var(--border);
+    color: var(--text2);
+  }
+
+  .info-section li:last-child {
+    border-bottom: none;
+  }
+
+  .faq-item {
+    margin-bottom: 1.5rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .faq-item:last-child {
+    border-bottom: none;
+  }
+
+  .faq-item h3 {
+    color: var(--accent);
+    margin-bottom: 0.5rem;
+  }
+
+  .faq-item p {
+    color: var(--text2);
+    line-height: 1.6;
+  }
+
+  .links-section {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 2rem;
+  }
+
+  .links-section h2 {
+    color: var(--accent);
+    font-size: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .links-section ul {
+    list-style: none;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+  }
+
+  .links-section a {
+    display: block;
+    padding: 0.75rem 1rem;
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    color: var(--accent);
+    text-decoration: none;
+    transition: all 0.2s;
+  }
+
+  .links-section a:hover {
+    background: var(--accent);
+    color: white;
+  }
+</style>
+
+<script>
+  const roundNumInput = document.getElementById('roundNum');
+  const prevTeamMoneyInput = document.getElementById('prevTeamMoney');
+  const roundResultSelect = document.getElementById('roundResult');
+  const teamKillsInput = document.getElementById('teamKills');
+  const assistKillsInput = document.getElementById('assistKills');
+  const deathsInput = document.getElementById('deaths');
+  const utilityInput = document.getElementById('utilityInput');
+
+  const killedBonusEl = document.getElementById('killedBonus');
+  const winBonusEl = document.getElementById('winBonus');
+  const utilityCostEl = document.getElementById('utilityCost');
+  const totalEconomyEl = document.getElementById('totalEconomy');
+  const tableBody = document.getElementById('tableBody');
+
+  function calculateRoundEconomy() {
+    const teamKills = parseInt(teamKillsInput.value) || 0;
+    const assistKills = parseInt(assistKillsInput.value) || 0;
+    const prevMoney = parseInt(prevTeamMoneyInput.value) || 0;
+    const roundResult = roundResultSelect.value;
+    const utilityCost = parseInt(utilityInput.value) || 0;
+
+    const killedBonus = (teamKills + assistKills) * 300;
+    let winBonus = 0;
+
+    if (roundResult === 'win') {
+      winBonus = 3250;
+    } else if (roundResult === 'loss') {
+      winBonus = 1900;
+    } else if (roundResult === 'bomb') {
+      winBonus = 3250 + 800;
+    }
+
+    const totalEconomy = Math.min(16000, prevMoney + killedBonus + winBonus - utilityCost);
+
+    killedBonusEl.textContent = '$' + killedBonus.toLocaleString();
+    winBonusEl.textContent = '$' + winBonus.toLocaleString();
+    utilityCostEl.textContent = '$' + utilityCost.toLocaleString();
+    totalEconomyEl.textContent = '$' + totalEconomy.toLocaleString();
+
+    const buyType = totalEconomy >= 16000 ? 'Full Buy' : totalEconomy >= 10000 ? 'Half Buy' : totalEconomy >= 2000 ? 'Eco' : 'Full Eco';
+
+    return { totalEconomy, killedBonus, winBonus, buyType };
+  }
+
+  function updateTable() {
+    const { totalEconomy, killedBonus, winBonus, buyType } = calculateRoundEconomy();
+    const roundNum = parseInt(roundNumInput.value) || 1;
+    const roundResult = roundResultSelect.value;
+
+    if (tableBody.children.length === 0) {
+      const row = document.createElement('tr');
+      row.innerHTML = `
+        <td>${roundNum}</td>
+        <td>${roundResult.charAt(0).toUpperCase() + roundResult.slice(1)}</td>
+        <td>$${(killedBonus + winBonus).toLocaleString()}</td>
+        <td>$${totalEconomy.toLocaleString()}</td>
+        <td>${buyType}</td>
+      `;
+      tableBody.appendChild(row);
+    }
+  }
+
+  teamKillsInput.addEventListener('input', calculateRoundEconomy);
+  assistKillsInput.addEventListener('input', calculateRoundEconomy);
+  roundResultSelect.addEventListener('change', calculateRoundEconomy);
+  utilityInput.addEventListener('input', calculateRoundEconomy);
+  roundNumInput.addEventListener('input', updateTable);
+
+  calculateRoundEconomy();
+  updateTable();
+</script>

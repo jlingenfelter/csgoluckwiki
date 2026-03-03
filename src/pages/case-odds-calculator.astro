@@ -1,0 +1,175 @@
+---
+import Base from '../layouts/Base.astro';
+import ExploreMore from '../components/ExploreMore.astro';
+import { faqSchema, breadcrumbSchema, toolAppSchema } from '../lib/weapons';
+
+const title = 'CS2 Case Odds Calculator — Knife & Covert Drop Chances | CSDB.gg';
+const description = 'Calculate your real odds of unboxing a knife, covert, or any rarity from CS2 cases. See expected costs, ROI analysis, and probability tables for every rarity tier.';
+
+const breadcrumbs = [
+  { name: 'Home', url: '/' },
+  { name: 'Tools', url: '/case-odds-calculator' },
+  { name: 'Case Odds Calculator', url: '/case-odds-calculator' },
+];
+
+const faqs = [
+  { question: 'What are the odds of getting a knife from a CS2 case?', answer: 'The chance of unboxing a knife or glove (Rare Special Item) from any CS2 case is approximately 0.26%, or roughly 1 in 385 cases. This means you would statistically need to open 385 cases to expect one knife drop.' },
+  { question: 'Are CS2 case odds the same for every case?', answer: 'Yes, all standard CS2 weapon cases share the same rarity drop rates. The odds of getting a Mil-Spec, Restricted, Classified, Covert, or Rare Special Item are consistent regardless of which case you open.' },
+  { question: 'Is opening CS2 cases profitable?', answer: 'On average, no. The expected value of opening a standard case is typically $0.80–$1.50, while each case costs $2.49 plus a key. However, rare knife or glove drops can be worth hundreds or thousands of dollars, which is what makes it exciting.' },
+  { question: 'How many cases do I need to open for a guaranteed knife?', answer: 'There is no guaranteed number — each case is an independent event. However, after opening 1,000 cases, you have roughly a 92.6% chance of having received at least one knife. After 1,500 cases, it rises to 98%.' },
+  { question: 'What is the rarest item you can get from a CS2 case?', answer: 'The rarest items are StatTrak Factory New knives or gloves from the Rare Special Items pool. The combined probability of a specific StatTrak FN knife pattern can be as low as 1 in 100,000+ cases.' },
+];
+
+const rarityOdds = [
+  { rarity: 'Mil-Spec (Blue)', chance: '79.92%', ratio: '~4 in 5', color: '#4b69ff' },
+  { rarity: 'Restricted (Purple)', chance: '15.98%', ratio: '~1 in 6.3', color: '#8847ff' },
+  { rarity: 'Classified (Pink)', chance: '3.20%', ratio: '~1 in 31.3', color: '#d32ce6' },
+  { rarity: 'Covert (Red)', chance: '0.64%', ratio: '~1 in 156.3', color: '#eb4b4b' },
+  { rarity: 'Rare Special Item (Gold)', chance: '0.26%', ratio: '~1 in 384.6', color: '#ffd700' },
+];
+---
+
+<Base title={title} description={description} currentNav="/tools/">
+  <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema(breadcrumbs))}></script>
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema(faqs))}></script>
+  <script type="application/ld+json" set:html={JSON.stringify(toolAppSchema({ name: 'CS2 Case Odds Calculator', url: 'https://csdb.gg/case-odds-calculator/', description }))}></script>
+
+  <nav class="breadcrumb">
+    <a href="/">Home</a> / <a href="/case-odds-calculator/">Tools</a> / <span>Case Odds Calculator</span>
+  </nav>
+
+  <h1>CS2 Case Odds Calculator</h1>
+  <p>Every CS2 case opening is a gamble. Use this calculator to understand exactly what your odds are before spending money on keys — and decide whether the expected return justifies the cost.</p>
+
+  <div class="calc-section">
+    <h2>How Many Cases Will You Open?</h2>
+    <div class="calc-row">
+      <label for="numCases">Number of Cases</label>
+      <input type="number" id="numCases" min="1" max="10000" value="100" />
+    </div>
+    <div class="calc-row">
+      <label for="casePrice">Cost Per Case + Key ($)</label>
+      <input type="number" id="casePrice" min="0.01" step="0.01" value="2.50" />
+    </div>
+
+    <div class="stats-grid" style="margin-top:1rem">
+      <div class="stat-card">
+        <div class="val" id="totalCost">$250.00</div>
+        <div class="label">Total Cost</div>
+      </div>
+      <div class="stat-card">
+        <div class="val" id="knifeChance">22.9%</div>
+        <div class="label">Chance of 1+ Knife</div>
+      </div>
+      <div class="stat-card">
+        <div class="val" id="covertChance">47.4%</div>
+        <div class="label">Chance of 1+ Covert</div>
+      </div>
+      <div class="stat-card">
+        <div class="val" id="classifiedChance">96.2%</div>
+        <div class="label">Chance of 1+ Classified</div>
+      </div>
+    </div>
+
+    <h3 style="margin-top:1.5rem">Expected Drops from <span id="caseCount">100</span> Cases</h3>
+    <table>
+      <thead><tr><th>Rarity</th><th>Expected Drops</th><th>Probability of At Least 1</th></tr></thead>
+      <tbody id="dropTable"></tbody>
+    </table>
+  </div>
+
+  <h2>Official CS2 Case Drop Rates</h2>
+  <p>Valve disclosed the exact rarity probabilities for CS2 cases. These odds are identical across every standard weapon case:</p>
+  <table>
+    <thead><tr><th>Rarity Tier</th><th>Drop Chance</th><th>Odds Ratio</th></tr></thead>
+    <tbody>
+      {rarityOdds.map(r => (
+        <tr>
+          <td><span style={`color:${r.color};font-weight:700`}>{r.rarity}</span></td>
+          <td>{r.chance}</td>
+          <td>{r.ratio}</td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+
+  <h2>The Mathematics Behind Case Openings</h2>
+  <p>
+    CS2 case openings follow a binomial probability distribution. Each case is an independent event — opening 384 cases doesn't guarantee a knife, just as flipping heads 10 times in a row doesn't make the next flip more likely to be tails. The probability of getting at least one knife in N cases is: <code>P = 1 - (1 - 0.0026)^N</code>.
+  </p>
+  <p>
+    This means after 100 cases, your knife probability is about 22.9%. After 500 cases it rises to 72.7%, and after 1,000 cases you're at 92.6%. Even after 2,000 cases, there's still a 0.55% chance you haven't seen a single knife — that's the nature of independent random events.
+  </p>
+
+  <h3>Expected Value and ROI</h3>
+  <p>
+    The expected return from opening a standard CS2 case averages around $0.80–$1.50 per case depending on the specific case and current market prices. Since each opening costs approximately $2.50 (case + key), the average player loses about $1.00–$1.70 per case opened. Over 100 cases, you should expect to lose roughly $100–$170.
+  </p>
+  <p>
+    However, this average is heavily skewed by rare outcomes. Most of your returns come from the small chance of hitting a high-value knife or glove. A single Karambit Fade Factory New can be worth $1,000+, which would offset hundreds of losing cases. This variance is what makes case opening feel "worth it" despite the negative expected value.
+  </p>
+
+  <h3>StatTrak and Wear Probabilities</h3>
+  <p>
+    About 10% of case drops come with StatTrak technology. Combined with the five wear conditions (Factory New, Minimal Wear, Field-Tested, Well-Worn, Battle-Scarred), this creates tiered sub-probabilities. A specific StatTrak Factory New Covert skin has roughly a 0.0064% chance per case — about 1 in 15,600 openings.
+  </p>
+
+  <div class="internal-links">
+    <strong>Related Tools & Guides:</strong>
+    <a href="/case-simulator/">Case Simulator</a>
+    <a href="/cases/">Cases & Collections</a>
+    <a href="/tradeup-calculator/">Trade-Up Calculator</a>
+    <a href="/skins/">Skin Database</a>
+    <a href="/skin-compare/">Compare Skins</a>
+    <a href="/float-checker/">Float Checker</a>
+    <a href="/price-tracker/">Price Tracker</a>
+    <a href="/market-trends/">Market Trends</a>
+    <a href="/inventory-lookup/">Inventory Lookup</a>
+    <a href="/loadout-builder/">Loadout Builder</a>
+    <a href="/weapons/">Weapon Database</a>
+    <a href="/guides/trading-guide/">Trading Guide</a>
+    <a href="/guides/float-guide/">Float Value Guide</a>
+    <a href="/guides/skins-investing-guide/">Skins Investing Guide</a>
+  </div>
+
+  <h2>Frequently Asked Questions</h2>
+  <dl class="faq">
+    {faqs.map(f => (
+      <Fragment>
+        <dt>{f.question}</dt>
+        <dd>{f.answer}</dd>
+      </Fragment>
+    ))}
+  </dl>
+
+  <ExploreMore context="skins" />
+</Base>
+
+<script is:inline>
+(function(){
+  var numCases=document.getElementById('numCases');
+  var casePrice=document.getElementById('casePrice');
+  var odds=[{name:'Mil-Spec (Blue)',p:0.7992,color:'#4b69ff'},{name:'Restricted (Purple)',p:0.1598,color:'#8847ff'},{name:'Classified (Pink)',p:0.0320,color:'#d32ce6'},{name:'Covert (Red)',p:0.0064,color:'#eb4b4b'},{name:'Knife / Glove (Gold)',p:0.0026,color:'#ffd700'}];
+  function calc(){
+    var n=parseInt(numCases.value)||100;
+    var price=parseFloat(casePrice.value)||2.50;
+    document.getElementById('totalCost').textContent='$'+(n*price).toFixed(2);
+    document.getElementById('knifeChance').textContent=(100*(1-Math.pow(1-0.0026,n))).toFixed(1)+'%';
+    document.getElementById('covertChance').textContent=(100*(1-Math.pow(1-0.0064,n))).toFixed(1)+'%';
+    document.getElementById('classifiedChance').textContent=(100*(1-Math.pow(1-0.0320,n))).toFixed(1)+'%';
+    document.getElementById('caseCount').textContent=n;
+    var tb=document.getElementById('dropTable');
+    tb.innerHTML='';
+    odds.forEach(function(o){
+      var expected=(n*o.p).toFixed(2);
+      var atLeastOne=(100*(1-Math.pow(1-o.p,n))).toFixed(1);
+      var tr=document.createElement('tr');
+      tr.innerHTML='<td><span style="color:'+o.color+';font-weight:700">'+o.name+'</span></td><td>'+expected+'</td><td>'+atLeastOne+'%</td>';
+      tb.appendChild(tr);
+    });
+  }
+  numCases.addEventListener('input',calc);
+  casePrice.addEventListener('input',calc);
+  calc();
+})();
+</script>

@@ -1,0 +1,1877 @@
+---
+import Base from '../layouts/Base.astro';
+import { SKINS, getLowestPrice, getHighestPrice, RARITY_COLORS, RARITY_BG, SKINS_TOTAL, getCollections } from '../lib/skins';
+import { WEAPONS } from '../lib/weapons';
+import { faqSchema } from '../lib/weapons';
+import { skinHeroImage, skinHeroSideImage, homeSkinCardImage, categoryCardImage } from '../lib/imageOptimize';
+import { getAllGear, getGearImageUrl, getPlayerBySlug } from '../lib/pro-players';
+
+const topSkins = SKINS
+  .filter(s => !s.phase)
+  .map(skin => ({ ...skin, maxPrice: getHighestPrice(skin) }))
+  .sort((a, b) => b.maxPrice - a.maxPrice)
+  .slice(0, 10);
+
+const skinCount = SKINS_TOTAL || SKINS.length;
+const weaponCount = WEAPONS.length;
+const collectionCount = getCollections().length;
+
+// Count pro players
+const playerFiles = import.meta.glob('../data/players/*.json', { eager: true });
+const playerCount = Object.keys(playerFiles).length;
+
+// Top gear items (one per type, most popular, with images)
+const topGear = getAllGear()
+  .filter(g => getGearImageUrl(g.name))
+  .reduce((acc, g) => {
+    if (!acc.find(x => x.type === g.type)) acc.push(g);
+    return acc;
+  }, [] as ReturnType<typeof getAllGear>)
+  .slice(0, 5);
+
+const faqs = [
+  { question: 'What is CSDB.gg?', answer: 'CSDB.gg is a comprehensive Counter-Strike 2 resource hub covering skin prices from 14+ marketplaces, weapon stats, 860+ pro player settings, 30+ interactive tools, map callouts, and in-depth guides — everything a CS2 player needs in one place.' },
+  { question: 'How are skin prices updated?', answer: 'Prices are aggregated from 14+ marketplaces including Buff163, CSFloat, BitSkins, DMarket, and more via PriceEmpire. Data is refreshed regularly to ensure accuracy across all wear conditions and Doppler phases.' },
+  { question: 'Are the tools free to use?', answer: 'Yes, every tool on CSDB.gg is completely free — damage calculator, sensitivity converter, bind generator, crosshair codes, case simulator, inventory lookup, and more.' },
+  { question: 'Is CSDB.gg affiliated with Valve?', answer: 'No. CSDB.gg is an independent community resource. All game content and trademarks belong to Valve Corporation.' },
+  { question: 'How do I find pro player settings?', answer: `Visit our Pro Players page to browse ${playerCount}+ professional player configs with crosshair codes, sensitivity, resolution, gear loadouts, and weapon skin preferences.` },
+  { question: 'Can I compare weapon stats?', answer: 'Yes! Our weapon pages show detailed combat stats, and the Weapon Compare tool lets you compare any two weapons side by side.' },
+  { question: 'What Doppler phases are tracked?', answer: 'Every Doppler and Gamma Doppler knife has individual pages for each phase — Phase 1 through 4, Ruby, Sapphire, Black Pearl, and Emerald — with phase-specific pricing and images.' },
+  { question: 'Can I look up my Steam inventory?', answer: 'Yes! Our Inventory Lookup tool lets you search any public Steam inventory to see all CS2 skins with current market values and float values.' },
+];
+---
+
+<Base title="CSDB.gg — CS2 Database, Skin Prices, Pro Settings & Tools" description={`The ultimate CS2 resource: ${skinCount.toLocaleString()} skins with live prices from 14+ marketplaces, ${weaponCount} weapon stats, ${playerCount}+ pro player settings & gear, 30+ free tools, map callouts, and guides.`} currentNav="/">
+<Fragment slot="head">
+<script type="application/ld+json" set:html={JSON.stringify(faqSchema(faqs))} />
+</Fragment>
+
+<!-- Hero with Featured Skin Showcase -->
+<section class="hp-hero">
+  <div class="hp-hero-content">
+    <div class="hp-hero-showcase">
+      <div class="hp-featured-main">
+        {topSkins[0] && (
+          <div class="hp-featured-skin hp-featured-primary" style={`--rarity-color: ${RARITY_COLORS[topSkins[0].rarity] || '#d4956e'}`}>
+            <div class="hp-featured-glow"></div>
+            <div class="hp-featured-image">
+              {topSkins[0].image ? (
+                <img src={skinHeroImage(topSkins[0].image)} alt={`${topSkins[0].weapon} | ${topSkins[0].name}`} width="600" height="450" loading="lazy" />
+              ) : (
+                <div class="hp-featured-placeholder">{topSkins[0].name.substring(0, 2)}</div>
+              )}
+            </div>
+            <div class="hp-featured-badge">{topSkins[0].rarity}</div>
+          </div>
+        )}
+      </div>
+      <div class="hp-featured-side">
+        {topSkins[1] && (
+          <a href={`/skin/${topSkins[1].slug}/`} class="hp-featured-skin hp-featured-secondary" style={`--rarity-color: ${RARITY_COLORS[topSkins[1].rarity] || '#d4956e'}`}>
+            <div class="hp-featured-image-sm">
+              {topSkins[1].image ? (
+                <img src={skinHeroSideImage(topSkins[1].image)} alt={`${topSkins[1].weapon} | ${topSkins[1].name}`} width="400" height="300" loading="lazy" />
+              ) : (
+                <div class="hp-featured-placeholder-sm">{topSkins[1].name.substring(0, 2)}</div>
+              )}
+            </div>
+          </a>
+        )}
+        {topSkins[2] && (
+          <a href={`/skin/${topSkins[2].slug}/`} class="hp-featured-skin hp-featured-secondary" style={`--rarity-color: ${RARITY_COLORS[topSkins[2].rarity] || '#d4956e'}`}>
+            <div class="hp-featured-image-sm">
+              {topSkins[2].image ? (
+                <img src={skinHeroSideImage(topSkins[2].image)} alt={`${topSkins[2].weapon} | ${topSkins[2].name}`} width="400" height="300" loading="lazy" />
+              ) : (
+                <div class="hp-featured-placeholder-sm">{topSkins[2].name.substring(0, 2)}</div>
+              )}
+            </div>
+          </a>
+        )}
+      </div>
+    </div>
+
+    <div class="hp-hero-text">
+      <h1>Your Complete CS2 Resource Hub</h1>
+      <p class="hp-sub">Skin prices, weapon stats, pro settings, interactive tools, map callouts, and guides — everything you need for Counter-Strike 2.</p>
+      <div class="hp-search-hero">
+        <form action="/search/" method="get" class="hp-search-form">
+          <svg class="hp-search-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2"/><line x1="16.5" y1="16.5" x2="21" y2="21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+          <input type="search" name="q" placeholder="Search skins, weapons, tools..." class="hp-search-input" autocomplete="off" />
+          <button type="submit" class="hp-search-btn">Search</button>
+        </form>
+        <div class="hp-search-tags">
+          <a href="/search/?q=Dragon+Lore">Dragon Lore</a>
+          <a href="/search/?q=AK-47">AK-47</a>
+          <a href="/search/?q=AWP+Fade">AWP Fade</a>
+          <a href="/search/?q=Butterfly+Knife">Butterfly Knife</a>
+        </div>
+      </div>
+      <div class="hp-cta">
+        <a href="/skins/" class="hp-btn hp-primary">Browse {skinCount.toLocaleString()} Skins</a>
+        <a href="/pro-players/" class="hp-btn hp-secondary">{playerCount}+ Pro Players</a>
+        <a href="/tools/" class="hp-btn hp-secondary">Free Tools</a>
+      </div>
+      <div class="hp-stats-row">
+        <div class="hp-stat"><span class="hp-sn" style="font-variant-numeric: tabular-nums">{skinCount.toLocaleString()}</span><span class="hp-sl">Skins</span></div>
+        <div class="hp-stat"><span class="hp-sn" style="font-variant-numeric: tabular-nums">{weaponCount}</span><span class="hp-sl">Weapons</span></div>
+        <div class="hp-stat"><span class="hp-sn">14+</span><span class="hp-sl">Marketplaces</span></div>
+        <div class="hp-stat"><span class="hp-sn" style="font-variant-numeric: tabular-nums">{playerCount}+</span><span class="hp-sl">Pro Players</span></div>
+        <div class="hp-stat"><span class="hp-sn">30+</span><span class="hp-sl">Free Tools</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="hp-hero-scanlines"></div>
+  <div class="hp-hero-gradient"></div>
+</section>
+
+<!-- Silo 1: Skins & Market -->
+<section class="hp-silo">
+  <div class="hp-silo-header">
+    <span class="hp-header-accent"></span>
+    <h2>Skins & Market Data</h2>
+    <p>Live prices from 14+ marketplaces across {skinCount.toLocaleString()} skins — including per-phase Doppler pricing, float values, and price tracking.</p>
+  </div>
+  <div class="hp-skin-grid">
+    {topSkins.map(skin => {
+      const rc = RARITY_COLORS[skin.rarity] || '#d4956e';
+      const rbg = RARITY_BG[skin.rarity] || 'rgba(255,255,255,0.05)';
+      return (
+        <a href={`/skin/${skin.slug}/`} class="hp-skincard" style={`--rarity-color: ${rc}`}>
+          <div class="hp-skincard-rarity">{skin.rarity}</div>
+          <div class="hp-skinimg" style={`background:${rbg}`}>
+            {skin.image
+              ? <img src={homeSkinCardImage(skin.image)} alt={`${skin.weapon} | ${skin.name}`} width="360" height="270" loading="lazy" />
+              : <div style={`font-size:1.8rem;font-weight:900;color:${rc};opacity:.25`}>{skin.name.substring(0,2)}</div>
+            }
+          </div>
+          <div class="hp-skininfo">
+            <strong>{skin.name}</strong>
+            <span class="hp-skinwep">{skin.weapon}</span>
+            <span class="hp-skinprice" style="font-variant-numeric: tabular-nums">${getLowestPrice(skin).toLocaleString()} – ${getHighestPrice(skin).toLocaleString()}</span>
+          </div>
+        </a>
+      );
+    })}
+  </div>
+  <div class="hp-silo-links">
+    <a href="/skins/" class="hp-link-main">All Skins →</a>
+    <a href="/skin-compare/">Compare Skins</a>
+    <a href="/price-tracker/">Price Tracker</a>
+    <a href="/market-trends/">Market Trends</a>
+    <a href="/float-checker/">Float Checker</a>
+    <a href="/tradeup-calculator/">Trade-Up Calculator</a>
+    <a href="/case-odds-calculator/">Case Odds</a>
+    <a href="/case-simulator/">Case Simulator</a>
+    <a href="/cases/">Cases & Collections</a>
+    <a href="/stickers/">Stickers</a>
+    <a href="/agents/">Agents</a>
+    <a href="/inventory-lookup/">Inventory Lookup</a>
+    <a href="/loadout-builder/">Loadout Builder</a>
+    <a href="/trading-sites/">Trading Sites</a>
+  </div>
+</section>
+
+<!-- Silo 2: Weapons & Stats -->
+<section class="hp-silo">
+  <div class="hp-silo-header">
+    <span class="hp-header-accent"></span>
+    <h2>Weapons & Combat Stats</h2>
+    <p>Detailed stats for every weapon — damage, DPS, recoil patterns, and side-by-side comparisons.</p>
+  </div>
+  <div class="hp-cat-grid">
+    <a href="/weapons/rifle/" class="hp-catcard">
+      <div class="hp-catimg">
+        <img src={categoryCardImage("https://community.cloudflare.steamstatic.com/economy/image/-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXH5ApeO4YmlhxYQknCRvCo04DEVlxkKgpot7HxfDhjxszJemkV092lnYmGmOHLPr7Vn35cppQiiOuQpoml3wW18xdkNTjxd9CQdwM_ZlrT-lW_kLzu0560vp-azXJ9-n51Q5-Fea0")} alt="AK-47 Asiimov" width="360" height="270" loading="lazy" />
+      </div>
+      <h3>Rifles</h3>
+      <p>AK-47, M4A4, AWP & more</p>
+    </a>
+    <a href="/weapons/pistol/" class="hp-catcard">
+      <div class="hp-catimg">
+        <img src={categoryCardImage("https://community.cloudflare.steamstatic.com/economy/image/-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXH5ApeO4YmlhxYQknCRvCo04DEVlxkKgposr-kLAtl7PLJTjtO7dGzh7-HnvD8J_XVkjoFuMYiiLqUrI-k3le3r0s5amj7d9eTI1I-M1rW-Fm_xO-50Jfvot2XnhS4_w8U")} alt="Desert Eagle Blaze" width="360" height="270" loading="lazy" />
+      </div>
+      <h3>Pistols</h3>
+      <p>Desert Eagle, USP-S, Glock-18</p>
+    </a>
+    <a href="/weapons/smg/" class="hp-catcard">
+      <div class="hp-catimg">
+        <img src={categoryCardImage("https://steamcommunity-a.akamaihd.net/economy/image/-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXH5ApeO4YmlhxYQknCRvCo04DEVlxkKgpou7umeldf1OD3fDxBvYyJh5SKm_zxIYTdn2xZ_ItyiL3Foo2j2FXi8kpraz_yIYGQdwQ4N1HX8wPrybvu0Je5v5WYz3VgpGB8smMduxoo")} alt="MAC-10 Stalker" width="360" height="270" loading="lazy" />
+      </div>
+      <h3>SMGs</h3>
+      <p>MAC-10, MP9, P90 & more</p>
+    </a>
+    <a href="/weapons/heavy/" class="hp-catcard">
+      <div class="hp-catimg">
+        <img src={categoryCardImage("https://community.cloudflare.steamstatic.com/economy/image/-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXH5ApeO4YmlhxYQknCRvCo04DEVlxkKgpou7uifDhnwMzFcDoV09u6lZOYqPv9NLPF2GlU6cF0jLnAo47x2gCx_BE9YDynJIOUIARsYVHSqVO5wO_m1sO8u5jXiSw0-UWPhRk")} alt="MAG-7 Cinquedea" width="360" height="270" loading="lazy" />
+      </div>
+      <h3>Heavy</h3>
+      <p>Nova, XM1014, Negev</p>
+    </a>
+    <a href="/weapons/knife/" class="hp-catcard">
+      <div class="hp-catimg">
+        <img src={categoryCardImage("https://community.cloudflare.steamstatic.com/economy/image/-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXH5ApeO4YmlhxYQknCRvCo04DEVlxkKgpovbSsLQJf2PLacDBA5ciJnJm0gPL2IITck29Y_cg_ib-SotjxjgfnqUU6MTygI4-WcVI6ZFrZ_ljvl-frgpHtuMnLwCdisj5iuyi9lOnfGQ")} alt="Karambit Crimson Web" width="360" height="270" loading="lazy" />
+      </div>
+      <h3>Knives</h3>
+      <p>Karambit, Butterfly, M9 Bayonet</p>
+    </a>
+  </div>
+  <div class="hp-silo-links">
+    <a href="/weapons/" class="hp-link-main">All Weapons →</a>
+    <a href="/weapon-compare/">Compare Weapons</a>
+    <a href="/damage-calculator/">Damage Calculator</a>
+    <a href="/recoil-patterns/">Recoil Patterns</a>
+    <a href="/economy-calculator/">Economy Calculator</a>
+    <a href="/spray-trainer/">Spray Trainer</a>
+    <a href="/guides/economy-guide/">Economy Guide</a>
+  </div>
+</section>
+
+<!-- Silo 3: Tools -->
+<section class="hp-silo">
+  <div class="hp-silo-header">
+    <span class="hp-header-accent"></span>
+    <h2>Interactive Tools & Calculators</h2>
+    <p>Free tools to optimize your settings, build configs, and improve your gameplay.</p>
+  </div>
+  <div class="hp-tools-grid">
+    <a href="/sensitivity-converter/" class="hp-toolcard">
+      <span class="hp-toolsvg">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="8" cy="12" r="5" fill="none" stroke="currentColor" stroke-width="2"/>
+          <path d="M 13 7 L 19 1 M 18 6 L 24 0" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </span>
+      <div><strong>Sensitivity Converter</strong><span>Convert sens between games</span></div>
+    </a>
+    <a href="/crosshair-codes/" class="hp-toolcard">
+      <span class="hp-toolsvg">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="12" cy="12" r="1.5" fill="currentColor"/>
+          <line x1="12" y1="5" x2="12" y2="9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+          <line x1="12" y1="15" x2="12" y2="19" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+          <line x1="5" y1="12" x2="9" y2="12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+          <line x1="15" y1="12" x2="19" y2="12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+      </span>
+      <div><strong>Crosshair Codes</strong><span>Pro presets ready to copy</span></div>
+    </a>
+    <a href="/crosshair-generator/" class="hp-toolcard">
+      <span class="hp-toolsvg">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path d="M 12 2 L 18 6 L 18 12 L 12 18 L 6 12 L 6 6 Z" stroke="currentColor" stroke-width="1.5" fill="none"/>
+          <circle cx="12" cy="11" r="2" fill="currentColor"/>
+        </svg>
+      </span>
+      <div><strong>Crosshair Generator</strong><span>Customize your crosshair</span></div>
+    </a>
+    <a href="/bind-generator/" class="hp-toolcard">
+      <span class="hp-toolsvg">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <rect x="3" y="4" width="5" height="5" rx="1" stroke="currentColor" stroke-width="1.5" fill="none"/>
+          <rect x="10" y="4" width="5" height="5" rx="1" stroke="currentColor" stroke-width="1.5" fill="none"/>
+          <rect x="17" y="4" width="4" height="5" rx="1" stroke="currentColor" stroke-width="1.5" fill="none"/>
+          <rect x="3" y="11" width="5" height="5" rx="1" stroke="currentColor" stroke-width="1.5" fill="none"/>
+          <rect x="10" y="11" width="5" height="5" rx="1" stroke="currentColor" stroke-width="1.5" fill="none"/>
+          <rect x="3" y="18" width="5" height="2" rx="0.5" stroke="currentColor" stroke-width="1.5" fill="none"/>
+          <rect x="10" y="18" width="11" height="2" rx="0.5" stroke="currentColor" stroke-width="1.5" fill="none"/>
+        </svg>
+      </span>
+      <div><strong>Bind Generator</strong><span>Create utility & buy binds</span></div>
+    </a>
+    <a href="/resolution-calculator/" class="hp-toolcard">
+      <span class="hp-toolsvg">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <rect x="2" y="3" width="20" height="15" rx="1" stroke="currentColor" stroke-width="1.5" fill="none"/>
+          <line x1="8" y1="20" x2="16" y2="20" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+      </span>
+      <div><strong>Resolution Calculator</strong><span>Compare resolutions & ratios</span></div>
+    </a>
+    <a href="/damage-calculator/" class="hp-toolcard">
+      <span class="hp-toolsvg">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path d="M 12 2 L 15 8 L 22 8 L 17 13 L 19 19 L 12 15 L 5 19 L 7 13 L 2 8 L 9 8 Z" stroke="currentColor" stroke-width="1.5" fill="none"/>
+        </svg>
+      </span>
+      <div><strong>Damage Calculator</strong><span>Calculate exact damage</span></div>
+    </a>
+    <a href="/economy-calculator/" class="hp-toolcard">
+      <span class="hp-toolsvg">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="12" cy="12" r="8" stroke="currentColor" stroke-width="1.5" fill="none"/>
+          <line x1="12" y1="6" x2="12" y2="18" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+          <line x1="15" y1="9" x2="9" y2="9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+          <line x1="15" y1="15" x2="9" y2="15" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+      </span>
+      <div><strong>Economy Calculator</strong><span>Plan your buys round by round</span></div>
+    </a>
+    <a href="/edpi-calculator/" class="hp-toolcard">
+      <span class="hp-toolsvg">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <rect x="3" y="6" width="18" height="12" rx="1" stroke="currentColor" stroke-width="1.5" fill="none"/>
+          <line x1="9" y1="2" x2="9" y2="4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+          <line x1="15" y1="2" x2="15" y2="4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+      </span>
+      <div><strong>eDPI Calculator</strong><span>Calculate your effective DPI</span></div>
+    </a>
+    <a href="/cm360-calculator/" class="hp-toolcard">
+      <span class="hp-toolsvg">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path d="M 12 3 C 7 3 3 7 3 12 C 3 17 7 21 12 21 C 17 21 21 17 21 12" stroke="currentColor" stroke-width="1.5" fill="none"/>
+          <line x1="12" y1="6" x2="12" y2="12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+          <line x1="12" y1="12" x2="16" y2="12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+      </span>
+      <div><strong>cm/360 Calculator</strong><span>Centimetres per 360°</span></div>
+    </a>
+    <a href="/autoexec-generator/" class="hp-toolcard">
+      <span class="hp-toolsvg">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.5" fill="none"/>
+          <circle cx="12" cy="12" r="6" stroke="currentColor" stroke-width="1.5" fill="none"/>
+          <circle cx="12" cy="12" r="3" fill="currentColor"/>
+        </svg>
+      </span>
+      <div><strong>Autoexec Generator</strong><span>Generate autoexec.cfg</span></div>
+    </a>
+    <a href="/launch-options/" class="hp-toolcard">
+      <span class="hp-toolsvg">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path d="M 6 12 L 12 6 L 18 12 L 18 20 L 6 20 Z" stroke="currentColor" stroke-width="1.5" fill="none"/>
+          <line x1="12" y1="12" x2="12" y2="20" stroke="currentColor" stroke-width="1.5"/>
+        </svg>
+      </span>
+      <div><strong>Launch Options</strong><span>Optimize launch parameters</span></div>
+    </a>
+    <a href="/practice-config/" class="hp-toolcard">
+      <span class="hp-toolsvg">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="6" cy="8" r="2.5" stroke="currentColor" stroke-width="1.5" fill="none"/>
+          <circle cx="18" cy="8" r="2.5" stroke="currentColor" stroke-width="1.5" fill="none"/>
+          <circle cx="12" cy="18" r="2.5" stroke="currentColor" stroke-width="1.5" fill="none"/>
+          <line x1="8" y1="10" x2="10" y2="16" stroke="currentColor" stroke-width="1.5"/>
+          <line x1="16" y1="10" x2="14" y2="16" stroke="currentColor" stroke-width="1.5"/>
+        </svg>
+      </span>
+      <div><strong>Practice Config</strong><span>Set up practice servers</span></div>
+    </a>
+  </div>
+</section>
+
+<!-- Silo 4: Maps & Lineups -->
+<section class="hp-silo">
+  <div class="hp-silo-header">
+    <span class="hp-header-accent"></span>
+    <h2>Maps, Callouts & Lineups</h2>
+    <p>Learn every callout, smoke, flash, and molly for the active duty map pool.</p>
+  </div>
+  <div class="hp-map-grid">
+    {['mirage','inferno','dust2','anubis','ancient','nuke','overpass','vertigo'].map((m, idx) => {
+      const gradients = ['#1e3a5f,#2a5f99', '#d4956e,#d97706', '#8b4513,#a0522d', '#d4a574,#cd853f', '#2d5016,#3d7c1a', '#00aaff,#0088cc', '#4a9d6f,#2d7a4a', '#4a6fa5,#2c4a7f'];
+      return (
+        <a href={`/maps/${m}/`} class="hp-mapcard" style={`background: linear-gradient(135deg, ${gradients[idx % gradients.length]})`}>
+          <div class="hp-mapcard-name">{m.charAt(0).toUpperCase() + m.slice(1).replace('2',' 2')}</div>
+          <div class="hp-maplinks">
+            <span class="hp-maplinks-item">Callouts</span>
+            <span class="hp-maplinks-sep">·</span>
+            <span class="hp-maplinks-item">Lineups</span>
+          </div>
+        </a>
+      );
+    })}
+  </div>
+  <div class="hp-silo-links">
+    <a href="/maps/" class="hp-link-main">All Maps →</a>
+    <a href="/workshop-maps/">Workshop Maps</a>
+    <a href="/practice-config/">Practice Config</a>
+    <a href="/bind-generator/">Bind Generator</a>
+  </div>
+</section>
+
+<!-- Silo 5: Pro Players, Teams & Gear -->
+<section class="hp-silo">
+  <div class="hp-silo-header">
+    <span class="hp-header-accent"></span>
+    <h2>Pro Player Settings, Teams & Gear</h2>
+    <p>Complete configs from {playerCount}+ professional CS2 players — crosshair codes, sensitivity, resolution, peripherals, and weapon skin loadouts.</p>
+  </div>
+  <div class="hp-pro-preview">
+    {['s1mple', 'zywoo', 'niko', 'donk', 'ropz', 'm0nesy', 'twistzz', 'electroNic', 'b1t', 'aleksib', 'rain', 'broky', 'frozen', 'sh1ro', 'magisk', 'gla1ve'].map(slug => {
+      const p = getPlayerBySlug(slug);
+      if (!p) return null;
+      return (
+        <a href={`/player/${p.slug}/`} class="hp-procard">
+          {p.image ? (
+            <img src={p.image} alt={p.name} width="64" height="64" class="hp-pro-avatar" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'" />
+          ) : null}
+          <div class="hp-pro-monogram" style={p.image ? 'display:none' : ''}>{p.name.charAt(0).toUpperCase()}</div>
+          <strong>{p.name}</strong>
+        </a>
+      );
+    })}
+  </div>
+  <h3 class="hp-gear-heading">Most Popular Pro Gear</h3>
+  <div class="hp-gear-row">
+    {topGear.map(g => (
+      <a href={`/gear/${g.slug}/`} class="hp-gearcard">
+        <img class="hp-gearcard-img" src={getGearImageUrl(g.name)} alt={g.name} width="64" height="64" loading="lazy" onerror="this.style.display='none'" />
+        <div class="hp-gearcard-info">
+          <strong>{g.name}</strong>
+          <span>{g.players.length} pros</span>
+        </div>
+      </a>
+    ))}
+  </div>
+  <div class="hp-silo-links">
+    <a href="/pro-players/" class="hp-link-main">All {playerCount}+ Players →</a>
+    <a href="/teams/">Teams</a>
+    <a href="/gear/">Pro Gear</a>
+    <a href="/sensitivity-converter/">Sensitivity Converter</a>
+    <a href="/crosshair-codes/">Crosshair Codes</a>
+    <a href="/crosshair-generator/">Crosshair Generator</a>
+    <a href="/edpi-calculator/">eDPI Calculator</a>
+    <a href="/resolution-calculator/">Resolution Calculator</a>
+    <a href="/loadout-builder/">Loadout Builder</a>
+  </div>
+</section>
+
+<!-- Silo 6: Guides, Ranks & Knowledge -->
+<section class="hp-silo">
+  <div class="hp-silo-header">
+    <span class="hp-header-accent"></span>
+    <h2>Guides, Ranks & Learning Resources</h2>
+    <p>In-depth guides covering trading, economy, mechanics, competitive play, and CS2 rank progression.</p>
+  </div>
+  <div class="hp-guide-grid">
+    <a href="/guides/economy-guide/" class="hp-guidecard">
+      <span class="hp-guidesvg">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="12" cy="12" r="8" stroke="currentColor" stroke-width="1.5" fill="none"/>
+          <line x1="12" y1="6" x2="12" y2="18" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+          <line x1="15" y1="9" x2="9" y2="9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+          <line x1="15" y1="15" x2="9" y2="15" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+      </span>
+      <div><strong>Economy Guide</strong><p>Round-by-round money management and buy strategies</p></div>
+    </a>
+    <a href="/rank-distribution/" class="hp-guidecard">
+      <span class="hp-guidesvg">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path d="M 12 2 L 15 8 L 22 8 L 17 13 L 19 19 L 12 15 L 5 19 L 7 13 L 2 8 L 9 8 Z" stroke="currentColor" stroke-width="1.5" fill="none"/>
+        </svg>
+      </span>
+      <div><strong>Rank Distribution</strong><p>Premier & competitive rank breakdown with tips</p></div>
+    </a>
+    <a href="/guides/trading-guide/" class="hp-guidecard">
+      <span class="hp-guidesvg">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <rect x="3" y="5" width="8" height="8" rx="1" stroke="currentColor" stroke-width="1.5" fill="none"/>
+          <rect x="13" y="11" width="8" height="8" rx="1" stroke="currentColor" stroke-width="1.5" fill="none"/>
+          <path d="M 11 9 L 13 11 M 11 13 L 13 11" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+      </span>
+      <div><strong>Trading Guide</strong><p>How to trade CS2 skins profitably</p></div>
+    </a>
+    <a href="/guides/float-guide/" class="hp-guidecard">
+      <span class="hp-guidesvg">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="11" cy="11" r="8" stroke="currentColor" stroke-width="1.5" fill="none"/>
+          <path d="M 17 17 L 20 20" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+      </span>
+      <div><strong>Float Value Guide</strong><p>Understanding float values and wear conditions</p></div>
+    </a>
+    <a href="/guides/skins-investing-guide/" class="hp-guidecard">
+      <span class="hp-guidesvg">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <polyline points="22 7 13.5 15.5 9 11 2 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          <polyline points="22 7 22 13 16 13" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </span>
+      <div><strong>Skin Investing</strong><p>Long-term investment strategies for CS2 skins</p></div>
+    </a>
+    <a href="/guides/fps-optimization-guide/" class="hp-guidecard">
+      <span class="hp-guidesvg">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path d="M 13 2 L 13 6 M 11 4 L 15 4 M 5 10 C 2 13 2 17 5 20 M 19 10 C 22 13 22 17 19 20 M 12 12 L 12 16 M 10 14 L 14 14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+      </span>
+      <div><strong>FPS Optimization</strong><p>Maximize your framerate and reduce input lag</p></div>
+    </a>
+    <a href="/guides/advanced-mechanics-guide/" class="hp-guidecard">
+      <span class="hp-guidesvg">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.5" fill="none"/>
+          <path d="M 12 7 L 15 12 L 12 17 L 9 12 Z" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linejoin="round"/>
+        </svg>
+      </span>
+      <div><strong>Advanced Mechanics</strong><p>Movement, counter-strafing, and game sense</p></div>
+    </a>
+  </div>
+  <div class="hp-silo-links">
+    <a href="/guides/" class="hp-link-main">All Guides →</a>
+    <a href="/rank-distribution/">Rank Distribution</a>
+    <a href="/guides/ranks-guide/">Ranks Guide</a>
+    <a href="/cs2-commands/">CS2 Commands</a>
+    <a href="/aim-training/">Aim Training</a>
+    <a href="/faq/">FAQ</a>
+    <a href="/patch-notes/">Patch Notes</a>
+  </div>
+</section>
+
+<!-- Silo 7: Trading & Marketplace -->
+<section class="hp-silo">
+  <div class="hp-silo-header">
+    <span class="hp-header-accent"></span>
+    <h2>Trading Sites & Marketplaces</h2>
+    <p>Compare 15+ CS2 skin marketplaces — fees, trust ratings, promo codes, and P2P vs. bot trading options.</p>
+  </div>
+  <div class="hp-trade-grid">
+    <a href="/trading-sites/" class="hp-tradecard">
+      <span class="hp-tradesvg">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <rect x="3" y="5" width="8" height="8" rx="1" stroke="currentColor" stroke-width="1.5" fill="none"/>
+          <rect x="13" y="11" width="8" height="8" rx="1" stroke="currentColor" stroke-width="1.5" fill="none"/>
+          <path d="M 11 9 L 13 11 M 11 13 L 13 11" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+      </span>
+      <div><strong>Compare Trading Sites</strong><span>Side-by-side marketplace comparison</span></div>
+    </a>
+    <a href="/inventory-lookup/" class="hp-tradecard">
+      <span class="hp-tradesvg">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="11" cy="11" r="8" stroke="currentColor" stroke-width="1.5" fill="none"/>
+          <path d="M 17 17 L 21 21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </span>
+      <div><strong>Inventory Lookup</strong><span>Check any Steam inventory value</span></div>
+    </a>
+    <a href="/skin-compare/" class="hp-tradecard">
+      <span class="hp-tradesvg">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <rect x="2" y="4" width="8" height="16" rx="1" stroke="currentColor" stroke-width="1.5" fill="none"/>
+          <rect x="14" y="4" width="8" height="16" rx="1" stroke="currentColor" stroke-width="1.5" fill="none"/>
+          <line x1="12" y1="8" x2="12" y2="16" stroke="currentColor" stroke-width="1.5" stroke-dasharray="2 2"/>
+        </svg>
+      </span>
+      <div><strong>Skin Compare</strong><span>Compare prices across marketplaces</span></div>
+    </a>
+    <a href="/tradeup-calculator/" class="hp-tradecard">
+      <span class="hp-tradesvg">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <polyline points="22 7 13.5 15.5 9 11 2 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          <polyline points="22 7 22 13 16 13" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </span>
+      <div><strong>Trade-Up Calculator</strong><span>Calculate trade-up contract outcomes</span></div>
+    </a>
+  </div>
+  <div class="hp-silo-links">
+    <a href="/trading-sites/" class="hp-link-main">All Trading Sites →</a>
+    <a href="/guides/trading-guide/">Trading Guide</a>
+    <a href="/guides/skins-investing-guide/">Skin Investing</a>
+    <a href="/float-checker/">Float Checker</a>
+    <a href="/price-tracker/">Price Tracker</a>
+    <a href="/market-trends/">Market Trends</a>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="hp-faq-section">
+  <h2>Frequently Asked Questions</h2>
+  <dl class="faq">
+    {faqs.map(f => (
+      <>
+        <dt>{f.question}</dt>
+        <dd>{f.answer}</dd>
+      </>
+    ))}
+  </dl>
+</section>
+
+</Base>
+
+<style is:inline>
+:root {
+  --glow: 0 0 20px rgba(212,149,110,0.15);
+  --glow-blue: 0 0 20px rgba(0,170,255,0.15);
+  --glow-gold: 0 0 20px rgba(212,149,110,0.15);
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes glowPulse {
+  0%, 100% { box-shadow: var(--glow), 0 0 0 0 rgba(212,149,110,0.3); }
+  50% { box-shadow: var(--glow), 0 0 10px 3px rgba(212,149,110,0.05); }
+}
+
+@keyframes numGlow {
+  0%, 100% { color: var(--accent); }
+  50% { color: #00d4ff; text-shadow: 0 0 10px rgba(0,212,255,0.5); }
+}
+
+@keyframes gridShimmer {
+  0% { background-position: 0 0; }
+  100% { background-position: 100px 100px; }
+}
+
+@keyframes scanLines {
+  0% { transform: translateY(-100%); }
+  100% { transform: translateY(100%); }
+}
+
+@keyframes floatUp {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Hero Section - Premium Showcase */
+.hp-hero {
+  position: relative;
+  padding: 3rem 1.5rem;
+  background: linear-gradient(135deg, #0f1419, #1a2332);
+  border-radius: 16px;
+  border: 1px solid rgba(212,149,110,0.1);
+  margin-bottom: 3rem;
+  overflow: hidden;
+}
+
+.hp-hero-scanlines {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    rgba(0,0,0,0.15),
+    rgba(0,0,0,0.15) 1px,
+    transparent 1px,
+    transparent 2px
+  );
+  pointer-events: none;
+  z-index: 1;
+}
+
+.hp-hero-gradient {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(ellipse at 50% -50%, rgba(0,170,255,0.08) 0%, transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.hp-hero-content {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  align-items: center;
+}
+
+.hp-hero-showcase {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  position: relative;
+  min-height: 280px;
+}
+
+.hp-featured-main {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hp-featured-primary {
+  width: 200px;
+  height: 280px;
+  position: relative;
+}
+
+.hp-featured-glow {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 240px;
+  height: 240px;
+  background: radial-gradient(circle, var(--rarity-color) 0%, transparent 70%);
+  opacity: 0.15;
+  filter: blur(40px);
+  z-index: -1;
+}
+
+.hp-featured-image {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, rgba(20, 30, 50, 0.6), rgba(30, 50, 80, 0.4));
+  border-radius: 12px;
+  border: 2px solid var(--rarity-color);
+  position: relative;
+  overflow: hidden;
+  animation: floatUp 4s ease-in-out infinite;
+}
+
+.hp-featured-image img {
+  max-width: 90%;
+  max-height: 90%;
+  object-fit: contain;
+}
+
+.hp-featured-placeholder {
+  font-size: 3rem;
+  font-weight: 900;
+  color: var(--rarity-color);
+  opacity: 0.3;
+}
+
+.hp-featured-badge {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: var(--rarity-color);
+  color: #000;
+  padding: 0.4rem 0.75rem;
+  border-radius: 4px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  z-index: 10;
+}
+
+.hp-featured-side {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.hp-featured-secondary {
+  width: 140px;
+  height: 140px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, rgba(20, 30, 50, 0.8), rgba(30, 50, 80, 0.6));
+  border-radius: 12px;
+  border: 2px solid var(--rarity-color);
+  opacity: 0.65;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  text-decoration: none;
+  position: relative;
+  overflow: hidden;
+}
+
+.hp-featured-secondary:hover {
+  opacity: 1;
+  transform: scale(1.05);
+  box-shadow: 0 8px 24px rgba(212,149,110,0.2);
+}
+
+.hp-featured-image-sm {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hp-featured-image-sm img {
+  max-width: 85%;
+  max-height: 85%;
+  object-fit: contain;
+}
+
+.hp-featured-placeholder-sm {
+  font-size: 1.8rem;
+  font-weight: 900;
+  color: var(--rarity-color);
+  opacity: 0.3;
+}
+
+.hp-hero-text {
+  text-align: left;
+}
+
+.hp-hero h1 {
+  font-size: 2.2rem;
+  font-weight: 900;
+  margin: 0 0 0.75rem;
+  background: linear-gradient(135deg, var(--accent), #00d4ff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  line-height: 1.2;
+}
+
+.hp-sub {
+  color: var(--text2);
+  font-size: 1rem;
+  margin: 0 0 1.5rem;
+  line-height: 1.6;
+}
+
+/* Hero Search Bar */
+.hp-search-hero {
+  margin-bottom: 1.25rem;
+}
+
+.hp-search-form {
+  display: flex;
+  align-items: center;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 12px;
+  padding: 0.3rem;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.hp-search-form:focus-within {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(212,149,110,0.15);
+}
+
+.hp-search-icon {
+  width: 20px;
+  height: 20px;
+  color: var(--text2);
+  margin: 0 0.6rem;
+  flex-shrink: 0;
+}
+
+.hp-search-input {
+  flex: 1;
+  background: none;
+  border: none;
+  color: var(--text);
+  font-size: 0.95rem;
+  padding: 0.55rem 0.25rem;
+  outline: none;
+  min-width: 0;
+}
+
+.hp-search-input::placeholder {
+  color: var(--text2);
+  opacity: 0.7;
+}
+
+.hp-search-btn {
+  background: linear-gradient(135deg, #4ade80, #34d399);
+  color: #0a1a0f;
+  border: none;
+  padding: 0.55rem 1.2rem;
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+
+.hp-search-btn:hover {
+  box-shadow: 0 4px 14px rgba(74,222,128,0.3);
+  transform: translateY(-1px);
+}
+
+.hp-search-tags {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin-top: 0.6rem;
+}
+
+.hp-search-tags a {
+  font-size: 0.75rem;
+  color: var(--text2);
+  background: rgba(255,255,255,0.05);
+  padding: 0.25rem 0.6rem;
+  border-radius: 20px;
+  border: 1px solid rgba(255,255,255,0.08);
+  text-decoration: none;
+  transition: all 0.2s;
+}
+
+.hp-search-tags a:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: rgba(212,149,110,0.08);
+}
+
+.hp-cta {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  margin-bottom: 1.5rem;
+}
+
+.hp-btn {
+  padding: 0.7rem 1.4rem;
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: 0.9rem;
+  text-decoration: none;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 2px solid transparent;
+  will-change: transform, box-shadow;
+  cursor: pointer;
+}
+
+.hp-primary {
+  background: var(--accent);
+  color: #000;
+  border-color: var(--accent);
+  animation: glowPulse 2s ease-in-out infinite;
+}
+
+.hp-primary:hover {
+  opacity: 0.95;
+  transform: translateY(-3px);
+  box-shadow: var(--glow), 0 8px 20px rgba(212,149,110,0.25);
+}
+
+.hp-secondary {
+  background: transparent;
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
+.hp-secondary:hover {
+  background: var(--accent);
+  color: #000;
+  transform: translateY(-2px);
+}
+
+.hp-stats-row {
+  display: flex;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.hp-stat {
+  text-align: center;
+  animation: slideUp 0.6s ease-out;
+}
+
+.hp-stat:nth-child(1) { animation-delay: 0.1s; }
+.hp-stat:nth-child(2) { animation-delay: 0.2s; }
+.hp-stat:nth-child(3) { animation-delay: 0.3s; }
+.hp-stat:nth-child(4) { animation-delay: 0.4s; }
+.hp-stat:nth-child(5) { animation-delay: 0.5s; }
+
+.hp-sn {
+  display: block;
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: var(--accent);
+  animation: numGlow 3s ease-in-out infinite;
+}
+
+.hp-sl {
+  font-size: 0.75rem;
+  color: var(--text2);
+  text-transform: uppercase;
+}
+
+/* Scroll animations */
+.hp-silo {
+  margin-bottom: 3rem;
+  opacity: 0;
+  transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+  will-change: opacity, transform;
+}
+
+.hp-silo.visible {
+  opacity: 1;
+  animation: slideUp 0.6s ease-out forwards;
+}
+
+.hp-silo-header {
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+}
+
+.hp-header-accent {
+  width: 4px;
+  height: 32px;
+  background: var(--accent);
+  border-radius: 2px;
+  flex-shrink: 0;
+  animation: slideUp 0.6s ease-out;
+}
+
+.hp-silo-header h2 {
+  font-size: 1.6rem;
+  font-weight: 800;
+  margin: 0 0 0.4rem;
+}
+
+.hp-silo-header p {
+  color: var(--text2);
+  font-size: 0.95rem;
+  margin: 0;
+}
+
+.hp-silo-links {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  margin-top: 1rem;
+  padding: 0.75rem;
+  background: var(--bg2);
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  align-items: center;
+}
+
+.hp-silo-links a {
+  font-size: 0.85rem;
+  color: var(--text2);
+  padding: 0.4rem 0.75rem;
+  border-radius: 6px;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  text-decoration: none;
+  transition: all 0.2s;
+  will-change: border-color, color, background;
+}
+
+.hp-silo-links a:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: rgba(212,149,110,0.1);
+}
+
+.hp-link-main {
+  font-weight: 700;
+  color: var(--accent) !important;
+  border-color: var(--accent) !important;
+  background: rgba(212,149,110,0.15) !important;
+}
+
+/* Skin cards - Enhanced */
+.hp-skin-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+  gap: 1rem;
+}
+
+.hp-skincard {
+  background: var(--bg2);
+  border: 2px solid var(--border);
+  border-left: 4px solid var(--rarity-color);
+  border-radius: 10px;
+  overflow: hidden;
+  text-decoration: none;
+  color: inherit;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: transform, border-color, background, box-shadow;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.hp-skincard::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(circle at 0 0, rgba(212,149,110,0.05) 0%, transparent 70%);
+  opacity: 0;
+  transition: opacity 0.3s;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.hp-skincard:hover {
+  border-color: var(--accent);
+  transform: translateY(-6px);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.4), 0 0 20px rgba(212,149,110,0.15);
+}
+
+.hp-skincard:hover::before {
+  opacity: 1;
+}
+
+.hp-skincard-rarity {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: var(--rarity-color);
+  color: #000;
+  padding: 0.25rem 0.6rem;
+  border-radius: 4px;
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  z-index: 2;
+}
+
+.hp-skinimg {
+  height: 160px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  position: relative;
+  background: linear-gradient(135deg, rgba(20, 30, 50, 0.8), rgba(30, 50, 80, 0.6));
+}
+
+.hp-skinimg img {
+  max-width: 85%;
+  max-height: 140px;
+  object-fit: contain;
+  transition: transform 0.3s ease;
+}
+
+.hp-skincard:hover .hp-skinimg img {
+  transform: scale(1.12);
+}
+
+.hp-skininfo {
+  padding: 0.9rem;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.hp-skininfo strong {
+  display: block;
+  font-size: 0.92rem;
+  margin-bottom: 0.2rem;
+  font-weight: 700;
+}
+
+.hp-skinwep {
+  display: block;
+  font-size: 0.78rem;
+  color: var(--text2);
+  margin-bottom: 0.4rem;
+  flex: 1;
+}
+
+.hp-skinprice {
+  display: block;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--accent);
+}
+
+/* Category cards - SVG Icons */
+.hp-cat-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 1rem;
+}
+
+.hp-catcard {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1.5rem;
+  text-decoration: none;
+  color: inherit;
+  text-align: center;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: transform, border-color, box-shadow, background;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.hp-catcard::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 2px;
+  background: var(--accent);
+  transition: left 0.3s ease;
+}
+
+.hp-catcard:hover::before {
+  left: 100%;
+}
+
+.hp-catcard:hover {
+  border-color: var(--accent);
+  transform: translateY(-4px);
+  box-shadow: 0 12px 28px rgba(212,149,110,0.15);
+  background: rgba(212,149,110,0.05);
+}
+
+.hp-catimg {
+  width: 180px;
+  height: 130px;
+  margin-bottom: 0.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.3s ease;
+}
+
+.hp-catcard:hover .hp-catimg {
+  transform: scale(1.1);
+}
+
+.hp-catimg img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  filter: drop-shadow(0 4px 12px rgba(0,0,0,0.5));
+}
+
+.hp-catcard h3 {
+  margin: 0 0 0.3rem;
+  font-size: 1.05rem;
+  font-weight: 700;
+}
+
+.hp-catcard p {
+  margin: 0;
+  font-size: 0.8rem;
+  color: var(--text2);
+}
+
+/* Tools grid - SVG Icons */
+.hp-tools-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 0.75rem;
+}
+
+.hp-toolcard {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--accent);
+  border-radius: 10px;
+  padding: 1rem;
+  text-decoration: none;
+  color: inherit;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: border-color, transform, box-shadow, background;
+  position: relative;
+  overflow: hidden;
+}
+
+.hp-toolcard::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(212,149,110,0.08), transparent);
+  transition: left 0.6s ease;
+  pointer-events: none;
+}
+
+.hp-toolcard:hover {
+  border-color: var(--accent);
+  transform: translateX(4px);
+  box-shadow: 0 8px 20px rgba(212,149,110,0.12);
+  background: rgba(212,149,110,0.03);
+}
+
+.hp-toolcard:hover::after {
+  left: 100%;
+}
+
+.hp-toolsvg {
+  width: 32px;
+  height: 32px;
+  flex-shrink: 0;
+  color: var(--accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.3s ease;
+}
+
+.hp-toolcard:hover .hp-toolsvg {
+  transform: scale(1.15);
+}
+
+.hp-toolsvg svg {
+  width: 100%;
+  height: 100%;
+}
+
+.hp-toolcard strong {
+  display: block;
+  font-size: 0.9rem;
+  color: var(--text);
+  margin-bottom: 0.15rem;
+  font-weight: 700;
+}
+
+.hp-toolcard span {
+  font-size: 0.78rem;
+  color: var(--text2);
+}
+
+/* Map grid - Gradient Backgrounds */
+.hp-map-grid {
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  gap: 0.75rem;
+}
+
+@media(max-width: 1200px) {
+  .hp-map-grid {
+    grid-template-columns: repeat(6, 1fr);
+  }
+}
+
+@media(max-width: 900px) {
+  .hp-map-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+@media(max-width: 550px) {
+  .hp-map-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.hp-mapcard {
+  background: var(--bg2);
+  border-radius: 10px;
+  padding: 1.2rem;
+  text-align: center;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: transform, box-shadow;
+  position: relative;
+  overflow: hidden;
+  border: none;
+  color: white;
+  text-decoration: none;
+}
+
+.hp-mapcard::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, rgba(0,0,0,0.3), rgba(0,0,0,0.1));
+  z-index: 0;
+}
+
+.hp-mapcard::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, var(--background), transparent);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  z-index: 1;
+}
+
+.hp-mapcard:hover {
+  transform: translateY(-4px) scale(1.02);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.3);
+}
+
+.hp-mapcard:hover::after {
+  opacity: 0.5;
+}
+
+.hp-mapcard-name {
+  display: block;
+  font-size: 1rem;
+  font-weight: 800;
+  margin-bottom: 0.5rem;
+  position: relative;
+  z-index: 2;
+  text-transform: capitalize;
+}
+
+.hp-maplinks {
+  display: flex;
+  justify-content: center;
+  gap: 0.3rem;
+  font-size: 0.75rem;
+  position: relative;
+  z-index: 2;
+}
+
+.hp-maplinks-item {
+  color: rgba(255,255,255,0.8);
+  transition: all 0.2s;
+}
+
+.hp-mapcard:hover .hp-maplinks-item {
+  color: white;
+  text-shadow: 0 0 8px rgba(255,255,255,0.4);
+}
+
+.hp-maplinks-sep {
+  color: rgba(255,255,255,0.5);
+}
+
+/* Pro Players - Monogram Cards */
+.hp-pro-preview {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.hp-procard {
+  background: linear-gradient(135deg, var(--bg2), rgba(212,149,110,0.08));
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 0.75rem;
+  text-decoration: none;
+  color: inherit;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: border-color, box-shadow, transform;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  min-width: 90px;
+  flex: 0 0 auto;
+}
+
+.hp-procard:hover {
+  border-color: var(--accent);
+  box-shadow: 0 8px 24px rgba(212,149,110,0.2);
+  transform: translateY(-3px);
+  background: linear-gradient(135deg, var(--bg2), rgba(212,149,110,0.15));
+}
+
+.hp-pro-avatar {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.hp-pro-monogram {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: var(--accent);
+  color: #000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.4rem;
+  font-weight: 900;
+  flex-shrink: 0;
+}
+
+.hp-procard strong {
+  display: block;
+  font-size: 0.82rem;
+  font-weight: 700;
+  text-align: center;
+}
+
+/* Popular Gear Row */
+.hp-gear-heading {
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin: 1.5rem 0 0.75rem;
+  color: var(--text);
+}
+
+.hp-gear-row {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  margin-bottom: 0.5rem;
+}
+
+.hp-gearcard {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 0.75rem 1rem;
+  text-decoration: none;
+  color: var(--text);
+  transition: border-color 0.2s, transform 0.2s;
+  flex: 1 1 200px;
+  min-width: 0;
+}
+
+.hp-gearcard:hover {
+  border-color: var(--accent);
+  transform: translateY(-2px);
+}
+
+.hp-gearcard-img {
+  width: 56px;
+  height: 56px;
+  object-fit: contain;
+  flex-shrink: 0;
+  border-radius: 6px;
+  background: var(--bg1);
+}
+
+.hp-gearcard-info {
+  min-width: 0;
+}
+
+.hp-gearcard-info strong {
+  display: block;
+  font-size: 0.9rem;
+  font-weight: 700;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.hp-gearcard-info span {
+  font-size: 0.75rem;
+  color: var(--accent);
+  font-weight: 600;
+}
+
+/* Guide grid - SVG Icons */
+.hp-guide-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 0.75rem;
+}
+
+.hp-guidecard {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 1.1rem;
+  text-decoration: none;
+  color: inherit;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: border-color, box-shadow, transform;
+}
+
+.hp-guidecard:hover {
+  border-color: var(--accent);
+  box-shadow: 0 8px 24px rgba(212,149,110,0.15);
+  transform: translateY(-3px);
+  background: rgba(212,149,110,0.04);
+}
+
+.hp-guidesvg {
+  width: 32px;
+  height: 32px;
+  flex-shrink: 0;
+  color: var(--accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 0.2rem;
+  transition: transform 0.3s ease;
+}
+
+.hp-guidecard:hover .hp-guidesvg {
+  transform: scale(1.15);
+}
+
+.hp-guidesvg svg {
+  width: 100%;
+  height: 100%;
+}
+
+.hp-guidecard strong {
+  display: block;
+  font-size: 0.95rem;
+  color: var(--text);
+  margin-bottom: 0.2rem;
+  font-weight: 700;
+}
+
+.hp-guidecard p {
+  margin: 0;
+  font-size: 0.82rem;
+  color: var(--text2);
+  line-height: 1.4;
+}
+
+/* Trading grid */
+.hp-trade-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 0.75rem;
+}
+
+.hp-tradecard {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-left: 3px solid #4ade80;
+  border-radius: 10px;
+  padding: 1rem;
+  text-decoration: none;
+  color: inherit;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: border-color, transform, box-shadow, background;
+  position: relative;
+  overflow: hidden;
+}
+
+.hp-tradecard:hover {
+  border-color: #4ade80;
+  transform: translateX(4px);
+  box-shadow: 0 8px 20px rgba(74,222,128,0.12);
+  background: rgba(74,222,128,0.03);
+}
+
+.hp-tradesvg {
+  width: 32px;
+  height: 32px;
+  flex-shrink: 0;
+  color: #4ade80;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.3s ease;
+}
+
+.hp-tradecard:hover .hp-tradesvg {
+  transform: scale(1.15);
+}
+
+.hp-tradesvg svg {
+  width: 100%;
+  height: 100%;
+}
+
+.hp-tradecard strong {
+  display: block;
+  font-size: 0.9rem;
+  color: var(--text);
+  margin-bottom: 0.15rem;
+  font-weight: 700;
+}
+
+.hp-tradecard span {
+  font-size: 0.78rem;
+  color: var(--text2);
+}
+
+.hp-faq-section {
+  margin-bottom: 2rem;
+  opacity: 0;
+  animation: slideUp 0.6s ease-out 0.8s forwards;
+}
+
+.hp-faq-section h2 {
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.hp-faq-section h2::before {
+  content: '';
+  width: 4px;
+  height: 28px;
+  background: var(--accent);
+  border-radius: 2px;
+}
+
+@media(max-width: 1024px) {
+  .hp-hero-content {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  .hp-hero-text {
+    text-align: center;
+  }
+
+  .hp-hero h1 {
+    font-size: 1.8rem;
+  }
+
+  .hp-cta {
+    justify-content: center;
+  }
+
+  .hp-stats-row {
+    justify-content: center;
+  }
+}
+
+@media(max-width: 768px) {
+  .hp-hero {
+    padding: 2rem 1.25rem;
+  }
+
+  .hp-hero-showcase {
+    min-height: 220px;
+  }
+
+  .hp-featured-primary {
+    width: 160px;
+    height: 220px;
+  }
+
+  .hp-featured-secondary {
+    width: 110px;
+    height: 110px;
+  }
+
+  .hp-hero h1 {
+    font-size: 1.6rem;
+  }
+
+  .hp-sn {
+    font-size: 1.1rem;
+  }
+
+  .hp-tools-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .hp-skin-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .hp-guide-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .hp-pro-preview {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+}
+
+@media(max-width: 480px) {
+  .hp-hero {
+    padding: 1.5rem 1rem;
+  }
+
+  .hp-silo-header {
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .hp-header-accent {
+    width: 3px;
+    height: 24px;
+    margin-left: 0;
+  }
+
+  .hp-hero-showcase {
+    gap: 0.5rem;
+  }
+
+  .hp-featured-primary {
+    width: 140px;
+    height: 180px;
+  }
+
+  .hp-featured-side {
+    gap: 0.5rem;
+  }
+
+  .hp-featured-secondary {
+    width: 90px;
+    height: 90px;
+  }
+
+  .hp-skin-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .hp-cat-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .hp-map-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .hp-toolcard,
+  .hp-tradecard {
+    flex-direction: column;
+    text-align: center;
+  }
+}
+</style>
+
+<script>
+if (typeof window !== 'undefined') {
+  document.addEventListener('DOMContentLoaded', () => {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, {
+      threshold: 0.1,
+      rootMargin: '0px 0px -50px 0px'
+    });
+
+    document.querySelectorAll('.hp-silo').forEach(el => {
+      observer.observe(el);
+    });
+  });
+}
+</script>

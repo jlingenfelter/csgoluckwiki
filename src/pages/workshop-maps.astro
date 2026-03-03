@@ -1,0 +1,292 @@
+---
+import Base from '../layouts/Base.astro';
+import ExploreMore from '../components/ExploreMore.astro';
+import { breadcrumbSchema, faqSchema, toolAppSchema } from '../lib/weapons';
+
+const title = 'Best CS2 Workshop Maps — Aim Training, Movement & Utility Practice | CSDB.gg';
+const description = 'Curated directory of the best CS2 Steam Workshop maps for aim training, movement practice, utility lineups, warmup routines, and more. Links to subscribe directly.';
+const crumbs = [{ name: 'Home', url: '/' }, { name: 'Workshop Maps', url: '/workshop-maps/' }];
+const faqs = [
+  { question: 'How do I install CS2 workshop maps?', answer: 'Open Steam, go to the CS2 Workshop page, find the map you want, and click "Subscribe". The map will automatically download. Then in CS2, go to Play → Practice → Workshop Maps to find and load it.' },
+  { question: 'What is the best aim training map for CS2?', answer: 'Aim Botz by ulletical is the most popular aim training map, used by professional players worldwide. It provides stationary and moving bots in a controlled environment. For reflex training, Fast Aim/Reflex Training is also excellent.' },
+  { question: 'Can I practice smokes on workshop maps?', answer: 'Yes. Yprac makes dedicated utility practice maps for each active duty map (Mirage, Inferno, Dust2, etc.) that show you exactly where to stand and aim for every common smoke, flash, and molotov lineup.' },
+  { question: 'What workshop maps do pros use for warmup?', answer: 'Most pros warm up with Aim Botz for 10-15 minutes, then play a few rounds of community FFA Deathmatch. Some also use the Yprac Prefire maps to practice angle clearing on specific maps they will play.' },
+  { question: 'Are surf and KZ maps available in CS2?', answer: 'Yes, surf and KZ (climb) maps have been ported to CS2. While the movement physics differ slightly from CSGO, the core mechanics work. Look for maps labeled CS2 compatible in the workshop.' },
+];
+
+interface WorkshopMap {
+  name: string;
+  author: string;
+  category: string;
+  description: string;
+  features: string[];
+  difficulty: string;
+  popular: boolean;
+  steamUrl: string;
+}
+
+const MAPS: WorkshopMap[] = [
+  // Aim Training
+  { name: 'Aim Botz', author: 'ulletical', category: 'aim', description: 'The gold standard of aim training maps. Practice against up to 100 stationary or moving bots. Adjust distance, speed, and armor to train different scenarios.', features: ['Moving targets', 'Adjustable difficulty', 'Weapon selection', 'Stat tracking'], difficulty: 'beginner', popular: true, steamUrl: 'https://steamcommunity.com/sharedfiles/filedetails/?id=243702660' },
+  { name: 'Fast Aim / Reflex Training', author: 'Yolokas', category: 'aim', description: 'Intense reflex training with bots spawning rapidly around you. Excellent for building reaction time and flick shots. Multiple difficulty levels.', features: ['Reflex drills', 'Flick practice', 'Speed modes', 'Score tracking'], difficulty: 'intermediate', popular: true, steamUrl: 'https://steamcommunity.com/sharedfiles/filedetails/?id=368026786' },
+  { name: 'training_aim_csgo2', author: 'Dolnma', category: 'aim', description: 'Classic aim training map with customizable target size, speed, and spawn patterns. Features tracking targets, flick targets, and micro-adjustment drills.', features: ['Target customization', 'Multiple modes', 'Sensitivity testing', 'Progress tracking'], difficulty: 'beginner', popular: true, steamUrl: 'https://steamcommunity.com/sharedfiles/filedetails/?id=213240871' },
+  { name: 'Yprac Aim Arena', author: 'Yprac', category: 'aim', description: 'Arena-style aim training with multiple game modes. Includes 1v1 arenas, spray transfer practice, and pre-aim drills. Great warmup before competitive.', features: ['1v1 arena', 'Spray transfer', 'Pre-aim drills', 'Multiple modes'], difficulty: 'intermediate', popular: false, steamUrl: 'https://steamcommunity.com/sharedfiles/filedetails/?id=1365781615' },
+  { name: 'Aim Lab CS2', author: 'AimLab', category: 'aim', description: 'Community port of Aim Lab exercises directly into CS2. Practice tracking, flicking, and micro-adjustments with CS2 weapons and sensitivity.', features: ['Tracking drills', 'Flick training', 'CS2 sensitivity', 'Detailed stats'], difficulty: 'beginner', popular: false, steamUrl: 'https://steamcommunity.com/sharedfiles/filedetails/?id=3070348191' },
+  { name: 'Recoil Master', author: 'ulletical', category: 'aim', description: 'Master spray patterns for every CS2 weapon. Visual guides overlay the spray pattern on screen so you can learn exactly how to control each weapon.', features: ['All weapons', 'Visual overlay', 'Ghost crosshair', 'Spray analysis'], difficulty: 'beginner', popular: true, steamUrl: 'https://steamcommunity.com/sharedfiles/filedetails/?id=419404847' },
+
+  // Movement
+  { name: 'surf_beginner', author: 'Community', category: 'surf', description: 'The perfect introduction to surf in CS2. Gentle ramps and forgiving angles teach the basics of surf movement and air strafing.', features: ['Beginner friendly', 'Gradual difficulty', 'Checkpoint system', 'Timer'], difficulty: 'beginner', popular: true, steamUrl: 'https://steamcommunity.com/sharedfiles/filedetails/?id=3076498824' },
+  { name: 'surf_utopia', author: 'Community', category: 'surf', description: 'One of the most popular intermediate surf maps. Flowing ramps with satisfying movement and beautiful visuals. A classic that every surfer should experience.', features: ['Beautiful design', 'Smooth ramps', 'Intermediate level', 'Multiple stages'], difficulty: 'intermediate', popular: true, steamUrl: 'https://steamcommunity.com/sharedfiles/filedetails/?id=3088608929' },
+  { name: 'surf_mesa', author: 'Community', category: 'surf', description: 'Advanced surf map with tight ramps and precise movement requirements. A true test of surf skill.', features: ['Advanced ramps', 'Tight margins', 'Stage system', 'Leaderboard'], difficulty: 'advanced', popular: false, steamUrl: 'https://steamcommunity.com/sharedfiles/filedetails/?id=3076897888' },
+  { name: 'kz_beginnerblock', author: 'Community', category: 'kz', description: 'Learn the fundamentals of climbing in CS2. Features basic long jumps, bhops, ladder movement, and edge detection exercises.', features: ['Basic jumps', 'Bhop practice', 'Ladder training', 'Checkpoint system'], difficulty: 'beginner', popular: true, steamUrl: 'https://steamcommunity.com/sharedfiles/filedetails/?id=3070254025' },
+  { name: 'kz_checkmate', author: 'Community', category: 'kz', description: 'Intermediate KZ challenge with creative block designs. Tests long jumps, count strafes, and aerial movement in a chess-themed environment.', features: ['Creative design', 'Varied jumps', 'Strafe practice', 'Timer support'], difficulty: 'intermediate', popular: false, steamUrl: 'https://steamcommunity.com/sharedfiles/filedetails/?id=3071888840' },
+  { name: 'bhop_badges', author: 'Community', category: 'movement', description: 'Classic bunny hop map ported to CS2. Progressive difficulty with checkpoints. Great for learning the timing and rhythm of bhop movement.', features: ['Progressive difficulty', 'Checkpoints', 'Timer', 'Bhop practice'], difficulty: 'intermediate', popular: false, steamUrl: 'https://steamcommunity.com/sharedfiles/filedetails/?id=3071652524' },
+  { name: 'CS2 Movement Training', author: 'Various', category: 'movement', description: 'Comprehensive movement training including counter-strafing, shoulder peeking, jiggle peeking, and crouch jumping. Builds essential competitive mechanics.', features: ['Counter-strafing', 'Peek practice', 'Jump spots', 'Movement tech'], difficulty: 'beginner', popular: true, steamUrl: 'https://steamcommunity.com/sharedfiles/filedetails/?id=3085635498' },
+
+  // Utility Practice
+  { name: 'Yprac Mirage', author: 'Yprac', category: 'utility', description: 'Complete utility guide for Mirage. Shows every competitive smoke, flash, and molotov with on-screen alignment markers. Used by professionals.', features: ['All smokes', 'Flash lineups', 'Molotov spots', 'Alignment guides'], difficulty: 'beginner', popular: true, steamUrl: 'https://steamcommunity.com/sharedfiles/filedetails/?id=1222094548' },
+  { name: 'Yprac Inferno', author: 'Yprac', category: 'utility', description: 'Learn every essential Inferno lineup. Banana smokes, site executes, retake utility — all with visual position and aim guides.', features: ['Banana control', 'Site execute', 'Retake utility', 'Step-by-step'], difficulty: 'beginner', popular: true, steamUrl: 'https://steamcommunity.com/sharedfiles/filedetails/?id=1222094766' },
+  { name: 'Yprac Dust 2', author: 'Yprac', category: 'utility', description: 'Master Dust 2 utility. Cross smokes, site flashes, and key molotovs with precise alignment markers and execution guides.', features: ['Cross smokes', 'Long control', 'B tunnels utility', 'Visual guides'], difficulty: 'beginner', popular: true, steamUrl: 'https://steamcommunity.com/sharedfiles/filedetails/?id=1222095286' },
+  { name: 'Yprac Anubis', author: 'Yprac', category: 'utility', description: 'Complete utility guide for Anubis, one of the newer active duty maps. Learn essential smokes and flashes for both sites.', features: ['A site lineups', 'B site lineups', 'Mid control', 'Retake utility'], difficulty: 'beginner', popular: false, steamUrl: 'https://steamcommunity.com/sharedfiles/filedetails/?id=2992845498' },
+  { name: 'Yprac Ancient', author: 'Yprac', category: 'utility', description: 'Ancient utility practice with lineups for all key positions. A and B site executes, mid control smokes, and defensive utility.', features: ['Cave smokes', 'Site executes', 'Donut flashes', 'Mid utility'], difficulty: 'beginner', popular: false, steamUrl: 'https://steamcommunity.com/sharedfiles/filedetails/?id=2470783843' },
+  { name: 'Yprac Nuke', author: 'Yprac', category: 'utility', description: 'Nuke utility is complex due to verticality. This map covers essential smokes for both levels, vent flashes, and ramp control utility.', features: ['Upper smokes', 'Lower utility', 'Ramp control', 'Vent flashes'], difficulty: 'intermediate', popular: false, steamUrl: 'https://steamcommunity.com/sharedfiles/filedetails/?id=1222095600' },
+  { name: 'Yprac Vertigo', author: 'Yprac', category: 'utility', description: 'Vertigo lineup guide covering ramp smokes, A site flashes, B site executes, and elevator area utility.', features: ['Ramp smokes', 'A flashes', 'B execute', 'Elevator utility'], difficulty: 'intermediate', popular: false, steamUrl: 'https://steamcommunity.com/sharedfiles/filedetails/?id=2469202625' },
+
+  // Warmup / Prefire
+  { name: 'Yprac Prefire Mirage', author: 'Yprac', category: 'warmup', description: 'Practice pre-aiming every common angle on Mirage. Bots hold real positions so you can practice clearing sites, mid, and connectors.', features: ['Realistic angles', 'T & CT routes', 'All positions', 'Bot placement'], difficulty: 'intermediate', popular: true, steamUrl: 'https://steamcommunity.com/sharedfiles/filedetails/?id=1603896498' },
+  { name: 'Yprac Prefire Inferno', author: 'Yprac', category: 'warmup', description: 'Prefire practice for Inferno. Clear apartments, banana, and both bombsites with bots holding typical competitive positions.', features: ['Banana clearing', 'A site angles', 'B push routes', 'Real positions'], difficulty: 'intermediate', popular: true, steamUrl: 'https://steamcommunity.com/sharedfiles/filedetails/?id=1603897308' },
+  { name: 'Yprac Prefire Dust 2', author: 'Yprac', category: 'warmup', description: 'Prefire training on Dust 2. Practice long doors, short A, tunnels, and both sites against bots in common hold positions.', features: ['Long doors drill', 'Short A clearing', 'B tunnels', 'Site takes'], difficulty: 'intermediate', popular: false, steamUrl: 'https://steamcommunity.com/sharedfiles/filedetails/?id=1603897849' },
+  { name: 'Warmup Arena', author: 'Community', category: 'warmup', description: 'Quick warmup map with multiple zones for different practice types: spray, flick, peek, and tracking. Perfect 10-minute pre-game warmup.', features: ['Multiple zones', 'Spray wall', 'Flick targets', 'Quick warmup'], difficulty: 'beginner', popular: false, steamUrl: 'https://steamcommunity.com/sharedfiles/filedetails/?id=3074961197' },
+
+  // Retake
+  { name: 'Retake Mirage', author: 'Community', category: 'retake', description: 'Practice retaking Mirage bomb sites with realistic player spawns and utility. CTs spawn with randomized positions and loadouts.', features: ['A & B sites', 'Random spawns', 'Utility practice', 'Realistic scenarios'], difficulty: 'intermediate', popular: true, steamUrl: 'https://steamcommunity.com/sharedfiles/filedetails/?id=3074825648' },
+  { name: 'Retake Inferno', author: 'Community', category: 'retake', description: 'Inferno retake scenarios for both A and B sites. Practice coordinated retakes with utility and positioning.', features: ['Both sites', 'Team coordination', 'Utility spawns', 'Variable scenarios'], difficulty: 'intermediate', popular: false, steamUrl: 'https://steamcommunity.com/sharedfiles/filedetails/?id=3074830247' },
+  { name: 'Retake Dust 2', author: 'Community', category: 'retake', description: 'Classic Dust 2 retake practice. Learn optimal post-plant positions and retake routes for A long, short, and B tunnels.', features: ['Post-plant angles', 'Retake routes', 'Both sites', 'Score system'], difficulty: 'beginner', popular: false, steamUrl: 'https://steamcommunity.com/sharedfiles/filedetails/?id=3074835900' },
+
+  // Benchmark
+  { name: 'FPS Benchmark', author: 'Community', category: 'benchmark', description: 'Test your CS2 FPS in a standardized environment. Runs a flythrough of a complex scene and reports min, max, and average FPS.', features: ['Standardized test', 'Min/Max/Avg FPS', 'GPU stress test', 'Reproducible results'], difficulty: 'beginner', popular: true, steamUrl: 'https://steamcommunity.com/sharedfiles/filedetails/?id=3075025781' },
+  { name: 'Ulletical FPS Benchmark', author: 'ulletical', category: 'benchmark', description: 'Popular FPS benchmark map by the creator of Aim Botz. Tests various rendering scenarios including smokes, molotovs, and complex geometry.', features: ['Smoke stress test', 'Particle effects', 'Complex geometry', 'Result comparison'], difficulty: 'beginner', popular: false, steamUrl: 'https://steamcommunity.com/sharedfiles/filedetails/?id=500334237' },
+];
+
+const CATEGORIES = [
+  { slug: 'aim', label: 'Aim Training', icon: '🎯', color: 'var(--red)' },
+  { slug: 'movement', label: 'Movement', icon: '🏃', color: 'var(--blue)' },
+  { slug: 'surf', label: 'Surf', icon: '🏄', color: 'var(--teal)' },
+  { slug: 'kz', label: 'KZ / Climb', icon: '🧗', color: 'var(--purple)' },
+  { slug: 'utility', label: 'Utility Practice', icon: '💨', color: 'var(--green)' },
+  { slug: 'warmup', label: 'Warmup / Prefire', icon: '🔥', color: 'var(--accent)' },
+  { slug: 'retake', label: 'Retake', icon: '⚔️', color: 'var(--gold)' },
+  { slug: 'benchmark', label: 'Benchmark', icon: '📊', color: 'var(--text2)' },
+];
+
+const DIFFICULTIES = [
+  { slug: 'beginner', label: 'Beginner', color: 'var(--green)' },
+  { slug: 'intermediate', label: 'Intermediate', color: 'var(--accent)' },
+  { slug: 'advanced', label: 'Advanced', color: 'var(--red)' },
+];
+
+const popularMaps = MAPS.filter(m => m.popular);
+---
+
+<Base title={title} description={description}>
+  <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema(crumbs))}></script>
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema(faqs))}></script>
+  <script type="application/ld+json" set:html={JSON.stringify(toolAppSchema({ name: 'CS2 Workshop Maps Directory', url: 'https://csdb.gg/workshop-maps/', description }))}></script>
+
+  <nav class="breadcrumb"><a href="/">Home</a> / <span>Workshop Maps</span></nav>
+  <h1>Best CS2 Workshop Maps</h1>
+  <p>A curated collection of {MAPS.length} essential Steam Workshop maps for improving at Counter-Strike 2. From aim training to surf, utility lineups to movement practice.</p>
+
+  <!-- Editor's Picks -->
+  <section class="wm-picks">
+    <h2>Editor's Picks</h2>
+    <div class="wm-picks-grid">
+      {popularMaps.map(m => {
+        const cat = CATEGORIES.find(c => c.slug === m.category);
+        return (
+          <a href={m.steamUrl} target="_blank" rel="noopener nofollow" class="wm-pick-card">
+            <div class="wm-pick-badges">
+              <span class="wm-badge" style={`background:${cat?.color || 'var(--text2)'}`}>{cat?.icon} {cat?.label}</span>
+              <span class="wm-badge wm-badge-star">⭐ Recommended</span>
+            </div>
+            <h3>{m.name}</h3>
+            <p class="wm-pick-author">by {m.author}</p>
+            <p>{m.description}</p>
+            <span class="wm-pick-link">Open in Steam →</span>
+          </a>
+        );
+      })}
+    </div>
+  </section>
+
+  <!-- Filters -->
+  <section>
+    <h2>All Workshop Maps</h2>
+    <div class="wm-filter-row">
+      <span class="wm-filter-label">Category:</span>
+      <button class="filter-btn active" data-cat="all">All ({MAPS.length})</button>
+      {CATEGORIES.map(c => {
+        const count = MAPS.filter(m => m.category === c.slug).length;
+        return <button class="filter-btn" data-cat={c.slug}>{c.icon} {c.label} ({count})</button>;
+      })}
+    </div>
+    <div class="wm-filter-row" style="margin-top:.5rem">
+      <span class="wm-filter-label">Difficulty:</span>
+      <button class="filter-btn active" data-diff="all">All</button>
+      {DIFFICULTIES.map(d => <button class="filter-btn" data-diff={d.slug}>{d.label}</button>)}
+    </div>
+  </section>
+
+  <!-- Map Grid -->
+  <div class="wm-grid" id="wm-grid">
+    {MAPS.map(m => {
+      const cat = CATEGORIES.find(c => c.slug === m.category);
+      const diff = DIFFICULTIES.find(d => d.slug === m.difficulty);
+      return (
+        <div class="wm-card" data-cat={m.category} data-diff={m.difficulty}>
+          <div class="wm-card-top">
+            <span class="wm-badge" style={`background:${cat?.color || 'var(--text2)'}`}>{cat?.icon} {cat?.label}</span>
+            <span class="wm-badge" style={`background:${diff?.color || 'var(--text2)'}`}>{diff?.label}</span>
+          </div>
+          <h3>{m.name}</h3>
+          <p class="wm-card-author">by {m.author}</p>
+          <p class="wm-card-desc">{m.description}</p>
+          <div class="wm-card-features">
+            {m.features.map(f => <span class="wm-feature">{f}</span>)}
+          </div>
+          <a href={m.steamUrl} target="_blank" rel="noopener nofollow" class="wm-steam-btn">Open in Steam Workshop →</a>
+        </div>
+      );
+    })}
+  </div>
+
+  <!-- Daily Routine -->
+  <section class="wm-routine">
+    <h2>Recommended Daily Warmup Routine</h2>
+    <p style="color:var(--text2);font-size:.9rem;margin-bottom:1.25rem">A structured 30-minute warmup routine used by competitive players to peak before matchmaking.</p>
+    <div class="wm-routine-grid">
+      <div class="wm-routine-card">
+        <span class="wm-routine-time">10 min</span>
+        <h3>Aim Training</h3>
+        <p>Start with Aim Botz or training_aim_csgo2. Focus on headshot-only practice. Begin with static targets, then enable movement. Work on both tap shooting and spray control.</p>
+        <span class="wm-routine-map">Map: Aim Botz</span>
+      </div>
+      <div class="wm-routine-card">
+        <span class="wm-routine-time">10 min</span>
+        <h3>Movement & Prefire</h3>
+        <p>Load a Yprac Prefire map for the map you plan to play. Practice clearing every angle as both T and CT. Focus on crosshair placement and counter-strafing.</p>
+        <span class="wm-routine-map">Map: Yprac Prefire</span>
+      </div>
+      <div class="wm-routine-card">
+        <span class="wm-routine-time">5 min</span>
+        <h3>Utility Practice</h3>
+        <p>Run through your essential smokes and flashes on the Yprac utility map for your planned competitive map. Practice 3-5 key lineups until they are muscle memory.</p>
+        <span class="wm-routine-map">Map: Yprac Utility</span>
+      </div>
+      <div class="wm-routine-card">
+        <span class="wm-routine-time">5 min</span>
+        <h3>Deathmatch</h3>
+        <p>Finish with a quick Deathmatch to get into a competitive mindset. Focus on crosshair placement and positioning rather than kills. Take deliberate aim at every engagement.</p>
+        <span class="wm-routine-map">Mode: Community DM</span>
+      </div>
+    </div>
+  </section>
+
+  <div class="internal-links">
+    <strong>Related Pages:</strong>
+    <a href="/practice-config/">Practice Config</a>
+    <a href="/crosshair-generator/">Crosshair Generator</a>
+    <a href="/sensitivity-converter/">Sensitivity Converter</a>
+    <a href="/recoil-patterns/">Recoil Patterns</a>
+    <a href="/guides/advanced-mechanics-guide/">Advanced Mechanics</a>
+    <a href="/maps/mirage/">Mirage Callouts</a>
+  </div>
+
+  <h2>Frequently Asked Questions</h2>
+  <dl class="faq">{faqs.map(f => (<Fragment><dt>{f.question}</dt><dd>{f.answer}</dd></Fragment>))}</dl>
+
+  <ExploreMore context="maps" />
+</Base>
+
+<script is:inline>
+(function(){
+  var catBtns = document.querySelectorAll('[data-cat]');
+  var diffBtns = document.querySelectorAll('[data-diff]');
+  var cards = document.querySelectorAll('.wm-card');
+  var activeCat = 'all';
+  var activeDiff = 'all';
+
+  function update(){
+    cards.forEach(function(c){
+      var catOk = activeCat === 'all' || c.dataset.cat === activeCat;
+      var diffOk = activeDiff === 'all' || c.dataset.diff === activeDiff;
+      c.style.display = (catOk && diffOk) ? '' : 'none';
+    });
+  }
+
+  catBtns.forEach(function(b){
+    if(!b.dataset.cat) return;
+    b.addEventListener('click', function(){
+      catBtns.forEach(function(x){ if(x.dataset.cat) x.classList.remove('active'); });
+      b.classList.add('active');
+      activeCat = b.dataset.cat;
+      update();
+    });
+  });
+
+  diffBtns.forEach(function(b){
+    if(!b.dataset.diff) return;
+    b.addEventListener('click', function(){
+      diffBtns.forEach(function(x){ if(x.dataset.diff) x.classList.remove('active'); });
+      b.classList.add('active');
+      activeDiff = b.dataset.diff;
+      update();
+    });
+  });
+})();
+</script>
+
+<style>
+  .wm-picks{margin-bottom:2.5rem}
+  .wm-picks-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1rem}
+  .wm-pick-card{display:flex;flex-direction:column;background:var(--bg2);border:2px solid var(--accent);border-radius:10px;padding:1.25rem;text-decoration:none;color:inherit;transition:transform .2s}
+  .wm-pick-card:hover{transform:translateY(-3px)}
+  .wm-pick-badges{display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:.5rem}
+  .wm-badge{display:inline-block;padding:.15rem .5rem;border-radius:3px;font-size:.72rem;font-weight:700;color:#000}
+  .wm-badge-star{background:var(--gold)!important}
+  .wm-pick-card h3{margin:0 0 .15rem;font-size:1.1rem}
+  .wm-pick-author{font-size:.8rem;color:var(--text2);margin:0 0 .5rem}
+  .wm-pick-card p{font-size:.85rem;color:var(--text2);line-height:1.5;flex:1}
+  .wm-pick-link{color:var(--accent);font-weight:700;font-size:.85rem;margin-top:.5rem}
+
+  .wm-filter-row{display:flex;gap:.4rem;align-items:center;flex-wrap:wrap}
+  .wm-filter-label{font-size:.82rem;color:var(--text2);font-weight:700;min-width:70px}
+
+  .wm-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:1rem;margin:1.5rem 0}
+  .wm-card{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:1.25rem;display:flex;flex-direction:column;transition:border-color .2s}
+  .wm-card:hover{border-color:var(--accent)}
+  .wm-card-top{display:flex;gap:.4rem;margin-bottom:.5rem}
+  .wm-card h3{margin:0 0 .15rem;font-size:1.05rem}
+  .wm-card-author{font-size:.78rem;color:var(--text2);margin:0 0 .5rem}
+  .wm-card-desc{font-size:.85rem;color:var(--text2);line-height:1.5;margin:0 0 .75rem;flex:1}
+  .wm-card-features{display:flex;gap:.35rem;flex-wrap:wrap;margin-bottom:.75rem}
+  .wm-feature{background:var(--bg3);border:1px solid var(--border);border-radius:3px;padding:.15rem .4rem;font-size:.72rem;color:var(--text2)}
+  .wm-steam-btn{display:inline-block;background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:.4rem .8rem;font-size:.82rem;color:var(--accent);font-weight:700;text-decoration:none;transition:all .2s;text-align:center}
+  .wm-steam-btn:hover{background:var(--accent);color:#000;border-color:var(--accent)}
+
+  .wm-routine{margin:2.5rem 0;background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:1.5rem 2rem}
+  .wm-routine-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:1rem}
+  .wm-routine-card{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:1rem;display:flex;flex-direction:column}
+  .wm-routine-time{display:inline-block;background:var(--accent);color:#000;padding:.15rem .5rem;border-radius:3px;font-size:.75rem;font-weight:800;margin-bottom:.5rem;width:fit-content}
+  .wm-routine-card h3{margin:0 0 .3rem;font-size:.95rem}
+  .wm-routine-card p{font-size:.82rem;color:var(--text2);line-height:1.5;flex:1;margin:0 0 .5rem}
+  .wm-routine-map{font-size:.75rem;color:var(--accent);font-weight:600}
+
+  @media(max-width:768px){
+    .wm-grid{grid-template-columns:1fr}
+    .wm-picks-grid{grid-template-columns:1fr}
+    .wm-routine-grid{grid-template-columns:1fr 1fr}
+    .wm-routine{padding:1rem}
+  }
+  @media(max-width:480px){.wm-routine-grid{grid-template-columns:1fr}}
+</style>

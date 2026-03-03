@@ -1,0 +1,812 @@
+---
+import Base from '../layouts/Base.astro';
+import ExploreMore from '../components/ExploreMore.astro';
+import { breadcrumbSchema, faqSchema, toolAppSchema } from '../lib/weapons';
+
+const currentNav = "/weapons/";
+
+const trainingRoutines = [
+  {
+    level: "Beginner",
+    description: "Perfect for new players learning the fundamentals",
+    totalTime: "45 minutes",
+    sections: [
+      {
+        name: "Warmup",
+        duration: "5 min",
+        drills: [
+          "Practice crosshair placement in offline server",
+          "Run around map focusing on head level positioning",
+          "No aim practice yet, just positioning and awareness"
+        ]
+      },
+      {
+        name: "Aim Training",
+        duration: "15 min",
+        drills: [
+          "Aim Botz map with 100% bot difficulty, standing position only",
+          "Practice clicking heads from 5 meters distance",
+          "Ensure you're moving between kills, not standing still",
+          "Focus on consistency over speed"
+        ]
+      },
+      {
+        name: "Spray Control",
+        duration: "10 min",
+        drills: [
+          "Spray Training map, slow-motion mode (0.5x speed)",
+          "Practice AK-47 and M4A4 spray patterns with bots standing still",
+          "Shoot 30 bullet sprays, aiming for tight grouping",
+          "Don't worry about speed, focus on muscle memory"
+        ]
+      },
+      {
+        name: "Deathmatch",
+        duration: "15 min",
+        drills: [
+          "Play 15 minutes of pistol-only deathmatch",
+          "Focus on landing headshots with the USPS",
+          "Practice pre-aiming common positions",
+          "Improve your positioning and map awareness",
+          "Don't rush; take your time engaging enemies"
+        ]
+      }
+    ]
+  },
+  {
+    level: "Intermediate",
+    description: "For players with basic fundamentals looking to improve",
+    totalTime: "45 minutes",
+    sections: [
+      {
+        name: "Warmup",
+        duration: "5 min",
+        drills: [
+          "Load into offline map with 8 bots on medium difficulty",
+          "Do 2-3 minutes of movement between positions",
+          "Practice shoulder peeking and taking fights",
+          "Get comfortable with your sensitivity settings"
+        ]
+      },
+      {
+        name: "Aim Training",
+        duration: "15 min",
+        drills: [
+          "Aim Lab (Steam workshop) - Micro Flick exercises, 10 minutes",
+          "Aimbotz with moving bots, hard difficulty, strafing enabled",
+          "Practice flicking between targets at different distances",
+          "Record how many kills you get in each session for improvement tracking"
+        ]
+      },
+      {
+        name: "Spray Control",
+        duration: "10 min",
+        drills: [
+          "Yprac's Spray Control map - full speed, live targets",
+          "Practice AK spray from various ranges (close, medium, far)",
+          "Do 20-30 sprays with consistency check",
+          "Transition to moving targets for increased difficulty"
+        ]
+      },
+      {
+        name: "Deathmatch",
+        duration: "15 min",
+        drills: [
+          "Play rifle deathmatch (AK/M4 default) for 15 minutes",
+          "Focus on pre-aiming high-traffic choke points",
+          "Practice holding angles and peeking",
+          "Try to maintain 1.5+ KDR minimum",
+          "Call out target positions to improve game sense"
+        ]
+      }
+    ]
+  },
+  {
+    level: "Advanced",
+    description: "For competitive players looking to maintain high-level performance",
+    totalTime: "50 minutes",
+    sections: [
+      {
+        name: "Warmup",
+        duration: "5 min",
+        drills: [
+          "Aim Botz with bots on expert, movement enabled",
+          "Load your competitive config and crosshair settings",
+          "Do rapid fire drills: 50 clicks in 30 seconds",
+          "Focus on 100% consistency with your settings"
+        ]
+      },
+      {
+        name: "Aim Training",
+        duration: "20 min",
+        drills: [
+          "Aim Lab Advanced - Micro Flick + Speed Focus, 10 minutes",
+          "Reflex/Aim Training map with expert bots, all movement types",
+          "Practice weapon-specific aim: AK, M4A4, M4A1-S separate sessions",
+          "Focus on edge aiming and flick accuracy under pressure",
+          "Aim for 60%+ accuracy in each weapon category"
+        ]
+      },
+      {
+        name: "Spray Control",
+        duration: "10 min",
+        drills: [
+          "Yprac Advanced Spray Map - live moving targets",
+          "Practice spray transfers between multiple enemies",
+          "Do AK spray while moving and counter-strafing",
+          "Practice spray recovery from movement (stop and spray)",
+          "Maintain accuracy while pre-firing wall positions"
+        ]
+      },
+      {
+        name: "Deathmatch",
+        duration: "15 min",
+        drills: [
+          "High-skill competitive deathmatch servers (ESEA/Faceit level)",
+          "Focus on gamesense: rotations, timing, positioning",
+          "Practice economy-specific loadouts (force buys, half buys)",
+          "Maintain 2.0+ KDR target",
+          "Review your demo after session to identify mistakes"
+        ]
+      }
+    ]
+  },
+  {
+    level: "Pro",
+    description: "Elite training regimen for aspiring professional players",
+    totalTime: "90 minutes",
+    sections: [
+      {
+        name: "Warmup",
+        duration: "10 min",
+        drills: [
+          "Aim Botz with expert bots, all movement types, rapid kills goal",
+          "Aim for 50+ kills in 2 minutes to gauge daily form",
+          "Load map smokes and utility positions for your team",
+          "Verify your mouse settings and monitor Hz synchronization",
+          "Do reaction time drills: random target flicks"
+        ]
+      },
+      {
+        name: "Aim Training",
+        duration: "35 min",
+        drills: [
+          "Aim Lab Pro Rank scenarios - 15 minutes minimum",
+          "Advanced Reflex training with 200% difficulty settings",
+          "Pistol-specific aim: USP, Deagle, P250 separate, 10 minutes each",
+          "Practice holding multiple angles while tracking movement",
+          "Weapon-specific spray patterns under movement: 10 minutes",
+          "Target consistency goal: 85%+ accuracy across all drills",
+          "Review clip library: study pro player aim mechanics"
+        ]
+      },
+      {
+        name: "Spray Control",
+        duration: "15 min",
+        drills: [
+          "Advanced spray maps with competitive match scenarios",
+          "Full spray-transfer chains: 3-4 enemies in sequence",
+          "Spray while rotating between positions rapidly",
+          "Practice pre-fire and spam spray patterns on walls",
+          "Spray accuracy from crouch, stand, and air positions",
+          "Mental focus: spray 50 bullets and count accuracy percentage"
+        ]
+      },
+      {
+        name: "Deathmatch & Competitive",
+        duration: "30 min",
+        drills: [
+          "10 min FaceIT/ESEA competitive queue",
+          "20 min pro-level deathmatch (Aim Arena or equivalent)",
+          "Focus on consistent multi-kill rounds (3+ kills per spawn)",
+          "Maintain 2.5+ KDR and track stats session-to-session",
+          "Practice specific utility combinations with teammates",
+          "VOD review of professional players in your role"
+        ]
+      }
+    ]
+  }
+];
+
+const workshopMaps = [
+  {
+    name: "Aim Botz",
+    description: "Essential aim training map with customizable bot difficulty, movement types, and no-kill zones. Perfect for beginner to advanced training.",
+    features: ["Adjustable bot difficulty", "Multiple difficulty levels", "Movement enabled/disabled", "Kill counter and accuracy tracking"]
+  },
+  {
+    name: "Aim Lab (Steam)",
+    description: "Comprehensive aim training with ranked scenarios, detailed statistics, and progressive difficulty. Excellent for tracking improvement over time.",
+    features: ["Ranked aim scenarios", "Detailed statistics", "Leaderboards", "Multiple game modes"]
+  },
+  {
+    name: "Yprac Spray Control",
+    description: "Dedicated spray pattern training with both moving and stationary targets. Essential for learning weapon spray patterns efficiently.",
+    features: ["Slow-motion mode", "Live moving targets", "Multiple weapon types", "Accuracy feedback"]
+  },
+  {
+    name: "Reflex/Aim Training",
+    description: "Advanced aim mechanics training with realistic enemy movement and positioning. Great for intermediate to advanced players.",
+    features: ["Expert bot AI", "Movement and strafing", "Multiple ranges", "Competitive settings"]
+  },
+  {
+    name: "Prefire Training Maps",
+    description: "Maps designed to teach common pre-fire positions and holding angles. Critical for competitive play and map knowledge.",
+    features: ["Pre-fire spots", "Common positions", "Tutorial mode", "Multiple maps available"]
+  },
+  {
+    name: "1v1 Arena Maps",
+    description: "Competitive 1v1 scenarios for developing clutch plays and high-pressure situations. Excellent for decision-making under stress.",
+    features: ["Realistic scenarios", "Clutch situations", "Economy management", "Competitive rules"]
+  }
+];
+
+const faqs = [
+  {
+    question: "How often should I practice aim training?",
+    answer: "Consistency is key. Aim for daily sessions of 30-60 minutes. Professional players often train 2-4 hours daily, but even 30 minutes daily will show significant improvement over weeks."
+  },
+  {
+    question: "How long does it take to improve aim?",
+    answer: "You can see noticeable improvement in 2-4 weeks of consistent training. Significant improvement takes 2-3 months. Developing professional-level aim typically takes 6-12 months of dedicated practice."
+  },
+  {
+    question: "Should I use aim training maps in deathmatch?",
+    answer: "Yes, alternate between both. Aim training maps develop specific mechanics in controlled environments. Deathmatch applies those skills against real players in realistic scenarios. Both are essential."
+  },
+  {
+    question: "What sensitivity should I use for aim training?",
+    answer: "Use the same sensitivity you use in competitive play. Consistency is crucial. Once you find a comfortable eDPI (sensitivity × DPI), stick with it to build muscle memory."
+  },
+  {
+    question: "Can aim training replace competitive matchmaking?",
+    answer: "No, aim training complements competitive play but doesn't replace it. Matchmaking teaches gamesense, positioning, and decision-making that aim training alone cannot develop."
+  },
+  {
+    question: "How do I track progress in aim training?",
+    answer: "Keep a practice log with dates, maps used, kills per session, and accuracy percentages. Most aim training maps track stats automatically. Review your progress weekly."
+  },
+  {
+    question: "What's the difference between spray control and flick aim?",
+    answer: "Spray control is maintaining accuracy while holding down the mouse button (sustained fire). Flick aim is quickly moving to a target and clicking precisely. Both are essential for different combat scenarios."
+  }
+];
+
+const sensitivityLinks = [
+  { name: "Sensitivity Converter", path: "/sensitivity-converter/" },
+  { name: "eDPI Calculator", path: "/edpi-calculator/" }
+];
+
+const crosshairLinks = [
+  { name: "Crosshair Generator", path: "/crosshair-generator/" },
+  { name: "Crosshair Code Library", path: "/crosshair-codes/" }
+];
+
+const relatedLinks = [
+  { name: "Spray Trainer", path: "/spray-trainer/" },
+  { name: "Pro Player Setups", path: "/pro-players/" },
+  { name: "Workshop Maps", path: "/workshop-maps/" },
+  { name: "Sensitivity Guide", path: "/sensitivity-converter/" }
+];
+
+const breadcrumbs = [
+  { name: 'Home', url: '/' },
+  { name: 'Tools', url: '/tools/' },
+  { name: 'Aim Training', url: '/aim-training/' },
+];
+
+const faqSchemaData = faqs.map(f => ({ q: f.question, a: f.answer }));
+---
+
+<Base title="CS2 Aim Training Routines — Practice Plans & Workshop Maps | CSDB.gg" description="Complete CS2 aim training routines for all skill levels. Learn workshop maps, spray patterns, sensitivity optimization, and crosshair tips from beginner to pro." currentNav={currentNav}>
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema(breadcrumbs))} />
+    <script type="application/ld+json" set:html={JSON.stringify(faqSchema(faqSchemaData))} />
+    <script type="application/ld+json" set:html={JSON.stringify(toolAppSchema({ name: 'CS2 Aim Training Routines', url: 'https://csdb.gg/aim-training/', description: 'Complete CS2 aim training routines for all skill levels. Learn workshop maps, spray patterns, sensitivity optimization, and crosshair tips from beginner to pro.' }))} />
+  </Fragment>
+  <style define:vars={{
+    bg: '#0e0e12',
+    bg2: '#16161d',
+    bg3: '#1e1e28',
+    text: '#e4e4ec',
+    text2: '#9595a8',
+    accent: '#d4956e',
+    accent2: '#e8b992',
+    border: '#2a2a38',
+    green: '#4caf50',
+    blue: '#42a5f5',
+    purple: '#ab47bc',
+    red: '#ef5350'
+  }}>
+      .hero {
+        background: linear-gradient(135deg, var(--blue) 0%, var(--purple) 100%);
+        padding: 80px 20px;
+        text-align: center;
+        margin-bottom: 60px;
+        border-radius: 12px;
+      }
+
+      .hero h1 {
+        font-size: 3em;
+        color: white;
+        margin: 0 0 10px 0;
+        font-weight: 800;
+      }
+
+      .hero p {
+        font-size: 1.2em;
+        color: rgba(255, 255, 255, 0.9);
+        margin: 0;
+      }
+
+      .intro-section {
+        background: var(--bg2);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 40px;
+        margin-bottom: 60px;
+      }
+
+      .intro-section p {
+        color: var(--text2);
+        line-height: 1.8;
+        margin: 0;
+      }
+
+      .routines-container {
+        display: grid;
+        gap: 40px;
+        margin-bottom: 60px;
+      }
+
+      .routine-card {
+        background: var(--bg2);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        overflow: hidden;
+      }
+
+      .routine-header {
+        background: linear-gradient(135deg, var(--accent) 0%, var(--accent2) 100%);
+        padding: 32px;
+        color: white;
+      }
+
+      .routine-level {
+        font-size: 2em;
+        font-weight: 800;
+        margin: 0 0 8px 0;
+      }
+
+      .routine-meta {
+        display: flex;
+        gap: 24px;
+        margin-top: 16px;
+        font-size: 0.95em;
+        opacity: 0.95;
+      }
+
+      .routine-description {
+        color: rgba(255, 255, 255, 0.9);
+        margin: 12px 0 0 0;
+      }
+
+      .routine-body {
+        padding: 32px;
+      }
+
+      .section {
+        margin-bottom: 32px;
+      }
+
+      .section:last-child {
+        margin-bottom: 0;
+      }
+
+      .section-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 16px;
+        padding-bottom: 12px;
+        border-bottom: 2px solid var(--border);
+      }
+
+      .section-name {
+        font-size: 1.3em;
+        font-weight: 700;
+        color: var(--accent);
+        margin: 0;
+      }
+
+      .section-duration {
+        background: var(--bg3);
+        color: var(--text2);
+        padding: 6px 12px;
+        border-radius: 4px;
+        font-size: 0.9em;
+      }
+
+      .drills-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+      }
+
+      .drills-list li {
+        padding: 10px 0;
+        padding-left: 28px;
+        position: relative;
+        color: var(--text2);
+        line-height: 1.5;
+      }
+
+      .drills-list li:before {
+        content: "▸";
+        position: absolute;
+        left: 0;
+        color: var(--accent);
+        font-weight: bold;
+      }
+
+      .workshop-section {
+        margin-bottom: 60px;
+      }
+
+      .workshop-section h2 {
+        font-size: 2em;
+        margin-bottom: 32px;
+        color: var(--text);
+      }
+
+      .maps-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 24px;
+      }
+
+      .map-card {
+        background: var(--bg2);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 28px;
+        transition: all 0.3s;
+      }
+
+      .map-card:hover {
+        border-color: var(--accent);
+        box-shadow: 0 8px 24px rgba(245, 166, 35, 0.1);
+      }
+
+      .map-name {
+        font-size: 1.3em;
+        font-weight: 700;
+        color: var(--accent);
+        margin: 0 0 12px 0;
+      }
+
+      .map-description {
+        color: var(--text2);
+        margin-bottom: 16px;
+        line-height: 1.6;
+      }
+
+      .features-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+      }
+
+      .features-list li {
+        padding: 6px 0;
+        padding-left: 20px;
+        position: relative;
+        font-size: 0.9em;
+        color: var(--text2);
+      }
+
+      .features-list li:before {
+        content: "✓";
+        position: absolute;
+        left: 0;
+        color: var(--green);
+        font-weight: bold;
+      }
+
+      .optimization-section {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 24px;
+        margin-bottom: 60px;
+      }
+
+      .optimization-card {
+        background: var(--bg2);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 28px;
+      }
+
+      .optimization-title {
+        font-size: 1.2em;
+        font-weight: 700;
+        color: var(--text);
+        margin: 0 0 16px 0;
+      }
+
+      .links-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+      }
+
+      .links-list li {
+        margin-bottom: 12px;
+      }
+
+      .links-list a {
+        color: var(--accent);
+        text-decoration: none;
+        font-weight: 600;
+        transition: all 0.3s;
+      }
+
+      .links-list a:hover {
+        text-decoration: underline;
+      }
+
+      .progress-section {
+        background: linear-gradient(135deg, var(--green) 0%, var(--blue) 100%);
+        padding: 40px;
+        border-radius: 8px;
+        margin-bottom: 60px;
+        color: white;
+      }
+
+      .progress-section h2 {
+        font-size: 1.5em;
+        margin: 0 0 16px 0;
+      }
+
+      .progress-tips {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+      }
+
+      .progress-tips li {
+        padding: 8px 0;
+        padding-left: 24px;
+        position: relative;
+      }
+
+      .progress-tips li:before {
+        content: "▸";
+        position: absolute;
+        left: 0;
+      }
+
+      .faq-section {
+        margin-bottom: 60px;
+      }
+
+      .faq-section h2 {
+        font-size: 2em;
+        margin-bottom: 32px;
+        color: var(--text);
+      }
+
+      .faq-grid {
+        display: grid;
+        gap: 20px;
+      }
+
+      .faq-item {
+        background: var(--bg2);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 24px;
+      }
+
+      .faq-item h3 {
+        margin: 0 0 12px 0;
+        color: var(--accent);
+        font-size: 1.1em;
+      }
+
+      .faq-item p {
+        margin: 0;
+        color: var(--text2);
+        line-height: 1.6;
+      }
+
+      .related-links {
+        background: var(--bg2);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 32px;
+        margin-top: 60px;
+      }
+
+      .related-links h2 {
+        font-size: 1.5em;
+        margin: 0 0 24px 0;
+        color: var(--text);
+      }
+
+      .links-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 16px;
+      }
+
+      .link-btn {
+        background: var(--bg3);
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        padding: 16px;
+        text-align: center;
+        transition: all 0.3s;
+      }
+
+      .link-btn:hover {
+        border-color: var(--accent);
+        background: var(--bg);
+      }
+
+      .link-btn a {
+        color: var(--accent);
+        text-decoration: none;
+        font-weight: 600;
+      }
+
+      .link-btn a:hover {
+        text-decoration: underline;
+      }
+
+      @media (max-width: 768px) {
+        .hero {
+          padding: 40px 20px;
+        }
+
+        .hero h1 {
+          font-size: 2em;
+        }
+
+        .hero p {
+          font-size: 1em;
+        }
+
+        .routine-meta {
+          flex-direction: column;
+          gap: 8px;
+        }
+
+        .maps-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .links-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+  </style>
+
+  <div class="hero">
+    <h1>CS2 Aim Training Routines</h1>
+    <p>Master your aim with structured training routines for every skill level</p>
+  </div>
+
+  <div class="intro-section">
+    <p>
+      Consistent aim training is the foundation of CS2 mastery. Whether you're just starting out or competing at the professional level,
+      these structured routines will help you develop precision, speed, and muscle memory. Each routine combines warmup drills, focused aim training,
+      spray control practice, and competitive application. Dedicate 30-90 minutes daily and you'll see measurable improvement within weeks.
+    </p>
+  </div>
+
+  <div class="routines-container">
+    {trainingRoutines.map((routine) => (
+      <div class="routine-card">
+        <div class="routine-header">
+          <h2 class="routine-level">{routine.level}</h2>
+          <p class="routine-description">{routine.description}</p>
+          <div class="routine-meta">
+            <span>Total Time: {routine.totalTime}</span>
+          </div>
+        </div>
+        <div class="routine-body">
+          {routine.sections.map((section) => (
+            <div class="section">
+              <div class="section-header">
+                <h3 class="section-name">{section.name}</h3>
+                <span class="section-duration">{section.duration}</span>
+              </div>
+              <ul class="drills-list">
+                {section.drills.map(drill => <li>{drill}</li>)}
+              </ul>
+            </div>
+          ))}
+        </div>
+      </div>
+    ))}
+  </div>
+
+  <div class="workshop-section">
+    <h2>Essential Workshop Maps</h2>
+    <div class="maps-grid">
+      {workshopMaps.map((map) => (
+        <div class="map-card">
+          <h3 class="map-name">{map.name}</h3>
+          <p class="map-description">{map.description}</p>
+          <ul class="features-list">
+            {map.features.map(feature => <li>{feature}</li>)}
+          </ul>
+        </div>
+      ))}
+    </div>
+  </div>
+
+  <div class="progress-section">
+    <h2>Track Your Progress</h2>
+    <ul class="progress-tips">
+      <li>Keep a practice log: date, maps played, kills per session, accuracy %</li>
+      <li>Test your aim weekly with the same warmup routine to track improvement</li>
+      <li>Review demos of your competitive games to identify weak areas</li>
+      <li>Set specific goals: "reach 65% accuracy in Aim Lab" or "get 50+ kills in 2 minutes on Aimbotz"</li>
+      <li>Share progress with teammates to stay motivated and accountable</li>
+      <li>Adjust routines based on where you're weakest: spray, flicking, tracking, etc.</li>
+    </ul>
+  </div>
+
+  <div class="optimization-section">
+    <div class="optimization-card">
+      <h3 class="optimization-title">Sensitivity Optimization</h3>
+      <p style="color: var(--text2); margin-bottom: 16px;">
+        Finding the right sensitivity is crucial for consistent aim. Use our tools to convert between different sensitivity scales and calculate your eDPI.
+      </p>
+      <ul class="links-list">
+        {sensitivityLinks.map(link => (
+          <li><a href={link.path}>{link.name}</a></li>
+        ))}
+      </ul>
+    </div>
+
+    <div class="optimization-card">
+      <h3 class="optimization-title">Crosshair Configuration</h3>
+      <p style="color: var(--text2); margin-bottom: 16px;">
+        Your crosshair should reflect your playstyle and preferences. Generate custom crosshairs or browse pro player configurations.
+      </p>
+      <ul class="links-list">
+        {crosshairLinks.map(link => (
+          <li><a href={link.path}>{link.name}</a></li>
+        ))}
+      </ul>
+    </div>
+  </div>
+
+  <div class="faq-section">
+    <h2>Frequently Asked Questions</h2>
+    <div class="faq-grid">
+      {faqs.map((faq) => (
+        <div class="faq-item">
+          <h3>{faq.question}</h3>
+          <p>{faq.answer}</p>
+        </div>
+      ))}
+    </div>
+  </div>
+
+  <div class="related-links">
+    <h2>Related Resources</h2>
+    <div class="links-grid">
+      {relatedLinks.map(link => (
+        <div class="link-btn">
+          <a href={link.path}>{link.name}</a>
+        </div>
+      ))}
+    </div>
+  </div>
+
+  <ExploreMore context="tools" />
+</Base>

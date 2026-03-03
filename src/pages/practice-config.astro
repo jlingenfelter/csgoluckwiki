@@ -1,0 +1,205 @@
+---
+import Base from '../layouts/Base.astro';
+import ExploreMore from '../components/ExploreMore.astro';
+import { faqSchema, breadcrumbSchema, toolAppSchema } from '../lib/weapons';
+
+const title = 'CS2 Practice Config Generator — Grenade & Aim Training Commands | CSDB.gg';
+const description = 'Generate CS2 practice configs for grenade lineups, aim training, wallbang spots, and smoke practice. Instant copy-paste commands for offline server setup.';
+
+const faqs = [
+  { question: 'How do I start a practice server in CS2?', answer: 'Open console and type: game_mode 0; game_type 0; map [mapname]. This loads a casual game on that map. Then paste your practice config commands to enable unlimited money, grenades, and other training features.' },
+  { question: 'How do I get infinite grenades in CS2?', answer: 'Use the commands: sv_infinite_ammo 1 (infinite ammo), mp_buy_anywhere 1, and bind a key to "give weapon_smokegrenade" etc. The sv_grenade_trajectory 1 command shows grenade paths.' },
+  { question: 'Can I practice smokes offline in CS2?', answer: 'Yes. Start a local server, enable sv_cheats 1, then use sv_grenade_trajectory 1 to see grenade paths, sv_grenade_trajectory_time 10 to keep the trail visible, and noclip to fly around the map.' },
+  { question: 'How do I show bullet impact points?', answer: 'Enable sv_showimpacts 1 to see red (server) and blue (client) impact points. Use sv_showimpacts_time 10 to keep them visible longer. This helps identify spray patterns and wallbang spots.' },
+  { question: 'What is the best way to practice aim in CS2?', answer: 'Use workshop maps like Aim Botz or Yprac, or set up a local server with bot_add_ct/bot_add_t commands and bot_stop 1 to freeze them. Combine with mp_damage_print_enable 1 to see damage dealt.' },
+];
+
+const maps = [
+  { name: 'Mirage', slug: 'de_mirage', icon: '🏜️' },
+  { name: 'Inferno', slug: 'de_inferno', icon: '🔥' },
+  { name: 'Dust 2', slug: 'de_dust2', icon: '☀️' },
+  { name: 'Ancient', slug: 'de_ancient', icon: '🏛️' },
+  { name: 'Anubis', slug: 'de_anubis', icon: '⚱️' },
+  { name: 'Nuke', slug: 'de_nuke', icon: '☢️' },
+  { name: 'Overpass', slug: 'de_overpass', icon: '🌉' },
+  { name: 'Vertigo', slug: 'de_vertigo', icon: '🏗️' },
+];
+
+const modes = [
+  { id: 'grenade', name: 'Grenade Practice', desc: 'Infinite grenades, trajectory lines, and grenade camera', icon: '💣' },
+  { id: 'aim', name: 'Aim Training', desc: 'Bots, damage readouts, and impact markers', icon: '🎯' },
+  { id: 'wallbang', name: 'Wallbang Testing', desc: 'Show bullet penetration and damage through walls', icon: '🧱' },
+  { id: 'retake', name: 'Retake Practice', desc: 'Set up retake scenarios with bot placement', icon: '⚔️' },
+  { id: 'movement', name: 'Movement Practice', desc: 'Surf, bhop, and movement training commands', icon: '🏃' },
+];
+
+const howToSchema = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "HowTo",
+  "name": "How to Set Up a CS2 Practice Server",
+  "description": "Use the CSDB.gg Practice Config Generator to create console commands for offline practice servers in Counter-Strike 2, including grenade lineups, aim training, and wallbang testing.",
+  "step": [
+    { "@type": "HowToStep", "name": "Choose your map", "text": "Select the map you want to practice on from the available active duty maps (Mirage, Inferno, Dust 2, Ancient, Anubis, Nuke, Overpass, or Vertigo)." },
+    { "@type": "HowToStep", "name": "Select a practice mode", "text": "Choose your practice focus: Grenade Practice (trajectory lines and infinite grenades), Aim Training (bots and damage readouts), Wallbang Testing (penetration data), Retake Practice (bot placement), or Movement Practice (bunny hopping and surfing)." },
+    { "@type": "HowToStep", "name": "Configure additional options", "text": "Toggle optional settings like adding bots, enabling noclip (fly mode), infinite money, and extended round time depending on your practice needs." },
+    { "@type": "HowToStep", "name": "Copy and paste the config", "text": "Click 'Copy Commands' to copy all generated console commands. Open CS2, press ~ to open the console, and paste the commands to instantly set up your practice server." }
+  ]
+});
+---
+
+<Base title={title} description={description} currentNav="/tools/">
+  <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema([{name:'Home',url:'/'},{name:'Tools',url:'/practice-config'},{name:'Practice Config',url:'/practice-config'}]))}></script>
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema(faqs))}></script>
+  <script type="application/ld+json" set:html={howToSchema}></script>
+  <script type="application/ld+json" set:html={JSON.stringify(toolAppSchema({ name: 'CS2 Practice Config Generator', url: 'https://csdb.gg/practice-config/', description }))}></script>
+
+  <nav class="breadcrumb">
+    <a href="/">Home</a> / <a href="/practice-config/">Tools</a> / <span>Practice Config Generator</span>
+  </nav>
+
+  <h1>CS2 Practice Config Generator</h1>
+  <p>Set up the perfect practice environment in seconds. Choose your map, practice mode, and copy the ready-to-paste console commands.</p>
+
+  <div class="calc-section">
+    <h2>1. Choose Your Map</h2>
+    <div style="display:flex;gap:.5rem;flex-wrap:wrap" id="mapSelect">
+      {maps.map((m, i) => (
+        <button class={`filter-btn ${i === 0 ? 'active' : ''}`} data-map={m.slug}>{m.icon} {m.name}</button>
+      ))}
+    </div>
+  </div>
+
+  <div class="calc-section">
+    <h2>2. Select Practice Mode</h2>
+    <div class="card-grid" id="modeSelect">
+      {modes.map((m, i) => (
+        <div class={`card ${i === 0 ? 'selected' : ''}`} data-mode={m.id} style="cursor:pointer;border-color:var(--border)">
+          <div style="font-size:1.5rem">{m.icon}</div>
+          <h3 style="margin:.25rem 0">{m.name}</h3>
+          <p style="font-size:.82rem">{m.desc}</p>
+        </div>
+      ))}
+    </div>
+  </div>
+
+  <div class="calc-section">
+    <h2>3. Additional Options</h2>
+    <div style="display:flex;gap:1.5rem;flex-wrap:wrap">
+      <label style="display:flex;gap:.5rem;align-items:center;cursor:pointer"><input type="checkbox" id="optBots" checked style="accent-color:var(--accent)"> Add Bots</label>
+      <label style="display:flex;gap:.5rem;align-items:center;cursor:pointer"><input type="checkbox" id="optNoclip" checked style="accent-color:var(--accent)"> Enable Noclip</label>
+      <label style="display:flex;gap:.5rem;align-items:center;cursor:pointer"><input type="checkbox" id="optMoney" checked style="accent-color:var(--accent)"> Infinite Money</label>
+      <label style="display:flex;gap:.5rem;align-items:center;cursor:pointer"><input type="checkbox" id="optRoundTime" checked style="accent-color:var(--accent)"> Extended Round Time</label>
+    </div>
+  </div>
+
+  <div class="result-box" style="margin:2rem 0">
+    <h2 style="margin-top:0">Your Practice Config</h2>
+    <pre id="configOutput" style="background:var(--bg);padding:1rem;border-radius:6px;font-size:.82rem;color:var(--accent);overflow-x:auto;white-space:pre-wrap;max-height:500px;line-height:1.6"></pre>
+    <div style="display:flex;gap:1rem;margin-top:1rem">
+      <button id="copyBtn" style="padding:.5rem 1.5rem;background:var(--accent);color:#000;border:none;border-radius:6px;cursor:pointer;font-weight:700">Copy Commands</button>
+    </div>
+  </div>
+
+  <h2>Practice Mode Breakdown</h2>
+  <h3>Grenade Practice</h3>
+  <p>
+    The grenade practice config enables trajectory visualization (sv_grenade_trajectory 1), showing the exact path your grenades travel through the air. Combined with sv_grenade_trajectory_time, the lines persist long enough to study your throws, line up setups, and verify smokes land correctly. The infinite ammo command lets you throw unlimited grenades without buying them.
+  </p>
+  <h3>Aim Training</h3>
+  <p>
+    Spawns stationary bots for target practice with full damage readouts. Each shot displays exact damage dealt, hitbox hit, and remaining health. The sv_showimpacts command reveals where your bullets actually land versus where you aimed, helping identify spray control issues.
+  </p>
+  <h3>Wallbang Testing</h3>
+  <p>
+    Shows bullet penetration data including damage falloff through surfaces. Essential for learning which walls, doors, and objects are bangable on each map. The sv_showimpacts_penetration command visualizes the bullet's path through materials.
+  </p>
+
+  <div class="internal-links">
+    <strong>Related Tools & Guides:</strong>
+    <a href="/autoexec-generator/">Autoexec Generator</a>
+    <a href="/launch-options/">Launch Options</a>
+    <a href="/crosshair-generator/">Crosshair Generator</a>
+    <a href="/maps/">Map Database</a>
+    <a href="/damage-calculator/">Damage Calculator</a>
+  </div>
+
+  <h2>Frequently Asked Questions</h2>
+  <dl class="faq">
+    {faqs.map(f => (
+      <Fragment>
+        <dt>{f.question}</dt>
+        <dd>{f.answer}</dd>
+      </Fragment>
+    ))}
+  </dl>
+
+  <ExploreMore context="tools" />
+</Base>
+
+<style>
+  .card.selected{border-color:var(--accent)!important;box-shadow:0 0 0 1px var(--accent)}
+</style>
+
+<script is:inline>
+(function(){
+  var selectedMap='de_mirage',selectedMode='grenade';
+  var configs={
+    grenade:['// Grenade Practice Config','sv_cheats 1','sv_infinite_ammo 1','ammo_grenade_limit_total 5','sv_grenade_trajectory 1','sv_grenade_trajectory_time 10','sv_grenade_trajectory_thickness 1','mp_buy_anywhere 1','mp_buytime 9999','mp_warmup_end','mp_freezetime 0','mp_roundtime_defuse 60','mp_maxmoney 65535','mp_startmoney 65535','mp_restartgame 1'],
+    aim:['// Aim Training Config','sv_cheats 1','mp_buy_anywhere 1','mp_buytime 9999','mp_warmup_end','mp_freezetime 0','mp_roundtime_defuse 60','mp_maxmoney 65535','mp_startmoney 65535','sv_showimpacts 1','sv_showimpacts_time 5','mp_damage_print_enable 1','bot_stop 1','bot_knives_only 0','mp_restartgame 1'],
+    wallbang:['// Wallbang Testing Config','sv_cheats 1','sv_showimpacts 1','sv_showimpacts_time 10','sv_showimpacts_penetration 1','weapon_accuracy_nospread 1','weapon_recoil_scale 0','sv_infinite_ammo 2','mp_buy_anywhere 1','mp_buytime 9999','mp_warmup_end','mp_freezetime 0','mp_roundtime_defuse 60','mp_restartgame 1'],
+    retake:['// Retake Practice Config','sv_cheats 1','mp_buy_anywhere 1','mp_buytime 9999','mp_warmup_end','mp_freezetime 0','mp_roundtime_defuse 60','mp_maxmoney 65535','mp_startmoney 65535','bot_difficulty 3','mp_autoteambalance 0','mp_damage_print_enable 1','mp_restartgame 1'],
+    movement:['// Movement Practice Config','sv_cheats 1','sv_enablebunnyhopping 1','sv_autobunnyhopping 1','sv_staminamax 0','sv_staminalandcost 0','sv_staminajumpcost 0','sv_airaccelerate 100','sv_maxspeed 500','mp_warmup_end','mp_freezetime 0','mp_roundtime_defuse 60','sv_infinite_ammo 1','mp_restartgame 1']
+  };
+
+  function generate(){
+    var lines=['// ═══════════════════════════════════════════════════','// CS2 Practice Config — Generated by CSDB.gg','// Map: '+selectedMap,'// Mode: '+selectedMode,'// ═══════════════════════════════════════════════════','','game_mode 0','game_type 0','map '+selectedMap,''];
+    var modeCfg=configs[selectedMode]||configs.grenade;
+    lines=lines.concat(modeCfg);
+    if(document.getElementById('optBots').checked){
+      lines.push('','// Bots','bot_add_t','bot_add_t','bot_add_t','bot_add_ct','bot_add_ct');
+    }
+    if(document.getElementById('optNoclip').checked){
+      lines.push('','// Noclip toggle: bind key noclip','bind v noclip');
+    }
+    if(document.getElementById('optMoney').checked){
+      lines.push('','mp_maxmoney 65535','mp_startmoney 65535');
+    }
+    if(document.getElementById('optRoundTime').checked){
+      lines.push('','mp_roundtime_defuse 60','mp_roundtime 60');
+    }
+    lines.push('','// Generated at csdb.gg/practice-config');
+    document.getElementById('configOutput').textContent=lines.join('\n');
+  }
+
+  document.getElementById('mapSelect').addEventListener('click',function(e){
+    var btn=e.target.closest('[data-map]');
+    if(!btn)return;
+    selectedMap=btn.dataset.map;
+    document.querySelectorAll('#mapSelect .filter-btn').forEach(function(b){b.classList.remove('active');});
+    btn.classList.add('active');
+    generate();
+  });
+
+  document.getElementById('modeSelect').addEventListener('click',function(e){
+    var card=e.target.closest('[data-mode]');
+    if(!card)return;
+    selectedMode=card.dataset.mode;
+    document.querySelectorAll('#modeSelect .card').forEach(function(c){c.classList.remove('selected');});
+    card.classList.add('selected');
+    generate();
+  });
+
+  ['optBots','optNoclip','optMoney','optRoundTime'].forEach(function(id){
+    document.getElementById(id).addEventListener('change',generate);
+  });
+
+  document.getElementById('copyBtn').addEventListener('click',function(){
+    navigator.clipboard.writeText(document.getElementById('configOutput').textContent).then(function(){
+      document.getElementById('copyBtn').textContent='Copied!';
+      setTimeout(function(){document.getElementById('copyBtn').textContent='Copy Commands';},2000);
+    });
+  });
+
+  generate();
+})();
+</script>

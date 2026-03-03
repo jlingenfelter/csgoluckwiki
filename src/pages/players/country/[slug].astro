@@ -1,0 +1,297 @@
+---
+import Base from '../../../layouts/Base.astro';
+import ExploreMore from '../../../components/ExploreMore.astro';
+import { getCountries, getAverageEdpi, type CountryInfo } from '../../../lib/pro-players';
+import { breadcrumbSchema, faqSchema } from '../../../lib/weapons';
+
+export function getStaticPaths() {
+  return getCountries().map(c => ({
+    params: { slug: c.slug },
+    props: { country: c },
+  }));
+}
+
+const { country } = Astro.props as { country: CountryInfo };
+const allCountries = getCountries();
+const globalAvgEdpi = getAverageEdpi();
+
+// Country-specific stats
+const players = country.players;
+const countryAvgEdpi = players.length > 0
+  ? Math.round(players.reduce((s, p) => s + p.edpi, 0) / players.length)
+  : 0;
+
+// Teams represented
+const NON_TEAMS = ['free agent', 'retired', 'inactive', 'no team', 'none', 'benched', 'n/a', ''];
+const teams = [...new Set(
+  players.filter(p => !NON_TEAMS.includes(p.team.toLowerCase().trim())).map(p => p.team)
+)].sort();
+
+// Most common mouse
+const mouseCount: Record<string, number> = {};
+players.forEach(p => { mouseCount[p.mouse] = (mouseCount[p.mouse] || 0) + 1; });
+const topMouse = Object.entries(mouseCount).sort((a, b) => b[1] - a[1])[0]?.[0] || 'N/A';
+
+// Most common resolution
+const resCount: Record<string, number> = {};
+players.forEach(p => { resCount[p.res] = (resCount[p.res] || 0) + 1; });
+const topRes = Object.entries(resCount).sort((a, b) => b[1] - a[1])[0]?.[0] || 'N/A';
+
+// Resolution breakdown
+const resBreakdown = Object.entries(resCount)
+  .sort((a, b) => b[1] - a[1])
+  .map(([res, count]) => ({ res, count, pct: Math.round((count / players.length) * 100) }));
+
+// Role breakdown
+const roleCount: Record<string, number> = {};
+players.forEach(p => { roleCount[p.role] = (roleCount[p.role] || 0) + 1; });
+const roleBreakdown = Object.entries(roleCount)
+  .sort((a, b) => b[1] - a[1])
+  .map(([role, count]) => ({ role, count, pct: Math.round((count / players.length) * 100) }));
+
+// eDPI stats
+const edpis = players.map(p => p.edpi).sort((a, b) => a - b);
+const edpiMin = edpis[0] || 0;
+const edpiMax = edpis[edpis.length - 1] || 0;
+const edpiMedian = edpis[Math.floor(edpis.length / 2)] || 0;
+
+const title = `${country.flag} ${country.name} CS2 Pro Players \u2014 Settings & Configs | CSDB.gg`;
+const description = `Browse ${players.length} CS2 professional players from ${country.name}. Compare crosshair codes, sensitivity, resolution, mouse, and gear settings from ${country.name}'s top CS2 pros.`;
+
+const breadcrumbs = [
+  { name: 'Home', url: '/' },
+  { name: 'Pro Players', url: '/pro-players/' },
+  { name: 'Countries', url: '/pro-players/' },
+  { name: `${country.flag} ${country.name}`, url: `/players/country/${country.slug}/` },
+];
+
+const faqs = [
+  { question: `How many CS2 pros are from ${country.name}?`, answer: `There are currently ${players.length} professional CS2 players from ${country.name} in our database. They play across ${teams.length} different team${teams.length !== 1 ? 's' : ''}${teams.length > 0 ? `, including ${teams.slice(0, 3).join(', ')}` : ''}. ${country.name} has produced players in roles like ${roleBreakdown.slice(0, 3).map(r => r.role).join(', ')}.` },
+  { question: `What settings do ${country.name} CS2 pros use?`, answer: `${country.name} pros have an average eDPI of ${countryAvgEdpi}, which is ${countryAvgEdpi < globalAvgEdpi ? 'below' : countryAvgEdpi > globalAvgEdpi ? 'above' : 'right at'} the global pro average of ${globalAvgEdpi}. The most popular resolution among ${country.name} players is ${topRes}, and the most common mouse is the ${topMouse}.` },
+  { question: `Which ${country.name} CS2 player has the best settings to copy?`, answer: `The best settings are subjective and depend on your playstyle. However, copying settings from a player in your preferred role is a good starting point. Browse the player cards below and pay attention to eDPI (sensitivity) and resolution, as these have the biggest impact on gameplay feel. Use the settings as a baseline, then fine-tune over 2-3 weeks of practice.` },
+];
+---
+
+<Base {title} {description} currentNav="/pro-players/">
+<Fragment slot="head">
+<script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema(breadcrumbs))} />
+<script type="application/ld+json" set:html={JSON.stringify(faqSchema(faqs))} />
+</Fragment>
+
+<nav class="breadcrumb"><a href="/">Home</a> <span>/</span> <a href="/pro-players/">Pro Players</a> <span>/</span> <span>Countries</span> <span>/</span> <span>{country.flag} {country.name}</span></nav>
+
+<!-- Hero -->
+<section class="ctry-hero">
+  <div class="ctry-flag-big">{country.flag}</div>
+  <h1>{country.flag} {country.name} CS2 Pro Players</h1>
+  <p>Settings, crosshair codes, and gear configs from {players.length} professional CS2 player{players.length !== 1 ? 's' : ''} representing {country.name}.</p>
+  <div class="ctry-hero-stats">
+    <div class="ctry-hstat"><span class="ctry-hval">{players.length}</span><span class="ctry-hlbl">Pro Players</span></div>
+    <div class="ctry-hstat"><span class="ctry-hval">{teams.length}</span><span class="ctry-hlbl">Teams</span></div>
+    <div class="ctry-hstat"><span class="ctry-hval">{countryAvgEdpi}</span><span class="ctry-hlbl">Avg eDPI</span></div>
+    <div class="ctry-hstat"><span class="ctry-hval">{topRes}</span><span class="ctry-hlbl">Top Resolution</span></div>
+    <div class="ctry-hstat"><span class="ctry-hval">{topMouse}</span><span class="ctry-hlbl">Top Mouse</span></div>
+  </div>
+</section>
+
+<!-- Player Cards Grid -->
+<section class="ctry-section">
+  <h2>{country.name} Pro Player Settings</h2>
+  <div class="pp-grid">
+    {players.map(p => (
+      <a href={`/player/${p.slug}/`} class="pp-card" data-role={p.role} data-name={p.name.toLowerCase()} data-team={p.team.toLowerCase()}>
+        <div class="pp-card-top">
+          {p.image && <img class="pp-avatar" src={p.image} alt={p.name} width="56" height="56" loading="lazy" onerror="this.style.display='none'" />}
+          <div class="pp-card-info">
+            <h3 class="pp-name">{p.flag} {p.name}</h3>
+            <div class="pp-team-role">
+              <span class="pp-team">{p.team}</span>
+              <span class="pp-role" data-r={p.role.toLowerCase().replace(/\s/g,'-')}>{p.role}</span>
+            </div>
+            {p.realName && <div class="pp-realname">{p.realName}</div>}
+          </div>
+        </div>
+
+        <div class="pp-stats">
+          <div class="pp-s"><span class="pp-sv">{p.dpi}</span><span class="pp-sl">DPI</span></div>
+          <div class="pp-s"><span class="pp-sv">{p.sens}</span><span class="pp-sl">Sens</span></div>
+          <div class="pp-s pp-edpi"><span class="pp-sv">{p.edpi}</span><span class="pp-sl">eDPI</span></div>
+          <div class="pp-s"><span class="pp-sv">{p.res}</span><span class="pp-sl">{p.aspect} {p.stretch}</span></div>
+        </div>
+
+        {p.crosshairCode && (
+          <div class="pp-xhair" onclick="event.preventDefault();">
+            <code>{p.crosshairCode}</code>
+            <button class="pp-copy" data-code={p.crosshairCode}>Copy</button>
+          </div>
+        )}
+
+        <div class="pp-gear">
+          <div class="pp-gi"><span class="pp-gk">Mouse</span><span class="pp-gv">{p.mouse}</span></div>
+          <div class="pp-gi"><span class="pp-gk">Monitor</span><span class="pp-gv">{p.monitor}</span></div>
+          <div class="pp-gi"><span class="pp-gk">Keyboard</span><span class="pp-gv">{p.keyboard}</span></div>
+          <div class="pp-gi"><span class="pp-gk">Headset</span><span class="pp-gv">{p.headset}</span></div>
+          <div class="pp-gi"><span class="pp-gk">Mousepad</span><span class="pp-gv">{p.mousepad}</span></div>
+        </div>
+
+        <div class="pp-edpi-bar">
+          <div class="pp-ebar-fill" style={`width:${Math.min(100, Math.round(((p.edpi - 400) / (1700 - 400)) * 100))}%`}></div>
+          <span class="pp-ebar-label">{p.edpi} eDPI — {p.edpi < 600 ? 'Low' : p.edpi < 900 ? 'Medium' : 'High'} sens</span>
+        </div>
+
+        <div class="pp-view-more">View Full Profile &rarr;</div>
+      </a>
+    ))}
+  </div>
+</section>
+
+<!-- Comparison Table -->
+<section class="ctry-section">
+  <h2>{country.name} Players — Settings Comparison Table</h2>
+  <div class="pp-table-wrap">
+    <table class="pp-table">
+      <thead>
+        <tr>
+          <th>Player</th><th>Team</th><th>Role</th><th>Mouse</th><th>DPI</th><th>Sens</th><th>eDPI</th><th>Resolution</th><th>Aspect</th><th>Display</th>
+        </tr>
+      </thead>
+      <tbody>
+        {players.map(p => (
+          <tr>
+            <td><a href={`/player/${p.slug}/`} class="pp-tlink"><strong>{p.flag} {p.name}</strong></a></td>
+            <td>{p.team}</td>
+            <td><span class="pp-role pp-role-sm" data-r={p.role.toLowerCase().replace(/\s/g,'-')}>{p.role}</span></td>
+            <td>{p.mouse}</td>
+            <td>{p.dpi}</td>
+            <td>{p.sens}</td>
+            <td><strong>{p.edpi}</strong></td>
+            <td>{p.res}</td>
+            <td>{p.aspect}</td>
+            <td>{p.stretch}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="ctry-section">
+  <h2>Frequently Asked Questions</h2>
+  <dl class="faq">
+    {faqs.map(f => (
+      <>
+        <dt>{f.question}</dt>
+        <dd>{f.answer}</dd>
+      </>
+    ))}
+  </dl>
+</section>
+
+<!-- Internal Links -->
+<div class="internal-links">
+  <strong>Related:</strong>
+  <a href="/pro-players/">All Pro Settings</a>
+  {allCountries.filter(c => c.slug !== country.slug).slice(0, 6).map(c => (
+    <a href={`/players/country/${c.slug}/`}>{c.flag} {c.name} Pros</a>
+  ))}
+  <a href="/crosshair-codes/">Crosshair Codes</a>
+  <a href="/sensitivity-converter/">Sensitivity Converter</a>
+  <a href="/edpi-calculator/">eDPI Calculator</a>
+  <a href="/resolution-calculator/">Resolution Calculator</a>
+</div>
+
+<ExploreMore context="general" />
+
+</Base>
+
+<style>
+.ctry-hero{background:linear-gradient(135deg,var(--bg2),var(--bg3));border:1px solid var(--border);border-radius:12px;padding:2rem;margin-bottom:2rem;text-align:center}
+.ctry-flag-big{font-size:3.5rem;margin-bottom:.5rem;line-height:1}
+.ctry-hero h1{font-size:2.2rem;margin:0 0 .75rem}
+.ctry-hero>p{color:var(--text2);font-size:1.05rem;margin:0 0 1.5rem}
+.ctry-hero-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:.75rem}
+.ctry-hstat{background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:1rem;text-align:center}
+.ctry-hval{display:block;font-size:1.4rem;font-weight:800;color:var(--accent)}
+.ctry-hlbl{display:block;font-size:.75rem;color:var(--text2);margin-top:.25rem}
+
+.ctry-section{margin-bottom:3rem}
+.ctry-section h2{margin-bottom:1.25rem}
+
+.pp-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(380px,1fr));gap:1.25rem;margin-bottom:2rem}
+.pp-card{display:block;text-decoration:none;color:inherit;background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:1.25rem;transition:border-color .2s,transform .2s,box-shadow .2s}
+.pp-card:hover{border-color:var(--accent);transform:translateY(-2px);box-shadow:0 4px 16px rgba(212,149,110,.1)}
+.pp-card-top{display:flex;align-items:flex-start;margin-bottom:1rem;gap:.75rem}
+.pp-avatar{width:56px;height:56px;border-radius:50%;object-fit:cover;border:2px solid var(--border);flex-shrink:0;background:var(--bg3)}
+.pp-card-info{flex:1;min-width:0}
+.pp-name{margin:0;font-size:1.3rem;font-weight:800}
+.pp-team-role{display:flex;gap:.5rem;align-items:center;margin-top:.3rem}
+.pp-team{color:var(--accent);font-size:.85rem;font-weight:600}
+.pp-role{font-size:.72rem;font-weight:700;padding:.2rem .5rem;border-radius:4px;text-transform:uppercase;letter-spacing:.03em;background:var(--bg3);color:var(--text2);border:1px solid var(--border)}
+.pp-role[data-r="awper"]{background:rgba(239,83,80,.15);color:var(--red);border-color:var(--red)}
+.pp-role[data-r="rifler"]{background:rgba(66,165,245,.15);color:var(--blue);border-color:var(--blue)}
+.pp-role[data-r="igl"]{background:rgba(171,71,188,.15);color:var(--purple);border-color:var(--purple)}
+.pp-role[data-r="entry-fragger"]{background:rgba(212,149,110,.15);color:var(--accent);border-color:var(--accent)}
+.pp-role[data-r="support"]{background:rgba(76,175,80,.15);color:var(--green);border-color:var(--green)}
+.pp-role-sm{font-size:.65rem;padding:.15rem .4rem}
+.pp-realname{color:var(--text2);font-size:.78rem;margin-top:.2rem}
+.pp-view-more{text-align:center;color:var(--accent);font-size:.82rem;font-weight:700;margin-top:.75rem;padding-top:.5rem;border-top:1px solid var(--border)}
+
+.pp-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:.5rem;margin-bottom:1rem}
+.pp-s{background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:.5rem;text-align:center}
+.pp-s.pp-edpi{border-color:var(--accent)}
+.pp-sv{display:block;font-size:1.1rem;font-weight:700;color:var(--text)}
+.pp-edpi .pp-sv{color:var(--accent)}
+.pp-sl{display:block;font-size:.65rem;color:var(--text2);text-transform:uppercase;margin-top:.15rem}
+
+.pp-xhair{display:flex;gap:.5rem;background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:.4rem;margin-bottom:1rem;align-items:center}
+.pp-xhair code{flex:1;font-size:.75rem;color:var(--text2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding:0 .4rem}
+.pp-copy{background:var(--accent);color:#000;border:none;padding:.3rem .6rem;border-radius:4px;font-size:.75rem;font-weight:700;cursor:pointer;white-space:nowrap;font-family:inherit}
+.pp-copy:hover{opacity:.9}
+.pp-copy.copied{background:var(--green);color:#fff}
+
+.pp-gear{display:grid;grid-template-columns:1fr 1fr;gap:.3rem .75rem;margin-bottom:.75rem;font-size:.82rem}
+.pp-gi{display:flex;gap:.3rem}
+.pp-gk{color:var(--text2);font-weight:600;white-space:nowrap}
+.pp-gk::after{content:':'}
+.pp-gv{color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+.pp-edpi-bar{position:relative;background:var(--bg);border:1px solid var(--border);border-radius:4px;height:22px;overflow:hidden}
+.pp-ebar-fill{position:absolute;top:0;left:0;height:100%;background:linear-gradient(90deg,var(--green),var(--accent),var(--red));opacity:.25;border-radius:4px}
+.pp-ebar-label{position:absolute;top:50%;left:.5rem;transform:translateY(-50%);font-size:.7rem;color:var(--text2);font-weight:600}
+
+.pp-table-wrap{overflow-x:auto;border:1px solid var(--border);border-radius:8px}
+.pp-table{width:100%;border-collapse:collapse;background:var(--bg2);font-size:.82rem}
+.pp-table thead{background:var(--bg3)}
+.pp-table th{padding:.65rem .5rem;text-align:left;font-weight:700;color:var(--text);text-transform:uppercase;font-size:.7rem;letter-spacing:.03em;white-space:nowrap}
+.pp-table td{padding:.5rem;border-bottom:1px solid var(--border);color:var(--text2);white-space:nowrap}
+.pp-table tbody tr:hover td{background:var(--bg3)}
+.pp-table td strong{color:var(--text)}
+.pp-tlink{color:var(--accent);text-decoration:none;font-weight:600}
+.pp-tlink:hover{text-decoration:underline}
+
+@media(max-width:768px){
+  .ctry-hero h1{font-size:1.6rem}
+  .ctry-hero-stats{grid-template-columns:repeat(3,1fr)}
+  .ctry-flag-big{font-size:2.5rem}
+  .pp-grid{grid-template-columns:1fr}
+  .pp-stats{grid-template-columns:repeat(2,1fr)}
+  .pp-gear{grid-template-columns:1fr}
+}
+</style>
+
+<script is:inline>
+(function(){
+  document.querySelectorAll('.pp-copy').forEach(function(btn){
+    btn.addEventListener('click', function(e){
+      e.preventDefault();
+      e.stopPropagation();
+      navigator.clipboard.writeText(btn.dataset.code).then(function(){
+        btn.textContent = 'Copied!';
+        btn.classList.add('copied');
+        setTimeout(function(){ btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 1500);
+      });
+    });
+  });
+})();
+</script>

@@ -1,0 +1,124 @@
+---
+// Currency selector — auto-detects $X.XX prices on the page and converts them
+// Place in Base layout nav; only shows when price elements are detected
+---
+
+<div class="currency-selector" id="currency-selector" style="display:none">
+  <select id="currency-select" class="currency-select" title="Select currency">
+    <option value="USD">$ USD</option>
+    <option value="EUR">€ EUR</option>
+    <option value="GBP">£ GBP</option>
+    <option value="CNY">¥ CNY</option>
+    <option value="RUB">₽ RUB</option>
+    <option value="BRL">R$ BRL</option>
+    <option value="TRY">₺ TRY</option>
+    <option value="PLN">zł PLN</option>
+    <option value="AUD">A$ AUD</option>
+    <option value="CAD">C$ CAD</option>
+    <option value="JPY">¥ JPY</option>
+    <option value="KRW">₩ KRW</option>
+    <option value="SEK">kr SEK</option>
+    <option value="NOK">kr NOK</option>
+    <option value="DKK">kr DKK</option>
+  </select>
+</div>
+
+<script>
+const RATES: Record<string, { rate: number; symbol: string; decimals: number }> = {
+  USD: { rate: 1, symbol: '$', decimals: 2 },
+  EUR: { rate: 0.92, symbol: '€', decimals: 2 },
+  GBP: { rate: 0.79, symbol: '£', decimals: 2 },
+  CNY: { rate: 7.24, symbol: '¥', decimals: 2 },
+  RUB: { rate: 87.5, symbol: '₽', decimals: 0 },
+  BRL: { rate: 5.05, symbol: 'R$', decimals: 2 },
+  TRY: { rate: 38.5, symbol: '₺', decimals: 2 },
+  PLN: { rate: 3.95, symbol: 'zł', decimals: 2 },
+  AUD: { rate: 1.55, symbol: 'A$', decimals: 2 },
+  CAD: { rate: 1.44, symbol: 'C$', decimals: 2 },
+  JPY: { rate: 150.2, symbol: '¥', decimals: 0 },
+  KRW: { rate: 1380, symbol: '₩', decimals: 0 },
+  SEK: { rate: 10.45, symbol: 'kr', decimals: 2 },
+  NOK: { rate: 10.85, symbol: 'kr', decimals: 2 },
+  DKK: { rate: 6.88, symbol: 'kr', decimals: 2 },
+};
+
+// Price element selectors — classes that display USD prices as $X.XX
+const PRICE_SELECTORS = [
+  '.variant-price',
+  '.tp-price',
+  '.mp-price',
+  '.phase-card-price',
+  '.skin-price',
+  '.summary-item-price',
+  '.cost-display .amount',
+  '[data-usd]',
+].join(',');
+
+const USD_RE = /\$[\d,]+\.?\d*/;
+
+function initCurrencySelector() {
+  const selector = document.getElementById('currency-select') as HTMLSelectElement;
+  const container = document.getElementById('currency-selector') as HTMLElement;
+  if (!selector || !container) return;
+
+  // Find price elements on the page
+  const priceEls = document.querySelectorAll(PRICE_SELECTORS);
+  if (priceEls.length === 0) return; // No prices on this page — stay hidden
+
+  // Tag each price element with its original USD value
+  priceEls.forEach(el => {
+    const htmlEl = el as HTMLElement;
+    if (htmlEl.dataset.usd) return; // Already tagged
+    const text = htmlEl.textContent || '';
+    const match = text.match(USD_RE);
+    if (match) {
+      htmlEl.dataset.usd = match[0].replace(/[$,]/g, '');
+    }
+  });
+
+  // Only show if we found at least one taggable price
+  const tagged = document.querySelectorAll('[data-usd]');
+  if (tagged.length === 0) return;
+
+  container.style.display = '';
+
+  // Restore saved preference
+  const saved = localStorage.getItem('csdb-currency');
+  if (saved && RATES[saved]) selector.value = saved;
+
+  function convertPrices(currency: string) {
+    const info = RATES[currency];
+    if (!info) return;
+    localStorage.setItem('csdb-currency', currency);
+
+    document.querySelectorAll('[data-usd]').forEach(el => {
+      const htmlEl = el as HTMLElement;
+      const usd = parseFloat(htmlEl.dataset.usd || '0');
+      if (usd === 0) return;
+      const converted = usd * info.rate;
+      // Preserve prefix text like "from " in phase-card-price
+      const original = htmlEl.textContent || '';
+      const prefix = original.match(/^[^$₽€£¥₺₩]+(?=[\$₽€£¥₺₩])/)?.[0] || '';
+      htmlEl.textContent = `${prefix}${info.symbol}${converted.toFixed(info.decimals)}`;
+    });
+  }
+
+  selector.addEventListener('change', () => convertPrices(selector.value));
+
+  // Auto-convert on load if non-USD is saved
+  if (saved && saved !== 'USD') convertPrices(saved);
+}
+
+// Run after DOM is ready
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initCurrencySelector);
+} else {
+  initCurrencySelector();
+}
+</script>
+
+<style>
+  .currency-selector{display:inline-flex;align-items:center}
+  .currency-select{background:var(--bg2);border:1px solid var(--border);border-radius:6px;padding:.3rem .5rem;color:var(--text);font-size:.78rem;cursor:pointer;transition:border-color .2s}
+  .currency-select:hover{border-color:var(--accent)}
+</style>

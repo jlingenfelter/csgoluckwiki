@@ -1,0 +1,4384 @@
+{
+  "commands": [
+    {
+      "name": "alias",
+      "slug": "alias",
+      "description": "Assigns longer commands to custom shortcut phrases.",
+      "syntax": "alias <Alias> <Command>",
+      "category": "Bind"
+    },
+    {
+      "name": "autobuy",
+      "slug": "autobuy",
+      "description": "Purchases items configured via cl_autobuy command.",
+      "syntax": "autobuy",
+      "category": "Bind"
+    },
+    {
+      "name": "bind",
+      "slug": "bind",
+      "description": "Assigns command(s) to keyboard/mouse button.",
+      "syntax": "bind <Key> <Command>",
+      "category": "Bind"
+    },
+    {
+      "name": "binddefaults",
+      "slug": "binddefaults",
+      "description": "Resets all key bindings to defaults.",
+      "syntax": "binddefaults",
+      "category": "Bind"
+    },
+    {
+      "name": "bindss",
+      "slug": "bindss",
+      "description": "Binds key for specific splitscreen player.",
+      "syntax": "bindss <Index> <Key> <0 / 1> <Command>",
+      "category": "Bind"
+    },
+    {
+      "name": "bot_add",
+      "slug": "bot-add",
+      "description": "Adds a bot to your current game. If you specify a team (T or CT), the bot will be added to that team.",
+      "syntax": "bot_add <T / CT> <Difficulty> <Name>",
+      "category": "Bot"
+    },
+    {
+      "name": "bot_add_ct",
+      "slug": "bot-add-ct",
+      "description": "Adds a bot to the CT side. If the bot spawns dead, it will respawn next round.",
+      "syntax": "bot_add_ct <Difficulty> <Name>",
+      "category": "Bot"
+    },
+    {
+      "name": "bot_add_t",
+      "slug": "bot-add-t",
+      "description": "Adds a bot to the T side. If the bot spawns dead, it will respawn next round.",
+      "syntax": "bot_add_t <Difficulty> <Name>",
+      "category": "Bot"
+    },
+    {
+      "name": "bot_all_weapons",
+      "slug": "bot-all-weapons",
+      "description": "Allows bots on a private server to use all weapons.",
+      "syntax": "bot_all_weapons",
+      "category": "Bot"
+    },
+    {
+      "name": "bot_allow_grenades",
+      "slug": "bot-allow-grenades",
+      "description": "Allows bots to use grenades when set to 1.",
+      "syntax": "bot_allow_grenades <0 / 1>",
+      "category": "Bot",
+      "defaultValue": "1"
+    },
+    {
+      "name": "bot_allow_machine_guns",
+      "slug": "bot-allow-machine-guns",
+      "description": "Allows bots to use machine guns when set to 1.",
+      "syntax": "bot_allow_machine_guns <0 / 1>",
+      "category": "Bot",
+      "defaultValue": "1"
+    },
+    {
+      "name": "bot_allow_pistols",
+      "slug": "bot-allow-pistols",
+      "description": "Allows bots to use pistols when set to 1.",
+      "syntax": "bot_allow_pistols <0 / 1>",
+      "category": "Bot",
+      "defaultValue": "1"
+    },
+    {
+      "name": "bot_allow_rifles",
+      "slug": "bot-allow-rifles",
+      "description": "Allows bots to use rifles when set to 1.",
+      "syntax": "bot_allow_rifles <0 / 1>",
+      "category": "Bot",
+      "defaultValue": "1"
+    },
+    {
+      "name": "bot_allow_rogues",
+      "slug": "bot-allow-rogues",
+      "description": "Allows bots to go rogue and ignore radio commands.",
+      "syntax": "bot_allow_rogues <0 / 1>",
+      "category": "Bot",
+      "defaultValue": "1"
+    },
+    {
+      "name": "bot_allow_shotguns",
+      "slug": "bot-allow-shotguns",
+      "description": "Allows bots to use shotguns when set to 1.",
+      "syntax": "bot_allow_shotguns <0 / 1>",
+      "category": "Bot",
+      "defaultValue": "1"
+    },
+    {
+      "name": "bot_allow_snipers",
+      "slug": "bot-allow-snipers",
+      "description": "Allows bots to use sniper rifles when set to 1.",
+      "syntax": "bot_allow_snipers <0 / 1>",
+      "category": "Bot",
+      "defaultValue": "1"
+    },
+    {
+      "name": "bot_allow_sub_machine_guns",
+      "slug": "bot-allow-sub-machine-guns",
+      "description": "Allows bots to use SMGs when set to 1.",
+      "syntax": "bot_allow_sub_machine_guns <0 / 1>",
+      "category": "Bot",
+      "defaultValue": "1"
+    },
+    {
+      "name": "bot_autodifficulty_threshold_high",
+      "slug": "bot-autodifficulty-threshold-high",
+      "description": "Sets bot difficulty rating to high.",
+      "syntax": "bot_autodifficulty_threshold_high",
+      "category": "Bot"
+    },
+    {
+      "name": "bot_autodifficulty_threshold_low",
+      "slug": "bot-autodifficulty-threshold-low",
+      "description": "Sets bot difficulty rating to low.",
+      "syntax": "bot_autodifficulty_threshold_low",
+      "category": "Bot"
+    },
+    {
+      "name": "bot_chatter",
+      "slug": "bot-chatter",
+      "description": "Sets rules for bot speech (off, radio, minimal, or normal).",
+      "syntax": "bot_chatter <Value>",
+      "category": "Bot"
+    },
+    {
+      "name": "bot_controllable",
+      "slug": "bot-controllable",
+      "description": "Determine if players can control bots.",
+      "syntax": "bot_controllable <0 / 1>",
+      "category": "Bot"
+    },
+    {
+      "name": "bot_coop_force_throw_grenade_chance",
+      "slug": "bot-coop-force-throw-grenade-chance",
+      "description": "Sets chance bot throws grenade in coop missions.",
+      "syntax": "bot_coop_force_throw_grenade_chance <0-1>",
+      "category": "Bot"
+    },
+    {
+      "name": "bot_coop_idle_max_vision_distance",
+      "slug": "bot-coop-idle-max-vision-distance",
+      "description": "Sets max distance bots see enemies when idle in coop.",
+      "syntax": "bot_coop_idle_max_vision_distance <Distance>",
+      "category": "Bot"
+    },
+    {
+      "name": "bot_crouch",
+      "slug": "bot-crouch",
+      "description": "Set to 1 will make all bots crouch, 0 to disable.",
+      "syntax": "bot_crouch <0 / 1>",
+      "category": "Bot",
+      "defaultValue": "0"
+    },
+    {
+      "name": "bot_debug",
+      "slug": "bot-debug",
+      "description": "Toggles bot debug features on or off.",
+      "syntax": "bot_debug <0 / 1>",
+      "category": "Bot",
+      "defaultValue": "0"
+    },
+    {
+      "name": "bot_debug_target",
+      "slug": "bot-debug-target",
+      "description": "Debugs bot issues; primarily for testing purposes.",
+      "syntax": "bot_debug_target",
+      "category": "Bot"
+    },
+    {
+      "name": "bot_defer_to_human_goals",
+      "slug": "bot-defer-to-human-goals",
+      "description": "Prevents bots from doing scenario tasks when enabled.",
+      "syntax": "bot_defer_to_human_goals <Value>",
+      "category": "Bot"
+    },
+    {
+      "name": "bot_defer_to_human_items",
+      "slug": "bot-defer-to-human-items",
+      "description": "Prevents bots from taking scenario items when enabled.",
+      "syntax": "bot_defer_to_human_items <Value>",
+      "category": "Bot"
+    },
+    {
+      "name": "bot_difficulty",
+      "slug": "bot-difficulty",
+      "description": "Sets bot difficulty (0=easy, 1=normal, 2=hard, 3=expert).",
+      "syntax": "bot_difficulty <Difficulty>",
+      "category": "Bot",
+      "defaultValue": "1"
+    },
+    {
+      "name": "bot_dont_shoot",
+      "slug": "bot-dont-shoot",
+      "description": "Prevent bots from firing guns.",
+      "syntax": "bot_dont_shoot <0 / 1>",
+      "category": "Bot",
+      "defaultValue": "0"
+    },
+    {
+      "name": "bot_freeze",
+      "slug": "bot-freeze",
+      "description": "Prevents bots from being able to move when set to 1.",
+      "syntax": "bot_freeze <0 / 1>",
+      "category": "Bot",
+      "defaultValue": "0"
+    },
+    {
+      "name": "bot_goto_mark",
+      "slug": "bot-goto-mark",
+      "description": "Make a bot walk to the marked navigation area.",
+      "syntax": "bot_goto_mark",
+      "category": "Bot"
+    },
+    {
+      "name": "bot_goto_selected",
+      "slug": "bot-goto-selected",
+      "description": "Make a bot go to the navigation area currently selected.",
+      "syntax": "bot_goto_selected",
+      "category": "Bot"
+    },
+    {
+      "name": "bot_ignore_enemies",
+      "slug": "bot-ignore-enemies",
+      "description": "Makes bots ignore enemies for debugging.",
+      "syntax": "bot_ignore_enemies <0 / 1>",
+      "category": "Bot",
+      "defaultValue": "0"
+    },
+    {
+      "name": "bot_ignore_players",
+      "slug": "bot-ignore-players",
+      "description": "Make bots unable to see or react to players.",
+      "syntax": "bot_ignore_players <0 / 1>",
+      "category": "Bot",
+      "defaultValue": "0"
+    },
+    {
+      "name": "bot_join_after_player",
+      "slug": "bot-join-after-player",
+      "description": "Only have bots join after another live player joins.",
+      "syntax": "bot_join_after_player <0 / 1>",
+      "category": "Bot",
+      "defaultValue": "1"
+    },
+    {
+      "name": "bot_join_team",
+      "slug": "bot-join-team",
+      "description": "Sets default team for bots added with bot_add.",
+      "syntax": "bot_join_team <T / CT / Any>",
+      "category": "Bot",
+      "defaultValue": "any"
+    },
+    {
+      "name": "bot_kick",
+      "slug": "bot-kick",
+      "description": "Kick bots from the server by team, difficulty, or name.",
+      "syntax": "bot_kick <Kick Criteria>",
+      "category": "Bot"
+    },
+    {
+      "name": "bot_kill",
+      "slug": "bot-kill",
+      "description": "Kills bots (they respawn next round, unlike bot_kick).",
+      "syntax": "bot_kill <Kill Criteria>",
+      "category": "Bot"
+    },
+    {
+      "name": "bot_knives_only",
+      "slug": "bot-knives-only",
+      "description": "Forces all bots on the server to use knives.",
+      "syntax": "bot_knives_only <0 / 1>",
+      "category": "Bot",
+      "defaultValue": "0"
+    },
+    {
+      "name": "bot_loadout",
+      "slug": "bot-loadout",
+      "description": "Sets what bots spawn with (weapons and grenades).",
+      "syntax": "bot_loadout <Weapon Codes>",
+      "category": "Bot"
+    },
+    {
+      "name": "bot_max_visible_smoke_length",
+      "slug": "bot-max-visible-smoke-length",
+      "description": "Defines max distance bots recognize players through smoke.",
+      "syntax": "bot_max_visible_smoke_length <Distance>",
+      "category": "Bot"
+    },
+    {
+      "name": "bot_max_vision_distance_override",
+      "slug": "bot-max-vision-distance-override",
+      "description": "Overrides max distance bots can see players.",
+      "syntax": "bot_max_vision_distance_override <-1 / 1>",
+      "category": "Bot",
+      "defaultValue": "-1"
+    },
+    {
+      "name": "bot_mimic",
+      "slug": "bot-mimic",
+      "description": "Make all bots relay your actions when enabled.",
+      "syntax": "bot_mimic <0 / 1>",
+      "category": "Bot",
+      "defaultValue": "0"
+    },
+    {
+      "name": "bot_mimic_spec_buttons",
+      "slug": "bot-mimic-spec-buttons",
+      "description": "Allows spectator control inputs separate from bots.",
+      "syntax": "bot_mimic_spec_buttons <0 / 1>",
+      "category": "Bot"
+    },
+    {
+      "name": "bot_mimic_yaw_offset",
+      "slug": "bot-mimic-yaw-offset",
+      "description": "Set the yaw offset that bots will mimic you on.",
+      "syntax": "bot_mimic_yaw_offset",
+      "category": "Bot"
+    },
+    {
+      "name": "bot_pistols_only",
+      "slug": "bot-pistols-only",
+      "description": "Restricts bots to only use pistols.",
+      "syntax": "bot_pistols_only <0 / 1>",
+      "category": "Bot",
+      "defaultValue": "0"
+    },
+    {
+      "name": "bot_place",
+      "slug": "bot-place",
+      "description": "Spawn a bot where player model is standing.",
+      "syntax": "bot_place",
+      "category": "Bot"
+    },
+    {
+      "name": "bot_quota",
+      "slug": "bot-quota",
+      "description": "Adjusts the maximum number of bots (default 10).",
+      "syntax": "bot_quota <Amount>",
+      "category": "Bot",
+      "defaultValue": "10"
+    },
+    {
+      "name": "bot_quota_mode",
+      "slug": "bot-quota-mode",
+      "description": "Sets quota mode (normal, fill, match).",
+      "syntax": "bot_quota_mode <Mode>",
+      "category": "Bot",
+      "defaultValue": "normal"
+    },
+    {
+      "name": "bot_randombuy",
+      "slug": "bot-randombuy",
+      "description": "Make bots buy items randomly with their money.",
+      "syntax": "bot_randombuy <0 / 1>",
+      "category": "Bot",
+      "defaultValue": "0"
+    },
+    {
+      "name": "bot_show_battlefront",
+      "slug": "bot-show-battlefront",
+      "description": "Highlights map areas where rushing teams encounter first.",
+      "syntax": "bot_show_battlefront <0 / 1>",
+      "category": "Bot",
+      "defaultValue": "0"
+    },
+    {
+      "name": "bot_show_nav",
+      "slug": "bot-show-nav",
+      "description": "Show each bots navigation mesh when enabled.",
+      "syntax": "bot_show_nav <0 / 1>",
+      "category": "Bot",
+      "defaultValue": "0"
+    },
+    {
+      "name": "bot_show_occupy_time",
+      "slug": "bot-show-occupy-time",
+      "description": "Shows areas reachable by each team first.",
+      "syntax": "bot_show_occupy_time <0 / 1>",
+      "category": "Bot",
+      "defaultValue": "0"
+    },
+    {
+      "name": "bot_snipers_only",
+      "slug": "bot-snipers-only",
+      "description": "Restricts bots to only use sniper rifles.",
+      "syntax": "bot_snipers_only",
+      "category": "Bot"
+    },
+    {
+      "name": "bot_stop",
+      "slug": "bot-stop",
+      "description": "Stop all bots from doing what they are doing.",
+      "syntax": "bot_stop <0 / 1>",
+      "category": "Bot",
+      "defaultValue": "0"
+    },
+    {
+      "name": "bot_traceview",
+      "slug": "bot-traceview",
+      "description": "Enables bot tracers (sight lines) drawn on screen.",
+      "syntax": "bot_traceview",
+      "category": "Bot"
+    },
+    {
+      "name": "bot_zombie",
+      "slug": "bot-zombie",
+      "description": "Puts bots into zombie mode (idle, non-attacking).",
+      "syntax": "bot_zombie <0 / 1>",
+      "category": "Bot",
+      "defaultValue": "0"
+    },
+    {
+      "name": "buddha_ignore_bots",
+      "slug": "buddha-ignore-bots",
+      "description": "Dictates whether bots ignore Buddha mode.",
+      "syntax": "buddha_ignore_bots <0 / 1>",
+      "category": "Bot"
+    },
+    {
+      "name": "button_info",
+      "slug": "button-info",
+      "description": "Displays technical information about a specific key or button.",
+      "syntax": "button_info <Key>",
+      "category": "Input"
+    },
+    {
+      "name": "c_maxdistance",
+      "slug": "c-maxdistance",
+      "description": "Controls max camera distance from character in third person.",
+      "syntax": "c_maxdistance <Maximum Distance>",
+      "category": "Camera"
+    },
+    {
+      "name": "c_maxpitch",
+      "slug": "c-maxpitch",
+      "description": "Sets camera maximum pitch.",
+      "syntax": "c_maxpitch",
+      "category": "Camera"
+    },
+    {
+      "name": "c_maxyaw",
+      "slug": "c-maxyaw",
+      "description": "Sets camera maximum yaw.",
+      "syntax": "c_maxyaw",
+      "category": "Camera"
+    },
+    {
+      "name": "c_mindistance",
+      "slug": "c-mindistance",
+      "description": "Controls minimum camera distance in third person.",
+      "syntax": "c_mindistance <Minimum Distance>",
+      "category": "Camera"
+    },
+    {
+      "name": "c_minpitch",
+      "slug": "c-minpitch",
+      "description": "Sets camera minimum pitch.",
+      "syntax": "c_minpitch",
+      "category": "Camera"
+    },
+    {
+      "name": "c_minyaw",
+      "slug": "c-minyaw",
+      "description": "Sets camera minimum yaw.",
+      "syntax": "c_minyaw",
+      "category": "Camera"
+    },
+    {
+      "name": "callvote",
+      "slug": "callvote",
+      "description": "Initiates player kick or map change vote.",
+      "syntax": "callvote",
+      "category": "Bind"
+    },
+    {
+      "name": "cam_collision",
+      "slug": "cam-collision",
+      "description": "Prevent camera from colliding with walls in third person.",
+      "syntax": "cam_collision <0 / 1>",
+      "category": "Camera",
+      "defaultValue": "1"
+    },
+    {
+      "name": "cam_command",
+      "slug": "cam-command",
+      "description": "Adjusts camera between first person (default) and third person.",
+      "syntax": "cam_command <0 / 1 / 2>",
+      "category": "Camera",
+      "defaultValue": "0"
+    },
+    {
+      "name": "cam_idealdelta",
+      "slug": "cam-idealdelta",
+      "description": "Adjusts camera angle correction speed in third person.",
+      "syntax": "cam_idealdelta <Camera Speed>",
+      "category": "Camera"
+    },
+    {
+      "name": "cam_ideallag",
+      "slug": "cam-ideallag",
+      "description": "Controls how fast you can move your camera in third person.",
+      "syntax": "cam_ideallag <Camera Speed>",
+      "category": "Camera"
+    },
+    {
+      "name": "cam_showangles",
+      "slug": "cam-showangles",
+      "description": "Enable menu showing camera angle statistics in third person.",
+      "syntax": "cam_showangles <0 / 1>",
+      "category": "Camera",
+      "defaultValue": "0"
+    },
+    {
+      "name": "cam_snapto",
+      "slug": "cam-snapto",
+      "description": "Snap camera to default position in third person.",
+      "syntax": "cam_snapto <0 / 1>",
+      "category": "Camera",
+      "defaultValue": "0"
+    },
+    {
+      "name": "camortho",
+      "slug": "camortho",
+      "description": "Switches to orthographic camera view (2D-like).",
+      "syntax": "camortho",
+      "category": "Camera"
+    },
+    {
+      "name": "cash_player_bomb_defused",
+      "slug": "cash-player-bomb-defused",
+      "description": "Alters earnings for defusing the bomb.",
+      "syntax": "cash_player_bomb_defused <Money>",
+      "category": "Multiplayer and Game Settings",
+      "defaultValue": "300"
+    },
+    {
+      "name": "cash_player_bomb_planted",
+      "slug": "cash-player-bomb-planted",
+      "description": "Modifies earnings for planting the bomb.",
+      "syntax": "cash_player_bomb_planted <Money>",
+      "category": "Multiplayer and Game Settings",
+      "defaultValue": "300"
+    },
+    {
+      "name": "cash_player_damage_hostage",
+      "slug": "cash-player-damage-hostage",
+      "description": "Sets money gained/lost when damaging a hostage.",
+      "syntax": "cash_player_damage_hostage <Money>",
+      "category": "Multiplayer and Game Settings",
+      "defaultValue": "-30"
+    },
+    {
+      "name": "cash_player_get_killed",
+      "slug": "cash-player-get-killed",
+      "description": "Determines earnings or losses from being killed.",
+      "syntax": "cash_player_get_killed <Money>",
+      "category": "Multiplayer and Game Settings",
+      "defaultValue": "0"
+    },
+    {
+      "name": "cash_player_interact_with_hostage",
+      "slug": "cash-player-interact-with-hostage",
+      "description": "Sets earnings for hostage interaction.",
+      "syntax": "cash_player_interact_with_hostage <Money>",
+      "category": "Multiplayer and Game Settings",
+      "defaultValue": "150"
+    },
+    {
+      "name": "cash_player_killed_enemy_default",
+      "slug": "cash-player-killed-enemy-default",
+      "description": "Controls earnings for killing with default weapons.",
+      "syntax": "cash_player_killed_enemy_default <Money>",
+      "category": "Multiplayer and Game Settings",
+      "defaultValue": "300"
+    },
+    {
+      "name": "cash_player_killed_enemy_factor",
+      "slug": "cash-player-killed-enemy-factor",
+      "description": "Adjusts earnings for main weapon kills.",
+      "syntax": "cash_player_killed_enemy_factor <Money>",
+      "category": "Multiplayer and Game Settings",
+      "defaultValue": "1"
+    },
+    {
+      "name": "cash_player_killed_hostage",
+      "slug": "cash-player-killed-hostage",
+      "description": "Sets money earned/lost when killing hostages.",
+      "syntax": "cash_player_killed_hostage <Money>",
+      "category": "Multiplayer and Game Settings",
+      "defaultValue": "-1000"
+    },
+    {
+      "name": "cash_player_killed_teammate",
+      "slug": "cash-player-killed-teammate",
+      "description": "Manages earnings for teamkills.",
+      "syntax": "cash_player_killed_teammate <Money>",
+      "category": "Multiplayer and Game Settings",
+      "defaultValue": "-300"
+    },
+    {
+      "name": "cash_player_rescued_hostage",
+      "slug": "cash-player-rescued-hostage",
+      "description": "Determines earnings for hostage rescue.",
+      "syntax": "cash_player_rescued_hostage <Money>",
+      "category": "Multiplayer and Game Settings",
+      "defaultValue": "1000"
+    },
+    {
+      "name": "cash_player_respawn_amount",
+      "slug": "cash-player-respawn-amount",
+      "description": "Sets starting funds upon respawning.",
+      "syntax": "cash_player_respawn_amount <Money>",
+      "category": "Multiplayer and Game Settings",
+      "defaultValue": "0"
+    },
+    {
+      "name": "cash_team_bonus_shorthanded",
+      "slug": "cash-team-bonus-shorthanded",
+      "description": "Bonus for playing with fewer players.",
+      "syntax": "cash_team_bonus_shorthanded <Bonus Amount>",
+      "category": "Multiplayer and Game Settings"
+    },
+    {
+      "name": "cash_team_elimination_bomb_map",
+      "slug": "cash-team-elimination-bomb-map",
+      "description": "Earnings when eliminating all enemies on bomb maps.",
+      "syntax": "cash_team_elimination_bomb_map <Money>",
+      "category": "Multiplayer and Game Settings",
+      "defaultValue": "3250"
+    },
+    {
+      "name": "cash_team_elimination_hostage_map_ct",
+      "slug": "cash-team-elimination-hostage-map-ct",
+      "description": "CT earnings for hostage map elimination wins.",
+      "syntax": "cash_team_elimination_hostage_map_ct <Money>",
+      "category": "Multiplayer and Game Settings",
+      "defaultValue": "3000"
+    },
+    {
+      "name": "cash_team_elimination_hostage_map_t",
+      "slug": "cash-team-elimination-hostage-map-t",
+      "description": "Terrorist earnings for hostage map elimination wins.",
+      "syntax": "cash_team_elimination_hostage_map_t <Money>",
+      "category": "Multiplayer and Game Settings",
+      "defaultValue": "3000"
+    },
+    {
+      "name": "cash_team_hostage_alive",
+      "slug": "cash-team-hostage-alive",
+      "description": "Earnings when hostages survive a round.",
+      "syntax": "cash_team_hostage_alive <Money>",
+      "category": "Multiplayer and Game Settings",
+      "defaultValue": "0"
+    },
+    {
+      "name": "cash_team_hostage_interaction",
+      "slug": "cash-team-hostage-interaction",
+      "description": "Team earnings for hostage interaction.",
+      "syntax": "cash_team_hostage_interaction <Money>",
+      "category": "Multiplayer and Game Settings",
+      "defaultValue": "600"
+    },
+    {
+      "name": "cash_team_loser_bonus",
+      "slug": "cash-team-loser-bonus",
+      "description": "Base earnings for losing a round.",
+      "syntax": "cash_team_loser_bonus <Money>",
+      "category": "Multiplayer and Game Settings",
+      "defaultValue": "1400"
+    },
+    {
+      "name": "cash_team_loser_bonus_consecutive_rounds",
+      "slug": "cash-team-loser-bonus-consecutive-rounds",
+      "description": "Bonus increase per consecutive loss.",
+      "syntax": "cash_team_loser_bonus_consecutive_rounds <Money>",
+      "category": "Multiplayer and Game Settings",
+      "defaultValue": "500"
+    },
+    {
+      "name": "cash_team_planted_bomb_but_defused",
+      "slug": "cash-team-planted-bomb-but-defused",
+      "description": "Terrorist earnings when bomb is planted but defused.",
+      "syntax": "cash_team_planted_bomb_but_defused <Money>",
+      "category": "Multiplayer and Game Settings",
+      "defaultValue": "800"
+    },
+    {
+      "name": "cash_team_rescued_hostage",
+      "slug": "cash-team-rescued-hostage",
+      "description": "Team earnings when hostage is rescued.",
+      "syntax": "cash_team_rescued_hostage <Money>",
+      "category": "Multiplayer and Game Settings",
+      "defaultValue": "0"
+    },
+    {
+      "name": "cash_team_terrorist_win_bomb",
+      "slug": "cash-team-terrorist-win-bomb",
+      "description": "Earnings when Terrorists win via bomb explosion.",
+      "syntax": "cash_team_terrorist_win_bomb <Money>",
+      "category": "Multiplayer and Game Settings",
+      "defaultValue": "3500"
+    },
+    {
+      "name": "cash_team_win_by_defusing_bomb",
+      "slug": "cash-team-win-by-defusing-bomb",
+      "description": "CT earnings for defuse-based round wins.",
+      "syntax": "cash_team_win_by_defusing_bomb <Money>",
+      "category": "Multiplayer and Game Settings",
+      "defaultValue": "3500"
+    },
+    {
+      "name": "cash_team_win_by_hostage_rescue",
+      "slug": "cash-team-win-by-hostage-rescue",
+      "description": "Earnings for hostage rescue round wins.",
+      "syntax": "cash_team_win_by_hostage_rescue <Money>",
+      "category": "Multiplayer and Game Settings",
+      "defaultValue": "3500"
+    },
+    {
+      "name": "cash_team_win_by_time_running_out_bomb",
+      "slug": "cash-team-win-by-time-running-out-bomb",
+      "description": "CT earnings when time expires on bomb maps.",
+      "syntax": "cash_team_win_by_time_running_out_bomb <Money>",
+      "category": "Multiplayer and Game Settings",
+      "defaultValue": "3250"
+    },
+    {
+      "name": "cash_team_win_by_time_running_out_hostage",
+      "slug": "cash-team-win-by-time-running-out-hostage",
+      "description": "Earnings for protecting hostages until time expires.",
+      "syntax": "cash_team_win_by_time_running_out_hostage <Money>",
+      "category": "Multiplayer and Game Settings",
+      "defaultValue": "3250"
+    },
+    {
+      "name": "changelevel",
+      "slug": "changelevel",
+      "description": "Transitions to a different map.",
+      "syntax": "changelevel <Map Name>",
+      "category": "Multiplayer and Game Settings"
+    },
+    {
+      "name": "cl_allow_animated_avatars",
+      "slug": "cl-allow-animated-avatars",
+      "description": "Permits animated player avatars.",
+      "syntax": "cl_allow_animated_avatars <0 / 1>",
+      "category": "HUD",
+      "defaultValue": "1"
+    },
+    {
+      "name": "cl_autobuy",
+      "slug": "cl-autobuy",
+      "description": "Enables automatic purchasing of essential gear each round.",
+      "syntax": "cl_autobuy <Weapon Codes>",
+      "category": "Bind"
+    },
+    {
+      "name": "cl_borrow_music_from_player_slot",
+      "slug": "cl-borrow-music-from-player-slot",
+      "description": "Allows borrowing music kits from other players.",
+      "syntax": "cl_borrow_music_from_player_slot <Player Slot>",
+      "category": "Server"
+    },
+    {
+      "name": "cl_buywheel_donate_key",
+      "slug": "cl-buywheel-donate-key",
+      "description": "Sets key for donations in buy menu.",
+      "syntax": "cl_buywheel_donate_key <0 / 1>",
+      "category": "Bind"
+    },
+    {
+      "name": "cl_buywheel_nonumberpurchasing",
+      "slug": "cl-buywheel-nonumberpurchasing",
+      "description": "Prevents number key purchasing via buy wheel.",
+      "syntax": "cl_buywheel_nonumberpurchasing <0 / 1>",
+      "category": "HUD"
+    },
+    {
+      "name": "cl_cl_radialmenu_deadzone_size",
+      "slug": "cl-cl-radialmenu-deadzone-size",
+      "description": "Adjusts radial menu mouse/stick response threshold.",
+      "syntax": "cl_radialmenu_deadzone_size <Size>",
+      "category": "HUD"
+    },
+    {
+      "name": "cl_clock_recvmargin_enable",
+      "slug": "cl-clock-recvmargin-enable",
+      "description": "Activates client-side clock synchronization strategy.",
+      "syntax": "cl_clock_recvmargin_enable <0 / 1>",
+      "category": "Network"
+    },
+    {
+      "name": "cl_clockdrift_max_ticks",
+      "slug": "cl-clockdrift-max-ticks",
+      "description": "Sets maximum client clock drift before correction.",
+      "syntax": "cl_clockdrift_max_ticks <Maximum Clock Drift Ticks>",
+      "category": "Network"
+    },
+    {
+      "name": "cl_clutch_mode",
+      "slug": "cl-clutch-mode",
+      "description": "Silences distracting sounds during clutch situations.",
+      "syntax": "cl_clutch_mode <0 / 1>",
+      "category": "Voice",
+      "defaultValue": "0"
+    },
+    {
+      "name": "cl_color",
+      "slug": "cl-color",
+      "description": "Sets player color preference in matchmaking.",
+      "syntax": "cl_color <Color>",
+      "category": "HUD"
+    },
+    {
+      "name": "cl_connectionretrytime_p2p",
+      "slug": "cl-connectionretrytime-p2p",
+      "description": "Determines P2P connection retry attempt duration.",
+      "syntax": "cl_connectionretrytime_p2p <Seconds>",
+      "category": "Network"
+    },
+    {
+      "name": "cl_cq_min_queue",
+      "slug": "cl-cq-min-queue",
+      "description": "Controls command queue size handling.",
+      "syntax": "cl_cq_min_queue <-1 / 0 / Positive>",
+      "category": "Network"
+    },
+    {
+      "name": "cl_crosshair_drawoutline",
+      "slug": "cl-crosshair-drawoutline",
+      "description": "Enable and disable the small black outline around your crosshair.",
+      "syntax": "cl_crosshair_drawoutline <0 / 1>",
+      "category": "Crosshair",
+      "defaultValue": "1"
+    },
+    {
+      "name": "cl_crosshair_dynamic_maxdist_splitratio",
+      "slug": "cl-crosshair-dynamic-maxdist-splitratio",
+      "description": "Determines inner/outer line ratio for dynamic crosshair style 2.",
+      "syntax": "cl_crosshair_dynamic_maxdist_splitratio <Ratio>",
+      "category": "Crosshair"
+    },
+    {
+      "name": "cl_crosshair_dynamic_splitalpha_innermod",
+      "slug": "cl-crosshair-dynamic-splitalpha-innermod",
+      "description": "Adjusts the transparency of the inner crosshair.",
+      "syntax": "cl_crosshair_dynamic_splitalpha_innermod <Alpha Value>",
+      "category": "Crosshair"
+    },
+    {
+      "name": "cl_crosshair_dynamic_splitalpha_outermod",
+      "slug": "cl-crosshair-dynamic-splitalpha-outermod",
+      "description": "Adjusts the transparency of the outer crosshair.",
+      "syntax": "cl_crosshair_dynamic_splitalpha_outermod <Alpha Value>",
+      "category": "Crosshair"
+    },
+    {
+      "name": "cl_crosshair_dynamic_splitdist",
+      "slug": "cl-crosshair-dynamic-splitdist",
+      "description": "Sets separation distance for crosshair movement in style 2.",
+      "syntax": "cl_crosshair_dynamic_splitdist <Value>",
+      "category": "Crosshair"
+    },
+    {
+      "name": "cl_crosshair_friendly_warning",
+      "slug": "cl-crosshair-friendly-warning",
+      "description": "Configures whether a visual indication is shown on the crosshair when aimed at friendly players.",
+      "syntax": "cl_crosshair_friendly_warning <0 / 1>",
+      "category": "Crosshair",
+      "defaultValue": "1"
+    },
+    {
+      "name": "cl_crosshair_outlinethickness",
+      "slug": "cl-crosshair-outlinethickness",
+      "description": "Adjusts how thick the outline of your crosshair is.",
+      "syntax": "cl_crosshair_outlinethickness <Thickness>",
+      "category": "Crosshair",
+      "defaultValue": "1"
+    },
+    {
+      "name": "cl_crosshair_sniper_width",
+      "slug": "cl-crosshair-sniper-width",
+      "description": "Sets scoped sniper rifle crosshair width in pixels.",
+      "syntax": "cl_crosshair_sniper_width <Pixels>",
+      "category": "Crosshair",
+      "defaultValue": "1"
+    },
+    {
+      "name": "cl_crosshair_t",
+      "slug": "cl-crosshair-t",
+      "description": "Makes crosshair T-style by omitting top line.",
+      "syntax": "cl_crosshair_t <0 / 1>",
+      "category": "Crosshair",
+      "defaultValue": "0"
+    },
+    {
+      "name": "cl_crosshairalpha",
+      "slug": "cl-crosshairalpha",
+      "description": "Sets how transparent your crosshair is on your screen.",
+      "syntax": "cl_crosshairalpha <Alpha Value>",
+      "category": "Crosshair",
+      "defaultValue": "200"
+    },
+    {
+      "name": "cl_crosshaircolor",
+      "slug": "cl-crosshaircolor",
+      "description": "Sets the color that your crosshair shows up as (0-4).",
+      "syntax": "cl_crosshaircolor <Color>",
+      "category": "Crosshair",
+      "defaultValue": "1"
+    },
+    {
+      "name": "cl_crosshaircolor_b",
+      "slug": "cl-crosshaircolor-b",
+      "description": "Adjusts blue RGB value for crosshair color customization.",
+      "syntax": "cl_crosshaircolor_b <Blue Value>",
+      "category": "Crosshair",
+      "defaultValue": "50"
+    },
+    {
+      "name": "cl_crosshaircolor_g",
+      "slug": "cl-crosshaircolor-g",
+      "description": "Adjusts green RGB value for crosshair color customization.",
+      "syntax": "cl_crosshaircolor_g <Green Value>",
+      "category": "Crosshair",
+      "defaultValue": "250"
+    },
+    {
+      "name": "cl_crosshaircolor_r",
+      "slug": "cl-crosshaircolor-r",
+      "description": "Adjusts red RGB value for crosshair color customization.",
+      "syntax": "cl_crosshaircolor_r <Red Value>",
+      "category": "Crosshair",
+      "defaultValue": "50"
+    },
+    {
+      "name": "cl_crosshairdot",
+      "slug": "cl-crosshairdot",
+      "description": "Adds a dot in the center of your crosshair.",
+      "syntax": "cl_crosshairdot <0 / 1>",
+      "category": "Crosshair",
+      "defaultValue": "0"
+    },
+    {
+      "name": "cl_crosshairgap",
+      "slug": "cl-crosshairgap",
+      "description": "Adjusts the size of the gap in the middle of your crosshair.",
+      "syntax": "cl_crosshairgap <Gap>",
+      "category": "Crosshair",
+      "defaultValue": "1"
+    },
+    {
+      "name": "cl_crosshairgap_useweaponvalue",
+      "slug": "cl-crosshairgap-useweaponvalue",
+      "description": "Dynamically adjusts gap size based on equipped weapon.",
+      "syntax": "cl_crosshairgap_useweaponvalue <0 / 1>",
+      "category": "Crosshair",
+      "defaultValue": "0"
+    },
+    {
+      "name": "cl_crosshairsize",
+      "slug": "cl-crosshairsize",
+      "description": "Controls the length and size of the 4 lines in standard crosshair.",
+      "syntax": "cl_crosshairsize <Size>",
+      "category": "Crosshair",
+      "defaultValue": "5"
+    },
+    {
+      "name": "cl_crosshairstyle",
+      "slug": "cl-crosshairstyle",
+      "description": "Sets the style of your crosshair such as its general shape.",
+      "syntax": "cl_crosshairstyle <Style>",
+      "category": "Crosshair",
+      "defaultValue": "2"
+    },
+    {
+      "name": "cl_crosshairthickness",
+      "slug": "cl-crosshairthickness",
+      "description": "Customizes the thickness of your in game crosshair.",
+      "syntax": "cl_crosshairthickness <Thickness>",
+      "category": "Crosshair",
+      "defaultValue": "0.5"
+    },
+    {
+      "name": "cl_crosshairusealpha",
+      "slug": "cl-crosshairusealpha",
+      "description": "Adjusts overall crosshair transparency settings.",
+      "syntax": "cl_crosshairusealpha <0 / 1>",
+      "category": "Crosshair",
+      "defaultValue": "1"
+    },
+    {
+      "name": "cl_dangerzone_approaching_sound_radius",
+      "slug": "cl-dangerzone-approaching-sound-radius",
+      "description": "Sets the radius for approaching sound in Danger Zone.",
+      "syntax": "cl_dangerzone_approaching_sound_radius <Radius>",
+      "category": "Danger Zone"
+    },
+    {
+      "name": "cl_dangerzone_moving_sound_volume",
+      "slug": "cl-dangerzone-moving-sound-volume",
+      "description": "Sets the volume of moving sound in Danger Zone.",
+      "syntax": "cl_dangerzone_moving_sound_volume <Volume>",
+      "category": "Danger Zone"
+    },
+    {
+      "name": "cl_dangerzone_sound_volume",
+      "slug": "cl-dangerzone-sound-volume",
+      "description": "Sets the volume of sound effects in Danger Zone.",
+      "syntax": "cl_dangerzone_sound_volume <Volume>",
+      "category": "Danger Zone"
+    },
+    {
+      "name": "cl_deathnotices_show_numbers",
+      "slug": "cl-deathnotices-show-numbers",
+      "description": "Displays numbers in kill feed.",
+      "syntax": "cl_deathnotices_show_numbers <0 / 1>",
+      "category": "HUD",
+      "defaultValue": "0"
+    },
+    {
+      "name": "cl_debounce_zoom",
+      "slug": "cl-debounce-zoom",
+      "description": "Determines if players can hold secondary fire to cycle zoom.",
+      "syntax": "cl_debounce_zoom <0 / 1>",
+      "category": "Server"
+    },
+    {
+      "name": "cl_dm_buyrandomweapons",
+      "slug": "cl-dm-buyrandomweapons",
+      "description": "Spawns players with random weapons in deathmatch.",
+      "syntax": "cl_dm_buyrandomweapons <0 / 1>",
+      "category": "Multiplayer and Game Settings",
+      "defaultValue": "0"
+    },
+    {
+      "name": "cl_draw_only_deathnotices",
+      "slug": "cl-draw-only-deathnotices",
+      "description": "Strips down the UI to only include the crosshair and the kill feed.",
+      "syntax": "cl_draw_only_deathnotices <0 / 1>",
+      "category": "HUD",
+      "defaultValue": "0"
+    },
+    {
+      "name": "cl_drawhud",
+      "slug": "cl-drawhud",
+      "description": "Toggles visibility of all HUD elements.",
+      "syntax": "cl_drawhud <0 / 1>",
+      "category": "HUD",
+      "defaultValue": "1"
+    },
+    {
+      "name": "cl_drawhud_force_deathnotices",
+      "slug": "cl-drawhud-force-deathnotices",
+      "description": "Controls kill feed display conditions.",
+      "syntax": "cl_drawhud_force_deathnotices <-1 / 0 / 1>",
+      "category": "HUD",
+      "defaultValue": "-1"
+    },
+    {
+      "name": "cl_drawhud_force_radar",
+      "slug": "cl-drawhud-force-radar",
+      "description": "Controls radar display conditions.",
+      "syntax": "cl_drawhud_force_radar <-1 / 0 / 1>",
+      "category": "HUD",
+      "defaultValue": "-1"
+    },
+    {
+      "name": "cl_drawhud_force_teamid_overhead",
+      "slug": "cl-drawhud-force-teamid-overhead",
+      "description": "Controls teammate ID display conditions.",
+      "syntax": "cl_drawhud_force_teamid_overhead <-1 / 0 / 1>",
+      "category": "HUD",
+      "defaultValue": "-1"
+    },
+    {
+      "name": "cl_error_report_time",
+      "slug": "cl-error-report-time",
+      "description": "Sets minimum time before printing prediction error summaries.",
+      "syntax": "cl_error_report_time <Seconds>",
+      "category": "Network"
+    },
+    {
+      "name": "cl_fixedcrosshairgap",
+      "slug": "cl-fixedcrosshairgap",
+      "description": "Alters the gap inbetween the pips for fixed crosshair.",
+      "syntax": "cl_fixedcrosshairgap <Gap>",
+      "category": "Crosshair",
+      "defaultValue": "3"
+    },
+    {
+      "name": "cl_hud_color",
+      "slug": "cl-hud-color",
+      "description": "Changes HUD color from 11 preset options (0-10).",
+      "syntax": "cl_hud_color <HUD Color>",
+      "category": "HUD",
+      "defaultValue": "0"
+    },
+    {
+      "name": "cl_hud_radar_scale",
+      "slug": "cl-hud-radar-scale",
+      "description": "Controls how much room in your HUD your radar takes up.",
+      "syntax": "cl_hud_radar_scale <Radar Scale>",
+      "category": "Radar",
+      "defaultValue": "1"
+    },
+    {
+      "name": "cl_invites_only_friends",
+      "slug": "cl-invites-only-friends",
+      "description": "Ignores invites from non-friends.",
+      "syntax": "cl_invites_only_friends <0 / 1>",
+      "category": "Server"
+    },
+    {
+      "name": "cl_invites_only_mainmenu",
+      "slug": "cl-invites-only-mainmenu",
+      "description": "Restricts game invites to main menu only.",
+      "syntax": "cl_invites_only_mainmenu <0 / 1>",
+      "category": "Server"
+    },
+    {
+      "name": "cl_mouselook",
+      "slug": "cl-mouselook",
+      "description": "Controls whether you look around using your mouse or keyboard.",
+      "syntax": "cl_mouselook <0 / 1>",
+      "category": "Mouse",
+      "defaultValue": "1"
+    },
+    {
+      "name": "cl_mute_all_but_friends_and_party",
+      "slug": "cl-mute-all-but-friends-and-party",
+      "description": "Mute all except Steam friends and party members.",
+      "syntax": "cl_mute_all_but_friends_and_party <0 / 1>",
+      "category": "Chat",
+      "defaultValue": "0"
+    },
+    {
+      "name": "cl_mute_enemy_team",
+      "slug": "cl-mute-enemy-team",
+      "description": "Mute communication from all enemy players.",
+      "syntax": "cl_mute_enemy_team <0 / 1>",
+      "category": "Chat",
+      "defaultValue": "0"
+    },
+    {
+      "name": "cl_net_buffer_ticks",
+      "slug": "cl-net-buffer-ticks",
+      "description": "Controls snapshot and command delay buffer ticks.",
+      "syntax": "cl_net_buffer_ticks <Buffer Ticks>",
+      "category": "Network"
+    },
+    {
+      "name": "cl_observed_bot_crosshair",
+      "slug": "cl-observed-bot-crosshair",
+      "description": "Controls crosshair display when observing a bot.",
+      "syntax": "cl_observed_bot_crosshair <0 / 1>",
+      "category": "Crosshair"
+    },
+    {
+      "name": "cl_pitchdown",
+      "slug": "cl-pitchdown",
+      "description": "Controls how many degrees down from eye level you can look.",
+      "syntax": "cl_pitchdown <Degrees>",
+      "category": "Camera",
+      "defaultValue": "89"
+    },
+    {
+      "name": "cl_pitchup",
+      "slug": "cl-pitchup",
+      "description": "Controls how many degrees from eye level you can look up.",
+      "syntax": "cl_pitchup <Degrees>",
+      "category": "Camera",
+      "defaultValue": "89"
+    },
+    {
+      "name": "cl_playerspray_auto_apply",
+      "slug": "cl-playerspray-auto-apply",
+      "description": "Sets whether graffiti is auto-applied when closing menu.",
+      "syntax": "cl_playerspray_auto_apply <0 / 1>",
+      "category": "Server"
+    },
+    {
+      "name": "cl_playerspraydisable",
+      "slug": "cl-playerspraydisable",
+      "description": "Disables the ability for players to use their sprays.",
+      "syntax": "cl_playerspraydisable <0 / 1>",
+      "category": "Server",
+      "defaultValue": "0"
+    },
+    {
+      "name": "cl_radar_always_centered",
+      "slug": "cl-radar-always-centered",
+      "description": "Determines if radar stays centered on player location.",
+      "syntax": "cl_radar_always_centered <0 / 1>",
+      "category": "Radar",
+      "defaultValue": "1"
+    },
+    {
+      "name": "cl_radar_icon_scale_min",
+      "slug": "cl-radar-icon-scale-min",
+      "description": "Changes how large your character dot appears on the radar.",
+      "syntax": "cl_radar_icon_scale_min <Icon Scale>",
+      "category": "Radar",
+      "defaultValue": "0.6"
+    },
+    {
+      "name": "cl_radar_rotate",
+      "slug": "cl-radar-rotate",
+      "description": "Toggles whether radar rotates with player camera movement.",
+      "syntax": "cl_radar_rotate <0 / 1>",
+      "category": "Radar",
+      "defaultValue": "1"
+    },
+    {
+      "name": "cl_radar_scale",
+      "slug": "cl-radar-scale",
+      "description": "Adjusts the scale of your radar (zoom level).",
+      "syntax": "cl_radar_scale <Radar Scale>",
+      "category": "Radar",
+      "defaultValue": "0.7"
+    },
+    {
+      "name": "cl_radar_square_with_scoreboard",
+      "slug": "cl-radar-square-with-scoreboard",
+      "description": "Changes radar shape when scoreboard opens.",
+      "syntax": "cl_radar_square_with_scoreboard <0 / 1>",
+      "category": "Radar",
+      "defaultValue": "1"
+    },
+    {
+      "name": "cl_radial_radio_tab",
+      "slug": "cl-radial-radio-tab",
+      "description": "Sets the default tab displayed when opening radial radio.",
+      "syntax": "cl_radial_radio_tab <Tab Index>",
+      "category": "Radio"
+    },
+    {
+      "name": "cl_radial_radio_tap_to_ping",
+      "slug": "cl-radial-radio-tap-to-ping",
+      "description": "Enables pinging by tapping radial radio without selection.",
+      "syntax": "cl_radial_radio_tap_to_ping <0 / 1>",
+      "category": "Radio"
+    },
+    {
+      "name": "cl_radial_radio_version_reset",
+      "slug": "cl-radial-radio-version-reset",
+      "description": "Resets radial radio version to default value.",
+      "syntax": "cl_radial_radio_version_reset <Value>",
+      "category": "Radio"
+    },
+    {
+      "name": "cl_radialmenu_deadzone_size_joystick",
+      "slug": "cl-radialmenu-deadzone-size-joystick",
+      "description": "Adjusts radial menu deadzone for joystick precision.",
+      "syntax": "cl_radialmenu_deadzone_size_joystick <Size>",
+      "category": "Controller"
+    },
+    {
+      "name": "cl_ragdoll_limit",
+      "slug": "cl-ragdoll-limit",
+      "description": "Sets maximum visible ragdoll corpses (-1 removes limit).",
+      "syntax": "cl_ragdoll_limit <Amount>",
+      "category": "Server"
+    },
+    {
+      "name": "cl_rebuy",
+      "slug": "cl-rebuy",
+      "description": "Sets the order in which the game client rebuys your gear.",
+      "syntax": "cl_rebuy <Item Order>",
+      "category": "Bind"
+    },
+    {
+      "name": "cl_resend",
+      "slug": "cl-resend",
+      "description": "Sets client reconnection wait time after failed attempts.",
+      "syntax": "cl_resend <Wait Time>",
+      "category": "Network"
+    },
+    {
+      "name": "cl_sanitize_muted_players",
+      "slug": "cl-sanitize-muted-players",
+      "description": "Hide the names and avatars of muted players.",
+      "syntax": "cl_sanitize_muted_players <0 / 1>",
+      "category": "Chat",
+      "defaultValue": "0"
+    },
+    {
+      "name": "cl_sanitize_player_names",
+      "slug": "cl-sanitize-player-names",
+      "description": "Replaces player names with placeholders.",
+      "syntax": "cl_sanitize_player_names <0 / 1>",
+      "category": "HUD",
+      "defaultValue": "0"
+    },
+    {
+      "name": "cl_show_observer_crosshair",
+      "slug": "cl-show-observer-crosshair",
+      "description": "Displays observed player's crosshair.",
+      "syntax": "cl_show_observer_crosshair <0 / 1>",
+      "category": "HUD"
+    },
+    {
+      "name": "cl_showfps",
+      "slug": "cl-showfps",
+      "description": "Displays frames-per-second counter in top left corner.",
+      "syntax": "cl_showfps <0 / 1>",
+      "category": "HUD",
+      "defaultValue": "0"
+    },
+    {
+      "name": "cl_showmem",
+      "slug": "cl-showmem",
+      "description": "Shows approximate memory usage.",
+      "syntax": "cl_showmem <0 / 1>",
+      "category": "Server",
+      "defaultValue": "0"
+    },
+    {
+      "name": "cl_showpos",
+      "slug": "cl-showpos",
+      "description": "Displays player position coordinates and velocity.",
+      "syntax": "cl_showpos <0 / 1>",
+      "category": "Server",
+      "defaultValue": "0"
+    },
+    {
+      "name": "cl_silencer_mode",
+      "slug": "cl-silencer-mode",
+      "description": "Enables or disables silencers on compatible weapons.",
+      "syntax": "cl_silencer_mode <0 / 1>",
+      "category": "Server"
+    },
+    {
+      "name": "cl_sim_grenade_trajectory",
+      "slug": "cl-sim-grenade-trajectory",
+      "description": "Visualize the trajectory path a grenade will follow.",
+      "syntax": "cl_sim_grenade_trajectory <Duration>",
+      "category": "Server"
+    },
+    {
+      "name": "cl_sniper_delay_unscope",
+      "slug": "cl-sniper-delay-unscope",
+      "description": "Controls delay for sniper rifle unscoping after firing.",
+      "syntax": "cl_sniper_delay_unscope <0 / 1>",
+      "category": "Server"
+    },
+    {
+      "name": "cl_spec_stats",
+      "slug": "cl-spec-stats",
+      "description": "Shows or hides statistics while observing matches.",
+      "syntax": "cl_spec_stats <0 / 1>",
+      "category": "HUD"
+    },
+    {
+      "name": "cl_spec_swapplayersides",
+      "slug": "cl-spec-swapplayersides",
+      "description": "Swaps spectator player name positions.",
+      "syntax": "cl_spec_swapplayersides",
+      "category": "HUD"
+    },
+    {
+      "name": "cl_teamid_overhead_colors_show",
+      "slug": "cl-teamid-overhead-colors-show",
+      "description": "Shows teammate IDs in team colors.",
+      "syntax": "cl_teamid_overhead_colors_show <0 / 1>",
+      "category": "HUD"
+    },
+    {
+      "name": "cl_teamid_overhead_maxdist",
+      "slug": "cl-teamid-overhead-maxdist",
+      "description": "Sets max range for teammate icons.",
+      "syntax": "cl_teamid_overhead_maxdist <Distance>",
+      "category": "HUD"
+    },
+    {
+      "name": "cl_teamid_overhead_maxdist_spec",
+      "slug": "cl-teamid-overhead-maxdist-spec",
+      "description": "Sets spectator icon visibility range.",
+      "syntax": "cl_teamid_overhead_maxdist_spec <Distance>",
+      "category": "HUD"
+    },
+    {
+      "name": "cl_teamid_overhead_mode",
+      "slug": "cl-teamid-overhead-mode",
+      "description": "Controls teammate identifier display options.",
+      "syntax": "cl_teamid_overhead_mode <Mode>",
+      "category": "HUD"
+    },
+    {
+      "name": "cl_teammate_colors_show",
+      "slug": "cl-teammate-colors-show",
+      "description": "Enables different teammate colors.",
+      "syntax": "cl_teammate_colors_show <0 / 1>",
+      "category": "HUD",
+      "defaultValue": "1"
+    },
+    {
+      "name": "cl_timeout",
+      "slug": "cl-timeout",
+      "description": "Set client disconnect timeout duration.",
+      "syntax": "cl_timeout <Seconds>",
+      "category": "Server"
+    },
+    {
+      "name": "cl_usenewbob",
+      "slug": "cl-usenewbob",
+      "description": "Enables new weapon bobbing effect.",
+      "syntax": "cl_usenewbob <0 / 1>",
+      "category": "HUD"
+    },
+    {
+      "name": "cl_wallbang_heavy_threshold",
+      "slug": "cl-wallbang-heavy-threshold",
+      "description": "Sets threshold for wallbang tracer display.",
+      "syntax": "cl_wallbang_heavy_threshold <Value>",
+      "category": "Server"
+    },
+    {
+      "name": "clear",
+      "slug": "clear",
+      "description": "Clears all previous entries from the developer console.",
+      "syntax": "clear",
+      "category": "Server"
+    },
+    {
+      "name": "clearall",
+      "slug": "clearall",
+      "description": "Clear console output across all views.",
+      "syntax": "clearall",
+      "category": "Chat"
+    },
+    {
+      "name": "closecaption",
+      "slug": "closecaption",
+      "description": "Alters whether closed captions are available in game.",
+      "syntax": "closecaption <0 / 1>",
+      "category": "HUD",
+      "defaultValue": "0"
+    },
+    {
+      "name": "clutch_mode_toggle",
+      "slug": "clutch-mode-toggle",
+      "description": "Toggles clutch mode configuration.",
+      "syntax": "clutch_mode_toggle",
+      "category": "Bind"
+    },
+    {
+      "name": "connect",
+      "slug": "connect",
+      "description": "Join a server by IP address.",
+      "syntax": "connect <IP>",
+      "category": "Server"
+    },
+    {
+      "name": "connect_hltv",
+      "slug": "connect-hltv",
+      "description": "Connects to HLTV server for spectating broadcasts.",
+      "syntax": "connect_hltv <Server IP>",
+      "category": "Network"
+    },
+    {
+      "name": "crosshair",
+      "slug": "crosshair",
+      "description": "Toggle whether or not your crosshair is visible in game.",
+      "syntax": "crosshair <0 / 1>",
+      "category": "Crosshair",
+      "defaultValue": "1"
+    },
+    {
+      "name": "csgo_download_match",
+      "slug": "csgo-download-match",
+      "description": "Retrieves a match replay using its unique serial code.",
+      "syntax": "csgo_download_match <Match ID>",
+      "category": "Demo and Overwatch"
+    },
+    {
+      "name": "custom_bot_difficulty",
+      "slug": "custom-bot-difficulty",
+      "description": "Determines difficulty of custom bots (0-4).",
+      "syntax": "custom_bot_difficulty <Difficulty>",
+      "category": "Bot"
+    },
+    {
+      "name": "cv_bot_ai_bt_hiding_spot_show",
+      "slug": "cv-bot-ai-bt-hiding-spot-show",
+      "description": "Visualize the hiding spots for bots on map.",
+      "syntax": "cv_bot_ai_bt_hiding_spot_show <0 / 1>",
+      "category": "Bot",
+      "defaultValue": "0"
+    },
+    {
+      "name": "cv_bot_ai_bt_moveto_show_next_hiding_spot",
+      "slug": "cv-bot-ai-bt-moveto-show-next-hiding-spot",
+      "description": "Visualizes next hiding spot bots will check.",
+      "syntax": "cv_bot_ai_bt_moveto_show_next_hiding_spot <0 / 1>",
+      "category": "Bot",
+      "defaultValue": "0"
+    },
+    {
+      "name": "cvarlist",
+      "slug": "cvarlist",
+      "description": "Display console variables matching criteria.",
+      "syntax": "cvarlist <Command>",
+      "category": "Server"
+    },
+    {
+      "name": "default_fov",
+      "slug": "default-fov",
+      "description": "Sets field of view to any value; requires sv_cheats.",
+      "syntax": "default_fov <FOV>",
+      "category": "FOV and Viewmodel",
+      "defaultValue": "90"
+    },
+    {
+      "name": "demo_flush",
+      "slug": "demo-flush",
+      "description": "Forces immediate demo file writes.",
+      "syntax": "demo_flush <0 / 1>",
+      "category": "Demo and Overwatch"
+    },
+    {
+      "name": "demo_goto",
+      "slug": "demo-goto",
+      "description": "Navigates to tick with relative/pause options.",
+      "syntax": "demo_goto <Tick> <Relative> <Pause>",
+      "category": "Demo and Overwatch"
+    },
+    {
+      "name": "demo_gotomark",
+      "slug": "demo-gotomark",
+      "description": "Jumps to previously marked demo tick.",
+      "syntax": "demo_gotomark",
+      "category": "Demo and Overwatch"
+    },
+    {
+      "name": "demo_gototick",
+      "slug": "demo-gototick",
+      "description": "Advances demo playback to a specific tick number.",
+      "syntax": "demo_gototick <Tick>",
+      "category": "Demo and Overwatch"
+    },
+    {
+      "name": "demo_info",
+      "slug": "demo-info",
+      "description": "Outputs current demo information.",
+      "syntax": "demo_info",
+      "category": "Demo and Overwatch"
+    },
+    {
+      "name": "demo_marktick",
+      "slug": "demo-marktick",
+      "description": "Marks current playback position.",
+      "syntax": "demo_marktick",
+      "category": "Demo and Overwatch"
+    },
+    {
+      "name": "demo_pause",
+      "slug": "demo-pause",
+      "description": "Pauses current demo playback.",
+      "syntax": "demo_pause",
+      "category": "Demo and Overwatch"
+    },
+    {
+      "name": "demo_quitafterplayback",
+      "slug": "demo-quitafterplayback",
+      "description": "Auto-closes game after demo ends.",
+      "syntax": "demo_quitafterplayback <0 / 1>",
+      "category": "Demo and Overwatch",
+      "defaultValue": "0"
+    },
+    {
+      "name": "demo_recordcommands",
+      "slug": "demo-recordcommands",
+      "description": "Records console commands into demo files.",
+      "syntax": "demo_recordcommands <0 / 1>",
+      "category": "Demo and Overwatch"
+    },
+    {
+      "name": "demo_resume",
+      "slug": "demo-resume",
+      "description": "Resumes paused demo playback.",
+      "syntax": "demo_resume",
+      "category": "Demo and Overwatch"
+    },
+    {
+      "name": "demo_timescale",
+      "slug": "demo-timescale",
+      "description": "Adjusts demo playback speed multiplier.",
+      "syntax": "demo_timescale <Playback Speed>",
+      "category": "Demo and Overwatch",
+      "defaultValue": "1"
+    },
+    {
+      "name": "demo_togglepause",
+      "slug": "demo-togglepause",
+      "description": "Toggles between pause and play states.",
+      "syntax": "demo_togglepause",
+      "category": "Demo and Overwatch"
+    },
+    {
+      "name": "demolist",
+      "slug": "demolist",
+      "description": "Lists demo sequences in console.",
+      "syntax": "demolist",
+      "category": "Demo and Overwatch"
+    },
+    {
+      "name": "demoui",
+      "slug": "demoui",
+      "description": "Shows/hides the demo player interface.",
+      "syntax": "demoui",
+      "category": "Demo and Overwatch"
+    },
+    {
+      "name": "differences",
+      "slug": "differences",
+      "description": "Print a list of all convars not set to default value.",
+      "syntax": "differences",
+      "category": "Server"
+    },
+    {
+      "name": "disconnect",
+      "slug": "disconnect",
+      "description": "Leave current game session.",
+      "syntax": "disconnect",
+      "category": "Server"
+    },
+    {
+      "name": "dm_togglerandomweapons",
+      "slug": "dm-togglerandomweapons",
+      "description": "Toggle random weapon spawns in deathmatch mode.",
+      "syntax": "dm_togglerandomweapons",
+      "category": "Multiplayer and Game Settings"
+    },
+    {
+      "name": "echo",
+      "slug": "echo",
+      "description": "Print a specified message to the console.",
+      "syntax": "echo <Text>",
+      "category": "Server"
+    },
+    {
+      "name": "endround",
+      "slug": "endround",
+      "description": "Terminates the current round immediately.",
+      "syntax": "endround",
+      "category": "Multiplayer and Game Settings"
+    },
+    {
+      "name": "ent_kill",
+      "slug": "ent-kill",
+      "description": "Instantly kill specific entities (players, bots, etc.).",
+      "syntax": "ent_kill <Entity ID>",
+      "category": "Bot"
+    },
+    {
+      "name": "exec_async",
+      "slug": "exec-async",
+      "description": "Execute config file.",
+      "syntax": "exec_async <File Name>",
+      "category": "Server"
+    },
+    {
+      "name": "fadein",
+      "slug": "fadein",
+      "description": "Fades screen in with optional color.",
+      "syntax": "fadein <Duration> <R G B>",
+      "category": "HUD"
+    },
+    {
+      "name": "fadeout",
+      "slug": "fadeout",
+      "description": "Fades screen out with optional color.",
+      "syntax": "fadeout <Duration> <R G B>",
+      "category": "HUD"
+    },
+    {
+      "name": "ff_damage_bullet_penetration",
+      "slug": "ff-damage-bullet-penetration",
+      "description": "Sets multiplier for friendly fire bullet penetration.",
+      "syntax": "ff_damage_bullet_penetration <Value>",
+      "category": "Multiplayer and Game Settings"
+    },
+    {
+      "name": "ff_damage_reduction_bullets",
+      "slug": "ff-damage-reduction-bullets",
+      "description": "Adjusts teammate bullet damage multiplier.",
+      "syntax": "ff_damage_reduction_bullets <Multiplier>",
+      "category": "Multiplayer and Game Settings",
+      "defaultValue": "0.33"
+    },
+    {
+      "name": "ff_damage_reduction_grenade",
+      "slug": "ff-damage-reduction-grenade",
+      "description": "Controls teammate grenade damage multiplier.",
+      "syntax": "ff_damage_reduction_grenade <Multiplier>",
+      "category": "Multiplayer and Game Settings",
+      "defaultValue": "0.85"
+    },
+    {
+      "name": "ff_damage_reduction_grenade_self",
+      "slug": "ff-damage-reduction-grenade-self",
+      "description": "Self-inflicted grenade damage multiplier.",
+      "syntax": "ff_damage_reduction_grenade_self <Multiplier>",
+      "category": "Multiplayer and Game Settings",
+      "defaultValue": "1"
+    },
+    {
+      "name": "ff_damage_reduction_other",
+      "slug": "ff-damage-reduction-other",
+      "description": "Non-bullet/grenade friendly damage multiplier.",
+      "syntax": "ff_damage_reduction_other <Multiplier>",
+      "category": "Multiplayer and Game Settings",
+      "defaultValue": "0.4"
+    },
+    {
+      "name": "firstperson",
+      "slug": "firstperson",
+      "description": "Enables first person mode.",
+      "syntax": "firstperson",
+      "category": "Camera"
+    },
+    {
+      "name": "fog_color",
+      "slug": "fog-color",
+      "description": "Sets fog coloring via RGB values.",
+      "syntax": "fog_color <R> <G> <B>",
+      "category": "Fog"
+    },
+    {
+      "name": "fog_colorskybox",
+      "slug": "fog-colorskybox",
+      "description": "Configures skybox fog coloration using RGB.",
+      "syntax": "fog_colorskybox <R> <G> <B>",
+      "category": "Fog"
+    },
+    {
+      "name": "fog_enable",
+      "slug": "fog-enable",
+      "description": "Toggles fog rendering on or off.",
+      "syntax": "fog_enable <0 / 1>",
+      "category": "Fog",
+      "defaultValue": "1"
+    },
+    {
+      "name": "fog_enableskybox",
+      "slug": "fog-enableskybox",
+      "description": "Controls whether fog affects the skybox.",
+      "syntax": "fog_enableskybox <0 / 1>",
+      "category": "Fog",
+      "defaultValue": "1"
+    },
+    {
+      "name": "fog_end",
+      "slug": "fog-end",
+      "description": "Sets maximum fog rendering distance.",
+      "syntax": "fog_end <Distance>",
+      "category": "Fog"
+    },
+    {
+      "name": "fog_endskybox",
+      "slug": "fog-endskybox",
+      "description": "Determines skybox fog visibility range.",
+      "syntax": "fog_endskybox <Distance>",
+      "category": "Fog"
+    },
+    {
+      "name": "fog_hdrcolorscale",
+      "slug": "fog-hdrcolorscale",
+      "description": "Adjusts fog HDR color intensity (0-1).",
+      "syntax": "fog_hdrcolorscale <Scale>",
+      "category": "Fog"
+    },
+    {
+      "name": "fog_hdrcolorscaleskybox",
+      "slug": "fog-hdrcolorscaleskybox",
+      "description": "Modifies skybox fog HDR scaling.",
+      "syntax": "fog_hdrcolorscaleskybox <Scale>",
+      "category": "Fog"
+    },
+    {
+      "name": "fog_maxdensity",
+      "slug": "fog-maxdensity",
+      "description": "Controls fog opacity (0-1 range).",
+      "syntax": "fog_maxdensity <Density>",
+      "category": "Fog"
+    },
+    {
+      "name": "fog_maxdensityskybox",
+      "slug": "fog-maxdensityskybox",
+      "description": "Sets skybox fog maximum opacity.",
+      "syntax": "fog_maxdensityskybox <Density>",
+      "category": "Fog"
+    },
+    {
+      "name": "fog_override",
+      "slug": "fog-override",
+      "description": "Toggles map fog setting override.",
+      "syntax": "fog_override <0 / 1>",
+      "category": "Fog",
+      "defaultValue": "0"
+    },
+    {
+      "name": "fog_override_color",
+      "slug": "fog-override-color",
+      "description": "Applies custom fog color override.",
+      "syntax": "fog_override_color <R> <G> <B>",
+      "category": "Fog"
+    },
+    {
+      "name": "fog_override_enable",
+      "slug": "fog-override-enable",
+      "description": "Activates fog override feature.",
+      "syntax": "fog_override_enable <0 / 1>",
+      "category": "Fog",
+      "defaultValue": "0"
+    },
+    {
+      "name": "fog_override_end",
+      "slug": "fog-override-end",
+      "description": "Sets fog override opacity distance.",
+      "syntax": "fog_override_end <End Distance>",
+      "category": "Fog"
+    },
+    {
+      "name": "fog_override_exponent",
+      "slug": "fog-override-exponent",
+      "description": "Adjusts fog intensity and brightness.",
+      "syntax": "fog_override_exponent <Exponent>",
+      "category": "Fog"
+    },
+    {
+      "name": "fog_override_max_density",
+      "slug": "fog-override-max-density",
+      "description": "Controls override fog opacity level.",
+      "syntax": "fog_override_max_density <Density>",
+      "category": "Fog"
+    },
+    {
+      "name": "fog_override_start",
+      "slug": "fog-override-start",
+      "description": "Sets fog override visibility start point.",
+      "syntax": "fog_override_start <Distance>",
+      "category": "Fog"
+    },
+    {
+      "name": "fog_start",
+      "slug": "fog-start",
+      "description": "Sets fog rendering start distance.",
+      "syntax": "fog_start <Distance>",
+      "category": "Fog"
+    },
+    {
+      "name": "fog_startskybox",
+      "slug": "fog-startskybox",
+      "description": "Defines skybox fog start point.",
+      "syntax": "fog_startskybox <Distance>",
+      "category": "Fog"
+    },
+    {
+      "name": "fov_cs_debug",
+      "slug": "fov-cs-debug",
+      "description": "Adjusts camera field of view with sv_cheats, allowing unlimited FOV values.",
+      "syntax": "fov_cs_debug <FOV>",
+      "category": "FOV and Viewmodel"
+    },
+    {
+      "name": "fov_desired",
+      "slug": "fov-desired",
+      "description": "Sets the base field-of-view value.",
+      "syntax": "fov_desired <FOV>",
+      "category": "FOV and Viewmodel"
+    },
+    {
+      "name": "fps_max",
+      "slug": "fps-max",
+      "description": "Limits frames-per-second rendering.",
+      "syntax": "fps_max <FPS>",
+      "category": "Server",
+      "defaultValue": "0"
+    },
+    {
+      "name": "game_mode",
+      "slug": "game-mode",
+      "description": "Specifies game mode when used with game_type.",
+      "syntax": "game_mode <Game Mode>",
+      "category": "Multiplayer and Game Settings",
+      "defaultValue": "0"
+    },
+    {
+      "name": "game_type",
+      "slug": "game-type",
+      "description": "Sets game type for server gameplay.",
+      "syntax": "game_type <Game Type>",
+      "category": "Multiplayer and Game Settings",
+      "defaultValue": "0"
+    },
+    {
+      "name": "gameinstructor_enable",
+      "slug": "gameinstructor-enable",
+      "description": "Toggles in-game instructor feature.",
+      "syntax": "gameinstructor_enable <0 / 1>",
+      "category": "HUD"
+    },
+    {
+      "name": "gameui_hide",
+      "slug": "gameui-hide",
+      "description": "Closes pause menu.",
+      "syntax": "gameui_hide",
+      "category": "HUD"
+    },
+    {
+      "name": "give",
+      "slug": "give",
+      "description": "Spawns specified weapon or item.",
+      "syntax": "give <Weapon Code>",
+      "category": "Multiplayer and Game Settings"
+    },
+    {
+      "name": "givecurrentammo",
+      "slug": "givecurrentammo",
+      "description": "Restocks ammunition to maximum.",
+      "syntax": "givecurrentammo",
+      "category": "Multiplayer and Game Settings"
+    },
+    {
+      "name": "hideconsole",
+      "slug": "hideconsole",
+      "description": "Hides developer console.",
+      "syntax": "hideconsole",
+      "category": "HUD"
+    },
+    {
+      "name": "hidehud",
+      "slug": "hidehud",
+      "description": "Shows or hides HUD elements.",
+      "syntax": "hidehud <0 / -1>",
+      "category": "HUD"
+    },
+    {
+      "name": "host_framerate",
+      "slug": "host-framerate",
+      "description": "Adjust server frame rate speed.",
+      "syntax": "host_framerate <Framerate>",
+      "category": "Server"
+    },
+    {
+      "name": "host_timescale",
+      "slug": "host-timescale",
+      "description": "Speed up or slow down server time.",
+      "syntax": "host_timescale <Multiplier>",
+      "category": "Server",
+      "defaultValue": "1"
+    },
+    {
+      "name": "host_writeconfig",
+      "slug": "host-writeconfig",
+      "description": "Save server settings to config file.",
+      "syntax": "host_writeconfig <Config File>",
+      "category": "Server"
+    },
+    {
+      "name": "hostname",
+      "slug": "hostname",
+      "description": "Set server display name.",
+      "syntax": "hostname <Hostname>",
+      "category": "Server"
+    },
+    {
+      "name": "hostport",
+      "slug": "hostport",
+      "description": "Configure server port number.",
+      "syntax": "hostport <Port>",
+      "category": "Server",
+      "defaultValue": "27015"
+    },
+    {
+      "name": "hud_fastswitch",
+      "slug": "hud-fastswitch",
+      "description": "Enables fast weapon switching.",
+      "syntax": "hud_fastswitch <0 / 1>",
+      "category": "HUD",
+      "defaultValue": "0"
+    },
+    {
+      "name": "hud_scaling",
+      "slug": "hud-scaling",
+      "description": "Scales overall HUD size.",
+      "syntax": "hud_scaling <0.5-0.95>",
+      "category": "HUD",
+      "defaultValue": "0.85"
+    },
+    {
+      "name": "hud_showtargetid",
+      "slug": "hud-showtargetid",
+      "description": "Shows or hides enemy name text overlay.",
+      "syntax": "hud_showtargetid <0 / 1>",
+      "category": "HUD",
+      "defaultValue": "1"
+    },
+    {
+      "name": "hurtme",
+      "slug": "hurtme",
+      "description": "Hurts your character with specified damage amount.",
+      "syntax": "hurtme <Damage>",
+      "category": "Multiplayer and Game Settings"
+    },
+    {
+      "name": "inferno_damage",
+      "slug": "inferno-damage",
+      "description": "Modifies molotov/incendiary damage per second.",
+      "syntax": "inferno_damage <DPS>",
+      "category": "Multiplayer and Game Settings",
+      "defaultValue": "40"
+    },
+    {
+      "name": "inferno_flame_lifetime",
+      "slug": "inferno-flame-lifetime",
+      "description": "Adjusts fire grenade burn duration.",
+      "syntax": "inferno_flame_lifetime <Seconds>",
+      "category": "Multiplayer and Game Settings",
+      "defaultValue": "7"
+    },
+    {
+      "name": "inferno_max_range",
+      "slug": "inferno-max-range",
+      "description": "Maximum spread distance for fire grenades.",
+      "syntax": "inferno_max_range <Range>",
+      "category": "Multiplayer and Game Settings",
+      "defaultValue": "150"
+    },
+    {
+      "name": "input_filter_relative_analog_inputs",
+      "slug": "input-filter-relative-analog-inputs",
+      "description": "Filters analog inputs for enhanced precision.",
+      "syntax": "input_filter_relative_analog_inputs <0 / 1>",
+      "category": "Controller"
+    },
+    {
+      "name": "input_forceuser",
+      "slug": "input-forceuser",
+      "description": "Forces user input to a specified split screen player.",
+      "syntax": "input_forceuser <Player Index>",
+      "category": "Input"
+    },
+    {
+      "name": "invnext",
+      "slug": "invnext",
+      "description": "Cycles to next inventory item.",
+      "syntax": "invnext",
+      "category": "Bind"
+    },
+    {
+      "name": "invnextselect",
+      "slug": "invnextselect",
+      "description": "Cycles to next inventory item and selects it.",
+      "syntax": "invnextselect",
+      "category": "Bind"
+    },
+    {
+      "name": "invprev",
+      "slug": "invprev",
+      "description": "Cycles to previous inventory item.",
+      "syntax": "invprev",
+      "category": "Bind"
+    },
+    {
+      "name": "invprevselect",
+      "slug": "invprevselect",
+      "description": "Selects previously highlighted inventory item.",
+      "syntax": "invprevselect",
+      "category": "Bind"
+    },
+    {
+      "name": "ip",
+      "slug": "ip",
+      "description": "Override multi-host IP settings.",
+      "syntax": "ip",
+      "category": "Server"
+    },
+    {
+      "name": "joy_advanced",
+      "slug": "joy-advanced",
+      "description": "Advanced joystick configuration.",
+      "syntax": "joy_advanced",
+      "category": "Controller"
+    },
+    {
+      "name": "joy_advaxisr",
+      "slug": "joy-advaxisr",
+      "description": "Advanced right axis settings.",
+      "syntax": "joy_advaxisr",
+      "category": "Controller"
+    },
+    {
+      "name": "joy_advaxisu",
+      "slug": "joy-advaxisu",
+      "description": "Advanced U-axis settings.",
+      "syntax": "joy_advaxisu",
+      "category": "Controller"
+    },
+    {
+      "name": "joy_advaxisv",
+      "slug": "joy-advaxisv",
+      "description": "Advanced V-axis settings.",
+      "syntax": "joy_advaxisv",
+      "category": "Controller"
+    },
+    {
+      "name": "joy_advaxisx",
+      "slug": "joy-advaxisx",
+      "description": "Advanced X-axis settings.",
+      "syntax": "joy_advaxisx",
+      "category": "Controller"
+    },
+    {
+      "name": "joy_advaxisy",
+      "slug": "joy-advaxisy",
+      "description": "Advanced Y-axis settings.",
+      "syntax": "joy_advaxisy",
+      "category": "Controller"
+    },
+    {
+      "name": "joy_advaxisz",
+      "slug": "joy-advaxisz",
+      "description": "Advanced Z-axis settings.",
+      "syntax": "joy_advaxisz",
+      "category": "Controller"
+    },
+    {
+      "name": "joy_axisbutton_threshold",
+      "slug": "joy-axisbutton-threshold",
+      "description": "Controls analog stick range for button registration.",
+      "syntax": "joy_axisbutton_threshold <Range>",
+      "category": "Controller"
+    },
+    {
+      "name": "joy_axisr_deadzone",
+      "slug": "joy-axisr-deadzone",
+      "description": "Sets right stick deadzone threshold.",
+      "syntax": "joy_axisr_deadzone <Value>",
+      "category": "Controller"
+    },
+    {
+      "name": "joy_axisr_relative",
+      "slug": "joy-axisr-relative",
+      "description": "Toggles right axis relative input mode.",
+      "syntax": "joy_axisr_relative <0 / 1>",
+      "category": "Controller"
+    },
+    {
+      "name": "joy_axisu_deadzone",
+      "slug": "joy-axisu-deadzone",
+      "description": "Sets U-axis deadzone threshold.",
+      "syntax": "joy_axisu_deadzone <Value>",
+      "category": "Controller"
+    },
+    {
+      "name": "joy_axisu_relative",
+      "slug": "joy-axisu-relative",
+      "description": "Toggles U-axis relative input mode.",
+      "syntax": "joy_axisu_relative <0 / 1>",
+      "category": "Controller"
+    },
+    {
+      "name": "joy_axisv_deadzone",
+      "slug": "joy-axisv-deadzone",
+      "description": "Sets vertical axis deadzone threshold.",
+      "syntax": "joy_axisv_deadzone <Value>",
+      "category": "Controller"
+    },
+    {
+      "name": "joy_axisv_relative",
+      "slug": "joy-axisv-relative",
+      "description": "Toggles vertical axis relative input mode.",
+      "syntax": "joy_axisv_relative <0 / 1>",
+      "category": "Controller"
+    },
+    {
+      "name": "joy_axisx_deadzone",
+      "slug": "joy-axisx-deadzone",
+      "description": "Sets X-axis deadzone minimum movement.",
+      "syntax": "joy_axisx_deadzone <Value>",
+      "category": "Controller"
+    },
+    {
+      "name": "joy_axisx_relative",
+      "slug": "joy-axisx-relative",
+      "description": "Toggles X-axis relative input mode.",
+      "syntax": "joy_axisx_relative <0 / 1>",
+      "category": "Controller"
+    },
+    {
+      "name": "joy_axisy_deadzone",
+      "slug": "joy-axisy-deadzone",
+      "description": "Sets Y-axis deadzone threshold.",
+      "syntax": "joy_axisy_deadzone <Value>",
+      "category": "Controller"
+    },
+    {
+      "name": "joy_axisy_relative",
+      "slug": "joy-axisy-relative",
+      "description": "Toggles Y-axis relative input mode.",
+      "syntax": "joy_axisy_relative <0 / 1>",
+      "category": "Controller"
+    },
+    {
+      "name": "joy_axisz_deadzone",
+      "slug": "joy-axisz-deadzone",
+      "description": "Sets Z-axis deadzone threshold.",
+      "syntax": "joy_axisz_deadzone <Value>",
+      "category": "Controller"
+    },
+    {
+      "name": "joy_axisz_relative",
+      "slug": "joy-axisz-relative",
+      "description": "Toggles Z-axis relative input mode.",
+      "syntax": "joy_axisz_relative <0 / 1>",
+      "category": "Controller"
+    },
+    {
+      "name": "joy_circle_correct_mode",
+      "slug": "joy-circle-correct-mode",
+      "description": "Enables joystick circle correction.",
+      "syntax": "joy_circle_correct_mode <0 / 1>",
+      "category": "Controller"
+    },
+    {
+      "name": "joy_circle_correct_mode_vehicle",
+      "slug": "joy-circle-correct-mode-vehicle",
+      "description": "Sets vehicle circle correction mode.",
+      "syntax": "joy_circle_correct_mode_vehicle <0 / 1 / 2>",
+      "category": "Controller"
+    },
+    {
+      "name": "joy_display_input",
+      "slug": "joy-display-input",
+      "description": "Toggles joystick input display on screen.",
+      "syntax": "joy_display_input <0 / 1>",
+      "category": "Controller",
+      "defaultValue": "0"
+    },
+    {
+      "name": "joy_forward_sensitivity",
+      "slug": "joy-forward-sensitivity",
+      "description": "Adjusts forward movement sensitivity.",
+      "syntax": "joy_forward_sensitivity <Sensitivity>",
+      "category": "Controller"
+    },
+    {
+      "name": "joy_movement_stick",
+      "slug": "joy-movement-stick",
+      "description": "Assigns which stick controls player movement.",
+      "syntax": "joy_movement_stick <0 / 1 / 2>",
+      "category": "Controller",
+      "defaultValue": "0"
+    },
+    {
+      "name": "joy_name",
+      "slug": "joy-name",
+      "description": "Sets internal joystick device name.",
+      "syntax": "joy_name <Name>",
+      "category": "Controller"
+    },
+    {
+      "name": "joy_pitch_sensitivity",
+      "slug": "joy-pitch-sensitivity",
+      "description": "Adjusts pitch movement sensitivity.",
+      "syntax": "joy_pitch_sensitivity <Sensitivity>",
+      "category": "Controller"
+    },
+    {
+      "name": "joy_pitchsensitivity",
+      "slug": "joy-pitchsensitivity",
+      "description": "Adjusts vertical camera movement sensitivity.",
+      "syntax": "joy_pitchsensitivity <Sensitivity>",
+      "category": "Controller"
+    },
+    {
+      "name": "joy_response_look",
+      "slug": "joy-response-look",
+      "description": "Configures look stick response mode.",
+      "syntax": "joy_response_look <0 / 1>",
+      "category": "Controller"
+    },
+    {
+      "name": "joy_response_move",
+      "slug": "joy-response-move",
+      "description": "Sets movement stick response behavior.",
+      "syntax": "joy_response_move <0-5>",
+      "category": "Controller"
+    },
+    {
+      "name": "joy_side_sensitivity",
+      "slug": "joy-side-sensitivity",
+      "description": "Adjusts lateral movement sensitivity.",
+      "syntax": "joy_side_sensitivity <Value>",
+      "category": "Controller"
+    },
+    {
+      "name": "joy_sidesensitivity",
+      "slug": "joy-sidesensitivity",
+      "description": "Controls sideways camera movement sensitivity.",
+      "syntax": "joy_sidesensitivity <Sensitivity>",
+      "category": "Controller"
+    },
+    {
+      "name": "joy_wingmanwarrior_turnhack",
+      "slug": "joy-wingmanwarrior-turnhack",
+      "description": "Enables Wingman Warrior turning axis hack.",
+      "syntax": "joy_wingmanwarrior_turnhack <0 / 1>",
+      "category": "Controller"
+    },
+    {
+      "name": "joy_yaw_sensitivity",
+      "slug": "joy-yaw-sensitivity",
+      "description": "Adjusts yaw turning sensitivity.",
+      "syntax": "joy_yaw_sensitivity <Sensitivity>",
+      "category": "Controller"
+    },
+    {
+      "name": "joy_yawsensitivity",
+      "slug": "joy-yawsensitivity",
+      "description": "Adjusts horizontal camera turning speed.",
+      "syntax": "joy_yawsensitivity <Sensitivity>",
+      "category": "Controller"
+    },
+    {
+      "name": "joystick",
+      "slug": "joystick",
+      "description": "Enables or disables joystick input.",
+      "syntax": "joystick <0 / 1>",
+      "category": "Controller",
+      "defaultValue": "0"
+    },
+    {
+      "name": "key_findbinding",
+      "slug": "key-findbinding",
+      "description": "Lists what actions bind to specified key.",
+      "syntax": "key_findbinding <Key>",
+      "category": "Bind"
+    },
+    {
+      "name": "key_listboundkeys",
+      "slug": "key-listboundkeys",
+      "description": "Displays all keys with bound actions.",
+      "syntax": "key_listboundkeys",
+      "category": "Bind"
+    },
+    {
+      "name": "kick",
+      "slug": "kick",
+      "description": "Kicks or votes to kick a specified player.",
+      "syntax": "kick <Username>",
+      "category": "Server"
+    },
+    {
+      "name": "kill",
+      "slug": "kill",
+      "description": "Instantly kills your character.",
+      "syntax": "kill",
+      "category": "Server"
+    },
+    {
+      "name": "listdemo",
+      "slug": "listdemo",
+      "description": "Displays demo file contents.",
+      "syntax": "listdemo",
+      "category": "Demo and Overwatch"
+    },
+    {
+      "name": "listissues",
+      "slug": "listissues",
+      "description": "Produces a list of things you can vote for.",
+      "syntax": "listissues",
+      "category": "Server"
+    },
+    {
+      "name": "lobby_default_privacy_bits2",
+      "slug": "lobby-default-privacy-bits2",
+      "description": "Sets default privacy permissions for lobbies.",
+      "syntax": "lobby_default_privacy_bits2 <0 / 1>",
+      "category": "Server"
+    },
+    {
+      "name": "m_pitch",
+      "slug": "m-pitch",
+      "description": "Adjusts sensitivity on the Y axis (up/down looking).",
+      "syntax": "m_pitch <Y Sensitivity>",
+      "category": "Mouse",
+      "defaultValue": "0.022"
+    },
+    {
+      "name": "m_yaw",
+      "slug": "m-yaw",
+      "description": "Adjusts sensitivity on the X axis (left/right looking).",
+      "syntax": "m_yaw <X Sensitivity>",
+      "category": "Mouse",
+      "defaultValue": "0.022"
+    },
+    {
+      "name": "map",
+      "slug": "map",
+      "description": "Instantly changes current map.",
+      "syntax": "map <Map Code>",
+      "category": "Multiplayer and Game Settings"
+    },
+    {
+      "name": "map_workshop",
+      "slug": "map-workshop",
+      "description": "Loads custom Steam Workshop maps by ID.",
+      "syntax": "map_workshop <Workshop ID>",
+      "category": "Server"
+    },
+    {
+      "name": "mapgroup",
+      "slug": "mapgroup",
+      "description": "Configures server map cycling group.",
+      "syntax": "mapgroup <Map Group>",
+      "category": "Server"
+    },
+    {
+      "name": "mapoverview_icon_scale",
+      "slug": "mapoverview-icon-scale",
+      "description": "Scales overview map icons.",
+      "syntax": "mapoverview_icon_scale <Multiplier>",
+      "category": "HUD"
+    },
+    {
+      "name": "maps",
+      "slug": "maps",
+      "description": "Lists all installed maps.",
+      "syntax": "maps",
+      "category": "Server"
+    },
+    {
+      "name": "mm_dedicated_search_maxping",
+      "slug": "mm-dedicated-search-maxping",
+      "description": "Establishes maximum server ping for matchmaking.",
+      "syntax": "mm_dedicated_search_maxping <Max Ping>",
+      "category": "Network",
+      "defaultValue": "150"
+    },
+    {
+      "name": "mouse_inverty",
+      "slug": "mouse-inverty",
+      "description": "Inverts Y-axis mouse movement.",
+      "syntax": "mouse_inverty <0 / 1>",
+      "category": "Mouse",
+      "defaultValue": "0"
+    },
+    {
+      "name": "mp_afterroundmoney",
+      "slug": "mp-afterroundmoney",
+      "description": "Awards money to all players after each round.",
+      "syntax": "mp_afterroundmoney <Amount>",
+      "category": "Multiplayer and Game Settings",
+      "defaultValue": "0"
+    },
+    {
+      "name": "mp_autokick",
+      "slug": "mp-autokick",
+      "description": "Enables/disables auto-kick for AFK and team damage.",
+      "syntax": "mp_autokick <0 / 1>",
+      "category": "Multiplayer and Game Settings",
+      "defaultValue": "1"
+    },
+    {
+      "name": "mp_autoteambalance",
+      "slug": "mp-autoteambalance",
+      "description": "Automatic team balancing at round end.",
+      "syntax": "mp_autoteambalance <0 / 1>",
+      "category": "Multiplayer and Game Settings",
+      "defaultValue": "1"
+    },
+    {
+      "name": "mp_bot_ai_bt",
+      "slug": "mp-bot-ai-bt",
+      "description": "Set a behavior tree file that drives bot behavior.",
+      "syntax": "mp_bot_ai_bt <Behavior Tree File>",
+      "category": "Bot"
+    },
+    {
+      "name": "mp_bot_ai_bt_clear_cache",
+      "slug": "mp-bot-ai-bt-clear-cache",
+      "description": "Clears behavior tree file cache.",
+      "syntax": "mp_bot_ai_bt_clear_cache",
+      "category": "Bot"
+    },
+    {
+      "name": "mp_buy_allow_grenades",
+      "slug": "mp-buy-allow-grenades",
+      "description": "Permits grenade purchases from buy menu.",
+      "syntax": "mp_buy_allow_grenades <0 / 1>",
+      "category": "Multiplayer and Game Settings",
+      "defaultValue": "1"
+    },
+    {
+      "name": "mp_buy_allow_guns",
+      "slug": "mp-buy-allow-guns",
+      "description": "Controls which weapons players can purchase.",
+      "syntax": "mp_buy_allow_guns <1 / 2 / 4 / 8 / 16 / 32 / 255>",
+      "category": "Multiplayer and Game Settings",
+      "defaultValue": "255"
+    },
+    {
+      "name": "mp_buy_anywhere",
+      "slug": "mp-buy-anywhere",
+      "description": "Allows purchasing outside designated buy zones.",
+      "syntax": "mp_buy_anywhere <0 / 1 / 2 / 3>",
+      "category": "Multiplayer and Game Settings",
+      "defaultValue": "0"
+    },
+    {
+      "name": "mp_buy_during_immunity",
+      "slug": "mp-buy-during-immunity",
+      "description": "Permits buying during spawn immunity period.",
+      "syntax": "mp_buy_during_immunity <0 / 1 / 2 / 3>",
+      "category": "Multiplayer and Game Settings",
+      "defaultValue": "0"
+    },
+    {
+      "name": "mp_buytime",
+      "slug": "mp-buytime",
+      "description": "Duration players have to purchase after round starts.",
+      "syntax": "mp_buytime <Seconds>",
+      "category": "Multiplayer and Game Settings",
+      "defaultValue": "20"
+    },
+    {
+      "name": "mp_c4timer",
+      "slug": "mp-c4timer",
+      "description": "Time until C4 detonation after planting.",
+      "syntax": "mp_c4timer <Seconds>",
+      "category": "Multiplayer and Game Settings",
+      "defaultValue": "40"
+    },
+    {
+      "name": "mp_consecutive_loss_aversion",
+      "slug": "mp-consecutive-loss-aversion",
+      "description": "Reset loss streak on win.",
+      "syntax": "mp_consecutive_loss_aversion <0 / 1>",
+      "category": "Multiplayer and Game Settings"
+    },
+    {
+      "name": "mp_coopmission_bot_difficulty_offset",
+      "slug": "mp-coopmission-bot-difficulty-offset",
+      "description": "Sets difficulty offset for coop missions.",
+      "syntax": "mp_coopmission_bot_difficulty_offset <Offset>",
+      "category": "Bot"
+    },
+    {
+      "name": "mp_ct_default_grenades",
+      "slug": "mp-ct-default-grenades",
+      "description": "Assigns default grenades for CT spawn.",
+      "syntax": "mp_ct_default_grenades <Grenade Codes>",
+      "category": "Multiplayer and Game Settings"
+    },
+    {
+      "name": "mp_ct_default_melee",
+      "slug": "mp-ct-default-melee",
+      "description": "Specifies default CT melee weapon.",
+      "syntax": "mp_ct_default_melee <Weapon Code>",
+      "category": "Multiplayer and Game Settings"
+    },
+    {
+      "name": "mp_ct_default_primary",
+      "slug": "mp-ct-default-primary",
+      "description": "Designates default CT primary weapon.",
+      "syntax": "mp_ct_default_primary <Weapon Code>",
+      "category": "Multiplayer and Game Settings"
+    },
+    {
+      "name": "mp_ct_default_secondary",
+      "slug": "mp-ct-default-secondary",
+      "description": "Establishes default CT secondary weapon.",
+      "syntax": "mp_ct_default_secondary <Weapon Code>",
+      "category": "Multiplayer and Game Settings"
+    },
+    {
+      "name": "mp_death_drop_c4",
+      "slug": "mp-death-drop-c4",
+      "description": "Determines if bomb drops on death.",
+      "syntax": "mp_death_drop_c4 <0 / 1>",
+      "category": "Multiplayer and Game Settings",
+      "defaultValue": "1"
+    },
+    {
+      "name": "mp_death_drop_defuser",
+      "slug": "mp-death-drop-defuser",
+      "description": "Controls defuser kit drops upon death.",
+      "syntax": "mp_death_drop_defuser <0 / 1>",
+      "category": "Multiplayer and Game Settings",
+      "defaultValue": "1"
+    },
+    {
+      "name": "mp_death_drop_grenade",
+      "slug": "mp-death-drop-grenade",
+      "description": "Specifies grenade drop behavior on death.",
+      "syntax": "mp_death_drop_grenade <0 / 1 / 2>",
+      "category": "Multiplayer and Game Settings",
+      "defaultValue": "1"
+    },
+    {
+      "name": "mp_death_drop_gun",
+      "slug": "mp-death-drop-gun",
+      "description": "Determines gun drop behavior on death.",
+      "syntax": "mp_death_drop_gun <0 / 1 / 2>",
+      "category": "Multiplayer and Game Settings",
+      "defaultValue": "1"
+    },
+    {
+      "name": "mp_deathcam_skippable",
+      "slug": "mp-deathcam-skippable",
+      "description": "Allows skipping death camera replay.",
+      "syntax": "mp_deathcam_skippable <0 / 1>",
+      "category": "Multiplayer and Game Settings",
+      "defaultValue": "1"
+    },
+    {
+      "name": "mp_defuser_allocation",
+      "slug": "mp-defuser-allocation",
+      "description": "Distributes free defuser kits at round start.",
+      "syntax": "mp_defuser_allocation <0 / 1 / 2>",
+      "category": "Multiplayer and Game Settings",
+      "defaultValue": "0"
+    },
+    {
+      "name": "mp_drop_knife_enable",
+      "slug": "mp-drop-knife-enable",
+      "description": "Allows players to drop knives.",
+      "syntax": "mp_drop_knife_enable <0 / 1>",
+      "category": "Multiplayer and Game Settings",
+      "defaultValue": "0"
+    },
+    {
+      "name": "mp_fists_replace_melee",
+      "slug": "mp-fists-replace-melee",
+      "description": "Fists replace dropped melee weapons.",
+      "syntax": "mp_fists_replace_melee <0 / 1>",
+      "category": "Multiplayer and Game Settings"
+    },
+    {
+      "name": "mp_forcecamera",
+      "slug": "mp-forcecamera",
+      "description": "Restricts spectator viewing scope.",
+      "syntax": "mp_forcecamera <0 / 1 / 2>",
+      "category": "Multiplayer and Game Settings",
+      "defaultValue": "1"
+    },
+    {
+      "name": "mp_fraglimit",
+      "slug": "mp-fraglimit",
+      "description": "Maximum kills before map ends.",
+      "syntax": "mp_fraglimit <Limit>",
+      "category": "Multiplayer and Game Settings",
+      "defaultValue": "0"
+    },
+    {
+      "name": "mp_free_armor",
+      "slug": "mp-free-armor",
+      "description": "Grants free armor/helmet at round start.",
+      "syntax": "mp_free_armor <0 / 1 / 2>",
+      "category": "Multiplayer and Game Settings",
+      "defaultValue": "0"
+    },
+    {
+      "name": "mp_freezetime",
+      "slug": "mp-freezetime",
+      "description": "Freeze duration at round beginning.",
+      "syntax": "mp_freezetime <Seconds>",
+      "category": "Multiplayer and Game Settings",
+      "defaultValue": "6"
+    },
+    {
+      "name": "mp_friendlyfire",
+      "slug": "mp-friendlyfire",
+      "description": "Enables/disables teammate damage.",
+      "syntax": "mp_friendlyfire <0 / 1>",
+      "category": "Multiplayer and Game Settings",
+      "defaultValue": "1"
+    },
+    {
+      "name": "mp_give_player_c4",
+      "slug": "mp-give-player-c4",
+      "description": "Assigns bomb to random terrorist.",
+      "syntax": "mp_give_player_c4 <0 / 1>",
+      "category": "Multiplayer and Game Settings",
+      "defaultValue": "1"
+    },
+    {
+      "name": "mp_guardian_ai_bt_difficulty_adjust_wave_interval",
+      "slug": "mp-guardian-ai-bt-difficulty-adjust-wave-interval",
+      "description": "Adjusts guardian bot difficulty every nth wave.",
+      "syntax": "mp_guardian_ai_bt_difficulty_adjust_wave_interval <Interval>",
+      "category": "Bot"
+    },
+    {
+      "name": "mp_guardian_ai_bt_difficulty_initial_value",
+      "slug": "mp-guardian-ai-bt-difficulty-initial-value",
+      "description": "Sets starting difficulty for Guardian mode bots.",
+      "syntax": "mp_guardian_ai_bt_difficulty_initial_value <Difficulty>",
+      "category": "Bot"
+    },
+    {
+      "name": "mp_guardian_ai_bt_difficulty_max_next_level_bots",
+      "slug": "mp-guardian-ai-bt-difficulty-max-next-level-bots",
+      "description": "Controls number of bots increasing difficulty per wave.",
+      "syntax": "mp_guardian_ai_bt_difficulty_max_next_level_bots <Number>",
+      "category": "Bot"
+    },
+    {
+      "name": "mp_guardian_force_collect_hostages_timeout",
+      "slug": "mp-guardian-force-collect-hostages-timeout",
+      "description": "Forces bots to collect hostages after timeout.",
+      "syntax": "mp_guardian_force_collect_hostages_timeout <Time>",
+      "category": "Bot"
+    },
+    {
+      "name": "mp_guardian_give_random_grenades_to_bots",
+      "slug": "mp-guardian-give-random-grenades-to-bots",
+      "description": "Determines if guardian bots get grenades each wave.",
+      "syntax": "mp_guardian_give_random_grenades_to_bots <0 / 1>",
+      "category": "Bot"
+    },
+    {
+      "name": "mp_halftime",
+      "slug": "mp-halftime",
+      "description": "Team switching at match midpoint.",
+      "syntax": "mp_halftime <0 / 1>",
+      "category": "Multiplayer and Game Settings",
+      "defaultValue": "1"
+    },
+    {
+      "name": "mp_halftime_duration",
+      "slug": "mp-halftime-duration",
+      "description": "Halftime break duration.",
+      "syntax": "mp_halftime_duration <Seconds>",
+      "category": "Multiplayer and Game Settings",
+      "defaultValue": "15"
+    },
+    {
+      "name": "mp_humanteam",
+      "slug": "mp-humanteam",
+      "description": "Restrict non-bot players to specified team.",
+      "syntax": "mp_humanteam <Any / CT / T>",
+      "category": "Bot",
+      "defaultValue": "any"
+    },
+    {
+      "name": "mp_ignore_round_win_conditions",
+      "slug": "mp-ignore-round-win-conditions",
+      "description": "Enable and disable round win conditions.",
+      "syntax": "mp_ignore_round_win_conditions <0 / 1>",
+      "category": "Multiplayer and Game Settings",
+      "defaultValue": "0"
+    },
+    {
+      "name": "mp_limitteams",
+      "slug": "mp-limitteams",
+      "description": "Maximum player count disparity between teams.",
+      "syntax": "mp_limitteams <Amount>",
+      "category": "Multiplayer and Game Settings",
+      "defaultValue": "2"
+    },
+    {
+      "name": "mp_match_can_clinch",
+      "slug": "mp-match-can-clinch",
+      "description": "Auto-ends match when clinched.",
+      "syntax": "mp_match_can_clinch <0 / 1>",
+      "category": "Multiplayer and Game Settings",
+      "defaultValue": "1"
+    },
+    {
+      "name": "mp_maxmoney",
+      "slug": "mp-maxmoney",
+      "description": "Player account balance ceiling.",
+      "syntax": "mp_maxmoney <Amount>",
+      "category": "Multiplayer and Game Settings",
+      "defaultValue": "16000"
+    },
+    {
+      "name": "mp_maxrounds",
+      "slug": "mp-maxrounds",
+      "description": "Total rounds before server restart.",
+      "syntax": "mp_maxrounds <Amount>",
+      "category": "Multiplayer and Game Settings",
+      "defaultValue": "30"
+    },
+    {
+      "name": "mp_only_cts_rescue_hostages",
+      "slug": "mp-only-cts-rescue-hostages",
+      "description": "Controls whether only CTs can rescue hostages.",
+      "syntax": "mp_only_cts_rescue_hostages <0 / 1>",
+      "category": "Multiplayer and Game Settings"
+    },
+    {
+      "name": "mp_overtime_enable",
+      "slug": "mp-overtime-enable",
+      "description": "Activates overtime on tied matches.",
+      "syntax": "mp_overtime_enable <0 / 1>",
+      "category": "Multiplayer and Game Settings",
+      "defaultValue": "0"
+    },
+    {
+      "name": "mp_overtime_limit",
+      "slug": "mp-overtime-limit",
+      "description": "Maximum overtimes allowed (0 = unlimited).",
+      "syntax": "mp_overtime_limit <Limit>",
+      "category": "Multiplayer and Game Settings",
+      "defaultValue": "0"
+    },
+    {
+      "name": "mp_overtime_maxrounds",
+      "slug": "mp-overtime-maxrounds",
+      "description": "Rounds per overtime session.",
+      "syntax": "mp_overtime_maxrounds <Amount>",
+      "category": "Multiplayer and Game Settings",
+      "defaultValue": "6"
+    },
+    {
+      "name": "mp_overtime_startmoney",
+      "slug": "mp-overtime-startmoney",
+      "description": "Starting funds for overtime rounds.",
+      "syntax": "mp_overtime_startmoney <Amount>",
+      "category": "Multiplayer and Game Settings",
+      "defaultValue": "10000"
+    },
+    {
+      "name": "mp_pause_match",
+      "slug": "mp-pause-match",
+      "description": "Pauses match after current round.",
+      "syntax": "mp_pause_match",
+      "category": "Multiplayer and Game Settings"
+    },
+    {
+      "name": "mp_plant_c4_anywhere",
+      "slug": "mp-plant-c4-anywhere",
+      "description": "Allows C4 planting anywhere when enabled.",
+      "syntax": "mp_plant_c4_anywhere <0 / 1>",
+      "category": "Multiplayer and Game Settings",
+      "defaultValue": "0"
+    },
+    {
+      "name": "mp_playercashawards",
+      "slug": "mp-playercashawards",
+      "description": "Performance-based earnings on/off.",
+      "syntax": "mp_playercashawards <0 / 1>",
+      "category": "Multiplayer and Game Settings",
+      "defaultValue": "1"
+    },
+    {
+      "name": "mp_randomspawn",
+      "slug": "mp-randomspawn",
+      "description": "Random or fixed spawn location system.",
+      "syntax": "mp_randomspawn <0 / 1 / 2 / 3>",
+      "category": "Multiplayer and Game Settings",
+      "defaultValue": "0"
+    },
+    {
+      "name": "mp_require_gun_use_to_acquire",
+      "slug": "mp-require-gun-use-to-acquire",
+      "description": "Requires using E-key to pick up weapons.",
+      "syntax": "mp_require_gun_use_to_acquire <0 / 1>",
+      "category": "Multiplayer and Game Settings",
+      "defaultValue": "0"
+    },
+    {
+      "name": "mp_respawn_immunitytime",
+      "slug": "mp-respawn-immunitytime",
+      "description": "Invulnerability duration after respawn.",
+      "syntax": "mp_respawn_immunitytime <Seconds>",
+      "category": "Multiplayer and Game Settings",
+      "defaultValue": "0"
+    },
+    {
+      "name": "mp_respawn_on_death_ct",
+      "slug": "mp-respawn-on-death-ct",
+      "description": "Counter-terrorist respawning on death.",
+      "syntax": "mp_respawn_on_death_ct <0 / 1>",
+      "category": "Multiplayer and Game Settings",
+      "defaultValue": "0"
+    },
+    {
+      "name": "mp_respawn_on_death_t",
+      "slug": "mp-respawn-on-death-t",
+      "description": "Terrorist respawning on death.",
+      "syntax": "mp_respawn_on_death_t <0 / 1>",
+      "category": "Multiplayer and Game Settings",
+      "defaultValue": "0"
+    },
+    {
+      "name": "mp_restartgame",
+      "slug": "mp-restartgame",
+      "description": "Restarts game with optional countdown.",
+      "syntax": "mp_restartgame <Seconds>",
+      "category": "Multiplayer and Game Settings"
+    },
+    {
+      "name": "mp_round_restart_delay",
+      "slug": "mp-round-restart-delay",
+      "description": "Delay before next round after winner.",
+      "syntax": "mp_round_restart_delay <Seconds>",
+      "category": "Multiplayer and Game Settings",
+      "defaultValue": "7"
+    },
+    {
+      "name": "mp_roundtime",
+      "slug": "mp-roundtime",
+      "description": "Maximum round duration in minutes.",
+      "syntax": "mp_roundtime <Minutes>",
+      "category": "Multiplayer and Game Settings",
+      "defaultValue": "5"
+    },
+    {
+      "name": "mp_roundtime_defuse",
+      "slug": "mp-roundtime-defuse",
+      "description": "Bomb defusal round duration in minutes.",
+      "syntax": "mp_roundtime_defuse <Minutes>",
+      "category": "Multiplayer and Game Settings",
+      "defaultValue": "1.92"
+    },
+    {
+      "name": "mp_roundtime_hostage",
+      "slug": "mp-roundtime-hostage",
+      "description": "Hostage rescue round duration in minutes.",
+      "syntax": "mp_roundtime_hostage <Minutes>",
+      "category": "Multiplayer and Game Settings",
+      "defaultValue": "2"
+    },
+    {
+      "name": "mp_scrambleteams",
+      "slug": "mp-scrambleteams",
+      "description": "Randomly redistributes players and restarts.",
+      "syntax": "mp_scrambleteams",
+      "category": "Multiplayer and Game Settings"
+    },
+    {
+      "name": "mp_shield_speed_deployed",
+      "slug": "mp-shield-speed-deployed",
+      "description": "Shield deployment speed limit.",
+      "syntax": "mp_shield_speed_deployed <Speed>",
+      "category": "Multiplayer and Game Settings"
+    },
+    {
+      "name": "mp_solid_teammates",
+      "slug": "mp-solid-teammates",
+      "description": "Teammates as physical obstacles.",
+      "syntax": "mp_solid_teammates <0 / 1>",
+      "category": "Multiplayer and Game Settings",
+      "defaultValue": "1"
+    },
+    {
+      "name": "mp_spec_swapplayersides",
+      "slug": "mp-spec-swapplayersides",
+      "description": "Flips spectator display sides.",
+      "syntax": "mp_spec_swapplayersides <0 / 1>",
+      "category": "Multiplayer and Game Settings",
+      "defaultValue": "0"
+    },
+    {
+      "name": "mp_startmoney",
+      "slug": "mp-startmoney",
+      "description": "Initial round funds per player.",
+      "syntax": "mp_startmoney <Amount>",
+      "category": "Multiplayer and Game Settings",
+      "defaultValue": "800"
+    },
+    {
+      "name": "mp_suicide_penalty",
+      "slug": "mp-suicide-penalty",
+      "description": "Penalize player suicides.",
+      "syntax": "mp_suicide_penalty <0 / 1>",
+      "category": "Multiplayer and Game Settings"
+    },
+    {
+      "name": "mp_swapteams",
+      "slug": "mp-swapteams",
+      "description": "Switches teams and restarts match.",
+      "syntax": "mp_swapteams",
+      "category": "Multiplayer and Game Settings"
+    },
+    {
+      "name": "mp_t_default_grenades",
+      "slug": "mp-t-default-grenades",
+      "description": "Sets default terrorist spawn grenades.",
+      "syntax": "mp_t_default_grenades <Grenade Codes>",
+      "category": "Multiplayer and Game Settings"
+    },
+    {
+      "name": "mp_t_default_melee",
+      "slug": "mp-t-default-melee",
+      "description": "Specifies default terrorist melee weapon.",
+      "syntax": "mp_t_default_melee <Weapon Code>",
+      "category": "Multiplayer and Game Settings"
+    },
+    {
+      "name": "mp_t_default_primary",
+      "slug": "mp-t-default-primary",
+      "description": "Designates default terrorist primary weapon.",
+      "syntax": "mp_t_default_primary <Weapon Code>",
+      "category": "Multiplayer and Game Settings"
+    },
+    {
+      "name": "mp_t_default_secondary",
+      "slug": "mp-t-default-secondary",
+      "description": "Establishes default terrorist secondary weapon.",
+      "syntax": "mp_t_default_secondary <Weapon Code>",
+      "category": "Multiplayer and Game Settings"
+    },
+    {
+      "name": "mp_team_intro_time",
+      "slug": "mp-team-intro-time",
+      "description": "Team introduction duration.",
+      "syntax": "mp_team_intro_time <Seconds>",
+      "category": "Multiplayer and Game Settings"
+    },
+    {
+      "name": "mp_teamcashawards",
+      "slug": "mp-teamcashawards",
+      "description": "Team-based earnings on/off.",
+      "syntax": "mp_teamcashawards <0 / 1>",
+      "category": "Multiplayer and Game Settings",
+      "defaultValue": "1"
+    },
+    {
+      "name": "mp_teammates_are_enemies",
+      "slug": "mp-teammates-are-enemies",
+      "description": "Treats teammates as hostile players.",
+      "syntax": "mp_teammates_are_enemies <0 / 1>",
+      "category": "Multiplayer and Game Settings",
+      "defaultValue": "0"
+    },
+    {
+      "name": "mp_teamscore_2",
+      "slug": "mp-teamscore-2",
+      "description": "Sets the score of team 2 for best-of games.",
+      "syntax": "mp_teamscore_2 <Number>",
+      "category": "Multiplayer and Game Settings"
+    },
+    {
+      "name": "mp_timelimit",
+      "slug": "mp-timelimit",
+      "description": "Match duration before map change.",
+      "syntax": "mp_timelimit <Minutes>",
+      "category": "Multiplayer and Game Settings",
+      "defaultValue": "0"
+    },
+    {
+      "name": "mp_unpause_match",
+      "slug": "mp-unpause-match",
+      "description": "Resumes paused match.",
+      "syntax": "mp_unpause_match",
+      "category": "Multiplayer and Game Settings"
+    },
+    {
+      "name": "mp_warmup_end",
+      "slug": "mp-warmup-end",
+      "description": "Terminates warmup period.",
+      "syntax": "mp_warmup_end",
+      "category": "Multiplayer and Game Settings"
+    },
+    {
+      "name": "mp_warmup_offline_enabled",
+      "slug": "mp-warmup-offline-enabled",
+      "description": "Enable offline warmup.",
+      "syntax": "mp_warmup_offline_enabled <0 / 1>",
+      "category": "Multiplayer and Game Settings"
+    },
+    {
+      "name": "mp_warmup_online_enabled",
+      "slug": "mp-warmup-online-enabled",
+      "description": "Enable online warmup.",
+      "syntax": "mp_warmup_online_enabled <0 / 1>",
+      "category": "Multiplayer and Game Settings"
+    },
+    {
+      "name": "mp_warmup_start",
+      "slug": "mp-warmup-start",
+      "description": "Initiates warmup period.",
+      "syntax": "mp_warmup_start",
+      "category": "Multiplayer and Game Settings"
+    },
+    {
+      "name": "mp_warmuptime",
+      "slug": "mp-warmuptime",
+      "description": "Warmup duration in seconds.",
+      "syntax": "mp_warmuptime <Seconds>",
+      "category": "Multiplayer and Game Settings",
+      "defaultValue": "30"
+    },
+    {
+      "name": "mp_weapons_allow_zeus",
+      "slug": "mp-weapons-allow-zeus",
+      "description": "Permits Zeus taser purchases.",
+      "syntax": "mp_weapons_allow_zeus <0 / 1>",
+      "category": "Multiplayer and Game Settings",
+      "defaultValue": "1"
+    },
+    {
+      "name": "mp_weapons_glow_on_ground",
+      "slug": "mp-weapons-glow-on-ground",
+      "description": "Ground weapon glow effects.",
+      "syntax": "mp_weapons_glow_on_ground <0 / 1>",
+      "category": "Multiplayer and Game Settings"
+    },
+    {
+      "name": "net_allow_multicast",
+      "slug": "net-allow-multicast",
+      "description": "Toggles multicast network functionality.",
+      "syntax": "net_allow_multicast <0 / 1>",
+      "category": "Network"
+    },
+    {
+      "name": "net_print_sdr_ping_times",
+      "slug": "net-print-sdr-ping-times",
+      "description": "Prints current ping times to Steam Datagram Relay points.",
+      "syntax": "net_print_sdr_ping_times",
+      "category": "Network"
+    },
+    {
+      "name": "net_public_adr",
+      "slug": "net-public-adr",
+      "description": "Configures server public IP for NAT/DHCP.",
+      "syntax": "net_public_adr <IP Address>",
+      "category": "Network"
+    },
+    {
+      "name": "net_showudp",
+      "slug": "net-showudp",
+      "description": "Enables UDP packet information printing to console.",
+      "syntax": "net_showudp <0 / 1>",
+      "category": "Network",
+      "defaultValue": "0"
+    },
+    {
+      "name": "net_showudp_remoteonly",
+      "slug": "net-showudp-remoteonly",
+      "description": "Enables remote UDP packet information printing.",
+      "syntax": "net_showudp_remoteonly <0 / 1>",
+      "category": "Network",
+      "defaultValue": "0"
+    },
+    {
+      "name": "nextdemo",
+      "slug": "nextdemo",
+      "description": "Plays the next demo in sequence.",
+      "syntax": "nextdemo",
+      "category": "Demo and Overwatch"
+    },
+    {
+      "name": "nextlevel",
+      "slug": "nextlevel",
+      "description": "Queues map for next cycle.",
+      "syntax": "nextlevel <Map Code>",
+      "category": "Server"
+    },
+    {
+      "name": "noclip",
+      "slug": "noclip",
+      "description": "Toggle noclip for your player. Fly and pass through walls.",
+      "syntax": "noclip",
+      "category": "Multiplayer and Game Settings"
+    },
+    {
+      "name": "notarget",
+      "slug": "notarget",
+      "description": "Toggles whether bots are aware of your player.",
+      "syntax": "notarget",
+      "category": "Bot"
+    },
+    {
+      "name": "panorama_focus_world_panels",
+      "slug": "panorama-focus-world-panels",
+      "description": "Requests key focus for world panels when enabled.",
+      "syntax": "panorama_focus_world_panels <0 / 1>",
+      "category": "Input"
+    },
+    {
+      "name": "password",
+      "slug": "password",
+      "description": "Set server connection password.",
+      "syntax": "password",
+      "category": "Server"
+    },
+    {
+      "name": "pause",
+      "slug": "pause",
+      "description": "Pauses game (requires sv_pausable).",
+      "syntax": "pause",
+      "category": "Server"
+    },
+    {
+      "name": "plant_bomb",
+      "slug": "plant-bomb",
+      "description": "Forces the player to plant a bomb at their current location.",
+      "syntax": "plant_bomb",
+      "category": "Server"
+    },
+    {
+      "name": "playdemo",
+      "slug": "playdemo",
+      "description": "Initiates playback of specified demo file.",
+      "syntax": "playdemo <Demo File Name>",
+      "category": "Demo and Overwatch"
+    },
+    {
+      "name": "player_botdifflast_s",
+      "slug": "player-botdifflast-s",
+      "description": "Sets bot difficulty when they are last man standing.",
+      "syntax": "player_botdifflast_s <Difficulty>",
+      "category": "Bot"
+    },
+    {
+      "name": "player_ping",
+      "slug": "player-ping",
+      "description": "Create a ping notification at current aim location.",
+      "syntax": "player_ping",
+      "category": "Chat"
+    },
+    {
+      "name": "player0_using_joystick",
+      "slug": "player0-using-joystick",
+      "description": "Designates first player joystick input usage.",
+      "syntax": "player0_using_joystick <0 / 1>",
+      "category": "Controller"
+    },
+    {
+      "name": "r_cleardecals",
+      "slug": "r-cleardecals",
+      "description": "Clears all decals (blood, bullet holes) from surfaces.",
+      "syntax": "r_cleardecals",
+      "category": "Server"
+    },
+    {
+      "name": "r_csgo_effects_bloom",
+      "slug": "r-csgo-effects-bloom",
+      "description": "Controls bloom glow intensity in visuals.",
+      "syntax": "r_csgo_effects_bloom <0 / 1>",
+      "category": "Server"
+    },
+    {
+      "name": "r_csgo_enable_glows",
+      "slug": "r-csgo-enable-glows",
+      "description": "Toggles glow effects on players and equipment.",
+      "syntax": "r_csgo_enable_glows <0 / 1>",
+      "category": "Server"
+    },
+    {
+      "name": "r_csgo_enable_tonemapping",
+      "slug": "r-csgo-enable-tonemapping",
+      "description": "Toggles tonemapping effects on color and lighting.",
+      "syntax": "r_csgo_enable_tonemapping <0 / 1>",
+      "category": "Server"
+    },
+    {
+      "name": "r_csgo_postprocess_enable",
+      "slug": "r-csgo-postprocess-enable",
+      "description": "Toggles post-processing visual effects.",
+      "syntax": "r_csgo_postprocess_enable <0 / 1>",
+      "category": "Server"
+    },
+    {
+      "name": "r_csgo_render_decals",
+      "slug": "r-csgo-render-decals",
+      "description": "Enables/disables bullet marks, blood splatters.",
+      "syntax": "r_csgo_render_decals <0 / 1>",
+      "category": "Server"
+    },
+    {
+      "name": "r_dof_override_far_blurry",
+      "slug": "r-dof-override-far-blurry",
+      "description": "Adjusts distance at which depth of field becomes maximally blurry.",
+      "syntax": "r_dof_override_far_blurry <Distance>",
+      "category": "Camera"
+    },
+    {
+      "name": "r_dof_override_far_crisp",
+      "slug": "r-dof-override-far-crisp",
+      "description": "Adjusts depth of field far crisp setting for object sharpness.",
+      "syntax": "r_dof_override_far_crisp <Distance>",
+      "category": "Camera"
+    },
+    {
+      "name": "r_dof_override_near_blurry",
+      "slug": "r-dof-override-near-blurry",
+      "description": "Adjusts depth of field to make close objects appear blurry.",
+      "syntax": "r_dof_override_near_blurry <Distance>",
+      "category": "Camera"
+    },
+    {
+      "name": "r_drawcsplayers",
+      "slug": "r-drawcsplayers",
+      "description": "Toggle rendering of Counter-Strike players.",
+      "syntax": "r_drawcsplayers <0 / 1>",
+      "category": "Server",
+      "defaultValue": "1"
+    },
+    {
+      "name": "r_shadows",
+      "slug": "r-shadows",
+      "description": "Toggles shadow rendering (requires cheats).",
+      "syntax": "r_shadows <0 / 1>",
+      "category": "Server",
+      "defaultValue": "1"
+    },
+    {
+      "name": "radarvisdistance",
+      "slug": "radarvisdistance",
+      "description": "Sets maximum distance enemies appear without crosshair focus.",
+      "syntax": "radarvisdistance <Distance>",
+      "category": "Radar"
+    },
+    {
+      "name": "radarvismaxdot",
+      "slug": "radarvismaxdot",
+      "description": "Controls aiming precision needed to detect distant enemies.",
+      "syntax": "radarvismaxdot <Value>",
+      "category": "Radar"
+    },
+    {
+      "name": "radarvismethod",
+      "slug": "radarvismethod",
+      "description": "Switches between classic/realistic radar visibility methods.",
+      "syntax": "radarvismethod <0 / 1>",
+      "category": "Radar"
+    },
+    {
+      "name": "radarvispow",
+      "slug": "radarvispow",
+      "description": "Sets how far from target you can look and still see them.",
+      "syntax": "radarvispow <Degree>",
+      "category": "Radar"
+    },
+    {
+      "name": "radio1",
+      "slug": "radio1",
+      "description": "Opens radio menu 1.",
+      "syntax": "radio1",
+      "category": "Radio"
+    },
+    {
+      "name": "radio2",
+      "slug": "radio2",
+      "description": "Opens radio menu 2.",
+      "syntax": "radio2",
+      "category": "Radio"
+    },
+    {
+      "name": "radio3",
+      "slug": "radio3",
+      "description": "Opens radio menu 3.",
+      "syntax": "radio3",
+      "category": "Radio"
+    },
+    {
+      "name": "rate",
+      "slug": "rate",
+      "description": "Configure client network data rate.",
+      "syntax": "rate <Rate (Bytes/s)>",
+      "category": "Network"
+    },
+    {
+      "name": "rcon",
+      "slug": "rcon",
+      "description": "Execute remote console command.",
+      "syntax": "rcon <Command>",
+      "category": "Server"
+    },
+    {
+      "name": "rcon_address",
+      "slug": "rcon-address",
+      "description": "Set remote console IP.",
+      "syntax": "rcon_address <IP Address>",
+      "category": "Server"
+    },
+    {
+      "name": "rcon_password",
+      "slug": "rcon-password",
+      "description": "Authenticate remote console access.",
+      "syntax": "rcon_password <Password>",
+      "category": "Server"
+    },
+    {
+      "name": "rebuy",
+      "slug": "rebuy",
+      "description": "Repurchases recently bought items.",
+      "syntax": "rebuy",
+      "category": "Bind"
+    },
+    {
+      "name": "record",
+      "slug": "record",
+      "description": "Begins recording current gameplay as demo.",
+      "syntax": "record <Demo File Name>",
+      "category": "Demo and Overwatch"
+    },
+    {
+      "name": "repeat_last_console_command",
+      "slug": "repeat-last-console-command",
+      "description": "Repeats the last command entered into the console.",
+      "syntax": "repeat_last_console_command",
+      "category": "Input"
+    },
+    {
+      "name": "report_cliententitysim",
+      "slug": "report-cliententitysim",
+      "description": "Prints all clientside simulations and execution time.",
+      "syntax": "report_cliententitysim <0 / 1>",
+      "category": "Server"
+    },
+    {
+      "name": "report_clientthinklist",
+      "slug": "report-clientthinklist",
+      "description": "Prints all clientside simulations thinking and time.",
+      "syntax": "report_clientthinklist <0 / 1>",
+      "category": "Server"
+    },
+    {
+      "name": "respawn_player",
+      "slug": "respawn-player",
+      "description": "Forces immediate player respawn when dead.",
+      "syntax": "respawn_player",
+      "category": "Server"
+    },
+    {
+      "name": "restart",
+      "slug": "restart",
+      "description": "Reloads current map and resets scores.",
+      "syntax": "restart",
+      "category": "Server"
+    },
+    {
+      "name": "say",
+      "slug": "say",
+      "description": "Send the specified message in chat to all players.",
+      "syntax": "say <Message>",
+      "category": "Chat"
+    },
+    {
+      "name": "say_team",
+      "slug": "say-team",
+      "description": "Send the specified message in team chat.",
+      "syntax": "say_team <Message>",
+      "category": "Chat"
+    },
+    {
+      "name": "sensitivity",
+      "slug": "sensitivity",
+      "description": "Sets overall mouse sensitivity to a specified value.",
+      "syntax": "sensitivity <Sensitivity>",
+      "category": "Mouse"
+    },
+    {
+      "name": "servercfgfile",
+      "slug": "servercfgfile",
+      "description": "Designate server configuration file.",
+      "syntax": "servercfgfile <Config File>",
+      "category": "Server"
+    },
+    {
+      "name": "showconsole",
+      "slug": "showconsole",
+      "description": "Opens developer console.",
+      "syntax": "showconsole",
+      "category": "HUD"
+    },
+    {
+      "name": "showtriggers_toggle",
+      "slug": "showtriggers-toggle",
+      "description": "Toggles rendering of trigger brushes in current map.",
+      "syntax": "showtriggers_toggle",
+      "category": "Server"
+    },
+    {
+      "name": "skill",
+      "slug": "skill",
+      "description": "Sets the game skill level (1-3).",
+      "syntax": "skill <1 / 2 / 3>",
+      "category": "Server"
+    },
+    {
+      "name": "slot0",
+      "slug": "slot0",
+      "description": "Switches to inventory slot 0.",
+      "syntax": "slot0",
+      "category": "Bind"
+    },
+    {
+      "name": "slot1",
+      "slug": "slot1",
+      "description": "Switches to inventory slot 1 (primary weapon).",
+      "syntax": "slot1",
+      "category": "Bind"
+    },
+    {
+      "name": "slot10",
+      "slug": "slot10",
+      "description": "Switches to inventory slot 10.",
+      "syntax": "slot10",
+      "category": "Bind"
+    },
+    {
+      "name": "slot11",
+      "slug": "slot11",
+      "description": "Switches to inventory slot 11.",
+      "syntax": "slot11",
+      "category": "Bind"
+    },
+    {
+      "name": "slot12",
+      "slug": "slot12",
+      "description": "Switches to inventory slot 12.",
+      "syntax": "slot12",
+      "category": "Bind"
+    },
+    {
+      "name": "slot13",
+      "slug": "slot13",
+      "description": "Switches to inventory slot 13.",
+      "syntax": "slot13",
+      "category": "Bind"
+    },
+    {
+      "name": "slot2",
+      "slug": "slot2",
+      "description": "Switches to inventory slot 2 (secondary weapon).",
+      "syntax": "slot2",
+      "category": "Bind"
+    },
+    {
+      "name": "slot3",
+      "slug": "slot3",
+      "description": "Switches to inventory slot 3 (knife).",
+      "syntax": "slot3",
+      "category": "Bind"
+    },
+    {
+      "name": "slot4",
+      "slug": "slot4",
+      "description": "Switches to inventory slot 4 (grenades).",
+      "syntax": "slot4",
+      "category": "Bind"
+    },
+    {
+      "name": "slot5",
+      "slug": "slot5",
+      "description": "Switches to inventory slot 5 (C4).",
+      "syntax": "slot5",
+      "category": "Bind"
+    },
+    {
+      "name": "slot6",
+      "slug": "slot6",
+      "description": "Switches to inventory slot 6.",
+      "syntax": "slot6",
+      "category": "Bind"
+    },
+    {
+      "name": "slot7",
+      "slug": "slot7",
+      "description": "Switches to inventory slot 7.",
+      "syntax": "slot7",
+      "category": "Bind"
+    },
+    {
+      "name": "slot8",
+      "slug": "slot8",
+      "description": "Switches to inventory slot 8.",
+      "syntax": "slot8",
+      "category": "Bind"
+    },
+    {
+      "name": "slot9",
+      "slug": "slot9",
+      "description": "Switches to inventory slot 9.",
+      "syntax": "slot9",
+      "category": "Bind"
+    },
+    {
+      "name": "snd_gamevoicevolume",
+      "slug": "snd-gamevoicevolume",
+      "description": "Sets game voice-over volume independently.",
+      "syntax": "snd_gamevoicevolume <Volume>",
+      "category": "Server"
+    },
+    {
+      "name": "snd_gamevolume",
+      "slug": "snd-gamevolume",
+      "description": "Adjusts the overall game volume.",
+      "syntax": "snd_gamevolume <Volume Level>",
+      "category": "Server",
+      "defaultValue": "1"
+    },
+    {
+      "name": "snd_headphone_eq",
+      "slug": "snd-headphone-eq",
+      "description": "Selects a preset for headphone equalizer.",
+      "syntax": "snd_headphone_eq <0 / 1>",
+      "category": "Server"
+    },
+    {
+      "name": "snd_mute_mvp_music_live_players",
+      "slug": "snd-mute-mvp-music-live-players",
+      "description": "Mutes MVP music when both teams have alive players.",
+      "syntax": "snd_mute_mvp_music_live_players <0 / 1>",
+      "category": "Server"
+    },
+    {
+      "name": "snd_mvp_volume",
+      "slug": "snd-mvp-volume",
+      "description": "Sets the MVP music volume.",
+      "syntax": "snd_mvp_volume <Volume>",
+      "category": "Server"
+    },
+    {
+      "name": "snd_tensecondwarning_volume",
+      "slug": "snd-tensecondwarning-volume",
+      "description": "Adjusts volume of the ten-second warning sound.",
+      "syntax": "snd_tensecondwarning_volume",
+      "category": "Server"
+    },
+    {
+      "name": "snd_voipvolume",
+      "slug": "snd-voipvolume",
+      "description": "Adjusts voice communication volume level.",
+      "syntax": "snd_voipvolume <Volume>",
+      "category": "Voice"
+    },
+    {
+      "name": "spec_autodirector",
+      "slug": "spec-autodirector",
+      "description": "Enables or disables auto-director while spectating.",
+      "syntax": "spec_autodirector <0 / 1>",
+      "category": "Camera"
+    },
+    {
+      "name": "spec_centerchasecam",
+      "slug": "spec-centerchasecam",
+      "description": "Enables camera focusing on target center rather than eye position.",
+      "syntax": "spec_centerchasecam <0 / 1>",
+      "category": "Camera"
+    },
+    {
+      "name": "spec_lock_to_current_player",
+      "slug": "spec-lock-to-current-player",
+      "description": "Locks observer view to current target, preventing auto-switching.",
+      "syntax": "spec_lock_to_current_player",
+      "category": "Camera"
+    },
+    {
+      "name": "status_json",
+      "slug": "status-json",
+      "description": "Prints current game status in JSON format.",
+      "syntax": "status_json",
+      "category": "Network"
+    },
+    {
+      "name": "stopdemos",
+      "slug": "stopdemos",
+      "description": "Stops demo sequence looping.",
+      "syntax": "stopdemos",
+      "category": "Demo and Overwatch"
+    },
+    {
+      "name": "sv_air_max_horizontal_parachute_speed",
+      "slug": "sv-air-max-horizontal-parachute-speed",
+      "description": "Adjusts horizontal parachute movement speed.",
+      "syntax": "sv_air_max_horizontal_parachute_speed <Speed>",
+      "category": "Danger Zone"
+    },
+    {
+      "name": "sv_airaccelerate_rappel",
+      "slug": "sv-airaccelerate-rappel",
+      "description": "Sets speed while rappeling to the ground.",
+      "syntax": "sv_airaccelerate_rappel <Speed>",
+      "category": "Danger Zone"
+    },
+    {
+      "name": "sv_auto_adjust_bot_difficulty",
+      "slug": "sv-auto-adjust-bot-difficulty",
+      "description": "Auto-adjusts bot difficulty.",
+      "syntax": "sv_auto_adjust_bot_difficulty",
+      "category": "Bot"
+    },
+    {
+      "name": "sv_autobunnyhopping",
+      "slug": "sv-autobunnyhopping",
+      "description": "Auto-executes bunny hopping when holding space bar.",
+      "syntax": "sv_autobunnyhopping <0 / 1>",
+      "category": "Server",
+      "defaultValue": "0"
+    },
+    {
+      "name": "sv_banid_enabled",
+      "slug": "sv-banid-enabled",
+      "description": "Determines if server allows banid command usage.",
+      "syntax": "sv_banid_enabled <0 / 1>",
+      "category": "Server"
+    },
+    {
+      "name": "sv_bot_buy_decoy_weight",
+      "slug": "sv-bot-buy-decoy-weight",
+      "description": "Sets chance of bots buying decoy grenades.",
+      "syntax": "sv_bot_buy_decoy_weight <Weight>",
+      "category": "Bot"
+    },
+    {
+      "name": "sv_bot_buy_flash_weight",
+      "slug": "sv-bot-buy-flash-weight",
+      "description": "Sets chance of bots buying flashbangs.",
+      "syntax": "sv_bot_buy_flash_weight <Weight>",
+      "category": "Bot"
+    },
+    {
+      "name": "sv_bot_buy_grenade_chance",
+      "slug": "sv-bot-buy-grenade-chance",
+      "description": "Sets percentage chance bots buy grenades.",
+      "syntax": "sv_bot_buy_grenade_chance <0-100>",
+      "category": "Bot"
+    },
+    {
+      "name": "sv_bot_buy_hegrenade_weight",
+      "slug": "sv-bot-buy-hegrenade-weight",
+      "description": "Sets chance of bots buying HE grenades.",
+      "syntax": "sv_bot_buy_hegrenade_weight <Weight>",
+      "category": "Bot"
+    },
+    {
+      "name": "sv_bot_buy_molotov_weight",
+      "slug": "sv-bot-buy-molotov-weight",
+      "description": "Sets chance of bots buying molotov grenades.",
+      "syntax": "sv_bot_buy_molotov_weight <Weight>",
+      "category": "Bot"
+    },
+    {
+      "name": "sv_bot_buy_smoke_weight",
+      "slug": "sv-bot-buy-smoke-weight",
+      "description": "Sets chance of bots buying smoke grenades.",
+      "syntax": "sv_bot_buy_smoke_weight <Weight>",
+      "category": "Bot"
+    },
+    {
+      "name": "sv_bots_get_easier_each_win",
+      "slug": "sv-bots-get-easier-each-win",
+      "description": "Bots become easier after wins.",
+      "syntax": "sv_bots_get_easier_each_win",
+      "category": "Bot"
+    },
+    {
+      "name": "sv_bots_get_harder_after_each_wave",
+      "slug": "sv-bots-get-harder-after-each-wave",
+      "description": "Bots get harder after waves.",
+      "syntax": "sv_bots_get_harder_after_each_wave",
+      "category": "Bot"
+    },
+    {
+      "name": "sv_cheats",
+      "slug": "sv-cheats",
+      "description": "Enables or disables cheat commands.",
+      "syntax": "sv_cheats <0 / 1>",
+      "category": "Multiplayer and Game Settings",
+      "defaultValue": "0"
+    },
+    {
+      "name": "sv_disable_teamselect_menu",
+      "slug": "sv-disable-teamselect-menu",
+      "description": "Disables team selection menu access.",
+      "syntax": "sv_disable_teamselect_menu <0 / 1>",
+      "category": "Server"
+    },
+    {
+      "name": "sv_dz_cash_bundle_size",
+      "slug": "sv-dz-cash-bundle-size",
+      "description": "Sets money amount per cash bundle.",
+      "syntax": "sv_dz_cash_bundle_size <Amount>",
+      "category": "Danger Zone"
+    },
+    {
+      "name": "sv_dz_cash_mega_bundle_size",
+      "slug": "sv-dz-cash-mega-bundle-size",
+      "description": "Size of mega cash bundle in Danger Zone.",
+      "syntax": "sv_dz_cash_mega_bundle_size <Size>",
+      "category": "Danger Zone"
+    },
+    {
+      "name": "sv_dz_contractkill_reward",
+      "slug": "sv-dz-contractkill-reward",
+      "description": "Reward for contract kills in cash bundles.",
+      "syntax": "sv_dz_contractkill_reward <Amount>",
+      "category": "Danger Zone"
+    },
+    {
+      "name": "sv_dz_hostage_rescue_reward",
+      "slug": "sv-dz-hostage-rescue-reward",
+      "description": "Reward for hostage rescue in cash bundles.",
+      "syntax": "sv_dz_hostage_rescue_reward <Amount>",
+      "category": "Danger Zone"
+    },
+    {
+      "name": "sv_dz_squad_wipe_reward",
+      "slug": "sv-dz-squad-wipe-reward",
+      "description": "Reward for eliminating an entire squad.",
+      "syntax": "sv_dz_squad_wipe_reward <Cash Bundles>",
+      "category": "Danger Zone"
+    },
+    {
+      "name": "sv_gameinstructor_enable",
+      "slug": "sv-gameinstructor-enable",
+      "description": "Forces all clients to enable tutorial assistance.",
+      "syntax": "sv_gameinstructor_enable <0 / 1>",
+      "category": "Server"
+    },
+    {
+      "name": "sv_grenade_trajectory_time_spectator",
+      "slug": "sv-grenade-trajectory-time-spectator",
+      "description": "Sets time grenade trajectories are drawn for spectators.",
+      "syntax": "sv_grenade_trajectory_time_spectator <Seconds>",
+      "category": "Server"
+    },
+    {
+      "name": "sv_hegrenade_damage_multiplier",
+      "slug": "sv-hegrenade-damage-multiplier",
+      "description": "Sets the damage multiplier of HE grenades.",
+      "syntax": "sv_hegrenade_damage_multiplier <Damage>",
+      "category": "Server",
+      "defaultValue": "1"
+    },
+    {
+      "name": "sv_hegrenade_radius_multiplier",
+      "slug": "sv-hegrenade-radius-multiplier",
+      "description": "Sets the radius multiplier of HE grenades.",
+      "syntax": "sv_hegrenade_radius_multiplier <Radius>",
+      "category": "Server",
+      "defaultValue": "1"
+    },
+    {
+      "name": "sv_holiday_mode",
+      "slug": "sv-holiday-mode",
+      "description": "Sets the holiday mode for the server.",
+      "syntax": "sv_holiday_mode <0 / 1 / 2>",
+      "category": "Server",
+      "defaultValue": "0"
+    },
+    {
+      "name": "sv_ignoregrenaderadio",
+      "slug": "sv-ignoregrenaderadio",
+      "description": "Turns off grenade radio messages.",
+      "syntax": "sv_ignoregrenaderadio <0 / 1>",
+      "category": "Server",
+      "defaultValue": "0"
+    },
+    {
+      "name": "sv_infinite_ammo",
+      "slug": "sv-infinite-ammo",
+      "description": "Provides infinite ammunition options.",
+      "syntax": "sv_infinite_ammo <0 / 1 / 2>",
+      "category": "Multiplayer and Game Settings",
+      "defaultValue": "0"
+    },
+    {
+      "name": "sv_jump_spam_penalty_time",
+      "slug": "sv-jump-spam-penalty-time",
+      "description": "Sets penalty duration for jump key spam.",
+      "syntax": "sv_jump_spam_penalty_time <Seconds>",
+      "category": "Server"
+    },
+    {
+      "name": "sv_kick_ban_duration",
+      "slug": "sv-kick-ban-duration",
+      "description": "Sets how long a kick ban lasts in minutes.",
+      "syntax": "sv_kick_ban_duration <Minutes>",
+      "category": "Server"
+    },
+    {
+      "name": "sv_kick_players_with_cooldown",
+      "slug": "sv-kick-players-with-cooldown",
+      "description": "Determines if players with bans are denied server access.",
+      "syntax": "sv_kick_players_with_cooldown <0 / 1 / 2>",
+      "category": "Server"
+    },
+    {
+      "name": "sv_log_roundstats",
+      "slug": "sv-log-roundstats",
+      "description": "Enables or disables round statistics logging.",
+      "syntax": "sv_log_roundstats <0 / 1>",
+      "category": "Server"
+    },
+    {
+      "name": "sv_matchend_drops_enabled",
+      "slug": "sv-matchend-drops-enabled",
+      "description": "Toggle end-of-match item drops.",
+      "syntax": "sv_matchend_drops_enabled <0 / 1>",
+      "category": "Server",
+      "defaultValue": "1"
+    },
+    {
+      "name": "sv_matchpause_auto_5v5",
+      "slug": "sv-matchpause-auto-5v5",
+      "description": "Auto-pause when teams fall below 5v5.",
+      "syntax": "sv_matchpause_auto_5v5 <0 / 1>",
+      "category": "Server"
+    },
+    {
+      "name": "sv_maxspeed",
+      "slug": "sv-maxspeed",
+      "description": "Limit player movement velocity.",
+      "syntax": "sv_maxspeed <Speed>",
+      "category": "Server",
+      "defaultValue": "320"
+    },
+    {
+      "name": "sv_noclipspeed",
+      "slug": "sv-noclipspeed",
+      "description": "Adjust noclip movement speed.",
+      "syntax": "sv_noclipspeed <Multiplier>",
+      "category": "Server",
+      "defaultValue": "5"
+    },
+    {
+      "name": "sv_party_mode",
+      "slug": "sv-party-mode",
+      "description": "Activate confetti effect mode.",
+      "syntax": "sv_party_mode <0 / 1>",
+      "category": "Server",
+      "defaultValue": "0"
+    },
+    {
+      "name": "sv_password",
+      "slug": "sv-password",
+      "description": "Require server connection password.",
+      "syntax": "sv_password <0 / Password>",
+      "category": "Server"
+    },
+    {
+      "name": "sv_pausable",
+      "slug": "sv-pausable",
+      "description": "Allow game pause functionality.",
+      "syntax": "sv_pausable <0 / 1>",
+      "category": "Server",
+      "defaultValue": "0"
+    },
+    {
+      "name": "sv_playerradio_use_allowlist",
+      "slug": "sv-playerradio-use-allowlist",
+      "description": "Restricts player radio commands to predefined allowlist.",
+      "syntax": "sv_playerradio_use_allowlist <0 / 1>",
+      "category": "Radio"
+    },
+    {
+      "name": "sv_prime_accounts_only",
+      "slug": "sv-prime-accounts-only",
+      "description": "Restricts server access to Prime accounts only.",
+      "syntax": "sv_prime_accounts_only <0 / 1>",
+      "category": "Server",
+      "defaultValue": "0"
+    },
+    {
+      "name": "sv_pure",
+      "slug": "sv-pure",
+      "description": "Enforce client file matching.",
+      "syntax": "sv_pure <0 / 1>",
+      "category": "Server"
+    },
+    {
+      "name": "sv_radio_throttle_window",
+      "slug": "sv-radio-throttle-window",
+      "description": "Sets time before radio command tokens refresh.",
+      "syntax": "sv_radio_throttle_window <Seconds>",
+      "category": "Radio"
+    },
+    {
+      "name": "sv_regeneration_force_on",
+      "slug": "sv-regeneration-force-on",
+      "description": "Enable health regeneration system.",
+      "syntax": "sv_regeneration_force_on <0 / 1>",
+      "category": "Server",
+      "defaultValue": "0"
+    },
+    {
+      "name": "sv_region",
+      "slug": "sv-region",
+      "description": "Set server geographical region.",
+      "syntax": "sv_region <Region>",
+      "category": "Server"
+    },
+    {
+      "name": "sv_show_teammate_death_notification",
+      "slug": "sv-show-teammate-death-notification",
+      "description": "Configure teammate death chat notifications.",
+      "syntax": "sv_show_teammate_death_notification <0 / 1>",
+      "category": "Chat"
+    },
+    {
+      "name": "sv_showhitregistration",
+      "slug": "sv-showhitregistration",
+      "description": "Visualizes hitbox lag compensation for debugging.",
+      "syntax": "sv_showhitregistration <0 / 1>",
+      "category": "Server"
+    },
+    {
+      "name": "sv_showimpacts",
+      "slug": "sv-showimpacts",
+      "description": "Display bullet impact indicators.",
+      "syntax": "sv_showimpacts <0 / 1 / 2 / 3>",
+      "category": "Server",
+      "defaultValue": "0"
+    },
+    {
+      "name": "sv_showimpacts_penetration",
+      "slug": "sv-showimpacts-penetration",
+      "description": "Show penetration impact data.",
+      "syntax": "sv_showimpacts_penetration <0 / 1>",
+      "category": "Server",
+      "defaultValue": "0"
+    },
+    {
+      "name": "sv_showimpacts_time",
+      "slug": "sv-showimpacts-time",
+      "description": "Control impact indicator duration.",
+      "syntax": "sv_showimpacts_time <Seconds>",
+      "category": "Server"
+    },
+    {
+      "name": "sv_skyname",
+      "slug": "sv-skyname",
+      "description": "Change environmental skybox.",
+      "syntax": "sv_skyname <Skybox Code>",
+      "category": "Server"
+    },
+    {
+      "name": "sv_spec_hear",
+      "slug": "sv-spec-hear",
+      "description": "Configure spectator audio settings.",
+      "syntax": "sv_spec_hear <0 - 4>",
+      "category": "Server"
+    },
+    {
+      "name": "sv_staminajumpcost",
+      "slug": "sv-staminajumpcost",
+      "description": "Jump stamina penalty amount.",
+      "syntax": "sv_staminajumpcost <Penalty>",
+      "category": "Server"
+    },
+    {
+      "name": "sv_staminalandcost",
+      "slug": "sv-staminalandcost",
+      "description": "Landing stamina penalty amount.",
+      "syntax": "sv_staminalandcost <Penalty>",
+      "category": "Server"
+    },
+    {
+      "name": "sv_strafing_inaccuracy_enabled",
+      "slug": "sv-strafing-inaccuracy-enabled",
+      "description": "Enables or disables inaccuracy while strafing.",
+      "syntax": "sv_strafing_inaccuracy_enabled <0 / 1>",
+      "category": "Server"
+    },
+    {
+      "name": "sv_tags",
+      "slug": "sv-tags",
+      "description": "Set server browser tags.",
+      "syntax": "sv_tags <Tags>",
+      "category": "Server"
+    },
+    {
+      "name": "sv_voiceenable",
+      "slug": "sv-voiceenable",
+      "description": "Enable server voice communication.",
+      "syntax": "sv_voiceenable <0 / 1>",
+      "category": "Server",
+      "defaultValue": "1"
+    },
+    {
+      "name": "sv_vote_issue_kick_allowed",
+      "slug": "sv-vote-issue-kick-allowed",
+      "description": "Enable vote kick functionality.",
+      "syntax": "sv_vote_issue_kick_allowed <0 / 1>",
+      "category": "Server",
+      "defaultValue": "1"
+    },
+    {
+      "name": "sv_vote_kick_ban_duration",
+      "slug": "sv-vote-kick-ban-duration",
+      "description": "Ban duration for vote kicks in minutes.",
+      "syntax": "sv_vote_kick_ban_duration <Minutes>",
+      "category": "Server"
+    },
+    {
+      "name": "trusted_launch",
+      "slug": "trusted-launch",
+      "description": "Controls enhanced security measures in CS2.",
+      "syntax": "trusted_launch <0 / 1>",
+      "category": "Server"
+    },
+    {
+      "name": "tv_record_immediate",
+      "slug": "tv-record-immediate",
+      "description": "Starts instant demo recording.",
+      "syntax": "tv_record_immediate <0 / 1>",
+      "category": "Demo and Overwatch"
+    },
+    {
+      "name": "ui_party_msg_sound_enabled",
+      "slug": "ui-party-msg-sound-enabled",
+      "description": "Toggle lobby message notification sounds.",
+      "syntax": "ui_party_msg_sound_enabled <0 / 1>",
+      "category": "Chat"
+    },
+    {
+      "name": "ui_playsettings_survival_solo",
+      "slug": "ui-playsettings-survival-solo",
+      "description": "Sets preference for playing solo in Survival modes.",
+      "syntax": "ui_playsettings_survival_solo <0 / 1>",
+      "category": "Danger Zone"
+    },
+    {
+      "name": "unbind",
+      "slug": "unbind",
+      "description": "Removes all actions bound to specified key.",
+      "syntax": "unbind <Key>",
+      "category": "Bind"
+    },
+    {
+      "name": "unbindall",
+      "slug": "unbindall",
+      "description": "Removes all key bindings from all keys.",
+      "syntax": "unbindall",
+      "category": "Bind"
+    },
+    {
+      "name": "viewmodel_fov",
+      "slug": "viewmodel-fov",
+      "description": "Sets your client FOV (54-68, default 60).",
+      "syntax": "viewmodel_fov <FOV>",
+      "category": "FOV and Viewmodel",
+      "defaultValue": "60"
+    },
+    {
+      "name": "viewmodel_offset_randomize",
+      "slug": "viewmodel-offset-randomize",
+      "description": "Randomly changes viewmodel offsets to visualize possible positions.",
+      "syntax": "viewmodel_offset_randomize <0 / 1>",
+      "category": "FOV and Viewmodel",
+      "defaultValue": "0"
+    },
+    {
+      "name": "viewmodel_offset_x",
+      "slug": "viewmodel-offset-x",
+      "description": "Adjusts horizontal gun positioning (-2.5 to 2.5).",
+      "syntax": "viewmodel_offset_x <X Offset>",
+      "category": "FOV and Viewmodel",
+      "defaultValue": "0"
+    },
+    {
+      "name": "viewmodel_offset_y",
+      "slug": "viewmodel-offset-y",
+      "description": "Controls gun distance from character (-2 to 2).",
+      "syntax": "viewmodel_offset_y <Y Offset>",
+      "category": "FOV and Viewmodel",
+      "defaultValue": "0"
+    },
+    {
+      "name": "viewmodel_offset_z",
+      "slug": "viewmodel-offset-z",
+      "description": "Manages vertical gun placement (-2 to 2).",
+      "syntax": "viewmodel_offset_z <Z Offset>",
+      "category": "FOV and Viewmodel",
+      "defaultValue": "0"
+    },
+    {
+      "name": "viewmodel_presetpos",
+      "slug": "viewmodel-presetpos",
+      "description": "Applies preset configurations: 1=Desktop, 2=Couch, 3=Classic.",
+      "syntax": "viewmodel_presetpos <1 / 2 / 3>",
+      "category": "FOV and Viewmodel",
+      "defaultValue": "1"
+    },
+    {
+      "name": "voice_always_sample_mic",
+      "slug": "voice-always-sample-mic",
+      "description": "Prevents system hangs from microphone sampling.",
+      "syntax": "voice_always_sample_mic <0 / 1>",
+      "category": "Voice"
+    },
+    {
+      "name": "voice_device_override",
+      "slug": "voice-device-override",
+      "description": "Specifies audio input device for voice capture.",
+      "syntax": "voice_device_override <Device ID>",
+      "category": "Voice"
+    },
+    {
+      "name": "voice_loopback",
+      "slug": "voice-loopback",
+      "description": "Enables microphone playback through speakers for testing.",
+      "syntax": "voice_loopback <0 / 1>",
+      "category": "Voice",
+      "defaultValue": "0"
+    },
+    {
+      "name": "voice_loopback_no_networking",
+      "slug": "voice-loopback-no-networking",
+      "description": "Local voice loopback without network transmission.",
+      "syntax": "voice_loopback_no_networking <0 / 1>",
+      "category": "Voice",
+      "defaultValue": "0"
+    },
+    {
+      "name": "voice_modenable",
+      "slug": "voice-modenable",
+      "description": "Toggles microphone enable/disable status.",
+      "syntax": "voice_modenable <0 / 1>",
+      "category": "Voice",
+      "defaultValue": "1"
+    },
+    {
+      "name": "voice_modenable_toggle",
+      "slug": "voice-modenable-toggle",
+      "description": "Toggles voice module settings.",
+      "syntax": "voice_modenable_toggle",
+      "category": "Voice"
+    },
+    {
+      "name": "voice_threshold",
+      "slug": "voice-threshold",
+      "description": "Sets volume threshold for voice activation detection.",
+      "syntax": "voice_threshold <Threshold>",
+      "category": "Voice"
+    },
+    {
+      "name": "voice_threshold_attack",
+      "slug": "voice-threshold-attack",
+      "description": "Sets audio buffer duration for voice onset detection.",
+      "syntax": "voice_threshold_attack <Buffer Time>",
+      "category": "Voice"
+    },
+    {
+      "name": "voice_threshold_delay",
+      "slug": "voice-threshold-delay",
+      "description": "Defines silence duration before assuming speech cessation.",
+      "syntax": "voice_threshold_delay <Delay Time>",
+      "category": "Voice"
+    },
+    {
+      "name": "voice_threshold_hold",
+      "slug": "voice-threshold-hold",
+      "description": "Maintains speaking status after voice falls below threshold.",
+      "syntax": "voice_threshold_hold <Duration>",
+      "category": "Voice"
+    },
+    {
+      "name": "voice_vox",
+      "slug": "voice-vox",
+      "description": "Enables voice-operated exchange mode.",
+      "syntax": "voice_vox <0 / 1>",
+      "category": "Voice",
+      "defaultValue": "0"
+    },
+    {
+      "name": "volume_fog_clipmap_update",
+      "slug": "volume-fog-clipmap-update",
+      "description": "Toggles volumetric fog clipmap updates.",
+      "syntax": "volume_fog_clipmap_update <0 / 1>",
+      "category": "Fog"
+    },
+    {
+      "name": "volume_fog_clipmaps_enabled",
+      "slug": "volume-fog-clipmaps-enabled",
+      "description": "Activates volumetric fog rendering.",
+      "syntax": "volume_fog_clipmaps_enabled <0 / 1>",
+      "category": "Fog"
+    },
+    {
+      "name": "volume_fog_disable",
+      "slug": "volume-fog-disable",
+      "description": "Disables or enables volumetric fog.",
+      "syntax": "volume_fog_disable <0 / 1>",
+      "category": "Fog",
+      "defaultValue": "0"
+    },
+    {
+      "name": "volume_fog_dither_scale",
+      "slug": "volume-fog-dither-scale",
+      "description": "Adjusts volumetric fog dither intensity.",
+      "syntax": "volume_fog_dither_scale <Scale>",
+      "category": "Fog"
+    },
+    {
+      "name": "volume_fog_enable_jitter",
+      "slug": "volume-fog-enable-jitter",
+      "description": "Toggles volumetric fog jitter effect.",
+      "syntax": "volume_fog_enable_jitter <0 / 1>",
+      "category": "Fog"
+    },
+    {
+      "name": "volume_fog_enable_stereo",
+      "slug": "volume-fog-enable-stereo",
+      "description": "Enables stereo volumetric fog rendering.",
+      "syntax": "volume_fog_enable_stereo <0 / 1>",
+      "category": "Fog"
+    },
+    {
+      "name": "volume_fog_enlarge_frusta",
+      "slug": "volume-fog-enlarge-frusta",
+      "description": "Modifies fog volume frustum enlargement.",
+      "syntax": "volume_fog_enlarge_frusta <Value>",
+      "category": "Fog"
+    },
+    {
+      "name": "volume_fog_show_volumes",
+      "slug": "volume-fog-show-volumes",
+      "description": "Displays volumetric fog boundaries.",
+      "syntax": "volume_fog_show_volumes <0 / 1>",
+      "category": "Fog",
+      "defaultValue": "0"
+    },
+    {
+      "name": "writekeybindings",
+      "slug": "writekeybindings",
+      "description": "Saves current key bindings to disk.",
+      "syntax": "writekeybindings <Cmd>",
+      "category": "Bind"
+    },
+    {
+      "name": "zoom_sensitivity_ratio",
+      "slug": "zoom-sensitivity-ratio",
+      "description": "Modifies sensitivity when zoomed with sniper or scoped weapons.",
+      "syntax": "zoom_sensitivity_ratio <Sensitivity Scale>",
+      "category": "Mouse",
+      "defaultValue": "1"
+    }
+  ],
+  "categories": [
+    "Bot",
+    "Crosshair",
+    "HUD",
+    "Radar",
+    "Mouse",
+    "FOV and Viewmodel",
+    "Camera",
+    "Chat",
+    "Controller",
+    "Network",
+    "Radio",
+    "Fog",
+    "Multiplayer and Game Settings",
+    "Bind",
+    "Danger Zone",
+    "Demo and Overwatch",
+    "Server",
+    "Voice",
+    "Input"
+  ],
+  "totalCount": 590,
+  "source": "totalcsgo.com/commands",
+  "lastUpdated": "2026-03-03"
+}

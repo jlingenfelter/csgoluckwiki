@@ -1,0 +1,17 @@
+# CSDB.gg - CS2 Skin Database
+User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /api/
+
+# Sitemaps
+Sitemap: https://csdb.gg/sitemap-index.xml
+
+# Crawl rate
+Crawl-delay: 1
+
+# Google specific
+User-agent: Googlebot
+Allow: /
+Disallow: /admin/
+Disallow: /api/

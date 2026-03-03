@@ -1,0 +1,37 @@
+{
+  "slug": "float-checker",
+  "title": "CS2 Float Checker - Analyze Skin Wear Values",
+  "description": "Interactive float value checker for CS2 skins. Determine wear conditions, compare against boundaries, and understand float tiers for better skin trading decisions on CSDB.",
+  "heading": "CS2 Float Value Checker",
+  "intro": "Understand skin wear values and make informed trading decisions. Use our interactive analyzer to determine wear conditions, compare boundaries, and identify float tiers.",
+  "faqs": [
+    {
+      "question": "What is float value in CS2?",
+      "answer": "Float value (also called wear value) is a decimal number between 0.00 and 1.00 that represents how worn a skin appears in-game. Lower float values mean the skin looks more pristine, while higher values indicate more visible wear and tear."
+    },
+    {
+      "question": "How many wear conditions are there?",
+      "answer": "There are 5 wear conditions: Factory New (0.00-0.07), Minimal Wear (0.07-0.15), Field-Tested (0.15-0.38), Well-Worn (0.38-0.45), and Battle-Scarred (0.45-1.00). Some skins may not be obtainable in all conditions."
+    },
+    {
+      "question": "Does float value affect skin price?",
+      "answer": "Yes, significantly. Lower float values are rarer and more expensive, especially in Factory New condition. A 0.001 float skin can be worth considerably more than a 0.069 float of the same skin design."
+    },
+    {
+      "question": "What is \"low float\"?",
+      "answer": "Low float refers to skins with float values in the lower range of their wear condition, making them appear less worn. For example, a Field-Tested skin with 0.15-0.20 float is considered low float within that condition."
+    },
+    {
+      "question": "Can all skins drop in Factory New?",
+      "answer": "No, some skins have minimum float values higher than 0.00. For example, certain weapon finishes may have minimum floats of 0.05 or higher. Always check the specific skin's float range before trading."
+    },
+    {
+      "question": "Why do collectors prefer specific float values?",
+      "answer": "Collectors often seek ultra-low floats (0.000x-0.001) or specific numbers (0.420, 0.690, etc.) for rarity and aesthetics. These skins become investment pieces and conversation pieces in the community."
+    },
+    {
+      "question": "How do I find a skin\\'s exact float value?",
+      "answer": "You can check float values through CS2 in-game inspection, or use third-party inspection tools. Float values are permanent for each skin and don't change over time."
+    }
+  ]
+}

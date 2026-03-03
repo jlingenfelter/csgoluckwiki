@@ -1,0 +1,29 @@
+{
+  "slug": "resolution-calculator",
+  "title": "CS2 Resolution & Aspect Ratio Calculator — Stretched vs Black Bars | CSDB.gg",
+  "description": "Calculate the best CS2 resolution for your monitor. Compare 4:3 stretched, 16:9, and 16:10 aspect ratios. See FOV differences, pros and cons, and what the pros use.",
+  "heading": "CS2 Resolution & Aspect Ratio Calculator",
+  "intro": "Find the perfect resolution for your CS2 setup. Compare aspect ratios, understand FOV differences, and see what resolution the pros use.",
+  "faqs": [
+    {
+      "question": "Is 4:3 stretched better than 16:9 in CS2?",
+      "answer": "4:3 stretched makes player models appear wider, which some players find easier to aim at. However, you lose peripheral vision (reduced horizontal FOV). Most pros use 4:3 stretched, but it is personal preference — 16:9 gives you more information on screen."
+    },
+    {
+      "question": "What resolution do most CS2 pros use?",
+      "answer": "The most popular pro resolution is 1280x960 (4:3 stretched), followed by 1024x768 and 1920x1080 (native 16:9). About 60% of professional players use some form of 4:3 resolution."
+    },
+    {
+      "question": "Does resolution affect FPS in CS2?",
+      "answer": "Yes. Lower resolutions render fewer pixels, which can significantly boost FPS. Switching from 1920x1080 to 1280x960 can increase FPS by 30-50% depending on your GPU. This is why many players on older hardware prefer lower resolutions."
+    },
+    {
+      "question": "What is the difference between stretched and black bars?",
+      "answer": "Both use a 4:3 resolution. Stretched fills your entire screen by stretching the image horizontally — models look wider but distorted. Black bars keep the native aspect ratio with unused black space on the sides — models look normal but your usable screen area is smaller."
+    },
+    {
+      "question": "How do I set up stretched resolution in CS2?",
+      "answer": "Set your in-game resolution to a 4:3 option (like 1280x960), then in your GPU control panel (NVIDIA Control Panel or AMD Radeon Settings) set the display scaling mode to \"Full-screen\" instead of \"Aspect ratio\". This forces the image to stretch across your entire monitor."
+    }
+  ]
+}

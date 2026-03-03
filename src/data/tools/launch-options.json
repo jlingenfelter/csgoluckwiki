@@ -1,0 +1,29 @@
+{
+  "slug": "launch-options",
+  "title": "CS2 Launch Options Optimizer — Best Settings for Performance | CSDB.gg",
+  "description": "Optimize your CS2 launch options for maximum FPS, reduced input lag, and stable performance. Choose from presets or build a custom launch string for your hardware.",
+  "heading": "CS2 Launch Options Optimizer",
+  "intro": "Configure your Steam launch options for optimal CS2 performance. Select individual flags or start from a hardware-matched preset.",
+  "faqs": [
+    {
+      "question": "How do I set launch options in CS2?",
+      "answer": "Right-click CS2 in your Steam Library → Properties → General tab → Launch Options. Paste your launch options string in the text field. Changes take effect next time you start the game."
+    },
+    {
+      "question": "What are the best CS2 launch options?",
+      "answer": "For most players: -novid -high -tickrate 128. Add -threads [your CPU threads] on older hardware. Avoid deprecated options like -nojoy or -lv which no longer do anything in CS2."
+    },
+    {
+      "question": "Does -high actually help in CS2?",
+      "answer": "The -high flag sets CS2 to high process priority, which can improve performance on systems running background applications. On dedicated gaming PCs with nothing else running, the difference is minimal."
+    },
+    {
+      "question": "What launch options reduce input lag?",
+      "answer": "The most impactful options for input lag are -high (priority), -d3d9ex (DirectX optimization), and disabling VSync in-game. The -tickrate 128 flag ensures offline practice matches run at full tick rate."
+    },
+    {
+      "question": "Are there launch options that hurt performance?",
+      "answer": "Yes. Options like -fullscreen (forces exclusive fullscreen which can cause issues), too many -threads, or outdated CS:GO options that don't exist in CS2 can cause instability or have no effect."
+    }
+  ]
+}

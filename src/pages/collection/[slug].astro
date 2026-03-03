@@ -1,0 +1,690 @@
+---
+import Base from '../../layouts/Base.astro';
+import ExploreMore from '../../components/ExploreMore.astro';
+import { getCollections, getLowestPrice, RARITY_COLORS, RARITY_BG, type CollectionInfo } from '../../lib/skins';
+import { breadcrumbSchema, faqSchema } from '../../lib/weapons';
+import { getCollectionImage } from '../../lib/collection-images';
+
+export function getStaticPaths() {
+  return getCollections().map((col) => ({
+    params: { slug: col.slug },
+    props: { collection: col },
+  }));
+}
+
+const { collection } = Astro.props as { collection: CollectionInfo };
+
+if (!collection) {
+  return Astro.redirect('/skins/');
+}
+
+const title = `${collection.name} CS2 Skins — All Skins & Prices | CSDB.gg`;
+const description = `Browse all ${collection.skins.length} skins in the ${collection.name} collection. See prices, float ranges, and rarity breakdown. Find the best deals on ${collection.name} skins.`;
+
+// Rarity tier ordering — highest to lowest
+const rarityOrder = ['Covert', 'Classified', 'Restricted', 'Mil-Spec', 'Industrial', 'Consumer'];
+
+// Group skins by rarity
+const skinsByRarity: Record<string, typeof collection.skins> = {};
+for (const rarity of rarityOrder) {
+  const skinsInRarity = collection.skins.filter(s => s.rarity === rarity);
+  if (skinsInRarity.length > 0) {
+    skinsByRarity[rarity] = skinsInRarity;
+  }
+}
+
+// Collection stats
+const allPrices = collection.skins.map(s => getLowestPrice(s)).filter(p => p > 0);
+const avgPrice = allPrices.length > 0 ? allPrices.reduce((a, b) => a + b, 0) / allPrices.length : 0;
+const minPrice = allPrices.length > 0 ? Math.min(...allPrices) : 0;
+const maxPrice = allPrices.length > 0 ? Math.max(...allPrices) : 0;
+const statTrakCount = collection.skins.filter(s => s.statTrak).length;
+const souvenirCount = collection.skins.filter(s => s.souvenir).length;
+
+// Collection emblem image
+const collectionImage = getCollectionImage(collection.name);
+
+// Breadcrumbs
+const breadcrumbs = [
+  { name: 'Home', url: '/' },
+  { name: 'Skins', url: '/skins/' },
+  { name: 'Collections', url: '/cases/' },
+  { name: collection.name, url: `/collection/${collection.slug}/` },
+];
+
+// FAQ
+const faqs = [
+  {
+    q: `How many skins are in the ${collection.name} collection?`,
+    a: `The ${collection.name} collection contains ${collection.skins.length} skins across ${Object.keys(skinsByRarity).length} rarity tiers: ${Object.entries(collection.rarities).map(([r, c]) => `${c} ${r}`).join(', ')}.`,
+  },
+  {
+    q: `What is the cheapest skin in the ${collection.name} collection?`,
+    a: minPrice > 0
+      ? `The most affordable skin in the ${collection.name} collection starts at $${minPrice.toFixed(2)}. Prices vary by wear condition and whether the skin is StatTrak or Souvenir.`
+      : `Price data for ${collection.name} skins is currently being updated. Check back soon for the latest prices.`,
+  },
+  {
+    q: `Can you get ${collection.name} skins as drops?`,
+    a: `${collection.name} skins can be obtained through in-game drops, trade-ups, or purchased from the Steam Community Market and third-party marketplaces. Availability depends on whether the collection is currently in the active drop pool.`,
+  },
+];
+---
+
+<Base {title} {description} currentNav="/skins/">
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema(breadcrumbs))} />
+    <script type="application/ld+json" set:html={JSON.stringify(faqSchema(faqs))} />
+  </Fragment>
+
+  <!-- Breadcrumb -->
+  <nav class="breadcrumb-nav" aria-label="Breadcrumb">
+    <a href="/">Home</a>
+    <span class="sep">/</span>
+    <a href="/skins/">Skins</a>
+    <span class="sep">/</span>
+    <a href="/cases/">Collections</a>
+    <span class="sep">/</span>
+    <span class="current">{collection.name}</span>
+  </nav>
+
+  <!-- Hero -->
+  <header class="collection-hero">
+    {collectionImage && (
+      <img src={collectionImage} alt={collection.name} class="collection-emblem" width="120" height="120" loading="eager" />
+    )}
+    <h1>{collection.name}</h1>
+    <p class="hero-subtitle">{collection.skins.length} skins across {Object.keys(skinsByRarity).length} rarity tiers</p>
+
+    <div class="rarity-badges">
+      {rarityOrder
+        .filter(r => collection.rarities[r])
+        .map(r => (
+          <span class="rarity-pill" style={`background:${RARITY_BG[r]};color:${RARITY_COLORS[r]};border:1px solid ${RARITY_COLORS[r]}40`}>
+            <span class="rarity-dot" style={`background:${RARITY_COLORS[r]}`}></span>
+            {r} ({collection.rarities[r]})
+          </span>
+        ))
+      }
+    </div>
+
+    <div class="hero-meta">
+      <span class="meta-item">{collection.weapons.length} weapon{collection.weapons.length !== 1 ? 's' : ''}</span>
+      {statTrakCount > 0 && <span class="meta-item st-badge">StatTrak Available</span>}
+      {souvenirCount > 0 && <span class="meta-item sv-badge">Souvenir Available</span>}
+    </div>
+  </header>
+
+  <!-- Skins grouped by rarity -->
+  <section class="skins-section">
+    <h2>All Skins in {collection.name}</h2>
+    <p class="skins-description">Browse all {collection.skins.length} skins grouped by rarity tier, from rarest to most common.</p>
+
+    {rarityOrder
+      .filter(r => skinsByRarity[r])
+      .map(rarity => (
+        <div class="rarity-group">
+          <h3 class="rarity-header" style={`border-left:4px solid ${RARITY_COLORS[rarity]}`}>
+            <span class="rarity-header-dot" style={`background:${RARITY_COLORS[rarity]}`}></span>
+            {rarity}
+            <span class="rarity-count">({skinsByRarity[rarity].length} skin{skinsByRarity[rarity].length !== 1 ? 's' : ''})</span>
+          </h3>
+          <div class="skins-grid">
+            {skinsByRarity[rarity].map(skin => {
+              const price = getLowestPrice(skin);
+              const rarityColor = RARITY_COLORS[skin.rarity] || '#fff';
+              const floatLeft = (skin.minFloat * 100);
+              const floatWidth = ((skin.maxFloat - skin.minFloat) * 100);
+              return (
+                <a href={`/skin/${skin.slug}/`} class="skin-card" style={`--card-accent:${rarityColor}`}>
+                  <div class="skin-card-image" style={`background:${RARITY_BG[skin.rarity] || 'rgba(255,255,255,0.05)'}`}>
+                    {skin.image ? (
+                      <img src={skin.image} alt={`${skin.weapon} | ${skin.name}`} loading="lazy" width="256" height="192" />
+                    ) : (
+                      <div class="no-image">No Image</div>
+                    )}
+                    {skin.statTrak && <span class="st-tag">StatTrak</span>}
+                  </div>
+                  <div class="skin-card-body">
+                    <div class="skin-weapon-name">{skin.weapon}</div>
+                    <div class="skin-skin-name">{skin.name}</div>
+                    <div class="skin-card-meta">
+                      <span class="skin-rarity-badge" style={`background:${rarityColor}22;color:${rarityColor};border:1px solid ${rarityColor}40`}>
+                        {skin.rarity}
+                      </span>
+                      {price > 0 && <span class="skin-price">From ${price.toFixed(2)}</span>}
+                    </div>
+                    <div class="float-bar-wrapper">
+                      <div class="float-labels">
+                        <span>{skin.minFloat.toFixed(2)}</span>
+                        <span>{skin.maxFloat.toFixed(2)}</span>
+                      </div>
+                      <div class="float-bar">
+                        <div class="float-bar-range" style={`left:${floatLeft}%;width:${floatWidth}%;background:${rarityColor}`}></div>
+                      </div>
+                    </div>
+                  </div>
+                </a>
+              );
+            })}
+          </div>
+        </div>
+      ))
+    }
+  </section>
+
+  <!-- Collection Stats -->
+  <section class="stats-section">
+    <h2>Collection Stats</h2>
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-label">Total Skins</div>
+        <div class="stat-value">{collection.skins.length}</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Average Price</div>
+        <div class="stat-value">{avgPrice > 0 ? `$${avgPrice.toFixed(2)}` : 'N/A'}</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Price Range</div>
+        <div class="stat-value">{minPrice > 0 ? `$${minPrice.toFixed(2)} – $${maxPrice.toFixed(2)}` : 'N/A'}</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Weapons</div>
+        <div class="stat-value">{collection.weapons.length}</div>
+      </div>
+    </div>
+
+    <div class="weapons-list">
+      <h3>Weapons in this Collection</h3>
+      <div class="weapons-tags">
+        {collection.weapons.map(w => (
+          <span class="weapon-tag">{w}</span>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="faq-section">
+    <h2>Frequently Asked Questions</h2>
+    {faqs.map(faq => (
+      <div class="faq-item">
+        <h3 class="faq-q">{faq.q}</h3>
+        <p class="faq-a">{faq.a}</p>
+      </div>
+    ))}
+  </section>
+
+  <!-- Internal Links -->
+  <div class="internal-links">
+    <a href="/skins/">All Skins</a>
+    <a href="/cases/">Cases & Collections</a>
+    <a href="/skin-compare/">Compare Skins</a>
+    <a href="/price-tracker/">Price Tracker</a>
+    <a href="/float-checker/">Float Checker</a>
+    <a href="/tradeup-calculator/">Trade-Up Calculator</a>
+    <a href="/market-trends/">Market Trends</a>
+    <a href="/inventory-lookup/">Inventory Lookup</a>
+    <a href="/loadout-builder/">Loadout Builder</a>
+    <a href="/guides/skins-investing-guide/">Investing Guide</a>
+    <a href="/guides/trading-guide/">Trading Guide</a>
+    <a href="/guides/float-guide/">Float Guide</a>
+  </div>
+
+  <ExploreMore context="skins" />
+
+  <style is:inline>
+    /* ── Breadcrumb ────────────────────────────────────────────────── */
+    .breadcrumb-nav {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.85rem;
+      margin-bottom: 1.5rem;
+      flex-wrap: wrap;
+    }
+
+    .breadcrumb-nav a {
+      color: var(--text2);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .breadcrumb-nav a:hover {
+      color: var(--accent);
+    }
+
+    .breadcrumb-nav .sep {
+      color: var(--text2);
+      opacity: 0.5;
+    }
+
+    .breadcrumb-nav .current {
+      color: var(--text);
+      font-weight: 600;
+    }
+
+    /* ── Hero ──────────────────────────────────────────────────────── */
+    .collection-hero {
+      margin-bottom: 2.5rem;
+    }
+
+    .collection-emblem {
+      width: 120px;
+      height: 120px;
+      object-fit: contain;
+      margin-bottom: 1rem;
+      filter: drop-shadow(0 4px 12px rgba(0,0,0,0.4));
+    }
+
+    .collection-hero h1 {
+      font-size: 2.5rem;
+      background: linear-gradient(135deg, var(--accent), var(--accent2, #f5a623));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin: 0 0 0.5rem;
+      line-height: 1.2;
+    }
+
+    .hero-subtitle {
+      font-size: 1.1rem;
+      color: var(--text2);
+      margin: 0 0 1rem;
+    }
+
+    .rarity-badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .rarity-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.3rem 0.75rem;
+      border-radius: 20px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .rarity-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .hero-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      font-size: 0.88rem;
+      color: var(--text2);
+    }
+
+    .meta-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+    }
+
+    .st-badge {
+      color: #cf6a32;
+      font-weight: 600;
+    }
+
+    .sv-badge {
+      color: #e4ae39;
+      font-weight: 600;
+    }
+
+    /* ── Skins Section ────────────────────────────────────────────── */
+    .skins-section {
+      margin: 2rem 0 3rem;
+    }
+
+    .skins-section h2 {
+      margin-bottom: 0.4rem;
+    }
+
+    .skins-description {
+      color: var(--text2);
+      margin-bottom: 2rem;
+      font-size: 0.95rem;
+    }
+
+    .rarity-group {
+      margin-bottom: 2.5rem;
+    }
+
+    .rarity-header {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      padding-left: 1rem;
+      margin: 0 0 1rem;
+      font-size: 1.15rem;
+      font-weight: 700;
+    }
+
+    .rarity-header-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 2px;
+      flex-shrink: 0;
+    }
+
+    .rarity-count {
+      font-weight: 400;
+      font-size: 0.9rem;
+      color: var(--text2);
+    }
+
+    .skins-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 1rem;
+    }
+
+    /* ── Skin Card ────────────────────────────────────────────────── */
+    .skin-card {
+      display: flex;
+      flex-direction: column;
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+      text-decoration: none;
+      color: inherit;
+      transition: all 0.25s;
+      border-bottom: 3px solid var(--card-accent, var(--border));
+    }
+
+    .skin-card:hover {
+      border-color: var(--card-accent);
+      transform: translateY(-3px);
+      box-shadow: 0 8px 28px rgba(0, 0, 0, 0.25);
+    }
+
+    .skin-card-image {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 160px;
+      overflow: hidden;
+    }
+
+    .skin-card-image img {
+      max-width: 90%;
+      max-height: 90%;
+      object-fit: contain;
+    }
+
+    .no-image {
+      font-size: 0.8rem;
+      color: var(--text2);
+      opacity: 0.5;
+    }
+
+    .st-tag {
+      position: absolute;
+      top: 0.5rem;
+      right: 0.5rem;
+      background: rgba(207, 106, 50, 0.9);
+      color: #fff;
+      font-size: 0.65rem;
+      font-weight: 700;
+      padding: 0.2rem 0.5rem;
+      border-radius: 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .skin-card-body {
+      padding: 0.8rem 1rem 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.3rem;
+      flex: 1;
+    }
+
+    .skin-weapon-name {
+      font-size: 0.72rem;
+      color: var(--text2);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .skin-skin-name {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--text);
+      line-height: 1.3;
+    }
+
+    .skin-card-meta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.5rem;
+      margin-top: 0.25rem;
+    }
+
+    .skin-rarity-badge {
+      font-size: 0.68rem;
+      font-weight: 600;
+      padding: 0.15rem 0.5rem;
+      border-radius: 4px;
+      white-space: nowrap;
+    }
+
+    .skin-price {
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    /* ── Float Range Bar ──────────────────────────────────────────── */
+    .float-bar-wrapper {
+      margin-top: auto;
+      padding-top: 0.4rem;
+    }
+
+    .float-labels {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.65rem;
+      color: var(--text2);
+      margin-bottom: 0.2rem;
+    }
+
+    .float-bar {
+      position: relative;
+      height: 6px;
+      background: var(--bg3);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+
+    .float-bar-range {
+      position: absolute;
+      top: 0;
+      height: 100%;
+      border-radius: 3px;
+      opacity: 0.8;
+      min-width: 2px;
+    }
+
+    /* ── Stats Section ────────────────────────────────────────────── */
+    .stats-section {
+      margin: 3rem 0;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+      margin: 1.5rem 0;
+    }
+
+    .stat-card {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1.5rem;
+      text-align: center;
+      transition: all 0.3s;
+    }
+
+    .stat-card:hover {
+      border-color: var(--accent);
+      box-shadow: 0 8px 24px rgba(245, 166, 35, 0.1);
+    }
+
+    .stat-label {
+      color: var(--text2);
+      font-size: 0.82rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 0.5rem;
+    }
+
+    .stat-value {
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: var(--accent);
+    }
+
+    .weapons-list {
+      margin-top: 1.5rem;
+    }
+
+    .weapons-list h3 {
+      font-size: 1rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .weapons-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .weapon-tag {
+      display: inline-block;
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 0.35rem 0.75rem;
+      font-size: 0.82rem;
+      color: var(--text);
+      font-weight: 500;
+    }
+
+    /* ── FAQ ───────────────────────────────────────────────────────── */
+    .faq-section {
+      margin: 3rem 0;
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 2rem;
+    }
+
+    .faq-section h2 {
+      margin-top: 0;
+    }
+
+    .faq-item {
+      margin-bottom: 1.5rem;
+    }
+
+    .faq-item:last-child {
+      margin-bottom: 0;
+    }
+
+    .faq-q {
+      font-size: 1rem;
+      font-weight: 700;
+      margin: 0 0 0.4rem;
+      color: var(--text);
+    }
+
+    .faq-a {
+      font-size: 0.92rem;
+      color: var(--text2);
+      margin: 0;
+      line-height: 1.6;
+    }
+
+    /* ── Internal Links ───────────────────────────────────────────── */
+    .internal-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin: 2rem 0;
+    }
+
+    .internal-links a {
+      display: inline-block;
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 0.4rem 0.85rem;
+      font-size: 0.82rem;
+      color: var(--text);
+      text-decoration: none;
+      font-weight: 500;
+      transition: all 0.2s;
+    }
+
+    .internal-links a:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    /* ── Responsive ───────────────────────────────────────────────── */
+    @media (max-width: 768px) {
+      .collection-hero h1 {
+        font-size: 1.8rem;
+      }
+
+      .hero-subtitle {
+        font-size: 0.95rem;
+      }
+
+      .skins-grid {
+        grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      }
+
+      .skin-card-image {
+        height: 120px;
+      }
+
+      .skin-card-body {
+        padding: 0.6rem 0.75rem 0.75rem;
+      }
+
+      .skin-skin-name {
+        font-size: 0.88rem;
+      }
+
+      .stats-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .faq-section {
+        padding: 1.25rem;
+      }
+
+      .rarity-header {
+        font-size: 1rem;
+      }
+    }
+  </style>
+</Base>

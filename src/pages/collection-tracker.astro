@@ -1,0 +1,829 @@
+---
+import Base from '../layouts/Base.astro';
+import ExploreMore from '../components/ExploreMore.astro';
+import { SKINS, getLowestPrice, RARITY_COLORS, getCollections } from '../lib/skins';
+import { breadcrumbSchema, faqSchema } from '../lib/weapons';
+
+const title = 'CS2 Collection Tracker — Track Your Skin Collection Progress | CSDB.gg';
+const description = 'Track your CS2 skin collection completion across every collection. Mark skins as owned, see completion percentages, and estimate your collection value. Free collection progress tracker.';
+
+const breadcrumbs = [
+  { name: 'Home', url: '/' },
+  { name: 'Skins', url: '/skins/' },
+  { name: 'Collection Tracker', url: '/collection-tracker/' },
+];
+
+const faqData = [
+  { q: 'How does the Collection Tracker work?', a: 'The tracker loads all CS2 skin collections and lets you click individual skins to mark them as owned. Your progress is saved locally in your browser using localStorage, so it persists between visits. No account or login is required.' },
+  { q: 'Is my collection data saved?', a: 'Yes. Your owned skins are stored in your browser\'s localStorage as a list of skin identifiers. The data never leaves your device and is not sent to any server. Clearing your browser data will reset your progress.' },
+  { q: 'How are collection values calculated?', a: 'The estimated value is based on the lowest available market price for each skin you\'ve marked as owned. Prices are sourced from PriceEmpire which aggregates data from 14+ marketplaces. Actual values may vary by wear condition and market fluctuations.' },
+  { q: 'Can I track StatTrak or Souvenir versions?', a: 'The tracker currently tracks base skins by collection. StatTrak and Souvenir variants share the same collection slot — marking a skin as owned covers all variants of that skin within the collection.' },
+  { q: 'How do I reset my collection progress?', a: 'Click the "Reset All" button at the top of the page to clear all owned skins and start fresh. This action cannot be undone, so make sure you want to reset before confirming.' },
+  { q: 'What collections are included?', a: 'Every collection available in CS2 is included, from map collections like the Dust 2 Collection to operation collections and special event collections. The tracker updates automatically as new collections are added to the game.' },
+  { q: 'Can I share my collection progress?', a: 'Currently, collection progress is stored locally in your browser. You can use the Inventory Lookup tool to show your actual Steam inventory, or the Loadout Builder to share a specific loadout with others.' },
+  { q: 'Why do some skins show $0.00 price?', a: 'Skins showing $0.00 either have no current market listings or their price data is temporarily unavailable. These skins are still tracked for completion percentage but won\'t count toward your estimated value.' },
+];
+
+// Build collection data at build time
+const collections = getCollections();
+const totalSkinsAll = collections.reduce((sum, c) => sum + c.skins.length, 0);
+
+// Build a JSON blob for client-side use
+const collectionsData = collections.map(col => ({
+  name: col.name,
+  slug: col.slug,
+  skins: col.skins.map(s => ({
+    slug: s.slug,
+    name: s.name,
+    weapon: s.weapon,
+    rarity: s.rarity,
+    lowestPrice: getLowestPrice(s),
+  })),
+}));
+
+const collectionsJson = JSON.stringify(collectionsData);
+const rarityColorsJson = JSON.stringify(RARITY_COLORS);
+---
+
+<Base title={title} description={description} currentNav="/skins/">
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema(breadcrumbs))} />
+    <script type="application/ld+json" set:html={JSON.stringify(faqSchema(faqData))} />
+  </Fragment>
+
+  <!-- Breadcrumb -->
+  <nav class="breadcrumb">
+    <a href="/">Home</a> / <a href="/skins/">Skins</a> / <span>Collection Tracker</span>
+  </nav>
+
+  <!-- Hero -->
+  <section class="tracker-hero">
+    <h1>CS2 Collection Tracker</h1>
+    <p>Track your skin collection progress across every CS2 collection. Click skins to mark them as owned and watch your completion grow. Your progress is saved locally in your browser.</p>
+  </section>
+
+  <!-- Overall Stats -->
+  <div class="stats-grid" id="overall-stats">
+    <div class="stat-card">
+      <div class="val" id="stat-owned">0</div>
+      <div class="label">Skins Owned</div>
+    </div>
+    <div class="stat-card">
+      <div class="val" id="stat-total">{totalSkinsAll}</div>
+      <div class="label">Total Skins</div>
+    </div>
+    <div class="stat-card">
+      <div class="val" id="stat-collections-started">0</div>
+      <div class="label">Collections Started</div>
+    </div>
+    <div class="stat-card">
+      <div class="val" id="stat-collections-complete">0</div>
+      <div class="label">Collections Complete</div>
+    </div>
+    <div class="stat-card">
+      <div class="val" id="stat-value">$0.00</div>
+      <div class="label">Est. Collection Value</div>
+    </div>
+  </div>
+
+  <!-- Controls -->
+  <div class="tracker-controls">
+    <div class="tracker-search-wrap">
+      <input type="text" id="collection-search" placeholder="Search collections..." class="tracker-search" />
+    </div>
+    <div class="tracker-sort-wrap">
+      <label for="sort-select">Sort by:</label>
+      <select id="sort-select">
+        <option value="completion">Completion %</option>
+        <option value="name">Name A-Z</option>
+        <option value="size">Collection Size</option>
+        <option value="value">Value</option>
+      </select>
+    </div>
+    <button id="reset-btn" class="tracker-reset-btn">Reset All</button>
+  </div>
+
+  <!-- Overall completion bar -->
+  <div class="overall-progress">
+    <div class="overall-progress-label">
+      <span>Overall Completion</span>
+      <span id="overall-pct">0%</span>
+    </div>
+    <div class="overall-progress-bar">
+      <div class="overall-progress-fill" id="overall-fill" style="width:0%"></div>
+    </div>
+  </div>
+
+  <!-- Collection Grid -->
+  <div class="collection-grid" id="collection-grid">
+    <!-- Populated by JS -->
+  </div>
+
+  <!-- Internal Links -->
+  <div class="internal-links">
+    <a href="/skins/">All Skins</a>
+    <a href="/cases/">Cases & Collections</a>
+    <a href="/skin-compare/">Compare Skins</a>
+    <a href="/price-tracker/">Price Tracker</a>
+    <a href="/float-checker/">Float Checker</a>
+    <a href="/tradeup-calculator/">Trade-Up Calculator</a>
+    <a href="/inventory-lookup/">Inventory Lookup</a>
+    <a href="/loadout-builder/">Loadout Builder</a>
+    <a href="/market-trends/">Market Trends</a>
+    <a href="/trading-sites/">Trading Sites</a>
+  </div>
+
+  <!-- FAQ -->
+  <section class="faq">
+    <h2>Frequently Asked Questions</h2>
+    <dl>
+      {faqData.map(f => (
+        <dt>{f.q}</dt>
+        <dd>{f.a}</dd>
+      ))}
+    </dl>
+  </section>
+
+  <ExploreMore context="skins" />
+</Base>
+
+<style>
+  .tracker-hero { margin-bottom: 1.5rem; }
+  .tracker-hero h1 { margin-bottom: .5rem; }
+  .tracker-hero p { color: var(--text2); font-size: .95rem; max-width: 720px; }
+
+  .tracker-controls {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    flex-wrap: wrap;
+    margin: 1.5rem 0 1rem;
+  }
+
+  .tracker-search-wrap { flex: 1; min-width: 200px; }
+
+  .tracker-search {
+    width: 100%;
+    background: var(--bg3);
+    color: var(--text);
+    border: 1px solid var(--border);
+    padding: .5rem .75rem;
+    border-radius: 6px;
+    font-size: .9rem;
+    transition: border-color .2s;
+  }
+  .tracker-search:focus {
+    outline: none;
+    border-color: var(--accent);
+  }
+
+  .tracker-sort-wrap {
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+  }
+  .tracker-sort-wrap label {
+    font-size: .85rem;
+    color: var(--text2);
+    white-space: nowrap;
+  }
+  .tracker-sort-wrap select {
+    background: var(--bg3);
+    color: var(--text);
+    border: 1px solid var(--border);
+    padding: .4rem .6rem;
+    border-radius: 6px;
+    font-size: .85rem;
+    cursor: pointer;
+  }
+  .tracker-sort-wrap select:focus {
+    outline: none;
+    border-color: var(--accent);
+  }
+
+  .tracker-reset-btn {
+    background: var(--bg3);
+    color: var(--red, #e07070);
+    border: 1px solid var(--border);
+    padding: .4rem .9rem;
+    border-radius: 6px;
+    font-size: .85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all .2s;
+    font-family: inherit;
+  }
+  .tracker-reset-btn:hover {
+    background: rgba(224, 112, 112, 0.15);
+    border-color: var(--red, #e07070);
+  }
+
+  /* Overall progress */
+  .overall-progress {
+    margin: 1rem 0 1.5rem;
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1rem 1.25rem;
+  }
+  .overall-progress-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: .88rem;
+    font-weight: 600;
+    margin-bottom: .5rem;
+  }
+  .overall-progress-label span:first-child { color: var(--text); }
+  .overall-progress-label span:last-child { color: var(--accent); }
+  .overall-progress-bar {
+    height: 10px;
+    background: var(--bg3);
+    border-radius: 5px;
+    overflow: hidden;
+  }
+  .overall-progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    border-radius: 5px;
+    transition: width .4s ease;
+  }
+
+  /* Collection grid */
+  .collection-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 1rem;
+    margin-bottom: 2rem;
+  }
+
+  /* Collection card */
+  .col-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    transition: border-color .2s, box-shadow .2s;
+  }
+  .col-card:hover {
+    border-color: rgba(212, 149, 110, 0.4);
+  }
+  .col-card.expanded {
+    border-color: var(--accent);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+  }
+
+  .col-card-header {
+    padding: 1rem 1.25rem;
+    cursor: pointer;
+    user-select: none;
+    display: flex;
+    flex-direction: column;
+    gap: .5rem;
+  }
+  .col-card-header:hover { background: rgba(255, 255, 255, 0.02); }
+
+  .col-card-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .col-card-name {
+    font-weight: 700;
+    font-size: .95rem;
+    color: var(--text);
+  }
+  .col-card-count {
+    font-size: .78rem;
+    color: var(--text2);
+    white-space: nowrap;
+  }
+
+  .col-card-bar-wrap {
+    display: flex;
+    align-items: center;
+    gap: .75rem;
+  }
+  .col-card-bar {
+    flex: 1;
+    height: 6px;
+    background: var(--bg3);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+  .col-card-fill {
+    height: 100%;
+    border-radius: 3px;
+    transition: width .3s ease;
+    background: var(--accent);
+  }
+  .col-card-fill.complete {
+    background: var(--green, #5cb85c);
+  }
+  .col-card-pct {
+    font-size: .78rem;
+    font-weight: 700;
+    color: var(--accent);
+    min-width: 38px;
+    text-align: right;
+  }
+  .col-card-pct.complete {
+    color: var(--green, #5cb85c);
+  }
+
+  .col-card-meta {
+    display: flex;
+    gap: .75rem;
+    font-size: .75rem;
+    color: var(--text2);
+  }
+
+  /* Expanded skin list */
+  .col-card-body {
+    display: none;
+    border-top: 1px solid var(--border);
+    padding: .75rem;
+    max-height: 400px;
+    overflow-y: auto;
+  }
+  .col-card.expanded .col-card-body {
+    display: block;
+  }
+
+  .col-card-actions {
+    display: flex;
+    gap: .5rem;
+    margin-bottom: .75rem;
+    padding: 0 .25rem;
+  }
+  .col-card-actions button {
+    background: var(--bg3);
+    color: var(--text2);
+    border: 1px solid var(--border);
+    padding: .25rem .6rem;
+    border-radius: 4px;
+    font-size: .72rem;
+    cursor: pointer;
+    font-family: inherit;
+    transition: all .2s;
+  }
+  .col-card-actions button:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  .skin-item {
+    display: flex;
+    align-items: center;
+    gap: .75rem;
+    padding: .45rem .5rem;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background .15s;
+    user-select: none;
+  }
+  .skin-item:hover {
+    background: var(--bg3);
+  }
+
+  .skin-check {
+    width: 18px;
+    height: 18px;
+    border-radius: 4px;
+    border: 2px solid var(--border);
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all .2s;
+    font-size: .7rem;
+    color: transparent;
+  }
+  .skin-item.owned .skin-check {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: var(--bg);
+  }
+
+  .skin-rarity-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .skin-info {
+    flex: 1;
+    min-width: 0;
+  }
+  .skin-info-name {
+    font-size: .82rem;
+    font-weight: 600;
+    color: var(--text);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .skin-info-weapon {
+    font-size: .72rem;
+    color: var(--text2);
+  }
+  .skin-item.owned .skin-info-name {
+    color: var(--accent);
+  }
+
+  .skin-price {
+    font-size: .78rem;
+    font-weight: 600;
+    color: var(--text2);
+    white-space: nowrap;
+  }
+
+  .skin-link {
+    font-size: .72rem;
+    color: var(--accent);
+    text-decoration: none;
+    flex-shrink: 0;
+    opacity: 0;
+    transition: opacity .15s;
+  }
+  .skin-item:hover .skin-link {
+    opacity: 1;
+  }
+  .skin-link:hover {
+    color: var(--accent2);
+    text-decoration: underline;
+  }
+
+  .col-card-value {
+    border-top: 1px solid var(--border);
+    padding: .5rem .75rem;
+    display: flex;
+    justify-content: space-between;
+    font-size: .78rem;
+  }
+  .col-card-value span:first-child { color: var(--text2); }
+  .col-card-value span:last-child { color: var(--accent); font-weight: 700; }
+
+  /* Scrollbar for expanded */
+  .col-card-body::-webkit-scrollbar { width: 5px; }
+  .col-card-body::-webkit-scrollbar-track { background: transparent; }
+  .col-card-body::-webkit-scrollbar-thumb { background: var(--bg3); border-radius: 3px; }
+  .col-card-body::-webkit-scrollbar-thumb:hover { background: var(--accent); }
+
+  @media (max-width: 768px) {
+    .collection-grid {
+      grid-template-columns: 1fr;
+    }
+    .tracker-controls {
+      flex-direction: column;
+      align-items: stretch;
+    }
+    .tracker-sort-wrap {
+      justify-content: space-between;
+    }
+  }
+</style>
+
+<script is:inline define:vars={{ collectionsJson, rarityColorsJson }}>
+(function() {
+  var STORAGE_KEY = 'csdb_collection_owned';
+  var collections = JSON.parse(collectionsJson);
+  var rarityColors = JSON.parse(rarityColorsJson);
+  var owned = loadOwned();
+  var expandedSlug = null;
+
+  function loadOwned() {
+    try {
+      var data = localStorage.getItem(STORAGE_KEY);
+      return data ? JSON.parse(data) : [];
+    } catch(e) {
+      return [];
+    }
+  }
+
+  function saveOwned() {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(owned));
+    } catch(e) {}
+  }
+
+  function isOwned(slug) {
+    return owned.indexOf(slug) !== -1;
+  }
+
+  function toggleOwned(slug) {
+    var idx = owned.indexOf(slug);
+    if (idx === -1) {
+      owned.push(slug);
+    } else {
+      owned.splice(idx, 1);
+    }
+    saveOwned();
+  }
+
+  function formatPrice(val) {
+    if (!val || val <= 0) return '$0.00';
+    return '$' + val.toFixed(2);
+  }
+
+  function getCollectionStats(col) {
+    var ownedCount = 0;
+    var ownedValue = 0;
+    var totalValue = 0;
+    for (var i = 0; i < col.skins.length; i++) {
+      var s = col.skins[i];
+      totalValue += s.lowestPrice || 0;
+      if (isOwned(s.slug)) {
+        ownedCount++;
+        ownedValue += s.lowestPrice || 0;
+      }
+    }
+    return {
+      ownedCount: ownedCount,
+      total: col.skins.length,
+      pct: col.skins.length > 0 ? Math.round((ownedCount / col.skins.length) * 100) : 0,
+      ownedValue: ownedValue,
+      totalValue: totalValue
+    };
+  }
+
+  function updateOverallStats() {
+    var totalOwned = 0;
+    var totalSkins = 0;
+    var totalValue = 0;
+    var started = 0;
+    var complete = 0;
+    for (var i = 0; i < collections.length; i++) {
+      var stats = getCollectionStats(collections[i]);
+      totalOwned += stats.ownedCount;
+      totalSkins += stats.total;
+      totalValue += stats.ownedValue;
+      if (stats.ownedCount > 0) started++;
+      if (stats.ownedCount === stats.total) complete++;
+    }
+    document.getElementById('stat-owned').textContent = totalOwned;
+    document.getElementById('stat-collections-started').textContent = started;
+    document.getElementById('stat-collections-complete').textContent = complete;
+    document.getElementById('stat-value').textContent = formatPrice(totalValue);
+    var overallPct = totalSkins > 0 ? Math.round((totalOwned / totalSkins) * 100) : 0;
+    document.getElementById('overall-pct').textContent = overallPct + '%';
+    document.getElementById('overall-fill').style.width = overallPct + '%';
+  }
+
+  function updateCardStats(colSlug) {
+    var col = collections.find(function(c) { return c.slug === colSlug; });
+    if (!col) return;
+    var stats = getCollectionStats(col);
+    var card = document.querySelector('[data-col="' + colSlug + '"]');
+    if (!card) return;
+
+    var countEl = card.querySelector('.col-card-count');
+    if (countEl) countEl.textContent = stats.ownedCount + ' / ' + stats.total;
+
+    var fillEl = card.querySelector('.col-card-fill');
+    if (fillEl) {
+      fillEl.style.width = stats.pct + '%';
+      if (stats.pct === 100) {
+        fillEl.classList.add('complete');
+      } else {
+        fillEl.classList.remove('complete');
+      }
+    }
+
+    var pctEl = card.querySelector('.col-card-pct');
+    if (pctEl) {
+      pctEl.textContent = stats.pct + '%';
+      if (stats.pct === 100) {
+        pctEl.classList.add('complete');
+      } else {
+        pctEl.classList.remove('complete');
+      }
+    }
+
+    var valueEl = card.querySelector('.col-value-amount');
+    if (valueEl) valueEl.textContent = formatPrice(stats.ownedValue);
+  }
+
+  function buildCard(col) {
+    var stats = getCollectionStats(col);
+    var card = document.createElement('div');
+    card.className = 'col-card';
+    card.setAttribute('data-col', col.slug);
+
+    // Header
+    var header = document.createElement('div');
+    header.className = 'col-card-header';
+    header.innerHTML =
+      '<div class="col-card-top">' +
+        '<span class="col-card-name">' + escHtml(col.name) + '</span>' +
+        '<span class="col-card-count">' + stats.ownedCount + ' / ' + stats.total + '</span>' +
+      '</div>' +
+      '<div class="col-card-bar-wrap">' +
+        '<div class="col-card-bar"><div class="col-card-fill' + (stats.pct === 100 ? ' complete' : '') + '" style="width:' + stats.pct + '%"></div></div>' +
+        '<span class="col-card-pct' + (stats.pct === 100 ? ' complete' : '') + '">' + stats.pct + '%</span>' +
+      '</div>' +
+      '<div class="col-card-meta">' +
+        '<span>' + col.skins.length + ' skins</span>' +
+        '<span>' + getRarityBreakdown(col) + '</span>' +
+      '</div>';
+
+    header.addEventListener('click', function() {
+      var isExpanded = card.classList.contains('expanded');
+      // Close all other cards
+      document.querySelectorAll('.col-card.expanded').forEach(function(c) {
+        if (c !== card) c.classList.remove('expanded');
+      });
+      card.classList.toggle('expanded');
+      expandedSlug = isExpanded ? null : col.slug;
+    });
+
+    card.appendChild(header);
+
+    // Body (skin list)
+    var body = document.createElement('div');
+    body.className = 'col-card-body';
+
+    // Quick actions
+    var actions = document.createElement('div');
+    actions.className = 'col-card-actions';
+    var selectAllBtn = document.createElement('button');
+    selectAllBtn.textContent = 'Select All';
+    selectAllBtn.addEventListener('click', function(e) {
+      e.stopPropagation();
+      for (var i = 0; i < col.skins.length; i++) {
+        if (!isOwned(col.skins[i].slug)) {
+          owned.push(col.skins[i].slug);
+        }
+      }
+      saveOwned();
+      renderSkinList(body, col);
+      updateCardStats(col.slug);
+      updateOverallStats();
+    });
+
+    var deselectAllBtn = document.createElement('button');
+    deselectAllBtn.textContent = 'Deselect All';
+    deselectAllBtn.addEventListener('click', function(e) {
+      e.stopPropagation();
+      for (var i = 0; i < col.skins.length; i++) {
+        var idx = owned.indexOf(col.skins[i].slug);
+        if (idx !== -1) owned.splice(idx, 1);
+      }
+      saveOwned();
+      renderSkinList(body, col);
+      updateCardStats(col.slug);
+      updateOverallStats();
+    });
+
+    actions.appendChild(selectAllBtn);
+    actions.appendChild(deselectAllBtn);
+    body.appendChild(actions);
+
+    // Skin items
+    renderSkinList(body, col);
+
+    card.appendChild(body);
+
+    // Value footer
+    var valueFooter = document.createElement('div');
+    valueFooter.className = 'col-card-value';
+    valueFooter.innerHTML =
+      '<span>Owned value</span>' +
+      '<span class="col-value-amount">' + formatPrice(stats.ownedValue) + '</span>';
+    card.appendChild(valueFooter);
+
+    return card;
+  }
+
+  function renderSkinList(body, col) {
+    // Remove existing skin items but keep actions
+    var existing = body.querySelectorAll('.skin-item');
+    for (var i = 0; i < existing.length; i++) {
+      existing[i].remove();
+    }
+
+    for (var i = 0; i < col.skins.length; i++) {
+      var s = col.skins[i];
+      var item = document.createElement('div');
+      item.className = 'skin-item' + (isOwned(s.slug) ? ' owned' : '');
+      item.setAttribute('data-skin', s.slug);
+
+      var rarityColor = rarityColors[s.rarity] || '#ffffff';
+
+      item.innerHTML =
+        '<div class="skin-check">&#10003;</div>' +
+        '<div class="skin-rarity-dot" style="background:' + rarityColor + '"></div>' +
+        '<div class="skin-info">' +
+          '<div class="skin-info-name">' + escHtml(s.name) + '</div>' +
+          '<div class="skin-info-weapon">' + escHtml(s.weapon) + ' &middot; ' + escHtml(s.rarity) + '</div>' +
+        '</div>' +
+        '<span class="skin-price">' + formatPrice(s.lowestPrice) + '</span>' +
+        '<a href="/skin/' + s.slug + '/" class="skin-link" onclick="event.stopPropagation()">View</a>';
+
+      (function(skinSlug, colSlug, el) {
+        el.addEventListener('click', function(e) {
+          e.stopPropagation();
+          toggleOwned(skinSlug);
+          el.classList.toggle('owned');
+          updateCardStats(colSlug);
+          updateOverallStats();
+        });
+      })(s.slug, col.slug, item);
+
+      body.appendChild(item);
+    }
+  }
+
+  function getRarityBreakdown(col) {
+    var counts = {};
+    for (var i = 0; i < col.skins.length; i++) {
+      var r = col.skins[i].rarity;
+      counts[r] = (counts[r] || 0) + 1;
+    }
+    var parts = [];
+    var order = ['Covert', 'Classified', 'Restricted', 'Mil-Spec', 'Industrial', 'Consumer'];
+    for (var i = 0; i < order.length; i++) {
+      if (counts[order[i]]) {
+        parts.push(counts[order[i]] + ' ' + order[i]);
+      }
+    }
+    // Include any other rarities not in the standard order
+    for (var r in counts) {
+      if (order.indexOf(r) === -1) {
+        parts.push(counts[r] + ' ' + r);
+      }
+    }
+    return parts.join(', ');
+  }
+
+  function escHtml(str) {
+    var d = document.createElement('span');
+    d.textContent = str;
+    return d.innerHTML;
+  }
+
+  function getSortedCollections(sortBy) {
+    var sorted = collections.slice();
+    if (sortBy === 'completion') {
+      sorted.sort(function(a, b) {
+        var sa = getCollectionStats(a);
+        var sb = getCollectionStats(b);
+        if (sb.pct !== sa.pct) return sb.pct - sa.pct;
+        if (sb.ownedCount !== sa.ownedCount) return sb.ownedCount - sa.ownedCount;
+        return a.name.localeCompare(b.name);
+      });
+    } else if (sortBy === 'name') {
+      sorted.sort(function(a, b) { return a.name.localeCompare(b.name); });
+    } else if (sortBy === 'size') {
+      sorted.sort(function(a, b) { return b.skins.length - a.skins.length; });
+    } else if (sortBy === 'value') {
+      sorted.sort(function(a, b) {
+        return getCollectionStats(b).ownedValue - getCollectionStats(a).ownedValue;
+      });
+    }
+    return sorted;
+  }
+
+  function renderGrid() {
+    var grid = document.getElementById('collection-grid');
+    var search = (document.getElementById('collection-search').value || '').toLowerCase();
+    var sortBy = document.getElementById('sort-select').value;
+    var sorted = getSortedCollections(sortBy);
+
+    grid.innerHTML = '';
+
+    for (var i = 0; i < sorted.length; i++) {
+      var col = sorted[i];
+      if (search && col.name.toLowerCase().indexOf(search) === -1) continue;
+      var card = buildCard(col);
+      if (expandedSlug === col.slug) {
+        card.classList.add('expanded');
+      }
+      grid.appendChild(card);
+    }
+
+    updateOverallStats();
+  }
+
+  // Event listeners
+  document.getElementById('collection-search').addEventListener('input', function() {
+    renderGrid();
+  });
+
+  document.getElementById('sort-select').addEventListener('change', function() {
+    renderGrid();
+  });
+
+  document.getElementById('reset-btn').addEventListener('click', function() {
+    if (confirm('Are you sure you want to reset all collection progress? This cannot be undone.')) {
+      owned = [];
+      saveOwned();
+      expandedSlug = null;
+      renderGrid();
+    }
+  });
+
+  // Initial render
+  renderGrid();
+})();
+</script>

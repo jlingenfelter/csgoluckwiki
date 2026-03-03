@@ -1,0 +1,996 @@
+---
+import Base from '../layouts/Base.astro';
+import ExploreMore from '../components/ExploreMore.astro';
+import { SKINS, getLowestPrice, getHighestPrice, RARITY_COLORS, RARITY_BG } from '../lib/skins';
+import { faqSchema, breadcrumbSchema, toolAppSchema } from '../lib/weapons';
+
+const title = 'CS2 Skin Comparison Tool — Compare Prices Side by Side | CSDB.gg';
+const description = 'Compare CS2 skins side-by-side. View prices per wear condition, marketplace prices, float ranges, and StatTrak availability. Find the best deal.';
+
+// Pass full skin data including prices, floats, variants for client-side comparison
+const skinDataForClient = SKINS.map(s => ({
+  slug: s.slug,
+  weapon: s.weapon,
+  name: s.name,
+  rarity: s.rarity,
+  rarityColor: s.rarityColor || null,
+  collection: s.collection || null,
+  image: s.image || null,
+  statTrak: s.statTrak,
+  souvenir: s.souvenir,
+  minFloat: s.minFloat,
+  maxFloat: s.maxFloat,
+  prices: s.prices || [],
+}));
+
+const faqs = [
+  {
+    question: 'Why compare skins before buying?',
+    answer: 'Comparing skins helps you understand price differences across wear conditions and marketplaces. You can spot better deals, see value differences between similar skins, and make informed purchasing decisions.'
+  },
+  {
+    question: 'How do marketplace prices differ?',
+    answer: 'Different marketplaces (Steam, CSGOFloat, OPSkins, etc.) charge different fees and have varying supply. Prices can differ by 5-20% between platforms. Always compare before buying to save money.'
+  },
+  {
+    question: 'What is float range?',
+    answer: 'Float range indicates wear progression. Factory New (0.00-0.07) looks pristine, while Battle-Scarred (0.45-1.0) shows heavy wear. Identical float values can look different per skin due to texture patterns.'
+  },
+  {
+    question: 'Should I buy StatTrak or standard?',
+    answer: 'StatTrak skins cost 2-5x more than standard versions but track your kills. Choose StatTrak for favorite weapons, standard for budget-conscious collecting. Both have identical appearance.'
+  },
+  {
+    question: 'How do I find the cheapest version?',
+    answer: 'Our comparison tool shows prices across wear conditions and marketplaces. The cheapest option is usually Battle-Scarred on smaller markets, but check condition-specific prices for Factory New deals.'
+  },
+  {
+    question: 'Can I compare different wear conditions of the same skin?',
+    answer: 'Yes! Select the same skin in different wear conditions. Our tool shows exact pricing per wear state, making it easy to see if paying more for better condition is worth it for your budget.'
+  }
+];
+
+const crumbs = [
+  { name: 'Home', url: '/' },
+  { name: 'Skins', url: '/skins/' },
+  { name: 'Skin Comparison', url: '/skin-compare/' }
+];
+---
+
+<Base title={title} description={description} currentNav="/skins/">
+<script type="application/ld+json" set:html={JSON.stringify(faqSchema(faqs))}></script>
+<script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema(crumbs))}></script>
+<script type="application/ld+json" set:html={JSON.stringify(toolAppSchema({ name: 'CS2 Skin Comparison Tool', url: 'https://csdb.gg/skin-compare/', description }))}></script>
+
+<nav class="breadcrumb"><a href="/">Home</a> / <a href="/skins/">Skins</a> / <span>Skin Comparison</span></nav>
+
+<div class="hero">
+  <h1>CS2 Skin Comparison Tool</h1>
+  <p>Compare CS2 skins side-by-side. View prices across wear conditions and marketplaces to find the best deals.</p>
+</div>
+
+<!-- Comparison Section -->
+<section class="compare-section">
+  <div class="compare-container">
+    <!-- Skin A -->
+    <div class="skin-selector">
+      <h3>Skin A</h3>
+      <div class="search-wrapper">
+        <input
+          type="text"
+          id="skinASearch"
+          class="skin-search"
+          placeholder="Search skins..."
+          autocomplete="off"
+        />
+        <div class="search-dropdown" id="skinADropdown" style="display: none;"></div>
+      </div>
+      <div class="selected-skin" id="skinAInfo"></div>
+    </div>
+
+    <!-- VS Badge -->
+    <div class="vs-badge">VS</div>
+
+    <!-- Skin B -->
+    <div class="skin-selector">
+      <h3>Skin B</h3>
+      <div class="search-wrapper">
+        <input
+          type="text"
+          id="skinBSearch"
+          class="skin-search"
+          placeholder="Search skins..."
+          autocomplete="off"
+        />
+        <div class="search-dropdown" id="skinBDropdown" style="display: none;"></div>
+      </div>
+      <div class="selected-skin" id="skinBInfo"></div>
+    </div>
+  </div>
+
+  <!-- Comparison Results -->
+  <div class="comparison-results" id="comparisonResults" style="display: none;">
+    <h2>Comparison Results</h2>
+
+    <!-- Basic Info -->
+    <div class="compare-grid">
+      <div class="compare-box">
+        <h4>Skin A</h4>
+        <div class="skin-info" id="skinABasic"></div>
+      </div>
+      <div class="compare-spacer"></div>
+      <div class="compare-box">
+        <h4>Skin B</h4>
+        <div class="skin-info" id="skinBBasic"></div>
+      </div>
+    </div>
+
+    <!-- Price Comparison by Wear -->
+    <h3>Price by Wear Condition</h3>
+    <div class="compare-table-wrapper">
+      <table class="compare-table">
+        <thead>
+          <tr>
+            <th>Wear Condition</th>
+            <th>Skin A</th>
+            <th>Difference</th>
+            <th>Skin B</th>
+          </tr>
+        </thead>
+        <tbody id="wearComparison"></tbody>
+      </table>
+    </div>
+
+    <!-- Float Range -->
+    <h3>Float Range & Availability</h3>
+    <div class="compare-grid">
+      <div class="compare-box">
+        <h4>Skin A Float</h4>
+        <div class="float-info" id="skinAFloat"></div>
+      </div>
+      <div class="compare-spacer"></div>
+      <div class="compare-box">
+        <h4>Skin B Float</h4>
+        <div class="float-info" id="skinBFloat"></div>
+      </div>
+    </div>
+
+    <!-- StatTrak & Souvenir -->
+    <h3>Special Variants</h3>
+    <div class="compare-grid">
+      <div class="compare-box">
+        <h4>Skin A Variants</h4>
+        <div class="variants-info" id="skinAVariants"></div>
+      </div>
+      <div class="compare-spacer"></div>
+      <div class="compare-box">
+        <h4>Skin B Variants</h4>
+        <div class="variants-info" id="skinBVariants"></div>
+      </div>
+    </div>
+
+    <!-- Recommendation -->
+    <div class="recommendation-box" id="recommendation"></div>
+  </div>
+
+  <!-- Empty State -->
+  <div class="empty-state" id="emptyState">
+    <p>Select two skins to compare their prices and specifications.</p>
+    <p style="font-size: 0.9rem; color: var(--text2);">Start typing in either search box above to find skins.</p>
+  </div>
+</section>
+
+<!-- Quick Links -->
+<div class="quick-nav">
+  <h3>Explore More</h3>
+  <div class="quick-links">
+    <a href="/skins/">Browse All Skins</a>
+    <a href="/market-trends/">Market Trends</a>
+    <a href="/price-tracker/">Price Tracker</a>
+    <a href="/guides/float-guide/">Float Guide</a>
+  </div>
+</div>
+
+<!-- FAQ -->
+<h2>Frequently Asked Questions</h2>
+<dl class="faq">
+  {faqs.map(f => (
+    <>
+      <dt>{f.question}</dt>
+      <dd>{f.answer}</dd>
+    </>
+  ))}
+</dl>
+
+<div class="internal-links">
+  <strong>Related Resources:</strong>
+  <a href="/skins/">Skin Database</a>
+  <a href="/market-trends/">Market Trends</a>
+  <a href="/price-tracker/">Price Tracker</a>
+  <a href="/float-checker/">Float Checker</a>
+  <a href="/tradeup-calculator/">Trade-Up Calculator</a>
+  <a href="/case-odds-calculator/">Case Odds Calculator</a>
+  <a href="/case-simulator/">Case Simulator</a>
+  <a href="/cases/">Cases & Collections</a>
+  <a href="/inventory-lookup/">Inventory Lookup</a>
+  <a href="/loadout-builder/">Loadout Builder</a>
+  <a href="/weapons/">Weapon Database</a>
+  <a href="/guides/float-guide/">Float Guide</a>
+  <a href="/guides/trading-guide/">Trading Guide</a>
+  <a href="/guides/skins-investing-guide/">Investing Guide</a>
+</div>
+
+<style is:inline>
+.hero {
+  text-align: center;
+  padding: 2rem 0;
+  margin-bottom: 2rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.hero h1 {
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 0.5rem;
+  font-size: 2.5rem;
+}
+
+.hero p {
+  max-width: 600px;
+  margin: 0 auto;
+  color: var(--text2);
+  font-size: 1.05rem;
+}
+
+/* Comparison Section */
+.compare-section {
+  margin: 2rem 0;
+}
+
+.compare-container {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  gap: 1.5rem;
+  align-items: start;
+  margin-bottom: 2rem;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 2rem;
+}
+
+.skin-selector {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.skin-selector h3 {
+  margin: 0;
+  font-size: 1.05rem;
+}
+
+.search-wrapper {
+  position: relative;
+}
+
+.skin-search {
+  width: 100%;
+  background: var(--bg3);
+  color: var(--text);
+  border: 1px solid var(--border);
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  font-family: inherit;
+}
+
+.skin-search:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(245, 166, 35, 0.1);
+}
+
+.skin-search::placeholder {
+  color: var(--text2);
+}
+
+.search-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-top: none;
+  border-radius: 0 0 8px 8px;
+  max-height: 320px;
+  overflow-y: auto;
+  z-index: 100;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+}
+
+.dropdown-item {
+  padding: 0.75rem 1rem;
+  cursor: pointer;
+  border-bottom: 1px solid var(--border);
+  transition: background-color 0.2s;
+}
+
+.dropdown-item:hover {
+  background: var(--bg3);
+  color: var(--accent);
+}
+
+.dropdown-item:last-child {
+  border-bottom: none;
+}
+
+.dropdown-weapon {
+  font-size: 0.75rem;
+  color: var(--text2);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.dropdown-name {
+  font-weight: 700;
+  margin: 0.25rem 0;
+}
+
+.dropdown-rarity {
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.selected-skin {
+  background: var(--bg3);
+  border: 2px solid var(--border);
+  border-radius: 8px;
+  padding: 1rem;
+  min-height: 80px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+.selected-skin.empty {
+  color: var(--text2);
+  font-size: 0.9rem;
+}
+
+.selected-skin.filled {
+  border-color: var(--accent);
+  background: rgba(245, 166, 35, 0.05);
+}
+
+.selected-skin h4 {
+  margin: 0 0 0.35rem;
+  font-size: 0.95rem;
+}
+
+.selected-skin .skin-weapon {
+  font-size: 0.75rem;
+  color: var(--text2);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  margin-bottom: 0.25rem;
+}
+
+.selected-skin .skin-name {
+  font-weight: 800;
+  font-size: 1.05rem;
+  color: var(--text);
+  margin-bottom: 0.25rem;
+}
+
+.selected-skin .skin-rarity {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.vs-badge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  color: var(--accent);
+  font-size: 1.2rem;
+  height: 50px;
+}
+
+/* Comparison Results */
+.comparison-results {
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.comparison-results h3 {
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+}
+
+.compare-grid {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.compare-box {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 1.5rem;
+}
+
+.compare-box h4 {
+  margin: 0 0 1rem;
+  color: var(--accent);
+  font-size: 0.95rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.skin-info,
+.float-info,
+.variants-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.info-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.info-row:last-child {
+  border-bottom: none;
+}
+
+.info-label {
+  color: var(--text2);
+  font-size: 0.88rem;
+  font-weight: 500;
+}
+
+.info-value {
+  color: var(--text);
+  font-weight: 700;
+  font-size: 0.95rem;
+}
+
+.compare-spacer {
+  width: 2px;
+  background: var(--border);
+  border-radius: 1px;
+}
+
+/* Comparison Table */
+.compare-table-wrapper {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  overflow: hidden;
+  margin-bottom: 2rem;
+}
+
+.compare-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+.compare-table thead {
+  background: var(--bg3);
+  border-bottom: 2px solid var(--border);
+}
+
+.compare-table th {
+  padding: 1rem;
+  text-align: left;
+  font-weight: 700;
+  color: var(--text);
+  text-transform: uppercase;
+  font-size: 0.8rem;
+  letter-spacing: 0.03em;
+}
+
+.compare-table td {
+  padding: 0.85rem 1rem;
+  border-bottom: 1px solid var(--border);
+  color: var(--text2);
+}
+
+.compare-table tbody tr:hover td {
+  background: var(--bg3);
+}
+
+.price-cell {
+  font-weight: 700;
+  color: var(--text);
+}
+
+.price-cheaper {
+  color: var(--green);
+}
+
+.price-higher {
+  color: var(--red);
+}
+
+.price-difference {
+  text-align: center;
+  font-weight: 600;
+  color: var(--accent);
+}
+
+/* Recommendation Box */
+.recommendation-box {
+  background: linear-gradient(135deg, rgba(245, 166, 35, 0.1), rgba(255, 200, 87, 0.05));
+  border: 2px solid var(--accent);
+  border-radius: 10px;
+  padding: 1.5rem;
+  margin-top: 2rem;
+}
+
+.recommendation-box h3 {
+  margin: 0 0 0.75rem;
+  color: var(--accent);
+}
+
+.recommendation-box p {
+  margin: 0.5rem 0;
+  color: var(--text2);
+}
+
+.recommendation-box .rec-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin: 0.5rem 0;
+}
+
+.rec-icon {
+  font-size: 1.2rem;
+}
+
+/* Empty State */
+.empty-state {
+  text-align: center;
+  padding: 3rem 1.5rem;
+  color: var(--text2);
+}
+
+.empty-state p {
+  margin: 1rem 0;
+  font-size: 1rem;
+}
+
+/* Quick Nav */
+.quick-nav {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 1.5rem;
+  margin: 2rem 0;
+}
+
+.quick-nav h3 {
+  margin: 0 0 1rem;
+}
+
+.quick-links {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.quick-links a {
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  transition: border-color 0.2s, color 0.2s;
+}
+
+.quick-links a:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+@media (max-width: 1000px) {
+  .compare-container {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+    padding: 1.5rem;
+  }
+
+  .vs-badge {
+    height: auto;
+    padding: 0.5rem 0;
+    transform: rotate(90deg);
+  }
+
+  .compare-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .compare-spacer {
+    display: none;
+  }
+}
+
+@media (max-width: 700px) {
+  .hero h1 {
+    font-size: 1.8rem;
+  }
+
+  .compare-table {
+    font-size: 0.8rem;
+  }
+
+  .compare-table th,
+  .compare-table td {
+    padding: 0.6rem 0.5rem;
+  }
+
+  .recommendation-box {
+    padding: 1rem;
+  }
+
+  .quick-links {
+    flex-direction: column;
+  }
+
+  .quick-links a {
+    display: block;
+    text-align: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero h1 {
+    font-size: 1.5rem;
+  }
+
+  .compare-container {
+    padding: 1rem;
+  }
+
+  .compare-table {
+    font-size: 0.75rem;
+  }
+
+  .compare-table th,
+  .compare-table td {
+    padding: 0.4rem 0.3rem;
+  }
+}
+</style>
+
+<script is:inline define:vars={{ skinDataForClient }}>
+  // Client-side skin search and comparison logic
+  const allSkins = skinDataForClient;
+  let selectedSkinA = null;
+  let selectedSkinB = null;
+
+  // Utility: Get full skin data from SKINS array
+  function getSkinBySlug(slug) {
+    return allSkins.find(s => s.slug === slug);
+  }
+
+  // Filter skins by search query
+  function filterSkins(query) {
+    const q = query.toLowerCase();
+    return allSkins.filter(s =>
+      s.name.toLowerCase().includes(q) ||
+      s.weapon.toLowerCase().includes(q) ||
+      (s.collection && s.collection.toLowerCase().includes(q))
+    );
+  }
+
+  // Populate dropdown with search results
+  function populateDropdown(inputId, dropdownId, query) {
+    const dropdown = document.getElementById(dropdownId);
+    if (!query.trim()) {
+      dropdown.style.display = 'none';
+      return;
+    }
+
+    const results = filterSkins(query).slice(0, 8);
+    if (results.length === 0) {
+      dropdown.innerHTML = '<div style="padding:1rem;text-align:center;color:var(--text2);">No skins found</div>';
+      dropdown.style.display = 'block';
+      return;
+    }
+
+    dropdown.innerHTML = results
+      .map(
+        skin => `
+      <div class="dropdown-item" onclick="selectSkin('${inputId}', '${skin.slug}')">
+        <div class="dropdown-weapon">${skin.weapon}</div>
+        <div class="dropdown-name">${skin.name}</div>
+        <div class="dropdown-rarity" style="color:var(--text2)">${skin.rarity}${skin.collection ? ' • ' + skin.collection : ''}</div>
+      </div>
+    `
+      )
+      .join('');
+    dropdown.style.display = 'block';
+  }
+
+  // Select a skin
+  window.selectSkin = function(inputId, slug) {
+    const skin = getSkinBySlug(slug);
+    if (!skin) return;
+
+    if (inputId === 'skinASearch') {
+      selectedSkinA = skin;
+      document.getElementById('skinASearch').value = `${skin.weapon} | ${skin.name}`;
+    } else {
+      selectedSkinB = skin;
+      document.getElementById('skinBSearch').value = `${skin.weapon} | ${skin.name}`;
+    }
+
+    document.getElementById(`${inputId.replace('Search', 'Dropdown')}`).style.display = 'none';
+    updateComparison();
+  };
+
+  // Update comparison display
+  function updateComparison() {
+    const resultsDiv = document.getElementById('comparisonResults');
+    const emptyStateDiv = document.getElementById('emptyState');
+
+    if (!selectedSkinA || !selectedSkinB) {
+      resultsDiv.style.display = 'none';
+      emptyStateDiv.style.display = 'block';
+      updateSelectedSkinDisplay('A', selectedSkinA);
+      updateSelectedSkinDisplay('B', selectedSkinB);
+      return;
+    }
+
+    emptyStateDiv.style.display = 'none';
+    resultsDiv.style.display = 'block';
+
+    updateSelectedSkinDisplay('A', selectedSkinA);
+    updateSelectedSkinDisplay('B', selectedSkinB);
+    updateBasicInfo('A', selectedSkinA);
+    updateBasicInfo('B', selectedSkinB);
+    updateFloatInfo('A', selectedSkinA);
+    updateFloatInfo('B', selectedSkinB);
+    updateVariantsInfo('A', selectedSkinA);
+    updateVariantsInfo('B', selectedSkinB);
+    updateWearComparison();
+    updateRecommendation();
+  }
+
+  // Update selected skin display
+  function updateSelectedSkinDisplay(letter, skin) {
+    const div = document.getElementById(`skin${letter}Info`);
+    if (!skin) {
+      div.className = 'selected-skin empty';
+      div.innerHTML = `<span>Select ${letter === 'A' ? 'first' : 'second'} skin</span>`;
+    } else {
+      div.className = 'selected-skin filled';
+      div.innerHTML = `
+        <div class="skin-weapon">${skin.weapon}</div>
+        <div class="skin-name">${skin.name}</div>
+        <div class="skin-rarity">${skin.rarity}</div>
+      `;
+    }
+  }
+
+  // Update basic info
+  function updateBasicInfo(letter, skin) {
+    const div = document.getElementById(`skin${letter}Basic`);
+    if (!skin) return;
+    const lowestPrice = skin.prices && skin.prices.length ? Math.min(...skin.prices.map(p => p.price)) : null;
+    const highestPrice = skin.prices && skin.prices.length ? Math.max(...skin.prices.map(p => p.price)) : null;
+    div.innerHTML = `
+      <div class="info-row">
+        <span class="info-label">Weapon</span>
+        <span class="info-value">${skin.weapon}</span>
+      </div>
+      <div class="info-row">
+        <span class="info-label">Name</span>
+        <span class="info-value">${skin.name}</span>
+      </div>
+      <div class="info-row">
+        <span class="info-label">Rarity</span>
+        <span class="info-value" style="color:${skin.rarityColor || 'var(--accent)'}">${skin.rarity}</span>
+      </div>
+      ${lowestPrice != null ? `
+      <div class="info-row">
+        <span class="info-label">Price Range</span>
+        <span class="info-value">$${lowestPrice.toFixed(2)}${highestPrice && highestPrice !== lowestPrice ? ` – $${highestPrice.toFixed(2)}` : ''}</span>
+      </div>` : ''}
+      ${skin.collection ? `
+      <div class="info-row">
+        <span class="info-label">Collection</span>
+        <span class="info-value">${skin.collection}</span>
+      </div>` : ''}
+    `;
+  }
+
+  // Update float info
+  function updateFloatInfo(letter, skin) {
+    const div = document.getElementById(`skin${letter}Float`);
+    if (!skin) return;
+    const minF = skin.minFloat != null ? skin.minFloat.toFixed(4) : '0.0000';
+    const maxF = skin.maxFloat != null ? skin.maxFloat.toFixed(4) : '1.0000';
+    // Determine wear range from float
+    const wears = [];
+    if (skin.minFloat <= 0.07) wears.push('FN');
+    if (skin.minFloat <= 0.15 && skin.maxFloat >= 0.07) wears.push('MW');
+    if (skin.minFloat <= 0.38 && skin.maxFloat >= 0.15) wears.push('FT');
+    if (skin.minFloat <= 0.45 && skin.maxFloat >= 0.38) wears.push('WW');
+    if (skin.maxFloat >= 0.45) wears.push('BS');
+    const wearRange = wears.length ? wears.join(', ') : 'FN to BS';
+    div.innerHTML = `
+      <div class="info-row">
+        <span class="info-label">Min Float</span>
+        <span class="info-value">${minF}</span>
+      </div>
+      <div class="info-row">
+        <span class="info-label">Max Float</span>
+        <span class="info-value">${maxF}</span>
+      </div>
+      <div class="info-row">
+        <span class="info-label">Wear Range</span>
+        <span class="info-value">${wearRange}</span>
+      </div>
+    `;
+  }
+
+  // Update variants info
+  function updateVariantsInfo(letter, skin) {
+    const div = document.getElementById(`skin${letter}Variants`);
+    if (!skin) return;
+    div.innerHTML = `
+      <div class="info-row">
+        <span class="info-label">StatTrak</span>
+        <span class="info-value">${skin.statTrak ? '✓ Available' : '✗ Not Available'}</span>
+      </div>
+      <div class="info-row">
+        <span class="info-label">Souvenir</span>
+        <span class="info-value">${skin.souvenir ? '✓ Available' : '✗ Not Available'}</span>
+      </div>
+    `;
+  }
+
+  // Helper: get price for a specific wear from skin data
+  function getPriceForWear(skin, wear) {
+    if (!skin || !skin.prices || !skin.prices.length) return null;
+    const match = skin.prices.find(p => p.wear === wear);
+    return match ? match.price : null;
+  }
+
+  // Update wear comparison table
+  function updateWearComparison() {
+    const tbody = document.getElementById('wearComparison');
+    const wears = ['Factory New', 'Minimal Wear', 'Field-Tested', 'Well-Worn', 'Battle-Scarred'];
+
+    tbody.innerHTML = wears
+      .map(wear => {
+        const priceA = getPriceForWear(selectedSkinA, wear);
+        const priceB = getPriceForWear(selectedSkinB, wear);
+        const hasBoth = priceA != null && priceB != null;
+        const diff = hasBoth ? Math.abs(priceA - priceB) : 0;
+        const aIsCheaper = hasBoth && priceA < priceB;
+        const bIsCheaper = hasBoth && priceB < priceA;
+
+        const cellA = priceA != null
+          ? `<td class="price-cell ${aIsCheaper ? 'price-cheaper' : bIsCheaper ? 'price-higher' : ''}">$${priceA.toFixed(2)}</td>`
+          : `<td class="price-cell" style="color:var(--text2)">—</td>`;
+        const cellB = priceB != null
+          ? `<td class="price-cell ${bIsCheaper ? 'price-cheaper' : aIsCheaper ? 'price-higher' : ''}">$${priceB.toFixed(2)}</td>`
+          : `<td class="price-cell" style="color:var(--text2)">—</td>`;
+        const diffCell = hasBoth
+          ? `<td class="price-difference">${aIsCheaper ? '−' : bIsCheaper ? '+' : '='} $${diff.toFixed(2)}</td>`
+          : `<td class="price-difference" style="color:var(--text2)">—</td>`;
+
+        return `<tr><td>${wear}</td>${cellA}${diffCell}${cellB}</tr>`;
+      })
+      .join('');
+  }
+
+  // Update recommendation
+  function updateRecommendation() {
+    const div = document.getElementById('recommendation');
+    if (!selectedSkinA || !selectedSkinB) return;
+
+    // Calculate average price for each skin across available wears
+    const wears = ['Factory New', 'Minimal Wear', 'Field-Tested', 'Well-Worn', 'Battle-Scarred'];
+    let totalA = 0, countA = 0, totalB = 0, countB = 0;
+    let aCheaperCount = 0, bCheaperCount = 0;
+
+    wears.forEach(w => {
+      const pA = getPriceForWear(selectedSkinA, w);
+      const pB = getPriceForWear(selectedSkinB, w);
+      if (pA != null) { totalA += pA; countA++; }
+      if (pB != null) { totalB += pB; countB++; }
+      if (pA != null && pB != null) {
+        if (pA < pB) aCheaperCount++;
+        else if (pB < pA) bCheaperCount++;
+      }
+    });
+
+    const avgA = countA ? totalA / countA : 0;
+    const avgB = countB ? totalB / countB : 0;
+    const noPrices = countA === 0 && countB === 0;
+
+    if (noPrices) {
+      div.innerHTML = `
+        <h3>Recommendation</h3>
+        <p>No price data available for these skins. Price data updates when the full skin database is built on Cloudflare.</p>
+      `;
+      return;
+    }
+
+    const cheaper = avgA <= avgB ? selectedSkinA : selectedSkinB;
+    const letter = avgA <= avgB ? 'A' : 'B';
+    const cheaperWins = avgA <= avgB ? aCheaperCount : bCheaperCount;
+    const avgPrice = avgA <= avgB ? avgA : avgB;
+
+    div.innerHTML = `
+      <h3>Recommendation</h3>
+      <p><strong>Better Value: Skin ${letter} — ${cheaper.weapon} | ${cheaper.name}</strong></p>
+      <p>Average price: $${avgPrice.toFixed(2)}. Cheaper in ${cheaperWins} out of ${Math.min(countA, countB)} comparable wear conditions.</p>
+      <div class="rec-item">
+        <span class="rec-icon">✓</span>
+        <span><strong>Price advantage:</strong> ${cheaper.weapon} | ${cheaper.name} is ${Math.abs(((avgA - avgB) / Math.max(avgA, avgB)) * 100).toFixed(0)}% ${avgA <= avgB ? 'cheaper' : 'more expensive'} on average</span>
+      </div>
+      <div class="rec-item">
+        <span class="rec-icon">ℹ</span>
+        <span><strong>Compare across markets:</strong> Prices may vary between Steam, Skinport, Buff163, and other platforms</span>
+      </div>
+    `;
+  }
+
+  // Event listeners
+  document.getElementById('skinASearch').addEventListener('input', e => {
+    populateDropdown('skinASearch', 'skinADropdown', e.target.value);
+  });
+
+  document.getElementById('skinBSearch').addEventListener('input', e => {
+    populateDropdown('skinBSearch', 'skinBDropdown', e.target.value);
+  });
+
+  // Close dropdowns on blur
+  document.addEventListener('click', e => {
+    if (!e.target.classList.contains('skin-search')) {
+      document.getElementById('skinADropdown').style.display = 'none';
+      document.getElementById('skinBDropdown').style.display = 'none';
+    }
+  });
+
+  // Initialize
+  updateComparison();
+</script>
+
+<ExploreMore context="skins" />
+
+</Base>

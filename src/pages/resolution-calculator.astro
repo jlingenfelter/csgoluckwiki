@@ -1,0 +1,424 @@
+---
+import Base from '../layouts/Base.astro';
+import ExploreMore from '../components/ExploreMore.astro';
+import { breadcrumbSchema, faqSchema } from '../lib/weapons';
+
+const title = 'CS2 Resolution & Aspect Ratio Calculator — Stretched vs Black Bars | CSDB.gg';
+const description = 'Calculate the best CS2 resolution for your monitor. Compare 4:3 stretched, 16:9, and 16:10 aspect ratios. See FOV differences, pros and cons, and what the pros use.';
+const crumbs = [{ name: 'Home', url: '/' }, { name: 'Resolution Calculator', url: '/resolution-calculator/' }];
+const faqs = [
+  { question: 'Is 4:3 stretched better than 16:9 in CS2?', answer: '4:3 stretched makes player models appear wider, which some players find easier to aim at. However, you lose peripheral vision (reduced horizontal FOV). Most pros use 4:3 stretched, but it is personal preference — 16:9 gives you more information on screen.' },
+  { question: 'What resolution do most CS2 pros use?', answer: 'The most popular pro resolution is 1280x960 (4:3 stretched), followed by 1024x768 and 1920x1080 (native 16:9). About 60% of professional players use some form of 4:3 resolution.' },
+  { question: 'Does resolution affect FPS in CS2?', answer: 'Yes. Lower resolutions render fewer pixels, which can significantly boost FPS. Switching from 1920x1080 to 1280x960 can increase FPS by 30-50% depending on your GPU. This is why many players on older hardware prefer lower resolutions.' },
+  { question: 'What is the difference between stretched and black bars?', answer: 'Both use a 4:3 resolution. Stretched fills your entire screen by stretching the image horizontally — models look wider but distorted. Black bars keep the native aspect ratio with unused black space on the sides — models look normal but your usable screen area is smaller.' },
+  { question: 'How do I set up stretched resolution in CS2?', answer: 'Set your in-game resolution to a 4:3 option (like 1280x960), then in your GPU control panel (NVIDIA Control Panel or AMD Radeon Settings) set the display scaling mode to "Full-screen" instead of "Aspect ratio". This forces the image to stretch across your entire monitor.' },
+];
+
+const RESOLUTIONS = [
+  { w: 1920, h: 1080, ratio: '16:9', label: '1080p', common: true },
+  { w: 2560, h: 1440, ratio: '16:9', label: '1440p', common: true },
+  { w: 3840, h: 2160, ratio: '16:9', label: '4K', common: false },
+  { w: 1280, h: 960, ratio: '4:3', label: 'Pro Standard', common: true },
+  { w: 1024, h: 768, ratio: '4:3', label: 'Classic Low', common: true },
+  { w: 1280, h: 1024, ratio: '5:4', label: '5:4', common: false },
+  { w: 1680, h: 1050, ratio: '16:10', label: 'WSXGA+', common: false },
+  { w: 1440, h: 1080, ratio: '4:3', label: '4:3 HD', common: true },
+  { w: 1600, h: 900, ratio: '16:9', label: '900p', common: false },
+  { w: 1280, h: 800, ratio: '16:10', label: 'WXGA', common: false },
+  { w: 1920, h: 1200, ratio: '16:10', label: 'WUXGA', common: false },
+  { w: 800, h: 600, ratio: '4:3', label: 'Lowest', common: false },
+];
+
+const PRO_RESOLUTIONS = [
+  { player: 's1mple', res: '1280x960', ratio: '4:3', mode: 'Stretched' },
+  { player: 'ZywOo', res: '1280x960', ratio: '4:3', mode: 'Stretched' },
+  { player: 'NiKo', res: '1280x960', ratio: '4:3', mode: 'Stretched' },
+  { player: 'm0NESY', res: '1280x960', ratio: '4:3', mode: 'Stretched' },
+  { player: 'donk', res: '1280x960', ratio: '4:3', mode: 'Stretched' },
+  { player: 'device', res: '1024x768', ratio: '4:3', mode: 'Stretched' },
+  { player: 'ropz', res: '1920x1080', ratio: '16:9', mode: 'Native' },
+  { player: 'Twistzz', res: '1280x960', ratio: '4:3', mode: 'Stretched' },
+  { player: 'b1t', res: '1280x960', ratio: '4:3', mode: 'Stretched' },
+  { player: 'electronic', res: '1280x960', ratio: '4:3', mode: 'Stretched' },
+  { player: 'rain', res: '1920x1080', ratio: '16:9', mode: 'Native' },
+  { player: 'broky', res: '1024x768', ratio: '4:3', mode: 'Black Bars' },
+  { player: 'EliGE', res: '1280x960', ratio: '4:3', mode: 'Stretched' },
+  { player: 'NAF', res: '1920x1080', ratio: '16:9', mode: 'Native' },
+  { player: 'FalleN', res: '1024x768', ratio: '4:3', mode: 'Stretched' },
+  { player: 'Stewie2k', res: '1280x960', ratio: '4:3', mode: 'Black Bars' },
+  { player: 'coldzera', res: '1024x768', ratio: '4:3', mode: 'Stretched' },
+  { player: 'Aleksib', res: '1920x1080', ratio: '16:9', mode: 'Native' },
+  { player: 'apEX', res: '1280x960', ratio: '4:3', mode: 'Stretched' },
+  { player: 'Magisk', res: '1920x1080', ratio: '16:9', mode: 'Native' },
+];
+
+const toolSchema = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": title,
+  "description": description,
+  "applicationCategory": "UtilityApplication",
+  "operatingSystem": "Web",
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+  "author": { "@type": "Organization", "name": "CSDB.gg", "url": "https://csdb.gg" }
+});
+---
+
+<Base title={title} description={description}>
+  <script type="application/ld+json" set:html={toolSchema}></script>
+  <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema(crumbs))}></script>
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema(faqs))}></script>
+
+  <nav class="breadcrumb"><a href="/">Home</a> / <span>Resolution Calculator</span></nav>
+  <h1>CS2 Resolution & Aspect Ratio Calculator</h1>
+  <p>Find the perfect resolution for your CS2 setup. Compare aspect ratios, understand FOV differences, and see what resolution the pros use.</p>
+
+  <!-- Calculator -->
+  <section class="calc-section">
+    <h2>Resolution Comparison Tool</h2>
+    <p style="color:var(--text2);font-size:.9rem;margin-bottom:1rem">Select or enter two resolutions to compare FOV, pixel count, and aspect ratio differences.</p>
+
+    <div class="rc-compare-grid">
+      <div class="rc-input-box">
+        <h3>Resolution A</h3>
+        <div class="calc-row"><label>Width</label><input type="number" id="resA-w" value="1920" min="640" max="7680" /></div>
+        <div class="calc-row"><label>Height</label><input type="number" id="resA-h" value="1080" min="480" max="4320" /></div>
+        <div class="rc-presets" id="presetsA">
+          {RESOLUTIONS.filter(r => r.common).map(r => (
+            <button class="filter-btn" data-w={r.w} data-h={r.h} data-target="A">{r.w}x{r.h}</button>
+          ))}
+        </div>
+      </div>
+      <div class="rc-vs">VS</div>
+      <div class="rc-input-box">
+        <h3>Resolution B</h3>
+        <div class="calc-row"><label>Width</label><input type="number" id="resB-w" value="1280" min="640" max="7680" /></div>
+        <div class="calc-row"><label>Height</label><input type="number" id="resB-h" value="960" min="480" max="4320" /></div>
+        <div class="rc-presets" id="presetsB">
+          {RESOLUTIONS.filter(r => r.common).map(r => (
+            <button class="filter-btn" data-w={r.w} data-h={r.h} data-target="B">{r.w}x{r.h}</button>
+          ))}
+        </div>
+      </div>
+    </div>
+
+    <div class="calc-row" style="justify-content:center;margin-top:1rem">
+      <label>Monitor Size (inches)</label>
+      <input type="number" id="monitor-size" value="24" min="13" max="49" />
+      <label style="margin-left:1rem">Display Mode</label>
+      <select id="display-mode">
+        <option value="stretched">Stretched</option>
+        <option value="blackbars">Black Bars</option>
+        <option value="native">Native</option>
+      </select>
+    </div>
+
+    <button class="filter-btn active" id="calc-btn" style="display:block;margin:1.5rem auto;padding:.6rem 2rem;font-size:1rem">Compare Resolutions</button>
+
+    <div id="rc-results" style="display:none">
+      <div class="rc-results-grid">
+        <div class="rc-result-col">
+          <div class="rc-result-header" id="rc-labelA">1920x1080</div>
+          <div class="rc-result-stats" id="rc-statsA"></div>
+        </div>
+        <div class="rc-result-col">
+          <div class="rc-result-header" id="rc-labelB">1280x960</div>
+          <div class="rc-result-stats" id="rc-statsB"></div>
+        </div>
+      </div>
+      <div class="result-box" id="rc-verdict" style="margin-top:1rem;text-align:center"></div>
+    </div>
+  </section>
+
+  <!-- Aspect Ratio Guide -->
+  <section class="rc-guide">
+    <h2>Aspect Ratio Comparison</h2>
+    <div class="rc-ratio-grid">
+      <div class="rc-ratio-card">
+        <div class="rc-ratio-visual rc-169"></div>
+        <h3>16:9 (Native)</h3>
+        <div class="rc-ratio-tag">Widest FOV</div>
+        <p>Full horizontal field of view. See everything on screen. Models appear at their normal width. Best for spotting enemies at the edge of your vision.</p>
+        <div class="rc-pros"><strong>Pros:</strong> Maximum information, natural proportions, no distortion</div>
+        <div class="rc-cons"><strong>Cons:</strong> Models are thinner, may feel "harder to hit" for some players</div>
+      </div>
+      <div class="rc-ratio-card">
+        <div class="rc-ratio-visual rc-1610"></div>
+        <h3>16:10</h3>
+        <div class="rc-ratio-tag">Middle Ground</div>
+        <p>Slight reduction in horizontal FOV. A compromise between 16:9 and 4:3. Rarely used competitively but comfortable for some players.</p>
+        <div class="rc-pros"><strong>Pros:</strong> Minor FPS boost, slight model widening, still decent FOV</div>
+        <div class="rc-cons"><strong>Cons:</strong> Not as dramatic as 4:3, not as wide as 16:9 — worst of both worlds for some</div>
+      </div>
+      <div class="rc-ratio-card rc-popular">
+        <div class="rc-ratio-visual rc-43"></div>
+        <h3>4:3 Stretched</h3>
+        <div class="rc-ratio-tag">Most Popular (Pros)</div>
+        <p>Image is stretched to fill the screen. Player models appear ~25% wider, making them subjectively easier to hit. Significant FPS boost. Used by ~60% of professional players.</p>
+        <div class="rc-pros"><strong>Pros:</strong> Wider models, higher FPS, faster perceived movement</div>
+        <div class="rc-cons"><strong>Cons:</strong> Reduced FOV, distorted image, lose peripheral vision</div>
+      </div>
+      <div class="rc-ratio-card">
+        <div class="rc-ratio-visual rc-43bb"></div>
+        <h3>4:3 Black Bars</h3>
+        <div class="rc-ratio-tag">Focused View</div>
+        <p>4:3 resolution with black bars on the sides. Models retain their original proportions. Smaller viewable area helps some players focus on the center of the screen.</p>
+        <div class="rc-pros"><strong>Pros:</strong> Normal proportions, FPS boost, less visual clutter</div>
+        <div class="rc-cons"><strong>Cons:</strong> Reduced FOV, wasted screen space, feels claustrophobic</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOV Chart -->
+  <section>
+    <h2>Horizontal FOV by Aspect Ratio</h2>
+    <p style="color:var(--text2);font-size:.9rem">CS2's base vertical FOV is 73.74°. Horizontal FOV scales with aspect ratio.</p>
+    <div class="rc-fov-bars">
+      <div class="rc-fov-row">
+        <span class="rc-fov-label">16:9</span>
+        <div class="rc-fov-track"><div class="rc-fov-fill" style="width:100%;background:var(--green)"></div></div>
+        <span class="rc-fov-val">106.26°</span>
+      </div>
+      <div class="rc-fov-row">
+        <span class="rc-fov-label">16:10</span>
+        <div class="rc-fov-track"><div class="rc-fov-fill" style="width:93%;background:var(--blue)"></div></div>
+        <span class="rc-fov-val">100.39°</span>
+      </div>
+      <div class="rc-fov-row">
+        <span class="rc-fov-label">4:3</span>
+        <div class="rc-fov-track"><div class="rc-fov-fill" style="width:84%;background:var(--accent)"></div></div>
+        <span class="rc-fov-val">90.00°</span>
+      </div>
+      <div class="rc-fov-row">
+        <span class="rc-fov-label">5:4</span>
+        <div class="rc-fov-track"><div class="rc-fov-fill" style="width:81%;background:var(--purple)"></div></div>
+        <span class="rc-fov-val">86.07°</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Pro Settings Table -->
+  <section>
+    <h2>What Resolution Do Pros Use?</h2>
+    <p style="color:var(--text2);font-size:.9rem;margin-bottom:1rem">Resolution settings from top CS2 professional players. Note: players frequently change settings.</p>
+    <div style="overflow-x:auto">
+      <table>
+        <thead>
+          <tr><th>Player</th><th>Resolution</th><th>Aspect Ratio</th><th>Display Mode</th></tr>
+        </thead>
+        <tbody>
+          {PRO_RESOLUTIONS.map(p => (
+            <tr>
+              <td style="font-weight:700">{p.player}</td>
+              <td>{p.res}</td>
+              <td><span class={`tag ${p.ratio === '4:3' ? 'rifle' : p.ratio === '16:9' ? 'both' : 'smg'}`}>{p.ratio}</span></td>
+              <td>{p.mode}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- Distribution -->
+  <section class="calc-section">
+    <h2>Pro Resolution Distribution</h2>
+    <div class="rc-dist-bars">
+      <div class="rc-dist-row">
+        <span class="rc-dist-label">4:3 Stretched</span>
+        <div class="rc-fov-track"><div class="rc-fov-fill" style="width:55%;background:var(--accent)"></div></div>
+        <span class="rc-fov-val">~55%</span>
+      </div>
+      <div class="rc-dist-row">
+        <span class="rc-dist-label">16:9 Native</span>
+        <div class="rc-fov-track"><div class="rc-fov-fill" style="width:25%;background:var(--green)"></div></div>
+        <span class="rc-fov-val">~25%</span>
+      </div>
+      <div class="rc-dist-row">
+        <span class="rc-dist-label">4:3 Black Bars</span>
+        <div class="rc-fov-track"><div class="rc-fov-fill" style="width:12%;background:var(--blue)"></div></div>
+        <span class="rc-fov-val">~12%</span>
+      </div>
+      <div class="rc-dist-row">
+        <span class="rc-dist-label">16:10</span>
+        <div class="rc-fov-track"><div class="rc-fov-fill" style="width:5%;background:var(--purple)"></div></div>
+        <span class="rc-fov-val">~5%</span>
+      </div>
+      <div class="rc-dist-row">
+        <span class="rc-dist-label">Other</span>
+        <div class="rc-fov-track"><div class="rc-fov-fill" style="width:3%;background:var(--text2)"></div></div>
+        <span class="rc-fov-val">~3%</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Setup Guide -->
+  <section>
+    <h2>How to Set Up Stretched Resolution</h2>
+    <div class="rc-steps">
+      <div class="rc-step">
+        <span class="rc-step-num">1</span>
+        <div>
+          <h3>Set CS2 Resolution</h3>
+          <p>Open CS2 → Settings → Video → Resolution. Select your desired 4:3 resolution (e.g., 1280x960). Set display mode to Fullscreen.</p>
+        </div>
+      </div>
+      <div class="rc-step">
+        <span class="rc-step-num">2</span>
+        <div>
+          <h3>Configure GPU Scaling (NVIDIA)</h3>
+          <p>Open NVIDIA Control Panel → Display → Adjust desktop size and position → Select "Full-screen" under scaling mode → Apply.</p>
+        </div>
+      </div>
+      <div class="rc-step">
+        <span class="rc-step-num">3</span>
+        <div>
+          <h3>Configure GPU Scaling (AMD)</h3>
+          <p>Open AMD Radeon Settings → Display → GPU Scaling: On → Scaling Mode: Full Panel → Apply.</p>
+        </div>
+      </div>
+      <div class="rc-step">
+        <span class="rc-step-num">4</span>
+        <div>
+          <h3>Verify In-Game</h3>
+          <p>Launch CS2 and verify the image fills your screen. If you see black bars, the GPU scaling setting isn't applied correctly. Try toggling fullscreen/windowed and back.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="internal-links">
+    <strong>Related Tools:</strong>
+    <a href="/sensitivity-converter/">Sensitivity Converter</a>
+    <a href="/edpi-calculator/">eDPI Calculator</a>
+    <a href="/cm360-calculator/">cm/360 Calculator</a>
+    <a href="/crosshair-generator/">Crosshair Generator</a>
+    <a href="/crosshair-codes/">Crosshair Codes</a>
+    <a href="/launch-options/">Launch Options</a>
+    <a href="/autoexec-generator/">Autoexec Generator</a>
+    <a href="/pro-players/">Pro Player Settings</a>
+    <a href="/tools/">All Tools</a>
+    <a href="/guides/fps-optimization-guide/">FPS Guide</a>
+  </div>
+
+  <h2>Frequently Asked Questions</h2>
+  <dl class="faq">{faqs.map(f => (<Fragment><dt>{f.question}</dt><dd>{f.answer}</dd></Fragment>))}</dl>
+
+  <ExploreMore context="tools" />
+</Base>
+
+<script is:inline>
+(function(){
+  function gcd(a,b){return b===0?a:gcd(b,a%b);}
+  function getAspectRatio(w,h){var d=gcd(w,h);return(w/d)+':'+(h/d);}
+  function getHFov(w,h){var vfov=73.74*Math.PI/180;var aspect=w/h;return Math.round(2*Math.atan(Math.tan(vfov/2)*aspect)*180/Math.PI*100)/100;}
+  function getPixelCount(w,h){return(w*h/1000000).toFixed(2);}
+
+  // Preset buttons
+  document.querySelectorAll('.rc-presets .filter-btn').forEach(function(btn){
+    btn.addEventListener('click',function(){
+      var t=btn.dataset.target;
+      document.getElementById('res'+t+'-w').value=btn.dataset.w;
+      document.getElementById('res'+t+'-h').value=btn.dataset.h;
+    });
+  });
+
+  document.getElementById('calc-btn').addEventListener('click',function(){
+    var aw=parseInt(document.getElementById('resA-w').value)||1920;
+    var ah=parseInt(document.getElementById('resA-h').value)||1080;
+    var bw=parseInt(document.getElementById('resB-w').value)||1280;
+    var bh=parseInt(document.getElementById('resB-h').value)||960;
+
+    var resDiv=document.getElementById('rc-results');
+    resDiv.style.display='block';
+
+    document.getElementById('rc-labelA').textContent=aw+'x'+ah;
+    document.getElementById('rc-labelB').textContent=bw+'x'+bh;
+
+    var hfovA=getHFov(aw,ah);
+    var hfovB=getHFov(bw,bh);
+    var pixA=getPixelCount(aw,ah);
+    var pixB=getPixelCount(bw,bh);
+    var arA=getAspectRatio(aw,ah);
+    var arB=getAspectRatio(bw,bh);
+    var fpsBoost=Math.round((1-(bw*bh)/(aw*ah))*100);
+
+    function statHtml(label,val){return '<div class="rc-stat-item"><span class="rc-stat-l">'+label+'</span><span class="rc-stat-v">'+val+'</span></div>';}
+
+    document.getElementById('rc-statsA').innerHTML=
+      statHtml('Aspect Ratio',arA)+
+      statHtml('Horizontal FOV',hfovA+'°')+
+      statHtml('Total Pixels',pixA+'MP')+
+      statHtml('Resolution',aw+'x'+ah);
+
+    document.getElementById('rc-statsB').innerHTML=
+      statHtml('Aspect Ratio',arB)+
+      statHtml('Horizontal FOV',hfovB+'°')+
+      statHtml('Total Pixels',pixB+'MP')+
+      statHtml('Resolution',bw+'x'+bh);
+
+    var fovDiff=Math.abs(hfovA-hfovB).toFixed(1);
+    var wider=hfovA>hfovB?'A':'B';
+    var verdict='<strong>FOV Difference:</strong> '+fovDiff+'° — Resolution '+(wider==='A'?aw+'x'+ah:bw+'x'+bh)+' has wider field of view.<br>';
+    if(fpsBoost>0)verdict+='<strong>FPS Estimate:</strong> Switching from '+aw+'x'+ah+' to '+bw+'x'+bh+' could give ~'+fpsBoost+'% FPS boost.<br>';
+    else if(fpsBoost<0)verdict+='<strong>FPS Estimate:</strong> '+bw+'x'+bh+' renders '+Math.abs(fpsBoost)+'% more pixels — expect lower FPS.<br>';
+    document.getElementById('rc-verdict').innerHTML=verdict;
+  });
+
+  // Auto-calculate on load
+  document.getElementById('calc-btn').click();
+})();
+</script>
+
+<style>
+  .rc-compare-grid{display:grid;grid-template-columns:1fr auto 1fr;gap:1rem;align-items:start}
+  .rc-input-box{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:1.25rem}
+  .rc-input-box h3{margin:0 0 .75rem;font-size:1rem}
+  .rc-vs{display:flex;align-items:center;font-size:1.5rem;font-weight:900;color:var(--accent);padding-top:2rem}
+  .rc-presets{display:flex;gap:.4rem;flex-wrap:wrap;margin-top:.75rem}
+  .rc-results-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-top:1rem}
+  .rc-result-col{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:1rem}
+  .rc-result-header{font-size:1.3rem;font-weight:800;color:var(--accent);text-align:center;margin-bottom:.75rem;padding-bottom:.5rem;border-bottom:1px solid var(--border)}
+  .rc-stat-item{display:flex;justify-content:space-between;padding:.4rem 0;font-size:.9rem}
+  .rc-stat-l{color:var(--text2)}
+  .rc-stat-v{font-weight:700;color:var(--text)}
+
+  .rc-guide{margin:2.5rem 0}
+  .rc-ratio-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:1rem}
+  .rc-ratio-card{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:1.25rem;transition:border-color .2s}
+  .rc-ratio-card:hover{border-color:var(--accent)}
+  .rc-ratio-card.rc-popular{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent)}
+  .rc-ratio-card h3{margin:.75rem 0 .25rem;font-size:1.1rem}
+  .rc-ratio-card p{font-size:.85rem;line-height:1.6;margin-bottom:.75rem}
+  .rc-ratio-tag{display:inline-block;background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:.15rem .5rem;font-size:.72rem;font-weight:700;color:var(--accent)}
+  .rc-pros,.rc-cons{font-size:.82rem;margin-bottom:.3rem;line-height:1.5}
+  .rc-pros{color:var(--green)}
+  .rc-cons{color:var(--red)}
+
+  .rc-ratio-visual{height:50px;background:var(--bg3);border:2px solid var(--accent);border-radius:4px;margin-bottom:.5rem}
+  .rc-169{aspect-ratio:16/9;width:100%;max-width:160px}
+  .rc-1610{aspect-ratio:16/10;width:100%;max-width:140px}
+  .rc-43{aspect-ratio:4/3;width:100%;max-width:120px}
+  .rc-43bb{aspect-ratio:4/3;width:100%;max-width:120px;border-left:15px solid var(--bg);border-right:15px solid var(--bg)}
+
+  .rc-fov-bars,.rc-dist-bars{display:flex;flex-direction:column;gap:.6rem;margin:1rem 0}
+  .rc-fov-row,.rc-dist-row{display:flex;align-items:center;gap:1rem}
+  .rc-fov-label,.rc-dist-label{width:100px;font-size:.85rem;color:var(--text2);flex-shrink:0;font-weight:600}
+  .rc-fov-track{flex:1;height:10px;background:var(--bg3);border-radius:5px;overflow:hidden}
+  .rc-fov-fill{height:100%;border-radius:5px;transition:width .3s}
+  .rc-fov-val{width:60px;text-align:right;font-size:.85rem;font-weight:700;color:var(--accent);flex-shrink:0}
+
+  .rc-steps{display:flex;flex-direction:column;gap:.75rem;margin:1rem 0}
+  .rc-step{display:flex;gap:1rem;align-items:flex-start;background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:1.25rem}
+  .rc-step-num{display:flex;align-items:center;justify-content:center;min-width:36px;height:36px;background:var(--accent);color:#000;border-radius:50%;font-weight:800;font-size:1rem;flex-shrink:0}
+  .rc-step h3{margin:0 0 .3rem;font-size:.95rem}
+  .rc-step p{margin:0;font-size:.88rem;color:var(--text2);line-height:1.6}
+
+  @media(max-width:768px){
+    .rc-compare-grid{grid-template-columns:1fr;gap:.5rem}
+    .rc-vs{justify-content:center;padding:0}
+    .rc-results-grid{grid-template-columns:1fr}
+    .rc-ratio-grid{grid-template-columns:1fr}
+    .rc-fov-label,.rc-dist-label{width:80px;font-size:.78rem}
+  }
+</style>

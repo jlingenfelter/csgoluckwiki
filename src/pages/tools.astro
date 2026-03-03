@@ -1,0 +1,262 @@
+---
+import Base from '../layouts/Base.astro';
+import ExploreMore from '../components/ExploreMore.astro';
+import { breadcrumbSchema, faqSchema } from '../lib/weapons';
+
+const title = 'CS2 Tools & Calculators — All-in-One Toolkit | CSDB.gg';
+const description = 'Every CS2 tool you need in one place. Calculators for sensitivity, eDPI, damage, economy, crosshair, float values, case odds, trade-ups, and more.';
+
+const breadcrumbs = [
+  { name: 'Home', url: '/' },
+  { name: 'Tools', url: '/tools/' },
+];
+
+// Tool categories with descriptions and icons
+const categories = [
+  {
+    name: 'Sensitivity & Aim',
+    icon: '🎯',
+    description: 'Fine-tune your aim settings to match the pros.',
+    tools: [
+      { slug: 'sensitivity-converter', name: 'Sensitivity Converter', desc: 'Convert sensitivity between CS2, Valorant, Apex, and other FPS games.' },
+      { slug: 'edpi-calculator', name: 'eDPI Calculator', desc: 'Calculate your effective DPI and compare with pro players.' },
+      { slug: 'cm360-calculator', name: 'cm/360 Calculator', desc: 'Find how many centimeters it takes for a full 360-degree turn.' },
+      { slug: 'resolution-calculator', name: 'Resolution Calculator', desc: 'Compare aspect ratios, stretched vs native, and find the right resolution.' },
+    ],
+  },
+  {
+    name: 'Crosshair',
+    icon: '✛',
+    description: 'Build, browse, and copy crosshair configurations.',
+    tools: [
+      { slug: 'crosshair-generator', name: 'Crosshair Generator', desc: 'Build a custom crosshair with live preview and export your code.' },
+      { slug: 'crosshair-codes', name: 'Pro Crosshair Codes', desc: 'Copy crosshair codes from professional CS2 players.' },
+    ],
+  },
+  {
+    name: 'Game Mechanics',
+    icon: '🔫',
+    description: 'Master the numbers behind the gameplay.',
+    tools: [
+      { slug: 'damage-calculator', name: 'Damage Calculator', desc: 'Calculate exact damage output based on weapon, armor, and distance.' },
+      { slug: 'economy-calculator', name: 'Economy Calculator', desc: 'Plan your buys and optimize team economy round by round.' },
+      { slug: 'recoil-patterns', name: 'Recoil Patterns', desc: 'Learn and practice spray patterns for every weapon.' },
+      { slug: 'weapon-compare', name: 'Weapon Compare', desc: 'Compare stats side-by-side for any two CS2 weapons.' },
+    ],
+  },
+  {
+    name: 'Skins & Market',
+    icon: '💰',
+    description: 'Track prices, check floats, and optimize your inventory.',
+    tools: [
+      { slug: 'case-simulator', name: 'Case Simulator', desc: 'Open CS2 cases risk-free with realistic roulette animation and profit tracking.' },
+      { slug: 'skin-compare', name: 'Skin Compare', desc: 'Compare two skins side-by-side: prices, floats, variants, and value.' },
+      { slug: 'float-checker', name: 'Float Checker', desc: 'Analyze skin wear values and check float ranges for any skin.' },
+      { slug: 'price-tracker', name: 'Price Tracker', desc: 'Live market overview with price distribution and category analysis.' },
+      { slug: 'market-trends', name: 'Market Trends', desc: 'Track skin market trends, price movements, and investment opportunities.' },
+      { slug: 'tradeup-calculator', name: 'Trade-Up Calculator', desc: 'Calculate expected value and odds for trade-up contracts.' },
+      { slug: 'case-odds-calculator', name: 'Case Odds Calculator', desc: 'See real unboxing odds and expected costs per rarity tier.' },
+      { slug: 'inventory-lookup', name: 'Inventory Lookup', desc: 'Look up any Steam inventory and calculate total skin value.' },
+      { slug: 'loadout-builder', name: 'Loadout Builder', desc: 'Build and plan your dream CS2 loadout with prices.' },
+      { slug: 'trading-sites', name: 'Trading Sites', desc: 'Compare the best CS2 skin trading platforms — fees, trust scores, and features.' },
+    ],
+  },
+  {
+    name: 'Config & Setup',
+    icon: '⚙️',
+    description: 'Generate configs, binds, and optimize your game.',
+    tools: [
+      { slug: 'bind-generator', name: 'Bind Generator', desc: 'Create custom key binds for buy menus, grenades, and utility.' },
+      { slug: 'autoexec-generator', name: 'Autoexec Generator', desc: 'Build a complete autoexec.cfg with recommended settings.' },
+      { slug: 'launch-options', name: 'Launch Options', desc: 'Optimize your CS2 launch options for maximum performance.' },
+      { slug: 'practice-config', name: 'Practice Config', desc: 'Generate practice mode configs for grenade lineups and aim training.' },
+      { slug: 'cs2-commands', name: 'Console Commands', desc: 'Complete CS2 console command reference — 300+ commands with search and one-click copy.' },
+    ],
+  },
+  {
+    name: 'Rankings & Maps',
+    icon: '🗺️',
+    description: 'Explore rankings, maps, and community content.',
+    tools: [
+      { slug: 'rank-distribution', name: 'Rank Distribution', desc: 'Current CS2 rank distribution and rating breakdowns.' },
+      { slug: 'workshop-maps', name: 'Workshop Maps', desc: 'Best community workshop maps for aim training, movement, and fun.' },
+    ],
+  },
+];
+
+const totalTools = categories.reduce((sum, c) => sum + c.tools.length, 0);
+
+const allTools = categories.flatMap(c => c.tools);
+
+const itemListSchema = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "ItemList",
+  "name": "CS2 Tools & Calculators",
+  "description": "Complete collection of free Counter-Strike 2 tools and calculators for sensitivity, crosshairs, economy, skins, configs, and more.",
+  "numberOfItems": allTools.length,
+  "itemListElement": allTools.map((tool, i) => ({
+    "@type": "ListItem",
+    "position": i + 1,
+    "name": tool.name,
+    "description": tool.desc,
+    "url": `https://csdb.gg/${tool.slug}/`
+  }))
+});
+
+const softwareAppSchema = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "CSDB.gg CS2 Toolkit",
+  "description": description,
+  "applicationCategory": "UtilityApplication",
+  "operatingSystem": "Web",
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+  "author": { "@type": "Organization", "name": "CSDB.gg", "url": "https://csdb.gg" }
+});
+
+const faqs = [
+  { question: 'Are these tools free to use?', answer: 'Yes, all CSDB.gg tools are completely free with no sign-up required. They run directly in your browser.' },
+  { question: 'Do these calculators use real game data?', answer: 'Yes. Our damage calculator, weapon stats, and economy tools use actual CS2 game values. Skin prices are sourced from multiple marketplaces and updated regularly.' },
+  { question: 'Can I save my settings from these tools?', answer: 'Most tools generate codes or commands that you can copy and paste directly into CS2. Crosshair codes, autoexec configs, and bind commands are all ready to use in-game.' },
+  { question: 'How accurate is the sensitivity converter?', answer: 'Our sensitivity converter uses the same mathematical formulas that the games themselves use. Conversions between CS2, Valorant, Apex Legends, and other supported games are pixel-accurate.' },
+];
+---
+
+<Base {title} {description} currentNav="/tools/">
+<Fragment slot="head">
+<script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema(breadcrumbs))} />
+<script type="application/ld+json" set:html={JSON.stringify(faqSchema(faqs))} />
+<script type="application/ld+json" set:html={itemListSchema} />
+<script type="application/ld+json" set:html={softwareAppSchema} />
+</Fragment>
+
+<nav class="breadcrumb"><a href="/">Home</a> <span>/</span> <span>Tools</span></nav>
+
+<section class="tools-hero">
+  <h1>CS2 Tools & Calculators</h1>
+  <p>Every tool you need to improve your CS2 game, all in one place. {totalTools} free tools covering sensitivity, crosshairs, economy, skins, configs, and more.</p>
+</section>
+
+<!-- Search -->
+<div class="tools-search-wrap">
+  <input type="text" id="toolSearch" placeholder="Search tools..." class="tools-search" />
+</div>
+
+<!-- Tool Categories -->
+{categories.map(cat => (
+  <section class="tools-category" data-category={cat.name.toLowerCase()}>
+    <div class="tools-cat-header">
+      <span class="tools-cat-icon">{cat.icon}</span>
+      <div>
+        <h2>{cat.name}</h2>
+        <p>{cat.description}</p>
+      </div>
+    </div>
+    <div class="tools-grid">
+      {cat.tools.map(tool => (
+        <a href={`/${tool.slug}/`} class="tool-card" data-name={tool.name.toLowerCase()} data-desc={tool.desc.toLowerCase()}>
+          <h3>{tool.name}</h3>
+          <p>{tool.desc}</p>
+          <span class="tool-arrow">→</span>
+        </a>
+      ))}
+    </div>
+  </section>
+))}
+
+<!-- No results message -->
+<div id="noResults" class="no-results" style="display:none">
+  <p>No tools found matching your search. Try a different keyword.</p>
+</div>
+
+<!-- FAQ -->
+<section class="tools-faq">
+  <h2>Frequently Asked Questions</h2>
+  <dl class="faq">
+    {faqs.map(f => (
+      <>
+        <dt>{f.question}</dt>
+        <dd>{f.answer}</dd>
+      </>
+    ))}
+  </dl>
+</section>
+
+<!-- Internal Links -->
+<div class="internal-links">
+  <strong>More Resources:</strong>
+  <a href="/pro-players/">Pro Player Settings</a>
+  <a href="/guides/">All Guides</a>
+  <a href="/weapons/">Weapon Database</a>
+  <a href="/skins/">Skin Database</a>
+  <a href="/maps/">Map Callouts</a>
+</div>
+
+<ExploreMore context="general" />
+</Base>
+
+<style>
+.tools-hero{background:linear-gradient(135deg,var(--bg2),var(--bg3));border:1px solid var(--border);border-radius:12px;padding:2rem;margin-bottom:2rem}
+.tools-hero h1{font-size:2.2rem;margin:0 0 .75rem}
+.tools-hero p{color:var(--text2);font-size:1.05rem;margin:0}
+
+.tools-search-wrap{margin-bottom:2rem}
+.tools-search{width:100%;background:var(--bg2);color:var(--text);border:1px solid var(--border);padding:.75rem 1rem;border-radius:8px;font-size:1rem;font-family:inherit}
+.tools-search:focus{border-color:var(--accent);outline:none;box-shadow:0 0 0 3px rgba(212,149,110,.15)}
+
+.tools-category{margin-bottom:2.5rem}
+.tools-category.hidden{display:none}
+.tools-cat-header{display:flex;gap:1rem;align-items:center;margin-bottom:1.25rem}
+.tools-cat-icon{font-size:2rem;width:48px;height:48px;display:flex;align-items:center;justify-content:center;background:var(--bg2);border:1px solid var(--border);border-radius:10px;flex-shrink:0}
+.tools-cat-header h2{margin:0;font-size:1.3rem;color:var(--text)}
+.tools-cat-header p{margin:.2rem 0 0;font-size:.9rem;color:var(--text2)}
+
+.tools-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1rem}
+
+.tool-card{display:block;background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:1.25rem;text-decoration:none;color:inherit;position:relative;transition:border-color .2s,transform .2s,box-shadow .2s}
+.tool-card:hover{border-color:var(--accent);transform:translateY(-2px);box-shadow:0 4px 16px rgba(212,149,110,.1)}
+.tool-card.hidden{display:none}
+.tool-card h3{margin:0 0 .5rem;font-size:1.05rem;color:var(--text);font-weight:700}
+.tool-card p{margin:0;font-size:.88rem;color:var(--text2);line-height:1.5}
+.tool-arrow{position:absolute;top:1.25rem;right:1.25rem;color:var(--accent);font-size:1.2rem;opacity:0;transition:opacity .2s}
+.tool-card:hover .tool-arrow{opacity:1}
+
+.no-results{text-align:center;padding:3rem;color:var(--text2)}
+
+.tools-faq{margin-top:3rem;padding:1.5rem;background:var(--bg2);border:1px solid var(--border);border-radius:10px}
+.tools-faq h2{margin:0 0 1rem;font-size:1.3rem}
+
+@media(max-width:768px){
+  .tools-hero h1{font-size:1.6rem}
+  .tools-grid{grid-template-columns:1fr}
+  .tools-cat-header{flex-direction:column;align-items:flex-start}
+}
+</style>
+
+<script is:inline>
+(function(){
+  var search = document.getElementById('toolSearch');
+  var cards = document.querySelectorAll('.tool-card');
+  var cats = document.querySelectorAll('.tools-category');
+  var noRes = document.getElementById('noResults');
+
+  search.addEventListener('input', function(){
+    var q = search.value.toLowerCase().trim();
+    var visible = 0;
+
+    cards.forEach(function(card){
+      var match = !q || card.dataset.name.indexOf(q) > -1 || card.dataset.desc.indexOf(q) > -1;
+      card.classList.toggle('hidden', !match);
+      if (match) visible++;
+    });
+
+    // Hide empty categories
+    cats.forEach(function(cat){
+      var visCards = cat.querySelectorAll('.tool-card:not(.hidden)');
+      cat.classList.toggle('hidden', visCards.length === 0);
+    });
+
+    noRes.style.display = visible === 0 ? 'block' : 'none';
+  });
+})();
+</script>

@@ -1,0 +1,1032 @@
+---
+import Base from '../layouts/Base.astro';
+import ExploreMore from '../components/ExploreMore.astro';
+import { SKINS, getLowestPrice, getHighestPrice } from '../lib/skins';
+import { breadcrumbSchema, faqSchema } from '../lib/weapons';
+
+const title = 'CS2 Skin Price Alerts — Get Notified on Price Drops | CSDB.gg';
+const description = 'Set custom price alerts for any CS2 skin. Track target prices, monitor drops, and never miss a deal on your favorite skins. Free tool — all data saved locally in your browser.';
+
+const breadcrumbs = [
+  { name: 'Home', url: '/' },
+  { name: 'Tools', url: '/tools/' },
+  { name: 'Price Alerts', url: '/price-alerts/' },
+];
+
+const faqs = [
+  { question: 'How do CS2 skin price alerts work on CSDB.gg?', answer: 'Price alerts are saved in your browser using localStorage. Each time you visit this page, your alerts are checked against the latest build-time prices sourced from multiple marketplaces. If a skin\'s current lowest price has dropped to or below your target, the alert is marked as triggered.' },
+  { question: 'Are price alerts real-time push notifications?', answer: 'No. Since CSDB.gg is a statically generated site, alerts are checked when you load the page rather than in real time. For the most up-to-date checks, simply revisit this page. Prices are updated regularly at build time from marketplace data.' },
+  { question: 'Will I lose my alerts if I clear my browser data?', answer: 'Yes. Alerts are stored in your browser\'s localStorage. Clearing your browsing data, cookies, or site data will remove your saved alerts. They are also specific to the browser and device you set them on.' },
+  { question: 'How many price alerts can I set?', answer: 'There is no hard limit. You can set as many alerts as you like. All alerts are stored locally in your browser, so performance depends on your device. We recommend keeping your list manageable for the best experience.' },
+  { question: 'What prices are used to check my alerts?', answer: 'Alerts are checked against the lowest available price across all tracked marketplaces at the time the site was last built. This gives you the best deal from sources like Skinport, DMarket, CSFloat, and more.' },
+  { question: 'Can I set alerts for StatTrak or Souvenir variants?', answer: 'Yes. The skin search includes all variants in the database, including StatTrak and Souvenir versions. Simply search for the specific variant you want and set your target price.' },
+];
+
+// Build a lightweight JSON blob for client-side search
+// Only include skins that have at least one price
+const skinsData = SKINS
+  .filter(s => s.prices.length > 0)
+  .map(s => ({
+    slug: s.slug,
+    name: s.name,
+    weapon: s.weapon,
+    lowestPrice: getLowestPrice(s),
+  }));
+
+const skinsWithPrices = SKINS.filter(s => s.prices.length > 0);
+const totalTracked = skinsWithPrices.length;
+---
+
+<Base title={title} description={description} currentNav="/tools/">
+  <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema(breadcrumbs))}></script>
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema(faqs))}></script>
+
+  <nav class="breadcrumb">
+    <a href="/">Home</a> / <a href="/tools/">Tools</a> / <span>Price Alerts</span>
+  </nav>
+
+  <h1>CS2 Skin Price Alerts</h1>
+  <p>Set target prices for any CS2 skin and check back to see when your price has been reached. Alerts are saved locally in your browser and checked against the latest marketplace data each time you visit. Track {totalTracked.toLocaleString()}+ skins across all categories.</p>
+
+  <!-- Stats overview -->
+  <div class="stats-grid" style="margin-bottom:2rem">
+    <div class="stat-card">
+      <div class="val" id="alertCount">0</div>
+      <div class="label">Active Alerts</div>
+    </div>
+    <div class="stat-card">
+      <div class="val" id="triggeredCount">0</div>
+      <div class="label">Triggered</div>
+    </div>
+    <div class="stat-card">
+      <div class="val" id="watchingCount">0</div>
+      <div class="label">Watching</div>
+    </div>
+    <div class="stat-card">
+      <div class="val">{totalTracked.toLocaleString()}</div>
+      <div class="label">Skins Tracked</div>
+    </div>
+  </div>
+
+  <!-- Search & Add Alert Section -->
+  <section class="alert-builder">
+    <h2>Add a Price Alert</h2>
+    <p>Search for a skin, then set your target price. You'll see the current lowest price to help you decide.</p>
+
+    <div class="search-box">
+      <label for="skinSearch">Search Skins</label>
+      <input type="text" id="skinSearch" placeholder="Type a skin name, e.g. Dragon Lore, Asiimov, Fade..." autocomplete="off" />
+      <div id="searchResults" class="search-results"></div>
+    </div>
+
+    <div id="selectedSkin" class="selected-skin" style="display:none">
+      <div class="selected-info">
+        <div class="selected-name" id="selectedName"></div>
+        <div class="selected-weapon" id="selectedWeapon"></div>
+        <div class="selected-price">Current lowest: <strong id="selectedPrice"></strong></div>
+        <a id="selectedLink" href="#" class="selected-view-link">View skin details</a>
+      </div>
+      <div class="target-row">
+        <label for="targetPrice">Target Price ($)</label>
+        <input type="number" id="targetPrice" min="0.01" step="0.01" placeholder="0.00" />
+      </div>
+      <button id="addAlertBtn" class="add-alert-btn">Add Alert</button>
+      <button id="cancelBtn" class="cancel-btn">Cancel</button>
+    </div>
+  </section>
+
+  <!-- Active Alerts List -->
+  <section class="alerts-section">
+    <h2>Your Alerts</h2>
+    <p id="alertsEmpty" class="alerts-empty">No alerts yet. Search for a skin above to add your first price alert.</p>
+    <div id="alertsList" class="alerts-list"></div>
+  </section>
+
+  <!-- How It Works -->
+  <section class="how-it-works">
+    <h2>How Price Alerts Work</h2>
+    <div class="steps-grid">
+      <div class="step-card">
+        <div class="step-num">1</div>
+        <h3>Search & Select</h3>
+        <p>Find the skin you want to track using the search bar. We index {totalTracked.toLocaleString()}+ skins with live marketplace pricing.</p>
+      </div>
+      <div class="step-card">
+        <div class="step-num">2</div>
+        <h3>Set Your Target</h3>
+        <p>Enter the price you want to pay. You can see the current lowest price to set a realistic target below market value.</p>
+      </div>
+      <div class="step-card">
+        <div class="step-num">3</div>
+        <h3>Check Back</h3>
+        <p>Visit this page anytime to check your alerts. When a skin's price drops to or below your target, the alert is triggered automatically.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Tips Section -->
+  <section class="tips-section">
+    <h2>Tips for Setting Price Alerts</h2>
+    <ul class="tip-list">
+      <li>Set target prices 10-20% below current market value for realistic alerts that may trigger within weeks.</li>
+      <li>Watch for major Steam sales and CS2 updates, which often cause temporary price dips across the market.</li>
+      <li>Track multiple wear conditions of the same skin to catch the best deal regardless of float.</li>
+      <li>Bookmark this page and check regularly. Prices update at each site build with fresh marketplace data.</li>
+      <li>Combine price alerts with the <a href="/market-trends/">Market Trends</a> tool to identify skins that are trending downward.</li>
+      <li>Use the <a href="/price-tracker/">Price Tracker</a> to research price ranges before setting your target.</li>
+    </ul>
+  </section>
+
+  <!-- FAQ -->
+  <section class="faq-section">
+    <h2>Frequently Asked Questions</h2>
+    <dl class="faq">
+      {faqs.map(f => (
+        <Fragment>
+          <dt>{f.question}</dt>
+          <dd>{f.answer}</dd>
+        </Fragment>
+      ))}
+    </dl>
+  </section>
+
+  <!-- Internal Links -->
+  <div class="internal-links">
+    <strong>Related Tools & Guides:</strong>
+    <a href="/skins/">Skin Database</a>
+    <a href="/price-tracker/">Price Tracker</a>
+    <a href="/market-trends/">Market Trends</a>
+    <a href="/skin-compare/">Compare Skins</a>
+    <a href="/float-checker/">Float Checker</a>
+    <a href="/tradeup-calculator/">Trade-Up Calculator</a>
+    <a href="/inventory-lookup/">Inventory Lookup</a>
+    <a href="/loadout-builder/">Loadout Builder</a>
+    <a href="/trading-sites/">Trading Sites</a>
+    <a href="/guides/trading-guide/">Trading Guide</a>
+    <a href="/guides/skins-investing-guide/">Skins Investing Guide</a>
+    <a href="/guides/float-guide/">Float Value Guide</a>
+  </div>
+
+  <ExploreMore context="skins" />
+</Base>
+
+<!-- Embed build-time skin data for client-side JS -->
+<script is:inline define:vars={{ skinsData }}>
+  // ── Skin price alert data (build-time) ──────────────────────────────────────
+  var SKINS_DATA = skinsData;
+  var STORAGE_KEY = 'csdb_price_alerts';
+
+  // ── Helpers ─────────────────────────────────────────────────────────────────
+  function loadAlerts() {
+    try {
+      var raw = localStorage.getItem(STORAGE_KEY);
+      return raw ? JSON.parse(raw) : [];
+    } catch (e) {
+      return [];
+    }
+  }
+
+  function saveAlerts(alerts) {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(alerts));
+    } catch (e) {
+      // localStorage full or unavailable
+    }
+  }
+
+  function formatPrice(num) {
+    return '$' + Number(num).toFixed(2);
+  }
+
+  function findSkinData(slug) {
+    for (var i = 0; i < SKINS_DATA.length; i++) {
+      if (SKINS_DATA[i].slug === slug) return SKINS_DATA[i];
+    }
+    return null;
+  }
+
+  // ── Search functionality ────────────────────────────────────────────────────
+  var searchInput = document.getElementById('skinSearch');
+  var resultsContainer = document.getElementById('searchResults');
+  var selectedSkinEl = document.getElementById('selectedSkin');
+  var selectedNameEl = document.getElementById('selectedName');
+  var selectedWeaponEl = document.getElementById('selectedWeapon');
+  var selectedPriceEl = document.getElementById('selectedPrice');
+  var selectedLinkEl = document.getElementById('selectedLink');
+  var targetPriceInput = document.getElementById('targetPrice');
+  var addAlertBtn = document.getElementById('addAlertBtn');
+  var cancelBtn = document.getElementById('cancelBtn');
+  var alertsList = document.getElementById('alertsList');
+  var alertsEmpty = document.getElementById('alertsEmpty');
+  var alertCountEl = document.getElementById('alertCount');
+  var triggeredCountEl = document.getElementById('triggeredCount');
+  var watchingCountEl = document.getElementById('watchingCount');
+
+  var currentSelection = null;
+  var debounceTimer = null;
+
+  searchInput.addEventListener('input', function() {
+    clearTimeout(debounceTimer);
+    var query = this.value.trim().toLowerCase();
+    if (query.length < 2) {
+      resultsContainer.innerHTML = '';
+      resultsContainer.style.display = 'none';
+      return;
+    }
+    debounceTimer = setTimeout(function() {
+      var matches = [];
+      for (var i = 0; i < SKINS_DATA.length; i++) {
+        var s = SKINS_DATA[i];
+        if (s.name.toLowerCase().indexOf(query) !== -1 || s.weapon.toLowerCase().indexOf(query) !== -1) {
+          matches.push(s);
+          if (matches.length >= 15) break;
+        }
+      }
+      renderResults(matches);
+    }, 200);
+  });
+
+  function renderResults(matches) {
+    if (matches.length === 0) {
+      resultsContainer.innerHTML = '<div class="search-no-results">No skins found. Try a different search term.</div>';
+      resultsContainer.style.display = 'block';
+      return;
+    }
+    var html = '';
+    for (var i = 0; i < matches.length; i++) {
+      var m = matches[i];
+      html += '<button class="search-result-item" data-slug="' + m.slug + '">';
+      html += '<span class="sr-name">' + escapeHtml(m.name) + '</span>';
+      html += '<span class="sr-meta">' + escapeHtml(m.weapon) + ' &middot; ' + formatPrice(m.lowestPrice) + '</span>';
+      html += '</button>';
+    }
+    resultsContainer.innerHTML = html;
+    resultsContainer.style.display = 'block';
+
+    // Attach click handlers
+    var items = resultsContainer.querySelectorAll('.search-result-item');
+    for (var j = 0; j < items.length; j++) {
+      items[j].addEventListener('click', function() {
+        var slug = this.getAttribute('data-slug');
+        selectSkin(slug);
+      });
+    }
+  }
+
+  function escapeHtml(str) {
+    var div = document.createElement('div');
+    div.textContent = str;
+    return div.innerHTML;
+  }
+
+  function selectSkin(slug) {
+    var skin = findSkinData(slug);
+    if (!skin) return;
+
+    currentSelection = skin;
+    selectedNameEl.textContent = skin.name;
+    selectedWeaponEl.textContent = skin.weapon;
+    selectedPriceEl.textContent = formatPrice(skin.lowestPrice);
+    selectedLinkEl.href = '/skin/' + skin.slug + '/';
+    targetPriceInput.value = '';
+    selectedSkinEl.style.display = 'block';
+
+    // Suggest a target price slightly below current
+    var suggested = Math.max(0.01, skin.lowestPrice * 0.85);
+    targetPriceInput.placeholder = suggested.toFixed(2);
+
+    resultsContainer.innerHTML = '';
+    resultsContainer.style.display = 'none';
+    searchInput.value = '';
+    targetPriceInput.focus();
+  }
+
+  // Cancel selection
+  cancelBtn.addEventListener('click', function() {
+    selectedSkinEl.style.display = 'none';
+    currentSelection = null;
+    searchInput.focus();
+  });
+
+  // Close results on outside click
+  document.addEventListener('click', function(e) {
+    if (!resultsContainer.contains(e.target) && e.target !== searchInput) {
+      resultsContainer.style.display = 'none';
+    }
+  });
+
+  // ── Add alert ───────────────────────────────────────────────────────────────
+  addAlertBtn.addEventListener('click', function() {
+    if (!currentSelection) return;
+    var target = parseFloat(targetPriceInput.value);
+    if (isNaN(target) || target <= 0) {
+      targetPriceInput.style.borderColor = 'var(--red)';
+      setTimeout(function() { targetPriceInput.style.borderColor = ''; }, 1500);
+      return;
+    }
+
+    var alerts = loadAlerts();
+
+    // Check for duplicate
+    for (var i = 0; i < alerts.length; i++) {
+      if (alerts[i].slug === currentSelection.slug && alerts[i].targetPrice === target) {
+        // Already exists
+        targetPriceInput.style.borderColor = 'var(--red)';
+        setTimeout(function() { targetPriceInput.style.borderColor = ''; }, 1500);
+        return;
+      }
+    }
+
+    var newAlert = {
+      id: Date.now().toString(36) + Math.random().toString(36).substr(2, 5),
+      slug: currentSelection.slug,
+      name: currentSelection.name,
+      weapon: currentSelection.weapon,
+      targetPrice: target,
+      createdAt: new Date().toISOString(),
+      triggered: false,
+    };
+
+    alerts.push(newAlert);
+    saveAlerts(alerts);
+
+    // Reset UI
+    selectedSkinEl.style.display = 'none';
+    currentSelection = null;
+
+    renderAlerts();
+  });
+
+  // ── Render alerts ───────────────────────────────────────────────────────────
+  function renderAlerts() {
+    var alerts = loadAlerts();
+
+    // Check alerts against current prices
+    var triggeredTotal = 0;
+    var watchingTotal = 0;
+
+    for (var i = 0; i < alerts.length; i++) {
+      var skin = findSkinData(alerts[i].slug);
+      if (skin && skin.lowestPrice <= alerts[i].targetPrice) {
+        alerts[i].triggered = true;
+        triggeredTotal++;
+      } else {
+        alerts[i].triggered = false;
+        watchingTotal++;
+      }
+    }
+
+    saveAlerts(alerts);
+
+    // Update stats
+    alertCountEl.textContent = alerts.length;
+    triggeredCountEl.textContent = triggeredTotal;
+    watchingCountEl.textContent = watchingTotal;
+
+    if (alerts.length === 0) {
+      alertsEmpty.style.display = 'block';
+      alertsList.innerHTML = '';
+      return;
+    }
+
+    alertsEmpty.style.display = 'none';
+
+    // Sort: triggered first, then by created date descending
+    var sorted = alerts.slice().sort(function(a, b) {
+      if (a.triggered && !b.triggered) return -1;
+      if (!a.triggered && b.triggered) return 1;
+      return new Date(b.createdAt) - new Date(a.createdAt);
+    });
+
+    var html = '';
+    for (var i = 0; i < sorted.length; i++) {
+      var a = sorted[i];
+      var skin = findSkinData(a.slug);
+      var currentPrice = skin ? formatPrice(skin.lowestPrice) : 'N/A';
+      var statusClass = a.triggered ? 'status-triggered' : 'status-watching';
+      var statusLabel = a.triggered ? 'Triggered' : 'Watching';
+      var createdDate = new Date(a.createdAt).toLocaleDateString();
+
+      html += '<div class="alert-card ' + (a.triggered ? 'alert-triggered' : '') + '">';
+      html += '<div class="alert-header">';
+      html += '<div class="alert-skin-info">';
+      html += '<a href="/skin/' + a.slug + '/" class="alert-name">' + escapeHtml(a.name) + '</a>';
+      html += '<span class="alert-weapon">' + escapeHtml(a.weapon) + '</span>';
+      html += '</div>';
+      html += '<span class="alert-status ' + statusClass + '">' + statusLabel + '</span>';
+      html += '</div>';
+      html += '<div class="alert-prices">';
+      html += '<div class="alert-price-item"><span class="alert-price-label">Current Price</span><span class="alert-price-value">' + currentPrice + '</span></div>';
+      html += '<div class="alert-price-item"><span class="alert-price-label">Target Price</span><span class="alert-price-value alert-target">' + formatPrice(a.targetPrice) + '</span></div>';
+      if (skin && !a.triggered) {
+        var diff = skin.lowestPrice - a.targetPrice;
+        var pct = ((diff / skin.lowestPrice) * 100).toFixed(1);
+        html += '<div class="alert-price-item"><span class="alert-price-label">Difference</span><span class="alert-price-value alert-diff">-' + formatPrice(diff) + ' (' + pct + '%)</span></div>';
+      }
+      html += '</div>';
+      html += '<div class="alert-footer">';
+      html += '<span class="alert-date">Added ' + createdDate + '</span>';
+      html += '<button class="alert-delete" data-id="' + a.id + '">Remove</button>';
+      html += '</div>';
+      html += '</div>';
+    }
+    alertsList.innerHTML = html;
+
+    // Attach delete handlers
+    var deleteBtns = alertsList.querySelectorAll('.alert-delete');
+    for (var d = 0; d < deleteBtns.length; d++) {
+      deleteBtns[d].addEventListener('click', function() {
+        var id = this.getAttribute('data-id');
+        deleteAlert(id);
+      });
+    }
+  }
+
+  // ── Delete alert ────────────────────────────────────────────────────────────
+  function deleteAlert(id) {
+    var alerts = loadAlerts();
+    alerts = alerts.filter(function(a) { return a.id !== id; });
+    saveAlerts(alerts);
+    renderAlerts();
+  }
+
+  // ── Initialize on page load ─────────────────────────────────────────────────
+  renderAlerts();
+</script>
+
+<style>
+  /* ── Alert Builder Section ─────────────────────────────────────────────────── */
+  .alert-builder {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1.5rem;
+    margin: 2rem 0;
+  }
+
+  .alert-builder h2 {
+    color: var(--text);
+    margin: 0 0 0.5rem;
+    font-size: 1.4rem;
+    font-weight: 700;
+  }
+
+  .alert-builder > p {
+    color: var(--text2);
+    margin-bottom: 1.5rem;
+    font-size: 0.95rem;
+  }
+
+  /* ── Search Box ────────────────────────────────────────────────────────────── */
+  .search-box {
+    position: relative;
+    margin-bottom: 1rem;
+  }
+
+  .search-box label {
+    display: block;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text2);
+    margin-bottom: 0.4rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
+  .search-box input {
+    width: 100%;
+    background: var(--bg3);
+    color: var(--text);
+    border: 1px solid var(--border);
+    padding: 0.65rem 1rem;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    font-family: inherit;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+
+  .search-box input:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(212, 149, 110, 0.15);
+  }
+
+  .search-box input::placeholder {
+    color: var(--text2);
+    opacity: 0.6;
+  }
+
+  /* ── Search Results Dropdown ───────────────────────────────────────────────── */
+  .search-results {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 0 0 8px 8px;
+    max-height: 320px;
+    overflow-y: auto;
+    z-index: 50;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  }
+
+  .search-result-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    padding: 0.6rem 1rem;
+    background: none;
+    border: none;
+    border-bottom: 1px solid var(--border);
+    color: var(--text);
+    font-family: inherit;
+    font-size: 0.9rem;
+    cursor: pointer;
+    text-align: left;
+    transition: background 0.15s;
+    gap: 0.75rem;
+  }
+
+  .search-result-item:last-child {
+    border-bottom: none;
+  }
+
+  .search-result-item:hover {
+    background: var(--bg3);
+  }
+
+  .sr-name {
+    font-weight: 600;
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .sr-meta {
+    color: var(--text2);
+    font-size: 0.82rem;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .search-no-results {
+    padding: 1rem;
+    color: var(--text2);
+    text-align: center;
+    font-size: 0.9rem;
+  }
+
+  /* ── Selected Skin Card ────────────────────────────────────────────────────── */
+  .selected-skin {
+    background: var(--bg3);
+    border: 2px solid var(--accent);
+    border-radius: 10px;
+    padding: 1.25rem;
+    margin-top: 1rem;
+    box-shadow: 0 4px 12px rgba(212, 149, 110, 0.1);
+  }
+
+  .selected-info {
+    margin-bottom: 1rem;
+  }
+
+  .selected-name {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 0.2rem;
+  }
+
+  .selected-weapon {
+    font-size: 0.85rem;
+    color: var(--text2);
+    margin-bottom: 0.4rem;
+  }
+
+  .selected-price {
+    font-size: 0.95rem;
+    color: var(--text2);
+    margin-bottom: 0.3rem;
+  }
+
+  .selected-price strong {
+    color: var(--green);
+    font-size: 1.1rem;
+  }
+
+  .selected-view-link {
+    font-size: 0.82rem;
+    color: var(--accent);
+    text-decoration: none;
+    font-weight: 600;
+  }
+
+  .selected-view-link:hover {
+    color: var(--accent2);
+    text-decoration: underline;
+  }
+
+  .target-row {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin: 1rem 0;
+    flex-wrap: wrap;
+  }
+
+  .target-row label {
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: var(--text);
+    white-space: nowrap;
+  }
+
+  .target-row input {
+    background: var(--bg2);
+    color: var(--text);
+    border: 1px solid var(--border);
+    padding: 0.5rem 0.75rem;
+    border-radius: 6px;
+    font-size: 0.95rem;
+    font-family: inherit;
+    width: 140px;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+
+  .target-row input:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(212, 149, 110, 0.1);
+  }
+
+  .add-alert-btn {
+    background: var(--accent);
+    color: var(--bg);
+    border: none;
+    padding: 0.55rem 1.5rem;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    font-weight: 700;
+    font-family: inherit;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+    margin-right: 0.5rem;
+  }
+
+  .add-alert-btn:hover {
+    background: var(--accent2);
+    transform: translateY(-1px);
+  }
+
+  .add-alert-btn:active {
+    transform: translateY(0);
+  }
+
+  .cancel-btn {
+    background: var(--bg2);
+    color: var(--text2);
+    border: 1px solid var(--border);
+    padding: 0.55rem 1rem;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    font-family: inherit;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+  }
+
+  .cancel-btn:hover {
+    background: var(--bg3);
+    color: var(--text);
+  }
+
+  /* ── Alerts Section ────────────────────────────────────────────────────────── */
+  .alerts-section {
+    margin: 3rem 0;
+  }
+
+  .alerts-section h2 {
+    color: var(--text);
+    margin-bottom: 0.5rem;
+    font-size: 1.4rem;
+    font-weight: 700;
+  }
+
+  .alerts-empty {
+    color: var(--text2);
+    font-size: 0.95rem;
+    padding: 2rem;
+    text-align: center;
+    background: var(--bg2);
+    border: 1px dashed var(--border);
+    border-radius: 10px;
+  }
+
+  .alerts-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  /* ── Individual Alert Card ─────────────────────────────────────────────────── */
+  .alert-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1rem 1.25rem;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+
+  .alert-card:hover {
+    border-color: rgba(212, 149, 110, 0.3);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  }
+
+  .alert-card.alert-triggered {
+    border-color: var(--green);
+    box-shadow: 0 0 12px rgba(92, 184, 92, 0.15);
+  }
+
+  .alert-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 0.75rem;
+    gap: 0.75rem;
+  }
+
+  .alert-skin-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+    min-width: 0;
+    flex: 1;
+  }
+
+  .alert-name {
+    font-weight: 700;
+    font-size: 1rem;
+    color: var(--accent);
+    text-decoration: none;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .alert-name:hover {
+    color: var(--accent2);
+    text-decoration: underline;
+  }
+
+  .alert-weapon {
+    font-size: 0.82rem;
+    color: var(--text2);
+  }
+
+  .alert-status {
+    padding: 0.25rem 0.65rem;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .status-watching {
+    background: rgba(109, 179, 232, 0.15);
+    color: var(--blue);
+    border: 1px solid rgba(109, 179, 232, 0.3);
+  }
+
+  .status-triggered {
+    background: rgba(92, 184, 92, 0.15);
+    color: var(--green);
+    border: 1px solid rgba(92, 184, 92, 0.3);
+  }
+
+  .alert-prices {
+    display: flex;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+    margin-bottom: 0.75rem;
+  }
+
+  .alert-price-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.1rem;
+  }
+
+  .alert-price-label {
+    font-size: 0.72rem;
+    color: var(--text2);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    font-weight: 600;
+  }
+
+  .alert-price-value {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--text);
+  }
+
+  .alert-target {
+    color: var(--accent);
+  }
+
+  .alert-diff {
+    color: var(--text2);
+    font-size: 0.9rem;
+  }
+
+  .alert-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 0.6rem;
+    border-top: 1px solid var(--border);
+  }
+
+  .alert-date {
+    font-size: 0.78rem;
+    color: var(--text2);
+  }
+
+  .alert-delete {
+    background: none;
+    border: 1px solid var(--border);
+    color: var(--text2);
+    padding: 0.3rem 0.7rem;
+    border-radius: 6px;
+    font-size: 0.78rem;
+    font-family: inherit;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .alert-delete:hover {
+    background: rgba(224, 112, 112, 0.1);
+    border-color: var(--red);
+    color: var(--red);
+  }
+
+  /* ── How It Works ──────────────────────────────────────────────────────────── */
+  .how-it-works {
+    margin: 3rem 0;
+  }
+
+  .how-it-works h2 {
+    color: var(--text);
+    margin-bottom: 1rem;
+    font-size: 1.4rem;
+    font-weight: 700;
+  }
+
+  .steps-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+  }
+
+  .step-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1.25rem;
+    text-align: center;
+    transition: border-color 0.2s, transform 0.2s;
+  }
+
+  .step-card:hover {
+    border-color: var(--accent);
+    transform: translateY(-2px);
+  }
+
+  .step-num {
+    width: 36px;
+    height: 36px;
+    line-height: 36px;
+    background: var(--accent);
+    color: var(--bg);
+    font-weight: 800;
+    font-size: 1rem;
+    border-radius: 50%;
+    margin: 0 auto 0.75rem;
+  }
+
+  .step-card h3 {
+    color: var(--text);
+    font-size: 1.05rem;
+    font-weight: 700;
+    margin: 0 0 0.4rem;
+  }
+
+  .step-card p {
+    color: var(--text2);
+    font-size: 0.88rem;
+    margin: 0;
+    line-height: 1.5;
+  }
+
+  /* ── Tips Section ──────────────────────────────────────────────────────────── */
+  .tips-section {
+    margin: 3rem 0;
+    padding: 1.5rem;
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+  }
+
+  .tips-section h2 {
+    color: var(--text);
+    margin: 0 0 1rem;
+    font-size: 1.4rem;
+    font-weight: 700;
+  }
+
+  .tips-section .tip-list li a {
+    color: var(--accent);
+    font-weight: 600;
+  }
+
+  .tips-section .tip-list li a:hover {
+    color: var(--accent2);
+    text-decoration: underline;
+  }
+
+  /* ── FAQ Section ───────────────────────────────────────────────────────────── */
+  .faq-section {
+    margin: 3rem 0;
+    padding: 1.5rem;
+    background: var(--bg2);
+    border-radius: 8px;
+    border: 1px solid var(--border);
+  }
+
+  .faq-section h2 {
+    color: var(--text);
+    margin-bottom: 0.5rem;
+    font-size: 1.4rem;
+    font-weight: 700;
+  }
+
+  .faq-section .faq {
+    margin-top: 1rem;
+  }
+
+  .faq-section .faq dt {
+    color: var(--text);
+    font-weight: 700;
+    font-size: 1rem;
+    margin-top: 1.2rem;
+    margin-bottom: 0.5rem;
+    cursor: pointer;
+    transition: color 0.2s;
+  }
+
+  .faq-section .faq dt:hover {
+    color: var(--accent);
+  }
+
+  .faq-section .faq dd {
+    color: var(--text2);
+    margin-left: 0;
+    margin-bottom: 1rem;
+    line-height: 1.7;
+    font-size: 0.95rem;
+  }
+
+  /* ── Responsive ────────────────────────────────────────────────────────────── */
+  @media (max-width: 768px) {
+    .steps-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .alert-prices {
+      gap: 1rem;
+    }
+
+    .alert-header {
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .target-row {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    .target-row input {
+      width: 100%;
+    }
+  }
+</style>

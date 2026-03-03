@@ -1,0 +1,687 @@
+---
+import Base from '../../layouts/Base.astro';
+import AuthorBox from '../../components/AuthorBox.astro';
+import { faqSchema, breadcrumbSchema } from '../../lib/weapons';
+
+const title = 'Grenades & Utility Guide';
+const description = 'Master CS2 grenades — smoke lineups, flash techniques, molotov usage, grenade binds, and practice commands for utility mastery.';
+
+const breadcrumbs = [
+  { name: 'Home', url: '/' },
+  { name: 'Guides', url: '/guides' },
+  { name: 'Grenades & Utility Guide', url: '/guides/grenade-guide' },
+];
+
+const faqs = [
+  {
+    question: 'How many grenades can you carry in CS2?',
+    answer: 'You can carry up to four grenades: one smoke, one HE grenade, one incendiary/molotov, and two flashbangs. A decoy grenade shares a slot with the HE grenade, so you cannot carry both simultaneously.',
+  },
+  {
+    question: 'What is a jump throw bind and how do I set one up?',
+    answer: 'A jump throw bind lets you throw a grenade and jump simultaneously for consistent long-range lineups. Add this to your autoexec.cfg: alias "+jumpthrow" "+jump;-attack" and alias "-jumpthrow" "-jump" then bind a key like bind "v" "+jumpthrow". CS2 also has a native jump throw option in settings.',
+  },
+  {
+    question: 'How much damage does an HE grenade do in CS2?',
+    answer: 'An HE grenade deals up to 98 damage to unarmored opponents and around 57 damage to armored opponents at point-blank range. Damage decreases with distance. Stacking two HE grenades on the same spot can eliminate a full-health armored enemy.',
+  },
+  {
+    question: 'What is the difference between left-click and right-click throws?',
+    answer: 'Left-click performs a long throw with maximum distance. Right-click performs a short underhand lob that lands close to you. Pressing both mouse buttons simultaneously (middle throw) gives a medium-distance throw, useful for precise placements.',
+  },
+  {
+    question: 'How do I practice grenade lineups offline?',
+    answer: 'Start a local server, enable sv_cheats 1, then use sv_infinite_ammo 1 for unlimited grenades, sv_grenade_trajectory 1 to see grenade paths, sv_grenade_trajectory_time 10 to keep paths visible, and mp_roundtime_defuse 60 for longer rounds. Use noclip to fly around the map.',
+  },
+];
+
+const breadcrumbSchema_ = breadcrumbSchema(breadcrumbs);
+const faqSchema_ = faqSchema(faqs);
+
+const articleSchema = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": title,
+  "description": description,
+  "author": { "@type": "Person", "name": "Josh Lingenfelter", "url": "https://www.linkedin.com/in/josh-lingenfelter-8157274b/", "jobTitle": "Director", "worksFor": { "@type": "Organization", "name": "Bettor Media" } },
+  "publisher": { "@type": "Organization", "name": "CSDB.gg", "url": "https://csdb.gg" },
+  "mainEntityOfPage": "https://csdb.gg/guides/grenade-guide/",
+  "inLanguage": "en-US"
+});
+---
+
+<Base title={title} description={description}>
+  <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema_)}></script>
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema_)}></script>
+  <script type="application/ld+json" set:html={articleSchema}></script>
+
+  <div class="guide-container">
+    <nav class="breadcrumb">
+      <a href="/">Home</a>
+      <span class="separator">/</span>
+      <a href="/guides">Guides</a>
+      <span class="separator">/</span>
+      <span>Grenades & Utility Guide</span>
+    </nav>
+
+    <article class="guide-article">
+      <header class="guide-header">
+        <h1>Grenades & Utility Guide</h1>
+        <p class="lead">Master every grenade type, learn lineups, and dominate with superior utility usage</p>
+      </header>
+
+      <section class="intro-section">
+        <p>
+          Grenades are among the most impactful tools in Counter-Strike 2. A well-placed smoke can shut down an entire push, a perfect pop flash creates free kills, and a timely molotov denies critical positions. Utility usage separates average players from elite competitors. This guide covers every grenade type, throw mechanics, practice commands, and advanced techniques to elevate your gameplay.
+        </p>
+      </section>
+
+      <section>
+        <h2>Grenade Types & Stats</h2>
+        <p>
+          CS2 features five grenade types, each serving a distinct tactical purpose. Understanding their costs, damage values, and effective ranges is essential for smart purchasing and deployment.
+        </p>
+
+        <h3>Smoke Grenade — $300</h3>
+        <ul>
+          <li><strong>Duration:</strong> 18 seconds of vision-blocking smoke</li>
+          <li><strong>Effect:</strong> Creates a dense smoke cloud that blocks line of sight</li>
+          <li><strong>Carry Limit:</strong> 1 per player</li>
+          <li><strong>Key Uses:</strong> Blocking sightlines, site executes, one-way smokes, defuse cover</li>
+          <li><strong>CS2 Change:</strong> Smoke grenades now respond to HE grenades and bullets, creating temporary gaps in the smoke cloud</li>
+        </ul>
+
+        <h3>Flashbang — $200</h3>
+        <ul>
+          <li><strong>Duration:</strong> Up to 5 seconds of full blindness (varies by exposure)</li>
+          <li><strong>Effect:</strong> Blinds and deafens players looking toward the flash</li>
+          <li><strong>Carry Limit:</strong> 2 per player</li>
+          <li><strong>Key Uses:</strong> Entry fragging, retakes, peeking angles, clearing corners</li>
+          <li><strong>Counter:</strong> Turn away from the flash to reduce or avoid the blind effect</li>
+        </ul>
+
+        <h3>HE Grenade — $300</h3>
+        <ul>
+          <li><strong>Max Damage (unarmored):</strong> ~98 HP at point blank</li>
+          <li><strong>Max Damage (armored):</strong> ~57 HP at point blank</li>
+          <li><strong>Damage Radius:</strong> ~350 units, damage decreases with distance</li>
+          <li><strong>Carry Limit:</strong> 1 per player</li>
+          <li><strong>Key Uses:</strong> Softening enemies before a push, finishing low-HP opponents, stacking with teammates</li>
+        </ul>
+
+        <h3>Incendiary Grenade (CT) / Molotov (T) — $600 / $400</h3>
+        <ul>
+          <li><strong>Duration:</strong> ~7 seconds of fire</li>
+          <li><strong>Damage:</strong> ~40 HP per second while standing in flames</li>
+          <li><strong>Effect:</strong> Creates a burning area that damages and slows players</li>
+          <li><strong>Carry Limit:</strong> 1 per player</li>
+          <li><strong>Counter:</strong> Extinguished instantly by a smoke grenade landing on it</li>
+          <li><strong>Key Uses:</strong> Area denial, clearing corners, delaying pushes, post-plant denial</li>
+        </ul>
+
+        <h3>Decoy Grenade — $50</h3>
+        <ul>
+          <li><strong>Duration:</strong> ~15 seconds of fake gunfire sounds</li>
+          <li><strong>Damage:</strong> ~5 HP explosion at end of life</li>
+          <li><strong>Effect:</strong> Mimics the sound of your primary weapon on radar, then explodes</li>
+          <li><strong>Carry Limit:</strong> 1 per player (shares slot with HE grenade)</li>
+          <li><strong>Key Uses:</strong> Faking presence, creating distractions, baiting reactions on eco rounds</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>Throw Mechanics</h2>
+        <p>
+          CS2 offers three distinct throw types that control the distance and arc of your grenades. Mastering all three is critical for precise utility placement.
+        </p>
+
+        <h3>Left-Click — Long Throw</h3>
+        <ul>
+          <li>Hold left mouse button, release to throw</li>
+          <li>Maximum distance and velocity</li>
+          <li>Used for long-range lineups, cross-map smokes, and deep flashes</li>
+          <li>Most common throw type for set-piece utility</li>
+        </ul>
+
+        <h3>Right-Click — Short Throw (Underhand)</h3>
+        <ul>
+          <li>Hold right mouse button, release to lob</li>
+          <li>Minimal distance, grenade lands close to your feet</li>
+          <li>Used for close-range molotovs, short pop flashes, and corner clearing</li>
+          <li>Essential for self-flashes and close smoke placements</li>
+        </ul>
+
+        <h3>Both-Click — Medium Throw</h3>
+        <ul>
+          <li>Hold both mouse buttons simultaneously, release to throw</li>
+          <li>Medium distance between left and right click throws</li>
+          <li>Used for mid-range placements where precision matters</li>
+          <li>Great for placing smokes on nearby elevated positions</li>
+        </ul>
+
+        <h3>Movement Affects Throws</h3>
+        <ul>
+          <li>Running forward adds distance to your throw</li>
+          <li>Running backward reduces throw distance</li>
+          <li>Strafing slightly shifts the trajectory left or right</li>
+          <li>Jumping extends maximum range (critical for jump throw lineups)</li>
+          <li>Standing still provides the most consistent results for lineups</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>Smoke Lineup Basics</h2>
+        <p>
+          Smoke lineups are precise, repeatable throws from fixed positions that land smokes on key sightlines. Learning even a handful of lineups per map dramatically improves your effectiveness.
+        </p>
+
+        <h3>How to Learn Lineups</h3>
+        <ul>
+          <li><strong>Step 1:</strong> Stand at the exact lineup position (use map features as reference)</li>
+          <li><strong>Step 2:</strong> Aim at the specific crosshair placement point</li>
+          <li><strong>Step 3:</strong> Use the correct throw type (left, right, or both-click)</li>
+          <li><strong>Step 4:</strong> Some lineups require a jump throw bind for consistency</li>
+          <li><strong>Step 5:</strong> Practice each lineup 10+ times until it becomes muscle memory</li>
+        </ul>
+
+        <h3>Essential Smokes Per Map</h3>
+        <ul>
+          <li><strong>Mirage:</strong> Window, Connector, Jungle, CT from T-spawn, Stairs</li>
+          <li><strong>Dust2:</strong> Xbox, CT cross, Long corner, B doors, Mid doors</li>
+          <li><strong>Inferno:</strong> Banana, CT, Arch, Library, Coffins</li>
+          <li><strong>Anubis:</strong> Mid, Connector, B main, A main</li>
+          <li><strong>Ancient:</strong> A site, Mid, B ramp, Donut</li>
+        </ul>
+
+        <h3>One-Way Smokes</h3>
+        <p>
+          A one-way smoke is placed so that you can see enemies' feet beneath the smoke while they cannot see you. These are powerful for holding positions but can be countered by experienced players who know the common spots.
+        </p>
+        <ul>
+          <li>Typically placed on elevated surfaces or ledges</li>
+          <li>Your crosshair should be at ankle height when holding a one-way</li>
+          <li>Most effective on CT side for holding chokepoints</li>
+          <li>Be ready to reposition once enemies catch on</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>Flash Techniques</h2>
+        <p>
+          Flashbangs are the most versatile utility in CS2. A well-timed flash wins duels before they even start. Here are the essential techniques every player should know.
+        </p>
+
+        <h3>Pop Flashes</h3>
+        <p>
+          A pop flash detonates the instant it enters an enemy's field of view, giving them zero time to turn away.
+        </p>
+        <ul>
+          <li>Bounce the flash off a wall so it pops around the corner</li>
+          <li>Use right-click throws for short, fast pops</li>
+          <li>Aim the flash to detonate at head height for maximum effect</li>
+          <li>Time your peek to be instant as the flash pops</li>
+          <li>Practice specific pop flash spots for each bombsite</li>
+        </ul>
+
+        <h3>Self-Flash Avoidance</h3>
+        <ul>
+          <li>Throw the flash behind you and turn to peek as it pops</li>
+          <li>Use both-click throws over cover for flashes that pop above you</li>
+          <li>Bank flashes off walls at angles that keep them behind your line of sight</li>
+          <li>Always turn away if the flash indicator appears on screen</li>
+        </ul>
+
+        <h3>Team Flashing</h3>
+        <ul>
+          <li>Communicate flash throws to teammates before executing</li>
+          <li>Call "flashing [location]" so teammates can look away</li>
+          <li>Avoid throwing flashes directly through areas teammates are actively pushing</li>
+          <li>Coordinate flashes so the entry player pushes as the flash detonates</li>
+          <li>A full-blind teammate is worse than no flash at all</li>
+        </ul>
+
+        <h3>Anti-Flash Techniques</h3>
+        <ul>
+          <li>Listen for the grenade bounce sound and turn away</li>
+          <li>Use walls and corners to shield yourself from the flash</li>
+          <li>If partially flashed, hold your angle and spray — many enemies will wide-peek expecting a full blind</li>
+          <li>Keep at least 90 degrees of turn distance from known flash angles</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>Molotov & Incendiary Usage</h2>
+        <p>
+          Molotovs and incendiaries are powerful area-denial tools. They force enemies out of positions, delay pushes, and control the pace of the round.
+        </p>
+
+        <h3>Clearing Corners</h3>
+        <ul>
+          <li>Throw molotovs into common hiding spots before pushing</li>
+          <li>Force enemies out of off-angles and headshot positions</li>
+          <li>Use before entering a site to eliminate dangerous close-range fights</li>
+          <li>Target spots like Mirage B apartments, Inferno banana car, Dust2 B closet</li>
+        </ul>
+
+        <h3>Delaying Pushes</h3>
+        <ul>
+          <li>Throw incendiaries into chokepoints when you hear enemies approaching</li>
+          <li>Buys ~7 seconds of delay, often enough for rotates to arrive</li>
+          <li>Stack with an HE grenade for additional damage as enemies wait</li>
+          <li>Force enemies to either wait, push through fire (taking damage), or use a smoke to extinguish</li>
+        </ul>
+
+        <h3>Post-Plant Usage</h3>
+        <ul>
+          <li>Molotov the bomb to deny or delay the defuse</li>
+          <li>Forces CTs to either extinguish with a smoke or wait the fire out</li>
+          <li>Combined with a smoke over the bomb, this creates a powerful stall</li>
+          <li>Time your molotov to land just as the CT begins defusing</li>
+        </ul>
+
+        <h3>Smoke Extinguishing</h3>
+        <ul>
+          <li>A smoke grenade landing on fire instantly extinguishes it</li>
+          <li>Always carry a smoke if pushing through a common molotov position</li>
+          <li>CTs should save a smoke for defuse situations against post-plant molotovs</li>
+          <li>This interaction is fundamental to high-level CS2 strategy</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>HE Grenade Stacking</h2>
+        <p>
+          A single HE grenade rarely kills, but coordinated HE stacks can eliminate full-health armored enemies. This technique is devastating when executed correctly.
+        </p>
+
+        <h3>How Stacking Works</h3>
+        <ul>
+          <li>Two or more players throw HE grenades at the same position simultaneously</li>
+          <li>Combined damage from two HEs on an armored target: ~114 HP (lethal)</li>
+          <li>Three HEs guarantee a kill even from moderate range</li>
+          <li>Coordinate timing so grenades detonate within a 1-second window</li>
+        </ul>
+
+        <h3>Best Stacking Spots</h3>
+        <ul>
+          <li><strong>Chokepoints:</strong> Narrow corridors where enemies are forced to group up</li>
+          <li><strong>Common hold positions:</strong> Spots where defenders are likely standing still</li>
+          <li><strong>Post-plant:</strong> Throw HEs at the bomb when a CT is defusing</li>
+          <li><strong>Anti-eco:</strong> Stack HEs against eco rounds for easy kills without risking weapon trades</li>
+        </ul>
+
+        <h3>Coordination Tips</h3>
+        <ul>
+          <li>Call "HE on [location] on my count" and throw on "3-2-1-throw"</li>
+          <li>Use the same lineup reference point so grenades converge on one spot</li>
+          <li>Follow up with a push immediately after the HEs detonate</li>
+          <li>Check scoreboard to confirm kills before committing to the push</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>Economy of Utility</h2>
+        <p>
+          Grenades are a significant investment. Smart utility purchasing ensures your team has the right tools without breaking the bank.
+        </p>
+
+        <h3>Grenade Costs</h3>
+        <ul>
+          <li><strong>Smoke Grenade:</strong> $300</li>
+          <li><strong>Flashbang:</strong> $200 each (max 2 = $400)</li>
+          <li><strong>HE Grenade:</strong> $300</li>
+          <li><strong>Molotov (T side):</strong> $400</li>
+          <li><strong>Incendiary (CT side):</strong> $600</li>
+          <li><strong>Decoy:</strong> $50</li>
+          <li><strong>Full utility loadout (T):</strong> $1,200 (smoke + 2 flash + molotov)</li>
+          <li><strong>Full utility loadout (CT):</strong> $1,400 (smoke + 2 flash + incendiary)</li>
+        </ul>
+
+        <h3>When to Buy Utility</h3>
+        <ul>
+          <li><strong>Full Buy Rounds:</strong> Always buy full utility — grenades win rounds</li>
+          <li><strong>Force Buy Rounds:</strong> Prioritize smoke + 1 flash over the second flash or molotov</li>
+          <li><strong>Eco Rounds:</strong> Consider a single flash ($200) for a hero play, or save everything</li>
+          <li><strong>Anti-Eco:</strong> Buy full utility to safely clear positions without risking deaths</li>
+        </ul>
+
+        <h3>Utility Priority Order</h3>
+        <ul>
+          <li><strong>1. Smoke</strong> — Always the highest priority; enables executes and blocks sightlines</li>
+          <li><strong>2. Flashbang (x1)</strong> — Entry tool and self-defense</li>
+          <li><strong>3. Molotov/Incendiary</strong> — Area denial is critical for site takes and holds</li>
+          <li><strong>4. Flashbang (x2)</strong> — Second flash for additional entries or trading</li>
+          <li><strong>5. HE Grenade</strong> — Damage supplement, lowest priority unless stacking</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>Grenade Binds</h2>
+        <p>
+          Quick-switch grenade binds let you pull out specific grenades instantly instead of cycling through them. This saves critical time during fast-paced rounds.
+        </p>
+
+        <h3>Recommended Grenade Binds</h3>
+        <p>
+          Add these to your autoexec.cfg or set them in the in-game console:
+        </p>
+        <ul>
+          <li><code>bind "4" "slot4"</code> — Cycle grenades (default)</li>
+          <li><code>bind "z" "use weapon_smokegrenade"</code> — Instant smoke</li>
+          <li><code>bind "x" "use weapon_flashbang"</code> — Instant flashbang</li>
+          <li><code>bind "c" "use weapon_hegrenade"</code> — Instant HE grenade</li>
+          <li><code>bind "v" "use weapon_molotov; use weapon_incgrenade"</code> — Instant molotov/incendiary</li>
+          <li><code>bind "b" "use weapon_decoy"</code> — Instant decoy</li>
+        </ul>
+
+        <h3>Jump Throw Bind</h3>
+        <p>
+          The jump throw bind is essential for consistent long-range lineups. It ensures you jump and release the grenade on the exact same tick every time.
+        </p>
+        <ul>
+          <li><code>alias "+jumpthrow" "+jump;-attack"</code></li>
+          <li><code>alias "-jumpthrow" "-jump"</code></li>
+          <li><code>bind "n" "+jumpthrow"</code></li>
+          <li>Hold left-click to pull the pin, then press your jump throw key</li>
+          <li>CS2 also includes a native jump throw keybind option in Settings &gt; Keyboard/Mouse</li>
+        </ul>
+
+        <h3>Run Throw Bind</h3>
+        <p>
+          Some lineups require you to run forward and throw. A run-throw bind automates this:
+        </p>
+        <ul>
+          <li><code>alias "+runthrow" "+forward;-attack"</code></li>
+          <li><code>alias "-runthrow" "-forward"</code></li>
+          <li><code>bind "m" "+runthrow"</code></li>
+          <li>Less common than jump throws but useful for specific lineups</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>Practice Commands</h2>
+        <p>
+          Offline practice is the fastest way to learn lineups and master grenade mechanics. Use these console commands to set up an ideal practice environment.
+        </p>
+
+        <h3>Essential Practice Commands</h3>
+        <ul>
+          <li><code>sv_cheats 1</code> — Enable cheat commands (required for most practice commands)</li>
+          <li><code>sv_infinite_ammo 1</code> — Unlimited ammo and grenades (set to 2 for unlimited ammo but still requiring reloads)</li>
+          <li><code>sv_grenade_trajectory 1</code> — Show grenade flight paths as colored lines</li>
+          <li><code>sv_grenade_trajectory_time 10</code> — How long trajectory lines stay visible (seconds)</li>
+          <li><code>mp_roundtime_defuse 60</code> — Set round time to 60 minutes</li>
+          <li><code>mp_freezetime 0</code> — Remove freeze time at round start</li>
+          <li><code>mp_warmup_end</code> — End warmup immediately</li>
+          <li><code>mp_restartgame 1</code> — Restart the game after 1 second</li>
+        </ul>
+
+        <h3>Movement & Utility Commands</h3>
+        <ul>
+          <li><code>noclip</code> — Fly through walls to check grenade landing spots</li>
+          <li><code>god</code> — God mode to test damage from your own grenades</li>
+          <li><code>give weapon_smokegrenade</code> — Give yourself a specific grenade</li>
+          <li><code>give weapon_flashbang</code> — Give a flashbang</li>
+          <li><code>give weapon_hegrenade</code> — Give an HE grenade</li>
+          <li><code>give weapon_molotov</code> — Give a molotov</li>
+          <li><code>give weapon_incgrenade</code> — Give an incendiary</li>
+          <li><code>bind "p" "noclip"</code> — Quick toggle noclip with a key</li>
+        </ul>
+
+        <h3>Bot Commands for Practice</h3>
+        <ul>
+          <li><code>bot_add_ct</code> / <code>bot_add_t</code> — Add a bot to a team</li>
+          <li><code>bot_stop 1</code> — Freeze all bots in place (useful for flash testing)</li>
+          <li><code>bot_place</code> — Place a bot at your crosshair position</li>
+          <li><code>bot_mimic 1</code> — Bots mimic your movements</li>
+          <li><code>bot_kick</code> — Remove all bots</li>
+          <li><code>mp_limitteams 0</code> — Allow unbalanced teams</li>
+          <li><code>mp_autoteambalance 0</code> — Disable auto team balance</li>
+        </ul>
+
+        <h3>Quick Practice Config</h3>
+        <p>
+          Copy and paste this block into your console to instantly set up a full grenade practice session:
+        </p>
+        <ul>
+          <li><code>sv_cheats 1; sv_infinite_ammo 1; sv_grenade_trajectory 1; sv_grenade_trajectory_time 10; mp_roundtime_defuse 60; mp_freezetime 0; mp_warmup_end; mp_restartgame 1</code></li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>Advanced Utility Tactics</h2>
+
+        <h3>Fake Executes with Utility</h3>
+        <ul>
+          <li>Throw smokes and flashes at one site while your team pushes the other</li>
+          <li>Use decoy grenades ($50) to simulate a full execute</li>
+          <li>A single player can fake a full A execute with 1 smoke + 1 flash + 1 decoy</li>
+          <li>Wait for CTs to rotate, then hit the opposite site</li>
+        </ul>
+
+        <h3>Retake Utility (CT Side)</h3>
+        <ul>
+          <li>Save smokes and flashes for retake situations</li>
+          <li>Smoke the bomb to safely defuse while teammates hold angles</li>
+          <li>Coordinate flashes from multiple angles to overwhelm post-plant positions</li>
+          <li>Use incendiaries to clear common after-plant spots before peeking</li>
+        </ul>
+
+        <h3>Utility Timing</h3>
+        <ul>
+          <li><strong>Early Round:</strong> Use smokes and molotovs to establish map control</li>
+          <li><strong>Mid Round:</strong> Save at least one smoke and flash for execute or retake</li>
+          <li><strong>Late Round:</strong> Your remaining utility is extremely valuable — use it decisively</li>
+          <li>Never waste utility randomly — every grenade should have a clear purpose</li>
+        </ul>
+
+        <h3>Counter-Utility</h3>
+        <ul>
+          <li>Throw an HE grenade or shoot through smokes to create gaps (CS2 mechanic)</li>
+          <li>Smoke enemy molotovs to extinguish them and push through</li>
+          <li>Throw flashes through smokes to blind enemies holding the other side</li>
+          <li>Use your own molotov to block a chokepoint after an enemy smoke fades</li>
+        </ul>
+      </section>
+
+      <section class="faq-section">
+        <h2>Frequently Asked Questions</h2>
+        <div class="faq-items">
+          {faqs.map((faq) => (
+            <div class="faq-item">
+              <h3>{faq.question}</h3>
+              <p>{faq.answer}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <section class="guide-links">
+        <h3>Related Resources</h3>
+        <ul>
+          <li><a href="/guides/">All Guides</a></li>
+          <li><a href="/maps/">Map Callouts</a></li>
+          <li><a href="/lineups/mirage/">Mirage Lineups</a></li>
+          <li><a href="/lineups/dust2/">Dust2 Lineups</a></li>
+          <li><a href="/lineups/inferno/">Inferno Lineups</a></li>
+          <li><a href="/bind-generator/">Bind Generator</a></li>
+          <li><a href="/practice-config/">Practice Config</a></li>
+          <li><a href="/guides/economy-guide/">Economy Guide</a></li>
+          <li><a href="/weapons/">Weapons Database</a></li>
+          <li><a href="/console-commands/">Console Commands</a></li>
+          <li><a href="/guides/beginners-guide/">Beginner's Guide</a></li>
+          <li><a href="/guides/advanced-mechanics-guide/">Advanced Mechanics Guide</a></li>
+        </ul>
+      </section>
+    </article>
+  </div>
+
+  <style>
+    .guide-container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+
+    .breadcrumb {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 2rem;
+      font-size: 0.95rem;
+      color: var(--text-secondary);
+    }
+
+    .breadcrumb a {
+      color: var(--accent-color);
+      text-decoration: none;
+      transition: color 0.2s ease;
+    }
+
+    .breadcrumb a:hover {
+      color: var(--accent-light);
+    }
+
+    .breadcrumb .separator {
+      color: var(--text-secondary);
+    }
+
+    .guide-article {
+      color: var(--text-primary);
+    }
+
+    .guide-header {
+      margin-bottom: 2rem;
+      border-bottom: 2px solid var(--border-color);
+      padding-bottom: 1.5rem;
+    }
+
+    .guide-header h1 {
+      margin: 0 0 0.5rem 0;
+      font-size: 2.5rem;
+      color: var(--text-primary);
+    }
+
+    .lead {
+      margin: 0;
+      font-size: 1.1rem;
+      color: var(--text-secondary);
+    }
+
+    .intro-section {
+      font-size: 1.05rem;
+      line-height: 1.8;
+      margin-bottom: 2.5rem;
+      padding: 1.5rem;
+      background: var(--bg-secondary);
+      border-left: 4px solid var(--accent-color);
+      border-radius: 4px;
+    }
+
+    section {
+      margin-bottom: 2.5rem;
+    }
+
+    h2 {
+      font-size: 1.8rem;
+      margin: 0 0 1rem 0;
+      color: var(--text-primary);
+      border-bottom: 2px solid var(--border-color);
+      padding-bottom: 0.5rem;
+    }
+
+    h3 {
+      font-size: 1.3rem;
+      margin: 1.5rem 0 0.75rem 0;
+      color: var(--text-primary);
+    }
+
+    p {
+      line-height: 1.7;
+      color: var(--text-secondary);
+      margin-bottom: 1rem;
+    }
+
+    ul {
+      list-style: none;
+      padding: 0;
+      margin: 1rem 0 1.5rem 0;
+    }
+
+    li {
+      padding-left: 1.5rem;
+      margin-bottom: 0.75rem;
+      position: relative;
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+
+    li::before {
+      content: '\25B8';
+      position: absolute;
+      left: 0;
+      color: var(--accent-color);
+    }
+
+    code {
+      background: var(--bg-secondary);
+      padding: 0.15rem 0.4rem;
+      border-radius: 3px;
+      font-size: 0.9em;
+      color: var(--accent-color);
+      font-family: 'Courier New', Courier, monospace;
+    }
+
+    .faq-section {
+      margin-top: 3rem;
+    }
+
+    .faq-items {
+      display: grid;
+      gap: 1.5rem;
+    }
+
+    .faq-item {
+      background: var(--bg-secondary);
+      padding: 1.5rem;
+      border-radius: 8px;
+      border-left: 4px solid var(--accent-color);
+    }
+
+    .faq-item h3 {
+      margin-top: 0;
+      color: var(--text-primary);
+      font-size: 1.1rem;
+    }
+
+    .faq-item p {
+      margin-bottom: 0;
+    }
+
+    .guide-links {
+      background: var(--bg-secondary);
+      padding: 1.5rem;
+      border-radius: 8px;
+      border-top: 2px solid var(--accent-color);
+    }
+
+    .guide-links h3 {
+      margin-top: 0;
+    }
+
+    .guide-links ul {
+      margin: 1rem 0 0 0;
+    }
+
+    .guide-links a {
+      color: var(--accent-color);
+      text-decoration: none;
+      transition: color 0.2s ease;
+    }
+
+    .guide-links a:hover {
+      color: var(--accent-light);
+    }
+  </style>
+  <AuthorBox updated="2026-03-02" />
+</Base>

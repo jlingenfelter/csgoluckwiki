@@ -1,0 +1,436 @@
+---
+import Base from '../../layouts/Base.astro';
+import AuthorBox from '../../components/AuthorBox.astro';
+import { faqSchema, breadcrumbSchema } from '../../lib/weapons';
+
+const title = 'Crosshair Customization Guide';
+const description = 'Master crosshair settings to improve your aim. Learn popular pro player crosshairs, console commands, and customization tips.';
+
+const breadcrumbs = [
+  { name: 'Home', url: '/' },
+  { name: 'Guides', url: '/guides' },
+  { name: 'Crosshair Customization Guide', url: '/guides/crosshair-guide' },
+];
+
+const faqs = [
+  {
+    question: 'What crosshair settings do pro players use?',
+    answer: 'Most pros use small, static crosshairs with minimal spread. Popular configs include players using 1-2px gap with 2-3px thickness. The best crosshair is one that feels comfortable for your playstyle.',
+  },
+  {
+    question: 'Should I use a dynamic or static crosshair?',
+    answer: 'Competitive players typically use static crosshairs because they don\'t expand during movement. This provides consistent aiming feedback regardless of weapon accuracy.',
+  },
+  {
+    question: 'How do I copy a pro player\'s crosshair?',
+    answer: 'Use a crosshair generator tool with pro player configs, or manually enter console commands from their config files. Many community resources compile popular pro crosshairs.',
+  },
+  {
+    question: 'What\'s the best crosshair size?',
+    answer: 'There\'s no universal "best" size. Start with small (outline 0-1, size 1-2) and adjust based on your monitor size and distance. You should be able to see enemies clearly through it.',
+  },
+  {
+    question: 'Can I import crosshairs from CS:GO?',
+    answer: 'CS2 uses the same crosshair command structure as CS:GO, so most crosshair settings are directly transferable. You\'ll likely want to fine-tune slightly for your preference.',
+  },
+];
+
+const breadcrumbSchema_ = breadcrumbSchema(breadcrumbs);
+const faqSchema_ = faqSchema(faqs);
+
+const articleSchema = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": title,
+  "description": description,
+  "author": { "@type": "Person", "name": "Josh Lingenfelter", "url": "https://www.linkedin.com/in/josh-lingenfelter-8157274b/", "jobTitle": "Director", "worksFor": { "@type": "Organization", "name": "Bettor Media" } },
+  "publisher": { "@type": "Organization", "name": "CSDB.gg", "url": "https://csdb.gg" },
+  "mainEntityOfPage": `https://csdb.gg/guides/crosshair-guide/`,
+  "inLanguage": "en-US"
+});
+---
+
+<Base title={title} description={description}>
+  <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema_)}></script>
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema_)}></script>
+  <script type="application/ld+json" set:html={articleSchema}></script>
+
+  <div class="guide-container">
+    <nav class="breadcrumb">
+      <a href="/">Home</a>
+      <span class="separator">/</span>
+      <a href="/guides">Guides</a>
+      <span class="separator">/</span>
+      <span>Crosshair Guide</span>
+    </nav>
+
+    <article class="guide-article">
+      <header class="guide-header">
+        <h1>Crosshair Customization Guide</h1>
+        <p class="lead">Optimize your crosshair for improved aim and consistency</p>
+      </header>
+
+      <section class="intro-section">
+        <p>
+          Your crosshair is your primary visual guide for aiming accuracy. The right crosshair setting can significantly improve your performance by providing clear feedback on accuracy and weapon spread. This guide covers customization options, popular pro settings, and how to find your optimal crosshair.
+        </p>
+      </section>
+
+      <section>
+        <h2>Crosshair Customization Settings</h2>
+        <p>
+          Counter-Strike 2 provides extensive crosshair customization through console commands. Each setting controls a specific aspect of your crosshair's appearance.
+        </p>
+
+        <h3>Essential Console Variables</h3>
+        <ul>
+          <li><strong>cl_crosshairsize:</strong> Controls the length of crosshair lines (recommended: 1-5)</li>
+          <li><strong>cl_crosshairgap:</strong> Sets the gap between crosshair lines (recommended: -2 to 2)</li>
+          <li><strong>cl_crosshairthickness:</strong> Line thickness in pixels (recommended: 0.5-2)</li>
+          <li><strong>cl_crosshairalpha:</strong> Crosshair opacity from 0-255 (recommended: 255)</li>
+          <li><strong>cl_crosshaircolor:</strong> Color preset: 0=red, 1=green, 2=yellow, 3=cyan, 4=custom RGB</li>
+          <li><strong>cl_crosshaircolor_r/g/b:</strong> Custom RGB values (0-255 each)</li>
+          <li><strong>cl_crosshairstyle:</strong> 0=default, 1=static, 2=dynamic, 3=classic, 4=classic static</li>
+          <li><strong>cl_crosshair_drawoutline:</strong> Adds outline to crosshair (0=off, 1=on)</li>
+          <li><strong>cl_crosshair_outlinewidth:</strong> Outline thickness (recommended: 1-3)</li>
+          <li><strong>cl_crosshairdot:</strong> Center dot (0=off, 1=on)</li>
+        </ul>
+
+        <h3>Static vs Dynamic Crosshairs</h3>
+        <p>
+          <strong>Static Crosshair (cl_crosshairstyle 1):</strong> Remains fixed size regardless of accuracy. Professional players prefer this for consistent aiming cues.
+        </p>
+        <p>
+          <strong>Dynamic Crosshair (cl_crosshairstyle 2):</strong> Expands when moving or firing. Useful for learning weapon accuracy patterns but less consistent for muscle memory.
+        </p>
+      </section>
+
+      <section>
+        <h2>Popular Pro Player Crosshairs</h2>
+        <p>
+          Many professional players share their crosshair configurations. These settings have been tested at the highest competitive level and represent effective choices.
+        </p>
+
+        <h3>Small Aggressive Crosshair</h3>
+        <p>
+          This minimalist approach provides maximum visibility. Use:
+        </p>
+        <ul>
+          <li>Size: 1</li>
+          <li>Gap: -2</li>
+          <li>Thickness: 0.5</li>
+          <li>Outline: 1 (width 1)</li>
+          <li>Color: Cyan (for contrast)</li>
+        </ul>
+        <p>
+          Favored by many riflers for precision aiming. The small size minimizes target obstruction.
+        </p>
+
+        <h3>Classic Pro Crosshair</h3>
+        <p>
+          A balanced choice used by many professional AWPers:
+        </p>
+        <ul>
+          <li>Size: 2</li>
+          <li>Gap: 0</li>
+          <li>Thickness: 1</li>
+          <li>Outline: 1 (width 2)</li>
+          <li>Color: Green</li>
+          <li>Dot: On</li>
+        </ul>
+        <p>
+          The larger size provides easier visibility without significant obstruction.
+        </p>
+
+        <h3>Minimal Dot Crosshair</h3>
+        <p>
+          Some players prefer an extremely minimal setup:
+        </p>
+        <ul>
+          <li>Size: 1</li>
+          <li>Gap: -3</li>
+          <li>Thickness: 0.5</li>
+          <li>Dot: On</li>
+          <li>Outline: 0</li>
+          <li>Color: Custom white</li>
+        </ul>
+        <p>
+          Excellent for maximum visibility. The dot serves as your primary aiming reference.
+        </p>
+      </section>
+
+      <section>
+        <h2>Console Commands for Configuration</h2>
+        <p>
+          Input these commands in your game console (press ~ key) to apply crosshair settings. You can also add them to your autoexec.cfg file for permanent application.
+        </p>
+
+        <h3>Quick Configuration Examples</h3>
+        <p>
+          Open your console and paste the following command sets to try different configurations:
+        </p>
+        <ul>
+          <li><strong>Small Static:</strong> cl_crosshairstyle 1; cl_crosshairsize 1; cl_crosshairgap -2; cl_crosshairthickness 0.5</li>
+          <li><strong>Classic:</strong> cl_crosshairstyle 1; cl_crosshairsize 2; cl_crosshairgap 0; cl_crosshairthickness 1; cl_crosshairdot 1</li>
+          <li><strong>Large Visible:</strong> cl_crosshairstyle 1; cl_crosshairsize 4; cl_crosshairgap -1; cl_crosshairthickness 1.5</li>
+        </ul>
+
+        <h3>Config File Setup</h3>
+        <p>
+          Create or edit your autoexec.cfg file in the CS2 config folder. Add your crosshair commands here to load them automatically when launching the game.
+        </p>
+      </section>
+
+      <section>
+        <h2>Color Selection Tips</h2>
+        <p>
+          Your crosshair color should contrast well with typical map environments while remaining visible in various lighting conditions.
+        </p>
+
+        <h3>Popular Crosshair Colors</h3>
+        <ul>
+          <li><strong>Cyan (Blue-Green):</strong> High contrast on most maps. Very popular among pros</li>
+          <li><strong>Green:</strong> Good visibility, less harsh than cyan</li>
+          <li><strong>Yellow:</strong> Excellent contrast on darker areas</li>
+          <li><strong>Red:</strong> Classic choice, good visibility</li>
+          <li><strong>Custom Colors:</strong> Experiment with RGB values for personalization</li>
+        </ul>
+
+        <h3>Custom RGB Values</h3>
+        <p>
+          For custom colors, use cl_crosshaircolor 4, then set:
+        </p>
+        <ul>
+          <li>cl_crosshaircolor_r [0-255]</li>
+          <li>cl_crosshaircolor_g [0-255]</li>
+          <li>cl_crosshaircolor_b [0-255]</li>
+        </ul>
+        <p>
+          For example, pure cyan: r=0, g=255, b=255
+        </p>
+      </section>
+
+      <section>
+        <h2>Finding Your Perfect Crosshair</h2>
+        <p>
+          The best crosshair is one that feels right to you. Follow this process to find your optimal settings:
+        </p>
+
+        <h3>Step-by-Step Process</h3>
+        <ol style="list-style: decimal; padding-left: 1.5rem;">
+          <li>Start with a small, static crosshair as your baseline</li>
+          <li>Play 5-10 deathmatch rounds and evaluate visibility</li>
+          <li>Adjust gap and thickness based on your comfort</li>
+          <li>Test size in spray patterns—you should see the target through it</li>
+          <li>Choose a color with good contrast on your monitor</li>
+          <li>Lock in settings and use them consistently for 2+ weeks</li>
+        </ol>
+
+        <h3>Testing Crosshairs</h3>
+        <p>
+          Use community deathmatch servers or aim training maps to test new crosshairs. Make sure to play multiple maps and angles to ensure your choice works in various situations.
+        </p>
+      </section>
+
+      <section>
+        <h2>Advanced Customization Tips</h2>
+        <ul>
+          <li><strong>Add outline:</strong> cl_crosshair_drawoutline 1 increases visibility in bright areas</li>
+          <li><strong>Use dot for center reference:</strong> cl_crosshairdot 1 helps with close-range spraying</li>
+          <li><strong>Match your monitor:</strong> Adjust size based on monitor size and resolution</li>
+          <li><strong>Consider weapon spray patterns:</strong> Smaller crosshairs work better with precise tapping</li>
+          <li><strong>Test at different resolutions:</strong> Your crosshair may need adjustment if you change resolution</li>
+          <li><strong>Record and review:</strong> Watch your demos to see how your crosshair positions during engagements</li>
+        </ul>
+      </section>
+
+      <section class="faq-section">
+        <h2>Frequently Asked Questions</h2>
+        <div class="faq-items">
+          {faqs.map((faq) => (
+            <div class="faq-item">
+              <h3>{faq.question}</h3>
+              <p>{faq.answer}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <section class="guide-links">
+        <h3>Related Resources</h3>
+        <ul>
+          <li><a href="/guides/">All Guides</a></li>
+          <li><a href="/crosshair-generator/">Crosshair Generator</a></li>
+          <li><a href="/crosshair-codes/">Pro Crosshair Codes</a></li>
+          <li><a href="/sensitivity-converter/">Sensitivity Converter</a></li>
+          <li><a href="/resolution-calculator/">Resolution Calculator</a></li>
+          <li><a href="/pro-players/">Pro Player Settings</a></li>
+          <li><a href="/tools/">All Tools</a></li>
+          <li><a href="/guides/beginners-guide/">Beginner's Guide</a></li>
+          <li><a href="/guides/ranks-guide/">Ranking System Guide</a></li>
+          <li><a href="/guides/fps-optimization-guide/">FPS Optimization Guide</a></li>
+        </ul>
+      </section>
+    </article>
+  </div>
+
+  <style>
+    .guide-container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+
+    .breadcrumb {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 2rem;
+      font-size: 0.95rem;
+      color: var(--text-secondary);
+    }
+
+    .breadcrumb a {
+      color: var(--accent-color);
+      text-decoration: none;
+      transition: color 0.2s ease;
+    }
+
+    .breadcrumb a:hover {
+      color: var(--accent-light);
+    }
+
+    .breadcrumb .separator {
+      color: var(--text-secondary);
+    }
+
+    .guide-article {
+      color: var(--text-primary);
+    }
+
+    .guide-header {
+      margin-bottom: 2rem;
+      border-bottom: 2px solid var(--border-color);
+      padding-bottom: 1.5rem;
+    }
+
+    .guide-header h1 {
+      margin: 0 0 0.5rem 0;
+      font-size: 2.5rem;
+      color: var(--text-primary);
+    }
+
+    .lead {
+      margin: 0;
+      font-size: 1.1rem;
+      color: var(--text-secondary);
+    }
+
+    .intro-section {
+      font-size: 1.05rem;
+      line-height: 1.8;
+      margin-bottom: 2.5rem;
+      padding: 1.5rem;
+      background: var(--bg-secondary);
+      border-left: 4px solid var(--accent-color);
+      border-radius: 4px;
+    }
+
+    section {
+      margin-bottom: 2.5rem;
+    }
+
+    h2 {
+      font-size: 1.8rem;
+      margin: 0 0 1rem 0;
+      color: var(--text-primary);
+      border-bottom: 2px solid var(--border-color);
+      padding-bottom: 0.5rem;
+    }
+
+    h3 {
+      font-size: 1.3rem;
+      margin: 1.5rem 0 0.75rem 0;
+      color: var(--text-primary);
+    }
+
+    p {
+      line-height: 1.7;
+      color: var(--text-secondary);
+      margin-bottom: 1rem;
+    }
+
+    ul {
+      list-style: none;
+      padding: 0;
+      margin: 1rem 0 1.5rem 0;
+    }
+
+    li {
+      padding-left: 1.5rem;
+      margin-bottom: 0.75rem;
+      position: relative;
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+
+    li::before {
+      content: '▸';
+      position: absolute;
+      left: 0;
+      color: var(--accent-color);
+    }
+
+    .faq-section {
+      margin-top: 3rem;
+    }
+
+    .faq-items {
+      display: grid;
+      gap: 1.5rem;
+    }
+
+    .faq-item {
+      background: var(--bg-secondary);
+      padding: 1.5rem;
+      border-radius: 8px;
+      border-left: 4px solid var(--accent-color);
+    }
+
+    .faq-item h3 {
+      margin-top: 0;
+      color: var(--text-primary);
+      font-size: 1.1rem;
+    }
+
+    .faq-item p {
+      margin-bottom: 0;
+    }
+
+    .guide-links {
+      background: var(--bg-secondary);
+      padding: 1.5rem;
+      border-radius: 8px;
+      border-top: 2px solid var(--accent-color);
+    }
+
+    .guide-links h3 {
+      margin-top: 0;
+    }
+
+    .guide-links ul {
+      margin: 1rem 0 0 0;
+    }
+
+    .guide-links a {
+      color: var(--accent-color);
+      text-decoration: none;
+      transition: color 0.2s ease;
+    }
+
+    .guide-links a:hover {
+      color: var(--accent-light);
+    }
+  </style>
+  <AuthorBox updated="2026-03-02" />
+</Base>

@@ -1,0 +1,227 @@
+---
+import Base from '../../layouts/Base.astro';
+import ExploreMore from '../../components/ExploreMore.astro';
+import { breadcrumbSchema, faqSchema } from '../../lib/weapons';
+import { COMMAND_CATEGORIES, getCommandsByCategory, ALL_COMMANDS } from '../../lib/commands';
+
+export function getStaticPaths() {
+  return COMMAND_CATEGORIES.map((cat) => ({
+    params: { category: cat.id },
+    props: { category: cat },
+  }));
+}
+
+const { category } = Astro.props;
+const commands = getCommandsByCategory(category.id);
+const cheatCount = commands.filter(c => c.cheat).length;
+const safeCount = commands.length - cheatCount;
+const otherCategories = COMMAND_CATEGORIES.filter(c => c.id !== category.id);
+
+const title = `CS2 ${category.name} Commands — All ${commands.length} Console Commands | CSDB.gg`;
+const description = `Complete list of CS2 ${category.name.toLowerCase()} console commands. ${category.desc} ${commands.length} commands with explanations, default values, and usage examples.`;
+
+const faqs = [
+  { question: `How many ${category.name.toLowerCase()} commands are there in CS2?`, answer: `There are ${commands.length} ${category.name.toLowerCase()} commands in CS2. ${safeCount} can be used in any game mode, and ${cheatCount} require sv_cheats 1.` },
+  { question: `Which ${category.name.toLowerCase()} commands require sv_cheats?`, answer: cheatCount > 0 ? `${cheatCount} of the ${commands.length} ${category.name.toLowerCase()} commands require sv_cheats 1. These are only usable in private servers or offline practice mode and are blocked in competitive matchmaking.` : `None of the ${category.name.toLowerCase()} commands require sv_cheats. All ${commands.length} commands can be used in any game mode including competitive matchmaking.` },
+  { question: `How do I use ${category.name.toLowerCase()} commands in CS2?`, answer: `Open the developer console by pressing the tilde key (~). If it does not open, enable it in Settings > Game > Enable Developer Console. Then type the command and press Enter. You can add these commands to your autoexec.cfg for them to run automatically on launch.` },
+  { question: 'How do I save console commands permanently?', answer: 'Create an autoexec.cfg file in your CS2 cfg folder (Steam/steamapps/common/Counter-Strike Global Offensive/game/csgo/cfg/) and add your commands there. End the file with host_writeconfig. These commands run automatically every time CS2 launches.' },
+];
+
+const breadcrumbs = [
+  { name: 'Home', url: '/' },
+  { name: 'CS2 Commands', url: '/cs2-commands/' },
+  { name: category.name, url: `/commands/${category.id}/` },
+];
+
+// Smart internal links based on category
+const categoryLinks: Record<string, { href: string; label: string }[]> = {
+  crosshair: [
+    { href: '/crosshair-generator/', label: 'Crosshair Generator' },
+    { href: '/crosshair-codes/', label: 'Crosshair Codes' },
+    { href: '/guides/crosshair-guide/', label: 'Crosshair Guide' },
+  ],
+  practice: [
+    { href: '/practice-config/', label: 'Practice Config' },
+    { href: '/workshop-maps/', label: 'Workshop Maps' },
+    { href: '/guides/grenade-guide/', label: 'Grenade Guide' },
+  ],
+  mouse: [
+    { href: '/sensitivity-converter/', label: 'Sensitivity Converter' },
+    { href: '/edpi-calculator/', label: 'eDPI Calculator' },
+  ],
+  audio: [
+    { href: '/guides/audio-guide/', label: 'Audio Guide' },
+  ],
+  network: [
+    { href: '/guides/fps-optimization/', label: 'FPS Optimization Guide' },
+  ],
+  viewmodel: [
+    { href: '/guides/config-guide/', label: 'Config Guide' },
+  ],
+  graphics: [
+    { href: '/guides/fps-optimization/', label: 'FPS Optimization Guide' },
+  ],
+  movement: [
+    { href: '/guides/movement-guide/', label: 'Movement Guide' },
+  ],
+  weapon: [
+    { href: '/damage-calculator/', label: 'Damage Calculator' },
+    { href: '/weapon-compare/', label: 'Weapon Compare' },
+  ],
+  demo: [
+    { href: '/guides/demo-guide/', label: 'Demo Guide' },
+  ],
+  bot: [
+    { href: '/practice-config/', label: 'Practice Config' },
+  ],
+  server: [
+    { href: '/practice-config/', label: 'Practice Config' },
+  ],
+  essential: [
+    { href: '/guides/config-guide/', label: 'Config Guide' },
+    { href: '/bind-generator/', label: 'Bind Generator' },
+  ],
+  radar: [
+    { href: '/guides/config-guide/', label: 'Config Guide' },
+  ],
+  communication: [],
+  utility: [
+    { href: '/bind-generator/', label: 'Bind Generator' },
+    { href: '/guides/config-guide/', label: 'Config Guide' },
+  ],
+};
+
+const smartLinks = categoryLinks[category.id] || [];
+---
+
+<Base title={title} description={description} currentNav="/tools/">
+  <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema(breadcrumbs))}></script>
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema(faqs))}></script>
+
+  <nav class="breadcrumb">
+    <a href="/">Home</a> / <a href="/cs2-commands/">CS2 Commands</a> / <span>{category.name}</span>
+  </nav>
+
+  <!-- Hero -->
+  <div class="cat-hero">
+    <span class="cat-hero-icon">{category.icon}</span>
+    <div>
+      <h1>{category.name} Commands</h1>
+      <p class="cat-hero-desc">{category.desc}</p>
+      <div class="cat-hero-stats">
+        <span class="cat-stat">{commands.length} commands</span>
+        <span class="cat-stat">{safeCount} multiplayer safe</span>
+        {cheatCount > 0 && <span class="cat-stat cat-stat-cheat">{cheatCount} require sv_cheats</span>}
+      </div>
+    </div>
+  </div>
+
+  <!-- Commands Grid -->
+  <div class="calc-section">
+    <h2>All {category.name} Commands ({commands.length})</h2>
+    <div class="cat-cmd-grid">
+      {commands.map((cmd) => (
+        <a href={`/command/${cmd.slug}/`} class="cat-cmd-card">
+          <div class="cat-cmd-top">
+            <code class="cat-cmd-name">{cmd.cmd}</code>
+            <button class="copy-btn" data-cmd={cmd.cmd} onclick="event.preventDefault();event.stopPropagation();">Copy</button>
+          </div>
+          <p class="cat-cmd-desc">{cmd.desc}</p>
+          <div class="cat-cmd-meta">
+            {cmd.def && <span class="cat-cmd-def">Default: {cmd.def}</span>}
+            {cmd.cheat && <span class="cat-cmd-cheat">sv_cheats</span>}
+          </div>
+        </a>
+      ))}
+    </div>
+  </div>
+
+  <!-- Other Categories -->
+  <div class="calc-section">
+    <h2>Other Command Categories</h2>
+    <div class="cat-other-grid">
+      {otherCategories.map((cat) => {
+        const catCmds = getCommandsByCategory(cat.id);
+        return (
+          <a href={`/commands/${cat.id}/`} class="cat-other-card">
+            <span class="cat-other-icon">{cat.icon}</span>
+            <span class="cat-other-name">{cat.name}</span>
+            <span class="cat-other-count">{catCmds.length}</span>
+          </a>
+        );
+      })}
+    </div>
+  </div>
+
+  <!-- Internal Links -->
+  <div class="internal-links">
+    <strong>Related Resources:</strong>
+    <a href="/cs2-commands/">All Console Commands</a>
+    {smartLinks.map((link) => (
+      <a href={link.href}>{link.label}</a>
+    ))}
+    <a href="/practice-config/">Practice Config</a>
+    <a href="/bind-generator/">Bind Generator</a>
+    <a href="/tools/">All Tools</a>
+  </div>
+
+  <!-- FAQ -->
+  <h2>Frequently Asked Questions</h2>
+  <dl class="faq">
+    {faqs.map(f => (
+      <Fragment>
+        <dt>{f.question}</dt>
+        <dd>{f.answer}</dd>
+      </Fragment>
+    ))}
+  </dl>
+
+  <ExploreMore context="tools" />
+</Base>
+
+<script is:inline>
+document.querySelectorAll('.copy-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    navigator.clipboard.writeText(btn.dataset.cmd);
+    btn.textContent = 'Copied!';
+    setTimeout(() => btn.textContent = 'Copy', 1500);
+  });
+});
+</script>
+
+<style is:inline>
+.cat-hero{display:flex;align-items:center;gap:1.5rem;background:linear-gradient(135deg,var(--bg2),var(--bg3));border:1px solid var(--border);border-radius:12px;padding:2rem;margin-bottom:2rem}
+.cat-hero-icon{font-size:3rem;flex-shrink:0}
+.cat-hero h1{margin:0 0 .35rem;font-size:1.8rem}
+.cat-hero-desc{margin:0 0 .75rem;color:var(--text2);font-size:.92rem;line-height:1.45}
+.cat-hero-stats{display:flex;gap:.75rem;flex-wrap:wrap}
+.cat-stat{font-size:.78rem;font-weight:600;padding:.25rem .6rem;background:var(--bg);border:1px solid var(--border);border-radius:6px;color:var(--text2)}
+.cat-stat-cheat{color:#f87171;border-color:rgba(239,68,68,.3);background:rgba(239,68,68,.08)}
+
+.cat-cmd-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:.75rem}
+.cat-cmd-card{display:block;background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:1rem;text-decoration:none;transition:all .15s}
+.cat-cmd-card:hover{border-color:var(--accent);transform:translateY(-2px)}
+.cat-cmd-top{display:flex;align-items:center;justify-content:space-between;gap:.5rem;margin-bottom:.4rem}
+.cat-cmd-name{font-family:'Courier New',Courier,monospace;font-size:.9rem;color:var(--accent);font-weight:700;word-break:break-all}
+.cat-cmd-desc{margin:0;font-size:.82rem;color:var(--text2);line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.cat-cmd-meta{display:flex;gap:.5rem;margin-top:.5rem;flex-wrap:wrap}
+.cat-cmd-def{font-size:.72rem;color:var(--text2);background:var(--bg2);padding:.15rem .4rem;border-radius:4px}
+.cat-cmd-cheat{font-size:.72rem;color:#f87171;background:rgba(239,68,68,.1);padding:.15rem .4rem;border-radius:4px}
+
+.copy-btn{background:var(--accent);color:#1a1a2e;border:none;border-radius:5px;padding:.25rem .6rem;font-size:.7rem;font-weight:700;cursor:pointer;flex-shrink:0;transition:opacity .15s}
+.copy-btn:hover{opacity:.85}
+
+.cat-other-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:.5rem}
+.cat-other-card{display:flex;align-items:center;gap:.6rem;padding:.6rem .85rem;background:var(--bg3);border:1px solid var(--border);border-radius:6px;text-decoration:none;color:var(--text);font-size:.85rem;transition:all .15s}
+.cat-other-card:hover{border-color:var(--accent);transform:translateX(3px)}
+.cat-other-icon{font-size:1.1rem;flex-shrink:0}
+.cat-other-name{flex:1;font-weight:600}
+.cat-other-count{color:var(--text2);font-size:.75rem;background:var(--bg2);padding:.15rem .4rem;border-radius:4px}
+
+@media(max-width:768px){
+  .cat-hero{flex-direction:column;text-align:center;padding:1.5rem 1rem}
+  .cat-hero-stats{justify-content:center}
+  .cat-cmd-grid{grid-template-columns:1fr}
+  .cat-other-grid{grid-template-columns:1fr 1fr}
+}
+</style>

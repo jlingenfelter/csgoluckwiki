@@ -1,0 +1,489 @@
+---
+import Base from '../../layouts/Base.astro';
+import AuthorBox from '../../components/AuthorBox.astro';
+import { faqSchema, breadcrumbSchema } from '../../lib/weapons';
+
+const title = 'Ranking System Guide';
+const description = 'Learn about competitive ranks, Premier rating system, and strategies to improve your ranking and reach higher divisions.';
+
+const breadcrumbs = [
+  { name: 'Home', url: '/' },
+  { name: 'Guides', url: '/guides' },
+  { name: 'Ranking System Guide', url: '/guides/ranks-guide' },
+];
+
+const faqs = [
+  {
+    question: 'What are the competitive ranks in CS2?',
+    answer: 'CS2 has 18 competitive ranks divided into 6 divisions (Bronze, Silver, Gold, Master Guardian, Legendary Eagle, Global Elite). Each division has 3 ranks within it (except Global which is single).',
+  },
+  {
+    question: 'How does the rating/ELO system work?',
+    answer: 'Your rating increases/decreases based on match results and individual performance. Wins gain rating, losses lose rating. The amount gained/lost depends on your opponent\'s rating and your current rating.',
+  },
+  {
+    question: 'What is Premier rating and how is it different?',
+    answer: 'Premier is CS2\'s newest competitive ladder using a rating system (0-3000+) instead of ranks. It\'s team-based, focuses on consistency, and has explicit skill requirements for each division.',
+  },
+  {
+    question: 'Can I derank by not playing?',
+    answer: 'In traditional competitive, inactivity doesn\'t cause immediate deranking. However, your rating does decay slightly. In Premier, inactivity has greater rating consequences.',
+  },
+  {
+    question: 'How many wins do I need to rank up?',
+    answer: 'There\'s no fixed number of wins needed to rank up. Ranking up depends on rating gains from wins and opponent skill levels. Better performance and beating higher-ranked opponents generates more rating.',
+  },
+];
+
+const breadcrumbSchema_ = breadcrumbSchema(breadcrumbs);
+const faqSchema_ = faqSchema(faqs);
+
+const articleSchema = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": title,
+  "description": description,
+  "author": { "@type": "Person", "name": "Josh Lingenfelter", "url": "https://www.linkedin.com/in/josh-lingenfelter-8157274b/", "jobTitle": "Director", "worksFor": { "@type": "Organization", "name": "Bettor Media" } },
+  "publisher": { "@type": "Organization", "name": "CSDB.gg", "url": "https://csdb.gg" },
+  "mainEntityOfPage": `https://csdb.gg/guides/ranks-guide/`,
+  "inLanguage": "en-US"
+});
+---
+
+<Base title={title} description={description}>
+  <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema_)}></script>
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema_)}></script>
+  <script type="application/ld+json" set:html={articleSchema}></script>
+
+  <div class="guide-container">
+    <nav class="breadcrumb">
+      <a href="/">Home</a>
+      <span class="separator">/</span>
+      <a href="/guides">Guides</a>
+      <span class="separator">/</span>
+      <span>Ranking System Guide</span>
+    </nav>
+
+    <article class="guide-article">
+      <header class="guide-header">
+        <h1>Counter-Strike 2 Ranking System Guide</h1>
+        <p class="lead">Understand rank progression and strategies to climb the competitive ladder</p>
+      </header>
+
+      <section class="intro-section">
+        <p>
+          Counter-Strike 2 features a comprehensive ranking system designed to match players of similar skill levels. Understanding how ranks work and what factors influence progression will help you set realistic goals and develop strategies for climbing. This guide covers both traditional Competitive and the newer Premier ranking systems.
+        </p>
+      </section>
+
+      <section>
+        <h2>Competitive Ranking System</h2>
+        <p>
+          CS2's traditional Competitive mode uses 18 ranks divided into 6 divisions. Ranks are earned through consistent winning and good individual performance against similarly skilled opponents.
+        </p>
+
+        <h3>Rank Divisions</h3>
+        <ul>
+          <li><strong>Silver Division (Ranks 1-3):</strong> Beginner players learning fundamentals</li>
+          <li><strong>Gold Division (Ranks 4-6):</strong> Casual players with basic skills</li>
+          <li><strong>Master Guardian (Ranks 7-9):</strong> Intermediate competitive players</li>
+          <li><strong>Legendary Eagle (Ranks 10-12):</strong> Advanced competitive players</li>
+          <li><strong>Supreme (Ranks 13-16):</strong> Expert players approaching professional level</li>
+          <li><strong>Global Elite (Rank 18):</strong> Top-tier competitive players</li>
+        </ul>
+
+        <h3>How Competitive Ranking Works</h3>
+        <p>
+          Your competitive rank is determined by an internal ELO-style rating system. Factors influencing rating changes:
+        </p>
+        <ul>
+          <li><strong>Match Outcome:</strong> Wins increase rating, losses decrease rating</li>
+          <li><strong>Opponent Strength:</strong> Beating higher-ranked opponents gains more rating</li>
+          <li><strong>Your Performance:</strong> Individual stats influence rating changes</li>
+          <li><strong>Team Performance:</strong> Team coordination and execution matter</li>
+          <li><strong>Consistency:</strong> Streaks (win/loss) can accelerate ranking</li>
+        </ul>
+
+        <h3>Ranking Up</h3>
+        <p>
+          To rank up, accumulate enough rating to surpass your current rank threshold. There's no fixed number of wins required—it depends on:
+        </p>
+        <ul>
+          <li>Quality of opponents (harder opponents = more rating per win)</li>
+          <li>Consistency (steady performance gains rating faster)</li>
+          <li>Individual statistics (K/D ratio, ADR, etc.)</li>
+          <li>Round impact (winning important rounds matters)</li>
+        </ul>
+
+        <h3>Ranking Down</h3>
+        <p>
+          Losing matches decreases your rating. You'll derank when your rating falls below your current rank threshold. Deranking happens faster when:
+        </p>
+        <ul>
+          <li>You lose against lower-ranked opponents</li>
+          <li>You have poor individual performance</li>
+          <li>Your team coordination breaks down</li>
+          <li>You go on losing streaks</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>Premier Rating System</h2>
+        <p>
+          Premier is CS2's newer competitive system featuring a rating-based ladder (0-3000+) instead of discrete ranks. It emphasizes team play and consistency with explicit skill divisions.
+        </p>
+
+        <h3>Premier Divisions & Ratings</h3>
+        <ul>
+          <li><strong>Emerging (0-499):</strong> New/beginner Premier players</li>
+          <li><strong>Intermediate (500-999):</strong> Developing competitive players</li>
+          <li><strong>Advanced (1000-1499):</strong> Competitive-level players</li>
+          <li><strong>Expert (1500-1999):</strong> High-level players</li>
+          <li><strong>Elite (2000-2499):</strong> Professional-level players</li>
+          <li><strong>Supreme (2500+):</strong> Top-tier competitive players</li>
+        </ul>
+
+        <h3>Premier Key Features</h3>
+        <ul>
+          <li><strong>Team-Based:</strong> Emphasizes organized team play</li>
+          <li><strong>Weekly Seasons:</strong> Resets weekly for fresh competition</li>
+          <li><strong>Consistent Matchmaking:</strong> Teams face balanced opposition</li>
+          <li><strong>Clear Skill Indicators:</strong> Rating directly reflects skill level</li>
+          <li><strong>Rating Decay:</strong> Inactivity causes rating loss</li>
+        </ul>
+
+        <h3>Premier Ranking Strategy</h3>
+        <p>
+          Premier success requires:
+        </p>
+        <ul>
+          <li>Stable team composition (same players)</li>
+          <li>Regular practice and coordination</li>
+          <li>Consistent individual performance</li>
+          <li>Strategic map pool understanding</li>
+          <li>Tactical depth and adaptation</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>Factors Affecting Rank Progression</h2>
+
+        <h3>Individual Performance</h3>
+        <p>
+          Your personal statistics significantly influence rating changes:
+        </p>
+        <ul>
+          <li><strong>K/D Ratio:</strong> Positive kills-to-deaths ratio helps</li>
+          <li><strong>ADR (Average Damage per Round):</strong> Consistent damage output</li>
+          <li><strong>First Kill Rate:</strong> Winning initial engagements</li>
+          <li><strong>Utility Usage:</strong> Effective grenade and positioning play</li>
+          <li><strong>Clutch Rounds:</strong> Winning difficult 1v1, 1v2 situations</li>
+        </ul>
+
+        <h3>Team Dynamics</h3>
+        <p>
+          Ranking isn't purely individual—team factors matter enormously:
+        </p>
+        <ul>
+          <li><strong>Communication:</strong> Clear callouts and coordination</li>
+          <li><strong>Role Assignment:</strong> Defined player roles and responsibilities</li>
+          <li><strong>Economy Management:</strong> Strategic team purchasing</li>
+          <li><strong>Map Execution:</strong> Coordinated attack and defense strategies</li>
+          <li><strong>Rotation Efficiency:</strong> Quick response to threats</li>
+        </ul>
+
+        <h3>Game Knowledge</h3>
+        <p>
+          Understanding game mechanics helps ranking progression:
+        </p>
+        <ul>
+          <li><strong>Map Knowledge:</strong> Understanding callouts, rotations, positioning</li>
+          <li><strong>Economy Strategy:</strong> Proper buy decisions and money management</li>
+          <li><strong>Weapon Mechanics:</strong> Spray control, recoil patterns, accuracy</li>
+          <li><strong>Utility Usage:</strong> Effective grenade timing and positioning</li>
+          <li><strong>Game Sense:</strong> Predicting opponent strategies and positioning</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>Strategies for Ranking Up</h2>
+
+        <h3>1. Master Fewer Maps</h3>
+        <p>
+          Rather than playing all maps equally, specialize in 3-4 maps. Deep map knowledge translates to better decision-making and positioning advantages.
+        </p>
+
+        <h3>2. Find Consistent Teammates</h3>
+        <p>
+          Play with the same 4 people regularly. Team chemistry develops over time, leading to better coordination and higher win rates.
+        </p>
+
+        <h3>3. Focus on Weapon Consistency</h3>
+        <p>
+          Master one rifle (AK-47 or M4A4) and perfect its spray pattern. Consistency with one weapon is more valuable than mediocre play with many weapons.
+        </p>
+
+        <h3>4. Improve Positioning & Game Sense</h3>
+        <p>
+          Good positioning means winning duels before they start. Practice positioning before gunplay skills when trying to rank up.
+        </p>
+
+        <h3>5. Play for the Team, Not Kills</h3>
+        <p>
+          Assist your teammates' strategies rather than hunting kills. Support players often rank up faster than fraggers because they enable team wins.
+        </p>
+
+        <h3>6. Analyze Your Demos</h3>
+        <p>
+          Review your matches to identify recurring mistakes. Common issues: bad positioning, poor utility usage, economy mismanagement.
+        </p>
+
+        <h3>7. Maintain Positive Mentality</h3>
+        <p>
+          Ranking up requires many matches. Stay positive through losing streaks. Tilt and frustration lead to worse decision-making and deranking.
+        </p>
+
+        <h3>8. Practice Aim in Deathmatch</h3>
+        <p>
+          30 minutes of daily deathmatch practice significantly improves your mechanical skill, leading to better overall performance.
+        </p>
+      </section>
+
+      <section>
+        <h2>Breaking Through Rank Plateaus</h2>
+        <p>
+          Many players hit ranks where they consistently win and lose without progressing. Breaking through requires identifying and fixing specific weaknesses.
+        </p>
+
+        <h3>Identifying Your Weakness</h3>
+        <ul>
+          <li><strong>If you lose duels:</strong> Practice aim training daily</li>
+          <li><strong>If you get caught out of position:</strong> Study demo positioning</li>
+          <li><strong>If your team loses rounds:</strong> Improve economy/strategy</li>
+          <li><strong>If you underperform in specific maps:</strong> Focus on those maps</li>
+          <li><strong>If your team struggles against certain teams:</strong> Analyze their tactics</li>
+        </ul>
+
+        <h3>Progressive Improvement Plan</h3>
+        <ol style="list-style: decimal; padding-left: 1.5rem;">
+          <li>Identify your primary weakness (aim, positioning, strategy, etc.)</li>
+          <li>Dedicate 2-3 weeks to improving that specific skill</li>
+          <li>Practice in appropriate training modes or scrims</li>
+          <li>Play competitive to apply improvements</li>
+          <li>Re-evaluate weaknesses and repeat</li>
+        </ol>
+      </section>
+
+      <section>
+        <h2>Realistic Rank Progression Expectations</h2>
+
+        <h3>Timeline for Rank Progression</h3>
+        <ul>
+          <li><strong>Ranks 1-6 (Silver-Gold):</strong> 20-50 matches with focus on learning</li>
+          <li><strong>Ranks 7-12 (MG-LE):</strong> 50-150 matches as skill consolidates</li>
+          <li><strong>Ranks 13-17 (Supreme):</strong> 150-500+ matches with diminishing progression</li>
+          <li><strong>Rank 18 (Global Elite):</strong> 500+ matches, extremely competitive</li>
+        </ul>
+
+        <h3>Climbing From Different Starting Points</h3>
+        <p>
+          Your starting rank depends on placement matches and initial calibration. If you start below your true skill level, faster ranking is possible. If placed above, expect ranking down initially.
+        </p>
+
+        <h3>Long-Term Ranking Strategy</h3>
+        <p>
+          Focus on consistency over streaks. A 51% win rate over 200 matches ranks you up faster than a 75% win rate over 50 matches. Play many matches against strong opponents for the best ranking progression.
+        </p>
+      </section>
+
+      <section class="faq-section">
+        <h2>Frequently Asked Questions</h2>
+        <div class="faq-items">
+          {faqs.map((faq) => (
+            <div class="faq-item">
+              <h3>{faq.question}</h3>
+              <p>{faq.answer}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <section class="guide-links">
+        <h3>Related Resources</h3>
+        <ul>
+          <li><a href="/guides/">All Guides</a></li>
+          <li><a href="/rank-distribution/">Rank Distribution</a></li>
+          <li><a href="/sensitivity-converter/">Sensitivity Converter</a></li>
+          <li><a href="/crosshair-generator/">Crosshair Generator</a></li>
+          <li><a href="/pro-players/">Pro Player Settings</a></li>
+          <li><a href="/tools/">All Tools</a></li>
+          <li><a href="/guides/beginners-guide/">Beginner's Guide</a></li>
+          <li><a href="/guides/economy-guide/">Economy Guide</a></li>
+          <li><a href="/guides/crosshair-guide/">Crosshair Guide</a></li>
+          <li><a href="/guides/advanced-mechanics-guide/">Advanced Mechanics Guide</a></li>
+          <li><a href="/maps/">Map Callouts</a></li>
+        </ul>
+      </section>
+    </article>
+  </div>
+
+  <style>
+    .guide-container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+
+    .breadcrumb {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 2rem;
+      font-size: 0.95rem;
+      color: var(--text-secondary);
+    }
+
+    .breadcrumb a {
+      color: var(--accent-color);
+      text-decoration: none;
+      transition: color 0.2s ease;
+    }
+
+    .breadcrumb a:hover {
+      color: var(--accent-light);
+    }
+
+    .breadcrumb .separator {
+      color: var(--text-secondary);
+    }
+
+    .guide-article {
+      color: var(--text-primary);
+    }
+
+    .guide-header {
+      margin-bottom: 2rem;
+      border-bottom: 2px solid var(--border-color);
+      padding-bottom: 1.5rem;
+    }
+
+    .guide-header h1 {
+      margin: 0 0 0.5rem 0;
+      font-size: 2.5rem;
+      color: var(--text-primary);
+    }
+
+    .lead {
+      margin: 0;
+      font-size: 1.1rem;
+      color: var(--text-secondary);
+    }
+
+    .intro-section {
+      font-size: 1.05rem;
+      line-height: 1.8;
+      margin-bottom: 2.5rem;
+      padding: 1.5rem;
+      background: var(--bg-secondary);
+      border-left: 4px solid var(--accent-color);
+      border-radius: 4px;
+    }
+
+    section {
+      margin-bottom: 2.5rem;
+    }
+
+    h2 {
+      font-size: 1.8rem;
+      margin: 0 0 1rem 0;
+      color: var(--text-primary);
+      border-bottom: 2px solid var(--border-color);
+      padding-bottom: 0.5rem;
+    }
+
+    h3 {
+      font-size: 1.3rem;
+      margin: 1.5rem 0 0.75rem 0;
+      color: var(--text-primary);
+    }
+
+    p {
+      line-height: 1.7;
+      color: var(--text-secondary);
+      margin-bottom: 1rem;
+    }
+
+    ul {
+      list-style: none;
+      padding: 0;
+      margin: 1rem 0 1.5rem 0;
+    }
+
+    li {
+      padding-left: 1.5rem;
+      margin-bottom: 0.75rem;
+      position: relative;
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+
+    li::before {
+      content: '▸';
+      position: absolute;
+      left: 0;
+      color: var(--accent-color);
+    }
+
+    .faq-section {
+      margin-top: 3rem;
+    }
+
+    .faq-items {
+      display: grid;
+      gap: 1.5rem;
+    }
+
+    .faq-item {
+      background: var(--bg-secondary);
+      padding: 1.5rem;
+      border-radius: 8px;
+      border-left: 4px solid var(--accent-color);
+    }
+
+    .faq-item h3 {
+      margin-top: 0;
+      color: var(--text-primary);
+      font-size: 1.1rem;
+    }
+
+    .faq-item p {
+      margin-bottom: 0;
+    }
+
+    .guide-links {
+      background: var(--bg-secondary);
+      padding: 1.5rem;
+      border-radius: 8px;
+      border-top: 2px solid var(--accent-color);
+    }
+
+    .guide-links h3 {
+      margin-top: 0;
+    }
+
+    .guide-links ul {
+      margin: 1rem 0 0 0;
+    }
+
+    .guide-links a {
+      color: var(--accent-color);
+      text-decoration: none;
+      transition: color 0.2s ease;
+    }
+
+    .guide-links a:hover {
+      color: var(--accent-light);
+    }
+  </style>
+  <AuthorBox updated="2026-03-02" />
+</Base>

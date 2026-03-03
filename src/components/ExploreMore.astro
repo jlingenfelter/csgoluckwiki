@@ -1,0 +1,152 @@
+---
+/**
+ * ExploreMore — contextual internal linking component
+ * Shows related content from different categories based on current page context.
+ * Usage: <ExploreMore context="tools" /> or <ExploreMore context="skins" />
+ */
+interface Props {
+  context?: 'tools' | 'skins' | 'maps' | 'guides' | 'weapons' | 'players' | 'general';
+  exclude?: string[]; // slugs to exclude from links
+}
+
+const { context = 'general', exclude = [] } = Astro.props;
+
+// Define link groups
+const toolLinks = [
+  { href: '/damage-calculator/', label: 'Damage Calculator', desc: 'Calculate exact damage' },
+  { href: '/sensitivity-converter/', label: 'Sensitivity Converter', desc: 'Convert between games' },
+  { href: '/crosshair-generator/', label: 'Crosshair Generator', desc: 'Build your crosshair' },
+  { href: '/crosshair-codes/', label: 'Crosshair Codes', desc: 'Pro player presets' },
+  { href: '/bind-generator/', label: 'Bind Generator', desc: 'Utility & buy binds' },
+  { href: '/economy-calculator/', label: 'Economy Calculator', desc: 'Plan your buys' },
+  { href: '/edpi-calculator/', label: 'eDPI Calculator', desc: 'Effective DPI' },
+  { href: '/resolution-calculator/', label: 'Resolution Calculator', desc: 'Compare ratios' },
+  { href: '/weapon-compare/', label: 'Compare Weapons', desc: 'Side-by-side stats' },
+  { href: '/spray-trainer/', label: 'Spray Trainer', desc: 'Practice patterns' },
+];
+
+const skinLinks = [
+  { href: '/skins/', label: 'All Skins', desc: '2,000+ skins with prices' },
+  { href: '/skin-compare/', label: 'Compare Skins', desc: 'Side-by-side comparison' },
+  { href: '/price-tracker/', label: 'Price Tracker', desc: 'Track price trends' },
+  { href: '/float-checker/', label: 'Float Checker', desc: 'Check float values' },
+  { href: '/tradeup-calculator/', label: 'Trade-Up Calculator', desc: 'Plan trade-ups' },
+  { href: '/inventory-lookup/', label: 'Inventory Lookup', desc: 'Check inventory value' },
+  { href: '/cases/', label: 'Cases & Collections', desc: 'Browse all cases' },
+  { href: '/market-trends/', label: 'Market Trends', desc: 'Market analysis' },
+];
+
+const mapLinks = [
+  { href: '/maps/', label: 'All Maps', desc: 'Map callouts & radar' },
+  { href: '/maps/mirage/', label: 'Mirage', desc: 'Callouts & lineups' },
+  { href: '/maps/inferno/', label: 'Inferno', desc: 'Callouts & lineups' },
+  { href: '/maps/dust2/', label: 'Dust 2', desc: 'Callouts & lineups' },
+  { href: '/maps/anubis/', label: 'Anubis', desc: 'Callouts & lineups' },
+  { href: '/lineups/mirage/', label: 'Mirage Lineups', desc: 'Smokes, flashes, mollys' },
+  { href: '/lineups/inferno/', label: 'Inferno Lineups', desc: 'Smokes, flashes, mollys' },
+  { href: '/workshop-maps/', label: 'Workshop Maps', desc: 'Practice maps' },
+];
+
+const guideLinks = [
+  { href: '/guides/', label: 'All Guides', desc: 'Learn CS2' },
+  { href: '/economy-guide/', label: 'Economy Guide', desc: 'Money management' },
+  { href: '/rank-distribution/', label: 'Rank Distribution', desc: 'Where you stand' },
+  { href: '/guides/trading-guide/', label: 'Trading Guide', desc: 'Trade profitably' },
+  { href: '/guides/float-guide/', label: 'Float Guide', desc: 'Understand floats' },
+  { href: '/guides/skins-investing-guide/', label: 'Investing Guide', desc: 'Long-term strategies' },
+  { href: '/guides/fps-optimization-guide/', label: 'FPS Guide', desc: 'Maximize framerate' },
+  { href: '/pro-players/', label: 'Pro Settings', desc: '860+ pro configs' },
+];
+
+// Pick which sections to show based on context
+const currentPath = Astro.url.pathname;
+const filterOut = (links: typeof toolLinks) =>
+  links.filter(l => l.href !== currentPath && !exclude.includes(l.href));
+
+type Section = { title: string; links: typeof toolLinks };
+let sections: Section[] = [];
+
+if (context === 'tools') {
+  sections = [
+    { title: 'More Tools', links: filterOut(toolLinks).slice(0, 5) },
+    { title: 'Skin Market', links: filterOut(skinLinks).slice(0, 3) },
+    { title: 'Learn & Improve', links: filterOut(guideLinks).slice(0, 3) },
+  ];
+} else if (context === 'skins') {
+  sections = [
+    { title: 'Skin Tools', links: filterOut(skinLinks).slice(0, 5) },
+    { title: 'Utility Tools', links: filterOut(toolLinks).slice(0, 3) },
+    { title: 'Maps & Lineups', links: filterOut(mapLinks).slice(0, 3) },
+  ];
+} else if (context === 'maps') {
+  sections = [
+    { title: 'More Maps', links: filterOut(mapLinks).slice(0, 5) },
+    { title: 'Practice Tools', links: filterOut(toolLinks).slice(0, 3) },
+    { title: 'Skin Market', links: filterOut(skinLinks).slice(0, 3) },
+  ];
+} else if (context === 'guides') {
+  sections = [
+    { title: 'More Guides', links: filterOut(guideLinks).slice(0, 5) },
+    { title: 'Tools & Calculators', links: filterOut(toolLinks).slice(0, 3) },
+    { title: 'Maps & Lineups', links: filterOut(mapLinks).slice(0, 3) },
+  ];
+} else if (context === 'weapons') {
+  sections = [
+    { title: 'Combat Tools', links: filterOut(toolLinks).slice(0, 4) },
+    { title: 'Skin Market', links: filterOut(skinLinks).slice(0, 3) },
+    { title: 'Maps & Lineups', links: filterOut(mapLinks).slice(0, 3) },
+  ];
+} else if (context === 'players') {
+  sections = [
+    { title: 'Settings Tools', links: filterOut([
+      { href: '/crosshair-generator/', label: 'Crosshair Generator', desc: 'Build your crosshair' },
+      { href: '/sensitivity-converter/', label: 'Sensitivity Converter', desc: 'Convert between games' },
+      { href: '/edpi-calculator/', label: 'eDPI Calculator', desc: 'Effective DPI' },
+      { href: '/crosshair-codes/', label: 'Crosshair Codes', desc: 'Pro player presets' },
+      { href: '/pro-players/', label: 'All Pro Players', desc: '860+ pro configs' },
+    ]).slice(0, 4) },
+    { title: 'Learn & Improve', links: filterOut(guideLinks).slice(0, 3) },
+    { title: 'Skin Market', links: filterOut(skinLinks).slice(0, 3) },
+  ];
+} else {
+  sections = [
+    { title: 'Tools', links: filterOut(toolLinks).slice(0, 4) },
+    { title: 'Skins', links: filterOut(skinLinks).slice(0, 3) },
+    { title: 'Guides', links: filterOut(guideLinks).slice(0, 3) },
+  ];
+}
+---
+
+<div class="explore-more">
+  <h2 class="explore-title">Explore More on CSDB.gg</h2>
+  <div class="explore-grid">
+    {sections.map(section => (
+      <div class="explore-section">
+        <h3>{section.title}</h3>
+        <div class="explore-links">
+          {section.links.map(link => (
+            <a href={link.href} class="explore-link">
+              <span class="explore-link-label">{link.label}</span>
+              <span class="explore-link-desc">{link.desc}</span>
+            </a>
+          ))}
+        </div>
+      </div>
+    ))}
+  </div>
+</div>
+
+<style is:inline>
+.explore-more{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:1.5rem;margin:2rem 0}
+.explore-title{margin:0 0 1.2rem;font-size:1.1rem;font-weight:700;display:flex;align-items:center;gap:.6rem}
+.explore-title::before{content:'';width:3px;height:20px;background:var(--accent);border-radius:2px}
+.explore-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem}
+@media(max-width:768px){.explore-grid{grid-template-columns:1fr}}
+.explore-section h3{font-size:.82rem;text-transform:uppercase;letter-spacing:.06em;color:var(--text2);margin:0 0 .6rem;font-weight:600}
+.explore-links{display:flex;flex-direction:column;gap:.35rem}
+.explore-link{display:flex;justify-content:space-between;align-items:center;padding:.45rem .7rem;background:var(--bg3);border:1px solid var(--border);border-radius:6px;text-decoration:none;transition:all .2s;gap:.5rem}
+.explore-link:hover{border-color:var(--accent);background:rgba(212,149,110,0.06)}
+.explore-link-label{font-size:.85rem;font-weight:600;color:var(--text);white-space:nowrap}
+.explore-link:hover .explore-link-label{color:var(--accent)}
+.explore-link-desc{font-size:.72rem;color:var(--text2);text-align:right;white-space:nowrap}
+</style>

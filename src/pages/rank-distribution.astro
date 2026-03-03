@@ -1,0 +1,924 @@
+---
+import Base from '../layouts/Base.astro';
+import ExploreMore from '../components/ExploreMore.astro';
+import { breadcrumbSchema, faqSchema, toolAppSchema } from '../lib/weapons';
+
+const title = 'CS2 Rank Distribution & Ratings Guide';
+const description = 'Explore CS2 Premier Mode rating distribution and Competitive rank percentiles. Find your rank, understand skill levels, and learn ranking strategies.';
+
+// Premier Mode Rating Distribution Data
+const premierRatings = [
+  {
+    tier: 'Below Average',
+    range: '0-4,999',
+    color: '#808080',
+    percentage: 8,
+    percentile: 'Bottom 8%',
+    description: 'New and casual players just starting their CS2 journey. Still learning fundamentals.'
+  },
+  {
+    tier: 'Average',
+    range: '5,000-9,999',
+    color: '#87CEEB',
+    percentage: 25,
+    percentile: '8-33%',
+    description: 'Developing basic skills. Understanding utility and positioning.'
+  },
+  {
+    tier: 'Above Average',
+    range: '10,000-14,999',
+    color: '#4169E1',
+    percentage: 32,
+    percentile: '33-65%',
+    description: 'Solid fundamentals. Consistent aim and map knowledge.'
+  },
+  {
+    tier: 'Distinguished',
+    range: '15,000-19,999',
+    color: '#9370DB',
+    percentage: 20,
+    percentile: '65-85%',
+    description: 'Advanced players with strong game sense and teamwork.'
+  },
+  {
+    tier: 'Exceptional',
+    range: '20,000-24,999',
+    color: '#FF69B4',
+    percentage: 10,
+    percentile: '85-95%',
+    description: 'Expert level players. Excellent decision-making and mechanics.'
+  },
+  {
+    tier: 'Elite',
+    range: '25,000-29,999',
+    color: '#DC143C',
+    percentage: 4,
+    percentile: '95-99%',
+    description: 'Top tier competitive players. World-class skill level.'
+  },
+  {
+    tier: 'Global Elite',
+    range: '30,000+',
+    color: '#FFD700',
+    percentage: 1,
+    percentile: 'Top 1%',
+    description: 'The absolute best. Professional and elite amateur players.'
+  }
+];
+
+// Competitive Mode Ranks Data
+const competitiveRanks = [
+  { rank: 'Silver 1', abbr: 'S1', color: '#C0C0C0', percentage: 5, slug: 'silver-1' },
+  { rank: 'Silver 2', abbr: 'S2', color: '#C0C0C0', percentage: 5, slug: 'silver-2' },
+  { rank: 'Silver 3', abbr: 'S3', color: '#C0C0C0', percentage: 6, slug: 'silver-3' },
+  { rank: 'Silver 4', abbr: 'S4', color: '#C0C0C0', percentage: 6, slug: 'silver-4' },
+  { rank: 'Silver Elite', abbr: 'SE', color: '#D3D3D3', percentage: 7, slug: 'silver-elite' },
+  { rank: 'Silver Elite Master', abbr: 'SEM', color: '#D3D3D3', percentage: 8, slug: 'silver-elite-master' },
+  { rank: 'Gold Nova 1', abbr: 'GN1', color: '#FFD700', percentage: 10, slug: 'gold-nova-1' },
+  { rank: 'Gold Nova 2', abbr: 'GN2', color: '#FFD700', percentage: 11, slug: 'gold-nova-2' },
+  { rank: 'Gold Nova 3', abbr: 'GN3', color: '#FFD700', percentage: 10, slug: 'gold-nova-3' },
+  { rank: 'Gold Nova Master', abbr: 'GNM', color: '#FFA500', percentage: 9, slug: 'gold-nova-master' },
+  { rank: 'Master Guardian 1', abbr: 'MG1', color: '#4169E1', percentage: 8, slug: 'master-guardian-1' },
+  { rank: 'Master Guardian 2', abbr: 'MG2', color: '#4169E1', percentage: 6, slug: 'master-guardian-2' },
+  { rank: 'Master Guardian Elite', abbr: 'MGE', color: '#1E90FF', percentage: 4, slug: 'master-guardian-elite' },
+  { rank: 'Distinctive Master Guardian', abbr: 'DMG', color: '#20B2AA', percentage: 3, slug: 'distinguished-master-guardian' },
+  { rank: 'Legendary Eagle', abbr: 'LE', color: '#008B8B', percentage: 2, slug: 'legendary-eagle' },
+  { rank: 'Legendary Eagle Master', abbr: 'LEM', color: '#00CED1', percentage: 1.5, slug: 'legendary-eagle-master' },
+  { rank: 'Supreme Master First Class', abbr: 'SMFC', color: '#FF4500', percentage: 0.7, slug: 'supreme-master-first-class' },
+  { rank: 'Global Elite', abbr: 'GE', color: '#FFD700', percentage: 0.3, slug: 'global-elite' }
+];
+
+// FAQ Data
+const faqs = [
+  {
+    question: 'What is Premier Mode rating in CS2?',
+    answer: 'Premier Mode uses a numeric rating system (0-35,000+) that reflects your skill level and rank. Unlike the old 18-rank system, Premier Mode provides more granular ranking with continuous progression. Your rating is based on performance, win/loss ratio, and how you perform against players of different skill levels.'
+  },
+  {
+    question: 'How does the rating distribution affect matchmaking?',
+    answer: 'CS2 matchmaking uses rating to pair players of similar skill levels. The distribution shows most players cluster between 5,000-15,000 rating. This creates better balanced matches where both teams have comparable skill levels, leading to more competitive and enjoyable games.'
+  },
+  {
+    question: 'What\'s a good rating for my rank in CS2?',
+    answer: 'A "good" rating depends on your goals. 10,000+ is above average, 15,000+ is distinguished, and 20,000+ puts you in the top 15%. For competitive players aiming to improve, focus on steady progression rather than absolute numbers. Consistent play and practice matter more than rating.'
+  },
+  {
+    question: 'How can I improve from my current rating?',
+    answer: 'Improvement comes from: 1) Mastering spray control and crosshair placement, 2) Learning map positions and callouts, 3) Playing with a consistent team when possible, 4) Watching pro replays to improve game sense, 5) Taking breaks to avoid tilt, 6) Focusing on utility usage and positioning over kills.'
+  },
+  {
+    question: 'Are these distribution percentages accurate?',
+    answer: 'These are estimates based on community data and may not reflect exact current numbers. Valve does not publish official distribution data. These percentages should be used as general guidelines for understanding relative skill levels. The actual distribution may vary as the player base evolves.'
+  }
+];
+
+const breadcrumbs = [
+  { name: 'Home', url: '/' },
+  { name: 'Ranks & Ratings', url: '/ranks' },
+  { name: 'Rank Distribution' }
+];
+
+const internalLinks = [
+  { name: 'Weapon Database', url: '/weapons/' },
+  { name: 'Spray Trainer', url: '/spray-trainer/' },
+  { name: 'Recoil Patterns', url: '/recoil-patterns/' },
+  { name: 'Map Callouts', url: '/maps/' },
+  { name: 'Pro Player Settings', url: '/pro-players/' },
+  { name: 'Sensitivity Converter', url: '/sensitivity-converter/' },
+  { name: 'Crosshair Generator', url: '/crosshair-generator/' },
+  { name: 'All Tools', url: '/tools/' },
+  { name: 'All Guides', url: '/guides/' },
+  { name: 'Ranking System Guide', url: '/guides/ranks-guide/' },
+  { name: 'Beginner\'s Guide', url: '/guides/beginners-guide/' },
+];
+---
+
+<Base title={title} description={description} currentNav="ranks">
+  <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema(breadcrumbs))} />
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema(faqs))} />
+  <script type="application/ld+json" set:html={JSON.stringify(toolAppSchema({ name: 'CS2 Rank Distribution', url: 'https://csdb.gg/rank-distribution/', description }))} />
+
+  <!-- Breadcrumbs -->
+  <nav class="breadcrumb" aria-label="Breadcrumb">
+    {breadcrumbs.map((crumb, index) => (
+      <>
+        {index > 0 && <span class="separator">/</span>}
+        {crumb.url ? (
+          <a href={crumb.url}>{crumb.name}</a>
+        ) : (
+          <span class="current">{crumb.name}</span>
+        )}
+      </>
+    ))}
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="hero-section">
+    <h1>CS2 Rank Distribution & Ratings</h1>
+    <p class="subtitle">Understand where you stand in the competitive landscape</p>
+    <div class="note-box">
+      <strong>Note:</strong> Distributions are approximate estimates based on community data and may not reflect exact current numbers. Actual percentages vary as the player base evolves.
+    </div>
+  </section>
+
+  <!-- Premier Mode Rating Distribution -->
+  <section class="calc-section premier-section">
+    <h2 id="premier-mode">Premier Mode Rating Distribution</h2>
+    <p class="section-intro">Premier Mode uses a numeric rating system (0-35,000+) for more granular skill assessment than traditional ranked systems.</p>
+    
+    <div class="distribution-container">
+      {premierRatings.map((tier) => (
+        <div class="rating-tier" data-rating={tier.range}>
+          <div class="tier-header">
+            <div class="tier-info">
+              <h3>{tier.tier}</h3>
+              <p class="range">{tier.range}</p>
+            </div>
+            <div class="tier-stats">
+              <span class="percentage">{tier.percentage}%</span>
+              <span class="percentile">{tier.percentile}</span>
+            </div>
+          </div>
+          
+          <div class="bar-container">
+            <div 
+              class="bar-fill" 
+              style={`width: ${tier.percentage * 3.5}%; background: linear-gradient(90deg, ${tier.color}cc 0%, ${tier.color} 100%);`}
+              title={`${tier.percentage}% of players`}
+            >
+              <span class="bar-label">{tier.percentage}%</span>
+            </div>
+          </div>
+          
+          <p class="tier-description">{tier.description}</p>
+        </div>
+      ))}
+    </div>
+
+    <div class="distribution-insights">
+      <h3>Key Insights</h3>
+      <ul>
+        <li><strong>Skill Bell Curve:</strong> Most players cluster between 5,000-15,000 rating (57% of player base)</li>
+        <li><strong>Above Average Gap:</strong> Less than 1 in 3 players exceed 15,000 rating</li>
+        <li><strong>Elite Barrier:</strong> Reaching 25,000+ puts you in the top 5%</li>
+        <li><strong>Global Competition:</strong> 30,000+ rating is reserved for the absolute best players worldwide</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- Competitive Mode Ranks -->
+  <section class="calc-section competitive-section">
+    <h2 id="competitive-ranks">Competitive Mode Ranks</h2>
+    <p class="section-intro">The classic 18-rank system still used in Competitive matchmaking. Each rank represents a skill milestone on your competitive journey.</p>
+    
+    <div class="ranks-grid">
+      {competitiveRanks.map((rankData) => (
+        <a href={`/rank/${rankData.slug}/`} class="rank-card" style={`border-left: 4px solid ${rankData.color}`}>
+          <div class="rank-badge" style={`background: ${rankData.color}33; border: 2px solid ${rankData.color};`}>
+            <span class="abbr">{rankData.abbr}</span>
+          </div>
+          <div class="rank-details">
+            <h4>{rankData.rank}</h4>
+            <p class="rank-percentage">{rankData.percentage}% of players</p>
+          </div>
+          <span class="rank-arrow">→</span>
+        </a>
+      ))}
+    </div>
+
+    <div class="rank-grouping">
+      <div class="group">
+        <h4>Entry Level (Silver)</h4>
+        <p>27% of players • Learning the game fundamentals</p>
+      </div>
+      <div class="group">
+        <h4>Intermediate (Gold Nova)</h4>
+        <p>40% of players • Developing consistency and map knowledge</p>
+      </div>
+      <div class="group">
+        <h4>Advanced (Master Guardian)</h4>
+        <p>18% of players • Strong mechanics and game sense</p>
+      </div>
+      <div class="group">
+        <h4>Expert (Eagle+)</h4>
+        <p>15% of players • Professional-level play</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Interactive Rank Finder -->
+  <section class="calc-section rank-finder-section">
+    <h2 id="rank-finder">What's My Rank?</h2>
+    <p class="section-intro">Enter your Premier Mode rating to see your tier, percentile ranking, and skill level description.</p>
+    
+    <div class="rank-finder-container">
+      <div class="input-wrapper">
+        <label for="rating-input">Enter Your Premier Mode Rating:</label>
+        <input 
+          type="number" 
+          id="rating-input" 
+          min="0" 
+          max="35000"
+          placeholder="e.g., 15250"
+          class="rating-input"
+        />
+      </div>
+
+      <div id="result-container" class="result-box hidden">
+        <div class="result-header">
+          <h3 id="result-tier"></h3>
+          <p id="result-range" class="result-range"></p>
+        </div>
+        <div class="result-stats">
+          <div class="stat">
+            <span class="stat-label">Your Percentile</span>
+            <span id="result-percentile" class="stat-value"></span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Tier Progress</span>
+            <span id="result-progress" class="stat-value"></span>
+          </div>
+        </div>
+        <p id="result-description" class="result-description"></p>
+        <div id="result-next" class="result-next"></div>
+      </div>
+
+      <div id="no-result" class="no-result hidden">
+        <p>Enter a rating between 0 and 35,000 to see your rank details.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Rank Tips Section -->
+  <section class="calc-section tips-section">
+    <h2 id="ranking-tips">Tips for Ranking Up</h2>
+    
+    <div class="tips-grid">
+      <div class="tip-card">
+        <h3>5,000-10,000 Range</h3>
+        <ul>
+          <li>Master spray control on M4 and AK-47</li>
+          <li>Learn basic map positions and callouts</li>
+          <li>Focus on crosshair placement and pre-aiming</li>
+          <li>Communicate with your team consistently</li>
+        </ul>
+      </div>
+
+      <div class="tip-card">
+        <h3>10,000-15,000 Range</h3>
+        <ul>
+          <li>Develop consistent utility usage on each map</li>
+          <li>Improve your game sense and positioning</li>
+          <li>Learn economy management and buy strategies</li>
+          <li>Analyze your demo replays to find mistakes</li>
+        </ul>
+      </div>
+
+      <div class="tip-card">
+        <h3>15,000-20,000 Range</h3>
+        <ul>
+          <li>Master advanced positioning and angles</li>
+          <li>Perfect your utility executes with a team</li>
+          <li>Develop read-based play for counter-strategies</li>
+          <li>Study pro player setups and strategies</li>
+        </ul>
+      </div>
+
+      <div class="tip-card">
+        <h3>20,000+ Range</h3>
+        <ul>
+          <li>Perfect all mechanics to minimize mistakes</li>
+          <li>Focus on team coordination and shotcalls</li>
+          <li>Adapt strategies based on opponent weaknesses</li>
+          <li>Practice with quality teammates consistently</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="universal-tips">
+      <h3>Universal Ranking Tips</h3>
+      <ul>
+        <li><strong>Play Consistently:</strong> Regular practice builds muscle memory and game sense</li>
+        <li><strong>Find Your Role:</strong> Excel in a specific role (rifler, support, IGL) rather than trying to do everything</li>
+        <li><strong>Mental Health Matters:</strong> Take breaks to avoid tilt; your mental state impacts performance</li>
+        <li><strong>Demo Review:</strong> Watch your replays to identify recurring mistakes and bad habits</li>
+        <li><strong>Team > Solo:</strong> Playing with a consistent team accelerates improvement significantly</li>
+        <li><strong>Learn, Don't Grind:</strong> Focus on improving specific skills rather than just grinding hours</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- FAQ Section -->
+  <section class="faq">
+    <h2 id="faq">Frequently Asked Questions</h2>
+    
+    <div class="faq-container">
+      {faqs.map((faq, index) => (
+        <details class="faq-item" data-index={index}>
+          <summary class="faq-question">{faq.question}</summary>
+          <div class="faq-answer">{faq.answer}</div>
+        </details>
+      ))}
+    </div>
+  </section>
+
+  <!-- Internal Links -->
+  <section class="internal-links">
+    <h2>Related Resources</h2>
+    <ul>
+      {internalLinks.map((link) => (
+        <li><a href={link.url}>{link.name}</a></li>
+      ))}
+    </ul>
+  </section>
+
+  <ExploreMore context="guides" />
+</Base>
+
+<script is:inline>
+  const ratingInput = document.getElementById('rating-input');
+  const resultContainer = document.getElementById('result-container');
+  const noResult = document.getElementById('no-result');
+  
+  // Premier rating tiers data
+  const tiers = [
+    { name: 'Below Average', min: 0, max: 4999, color: '#808080', percentile: 'Bottom 8%', description: 'New and casual players. Still learning fundamentals and game mechanics.' },
+    { name: 'Average', min: 5000, max: 9999, color: '#87CEEB', percentile: '8-33%', description: 'Developing basic skills. Understanding utility and positioning patterns.' },
+    { name: 'Above Average', min: 10000, max: 14999, color: '#4169E1', percentile: '33-65%', description: 'Solid fundamentals. Consistent aim and reliable map knowledge.' },
+    { name: 'Distinguished', min: 15000, max: 19999, color: '#9370DB', percentile: '65-85%', description: 'Advanced players. Strong game sense, teamwork, and decision-making.' },
+    { name: 'Exceptional', min: 20000, max: 24999, color: '#FF69B4', percentile: '85-95%', description: 'Expert level. Excellent mechanics and strategic understanding.' },
+    { name: 'Elite', min: 25000, max: 29999, color: '#DC143C', percentile: '95-99%', description: 'Top tier competitive players. World-class skill level consistently.' },
+    { name: 'Global Elite', min: 30000, max: 35000, color: '#FFD700', percentile: 'Top 1%', description: 'The absolute best. Professional and elite amateur players worldwide.' }
+  ];
+  
+  const percentileMap = {
+    'Bottom 8%': 4,
+    '8-33%': 20.5,
+    '33-65%': 49,
+    '65-85%': 75,
+    '85-95%': 90,
+    '95-99%': 97,
+    'Top 1%': 99.5
+  };
+
+  function updateRankDisplay() {
+    const rating = parseInt(ratingInput.value);
+    
+    if (isNaN(rating) || rating < 0 || rating > 35000) {
+      resultContainer.classList.add('hidden');
+      noResult.classList.remove('hidden');
+      return;
+    }
+    
+    const tier = tiers.find(t => rating >= t.min && rating <= t.max);
+    
+    if (!tier) {
+      resultContainer.classList.add('hidden');
+      noResult.classList.remove('hidden');
+      return;
+    }
+    
+    // Calculate progress within tier
+    const tierRange = tier.max - tier.min;
+    const progressInTier = rating - tier.min;
+    const progressPercent = Math.round((progressInTier / tierRange) * 100);
+    
+    // Update result display
+    document.getElementById('result-tier').textContent = tier.name;
+    document.getElementById('result-tier').style.color = tier.color;
+    
+    document.getElementById('result-range').textContent = `${tier.min.toLocaleString()}-${tier.max.toLocaleString()}`;
+    document.getElementById('result-percentile').textContent = tier.percentile;
+    document.getElementById('result-progress').textContent = `${progressPercent}% through tier`;
+    document.getElementById('result-description').textContent = tier.description;
+    
+    // Show next tier info if not at the top
+    const nextTierIndex = tiers.indexOf(tier) + 1;
+    if (nextTierIndex < tiers.length) {
+      const nextTier = tiers[nextTierIndex];
+      const pointsToNext = nextTier.min - rating;
+      document.getElementById('result-next').innerHTML = `
+        <p class="next-tier-info">
+          <strong>Next Tier:</strong> ${nextTier.name} (${nextTier.min.toLocaleString()}) — ${pointsToNext.toLocaleString()} rating points away
+        </p>
+      `;
+    } else {
+      document.getElementById('result-next').innerHTML = '';
+    }
+    
+    resultContainer.classList.remove('hidden');
+    noResult.classList.add('hidden');
+  }
+
+  ratingInput.addEventListener('input', updateRankDisplay);
+  ratingInput.addEventListener('change', updateRankDisplay);
+</script>
+
+<style>
+  /* Hero Section */
+  .hero-section {
+    text-align: center;
+    margin-bottom: 4rem;
+    padding: 2rem 1rem;
+  }
+
+  .hero-section h1 {
+    font-size: 2.5rem;
+    margin-bottom: 0.5rem;
+    color: var(--accent);
+  }
+
+  .subtitle {
+    font-size: 1.2rem;
+    color: var(--text2);
+    margin-bottom: 1.5rem;
+  }
+
+  .note-box {
+    background: var(--bg2);
+    border-left: 4px solid var(--accent);
+    padding: 1rem;
+    border-radius: 6px;
+    color: var(--text);
+    display: inline-block;
+    max-width: 600px;
+  }
+
+  /* Section Styling */
+  .section-intro {
+    color: var(--text2);
+    margin-bottom: 2rem;
+    font-size: 1.05rem;
+  }
+
+  /* Premier Distribution */
+  .distribution-container {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    margin-bottom: 3rem;
+  }
+
+  .rating-tier {
+    background: var(--bg2);
+    border-radius: 8px;
+    padding: 1.5rem;
+    transition: all 0.3s ease;
+    border: 1px solid var(--border);
+  }
+
+  .rating-tier:hover {
+    border-color: var(--accent);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  }
+
+  .tier-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+
+  .tier-header h3 {
+    margin: 0;
+    font-size: 1.3rem;
+    color: var(--text);
+  }
+
+  .tier-info {
+    flex: 1;
+  }
+
+  .range {
+    color: var(--text2);
+    margin: 0.25rem 0 0 0;
+    font-size: 0.95rem;
+  }
+
+  .tier-stats {
+    display: flex;
+    gap: 1.5rem;
+    text-align: right;
+  }
+
+  .percentage {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: var(--accent);
+  }
+
+  .percentile {
+    color: var(--text2);
+    font-size: 0.95rem;
+  }
+
+  .bar-container {
+    background: var(--bg);
+    border-radius: 4px;
+    height: 32px;
+    margin-bottom: 1rem;
+    overflow: hidden;
+    border: 1px solid var(--border);
+  }
+
+  .bar-fill {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding-right: 0.75rem;
+    transition: width 0.4s ease;
+    min-width: 40px;
+  }
+
+  .bar-fill:hover {
+    filter: brightness(1.1);
+  }
+
+  .bar-label {
+    color: white;
+    font-weight: bold;
+    font-size: 0.85rem;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+  }
+
+  .tier-description {
+    color: var(--text2);
+    margin: 0;
+    font-style: italic;
+    font-size: 0.95rem;
+  }
+
+  .distribution-insights {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin-top: 2rem;
+  }
+
+  .distribution-insights h3 {
+    margin-top: 0;
+    color: var(--accent);
+  }
+
+  .distribution-insights ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .distribution-insights li {
+    padding: 0.5rem 0;
+    color: var(--text);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .distribution-insights li:last-child {
+    border-bottom: none;
+  }
+
+  /* Competitive Ranks */
+  .ranks-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-bottom: 3rem;
+  }
+
+  .rank-card {
+    background: var(--bg2);
+    border-radius: 8px;
+    padding: 1.25rem;
+    display: flex;
+    gap: 1rem;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    text-decoration: none;
+    color: inherit;
+    position: relative;
+  }
+
+  .rank-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+  }
+
+  .rank-arrow {
+    position: absolute;
+    top: .75rem;
+    right: .75rem;
+    color: var(--accent);
+    font-size: 1rem;
+    opacity: 0;
+    transition: opacity .2s;
+  }
+
+  .rank-card:hover .rank-arrow {
+    opacity: 1;
+  }
+
+  .rank-badge {
+    width: 60px;
+    height: 60px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .abbr {
+    font-weight: bold;
+    font-size: 0.85rem;
+    text-align: center;
+  }
+
+  .rank-details h4 {
+    margin: 0 0 0.25rem 0;
+    color: var(--text);
+    font-size: 0.95rem;
+  }
+
+  .rank-percentage {
+    margin: 0;
+    color: var(--text2);
+    font-size: 0.85rem;
+  }
+
+  .rank-grouping {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+    margin-top: 2rem;
+  }
+
+  .group {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1.5rem;
+  }
+
+  .group h4 {
+    margin: 0 0 0.5rem 0;
+    color: var(--accent);
+  }
+
+  .group p {
+    margin: 0;
+    color: var(--text2);
+  }
+
+  /* Rank Finder */
+  .rank-finder-container {
+    max-width: 600px;
+    margin: 0 auto;
+  }
+
+  .input-wrapper {
+    margin-bottom: 2rem;
+  }
+
+  .input-wrapper label {
+    display: block;
+    margin-bottom: 0.75rem;
+    color: var(--text);
+    font-weight: 600;
+  }
+
+  .rating-input {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 2px solid var(--border);
+    background: var(--bg);
+    color: var(--text);
+    border-radius: 6px;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+  }
+
+  .rating-input:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(255, 107, 107, 0.1);
+  }
+
+  .result-header {
+    margin-bottom: 1.5rem;
+  }
+
+  .result-header h3 {
+    margin: 0 0 0.5rem 0;
+    font-size: 1.8rem;
+  }
+
+  .result-range {
+    color: var(--text2);
+    margin: 0;
+  }
+
+  .result-stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .stat {
+    background: var(--bg);
+    padding: 1rem;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+  }
+
+  .stat-label {
+    display: block;
+    color: var(--text2);
+    font-size: 0.85rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .stat-value {
+    display: block;
+    color: var(--accent);
+    font-size: 1.5rem;
+    font-weight: bold;
+  }
+
+  .result-description {
+    color: var(--text);
+    margin-bottom: 1rem;
+    padding: 1rem;
+    background: var(--bg);
+    border-radius: 6px;
+    border-left: 3px solid var(--accent);
+  }
+
+  .next-tier-info {
+    margin: 0;
+    color: var(--text2);
+    padding: 0.75rem 1rem;
+    background: var(--bg);
+    border-radius: 6px;
+  }
+
+  .hidden {
+    display: none !important;
+  }
+
+  .no-result {
+    text-align: center;
+    color: var(--text2);
+    padding: 2rem;
+    background: var(--bg2);
+    border-radius: 6px;
+    border: 1px dashed var(--border);
+  }
+
+  /* Tips Section */
+  .tips-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+  }
+
+  .tip-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1.5rem;
+    transition: all 0.3s ease;
+  }
+
+  .tip-card:hover {
+    border-color: var(--accent);
+    box-shadow: 0 4px 12px rgba(255, 107, 107, 0.1);
+  }
+
+  .tip-card h3 {
+    margin-top: 0;
+    color: var(--accent);
+  }
+
+  .tip-card ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .tip-card li {
+    padding: 0.5rem 0;
+    color: var(--text);
+    position: relative;
+    padding-left: 1.5rem;
+  }
+
+  .tip-card li::before {
+    content: '▹';
+    position: absolute;
+    left: 0;
+    color: var(--accent);
+    font-size: 1.2rem;
+  }
+
+  .universal-tips {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin-top: 2rem;
+  }
+
+  .universal-tips h3 {
+    margin-top: 0;
+    color: var(--accent);
+  }
+
+  .universal-tips ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .universal-tips li {
+    padding: 0.75rem 0;
+    color: var(--text);
+    border-bottom: 1px solid var(--border);
+    padding-left: 1.5rem;
+    position: relative;
+  }
+
+  .universal-tips li:last-child {
+    border-bottom: none;
+  }
+
+  .universal-tips li::before {
+    content: '→';
+    position: absolute;
+    left: 0;
+    color: var(--accent);
+  }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .hero-section h1 {
+      font-size: 1.8rem;
+    }
+
+    .tier-header {
+      flex-direction: column;
+    }
+
+    .result-stats {
+      grid-template-columns: 1fr;
+    }
+
+    .ranks-grid {
+      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    }
+  }
+</style>

@@ -1,0 +1,29 @@
+{
+  "slug": "cm360-calculator",
+  "title": "CS2 cm/360 Calculator — Mouse Distance Per Full Turn | CSDB.gg",
+  "description": "Calculate exactly how many centimetres your mouse needs to travel for a full 360° turn in CS2. Compare cm/360 values across sensitivity settings and pro players.",
+  "heading": "CS2 cm/360 Calculator",
+  "intro": "Find out exactly how far your mouse travels for a complete 360° rotation in Counter-Strike 2. This physical measurement is the most reliable way to compare and replicate sensitivity settings.",
+  "faqs": [
+    {
+      "question": "What is cm/360 in CS2?",
+      "answer": "cm/360 measures how far (in centimetres) you need to move your mouse on your desk to complete a full 360-degree turn in-game. Lower cm/360 means faster turning; higher means more precision."
+    },
+    {
+      "question": "What is a good cm/360 for CS2?",
+      "answer": "Most CS2 professionals play between 25 cm/360 and 55 cm/360. The sweet spot for most players is 30–45 cm/360. AWPers tend toward the higher end (more precision) while entry fraggers play lower (faster reactions)."
+    },
+    {
+      "question": "How is cm/360 calculated?",
+      "answer": "The formula is: cm/360 = (2.54 × 360) / (DPI × Sensitivity × 0.022). The 0.022 is the CS2 engine sensitivity multiplier (also called yaw value). This gives you centimetres of mouse travel per full revolution."
+    },
+    {
+      "question": "Why is cm/360 better than eDPI for comparing settings?",
+      "answer": "cm/360 is a physical measurement — it tells you the actual distance your hand needs to travel. This makes it easier to set up consistently across different mice and DPI settings, and directly relates to your mouse pad size requirements."
+    },
+    {
+      "question": "How big should my mouse pad be for my cm/360?",
+      "answer": "Your mouse pad should be at least as wide as your cm/360 divided by 2 (for a 180° turn). If your cm/360 is 40 cm, you need at least a 20 cm wide pad, but 30+ cm is recommended for comfortable play."
+    }
+  ]
+}
