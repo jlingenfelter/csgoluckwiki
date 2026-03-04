@@ -1,0 +1,229 @@
+---
+import Base from '../layouts/Base.astro';
+import AuthorBox from '../components/AuthorBox.astro';
+import { faqSchema, breadcrumbSchema } from '../lib/weapons';
+
+const title = 'CS2 Cases with Karambits: Every Case Listed | CSGOLuck Wiki';
+const description = 'All CS2 cases that can drop a karambit knife. Complete list with odds, prices, and which case gives you the best chance.';
+
+const breadcrumbs = [
+  { name: 'Home', url: '/' },
+  { name: 'Skins & Cases FAQ', url: '/cs2-skins-cases-faq' },
+  { name: 'Karambit Cases', url: '/cs2-cases-karambit' },
+];
+
+const faqs = [
+  {
+    question: 'How rare is it to unbox a karambit in CS2?',
+    answer: 'The base chance of unboxing any knife from a CS2 case is roughly 0.26%. From there, the karambit must be selected from among all knife types in that case\'s pool. The combined odds of unboxing a specific karambit skin are extremely low, which is why karambits hold significant market value.',
+  },
+  {
+    question: 'What is the cheapest karambit in CS2?',
+    answer: 'The most affordable karambits are typically those with less popular skin finishes in Battle-Scarred or Well-Worn condition. Vanilla (no pattern) karambits and Safari Mesh or Urban Masked finishes tend to sit at the lower end of the karambit price range. Check the Steam Community Market for current pricing.',
+  },
+  {
+    question: 'Can you get a karambit from every CS2 case?',
+    answer: 'No. Karambits only appear in cases that include them in the rare special items pool. Many newer cases feature different knife collections. You must verify that a case contains karambits before opening it if that is what you are targeting.',
+  },
+  {
+    question: 'Are karambits more expensive than butterfly knives?',
+    answer: 'It depends on the specific skin and condition. Both karambits and butterfly knives are premium knife types. For equivalent skin finishes and conditions, prices can be quite close. Certain rare patterns like the Karambit Fade or Karambit Doppler can command very high prices. Market demand fluctuates, so check current listings.',
+  },
+];
+
+const breadcrumbSchema_ = breadcrumbSchema(breadcrumbs);
+const faqSchema_ = faqSchema(faqs);
+
+const articleSchema = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": title,
+  "description": description,
+  "author": { "@type": "Person", "name": "Josh Lingenfelter", "url": "https://www.linkedin.com/in/josh-lingenfelter-8157274b/", "jobTitle": "Director", "worksFor": { "@type": "Organization", "name": "CSGOLuck" } },
+  "publisher": { "@type": "Organization", "name": "CSGOLuck Wiki", "url": "https://wiki.csgoluck.com" },
+  "mainEntityOfPage": "https://wiki.csgoluck.com/cs2-cases-karambit/",
+  "inLanguage": "en-US"
+});
+
+const sections = [
+  { id: 'which-cases', label: 'Which Cases' },
+  { id: 'full-list', label: 'Full List' },
+  { id: 'odds', label: 'Unboxing Odds' },
+  { id: 'prices', label: 'Price Ranges' },
+  { id: 'best-case', label: 'Best Case to Open' },
+  { id: 'faq', label: 'FAQ' },
+  { id: 'related', label: 'Related Articles' },
+];
+---
+
+<Base title={title} description={description}>
+  <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema_)}></script>
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema_)}></script>
+  <script type="application/ld+json" set:html={articleSchema}></script>
+
+  <div class="ckr-wrap">
+    <nav class="ckr-breadcrumb">
+      <a href="/">Home</a>
+      <span class="ckr-sep">/</span>
+      <a href="/cs2-skins-cases-faq/">Skins & Cases FAQ</a>
+      <span class="ckr-sep">/</span>
+      <span>Karambit Cases</span>
+    </nav>
+
+    <header class="ckr-header">
+      <h1>CS2 Cases with Karambits</h1>
+      <p class="ckr-subtitle">Every case that includes a karambit in its rare special item pool</p>
+    </header>
+
+    <nav class="ckr-toc-mobile" aria-label="Table of contents">
+      {sections.map((s) => (
+        <a href={`#${s.id}`} class="ckr-toc-mobile-link">{s.label}</a>
+      ))}
+    </nav>
+
+    <div class="ckr-layout">
+      <aside class="ckr-sidebar">
+        <nav class="ckr-toc" aria-label="Table of contents">
+          <span class="ckr-toc-title">Contents</span>
+          {sections.map((s) => (
+            <a href={`#${s.id}`} class="ckr-toc-link">{s.label}</a>
+          ))}
+        </nav>
+      </aside>
+
+      <article class="ckr-content">
+        <p class="ckr-intro">
+          The karambit is one of the most iconic knife types in CS2, recognized instantly by its curved blade and distinctive draw animation. If you want to unbox a karambit, you need to know which CS2 cases contain karambits in their rare special item pool. This guide lists every karambit case, breaks down the unboxing odds, and helps you decide which case offers the best approach.
+        </p>
+
+        <section id="which-cases">
+          <div class="ckr-section-header"><h2>Which Cases Contain Karambits</h2></div>
+          <p>Karambits have been part of CS2 (and CS:GO before it) since the Arms Deal update, which introduced the original set of knife skins. They appear as rare special items in specific weapon cases. Not every case released by Valve includes karambits — each case has its own defined pool of knives and gloves.</p>
+          <p>Cases that feature the original knife collection (often called "Chroma knives" by the community) include the karambit alongside other classic knife types such as the M9 Bayonet, Bayonet, Flip Knife, and Gut Knife. Newer case series have introduced different knife collections, so the karambit is not universally available.</p>
+          <p>Before purchasing cases specifically to chase a karambit, always confirm the case's rare special item pool. Our <a href="/cs2-cases/">CS2 cases database</a> provides full contents for every case in the game.</p>
+        </section>
+
+        <section id="full-list">
+          <div class="ckr-section-header"><h2>Full List of Karambit Cases</h2></div>
+          <p>The following cases include karambits as part of their rare special item pool. Valve may update case contents over time, so verify current pools on our <a href="/cs2-cases/">cases page</a>.</p>
+          <ul class="ckr-list">
+            <li><strong>CS:GO Weapon Case Series (1, 2, 3):</strong> The original weapon cases that introduced knife skins. These are no longer in the active drop pool and tend to be expensive to acquire.</li>
+            <li><strong>Chroma Case, Chroma 2 Case, Chroma 3 Case:</strong> Feature the Chroma knife finish collection, which includes karambits with finishes like Doppler, Marble Fade, Tiger Tooth, and more.</li>
+            <li><strong>Gamma Case, Gamma 2 Case:</strong> Include karambits with the Gamma finish set including Autotronic, Bright Water, and Freehand patterns.</li>
+            <li><strong>Spectrum Case, Spectrum 2 Case:</strong> Share a knife pool that includes karambits alongside butterfly knives and others.</li>
+            <li><strong>Prisma Case, Prisma 2 Case:</strong> More recent cases featuring karambits in the classic knife collection.</li>
+          </ul>
+          <p>Many Operation cases and other special releases also include karambits. The key is checking whether the case uses a knife collection that features the karambit model.</p>
+        </section>
+
+        <section id="odds">
+          <div class="ckr-section-header"><h2>Unboxing Odds for Karambit Knives</h2></div>
+          <p>The base probability of receiving any knife or gloves from a CS2 case is approximately 0.26%, or about 1 in 385 openings. This rate is consistent across all weapon cases regardless of their contents or price.</p>
+          <p>Once you hit the rare special item tier, the game randomly selects from the available knives (and gloves, if applicable) in that case's pool. Cases with six knife types in the pool give roughly a 1-in-6 chance of the knife being a karambit specifically. Cases with more knife types reduce that conditional probability further.</p>
+          <p>The combined probability of unboxing a karambit in any specific skin finish and wear condition is exceptionally low. This mathematical scarcity underpins karambit pricing on the market. For detailed probability breakdowns, try our <a href="/case-odds-calculator/">case odds calculator</a>.</p>
+        </section>
+
+        <section id="prices">
+          <div class="ckr-section-header"><h2>Karambit Price Ranges</h2></div>
+          <p>Karambit prices cover an enormous range depending on the skin finish, wear condition, pattern index, and StatTrak status. The most accessible karambits are typically Vanilla (no skin), Safari Mesh, or Urban Masked in Battle-Scarred condition. Premium finishes like Fade, Doppler (especially Phase 2 and Phase 4), Marble Fade, and Crimson Web in Factory New condition sit at the top end.</p>
+          <p>Certain pattern variations command additional premiums. For example, Karambit Doppler knives with specific phase patterns or Karambit Case Hardened knives with high blue-gem percentages can sell for significantly more than standard versions of the same skin.</p>
+          <p>Since prices change constantly with market conditions, we recommend checking the Steam Community Market or our <a href="/cs2-skins/knives/">knife skins database</a> for current valuations rather than relying on static price lists.</p>
+        </section>
+
+        <section id="best-case">
+          <div class="ckr-section-header"><h2>Best Case for a Karambit Drop</h2></div>
+          <p>Choosing the best case to open for a karambit depends on your priorities. If you want the highest conditional probability of your knife being a karambit, look for cases with the fewest total knife types in their rare pool. Fewer competing knife types means a better chance your rare drop is specifically a karambit.</p>
+          <p>Cost is also a major factor. Older and discontinued cases can cost significantly more to buy than newer ones. A case with slightly worse karambit odds but a fraction of the price per opening can be the better financial decision over many openings.</p>
+          <p>Keep in mind that case opening is never a profitable strategy on average. The expected return on most cases is below their opening cost (case price plus key). If you want a karambit, buying one directly from the market is almost always more cost-effective than trying to unbox one. For a broader value comparison, see our guide on the <a href="/best-cs2-cases-to-open/">best CS2 cases to open</a>.</p>
+        </section>
+
+        <section id="faq">
+          <div class="ckr-section-header"><h2>Frequently Asked Questions</h2></div>
+          <div class="ckr-faq-list">
+            {faqs.map((faq) => (
+              <details class="ckr-faq-item">
+                <summary class="ckr-faq-question">{faq.question}</summary>
+                <p class="ckr-faq-answer">{faq.answer}</p>
+              </details>
+            ))}
+          </div>
+          <p class="ckr-faq-more">Find more answers in our <a href="/cs2-skins-cases-faq/">Skins & Cases FAQ hub</a>.</p>
+        </section>
+
+        <section id="related">
+          <div class="ckr-section-header"><h2>Related Articles</h2></div>
+          <div class="ckr-resources-grid">
+            <a href="/cs2-cases-butterfly-knife/" class="ckr-resource-card"><span class="ckr-resource-name">Cases with Butterfly Knives</span><span class="ckr-resource-arrow">&rarr;</span></a>
+            <a href="/best-cs2-cases-to-open/" class="ckr-resource-card"><span class="ckr-resource-name">Best Cases to Open</span><span class="ckr-resource-arrow">&rarr;</span></a>
+            <a href="/cs2-cases/" class="ckr-resource-card"><span class="ckr-resource-name">All CS2 Cases</span><span class="ckr-resource-arrow">&rarr;</span></a>
+            <a href="/case-odds-calculator/" class="ckr-resource-card"><span class="ckr-resource-name">Case Odds Calculator</span><span class="ckr-resource-arrow">&rarr;</span></a>
+            <a href="/cs2-skins/knives/" class="ckr-resource-card"><span class="ckr-resource-name">Knife Skins Database</span><span class="ckr-resource-arrow">&rarr;</span></a>
+          </div>
+        </section>
+      </article>
+    </div>
+  </div>
+
+  <style>
+    .ckr-wrap{max-width:1100px;margin:0 auto;padding:0 1.5rem 2rem}
+    .ckr-breadcrumb{display:flex;align-items:center;gap:.5rem;padding:1.25rem 0;font-size:.85rem;color:var(--text2)}
+    .ckr-breadcrumb a{color:var(--accent);text-decoration:none}
+    .ckr-breadcrumb a:hover{color:var(--accent2)}
+    .ckr-sep{color:var(--border)}
+    .ckr-header{padding:1.5rem 0 1.25rem;border-bottom:2px solid var(--accent);margin-bottom:1.5rem}
+    .ckr-header h1{margin:0 0 .35rem;font-size:2.2rem;font-weight:800;color:var(--text);letter-spacing:-.02em;line-height:1.2}
+    .ckr-subtitle{margin:0;font-size:1.05rem;color:var(--text2);font-weight:400}
+    .ckr-toc-mobile{display:none}
+    .ckr-layout{display:grid;grid-template-columns:220px 1fr;gap:2.5rem;align-items:start}
+    .ckr-sidebar{position:sticky;top:80px}
+    .ckr-toc{display:flex;flex-direction:column;gap:0;border-left:2px solid var(--border);padding-left:0}
+    .ckr-toc-title{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--accent);padding:0 0 .6rem 1rem}
+    .ckr-toc-link{display:block;padding:.4rem 1rem;font-size:.82rem;color:var(--text2);text-decoration:none;border-left:2px solid transparent;margin-left:-2px;transition:color .2s,border-color .2s}
+    .ckr-toc-link:hover{color:var(--text);border-left-color:var(--accent)}
+    .ckr-content{min-width:0}
+    .ckr-intro{font-size:1rem;line-height:1.8;color:var(--text2);margin-bottom:2rem}
+    .ckr-section-header{background:rgba(46,204,113,.05);margin:0 -1.25rem 1.25rem;padding:.75rem 1.25rem;border-radius:4px}
+    .ckr-section-header h2{margin:0;padding:0;font-size:1.5rem;font-weight:700;color:var(--text);border:none;letter-spacing:-.01em}
+    section{margin-bottom:2.5rem}
+    h3{font-size:1.15rem;font-weight:600;margin:1.5rem 0 .6rem;color:var(--text)}
+    p{line-height:1.7;color:var(--text2);margin-bottom:1rem}
+    .ckr-list{list-style:none;padding:0;margin:.75rem 0 1.5rem}
+    .ckr-list li{padding:.4rem 0 .4rem 1.6rem;position:relative;color:var(--text2);line-height:1.65}
+    .ckr-list li::before{content:'';position:absolute;left:.25rem;top:.75rem;width:6px;height:6px;background:var(--accent);border-radius:1px}
+    .ckr-list li strong{color:var(--text)}
+    .ckr-faq-list{display:flex;flex-direction:column;gap:.5rem}
+    .ckr-faq-item{background:var(--bg2);border:1px solid var(--border);border-radius:4px;overflow:hidden}
+    .ckr-faq-question{display:block;padding:1rem 1.25rem;font-size:.95rem;font-weight:600;color:var(--text);cursor:pointer;list-style:none;position:relative;padding-right:2.5rem;transition:background .2s}
+    .ckr-faq-question::-webkit-details-marker{display:none}
+    .ckr-faq-question::after{content:'+';position:absolute;right:1.25rem;top:50%;transform:translateY(-50%);font-size:1.2rem;color:var(--accent);font-weight:700}
+    .ckr-faq-item[open] .ckr-faq-question::after{content:'\2212'}
+    .ckr-faq-item[open] .ckr-faq-question{border-bottom:1px solid var(--border);background:rgba(46,204,113,.03)}
+    .ckr-faq-question:hover{background:rgba(46,204,113,.03)}
+    .ckr-faq-answer{padding:1rem 1.25rem;margin:0;font-size:.9rem;color:var(--text2);line-height:1.7}
+    .ckr-faq-more{font-size:.9rem;margin-top:1rem}
+    .ckr-resources-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.6rem;margin:.5rem 0 1.5rem}
+    .ckr-resource-card{display:flex;align-items:center;justify-content:space-between;padding:.75rem 1rem;background:var(--bg2);border:1px solid var(--border);border-radius:4px;text-decoration:none;border-left:2px solid transparent;transition:border-left-color .2s,color .2s}
+    .ckr-resource-card:hover{border-left-color:var(--accent)}
+    .ckr-resource-name{font-size:.88rem;color:var(--text2);font-weight:500;transition:color .2s}
+    .ckr-resource-card:hover .ckr-resource-name{color:var(--text)}
+    .ckr-resource-arrow{font-size:1rem;color:var(--accent);opacity:0;transition:opacity .2s}
+    .ckr-resource-card:hover .ckr-resource-arrow{opacity:1}
+    @media(max-width:860px){
+      .ckr-layout{grid-template-columns:1fr;gap:0}
+      .ckr-sidebar{display:none}
+      .ckr-toc-mobile{display:flex;gap:.25rem;overflow-x:auto;padding:.75rem 0;margin-bottom:1rem;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+      .ckr-toc-mobile::-webkit-scrollbar{display:none}
+      .ckr-toc-mobile-link{flex-shrink:0;padding:.35rem .75rem;font-size:.78rem;font-weight:600;color:var(--text2);background:var(--bg2);border:1px solid var(--border);border-radius:4px;text-decoration:none;white-space:nowrap;transition:color .2s,border-color .2s}
+      .ckr-toc-mobile-link:hover{color:var(--accent);border-color:var(--accent)}
+      .ckr-header h1{font-size:1.7rem}
+      .ckr-section-header{margin:0 -1rem 1rem;padding:.6rem 1rem}
+      .ckr-resources-grid{grid-template-columns:repeat(2,1fr)}
+    }
+    @media(max-width:600px){
+      .ckr-wrap{padding:0 1rem 1.5rem}
+      .ckr-resources-grid{grid-template-columns:1fr}
+      .ckr-header h1{font-size:1.5rem}
+    }
+  </style>
+  <AuthorBox updated="2026-03-04" />
+</Base>

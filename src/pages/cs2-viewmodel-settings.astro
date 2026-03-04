@@ -1,0 +1,246 @@
+---
+import Base from '../layouts/Base.astro';
+import AuthorBox from '../components/AuthorBox.astro';
+import { faqSchema, breadcrumbSchema } from '../lib/weapons';
+
+const title = 'Best CS2 Viewmodel Settings & Pro Configs | CSGOLuck Wiki';
+const description = 'Optimize your CS2 viewmodel — left hand, offset values, and pro player viewmodel configs. Find the best setup for competitive play.';
+
+const breadcrumbs = [
+  { name: 'Home', url: '/' },
+  { name: 'Settings & Config', url: '/cs2-settings-config-faq/' },
+  { name: 'Viewmodel Settings', url: '/cs2-viewmodel-settings/' },
+];
+
+const faqs = [
+  {
+    question: 'What do viewmodel settings actually change?',
+    answer: 'Viewmodel settings control the position, angle, and hand of your weapon model on screen. They affect the visual presentation of your weapon but do not change gameplay mechanics like accuracy, recoil, or field of vision.',
+  },
+  {
+    question: 'Is left hand better than right hand in CS2?',
+    answer: 'Neither is objectively better. The choice depends on your dominant eye and personal preference. Some players find that putting the weapon model on their non-dominant eye side reduces visual clutter. Most pros use right hand, but several top players use left.',
+  },
+  {
+    question: 'Can I switch hands mid-game?',
+    answer: 'Yes. You can bind cl_righthand 0 and cl_righthand 1 to different keys to switch hands instantly during a match. Some players switch hands depending on which angle they are holding to keep the weapon model on the side with less action.',
+  },
+  {
+    question: 'Do viewmodel settings affect weapon skins appearance?',
+    answer: 'Yes. Changing viewmodel offset values and FOV changes how your weapon skin is displayed on screen. Higher viewmodel FOV shows more of the weapon model, which can reveal more of certain skin patterns.',
+  },
+];
+
+const breadcrumbSchema_ = breadcrumbSchema(breadcrumbs);
+const faqSchema_ = faqSchema(faqs);
+
+const articleSchema = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": title,
+  "description": description,
+  "author": { "@type": "Person", "name": "Josh Lingenfelter", "url": "https://www.linkedin.com/in/josh-lingenfelter-8157274b/", "jobTitle": "Director", "worksFor": { "@type": "Organization", "name": "CSGOLuck" } },
+  "publisher": { "@type": "Organization", "name": "CSGOLuck Wiki", "url": "https://wiki.csgoluck.com" },
+  "mainEntityOfPage": "https://wiki.csgoluck.com/cs2-viewmodel-settings/",
+  "inLanguage": "en-US"
+});
+
+const sections = [
+  { id: 'what-viewmodel', label: 'What Viewmodel Does' },
+  { id: 'commands', label: 'Key Commands' },
+  { id: 'left-vs-right', label: 'Left vs Right Hand' },
+  { id: 'offsets', label: 'Offset & FOV' },
+  { id: 'pro-configs', label: 'Pro Player Configs' },
+  { id: 'faq', label: 'FAQ' },
+  { id: 'related', label: 'Related Articles' },
+];
+---
+
+<Base title={title} description={description}>
+  <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema_)}></script>
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema_)}></script>
+  <script type="application/ld+json" set:html={articleSchema}></script>
+
+  <div class="cvs-wrap">
+    <nav class="cvs-breadcrumb">
+      <a href="/">Home</a>
+      <span class="cvs-sep">/</span>
+      <a href="/cs2-settings-config-faq/">Settings & Config</a>
+      <span class="cvs-sep">/</span>
+      <span>Viewmodel Settings</span>
+    </nav>
+
+    <header class="cvs-header">
+      <h1>Best CS2 Viewmodel Settings & Pro Configs</h1>
+      <p class="cvs-subtitle">Customize your weapon position for a cleaner competitive view</p>
+    </header>
+
+    <nav class="cvs-toc-mobile" aria-label="Table of contents">
+      {sections.map((s) => (
+        <a href={`#${s.id}`} class="cvs-toc-mobile-link">{s.label}</a>
+      ))}
+    </nav>
+
+    <div class="cvs-layout">
+      <aside class="cvs-sidebar">
+        <nav class="cvs-toc" aria-label="Table of contents">
+          <span class="cvs-toc-title">Contents</span>
+          {sections.map((s) => (
+            <a href={`#${s.id}`} class="cvs-toc-link">{s.label}</a>
+          ))}
+        </nav>
+      </aside>
+
+      <article class="cvs-content">
+        <p class="cvs-intro">
+          Dialling in your <strong>CS2 viewmodel settings</strong> determines how your weapon, arms, and gloves appear on screen. While viewmodel changes are purely cosmetic and do not affect gameplay mechanics, the right configuration reduces visual clutter and lets you focus on what matters -- crosshair placement and enemy models. This guide covers every viewmodel command, the left-hand vs right-hand debate, and popular pro player configurations.
+        </p>
+
+        <section id="what-viewmodel">
+          <div class="cvs-section-header"><h2>What Viewmodel Settings Do in CS2</h2></div>
+          <p>The viewmodel is the first-person rendering of your weapon, hands, and any equipped gloves. CS2 renders the viewmodel separately from the game world, which is why you can adjust its position without affecting your actual field of view or gameplay.</p>
+          <p>Viewmodel settings control three main aspects:</p>
+          <ul class="cvs-list">
+            <li><strong>Position:</strong> Where the weapon sits on screen (left/right, forward/back, up/down).</li>
+            <li><strong>Field of view:</strong> How much of the weapon model is visible. Higher values push the weapon further from the camera.</li>
+            <li><strong>Hand:</strong> Whether the weapon is held in the right or left hand, which mirrors the entire viewmodel.</li>
+          </ul>
+          <p>Getting these settings right is especially important for players who feel their weapon model obstructs their view during gameplay. A well-configured viewmodel sits comfortably at the edge of your vision without drawing attention away from the action. Learn more about Source 2 engine rendering at the <a href="https://developer.valvesoftware.com/" target="_blank" rel="noopener">Valve Developer Community</a>.</p>
+        </section>
+
+        <section id="commands">
+          <div class="cvs-section-header"><h2>Key Viewmodel Commands</h2></div>
+          <p>Here are the essential console commands for customising your viewmodel:</p>
+          <ul class="cvs-list">
+            <li><strong>viewmodel_fov [54-68]:</strong> Controls how far the weapon appears from the camera. Most competitive players use 68 (maximum). See our <a href="/change-fov-cs2/">FOV guide</a> for details.</li>
+            <li><strong>viewmodel_offset_x [-2.5 to 2.5]:</strong> Moves the weapon left (negative) or right (positive) on screen.</li>
+            <li><strong>viewmodel_offset_y [-2 to 2]:</strong> Moves the weapon forward (negative) or backward (positive).</li>
+            <li><strong>viewmodel_offset_z [-2 to 2]:</strong> Moves the weapon down (negative) or up (positive).</li>
+            <li><strong>cl_righthand [0/1]:</strong> Switches between left hand (0) and right hand (1).</li>
+            <li><strong>cl_bob_lower_amt [5-30]:</strong> Controls weapon bobbing when moving. Lower values reduce bob.</li>
+            <li><strong>viewmodel_presetpos [1-3]:</strong> Applies one of three built-in presets: 1 (Desktop), 2 (Couch), 3 (Classic).</li>
+          </ul>
+          <p>Add your preferred values to your autoexec.cfg file so they load automatically every session. Our <a href="/cs2-guides/config-guide/">config guide</a> explains how to set up and maintain your autoexec.</p>
+        </section>
+
+        <section id="left-vs-right">
+          <div class="cvs-section-header"><h2>Left Hand vs Right Hand</h2></div>
+          <p>The left-hand vs right-hand debate is one of CS2's oldest discussions. The choice affects where the weapon model sits on your screen:</p>
+          <ul class="cvs-list">
+            <li><strong>Right hand (cl_righthand 1):</strong> The default and most popular option. The weapon appears on the right side of the screen. This is what the majority of players and professionals use.</li>
+            <li><strong>Left hand (cl_righthand 0):</strong> Mirrors the viewmodel to the left side. Players with right-eye dominance sometimes prefer this because it places the weapon model away from their dominant eye, giving a cleaner view of the centre screen.</li>
+          </ul>
+          <p>Some players bind both options to keys and switch mid-match depending on the angle they are holding. For example, when holding a left-side angle, switching the weapon to the left hand keeps the model out of the primary sightline. This is purely preference-based and has no mechanical impact on accuracy or recoil.</p>
+        </section>
+
+        <section id="offsets">
+          <div class="cvs-section-header"><h2>Viewmodel Offset and FOV Explained</h2></div>
+          <p>The three offset values (x, y, z) work together with viewmodel FOV to position your weapon exactly where you want it:</p>
+          <ul class="cvs-list">
+            <li><strong>X offset:</strong> Moves the weapon horizontally. Positive values push it further to the side, negative values pull it toward centre. Most players keep this between 1 and 2.5.</li>
+            <li><strong>Y offset:</strong> Controls depth. Negative values push the weapon forward (further from you), positive values pull it back. A value of -2 combined with viewmodel_fov 68 creates a very distant weapon position.</li>
+            <li><strong>Z offset:</strong> Adjusts vertical position. Negative values drop the weapon lower on screen, positive values raise it. Lower positions keep the weapon out of your crosshair area.</li>
+            <li><strong>Viewmodel FOV:</strong> Works in tandem with offsets. Higher FOV (68) shows more of the weapon model from further away. Combined with offset adjustments, you can create a very compact, unobtrusive weapon presentation.</li>
+          </ul>
+          <p>A popular competitive configuration is: <code>viewmodel_fov 68; viewmodel_offset_x 2.5; viewmodel_offset_y -2; viewmodel_offset_z -2</code>. This pushes the weapon far to the side and down, maximising screen clarity. Experiment with different combinations to find what feels best for your play style.</p>
+        </section>
+
+        <section id="pro-configs">
+          <div class="cvs-section-header"><h2>Popular Pro Player Viewmodel Configs</h2></div>
+          <p>Professional players tend to gravitate toward similar viewmodel setups, though there is more variety than you might expect. Here are common patterns seen at the pro level:</p>
+          <ul class="cvs-list">
+            <li><strong>Classic preset (viewmodel_presetpos 3):</strong> Many pros use the classic preset or values close to it. This preset uses viewmodel_fov 68, offset_x 2.5, offset_y 0, offset_z -1.5.</li>
+            <li><strong>Maximally offset:</strong> Some players push all offsets to extremes (x 2.5, y -2, z -2) to minimise the weapon's screen presence.</li>
+            <li><strong>Default-adjacent:</strong> A handful of professionals play with values close to the default, preferring a centred weapon position they have used for years.</li>
+          </ul>
+          <p>The overwhelming majority of pros use viewmodel_fov 68 and cl_righthand 1. The primary variation is in offset values, which come down to personal comfort. Browse individual pro configurations on our <a href="/pro-players/">pro player settings page</a> to see exactly what your favourite players use, and compare settings across our <a href="/crosshair-codes/">crosshair codes database</a>.</p>
+        </section>
+
+        <section id="faq">
+          <div class="cvs-section-header"><h2>Frequently Asked Questions</h2></div>
+          <div class="cvs-faq-list">
+            {faqs.map((faq) => (
+              <details class="cvs-faq-item">
+                <summary class="cvs-faq-question">{faq.question}</summary>
+                <p class="cvs-faq-answer">{faq.answer}</p>
+              </details>
+            ))}
+          </div>
+        </section>
+
+        <section id="related">
+          <div class="cvs-section-header"><h2>Related Articles</h2></div>
+          <div class="cvs-resources-grid">
+            <a href="/cs2-settings-config-faq/" class="cvs-resource-card"><span class="cvs-resource-name">Settings & Config Hub</span><span class="cvs-resource-arrow">&rarr;</span></a>
+            <a href="/cs2-crosshair-guide/" class="cvs-resource-card"><span class="cvs-resource-name">Crosshair Guide</span><span class="cvs-resource-arrow">&rarr;</span></a>
+            <a href="/change-fov-cs2/" class="cvs-resource-card"><span class="cvs-resource-name">Change FOV in CS2</span><span class="cvs-resource-arrow">&rarr;</span></a>
+            <a href="/crosshair-codes/" class="cvs-resource-card"><span class="cvs-resource-name">Crosshair Codes</span><span class="cvs-resource-arrow">&rarr;</span></a>
+            <a href="/pro-players/" class="cvs-resource-card"><span class="cvs-resource-name">Pro Player Settings</span><span class="cvs-resource-arrow">&rarr;</span></a>
+            <a href="/cs2-guides/config-guide/" class="cvs-resource-card"><span class="cvs-resource-name">Config Guide</span><span class="cvs-resource-arrow">&rarr;</span></a>
+          </div>
+        </section>
+      </article>
+    </div>
+  </div>
+
+  <style>
+    .cvs-wrap{max-width:1100px;margin:0 auto;padding:0 1.5rem 2rem}
+    .cvs-breadcrumb{display:flex;align-items:center;gap:.5rem;padding:1.25rem 0;font-size:.85rem;color:var(--text2)}
+    .cvs-breadcrumb a{color:var(--accent);text-decoration:none}
+    .cvs-breadcrumb a:hover{color:var(--accent2)}
+    .cvs-sep{color:var(--border)}
+    .cvs-header{padding:1.5rem 0 1.25rem;border-bottom:2px solid var(--accent);margin-bottom:1.5rem}
+    .cvs-header h1{margin:0 0 .35rem;font-size:2.2rem;font-weight:800;color:var(--text);letter-spacing:-.02em;line-height:1.2}
+    .cvs-subtitle{margin:0;font-size:1.05rem;color:var(--text2);font-weight:400}
+    .cvs-toc-mobile{display:none}
+    .cvs-layout{display:grid;grid-template-columns:220px 1fr;gap:2.5rem;align-items:start}
+    .cvs-sidebar{position:sticky;top:80px}
+    .cvs-toc{display:flex;flex-direction:column;gap:0;border-left:2px solid var(--border);padding-left:0}
+    .cvs-toc-title{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--accent);padding:0 0 .6rem 1rem}
+    .cvs-toc-link{display:block;padding:.4rem 1rem;font-size:.82rem;color:var(--text2);text-decoration:none;border-left:2px solid transparent;margin-left:-2px;transition:color .2s,border-color .2s}
+    .cvs-toc-link:hover{color:var(--text);border-left-color:var(--accent)}
+    .cvs-content{min-width:0}
+    .cvs-intro{font-size:1rem;line-height:1.8;color:var(--text2);margin-bottom:2rem}
+    .cvs-section-header{background:rgba(46,204,113,.05);margin:0 -1.25rem 1.25rem;padding:.75rem 1.25rem;border-radius:4px}
+    .cvs-section-header h2{margin:0;padding:0;font-size:1.5rem;font-weight:700;color:var(--text);border:none;letter-spacing:-.01em}
+    section{margin-bottom:2.5rem}
+    p{line-height:1.7;color:var(--text2);margin-bottom:1rem}
+    .cvs-list{list-style:none;padding:0;margin:.75rem 0 1.5rem}
+    .cvs-list li{padding:.4rem 0 .4rem 1.6rem;position:relative;color:var(--text2);line-height:1.65}
+    .cvs-list li::before{content:'';position:absolute;left:.25rem;top:.75rem;width:6px;height:6px;background:var(--accent);border-radius:1px}
+    .cvs-list li strong{color:var(--text)}
+    .cvs-faq-list{display:flex;flex-direction:column;gap:.5rem}
+    .cvs-faq-item{background:var(--bg2);border:1px solid var(--border);border-radius:4px;overflow:hidden}
+    .cvs-faq-question{display:block;padding:1rem 1.25rem;font-size:.95rem;font-weight:600;color:var(--text);cursor:pointer;list-style:none;position:relative;padding-right:2.5rem;transition:background .2s}
+    .cvs-faq-question::-webkit-details-marker{display:none}
+    .cvs-faq-question::after{content:'+';position:absolute;right:1.25rem;top:50%;transform:translateY(-50%);font-size:1.2rem;color:var(--accent);font-weight:700}
+    .cvs-faq-item[open] .cvs-faq-question::after{content:'\2212'}
+    .cvs-faq-item[open] .cvs-faq-question{border-bottom:1px solid var(--border);background:rgba(46,204,113,.03)}
+    .cvs-faq-question:hover{background:rgba(46,204,113,.03)}
+    .cvs-faq-answer{padding:1rem 1.25rem;margin:0;font-size:.9rem;color:var(--text2);line-height:1.7}
+    .cvs-resources-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.6rem;margin:.5rem 0 1.5rem}
+    .cvs-resource-card{display:flex;align-items:center;justify-content:space-between;padding:.75rem 1rem;background:var(--bg2);border:1px solid var(--border);border-radius:4px;text-decoration:none;border-left:2px solid transparent;transition:border-left-color .2s,color .2s}
+    .cvs-resource-card:hover{border-left-color:var(--accent)}
+    .cvs-resource-name{font-size:.88rem;color:var(--text2);font-weight:500;transition:color .2s}
+    .cvs-resource-card:hover .cvs-resource-name{color:var(--text)}
+    .cvs-resource-arrow{font-size:1rem;color:var(--accent);opacity:0;transition:opacity .2s}
+    .cvs-resource-card:hover .cvs-resource-arrow{opacity:1}
+    @media(max-width:860px){
+      .cvs-layout{grid-template-columns:1fr;gap:0}
+      .cvs-sidebar{display:none}
+      .cvs-toc-mobile{display:flex;gap:.25rem;overflow-x:auto;padding:.75rem 0;margin-bottom:1rem;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+      .cvs-toc-mobile::-webkit-scrollbar{display:none}
+      .cvs-toc-mobile-link{flex-shrink:0;padding:.35rem .75rem;font-size:.78rem;font-weight:600;color:var(--text2);background:var(--bg2);border:1px solid var(--border);border-radius:4px;text-decoration:none;white-space:nowrap;transition:color .2s,border-color .2s}
+      .cvs-toc-mobile-link:hover{color:var(--accent);border-color:var(--accent)}
+      .cvs-header h1{font-size:1.7rem}
+      .cvs-section-header{margin:0 -1rem 1rem;padding:.6rem 1rem}
+      .cvs-resources-grid{grid-template-columns:repeat(2,1fr)}
+    }
+    @media(max-width:600px){
+      .cvs-wrap{padding:0 1rem 1.5rem}
+      .cvs-resources-grid{grid-template-columns:1fr}
+      .cvs-header h1{font-size:1.5rem}
+    }
+  </style>
+  <AuthorBox updated="2026-03-04" />
+</Base>

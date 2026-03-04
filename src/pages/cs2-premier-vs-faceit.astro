@@ -1,0 +1,246 @@
+---
+import Base from '../layouts/Base.astro';
+import AuthorBox from '../components/AuthorBox.astro';
+import { faqSchema, breadcrumbSchema } from '../lib/weapons';
+
+const title = 'CS2 Premier vs FACEIT vs Competitive | CSGOLuck Wiki';
+const description = 'Should you play Premier, FACEIT, or Competitive in CS2? Compare all three modes to find the best fit for your skill level and goals.';
+
+const breadcrumbs = [
+  { name: 'Home', url: '/' },
+  { name: 'Ranks & Competitive', url: '/cs2-ranks-competitive-faq/' },
+  { name: 'Premier vs FACEIT', url: '/cs2-premier-vs-faceit/' },
+];
+
+const faqs = [
+  {
+    question: 'Which mode has the best anti-cheat?',
+    answer: 'FACEIT uses its own kernel-level anti-cheat client which is widely considered more effective than Valve Anti-Cheat (VAC). Premier and Competitive both rely on VAC plus Valve\'s trust factor system.',
+  },
+  {
+    question: 'Can I play FACEIT and Premier at the same time?',
+    answer: 'You can have accounts on both platforms, but you can only play one match at a time. Many players split their sessions between FACEIT and Premier depending on their mood and goals.',
+  },
+  {
+    question: 'Which mode is best for beginners?',
+    answer: 'Competitive is the best starting point for beginners because you can select specific maps and play without any additional setup. Once comfortable, try Premier for its more transparent ranking system.',
+  },
+  {
+    question: 'Do pro players use FACEIT or Premier?',
+    answer: 'Most professional and semi-professional players use FACEIT for practice because of its anti-cheat, higher skill ceiling at top ranks, and organized hub/league system. Some also play Premier for its public leaderboards.',
+  },
+];
+
+const breadcrumbSchema_ = breadcrumbSchema(breadcrumbs);
+const faqSchema_ = faqSchema(faqs);
+
+const articleSchema = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": title,
+  "description": description,
+  "author": { "@type": "Person", "name": "Josh Lingenfelter", "url": "https://www.linkedin.com/in/josh-lingenfelter-8157274b/", "jobTitle": "Director", "worksFor": { "@type": "Organization", "name": "CSGOLuck" } },
+  "publisher": { "@type": "Organization", "name": "CSGOLuck Wiki", "url": "https://wiki.csgoluck.com" },
+  "mainEntityOfPage": "https://wiki.csgoluck.com/cs2-premier-vs-faceit/",
+  "inLanguage": "en-US"
+});
+
+const sections = [
+  { id: 'overview', label: 'Overview' },
+  { id: 'premier', label: 'Premier Pros & Cons' },
+  { id: 'faceit', label: 'FACEIT Pros & Cons' },
+  { id: 'competitive', label: 'Competitive Pros & Cons' },
+  { id: 'which-mode', label: 'Which Mode Is Right?' },
+  { id: 'faq', label: 'FAQ' },
+  { id: 'related', label: 'Related Articles' },
+];
+---
+
+<Base title={title} description={description}>
+  <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema_)}></script>
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema_)}></script>
+  <script type="application/ld+json" set:html={articleSchema}></script>
+
+  <div class="cpvf-wrap">
+    <nav class="cpvf-breadcrumb">
+      <a href="/">Home</a>
+      <span class="cpvf-sep">/</span>
+      <a href="/cs2-ranks-competitive-faq/">Ranks & Competitive</a>
+      <span class="cpvf-sep">/</span>
+      <span>Premier vs FACEIT</span>
+    </nav>
+
+    <header class="cpvf-header">
+      <h1>CS2 Premier vs FACEIT vs Competitive</h1>
+      <p class="cpvf-subtitle">Compare all three ranked modes to find your ideal competitive experience</p>
+    </header>
+
+    <nav class="cpvf-toc-mobile" aria-label="Table of contents">
+      {sections.map((s) => (
+        <a href={`#${s.id}`} class="cpvf-toc-mobile-link">{s.label}</a>
+      ))}
+    </nav>
+
+    <div class="cpvf-layout">
+      <aside class="cpvf-sidebar">
+        <nav class="cpvf-toc" aria-label="Table of contents">
+          <span class="cpvf-toc-title">Contents</span>
+          {sections.map((s) => (
+            <a href={`#${s.id}`} class="cpvf-toc-link">{s.label}</a>
+          ))}
+        </nav>
+      </aside>
+
+      <article class="cpvf-content">
+        <p class="cpvf-intro">
+          Choosing between <strong>CS2 Premier vs FACEIT</strong> vs standard Competitive is one of the first decisions competitive players face. Each mode offers a different ranking system, match format, and overall experience. This guide lays out the strengths and weaknesses of all three so you can pick the one that matches your skill level and goals.
+        </p>
+
+        <section id="overview">
+          <div class="cpvf-section-header"><h2>Overview of All Three Modes</h2></div>
+          <p>Counter-Strike 2 gives players two built-in ranked modes -- Premier and Competitive -- while <a href="https://www.faceit.com/" target="_blank" rel="noopener">FACEIT</a> provides a third-party alternative with its own servers and anti-cheat. Here is a quick summary of each:</p>
+          <ul class="cpvf-list">
+            <li><strong>Premier:</strong> Valve's flagship ranked mode. Uses a numeric CS Rating, full Active Duty map pool with pick-ban, and seasonal leaderboards.</li>
+            <li><strong>FACEIT:</strong> Third-party platform with a 10-level Elo system, kernel-level anti-cheat, and both free and premium queues.</li>
+            <li><strong>Competitive:</strong> The classic ranked mode with 18 skill group badges. You choose specific maps before queueing.</li>
+          </ul>
+          <p>All three modes use a 5v5 format and MR12 rules (first to 13 rounds). The differences lie in the ranking systems, server quality, anti-cheat, and how maps are selected. For a detailed look at each ranking tier, see our <a href="/cs2-ranks-explained/">CS2 ranks explained</a> article.</p>
+        </section>
+
+        <section id="premier">
+          <div class="cpvf-section-header"><h2>Premier Pros and Cons</h2></div>
+          <p>Premier is the mode Valve is positioning as the primary competitive experience in CS2. Here is what it does well and where it falls short:</p>
+          <ul class="cpvf-list">
+            <li><strong>Pro -- Transparent rating:</strong> The numeric CS Rating gives you an exact number to track, making progress and regression very clear.</li>
+            <li><strong>Pro -- Map diversity:</strong> The pick-ban system forces you to be comfortable on multiple maps rather than one-tricking.</li>
+            <li><strong>Pro -- Global leaderboards:</strong> You can see where you rank regionally and globally, adding a competitive benchmark beyond just your rating.</li>
+            <li><strong>Con -- Anti-cheat:</strong> Premier relies on VAC and trust factor, which some players feel is less effective than third-party solutions.</li>
+            <li><strong>Con -- Unlock requirements:</strong> New accounts must grind through level and win requirements before accessing Premier. See our <a href="/unlock-premier-cs2/">Premier unlock guide</a> for details.</li>
+          </ul>
+          <p>Premier is the best choice for players who want an official, easily trackable competitive experience without needing to install additional software. Visit the <a href="https://www.counter-strike.net/" target="_blank" rel="noopener">official Counter-Strike site</a> for the latest on Premier seasons and updates.</p>
+        </section>
+
+        <section id="faceit">
+          <div class="cpvf-section-header"><h2>FACEIT Pros and Cons</h2></div>
+          <p>FACEIT has been the go-to third-party platform for serious CS players for years. Here are its advantages and drawbacks:</p>
+          <ul class="cpvf-list">
+            <li><strong>Pro -- Anti-cheat:</strong> The FACEIT anti-cheat client is kernel-level and widely regarded as more effective than VAC.</li>
+            <li><strong>Pro -- Server quality:</strong> FACEIT runs its own 128-tick servers, which many players prefer for consistent hit registration.</li>
+            <li><strong>Pro -- Competitive ecosystem:</strong> Hubs, leagues, and tournaments give players structured paths to competition beyond simple matchmaking.</li>
+            <li><strong>Con -- External software:</strong> You need to install the FACEIT client and anti-cheat, adding an extra step compared to in-game modes.</li>
+            <li><strong>Con -- Free queue quality:</strong> The free tier can have inconsistent match quality. Premium subscriptions improve this but add a recurring cost.</li>
+          </ul>
+          <p>FACEIT is ideal for players who prioritise clean matches and want a path toward organised competitive play. Read our full <a href="/faceit-cs2-guide/">FACEIT CS2 guide</a> for setup instructions and Elo climbing tips.</p>
+        </section>
+
+        <section id="competitive">
+          <div class="cpvf-section-header"><h2>Competitive Pros and Cons</h2></div>
+          <p>Standard Competitive mode is the most accessible ranked option in CS2:</p>
+          <ul class="cpvf-list">
+            <li><strong>Pro -- Map selection:</strong> You pick exactly which maps you want to play, making it easy to specialise on your strongest maps.</li>
+            <li><strong>Pro -- No extra requirements:</strong> Competitive has the lowest barrier to entry of all three modes. No profile level grinding or third-party signups needed.</li>
+            <li><strong>Pro -- Per-map ranks:</strong> Each map has its own skill group, giving granular feedback on your performance across the pool.</li>
+            <li><strong>Con -- Less transparent ranking:</strong> Skill group badges are vague compared to Premier's numeric rating. You cannot see exactly how close you are to ranking up or down.</li>
+            <li><strong>Con -- One-tricking:</strong> Because you select maps, it is tempting to play only one or two maps forever, which limits your overall development.</li>
+          </ul>
+          <p>Competitive is the best starting point for new players and a solid option for anyone who wants to focus on specific maps. Check our <a href="/cs2-guides/ranks-guide/">ranks guide</a> for strategies on climbing the skill group ladder.</p>
+        </section>
+
+        <section id="which-mode">
+          <div class="cpvf-section-header"><h2>Which Mode Is Right for You?</h2></div>
+          <p>The best mode depends on what you value most in your competitive experience:</p>
+          <ul class="cpvf-list">
+            <li><strong>Choose Premier if:</strong> You want a clear numeric rating, enjoy map variety, and prefer staying within the official CS2 ecosystem.</li>
+            <li><strong>Choose FACEIT if:</strong> Anti-cheat quality is your top priority, you want access to leagues and tournaments, or you are aiming for a semi-professional path.</li>
+            <li><strong>Choose Competitive if:</strong> You are new to CS2, want to specialise on specific maps, or prefer the simplicity of skill group badges.</li>
+          </ul>
+          <p>Many experienced players split their time across multiple modes. There is no rule saying you have to commit to just one. Use Competitive to grind individual maps, Premier for overall ranking, and FACEIT for the most serious matches. View our <a href="/cs2-rank-distribution/">rank distribution page</a> to see where the majority of players sit across these systems.</p>
+        </section>
+
+        <section id="faq">
+          <div class="cpvf-section-header"><h2>Frequently Asked Questions</h2></div>
+          <div class="cpvf-faq-list">
+            {faqs.map((faq) => (
+              <details class="cpvf-faq-item">
+                <summary class="cpvf-faq-question">{faq.question}</summary>
+                <p class="cpvf-faq-answer">{faq.answer}</p>
+              </details>
+            ))}
+          </div>
+        </section>
+
+        <section id="related">
+          <div class="cpvf-section-header"><h2>Related Articles</h2></div>
+          <div class="cpvf-resources-grid">
+            <a href="/cs2-ranks-competitive-faq/" class="cpvf-resource-card"><span class="cpvf-resource-name">Ranks & Competitive Hub</span><span class="cpvf-resource-arrow">&rarr;</span></a>
+            <a href="/cs2-ranks-explained/" class="cpvf-resource-card"><span class="cpvf-resource-name">CS2 Ranks Explained</span><span class="cpvf-resource-arrow">&rarr;</span></a>
+            <a href="/faceit-cs2-guide/" class="cpvf-resource-card"><span class="cpvf-resource-name">FACEIT CS2 Guide</span><span class="cpvf-resource-arrow">&rarr;</span></a>
+            <a href="/unlock-premier-cs2/" class="cpvf-resource-card"><span class="cpvf-resource-name">Unlock Premier Mode</span><span class="cpvf-resource-arrow">&rarr;</span></a>
+            <a href="/cs2-rank-distribution/" class="cpvf-resource-card"><span class="cpvf-resource-name">Rank Distribution</span><span class="cpvf-resource-arrow">&rarr;</span></a>
+          </div>
+        </section>
+      </article>
+    </div>
+  </div>
+
+  <style>
+    .cpvf-wrap{max-width:1100px;margin:0 auto;padding:0 1.5rem 2rem}
+    .cpvf-breadcrumb{display:flex;align-items:center;gap:.5rem;padding:1.25rem 0;font-size:.85rem;color:var(--text2)}
+    .cpvf-breadcrumb a{color:var(--accent);text-decoration:none}
+    .cpvf-breadcrumb a:hover{color:var(--accent2)}
+    .cpvf-sep{color:var(--border)}
+    .cpvf-header{padding:1.5rem 0 1.25rem;border-bottom:2px solid var(--accent);margin-bottom:1.5rem}
+    .cpvf-header h1{margin:0 0 .35rem;font-size:2.2rem;font-weight:800;color:var(--text);letter-spacing:-.02em;line-height:1.2}
+    .cpvf-subtitle{margin:0;font-size:1.05rem;color:var(--text2);font-weight:400}
+    .cpvf-toc-mobile{display:none}
+    .cpvf-layout{display:grid;grid-template-columns:220px 1fr;gap:2.5rem;align-items:start}
+    .cpvf-sidebar{position:sticky;top:80px}
+    .cpvf-toc{display:flex;flex-direction:column;gap:0;border-left:2px solid var(--border);padding-left:0}
+    .cpvf-toc-title{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--accent);padding:0 0 .6rem 1rem}
+    .cpvf-toc-link{display:block;padding:.4rem 1rem;font-size:.82rem;color:var(--text2);text-decoration:none;border-left:2px solid transparent;margin-left:-2px;transition:color .2s,border-color .2s}
+    .cpvf-toc-link:hover{color:var(--text);border-left-color:var(--accent)}
+    .cpvf-content{min-width:0}
+    .cpvf-intro{font-size:1rem;line-height:1.8;color:var(--text2);margin-bottom:2rem}
+    .cpvf-section-header{background:rgba(46,204,113,.05);margin:0 -1.25rem 1.25rem;padding:.75rem 1.25rem;border-radius:4px}
+    .cpvf-section-header h2{margin:0;padding:0;font-size:1.5rem;font-weight:700;color:var(--text);border:none;letter-spacing:-.01em}
+    section{margin-bottom:2.5rem}
+    p{line-height:1.7;color:var(--text2);margin-bottom:1rem}
+    .cpvf-list{list-style:none;padding:0;margin:.75rem 0 1.5rem}
+    .cpvf-list li{padding:.4rem 0 .4rem 1.6rem;position:relative;color:var(--text2);line-height:1.65}
+    .cpvf-list li::before{content:'';position:absolute;left:.25rem;top:.75rem;width:6px;height:6px;background:var(--accent);border-radius:1px}
+    .cpvf-list li strong{color:var(--text)}
+    .cpvf-faq-list{display:flex;flex-direction:column;gap:.5rem}
+    .cpvf-faq-item{background:var(--bg2);border:1px solid var(--border);border-radius:4px;overflow:hidden}
+    .cpvf-faq-question{display:block;padding:1rem 1.25rem;font-size:.95rem;font-weight:600;color:var(--text);cursor:pointer;list-style:none;position:relative;padding-right:2.5rem;transition:background .2s}
+    .cpvf-faq-question::-webkit-details-marker{display:none}
+    .cpvf-faq-question::after{content:'+';position:absolute;right:1.25rem;top:50%;transform:translateY(-50%);font-size:1.2rem;color:var(--accent);font-weight:700}
+    .cpvf-faq-item[open] .cpvf-faq-question::after{content:'\2212'}
+    .cpvf-faq-item[open] .cpvf-faq-question{border-bottom:1px solid var(--border);background:rgba(46,204,113,.03)}
+    .cpvf-faq-question:hover{background:rgba(46,204,113,.03)}
+    .cpvf-faq-answer{padding:1rem 1.25rem;margin:0;font-size:.9rem;color:var(--text2);line-height:1.7}
+    .cpvf-resources-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.6rem;margin:.5rem 0 1.5rem}
+    .cpvf-resource-card{display:flex;align-items:center;justify-content:space-between;padding:.75rem 1rem;background:var(--bg2);border:1px solid var(--border);border-radius:4px;text-decoration:none;border-left:2px solid transparent;transition:border-left-color .2s,color .2s}
+    .cpvf-resource-card:hover{border-left-color:var(--accent)}
+    .cpvf-resource-name{font-size:.88rem;color:var(--text2);font-weight:500;transition:color .2s}
+    .cpvf-resource-card:hover .cpvf-resource-name{color:var(--text)}
+    .cpvf-resource-arrow{font-size:1rem;color:var(--accent);opacity:0;transition:opacity .2s}
+    .cpvf-resource-card:hover .cpvf-resource-arrow{opacity:1}
+    @media(max-width:860px){
+      .cpvf-layout{grid-template-columns:1fr;gap:0}
+      .cpvf-sidebar{display:none}
+      .cpvf-toc-mobile{display:flex;gap:.25rem;overflow-x:auto;padding:.75rem 0;margin-bottom:1rem;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+      .cpvf-toc-mobile::-webkit-scrollbar{display:none}
+      .cpvf-toc-mobile-link{flex-shrink:0;padding:.35rem .75rem;font-size:.78rem;font-weight:600;color:var(--text2);background:var(--bg2);border:1px solid var(--border);border-radius:4px;text-decoration:none;white-space:nowrap;transition:color .2s,border-color .2s}
+      .cpvf-toc-mobile-link:hover{color:var(--accent);border-color:var(--accent)}
+      .cpvf-header h1{font-size:1.7rem}
+      .cpvf-section-header{margin:0 -1rem 1rem;padding:.6rem 1rem}
+      .cpvf-resources-grid{grid-template-columns:repeat(2,1fr)}
+    }
+    @media(max-width:600px){
+      .cpvf-wrap{padding:0 1rem 1.5rem}
+      .cpvf-resources-grid{grid-template-columns:1fr}
+      .cpvf-header h1{font-size:1.5rem}
+    }
+  </style>
+  <AuthorBox updated="2026-03-04" />
+</Base>

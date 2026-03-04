@@ -1,0 +1,136 @@
+---
+import Base from '../layouts/Base.astro';
+import AuthorBox from '../components/AuthorBox.astro';
+import { faqSchema, breadcrumbSchema } from '../lib/weapons';
+
+const title = 'CS2 Download & System Requirements FAQ | CSGOLuck Wiki';
+const description = 'Is CS2 free? Can you play on Mac or console? File size, system requirements, and platform details — all answered here.';
+
+const faqs = [
+  {
+    question: 'Is CS2 free to play?',
+    answer: 'Yes, Counter-Strike 2 is completely free to download and play on Steam. There is no upfront purchase required. All core game modes, including Competitive and Premier, are accessible at no cost. The optional CS2 Prime Status upgrade, which provides enhanced matchmaking and exclusive item drops, can be purchased separately through Steam for a one-time fee.',
+  },
+  {
+    question: 'Can you play CS2 on Mac?',
+    answer: 'Valve dropped native macOS support when CS2 replaced CS:GO. Counter-Strike 2 is officially available only on Windows and Linux. Mac users who previously played CS:GO can no longer launch the game natively. Some players use compatibility layers like Boot Camp or CrossOver to run the Windows version on Apple hardware, but performance and stability vary significantly.',
+  },
+  {
+    question: 'Is CS2 on PS5 or Xbox?',
+    answer: 'No, Counter-Strike 2 is not available on PlayStation 5, Xbox Series X/S, or any other console platform. While CS:GO had console releases on PS3 and Xbox 360, those versions were discontinued years ago. Valve has made no announcements regarding console ports for CS2, so the game remains a PC-exclusive title available through Steam.',
+  },
+  {
+    question: 'How big is CS2? (file size)',
+    answer: 'The CS2 installation currently requires roughly 85 GB of free disk space on your drive. The exact size fluctuates with each update as Valve adds new content, maps, and patches. An SSD is strongly recommended over a traditional hard drive — it drastically reduces map loading times and helps prevent texture pop-in during gameplay.',
+  },
+  {
+    question: 'Is CS2 CPU or GPU intensive?',
+    answer: 'CS2 leans heavily on CPU performance, particularly single-core speed. High frame rates in competitive play depend more on your processor than your graphics card. That said, the Source 2 engine does place increased GPU demands compared to the original CS:GO, especially at higher resolutions and with visual effects enabled. A balanced system with a strong CPU and a mid-range or better GPU delivers the best results.',
+  },
+  {
+    question: 'What are the CS2 system requirements?',
+    answer: 'The minimum requirements include Windows 10, a processor with four cores, 8 GB of RAM, and a DirectX 11 capable GPU with at least 1 GB VRAM. For a comfortable competitive experience, Valve recommends a modern quad-core or six-core CPU, 16 GB RAM, a DirectX 12 GPU with 4 GB+ VRAM, and an SSD. Running below minimum specs will result in frequent frame drops and stuttering.',
+  },
+];
+---
+
+<Base title={title} description={description}>
+  <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema([{name:'Home',url:'/'},{name:'CS2 Download & Platform FAQ',url:'/cs2-download-platform-faq'}]))}></script>
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema(faqs))}></script>
+
+  <nav class="dpf-breadcrumb">
+    <a href="/">Home</a> / <span>CS2 Download &amp; Platform FAQ</span>
+  </nav>
+
+  <section class="dpf-hero">
+    <h1>CS2 Download &amp; System Requirements FAQ</h1>
+    <p class="dpf-hero-desc">Before jumping into Counter-Strike 2, you need to know the CS2 download and system requirements basics — whether the game is free, what platforms support it, how much disk space it needs, and what hardware runs it well. Here are the answers to every common question about getting CS2 installed and running smoothly.</p>
+  </section>
+
+  <div class="dpf-faq-list">
+    {faqs.map(faq => (
+      <details class="dpf-faq-item">
+        <summary class="dpf-faq-question">{faq.question}</summary>
+        <p class="dpf-faq-answer">{faq.answer}</p>
+      </details>
+    ))}
+  </div>
+
+  <section class="dpf-related">
+    <h2>Related Articles</h2>
+    <div class="dpf-related-grid">
+      <a href="/is-cs2-free/" class="dpf-related-card"><span class="dpf-related-name">Is CS2 Free to Play?</span><span class="dpf-related-arrow">&rarr;</span></a>
+      <a href="/cs2-on-mac/" class="dpf-related-card"><span class="dpf-related-name">CS2 on Mac — What You Need to Know</span><span class="dpf-related-arrow">&rarr;</span></a>
+      <a href="/cs2-on-console/" class="dpf-related-card"><span class="dpf-related-name">CS2 on Console (PS5, Xbox)</span><span class="dpf-related-arrow">&rarr;</span></a>
+      <a href="/cs2-system-requirements/" class="dpf-related-card"><span class="dpf-related-name">CS2 System Requirements Guide</span><span class="dpf-related-arrow">&rarr;</span></a>
+    </div>
+  </section>
+
+  <section class="dpf-explore">
+    <h2>Explore More</h2>
+    <div class="dpf-explore-links">
+      <a href="/cs2-server-status-technical-faq/">CS2 Server Status &amp; Technical FAQ</a>
+      <a href="/cs2-settings-config-faq/">CS2 Settings &amp; Config FAQ</a>
+    </div>
+  </section>
+
+  <div class="dpf-outbound">
+    <strong>Official Resources:</strong>
+    <a href="https://store.steampowered.com/app/730/CounterStrike_2/" target="_blank" rel="noopener noreferrer">CS2 on Steam</a>
+  </div>
+
+  <AuthorBox updated="2026-03-04" />
+</Base>
+
+<style>
+/* ── Breadcrumb ── */
+.dpf-breadcrumb{font-size:.82rem;color:var(--text2);margin-bottom:1.25rem;display:flex;gap:.35rem;flex-wrap:wrap}
+.dpf-breadcrumb a{color:var(--accent);text-decoration:none}
+.dpf-breadcrumb a:hover{text-decoration:underline}
+
+/* ── Hero ── */
+.dpf-hero{background:var(--bg2);border:1px solid var(--border);border-radius:4px;padding:2rem;margin-bottom:1.5rem}
+.dpf-hero h1{font-family:'Montserrat',sans-serif;font-size:2rem;font-weight:800;margin:0 0 .75rem;color:var(--text)}
+.dpf-hero-desc{color:var(--text2);font-size:.95rem;line-height:1.7;margin:0}
+
+/* ── FAQ List ── */
+.dpf-faq-list{display:flex;flex-direction:column;gap:.5rem;margin-bottom:2.5rem}
+.dpf-faq-item{background:var(--bg2);border:1px solid var(--border);border-radius:4px;overflow:hidden}
+.dpf-faq-question{display:block;padding:1rem 1.25rem;font-size:.95rem;font-weight:600;color:var(--text);cursor:pointer;list-style:none;position:relative;padding-right:2.5rem;transition:background .2s}
+.dpf-faq-question::-webkit-details-marker{display:none}
+.dpf-faq-question::after{content:'+';position:absolute;right:1.25rem;top:50%;transform:translateY(-50%);font-size:1.2rem;color:var(--accent);font-weight:700}
+.dpf-faq-item[open] .dpf-faq-question::after{content:'\2212'}
+.dpf-faq-item[open] .dpf-faq-question{border-bottom:1px solid var(--border);background:rgba(46,204,113,.03)}
+.dpf-faq-question:hover{background:rgba(46,204,113,.03)}
+.dpf-faq-answer{padding:1rem 1.25rem;margin:0;font-size:.9rem;color:var(--text2);line-height:1.7}
+
+/* ── Related Articles ── */
+.dpf-related{margin-bottom:2rem}
+.dpf-related h2{font-family:'Montserrat',sans-serif;font-size:1.2rem;font-weight:700;color:var(--text);margin:0 0 .75rem;padding-bottom:.5rem;border-bottom:2px solid var(--accent)}
+.dpf-related-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:.6rem}
+.dpf-related-card{display:flex;align-items:center;justify-content:space-between;padding:.75rem 1rem;background:var(--bg2);border:1px solid var(--border);border-radius:4px;text-decoration:none;border-left:2px solid transparent;transition:border-left-color .2s,color .2s}
+.dpf-related-card:hover{border-left-color:var(--accent)}
+.dpf-related-name{font-size:.88rem;color:var(--text2);font-weight:500;transition:color .2s}
+.dpf-related-card:hover .dpf-related-name{color:var(--text)}
+.dpf-related-arrow{font-size:1rem;color:var(--accent);opacity:0;transition:opacity .2s}
+.dpf-related-card:hover .dpf-related-arrow{opacity:1}
+
+/* ── Explore More ── */
+.dpf-explore{margin-bottom:2rem}
+.dpf-explore h2{font-family:'Montserrat',sans-serif;font-size:1.2rem;font-weight:700;color:var(--text);margin:0 0 .75rem;padding-bottom:.5rem;border-bottom:2px solid var(--accent)}
+.dpf-explore-links{display:flex;flex-wrap:wrap;gap:.45rem}
+.dpf-explore-links a{color:var(--accent);text-decoration:none;padding:.4rem .75rem;background:var(--bg2);border:1px solid var(--border);border-radius:4px;font-size:.85rem;font-weight:600;transition:border-color .15s,color .15s}
+.dpf-explore-links a:hover{border-color:var(--accent);color:var(--text)}
+
+/* ── Outbound Links ── */
+.dpf-outbound{display:flex;flex-wrap:wrap;gap:.45rem;align-items:center;margin:1.5rem 0 2rem;font-size:.82rem}
+.dpf-outbound strong{color:var(--text);margin-right:.2rem}
+.dpf-outbound a{color:var(--accent);text-decoration:none;padding:.2rem .5rem;background:var(--bg2);border:1px solid var(--border);border-radius:4px;transition:border-color .15s}
+.dpf-outbound a:hover{border-color:var(--accent)}
+
+/* ── Responsive ── */
+@media(max-width:768px){
+  .dpf-hero h1{font-size:1.5rem}
+  .dpf-related-grid{grid-template-columns:1fr}
+}
+</style>

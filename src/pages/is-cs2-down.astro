@@ -1,0 +1,234 @@
+---
+import Base from '../layouts/Base.astro';
+import AuthorBox from '../components/AuthorBox.astro';
+import { faqSchema, breadcrumbSchema } from '../lib/weapons';
+
+const title = 'Is CS2 Down? How to Check Server Status | CSGOLuck Wiki';
+const description = "CS2 not connecting? Learn how to check if CS2 servers are down right now and what to do while you wait for them to come back.";
+
+const breadcrumbs = [
+  { name: 'Home', url: '/' },
+  { name: 'Server Status & Technical FAQ', url: '/cs2-server-status-technical-faq' },
+  { name: 'Is CS2 Down?', url: '/is-cs2-down' },
+];
+
+const faqs = [
+  {
+    question: 'How can I tell if CS2 servers are down?',
+    answer: 'Check third-party tools like SteamStat.us or the Steam Status page. You can also look at community reports on social media. See our <a href="/cs2-server-status-technical-faq/">server status FAQ</a> for more.',
+  },
+  {
+    question: 'How long do CS2 outages usually last?',
+    answer: 'Most CS2 outages last between 15 minutes and a few hours. Scheduled maintenance on Tuesdays tends to be shorter. Extended outages are rare but can happen during major updates. Visit our <a href="/cs2-server-status-technical-faq/">server status FAQ</a> for details.',
+  },
+  {
+    question: 'Can I still play CS2 offline when servers are down?',
+    answer: 'You can play with bots in offline mode or use community servers that are independently hosted. However, matchmaking, ranked play, and VAC-secured servers require a connection to Valve servers. Check our <a href="/cs2-server-status-technical-faq/">server status FAQ</a> for alternatives.',
+  },
+];
+
+const breadcrumbSchema_ = breadcrumbSchema(breadcrumbs);
+const faqSchema_ = faqSchema(faqs);
+
+const articleSchema = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": title,
+  "description": description,
+  "author": { "@type": "Person", "name": "Josh Lingenfelter", "url": "https://www.linkedin.com/in/josh-lingenfelter-8157274b/", "jobTitle": "Director", "worksFor": { "@type": "Organization", "name": "CSGOLuck" } },
+  "publisher": { "@type": "Organization", "name": "CSGOLuck Wiki", "url": "https://wiki.csgoluck.com" },
+  "mainEntityOfPage": "https://wiki.csgoluck.com/is-cs2-down/",
+  "inLanguage": "en-US"
+});
+
+const sections = [
+  { id: 'check', label: 'How to Check' },
+  { id: 'tools', label: 'Status Tools' },
+  { id: 'reasons', label: 'Common Reasons' },
+  { id: 'what-to-do', label: 'What to Do' },
+  { id: 'maintenance', label: 'Maintenance Windows' },
+  { id: 'faq', label: 'FAQ' },
+  { id: 'related', label: 'Related Articles' },
+];
+---
+
+<Base title={title} description={description}>
+  <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema_)}></script>
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema_)}></script>
+  <script type="application/ld+json" set:html={articleSchema}></script>
+
+  <div class="icd-wrap">
+    <nav class="icd-breadcrumb">
+      <a href="/">Home</a>
+      <span class="icd-sep">/</span>
+      <a href="/cs2-server-status-technical-faq/">Server Status & Technical FAQ</a>
+      <span class="icd-sep">/</span>
+      <span>Is CS2 Down?</span>
+    </nav>
+
+    <header class="icd-header">
+      <h1>Is CS2 Down? How to Check Server Status</h1>
+      <p class="icd-subtitle">Quick ways to verify whether CS2 servers are offline and what to do about it</p>
+    </header>
+
+    <nav class="icd-toc-mobile" aria-label="Table of contents">
+      {sections.map((s) => (
+        <a href={`#${s.id}`} class="icd-toc-mobile-link">{s.label}</a>
+      ))}
+    </nav>
+
+    <div class="icd-layout">
+      <aside class="icd-sidebar">
+        <nav class="icd-toc" aria-label="Table of contents">
+          <span class="icd-toc-title">Contents</span>
+          {sections.map((s) => (
+            <a href={`#${s.id}`} class="icd-toc-link">{s.label}</a>
+          ))}
+        </nav>
+      </aside>
+
+      <article class="icd-content">
+        <p class="icd-intro">
+          When matchmaking fails or you cannot connect to a game, the first question is usually is cs2 down or is it a problem on your end. Server outages happen -- whether for scheduled maintenance, unexpected issues, or major update deployments. Knowing how to quickly check CS2 server status saves you from troubleshooting a problem that is not yours to fix. This guide covers the fastest ways to verify server status and what to do while you wait.
+        </p>
+
+        <section id="check">
+          <div class="icd-section-header"><h2>How to Check if CS2 Is Down</h2></div>
+          <p>The fastest way to determine whether CS2 is experiencing an outage is to check multiple sources. No single tool is perfectly reliable, so cross-referencing gives you the most accurate picture:</p>
+          <ul class="icd-list">
+            <li><strong>In-game indicators:</strong> If you can launch CS2, check the main menu. A yellow or red warning icon near the top indicates server issues. If matchmaking queues are unusually long or fail repeatedly, servers are likely under strain</li>
+            <li><strong>Steam client:</strong> Open your Steam client and look at the "Store" and "Community" tabs. If these load slowly or fail, Steam itself may be experiencing issues, which affects CS2</li>
+            <li><strong>Social media:</strong> Check the official Counter-Strike account on X (formerly Twitter) or Reddit communities like r/GlobalOffensive. Other players will report issues quickly if servers go down</li>
+          </ul>
+          <p>If multiple sources confirm problems, the issue is almost certainly on Valve's end. If only you are affected, the problem is more likely related to your network -- in which case, see our guides on <a href="/cs2-fix-net-jitter/">fixing net jitter</a> and <a href="/cs2-fix-packet-loss/">fixing packet loss</a>.</p>
+        </section>
+
+        <section id="tools">
+          <div class="icd-section-header"><h2>Official and Third-Party Status Tools</h2></div>
+          <p>Several websites track Steam and CS2 server status in real time:</p>
+          <ul class="icd-list">
+            <li><strong><a href="https://steamstat.us/" target="_blank" rel="noopener">SteamStat.us</a>:</strong> The most popular third-party tool for monitoring Steam infrastructure. It tracks the status of Steam services including the Game Coordinator (which CS2 uses for matchmaking), Steam Store, Steam Community, and regional servers</li>
+            <li><strong><a href="https://help.steampowered.com/" target="_blank" rel="noopener">Steam Status (official)</a>:</strong> Valve's own support page sometimes reflects known outages and provides estimated restoration times</li>
+            <li><strong>Downdetector:</strong> Aggregates user reports to show outage patterns. Useful for seeing whether a spike in complaints coincides with your connection issues</li>
+            <li><strong>IsItDown:</strong> A simple up/down checker for various services including Steam</li>
+          </ul>
+          <p>SteamStat.us is generally the fastest to reflect server status changes. Bookmark it for quick access whenever you suspect an outage.</p>
+        </section>
+
+        <section id="reasons">
+          <div class="icd-section-header"><h2>Common Reasons CS2 Goes Down</h2></div>
+          <p>CS2 server outages fall into a few categories:</p>
+          <ul class="icd-list">
+            <li><strong>Scheduled maintenance:</strong> Valve performs regular Tuesday maintenance on Steam servers, typically in the late morning or early afternoon Pacific Time. These outages are usually brief (15-30 minutes)</li>
+            <li><strong>Game updates:</strong> Major CS2 updates sometimes require the Game Coordinator to go offline while Valve deploys new server-side code. These can last from minutes to a few hours</li>
+            <li><strong>Infrastructure issues:</strong> Occasionally, Steam's backend infrastructure experiences problems unrelated to CS2 specifically. These affect all Steam games and services</li>
+            <li><strong>DDoS attacks:</strong> Large-scale distributed denial-of-service attacks against Steam servers have caused outages in the past, though Valve has hardened its infrastructure significantly</li>
+            <li><strong>Regional issues:</strong> Sometimes only specific server regions go down. You may be unable to connect while players in other parts of the world play normally</li>
+          </ul>
+        </section>
+
+        <section id="what-to-do">
+          <div class="icd-section-header"><h2>What to Do When Servers Are Down</h2></div>
+          <p>If you have confirmed that CS2 servers are down, here are your options:</p>
+          <ul class="icd-list">
+            <li><strong>Wait it out:</strong> Most outages resolve within minutes to a few hours. Avoid repeatedly restarting Steam or CS2 -- this does not speed up the process and can cause additional issues</li>
+            <li><strong>Play offline with bots:</strong> You can start a local game with bots to practice aim, movement, or learn map layouts while waiting</li>
+            <li><strong>Use community servers:</strong> Some community servers operate independently of Valve's matchmaking infrastructure. Browse the community server browser -- these may still be accessible</li>
+            <li><strong>Practice in aim trainers:</strong> Steam Workshop aim training maps work offline and are a productive way to use downtime</li>
+            <li><strong>Review demos:</strong> If you have downloaded match demos previously, watching them does not require a server connection</li>
+          </ul>
+          <p>Do not submit multiple support tickets to Valve during a known outage. They are aware of the issue and working on it. Support tickets for known outages just add noise and slow down responses to unique problems.</p>
+        </section>
+
+        <section id="maintenance">
+          <div class="icd-section-header"><h2>Scheduled Maintenance Windows</h2></div>
+          <p>Valve has a long-standing pattern of performing Steam maintenance on Tuesdays, typically around 4:00 PM to 7:00 PM Pacific Time (UTC-8). During this window, you may experience brief disconnections, failed matchmaking attempts, or inability to log into Steam.</p>
+          <p>These maintenance periods usually last 15 to 30 minutes, though they occasionally run longer if Valve is deploying significant infrastructure changes. If you schedule your gaming sessions around these windows, you can avoid the frustration of mid-game disconnections.</p>
+          <p>Major game updates do not follow a fixed schedule. Valve releases CS2 updates when they are ready, which can happen on any day of the week. Following the official Counter-Strike social media accounts or community news sites is the best way to get advance notice of upcoming updates.</p>
+        </section>
+
+        <section id="faq">
+          <div class="icd-section-header"><h2>Frequently Asked Questions</h2></div>
+          <div class="icd-faq-list">
+            {faqs.map((faq) => (
+              <details class="icd-faq-item">
+                <summary class="icd-faq-question">{faq.question}</summary>
+                <p class="icd-faq-answer" set:html={faq.answer}></p>
+              </details>
+            ))}
+          </div>
+        </section>
+
+        <section id="related">
+          <div class="icd-section-header"><h2>Related Articles</h2></div>
+          <div class="icd-resources-grid">
+            <a href="/cs2-server-status-technical-faq/" class="icd-resource-card"><span class="icd-resource-name">Server Status & Technical FAQ Hub</span><span class="icd-resource-arrow">&rarr;</span></a>
+            <a href="/cs2-fix-net-jitter/" class="icd-resource-card"><span class="icd-resource-name">Fix Net Jitter</span><span class="icd-resource-arrow">&rarr;</span></a>
+            <a href="/cs2-fix-packet-loss/" class="icd-resource-card"><span class="icd-resource-name">Fix Packet Loss</span><span class="icd-resource-arrow">&rarr;</span></a>
+          </div>
+        </section>
+      </article>
+    </div>
+  </div>
+
+  <style>
+    .icd-wrap{max-width:1100px;margin:0 auto;padding:0 1.5rem 2rem}
+    .icd-breadcrumb{display:flex;align-items:center;gap:.5rem;padding:1.25rem 0;font-size:.85rem;color:var(--text2)}
+    .icd-breadcrumb a{color:var(--accent);text-decoration:none}
+    .icd-breadcrumb a:hover{color:var(--accent2)}
+    .icd-sep{color:var(--border)}
+    .icd-header{padding:1.5rem 0 1.25rem;border-bottom:2px solid var(--accent);margin-bottom:1.5rem}
+    .icd-header h1{margin:0 0 .35rem;font-size:2.2rem;font-weight:800;color:var(--text);letter-spacing:-.02em;line-height:1.2}
+    .icd-subtitle{margin:0;font-size:1.05rem;color:var(--text2);font-weight:400}
+    .icd-toc-mobile{display:none}
+    .icd-layout{display:grid;grid-template-columns:220px 1fr;gap:2.5rem;align-items:start}
+    .icd-sidebar{position:sticky;top:80px}
+    .icd-toc{display:flex;flex-direction:column;gap:0;border-left:2px solid var(--border);padding-left:0}
+    .icd-toc-title{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--accent);padding:0 0 .6rem 1rem}
+    .icd-toc-link{display:block;padding:.4rem 1rem;font-size:.82rem;color:var(--text2);text-decoration:none;border-left:2px solid transparent;margin-left:-2px;transition:color .2s,border-color .2s}
+    .icd-toc-link:hover{color:var(--text);border-left-color:var(--accent)}
+    .icd-content{min-width:0}
+    .icd-intro{font-size:1rem;line-height:1.8;color:var(--text2);margin-bottom:2rem}
+    .icd-section-header{background:rgba(46,204,113,.05);margin:0 -1.25rem 1.25rem;padding:.75rem 1.25rem;border-radius:4px}
+    .icd-section-header h2{margin:0;padding:0;font-size:1.5rem;font-weight:700;color:var(--text);border:none;letter-spacing:-.01em}
+    section{margin-bottom:2.5rem}
+    p{line-height:1.7;color:var(--text2);margin-bottom:1rem}
+    .icd-list{list-style:none;padding:0;margin:.75rem 0 1.5rem}
+    .icd-list li{padding:.4rem 0 .4rem 1.6rem;position:relative;color:var(--text2);line-height:1.65}
+    .icd-list li::before{content:'';position:absolute;left:.25rem;top:.75rem;width:6px;height:6px;background:var(--accent);border-radius:1px}
+    .icd-list li strong{color:var(--text)}
+    .icd-faq-list{display:flex;flex-direction:column;gap:.5rem}
+    .icd-faq-item{background:var(--bg2);border:1px solid var(--border);border-radius:4px;overflow:hidden}
+    .icd-faq-question{display:block;padding:1rem 1.25rem;font-size:.95rem;font-weight:600;color:var(--text);cursor:pointer;list-style:none;position:relative;padding-right:2.5rem;transition:background .2s}
+    .icd-faq-question::-webkit-details-marker{display:none}
+    .icd-faq-question::after{content:'+';position:absolute;right:1.25rem;top:50%;transform:translateY(-50%);font-size:1.2rem;color:var(--accent);font-weight:700}
+    .icd-faq-item[open] .icd-faq-question::after{content:'\2212'}
+    .icd-faq-item[open] .icd-faq-question{border-bottom:1px solid var(--border);background:rgba(46,204,113,.03)}
+    .icd-faq-question:hover{background:rgba(46,204,113,.03)}
+    .icd-faq-answer{padding:1rem 1.25rem;margin:0;font-size:.9rem;color:var(--text2);line-height:1.7}
+    .icd-resources-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.6rem;margin:.5rem 0 1.5rem}
+    .icd-resource-card{display:flex;align-items:center;justify-content:space-between;padding:.75rem 1rem;background:var(--bg2);border:1px solid var(--border);border-radius:4px;text-decoration:none;border-left:2px solid transparent;transition:border-left-color .2s,color .2s}
+    .icd-resource-card:hover{border-left-color:var(--accent)}
+    .icd-resource-name{font-size:.88rem;color:var(--text2);font-weight:500;transition:color .2s}
+    .icd-resource-card:hover .icd-resource-name{color:var(--text)}
+    .icd-resource-arrow{font-size:1rem;color:var(--accent);opacity:0;transition:opacity .2s}
+    .icd-resource-card:hover .icd-resource-arrow{opacity:1}
+    @media(max-width:860px){
+      .icd-layout{grid-template-columns:1fr;gap:0}
+      .icd-sidebar{display:none}
+      .icd-toc-mobile{display:flex;gap:.25rem;overflow-x:auto;padding:.75rem 0;margin-bottom:1rem;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+      .icd-toc-mobile::-webkit-scrollbar{display:none}
+      .icd-toc-mobile-link{flex-shrink:0;padding:.35rem .75rem;font-size:.78rem;font-weight:600;color:var(--text2);background:var(--bg2);border:1px solid var(--border);border-radius:4px;text-decoration:none;white-space:nowrap;transition:color .2s,border-color .2s}
+      .icd-toc-mobile-link:hover{color:var(--accent);border-color:var(--accent)}
+      .icd-header h1{font-size:1.7rem}
+      .icd-section-header{margin:0 -1rem 1rem;padding:.6rem 1rem}
+      .icd-resources-grid{grid-template-columns:repeat(2,1fr)}
+    }
+    @media(max-width:600px){
+      .icd-wrap{padding:0 1rem 1.5rem}
+      .icd-resources-grid{grid-template-columns:1fr}
+      .icd-header h1{font-size:1.5rem}
+    }
+  </style>
+  <AuthorBox updated="2026-03-04" />
+</Base>

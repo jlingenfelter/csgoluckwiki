@@ -1,0 +1,221 @@
+---
+import Base from '../layouts/Base.astro';
+import AuthorBox from '../components/AuthorBox.astro';
+import { faqSchema, breadcrumbSchema } from '../lib/weapons';
+
+const title = 'Where to Watch CS2 Esports: All Platforms | CSGOLuck Wiki';
+const description = 'Every platform where you can watch CS2 esports live — Twitch, YouTube, HLTV, and in-game GOTV. Never miss a pro CS2 match.';
+
+const breadcrumbs = [
+  { name: 'Home', url: '/' },
+  { name: 'CS2 Esports & Pro Scene', url: '/cs2-esports-pro-scene-faq' },
+  { name: 'Where to Watch CS2', url: '/where-to-watch-cs2' },
+];
+
+const faqs = [
+  {
+    question: 'Is watching CS2 esports free?',
+    answer: 'Yes, the vast majority of CS2 esports content is free to watch. Twitch, YouTube, and HLTV streams are all free. In-game GOTV spectating is also free for anyone who owns CS2.',
+  },
+  {
+    question: 'Can I watch CS2 matches on my phone?',
+    answer: 'Yes. Both Twitch and YouTube have mobile apps that stream CS2 tournaments. HLTV also has a mobile-friendly website with live scoreboards and embedded streams.',
+  },
+  {
+    question: 'What is GOTV and how do I use it?',
+    answer: 'GOTV is Counter-Strike 2\'s built-in spectating system. During live tournaments, you can join GOTV broadcasts directly from the CS2 main menu to watch matches with full camera control and player perspective switching.',
+  },
+  {
+    question: 'Where can I find the CS2 tournament schedule?',
+    answer: 'HLTV.org maintains the most comprehensive CS2 tournament calendar. You can also check the official Counter-Strike website for Major dates. See our next CS2 Major guide for more details.',
+  },
+];
+
+const breadcrumbSchema_ = breadcrumbSchema(breadcrumbs);
+const faqSchema_ = faqSchema(faqs);
+
+const articleSchema = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": title,
+  "description": description,
+  "author": { "@type": "Person", "name": "Josh Lingenfelter", "url": "https://www.linkedin.com/in/josh-lingenfelter-8157274b/", "jobTitle": "Director", "worksFor": { "@type": "Organization", "name": "CSGOLuck" } },
+  "publisher": { "@type": "Organization", "name": "CSGOLuck Wiki", "url": "https://wiki.csgoluck.com" },
+  "mainEntityOfPage": "https://wiki.csgoluck.com/where-to-watch-cs2/",
+  "inLanguage": "en-US"
+});
+
+const sections = [
+  { id: 'twitch', label: 'Twitch Channels' },
+  { id: 'youtube', label: 'YouTube Streams' },
+  { id: 'hltv', label: 'HLTV Coverage' },
+  { id: 'gotv', label: 'In-Game GOTV' },
+  { id: 'schedules', label: 'Tournament Schedules' },
+  { id: 'faq', label: 'FAQ' },
+  { id: 'related', label: 'Related Articles' },
+];
+---
+
+<Base title={title} description={description}>
+  <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema_)}></script>
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema_)}></script>
+  <script type="application/ld+json" set:html={articleSchema}></script>
+
+  <div class="wtw-wrap">
+    <nav class="wtw-breadcrumb">
+      <a href="/">Home</a>
+      <span class="wtw-sep">/</span>
+      <a href="/cs2-esports-pro-scene-faq/">Esports & Pro Scene</a>
+      <span class="wtw-sep">/</span>
+      <span>Where to Watch CS2</span>
+    </nav>
+
+    <header class="wtw-header">
+      <h1>Where to Watch CS2 Esports: All Platforms</h1>
+      <p class="wtw-subtitle">Every platform and method for watching professional Counter-Strike 2 live</p>
+    </header>
+
+    <nav class="wtw-toc-mobile" aria-label="Table of contents">
+      {sections.map((s) => (
+        <a href={`#${s.id}`} class="wtw-toc-mobile-link">{s.label}</a>
+      ))}
+    </nav>
+
+    <div class="wtw-layout">
+      <aside class="wtw-sidebar">
+        <nav class="wtw-toc" aria-label="Table of contents">
+          <span class="wtw-toc-title">Contents</span>
+          {sections.map((s) => (
+            <a href={`#${s.id}`} class="wtw-toc-link">{s.label}</a>
+          ))}
+        </nav>
+      </aside>
+
+      <article class="wtw-content">
+        <p class="wtw-intro">
+          Wondering where to watch CS2 esports? Whether you want to catch the next Major final or follow your favourite team through a weekly league, there are multiple platforms streaming professional Counter-Strike 2 around the clock. From Twitch and YouTube to in-game GOTV, this guide covers every way to watch live CS2 so you never miss a match.
+        </p>
+
+        <section id="twitch">
+          <div class="wtw-section-header"><h2>Twitch CS2 Channels</h2></div>
+          <p>Twitch remains the most popular platform for watching live CS2 esports. Major tournament organizers like ESL, BLAST, and PGL all maintain dedicated Twitch channels where they broadcast their events. The <a href="https://www.twitch.tv/esl_csgo" target="_blank" rel="noopener">ESL CS2 Twitch channel</a> is one of the most-followed esports channels on the platform.</p>
+          <p>Key Twitch channels to follow for CS2 content include the official tournament organizer channels (ESL, BLAST, PGL), individual caster and analyst channels who provide co-streams during events, and community channels that cover lower-tier tournaments and regional leagues.</p>
+          <p>Twitch offers several features that enhance the viewing experience for CS2 fans. Chat interaction lets you discuss matches in real time with thousands of other viewers, clip functionality captures highlight moments, and the VOD system means you can watch matches you missed. Many tournaments also run Twitch Drops campaigns where viewers earn in-game rewards for watching.</p>
+        </section>
+
+        <section id="youtube">
+          <div class="wtw-section-header"><h2>YouTube Esports Streams</h2></div>
+          <p>YouTube has become an increasingly important platform for CS2 esports broadcasting. Several major tournament organizers simulcast their events on YouTube alongside Twitch, and some have signed exclusive broadcasting deals with the platform.</p>
+          <p>The advantages of watching on YouTube include higher maximum video quality options, a more reliable player on slower internet connections, built-in DVR functionality that lets you rewind live streams, and easy access to VODs after the event concludes. YouTube also has a robust search system that makes finding specific matches straightforward.</p>
+          <p>Subscribe to the official channels of tournament organizers like ESL, BLAST, and PGL on YouTube to receive notifications when they go live. Many of these channels also upload highlight reels, post-match interviews, and behind-the-scenes content between events.</p>
+        </section>
+
+        <section id="hltv">
+          <div class="wtw-section-header"><h2>HLTV Live Coverage</h2></div>
+          <p><a href="https://www.hltv.org/" target="_blank" rel="noopener">HLTV.org</a> is the definitive hub for competitive CS2 information. While HLTV is not a streaming platform itself, it aggregates live streams from Twitch and YouTube on its match pages and provides detailed real-time scoreboards, round-by-round statistics, and player performance data alongside the video feed.</p>
+          <p>For fans who want to follow matches without watching a full video stream, HLTV's live scoreboard is invaluable. It updates in real time with round results, economy information, and kill feeds. This makes it ideal for following matches at work, on mobile, or when bandwidth is limited.</p>
+          <p>HLTV also maintains the most comprehensive event calendar in CS2 esports. You can see every upcoming tournament, its schedule, participating teams, and broadcast links all in one place. Bookmarking the HLTV matches page is one of the best ways to ensure you never miss a significant CS2 event. Browse <a href="/pro-players/">pro player settings</a> and <a href="/pro-teams/">pro teams</a> on the wiki to learn more about the competitors you are watching.</p>
+        </section>
+
+        <section id="gotv">
+          <div class="wtw-section-header"><h2>In-Game GOTV Spectating</h2></div>
+          <p>GOTV (Game Observer Television) is Counter-Strike 2's built-in match spectating system. During major tournaments and certain online events, Valve enables GOTV broadcasts that let you watch matches directly inside the game client with full camera control.</p>
+          <p>The main advantage of GOTV over traditional streams is interactivity. You can freely move the camera around the map, watch from any player's first-person perspective, switch between X-ray views to see player positions through walls, and experience the match with full in-game audio including gun sounds and footsteps.</p>
+          <p>To access GOTV during a live event, open CS2 and look for the tournament banner on the main menu or check the "Watch" tab. GOTV is particularly popular during Majors, where Valve integrates the viewing experience with in-game pick'em challenges and souvenir drop systems that reward spectators.</p>
+        </section>
+
+        <section id="schedules">
+          <div class="wtw-section-header"><h2>Following Tournament Schedules</h2></div>
+          <p>Keeping up with the CS2 tournament schedule requires checking a few key sources. <a href="https://www.hltv.org/" target="_blank" rel="noopener">HLTV's events page</a> is the gold standard, listing every professional CS2 event with dates, formats, prize pools, and participating teams.</p>
+          <p>Tournament organizers also maintain their own schedule pages and social media accounts. Following ESL, BLAST, PGL, and other organizers on platforms like X (Twitter) ensures you receive announcements about upcoming events, schedule changes, and broadcast times.</p>
+          <p>For Major-specific scheduling, the <a href="https://www.counter-strike.net/" target="_blank" rel="noopener">official Counter-Strike website</a> publishes confirmed dates and details when Valve announces each Major. Our guide on the <a href="/next-cs2-major/">next CS2 Major</a> tracks the latest confirmed information about upcoming Valve-sponsored championships. You can also learn more about <a href="/how-long-cs2-match/">how long CS2 matches last</a> to plan your viewing schedule.</p>
+        </section>
+
+        <section id="faq">
+          <div class="wtw-section-header"><h2>Frequently Asked Questions</h2></div>
+          <div class="wtw-faq-list">
+            {faqs.map((faq) => (
+              <details class="wtw-faq-item">
+                <summary class="wtw-faq-question">{faq.question}</summary>
+                <p class="wtw-faq-answer">{faq.answer}</p>
+              </details>
+            ))}
+          </div>
+        </section>
+
+        <section id="related">
+          <div class="wtw-section-header"><h2>Related Articles</h2></div>
+          <div class="wtw-resources-grid">
+            <a href="/cs2-esports-pro-scene-faq/" class="wtw-resource-card"><span class="wtw-resource-name">Esports & Pro Scene Hub</span><span class="wtw-resource-arrow">&rarr;</span></a>
+            <a href="/next-cs2-major/" class="wtw-resource-card"><span class="wtw-resource-name">Next CS2 Major</span><span class="wtw-resource-arrow">&rarr;</span></a>
+            <a href="/how-long-cs2-match/" class="wtw-resource-card"><span class="wtw-resource-name">How Long Is a CS2 Match?</span><span class="wtw-resource-arrow">&rarr;</span></a>
+            <a href="/pro-players/" class="wtw-resource-card"><span class="wtw-resource-name">Pro Player Settings</span><span class="wtw-resource-arrow">&rarr;</span></a>
+            <a href="/pro-teams/" class="wtw-resource-card"><span class="wtw-resource-name">Pro Teams</span><span class="wtw-resource-arrow">&rarr;</span></a>
+          </div>
+        </section>
+      </article>
+    </div>
+  </div>
+
+  <style>
+    .wtw-wrap{max-width:1100px;margin:0 auto;padding:0 1.5rem 2rem}
+    .wtw-breadcrumb{display:flex;align-items:center;gap:.5rem;padding:1.25rem 0;font-size:.85rem;color:var(--text2)}
+    .wtw-breadcrumb a{color:var(--accent);text-decoration:none}
+    .wtw-breadcrumb a:hover{color:var(--accent2)}
+    .wtw-sep{color:var(--border)}
+    .wtw-header{padding:1.5rem 0 1.25rem;border-bottom:2px solid var(--accent);margin-bottom:1.5rem}
+    .wtw-header h1{margin:0 0 .35rem;font-size:2.2rem;font-weight:800;color:var(--text);letter-spacing:-.02em;line-height:1.2}
+    .wtw-subtitle{margin:0;font-size:1.05rem;color:var(--text2);font-weight:400}
+    .wtw-toc-mobile{display:none}
+    .wtw-layout{display:grid;grid-template-columns:220px 1fr;gap:2.5rem;align-items:start}
+    .wtw-sidebar{position:sticky;top:80px}
+    .wtw-toc{display:flex;flex-direction:column;gap:0;border-left:2px solid var(--border);padding-left:0}
+    .wtw-toc-title{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--accent);padding:0 0 .6rem 1rem}
+    .wtw-toc-link{display:block;padding:.4rem 1rem;font-size:.82rem;color:var(--text2);text-decoration:none;border-left:2px solid transparent;margin-left:-2px;transition:color .2s,border-color .2s}
+    .wtw-toc-link:hover{color:var(--text);border-left-color:var(--accent)}
+    .wtw-content{min-width:0}
+    .wtw-intro{font-size:1rem;line-height:1.8;color:var(--text2);margin-bottom:2rem}
+    .wtw-section-header{background:rgba(46,204,113,.05);margin:0 -1.25rem 1.25rem;padding:.75rem 1.25rem;border-radius:4px}
+    .wtw-section-header h2{margin:0;padding:0;font-size:1.5rem;font-weight:700;color:var(--text);border:none;letter-spacing:-.01em}
+    section{margin-bottom:2.5rem}
+    h3{font-size:1.15rem;font-weight:600;margin:1.5rem 0 .6rem;color:var(--text)}
+    p{line-height:1.7;color:var(--text2);margin-bottom:1rem}
+    .wtw-list{list-style:none;padding:0;margin:.75rem 0 1.5rem}
+    .wtw-list li{padding:.4rem 0 .4rem 1.6rem;position:relative;color:var(--text2);line-height:1.65}
+    .wtw-list li::before{content:'';position:absolute;left:.25rem;top:.75rem;width:6px;height:6px;background:var(--accent);border-radius:1px}
+    .wtw-list li strong{color:var(--text)}
+    .wtw-faq-list{display:flex;flex-direction:column;gap:.5rem}
+    .wtw-faq-item{background:var(--bg2);border:1px solid var(--border);border-radius:4px;overflow:hidden}
+    .wtw-faq-question{display:block;padding:1rem 1.25rem;font-size:.95rem;font-weight:600;color:var(--text);cursor:pointer;list-style:none;position:relative;padding-right:2.5rem;transition:background .2s}
+    .wtw-faq-question::-webkit-details-marker{display:none}
+    .wtw-faq-question::after{content:'+';position:absolute;right:1.25rem;top:50%;transform:translateY(-50%);font-size:1.2rem;color:var(--accent);font-weight:700}
+    .wtw-faq-item[open] .wtw-faq-question::after{content:'\2212'}
+    .wtw-faq-item[open] .wtw-faq-question{border-bottom:1px solid var(--border);background:rgba(46,204,113,.03)}
+    .wtw-faq-question:hover{background:rgba(46,204,113,.03)}
+    .wtw-faq-answer{padding:1rem 1.25rem;margin:0;font-size:.9rem;color:var(--text2);line-height:1.7}
+    .wtw-resources-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.6rem;margin:.5rem 0 1.5rem}
+    .wtw-resource-card{display:flex;align-items:center;justify-content:space-between;padding:.75rem 1rem;background:var(--bg2);border:1px solid var(--border);border-radius:4px;text-decoration:none;border-left:2px solid transparent;transition:border-left-color .2s,color .2s}
+    .wtw-resource-card:hover{border-left-color:var(--accent)}
+    .wtw-resource-name{font-size:.88rem;color:var(--text2);font-weight:500;transition:color .2s}
+    .wtw-resource-card:hover .wtw-resource-name{color:var(--text)}
+    .wtw-resource-arrow{font-size:1rem;color:var(--accent);opacity:0;transition:opacity .2s}
+    .wtw-resource-card:hover .wtw-resource-arrow{opacity:1}
+    @media(max-width:860px){
+      .wtw-layout{grid-template-columns:1fr;gap:0}
+      .wtw-sidebar{display:none}
+      .wtw-toc-mobile{display:flex;gap:.25rem;overflow-x:auto;padding:.75rem 0;margin-bottom:1rem;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+      .wtw-toc-mobile::-webkit-scrollbar{display:none}
+      .wtw-toc-mobile-link{flex-shrink:0;padding:.35rem .75rem;font-size:.78rem;font-weight:600;color:var(--text2);background:var(--bg2);border:1px solid var(--border);border-radius:4px;text-decoration:none;white-space:nowrap;transition:color .2s,border-color .2s}
+      .wtw-toc-mobile-link:hover{color:var(--accent);border-color:var(--accent)}
+      .wtw-header h1{font-size:1.7rem}
+      .wtw-section-header{margin:0 -1rem 1rem;padding:.6rem 1rem}
+      .wtw-resources-grid{grid-template-columns:repeat(2,1fr)}
+    }
+    @media(max-width:600px){
+      .wtw-wrap{padding:0 1rem 1.5rem}
+      .wtw-resources-grid{grid-template-columns:1fr}
+      .wtw-header h1{font-size:1.5rem}
+    }
+  </style>
+  <AuthorBox updated="2026-03-04" />
+</Base>

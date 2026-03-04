@@ -1,0 +1,241 @@
+---
+import Base from '../layouts/Base.astro';
+import AuthorBox from '../components/AuthorBox.astro';
+import { faqSchema, breadcrumbSchema } from '../lib/weapons';
+
+const title = 'CS2 System Requirements & File Size | CSGOLuck Wiki';
+const description = "Minimum and recommended specs for CS2, current file size, and whether it's CPU or GPU intensive. Check if your PC can run it.";
+
+const breadcrumbs = [
+  { name: 'Home', url: '/' },
+  { name: 'Download & Platform FAQ', url: '/cs2-download-platform-faq' },
+  { name: 'System Requirements', url: '/cs2-system-requirements' },
+];
+
+const faqs = [
+  {
+    question: 'What are the minimum requirements to run CS2?',
+    answer: 'CS2 requires at least Windows 10, 8 GB of RAM, a DirectX 11 compatible GPU, and a modern dual-core processor. See our <a href="/cs2-download-platform-faq/">download & platform FAQ</a> for more.',
+  },
+  {
+    question: 'How big is the CS2 download?',
+    answer: 'The CS2 installation is approximately 30-35 GB, though this can change with updates. Check the Steam store page for the most current size. Visit our <a href="/cs2-download-platform-faq/">download & platform FAQ</a> for details.',
+  },
+  {
+    question: 'Is CS2 more CPU or GPU intensive?',
+    answer: 'CS2 is generally more CPU-intensive than GPU-intensive, especially at lower resolutions and settings. A strong single-core CPU performance is important for high frame rates. See our <a href="/cs2-download-platform-faq/">download & platform FAQ</a> for optimisation tips.',
+  },
+];
+
+const breadcrumbSchema_ = breadcrumbSchema(breadcrumbs);
+const faqSchema_ = faqSchema(faqs);
+
+const articleSchema = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": title,
+  "description": description,
+  "author": { "@type": "Person", "name": "Josh Lingenfelter", "url": "https://www.linkedin.com/in/josh-lingenfelter-8157274b/", "jobTitle": "Director", "worksFor": { "@type": "Organization", "name": "CSGOLuck" } },
+  "publisher": { "@type": "Organization", "name": "CSGOLuck Wiki", "url": "https://wiki.csgoluck.com" },
+  "mainEntityOfPage": "https://wiki.csgoluck.com/cs2-system-requirements/",
+  "inLanguage": "en-US"
+});
+
+const sections = [
+  { id: 'minimum', label: 'Minimum Requirements' },
+  { id: 'recommended', label: 'Recommended Specs' },
+  { id: 'file-size', label: 'File Size & Download' },
+  { id: 'cpu-vs-gpu', label: 'CPU vs GPU' },
+  { id: 'optimize', label: 'Performance Tips' },
+  { id: 'faq', label: 'FAQ' },
+  { id: 'related', label: 'Related Articles' },
+];
+---
+
+<Base title={title} description={description}>
+  <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema_)}></script>
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema_)}></script>
+  <script type="application/ld+json" set:html={articleSchema}></script>
+
+  <div class="csr-wrap">
+    <nav class="csr-breadcrumb">
+      <a href="/">Home</a>
+      <span class="csr-sep">/</span>
+      <a href="/cs2-download-platform-faq/">Download & Platform FAQ</a>
+      <span class="csr-sep">/</span>
+      <span>System Requirements</span>
+    </nav>
+
+    <header class="csr-header">
+      <h1>CS2 System Requirements & File Size</h1>
+      <p class="csr-subtitle">Check if your PC can run Counter-Strike 2 and how to get the best performance</p>
+    </header>
+
+    <nav class="csr-toc-mobile" aria-label="Table of contents">
+      {sections.map((s) => (
+        <a href={`#${s.id}`} class="csr-toc-mobile-link">{s.label}</a>
+      ))}
+    </nav>
+
+    <div class="csr-layout">
+      <aside class="csr-sidebar">
+        <nav class="csr-toc" aria-label="Table of contents">
+          <span class="csr-toc-title">Contents</span>
+          {sections.map((s) => (
+            <a href={`#${s.id}`} class="csr-toc-link">{s.label}</a>
+          ))}
+        </nav>
+      </aside>
+
+      <article class="csr-content">
+        <p class="csr-intro">
+          Before downloading Counter-Strike 2, you need to know whether your PC meets the cs2 system requirements. The good news is that CS2 is not an extremely demanding game by modern standards -- it runs on a wide range of hardware. However, competitive players will want to aim above the minimums to ensure smooth, high-frame-rate gameplay. This guide covers the official specs, current file size, and practical tips for squeezing the best performance out of your machine.
+        </p>
+
+        <section id="minimum">
+          <div class="csr-section-header"><h2>Minimum System Requirements</h2></div>
+          <p>These are the baseline specs Valve lists on the <a href="https://store.steampowered.com/app/730/CounterStrike_2/" target="_blank" rel="noopener">Steam store page</a> for CS2. Meeting these requirements means the game will run, but do not expect high frame rates or smooth performance:</p>
+          <ul class="csr-list">
+            <li><strong>OS:</strong> Windows 10</li>
+            <li><strong>Processor:</strong> 4 hardware CPU threads - Intel Core i5-750 or higher</li>
+            <li><strong>Memory:</strong> 8 GB RAM</li>
+            <li><strong>Graphics:</strong> GPU with 1 GB VRAM or more, compatible with DirectX 11 - NVIDIA GeForce GT 730 or higher</li>
+            <li><strong>Storage:</strong> 85 GB available space (includes room for updates)</li>
+            <li><strong>Network:</strong> Broadband internet connection</li>
+          </ul>
+          <p>At minimum specs, you should expect to play at 720p or 1080p on the lowest settings with frame rates in the 30-60fps range. This is playable for casual modes but will be a disadvantage in competitive matches where higher frame rates provide smoother input response.</p>
+        </section>
+
+        <section id="recommended">
+          <div class="csr-section-header"><h2>Recommended System Requirements</h2></div>
+          <p>For a comfortable experience at 1080p with medium-to-high settings and frame rates above 120fps, aim for these specs or better:</p>
+          <ul class="csr-list">
+            <li><strong>OS:</strong> Windows 10 or 11</li>
+            <li><strong>Processor:</strong> Intel Core i5-9400F / AMD Ryzen 5 2600X or better</li>
+            <li><strong>Memory:</strong> 16 GB RAM</li>
+            <li><strong>Graphics:</strong> NVIDIA GTX 1650 / AMD RX 570 or better with 4 GB VRAM</li>
+            <li><strong>Storage:</strong> SSD with 85 GB available space</li>
+            <li><strong>Network:</strong> Broadband internet connection</li>
+          </ul>
+          <p>An SSD is strongly recommended over a mechanical hard drive. CS2 loads maps faster, stutters less during gameplay, and generally performs more consistently when installed on solid-state storage. If you can only afford one upgrade, moving to an SSD provides the most noticeable improvement.</p>
+        </section>
+
+        <section id="file-size">
+          <div class="csr-section-header"><h2>CS2 File Size and Download</h2></div>
+          <p>The CS2 installation currently occupies approximately 30-35 GB of disk space, though this fluctuates with major updates. Valve recommends having 85 GB available to account for updates, temporary files during patching, and future content additions.</p>
+          <p>The initial download size is slightly smaller than the installed size due to compression. On a standard broadband connection, expect the download to take anywhere from 30 minutes to a few hours depending on your speed.</p>
+          <p>CS2 is notably larger than CS:GO was at its peak, which typically sat around 15-20 GB. The increase comes from Source 2 engine assets -- higher-resolution textures, improved map geometry, and more detailed character models all contribute to the larger footprint. Updates are delivered incrementally, so you will not need to re-download the entire game when a patch arrives.</p>
+        </section>
+
+        <section id="cpu-vs-gpu">
+          <div class="csr-section-header"><h2>Is CS2 CPU or GPU Intensive?</h2></div>
+          <p>Counter-Strike 2 is primarily CPU-intensive, particularly at lower resolutions and competitive settings. Here is why that matters:</p>
+          <ul class="csr-list">
+            <li><strong>Low settings shift the bottleneck:</strong> When you reduce graphical quality (which competitive players do for maximum visibility and frame rates), the GPU has less work to do. The CPU then becomes the limiting factor</li>
+            <li><strong>Single-thread performance matters:</strong> While CS2 does utilise multiple cores, strong single-core performance is critical for maintaining high and stable frame rates</li>
+            <li><strong>High resolutions stress the GPU:</strong> At 1440p or 4K with higher settings, the GPU becomes more of a factor. But most competitive players run at 1080p or lower</li>
+            <li><strong>RAM speed helps:</strong> Faster memory (DDR4-3200 or higher) can provide a small but measurable boost to frame rates, especially on AMD Ryzen processors</li>
+          </ul>
+          <p>If you are building or upgrading a PC specifically for CS2, prioritise the CPU first (strong single-core performance from recent Intel or AMD generations), then pair it with a mid-range or better GPU.</p>
+        </section>
+
+        <section id="optimize">
+          <div class="csr-section-header"><h2>How to Optimize Performance on Lower-End PCs</h2></div>
+          <p>If your PC meets the minimum requirements but struggles with frame rates, these adjustments can help:</p>
+          <ul class="csr-list">
+            <li><strong>Lower resolution:</strong> Dropping from 1080p to 900p or 720p significantly reduces GPU load. Many professional players use non-native resolutions</li>
+            <li><strong>Reduce all settings to Low:</strong> Shadows, effects, shader detail, and anti-aliasing are the biggest performance drains. Set everything to Low for maximum frames</li>
+            <li><strong>Disable V-Sync:</strong> V-Sync caps your frame rate and adds input lag. Always turn it off for competitive play</li>
+            <li><strong>Use launch options:</strong> Commands like <code>-novid</code> (skip intro video) and <code>-high</code> (set process priority) can help. See our <a href="/launch-options/">launch options guide</a> for the full list</li>
+            <li><strong>Close background applications:</strong> Browsers, Discord overlays, and streaming software all consume CPU and RAM. Close anything non-essential before playing</li>
+            <li><strong>Update GPU drivers:</strong> Both NVIDIA and AMD regularly release driver updates optimised for CS2. Keep your drivers current</li>
+          </ul>
+          <p>For a comprehensive performance tuning walkthrough, check out our <a href="/cs2-guides/fps-optimization-guide/">FPS optimisation guide</a> which covers in-game settings, Windows tweaks, and hardware upgrade priorities. You can also check if <a href="/is-cs2-free/">CS2 is free to play</a> and learn about <a href="/cs2-on-mac/">Mac compatibility</a>.</p>
+        </section>
+
+        <section id="faq">
+          <div class="csr-section-header"><h2>Frequently Asked Questions</h2></div>
+          <div class="csr-faq-list">
+            {faqs.map((faq) => (
+              <details class="csr-faq-item">
+                <summary class="csr-faq-question">{faq.question}</summary>
+                <p class="csr-faq-answer" set:html={faq.answer}></p>
+              </details>
+            ))}
+          </div>
+        </section>
+
+        <section id="related">
+          <div class="csr-section-header"><h2>Related Articles</h2></div>
+          <div class="csr-resources-grid">
+            <a href="/cs2-download-platform-faq/" class="csr-resource-card"><span class="csr-resource-name">Download & Platform FAQ Hub</span><span class="csr-resource-arrow">&rarr;</span></a>
+            <a href="/is-cs2-free/" class="csr-resource-card"><span class="csr-resource-name">Is CS2 Free?</span><span class="csr-resource-arrow">&rarr;</span></a>
+            <a href="/cs2-on-mac/" class="csr-resource-card"><span class="csr-resource-name">CS2 on Mac</span><span class="csr-resource-arrow">&rarr;</span></a>
+            <a href="/launch-options/" class="csr-resource-card"><span class="csr-resource-name">Launch Options</span><span class="csr-resource-arrow">&rarr;</span></a>
+          </div>
+        </section>
+      </article>
+    </div>
+  </div>
+
+  <style>
+    .csr-wrap{max-width:1100px;margin:0 auto;padding:0 1.5rem 2rem}
+    .csr-breadcrumb{display:flex;align-items:center;gap:.5rem;padding:1.25rem 0;font-size:.85rem;color:var(--text2)}
+    .csr-breadcrumb a{color:var(--accent);text-decoration:none}
+    .csr-breadcrumb a:hover{color:var(--accent2)}
+    .csr-sep{color:var(--border)}
+    .csr-header{padding:1.5rem 0 1.25rem;border-bottom:2px solid var(--accent);margin-bottom:1.5rem}
+    .csr-header h1{margin:0 0 .35rem;font-size:2.2rem;font-weight:800;color:var(--text);letter-spacing:-.02em;line-height:1.2}
+    .csr-subtitle{margin:0;font-size:1.05rem;color:var(--text2);font-weight:400}
+    .csr-toc-mobile{display:none}
+    .csr-layout{display:grid;grid-template-columns:220px 1fr;gap:2.5rem;align-items:start}
+    .csr-sidebar{position:sticky;top:80px}
+    .csr-toc{display:flex;flex-direction:column;gap:0;border-left:2px solid var(--border);padding-left:0}
+    .csr-toc-title{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--accent);padding:0 0 .6rem 1rem}
+    .csr-toc-link{display:block;padding:.4rem 1rem;font-size:.82rem;color:var(--text2);text-decoration:none;border-left:2px solid transparent;margin-left:-2px;transition:color .2s,border-color .2s}
+    .csr-toc-link:hover{color:var(--text);border-left-color:var(--accent)}
+    .csr-content{min-width:0}
+    .csr-intro{font-size:1rem;line-height:1.8;color:var(--text2);margin-bottom:2rem}
+    .csr-section-header{background:rgba(46,204,113,.05);margin:0 -1.25rem 1.25rem;padding:.75rem 1.25rem;border-radius:4px}
+    .csr-section-header h2{margin:0;padding:0;font-size:1.5rem;font-weight:700;color:var(--text);border:none;letter-spacing:-.01em}
+    section{margin-bottom:2.5rem}
+    p{line-height:1.7;color:var(--text2);margin-bottom:1rem}
+    .csr-list{list-style:none;padding:0;margin:.75rem 0 1.5rem}
+    .csr-list li{padding:.4rem 0 .4rem 1.6rem;position:relative;color:var(--text2);line-height:1.65}
+    .csr-list li::before{content:'';position:absolute;left:.25rem;top:.75rem;width:6px;height:6px;background:var(--accent);border-radius:1px}
+    .csr-list li strong{color:var(--text)}
+    .csr-faq-list{display:flex;flex-direction:column;gap:.5rem}
+    .csr-faq-item{background:var(--bg2);border:1px solid var(--border);border-radius:4px;overflow:hidden}
+    .csr-faq-question{display:block;padding:1rem 1.25rem;font-size:.95rem;font-weight:600;color:var(--text);cursor:pointer;list-style:none;position:relative;padding-right:2.5rem;transition:background .2s}
+    .csr-faq-question::-webkit-details-marker{display:none}
+    .csr-faq-question::after{content:'+';position:absolute;right:1.25rem;top:50%;transform:translateY(-50%);font-size:1.2rem;color:var(--accent);font-weight:700}
+    .csr-faq-item[open] .csr-faq-question::after{content:'\2212'}
+    .csr-faq-item[open] .csr-faq-question{border-bottom:1px solid var(--border);background:rgba(46,204,113,.03)}
+    .csr-faq-question:hover{background:rgba(46,204,113,.03)}
+    .csr-faq-answer{padding:1rem 1.25rem;margin:0;font-size:.9rem;color:var(--text2);line-height:1.7}
+    .csr-resources-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.6rem;margin:.5rem 0 1.5rem}
+    .csr-resource-card{display:flex;align-items:center;justify-content:space-between;padding:.75rem 1rem;background:var(--bg2);border:1px solid var(--border);border-radius:4px;text-decoration:none;border-left:2px solid transparent;transition:border-left-color .2s,color .2s}
+    .csr-resource-card:hover{border-left-color:var(--accent)}
+    .csr-resource-name{font-size:.88rem;color:var(--text2);font-weight:500;transition:color .2s}
+    .csr-resource-card:hover .csr-resource-name{color:var(--text)}
+    .csr-resource-arrow{font-size:1rem;color:var(--accent);opacity:0;transition:opacity .2s}
+    .csr-resource-card:hover .csr-resource-arrow{opacity:1}
+    @media(max-width:860px){
+      .csr-layout{grid-template-columns:1fr;gap:0}
+      .csr-sidebar{display:none}
+      .csr-toc-mobile{display:flex;gap:.25rem;overflow-x:auto;padding:.75rem 0;margin-bottom:1rem;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+      .csr-toc-mobile::-webkit-scrollbar{display:none}
+      .csr-toc-mobile-link{flex-shrink:0;padding:.35rem .75rem;font-size:.78rem;font-weight:600;color:var(--text2);background:var(--bg2);border:1px solid var(--border);border-radius:4px;text-decoration:none;white-space:nowrap;transition:color .2s,border-color .2s}
+      .csr-toc-mobile-link:hover{color:var(--accent);border-color:var(--accent)}
+      .csr-header h1{font-size:1.7rem}
+      .csr-section-header{margin:0 -1rem 1rem;padding:.6rem 1rem}
+      .csr-resources-grid{grid-template-columns:repeat(2,1fr)}
+    }
+    @media(max-width:600px){
+      .csr-wrap{padding:0 1rem 1.5rem}
+      .csr-resources-grid{grid-template-columns:1fr}
+      .csr-header h1{font-size:1.5rem}
+    }
+  </style>
+  <AuthorBox updated="2026-03-04" />
+</Base>

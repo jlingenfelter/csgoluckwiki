@@ -1,0 +1,237 @@
+---
+import Base from '../layouts/Base.astro';
+import AuthorBox from '../components/AuthorBox.astro';
+import { faqSchema, breadcrumbSchema } from '../lib/weapons';
+
+const title = 'How to Fix Net Jitter in CS2 | CSGOLuck Wiki';
+const description = 'Experiencing net jitter in CS2? Follow this step-by-step guide to diagnose and fix jitter for smoother gameplay and better hit registration.';
+
+const breadcrumbs = [
+  { name: 'Home', url: '/' },
+  { name: 'Server Status & Technical FAQ', url: '/cs2-server-status-technical-faq' },
+  { name: 'Fix Net Jitter', url: '/cs2-fix-net-jitter' },
+];
+
+const faqs = [
+  {
+    question: 'What is a normal net jitter value in CS2?',
+    answer: 'A healthy net jitter value is under 2ms. Values between 2-5ms are noticeable in fast-paced gameplay, and anything above 5ms will significantly affect hit registration and responsiveness. See our <a href="/cs2-server-status-technical-faq/">server status FAQ</a> for more.',
+  },
+  {
+    question: 'Does net jitter cause missed shots in CS2?',
+    answer: 'Yes. High net jitter means your actions reach the server at inconsistent intervals, which can cause shots that look like hits on your screen to miss on the server side. Visit our <a href="/cs2-server-status-technical-faq/">server status FAQ</a> for details.',
+  },
+  {
+    question: 'Is net jitter the same as high ping?',
+    answer: 'No. Ping measures the total round-trip time to the server. Jitter measures how much that time varies between packets. You can have low ping but high jitter, which feels worse than slightly higher but stable ping. Check our <a href="/cs2-server-status-technical-faq/">server status FAQ</a> for a full explanation.',
+  },
+];
+
+const breadcrumbSchema_ = breadcrumbSchema(breadcrumbs);
+const faqSchema_ = faqSchema(faqs);
+
+const articleSchema = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": title,
+  "description": description,
+  "author": { "@type": "Person", "name": "Josh Lingenfelter", "url": "https://www.linkedin.com/in/josh-lingenfelter-8157274b/", "jobTitle": "Director", "worksFor": { "@type": "Organization", "name": "CSGOLuck" } },
+  "publisher": { "@type": "Organization", "name": "CSGOLuck Wiki", "url": "https://wiki.csgoluck.com" },
+  "mainEntityOfPage": "https://wiki.csgoluck.com/cs2-fix-net-jitter/",
+  "inLanguage": "en-US"
+});
+
+const sections = [
+  { id: 'what-is', label: 'What Is Net Jitter?' },
+  { id: 'causes', label: 'Common Causes' },
+  { id: 'fixes', label: 'Step-by-Step Fixes' },
+  { id: 'network-settings', label: 'Network Settings' },
+  { id: 'contact-isp', label: 'When to Contact ISP' },
+  { id: 'faq', label: 'FAQ' },
+  { id: 'related', label: 'Related Articles' },
+];
+---
+
+<Base title={title} description={description}>
+  <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema_)}></script>
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema_)}></script>
+  <script type="application/ld+json" set:html={articleSchema}></script>
+
+  <div class="fnj-wrap">
+    <nav class="fnj-breadcrumb">
+      <a href="/">Home</a>
+      <span class="fnj-sep">/</span>
+      <a href="/cs2-server-status-technical-faq/">Server Status & Technical FAQ</a>
+      <span class="fnj-sep">/</span>
+      <span>Fix Net Jitter</span>
+    </nav>
+
+    <header class="fnj-header">
+      <h1>How to Fix Net Jitter in CS2</h1>
+      <p class="fnj-subtitle">Diagnose and resolve inconsistent network timing for smoother competitive play</p>
+    </header>
+
+    <nav class="fnj-toc-mobile" aria-label="Table of contents">
+      {sections.map((s) => (
+        <a href={`#${s.id}`} class="fnj-toc-mobile-link">{s.label}</a>
+      ))}
+    </nav>
+
+    <div class="fnj-layout">
+      <aside class="fnj-sidebar">
+        <nav class="fnj-toc" aria-label="Table of contents">
+          <span class="fnj-toc-title">Contents</span>
+          {sections.map((s) => (
+            <a href={`#${s.id}`} class="fnj-toc-link">{s.label}</a>
+          ))}
+        </nav>
+      </aside>
+
+      <article class="fnj-content">
+        <p class="fnj-intro">
+          If you are looking for how to fix net jitter cs2, you are probably experiencing inconsistent gameplay -- shots that should land are missing, movement feels stuttery, and hit registration seems unreliable. Net jitter is one of the most frustrating network issues in CS2 because it affects the consistency of your connection rather than the speed. This guide explains what jitter is, why it happens, and how to systematically reduce it.
+        </p>
+
+        <section id="what-is">
+          <div class="fnj-section-header"><h2>What Is Net Jitter in CS2?</h2></div>
+          <p>Net jitter measures the variation in latency between your PC and the game server. While ping tells you the average round-trip time (e.g., 30ms), jitter tells you how much that time fluctuates from packet to packet. A ping of 30ms with 1ms of jitter means your connection is very stable. A ping of 30ms with 15ms of jitter means some packets arrive in 15ms while others take 45ms.</p>
+          <p>You can see your jitter value in CS2 by enabling the net graph. Open the console and type <code>cq_netgraph 1</code> to display network statistics. The jitter value appears alongside your ping and packet loss readings.</p>
+          <p>In a game like Counter-Strike where timing matters at the millisecond level, inconsistent packet delivery causes the server to receive your inputs at irregular intervals. This leads to desync between what you see on screen and what the server calculates, resulting in shots that look clean on your end but miss on the server side.</p>
+        </section>
+
+        <section id="causes">
+          <div class="fnj-section-header"><h2>Common Causes of Net Jitter</h2></div>
+          <p>Jitter usually originates from your local network or your ISP's infrastructure. Here are the most frequent culprits:</p>
+          <ul class="fnj-list">
+            <li><strong>Wi-Fi interference:</strong> Wireless connections are inherently less stable than wired ones. Other devices, walls, microwaves, and neighbouring Wi-Fi networks all introduce variability</li>
+            <li><strong>Network congestion:</strong> Other devices on your network streaming video, downloading files, or running cloud backups consume bandwidth and introduce packet queuing delays</li>
+            <li><strong>Outdated router firmware:</strong> Older firmware can have bugs that affect packet processing consistency</li>
+            <li><strong>ISP routing issues:</strong> Your packets travel through multiple hops between your home and the game server. Congestion or poor routing at any hop increases jitter</li>
+            <li><strong>Background applications:</strong> Programs that periodically send or receive data (cloud sync, auto-updates, antivirus scans) can cause momentary latency spikes</li>
+            <li><strong>VPN or proxy usage:</strong> Additional routing layers add latency variability</li>
+          </ul>
+        </section>
+
+        <section id="fixes">
+          <div class="fnj-section-header"><h2>Step-by-Step Fixes for Net Jitter</h2></div>
+          <p>Work through these fixes in order, testing your jitter after each change:</p>
+          <ul class="fnj-list">
+            <li><strong>1. Use a wired connection:</strong> Switch from Wi-Fi to an Ethernet cable. This single change eliminates the most common source of jitter for most players</li>
+            <li><strong>2. Close bandwidth-heavy applications:</strong> Shut down streaming services, cloud sync (Dropbox, Google Drive, OneDrive), torrent clients, and anything else that uses your network while you play</li>
+            <li><strong>3. Restart your router and modem:</strong> Power cycle both devices by unplugging them for 30 seconds. This clears cached routing tables and can resolve transient issues</li>
+            <li><strong>4. Update router firmware:</strong> Log into your router's admin panel and check for firmware updates. Manufacturers regularly release fixes for packet handling issues</li>
+            <li><strong>5. Disable QoS if misconfigured:</strong> Quality of Service settings on your router can help or hurt. If you are unsure how your QoS is configured, try disabling it and testing. Properly configured QoS can prioritise game traffic</li>
+            <li><strong>6. Change DNS servers:</strong> Switch to Google DNS (8.8.8.8 / 8.8.4.4) or Cloudflare DNS (1.1.1.1). While DNS does not directly affect jitter, faster DNS resolution can reduce initial connection variability</li>
+            <li><strong>7. Disable VPN:</strong> If you use a VPN, disable it while playing CS2. VPNs add routing hops that increase jitter</li>
+          </ul>
+        </section>
+
+        <section id="network-settings">
+          <div class="fnj-section-header"><h2>Network Settings to Optimize</h2></div>
+          <p>Within CS2 and your operating system, a few settings can help reduce jitter impact:</p>
+          <ul class="fnj-list">
+            <li><strong>Max acceptable matchmaking ping:</strong> In CS2 settings, lower your maximum acceptable ping. This forces the game to connect you to closer servers with less routing variability</li>
+            <li><strong>Disable Nagle's algorithm:</strong> On Windows, you can disable Nagle's algorithm for your network adapter, which reduces the batching of small packets. This requires a registry edit -- search for "TcpNoDelay" and "TcpAckFrequency" for your network interface</li>
+            <li><strong>Network adapter power management:</strong> In Windows Device Manager, open your network adapter properties and disable "Allow the computer to turn off this device to save power"</li>
+            <li><strong>Disable Wi-Fi power saving:</strong> If you must use Wi-Fi, set the wireless adapter power mode to "Maximum Performance" in Windows power settings</li>
+          </ul>
+          <p>For more command-line optimisations, refer to the <a href="https://help.steampowered.com/" target="_blank" rel="noopener">Steam support documentation</a> on network troubleshooting.</p>
+        </section>
+
+        <section id="contact-isp">
+          <div class="fnj-section-header"><h2>When to Contact Your ISP</h2></div>
+          <p>If you have exhausted all the steps above and jitter remains high, the problem likely lies outside your home network. Here is how to identify and communicate ISP-side issues:</p>
+          <ul class="fnj-list">
+            <li><strong>Run a traceroute:</strong> Use <code>tracert</code> on Windows or <code>traceroute</code> on macOS/Linux to trace the path to a CS2 server. High latency variation at a specific hop indicates a problem at that network node</li>
+            <li><strong>Test at different times:</strong> If jitter is consistently worse during peak hours (evenings, weekends), this points to ISP congestion rather than a hardware issue</li>
+            <li><strong>Document the issue:</strong> Capture screenshots of your traceroute results and CS2 net graph showing the jitter values. Concrete data helps your ISP's support team diagnose the problem faster</li>
+            <li><strong>Ask about routing:</strong> Request that your ISP check the routing path to Valve's server infrastructure. Sometimes a simple routing change on their end resolves persistent jitter</li>
+          </ul>
+          <p>If your ISP cannot resolve the issue and jitter continues to impact your gameplay, consider whether an alternative ISP is available in your area. Fibre optic connections generally provide the most stable latency compared to cable or DSL.</p>
+        </section>
+
+        <section id="faq">
+          <div class="fnj-section-header"><h2>Frequently Asked Questions</h2></div>
+          <div class="fnj-faq-list">
+            {faqs.map((faq) => (
+              <details class="fnj-faq-item">
+                <summary class="fnj-faq-question">{faq.question}</summary>
+                <p class="fnj-faq-answer" set:html={faq.answer}></p>
+              </details>
+            ))}
+          </div>
+        </section>
+
+        <section id="related">
+          <div class="fnj-section-header"><h2>Related Articles</h2></div>
+          <div class="fnj-resources-grid">
+            <a href="/cs2-server-status-technical-faq/" class="fnj-resource-card"><span class="fnj-resource-name">Server Status & Technical FAQ Hub</span><span class="fnj-resource-arrow">&rarr;</span></a>
+            <a href="/cs2-fix-packet-loss/" class="fnj-resource-card"><span class="fnj-resource-name">Fix Packet Loss</span><span class="fnj-resource-arrow">&rarr;</span></a>
+            <a href="/is-cs2-down/" class="fnj-resource-card"><span class="fnj-resource-name">Is CS2 Down?</span><span class="fnj-resource-arrow">&rarr;</span></a>
+          </div>
+        </section>
+      </article>
+    </div>
+  </div>
+
+  <style>
+    .fnj-wrap{max-width:1100px;margin:0 auto;padding:0 1.5rem 2rem}
+    .fnj-breadcrumb{display:flex;align-items:center;gap:.5rem;padding:1.25rem 0;font-size:.85rem;color:var(--text2)}
+    .fnj-breadcrumb a{color:var(--accent);text-decoration:none}
+    .fnj-breadcrumb a:hover{color:var(--accent2)}
+    .fnj-sep{color:var(--border)}
+    .fnj-header{padding:1.5rem 0 1.25rem;border-bottom:2px solid var(--accent);margin-bottom:1.5rem}
+    .fnj-header h1{margin:0 0 .35rem;font-size:2.2rem;font-weight:800;color:var(--text);letter-spacing:-.02em;line-height:1.2}
+    .fnj-subtitle{margin:0;font-size:1.05rem;color:var(--text2);font-weight:400}
+    .fnj-toc-mobile{display:none}
+    .fnj-layout{display:grid;grid-template-columns:220px 1fr;gap:2.5rem;align-items:start}
+    .fnj-sidebar{position:sticky;top:80px}
+    .fnj-toc{display:flex;flex-direction:column;gap:0;border-left:2px solid var(--border);padding-left:0}
+    .fnj-toc-title{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--accent);padding:0 0 .6rem 1rem}
+    .fnj-toc-link{display:block;padding:.4rem 1rem;font-size:.82rem;color:var(--text2);text-decoration:none;border-left:2px solid transparent;margin-left:-2px;transition:color .2s,border-color .2s}
+    .fnj-toc-link:hover{color:var(--text);border-left-color:var(--accent)}
+    .fnj-content{min-width:0}
+    .fnj-intro{font-size:1rem;line-height:1.8;color:var(--text2);margin-bottom:2rem}
+    .fnj-section-header{background:rgba(46,204,113,.05);margin:0 -1.25rem 1.25rem;padding:.75rem 1.25rem;border-radius:4px}
+    .fnj-section-header h2{margin:0;padding:0;font-size:1.5rem;font-weight:700;color:var(--text);border:none;letter-spacing:-.01em}
+    section{margin-bottom:2.5rem}
+    p{line-height:1.7;color:var(--text2);margin-bottom:1rem}
+    .fnj-list{list-style:none;padding:0;margin:.75rem 0 1.5rem}
+    .fnj-list li{padding:.4rem 0 .4rem 1.6rem;position:relative;color:var(--text2);line-height:1.65}
+    .fnj-list li::before{content:'';position:absolute;left:.25rem;top:.75rem;width:6px;height:6px;background:var(--accent);border-radius:1px}
+    .fnj-list li strong{color:var(--text)}
+    .fnj-faq-list{display:flex;flex-direction:column;gap:.5rem}
+    .fnj-faq-item{background:var(--bg2);border:1px solid var(--border);border-radius:4px;overflow:hidden}
+    .fnj-faq-question{display:block;padding:1rem 1.25rem;font-size:.95rem;font-weight:600;color:var(--text);cursor:pointer;list-style:none;position:relative;padding-right:2.5rem;transition:background .2s}
+    .fnj-faq-question::-webkit-details-marker{display:none}
+    .fnj-faq-question::after{content:'+';position:absolute;right:1.25rem;top:50%;transform:translateY(-50%);font-size:1.2rem;color:var(--accent);font-weight:700}
+    .fnj-faq-item[open] .fnj-faq-question::after{content:'\2212'}
+    .fnj-faq-item[open] .fnj-faq-question{border-bottom:1px solid var(--border);background:rgba(46,204,113,.03)}
+    .fnj-faq-question:hover{background:rgba(46,204,113,.03)}
+    .fnj-faq-answer{padding:1rem 1.25rem;margin:0;font-size:.9rem;color:var(--text2);line-height:1.7}
+    .fnj-resources-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.6rem;margin:.5rem 0 1.5rem}
+    .fnj-resource-card{display:flex;align-items:center;justify-content:space-between;padding:.75rem 1rem;background:var(--bg2);border:1px solid var(--border);border-radius:4px;text-decoration:none;border-left:2px solid transparent;transition:border-left-color .2s,color .2s}
+    .fnj-resource-card:hover{border-left-color:var(--accent)}
+    .fnj-resource-name{font-size:.88rem;color:var(--text2);font-weight:500;transition:color .2s}
+    .fnj-resource-card:hover .fnj-resource-name{color:var(--text)}
+    .fnj-resource-arrow{font-size:1rem;color:var(--accent);opacity:0;transition:opacity .2s}
+    .fnj-resource-card:hover .fnj-resource-arrow{opacity:1}
+    @media(max-width:860px){
+      .fnj-layout{grid-template-columns:1fr;gap:0}
+      .fnj-sidebar{display:none}
+      .fnj-toc-mobile{display:flex;gap:.25rem;overflow-x:auto;padding:.75rem 0;margin-bottom:1rem;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+      .fnj-toc-mobile::-webkit-scrollbar{display:none}
+      .fnj-toc-mobile-link{flex-shrink:0;padding:.35rem .75rem;font-size:.78rem;font-weight:600;color:var(--text2);background:var(--bg2);border:1px solid var(--border);border-radius:4px;text-decoration:none;white-space:nowrap;transition:color .2s,border-color .2s}
+      .fnj-toc-mobile-link:hover{color:var(--accent);border-color:var(--accent)}
+      .fnj-header h1{font-size:1.7rem}
+      .fnj-section-header{margin:0 -1rem 1rem;padding:.6rem 1rem}
+      .fnj-resources-grid{grid-template-columns:repeat(2,1fr)}
+    }
+    @media(max-width:600px){
+      .fnj-wrap{padding:0 1rem 1.5rem}
+      .fnj-resources-grid{grid-template-columns:1fr}
+      .fnj-header h1{font-size:1.5rem}
+    }
+  </style>
+  <AuthorBox updated="2026-03-04" />
+</Base>

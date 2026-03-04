@@ -1,0 +1,242 @@
+---
+import Base from '../layouts/Base.astro';
+import AuthorBox from '../components/AuthorBox.astro';
+import { faqSchema, breadcrumbSchema } from '../lib/weapons';
+
+const title = 'How Long Is a CS2 Match? All Formats | CSGOLuck Wiki';
+const description = 'CS2 match lengths vary by format — from 30-minute Competitive games to 90-minute professional matches. All formats and durations explained.';
+
+const breadcrumbs = [
+  { name: 'Home', url: '/' },
+  { name: 'CS2 Esports & Pro Scene', url: '/cs2-esports-pro-scene-faq' },
+  { name: 'How Long Is a CS2 Match?', url: '/how-long-cs2-match' },
+];
+
+const faqs = [
+  {
+    question: 'How long is a standard CS2 Competitive match?',
+    answer: 'A standard CS2 Competitive match typically lasts 30 to 45 minutes. The match is played as a best-of-24 rounds (first to 13), with each round lasting up to 1 minute 55 seconds plus buy time.',
+  },
+  {
+    question: 'How long do CS2 overtime rounds last?',
+    answer: 'If a Competitive or Premier match ties 12-12, overtime adds sets of 6 rounds (3 per side). Each overtime set can add roughly 10-15 minutes. Matches can have multiple overtime periods.',
+  },
+  {
+    question: 'Why do professional CS2 matches take longer?',
+    answer: 'Professional matches include tactical timeouts, longer pauses between halves, and sometimes best-of-three or best-of-five series. A single professional map can take 45-60 minutes, while a full series may last several hours.',
+  },
+  {
+    question: 'What is the shortest CS2 game mode?',
+    answer: 'Deathmatch is the shortest standard mode with fixed 10-minute rounds. Wingman matches are also relatively quick, typically lasting 15 to 25 minutes for a full game.',
+  },
+];
+
+const breadcrumbSchema_ = breadcrumbSchema(breadcrumbs);
+const faqSchema_ = faqSchema(faqs);
+
+const articleSchema = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": title,
+  "description": description,
+  "author": { "@type": "Person", "name": "Josh Lingenfelter", "url": "https://www.linkedin.com/in/josh-lingenfelter-8157274b/", "jobTitle": "Director", "worksFor": { "@type": "Organization", "name": "CSGOLuck" } },
+  "publisher": { "@type": "Organization", "name": "CSGOLuck Wiki", "url": "https://wiki.csgoluck.com" },
+  "mainEntityOfPage": "https://wiki.csgoluck.com/how-long-cs2-match/",
+  "inLanguage": "en-US"
+});
+
+const sections = [
+  { id: 'average-length', label: 'Average Match Length' },
+  { id: 'competitive', label: 'Competitive Duration' },
+  { id: 'premier', label: 'Premier Timing' },
+  { id: 'wingman', label: 'Wingman Length' },
+  { id: 'pro-matches', label: 'Professional Matches' },
+  { id: 'factors', label: 'Factors Affecting Length' },
+  { id: 'faq', label: 'FAQ' },
+  { id: 'related', label: 'Related Articles' },
+];
+---
+
+<Base title={title} description={description}>
+  <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema_)}></script>
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema_)}></script>
+  <script type="application/ld+json" set:html={articleSchema}></script>
+
+  <div class="hlm-wrap">
+    <nav class="hlm-breadcrumb">
+      <a href="/">Home</a>
+      <span class="hlm-sep">/</span>
+      <a href="/cs2-esports-pro-scene-faq/">Esports & Pro Scene</a>
+      <span class="hlm-sep">/</span>
+      <span>How Long Is a CS2 Match?</span>
+    </nav>
+
+    <header class="hlm-header">
+      <h1>How Long Is a CS2 Match? All Formats Explained</h1>
+      <p class="hlm-subtitle">Match durations for every CS2 game mode, from casual to professional play</p>
+    </header>
+
+    <nav class="hlm-toc-mobile" aria-label="Table of contents">
+      {sections.map((s) => (
+        <a href={`#${s.id}`} class="hlm-toc-mobile-link">{s.label}</a>
+      ))}
+    </nav>
+
+    <div class="hlm-layout">
+      <aside class="hlm-sidebar">
+        <nav class="hlm-toc" aria-label="Table of contents">
+          <span class="hlm-toc-title">Contents</span>
+          {sections.map((s) => (
+            <a href={`#${s.id}`} class="hlm-toc-link">{s.label}</a>
+          ))}
+        </nav>
+      </aside>
+
+      <article class="hlm-content">
+        <p class="hlm-intro">
+          How long is a CS2 match? The answer depends entirely on which mode you are playing. A casual Deathmatch wraps up in ten minutes, while a professional best-of-three series can stretch past three hours. This guide breaks down match duration for every CS2 format so you can plan your gaming sessions accordingly.
+        </p>
+
+        <section id="average-length">
+          <div class="hlm-section-header"><h2>Average Match Length by Mode</h2></div>
+          <p>Here is a quick overview of typical match durations across every CS2 game mode. These times assume a standard match without significant overtime or technical pauses.</p>
+          <ul class="hlm-list">
+            <li><strong>Competitive (5v5):</strong> 30-45 minutes</li>
+            <li><strong>Premier (5v5):</strong> 35-50 minutes</li>
+            <li><strong>Wingman (2v2):</strong> 15-25 minutes</li>
+            <li><strong>Casual:</strong> 15-20 minutes</li>
+            <li><strong>Deathmatch:</strong> 10 minutes (fixed timer)</li>
+            <li><strong>Arms Race:</strong> 10-15 minutes</li>
+          </ul>
+          <p>Keep in mind that overtime, player disconnects, and round-by-round pacing can push any match beyond these estimates. Competitive and Premier matches have the widest range because they depend on how close the score stays throughout the game.</p>
+        </section>
+
+        <section id="competitive">
+          <div class="hlm-section-header"><h2>Competitive Match Duration</h2></div>
+          <p>The standard Competitive mode is played as a best-of-24 rounds, with the first team to reach 13 round wins taking the match. Each half consists of 12 rounds, and teams switch sides at halftime. Individual rounds have a 1 minute 55 second timer, plus a buy phase at the start of each round.</p>
+          <p>In practice, most Competitive matches finish in 30 to 45 minutes. A dominant performance where one team wins 13-3 or 13-5 will end on the shorter side, while a closely contested 13-11 game stretches closer to 45 minutes. If the score reaches 12-12, the match enters overtime, which adds additional rounds and can extend the game by 10-15 minutes per overtime period.</p>
+          <p>Factors like tactical timeouts (each team gets one per half), clutch situations where the round timer runs down, and bomb plant/defuse scenarios all influence the total match time. A match with many close rounds and full timer usage will naturally take longer than one with quick eliminations.</p>
+        </section>
+
+        <section id="premier">
+          <div class="hlm-section-header"><h2>Premier Match Timing</h2></div>
+          <p>Premier mode uses the same round structure as Competitive -- first to 13 wins with overtime at 12-12. The key difference is that Premier includes a map pick-and-ban phase before the match begins, which adds a couple of minutes to the overall session time.</p>
+          <p>Because Premier is the primary ranked mode in CS2, players tend to play more carefully, use more utility, and communicate more deliberately. This often results in rounds that use more of the available time compared to unranked Competitive play. Expect Premier matches to run 35 to 50 minutes on average, with closely contested games potentially exceeding an hour when overtime is involved.</p>
+          <p>The map veto process itself is straightforward and takes under two minutes, but it is worth factoring into your time estimate when planning a session. You should always allocate at least 50 minutes for a Premier queue to account for veto time and potential overtime.</p>
+        </section>
+
+        <section id="wingman">
+          <div class="hlm-section-header"><h2>Wingman Game Length</h2></div>
+          <p>Wingman is a 2v2 mode played on smaller map sections with a best-of-16 format (first to 9 round wins). Rounds are shorter in duration and the reduced player count means engagements resolve faster. Most Wingman matches finish in 15 to 25 minutes.</p>
+          <p>The compact nature of Wingman maps forces faster rotations and more frequent contact between teams. There is less utility usage and fewer complex tactical setups compared to 5v5 modes. This makes rounds resolve quickly, and blowout matches can end in under 15 minutes.</p>
+          <p>Wingman is an excellent option when you have limited time and want a ranked competitive experience without committing to a full 5v5 session. Even with overtime, Wingman matches rarely exceed 30 minutes.</p>
+        </section>
+
+        <section id="pro-matches">
+          <div class="hlm-section-header"><h2>Professional Match Durations</h2></div>
+          <p>Professional CS2 matches run significantly longer than matchmaking games. A single map in a professional match typically takes 45 to 60 minutes due to tactical timeouts, longer pause durations, and methodical play from both teams. The <a href="https://www.counter-strike.net/" target="_blank" rel="noopener">official CS2 site</a> and tournament broadcasts reflect these extended timelines.</p>
+          <p>Most professional matches are played as best-of-three series, meaning teams must win two maps. A full three-map series can last two to three hours, including breaks between maps. Grand finals at major tournaments are sometimes played as best-of-five, which can exceed four hours if all five maps are played.</p>
+          <p>Professional matches also include additional breaks for analyst desks, technical pauses, and intermissions. When watching tournaments at events like CS2 Majors, plan for roughly one hour per map and additional buffer time for broadcast segments. For more on the competitive scene, check out our guide on the <a href="/next-cs2-major/">next CS2 Major</a>.</p>
+        </section>
+
+        <section id="factors">
+          <div class="hlm-section-header"><h2>Factors That Affect Match Length</h2></div>
+          <p>Several variables can push a CS2 match shorter or longer than the averages listed above. Understanding these factors helps you estimate how much time to set aside.</p>
+          <ul class="hlm-list">
+            <li><strong>Score closeness:</strong> A 13-2 blowout ends much faster than a 13-11 thriller or a match that goes to overtime</li>
+            <li><strong>Overtime periods:</strong> Each overtime set adds 6 rounds. Multiple overtime periods can extend a match significantly</li>
+            <li><strong>Round timer usage:</strong> Matches with many bomb plants, defuse attempts, and clutch situations use more clock time per round</li>
+            <li><strong>Tactical timeouts:</strong> Each team can call timeouts that pause the match for 30 seconds to a minute</li>
+            <li><strong>Player disconnects:</strong> If a player drops from the server, the match pauses while waiting for reconnection</li>
+            <li><strong>Game mode:</strong> Casual and Deathmatch have fixed or shorter timers, while Competitive and Premier are open-ended</li>
+          </ul>
+          <p>As a general rule, always budget slightly more time than the average estimate for any ranked mode. There is nothing worse than having to abandon a match because you ran out of time.</p>
+        </section>
+
+        <section id="faq">
+          <div class="hlm-section-header"><h2>Frequently Asked Questions</h2></div>
+          <div class="hlm-faq-list">
+            {faqs.map((faq) => (
+              <details class="hlm-faq-item">
+                <summary class="hlm-faq-question">{faq.question}</summary>
+                <p class="hlm-faq-answer">{faq.answer}</p>
+              </details>
+            ))}
+          </div>
+        </section>
+
+        <section id="related">
+          <div class="hlm-section-header"><h2>Related Articles</h2></div>
+          <div class="hlm-resources-grid">
+            <a href="/cs2-esports-pro-scene-faq/" class="hlm-resource-card"><span class="hlm-resource-name">Esports & Pro Scene Hub</span><span class="hlm-resource-arrow">&rarr;</span></a>
+            <a href="/next-cs2-major/" class="hlm-resource-card"><span class="hlm-resource-name">Next CS2 Major</span><span class="hlm-resource-arrow">&rarr;</span></a>
+            <a href="/where-to-watch-cs2/" class="hlm-resource-card"><span class="hlm-resource-name">Where to Watch CS2</span><span class="hlm-resource-arrow">&rarr;</span></a>
+            <a href="/how-long-cs2-game/" class="hlm-resource-card"><span class="hlm-resource-name">How Long Does a CS2 Game Last?</span><span class="hlm-resource-arrow">&rarr;</span></a>
+          </div>
+        </section>
+      </article>
+    </div>
+  </div>
+
+  <style>
+    .hlm-wrap{max-width:1100px;margin:0 auto;padding:0 1.5rem 2rem}
+    .hlm-breadcrumb{display:flex;align-items:center;gap:.5rem;padding:1.25rem 0;font-size:.85rem;color:var(--text2)}
+    .hlm-breadcrumb a{color:var(--accent);text-decoration:none}
+    .hlm-breadcrumb a:hover{color:var(--accent2)}
+    .hlm-sep{color:var(--border)}
+    .hlm-header{padding:1.5rem 0 1.25rem;border-bottom:2px solid var(--accent);margin-bottom:1.5rem}
+    .hlm-header h1{margin:0 0 .35rem;font-size:2.2rem;font-weight:800;color:var(--text);letter-spacing:-.02em;line-height:1.2}
+    .hlm-subtitle{margin:0;font-size:1.05rem;color:var(--text2);font-weight:400}
+    .hlm-toc-mobile{display:none}
+    .hlm-layout{display:grid;grid-template-columns:220px 1fr;gap:2.5rem;align-items:start}
+    .hlm-sidebar{position:sticky;top:80px}
+    .hlm-toc{display:flex;flex-direction:column;gap:0;border-left:2px solid var(--border);padding-left:0}
+    .hlm-toc-title{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--accent);padding:0 0 .6rem 1rem}
+    .hlm-toc-link{display:block;padding:.4rem 1rem;font-size:.82rem;color:var(--text2);text-decoration:none;border-left:2px solid transparent;margin-left:-2px;transition:color .2s,border-color .2s}
+    .hlm-toc-link:hover{color:var(--text);border-left-color:var(--accent)}
+    .hlm-content{min-width:0}
+    .hlm-intro{font-size:1rem;line-height:1.8;color:var(--text2);margin-bottom:2rem}
+    .hlm-section-header{background:rgba(46,204,113,.05);margin:0 -1.25rem 1.25rem;padding:.75rem 1.25rem;border-radius:4px}
+    .hlm-section-header h2{margin:0;padding:0;font-size:1.5rem;font-weight:700;color:var(--text);border:none;letter-spacing:-.01em}
+    section{margin-bottom:2.5rem}
+    h3{font-size:1.15rem;font-weight:600;margin:1.5rem 0 .6rem;color:var(--text)}
+    p{line-height:1.7;color:var(--text2);margin-bottom:1rem}
+    .hlm-list{list-style:none;padding:0;margin:.75rem 0 1.5rem}
+    .hlm-list li{padding:.4rem 0 .4rem 1.6rem;position:relative;color:var(--text2);line-height:1.65}
+    .hlm-list li::before{content:'';position:absolute;left:.25rem;top:.75rem;width:6px;height:6px;background:var(--accent);border-radius:1px}
+    .hlm-list li strong{color:var(--text)}
+    .hlm-faq-list{display:flex;flex-direction:column;gap:.5rem}
+    .hlm-faq-item{background:var(--bg2);border:1px solid var(--border);border-radius:4px;overflow:hidden}
+    .hlm-faq-question{display:block;padding:1rem 1.25rem;font-size:.95rem;font-weight:600;color:var(--text);cursor:pointer;list-style:none;position:relative;padding-right:2.5rem;transition:background .2s}
+    .hlm-faq-question::-webkit-details-marker{display:none}
+    .hlm-faq-question::after{content:'+';position:absolute;right:1.25rem;top:50%;transform:translateY(-50%);font-size:1.2rem;color:var(--accent);font-weight:700}
+    .hlm-faq-item[open] .hlm-faq-question::after{content:'\2212'}
+    .hlm-faq-item[open] .hlm-faq-question{border-bottom:1px solid var(--border);background:rgba(46,204,113,.03)}
+    .hlm-faq-question:hover{background:rgba(46,204,113,.03)}
+    .hlm-faq-answer{padding:1rem 1.25rem;margin:0;font-size:.9rem;color:var(--text2);line-height:1.7}
+    .hlm-resources-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.6rem;margin:.5rem 0 1.5rem}
+    .hlm-resource-card{display:flex;align-items:center;justify-content:space-between;padding:.75rem 1rem;background:var(--bg2);border:1px solid var(--border);border-radius:4px;text-decoration:none;border-left:2px solid transparent;transition:border-left-color .2s,color .2s}
+    .hlm-resource-card:hover{border-left-color:var(--accent)}
+    .hlm-resource-name{font-size:.88rem;color:var(--text2);font-weight:500;transition:color .2s}
+    .hlm-resource-card:hover .hlm-resource-name{color:var(--text)}
+    .hlm-resource-arrow{font-size:1rem;color:var(--accent);opacity:0;transition:opacity .2s}
+    .hlm-resource-card:hover .hlm-resource-arrow{opacity:1}
+    @media(max-width:860px){
+      .hlm-layout{grid-template-columns:1fr;gap:0}
+      .hlm-sidebar{display:none}
+      .hlm-toc-mobile{display:flex;gap:.25rem;overflow-x:auto;padding:.75rem 0;margin-bottom:1rem;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+      .hlm-toc-mobile::-webkit-scrollbar{display:none}
+      .hlm-toc-mobile-link{flex-shrink:0;padding:.35rem .75rem;font-size:.78rem;font-weight:600;color:var(--text2);background:var(--bg2);border:1px solid var(--border);border-radius:4px;text-decoration:none;white-space:nowrap;transition:color .2s,border-color .2s}
+      .hlm-toc-mobile-link:hover{color:var(--accent);border-color:var(--accent)}
+      .hlm-header h1{font-size:1.7rem}
+      .hlm-section-header{margin:0 -1rem 1rem;padding:.6rem 1rem}
+      .hlm-resources-grid{grid-template-columns:repeat(2,1fr)}
+    }
+    @media(max-width:600px){
+      .hlm-wrap{padding:0 1rem 1.5rem}
+      .hlm-resources-grid{grid-template-columns:1fr}
+      .hlm-header h1{font-size:1.5rem}
+    }
+  </style>
+  <AuthorBox updated="2026-03-04" />
+</Base>

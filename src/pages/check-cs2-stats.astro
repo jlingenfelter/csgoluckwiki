@@ -1,0 +1,235 @@
+---
+import Base from '../layouts/Base.astro';
+import AuthorBox from '../components/AuthorBox.astro';
+import { faqSchema, breadcrumbSchema } from '../lib/weapons';
+
+const title = 'How to Check Your CS2 Stats | CSGOLuck Wiki';
+const description = 'Check your CS2 stats using in-game tools and third-party trackers. Track KD, ADR, win rate, and more across all game modes.';
+
+const breadcrumbs = [
+  { name: 'Home', url: '/' },
+  { name: 'Stats & ADR FAQ', url: '/cs2-stats-adr-tracking-faq' },
+  { name: 'Check CS2 Stats', url: '/check-cs2-stats' },
+];
+
+const faqs = [
+  {
+    question: 'Does CS2 track all my stats automatically?',
+    answer: 'CS2 tracks core stats like kills, deaths, wins, and ADR in competitive and Premier modes. However, the in-game stats screen provides a limited view. Third-party stat trackers pull additional data and present it in more detailed, historical formats.',
+  },
+  {
+    question: 'What is the best third-party stat tracker for CS2?',
+    answer: 'Popular options include csstats.gg, Leetify, and Scope.gg. Each offers different features — some focus on raw stats and match history, while others provide detailed performance analysis and improvement recommendations. Try a few to see which fits your needs.',
+  },
+  {
+    question: 'Can other players see my CS2 stats?',
+    answer: 'Your stats visibility depends on your Steam profile privacy settings. If your profile is set to public, other players can look up your stats on third-party tracking sites. Setting your profile to private or friends-only limits who can access this information.',
+  },
+  {
+    question: 'Why do my stats differ between trackers?',
+    answer: 'Different trackers may use different data sources, calculation methods, or time ranges. Some only track matches played after you register with their service, while others can pull historical data. Minor discrepancies between platforms are normal.',
+  },
+];
+
+const breadcrumbSchema_ = breadcrumbSchema(breadcrumbs);
+const faqSchema_ = faqSchema(faqs);
+
+const articleSchema = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": title,
+  "description": description,
+  "author": { "@type": "Person", "name": "Josh Lingenfelter", "url": "https://www.linkedin.com/in/josh-lingenfelter-8157274b/", "jobTitle": "Director", "worksFor": { "@type": "Organization", "name": "CSGOLuck" } },
+  "publisher": { "@type": "Organization", "name": "CSGOLuck Wiki", "url": "https://wiki.csgoluck.com" },
+  "mainEntityOfPage": "https://wiki.csgoluck.com/check-cs2-stats/",
+  "inLanguage": "en-US"
+});
+
+const sections = [
+  { id: 'overview', label: 'Stats Overview' },
+  { id: 'in-game', label: 'In-Game Stats' },
+  { id: 'third-party', label: 'Third-Party Trackers' },
+  { id: 'important-stats', label: 'Key Stats' },
+  { id: 'tracking', label: 'Track Improvement' },
+  { id: 'faq', label: 'FAQ' },
+  { id: 'related', label: 'Related Articles' },
+];
+---
+
+<Base title={title} description={description}>
+  <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema_)}></script>
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema_)}></script>
+  <script type="application/ld+json" set:html={articleSchema}></script>
+
+  <div class="ccs-wrap">
+    <nav class="ccs-breadcrumb">
+      <a href="/">Home</a>
+      <span class="ccs-sep">/</span>
+      <a href="/cs2-stats-adr-tracking-faq/">Stats & ADR FAQ</a>
+      <span class="ccs-sep">/</span>
+      <span>Check CS2 Stats</span>
+    </nav>
+
+    <header class="ccs-header">
+      <h1>How to Check Your CS2 Stats</h1>
+      <p class="ccs-subtitle">In-game tools, third-party trackers, and the key metrics that matter for improvement</p>
+    </header>
+
+    <nav class="ccs-toc-mobile" aria-label="Table of contents">
+      {sections.map((s) => (
+        <a href={`#${s.id}`} class="ccs-toc-mobile-link">{s.label}</a>
+      ))}
+    </nav>
+
+    <div class="ccs-layout">
+      <aside class="ccs-sidebar">
+        <nav class="ccs-toc" aria-label="Table of contents">
+          <span class="ccs-toc-title">Contents</span>
+          {sections.map((s) => (
+            <a href={`#${s.id}`} class="ccs-toc-link">{s.label}</a>
+          ))}
+        </nav>
+      </aside>
+
+      <article class="ccs-content">
+        <p class="ccs-intro">
+          Knowing how to check your CS2 stats is the first step toward meaningful improvement. CS2 provides some built-in stat tracking, but third-party tools offer far more detailed performance analysis. This guide covers every method for viewing your stats — from the in-game scoreboard to dedicated tracking platforms — and explains which metrics actually matter for getting better at the game.
+        </p>
+
+        <section id="overview">
+          <div class="ccs-section-header"><h2>In-Game Stats Overview</h2></div>
+          <p>CS2 tracks a range of performance metrics automatically during competitive and Premier matches. The most basic stats — kills, deaths, assists, and ADR — are visible on the scoreboard during matches by pressing the Tab key.</p>
+          <p>After matches, you can review your recent performance through the CS2 main menu. The match history section shows your results, ratings, and basic stats for each recent game. This gives you a quick snapshot of your recent performance without needing any external tools.</p>
+          <p>However, the in-game stats system has limitations. It does not provide deep historical analysis, trend data, or comparisons against other players at your rank. For that level of detail, you will need to use third-party stat tracking tools.</p>
+        </section>
+
+        <section id="in-game">
+          <div class="ccs-section-header"><h2>Using the CS2 Stats Screen</h2></div>
+          <p>The CS2 stats screen can be accessed through the main menu. It provides an overview of your competitive performance including your Premier rating, competitive ranks by map, recent match results, and aggregate statistics.</p>
+          <p>During a match, the scoreboard (Tab key) displays real-time stats for all players. You can see kills, assists, deaths, ADR, score, and ping. The ADR column is particularly useful for gauging your damage contribution relative to teammates and opponents.</p>
+          <p>After each match, you can also view a more detailed match summary that breaks down your performance on a round-by-round basis. This includes information about your economy decisions, weapon purchases, and damage breakdown. Reviewing these post-match summaries regularly can reveal patterns in your play that are not obvious in the moment.</p>
+          <p>The in-game stats are best used for quick, immediate feedback. For long-term tracking and deeper analysis, supplement them with the third-party tools described below.</p>
+        </section>
+
+        <section id="third-party">
+          <div class="ccs-section-header"><h2>Third-Party Stat Trackers</h2></div>
+          <p>Several third-party platforms provide comprehensive CS2 stat tracking that goes well beyond what the game offers natively. Here are some of the most popular options.</p>
+          <ul class="ccs-list">
+            <li><strong><a href="https://csstats.gg/" target="_blank" rel="noopener">csstats.gg</a>:</strong> Provides detailed match history, performance charts, and per-map statistics. You can look up any player with a public Steam profile.</li>
+            <li><strong>Leetify:</strong> Focuses on performance analysis with specific improvement suggestions. It breaks down your play into categories like aim, positioning, and utility usage, then identifies areas where you can improve.</li>
+            <li><strong>Scope.gg:</strong> Offers match analysis with highlights, lowlights, and tactical breakdowns. Useful for reviewing specific plays and understanding what went right or wrong.</li>
+            <li><strong><a href="https://www.hltv.org/" target="_blank" rel="noopener">HLTV</a>:</strong> The primary stat source for professional CS2. While focused on pro matches, it provides a benchmark for what top-level performance looks like across all metrics.</li>
+          </ul>
+          <p>Most third-party trackers require your Steam profile to be set to public so they can access your match data. Some also require you to sign in through Steam's official authentication to unlock additional features.</p>
+        </section>
+
+        <section id="important-stats">
+          <div class="ccs-section-header"><h2>What Stats Matter Most</h2></div>
+          <p>Not all stats carry equal weight when evaluating performance. Here are the metrics most worth paying attention to.</p>
+          <ul class="ccs-list">
+            <li><strong>ADR (Average Damage per Round):</strong> The most reliable single metric for measuring consistent impact. See our <a href="/what-is-adr-cs2/">complete ADR guide</a> for benchmarks and improvement tips.</li>
+            <li><strong>K/D Ratio:</strong> Kills divided by deaths. Useful but can be misleading — a player who plays overly passive might have a good K/D but contribute less to team success.</li>
+            <li><strong>Win Rate:</strong> Your overall competitive win percentage. While partially dependent on teammates, a consistently high win rate over many games suggests strong overall play.</li>
+            <li><strong>Headshot Percentage:</strong> The proportion of your kills that are headshots. Higher percentages generally indicate better crosshair placement and aim precision.</li>
+            <li><strong>KAST:</strong> Percentage of rounds where you contributed a Kill, Assist, Survived, or were Traded. This metric rewards all forms of positive contribution and penalises rounds where you died without impact.</li>
+            <li><strong>Utility Damage:</strong> Damage dealt through grenades. High utility damage indicates effective grenade usage, which is a skill that separates good players from great ones.</li>
+          </ul>
+        </section>
+
+        <section id="tracking">
+          <div class="ccs-section-header"><h2>Tracking Improvement Over Time</h2></div>
+          <p>Checking your stats once is informative, but the real value comes from tracking them over time to measure improvement. Here is how to set up a practical tracking routine.</p>
+          <p>Pick one or two key metrics to focus on for a set period. Trying to improve everything at once is overwhelming and ineffective. If your ADR is low, make that your priority for a few weeks. If your headshot percentage needs work, focus your practice there.</p>
+          <p>Review your stats weekly rather than after every single match. Individual games have too much variance (different opponents, different maps, lucky or unlucky rounds) to be meaningful on their own. Weekly averages smooth out the noise and show genuine trends.</p>
+          <p>Use third-party trackers that show historical charts. Being able to see your ADR trending upward over several weeks is motivating and confirms that your practice is translating into match performance. Some platforms also let you filter stats by map, which helps you identify your strongest and weakest maps.</p>
+          <p>Finally, pair stats with demo review. Numbers tell you what happened, but demos show you why. When you see a drop in a particular metric, review those matches to understand the underlying cause.</p>
+        </section>
+
+        <section id="faq">
+          <div class="ccs-section-header"><h2>Frequently Asked Questions</h2></div>
+          <div class="ccs-faq-list">
+            {faqs.map((faq) => (
+              <details class="ccs-faq-item">
+                <summary class="ccs-faq-question">{faq.question}</summary>
+                <p class="ccs-faq-answer">{faq.answer}</p>
+              </details>
+            ))}
+          </div>
+          <p class="ccs-faq-more">More stats questions answered at our <a href="/cs2-stats-adr-tracking-faq/">Stats & ADR FAQ hub</a>.</p>
+        </section>
+
+        <section id="related">
+          <div class="ccs-section-header"><h2>Related Articles</h2></div>
+          <div class="ccs-resources-grid">
+            <a href="/what-is-adr-cs2/" class="ccs-resource-card"><span class="ccs-resource-name">What Is ADR in CS2?</span><span class="ccs-resource-arrow">&rarr;</span></a>
+            <a href="/what-is-stattrak-cs2/" class="ccs-resource-card"><span class="ccs-resource-name">What Is StatTrak?</span><span class="ccs-resource-arrow">&rarr;</span></a>
+            <a href="/cs2-stats-adr-tracking-faq/" class="ccs-resource-card"><span class="ccs-resource-name">Stats & ADR FAQ</span><span class="ccs-resource-arrow">&rarr;</span></a>
+          </div>
+        </section>
+      </article>
+    </div>
+  </div>
+
+  <style>
+    .ccs-wrap{max-width:1100px;margin:0 auto;padding:0 1.5rem 2rem}
+    .ccs-breadcrumb{display:flex;align-items:center;gap:.5rem;padding:1.25rem 0;font-size:.85rem;color:var(--text2)}
+    .ccs-breadcrumb a{color:var(--accent);text-decoration:none}
+    .ccs-breadcrumb a:hover{color:var(--accent2)}
+    .ccs-sep{color:var(--border)}
+    .ccs-header{padding:1.5rem 0 1.25rem;border-bottom:2px solid var(--accent);margin-bottom:1.5rem}
+    .ccs-header h1{margin:0 0 .35rem;font-size:2.2rem;font-weight:800;color:var(--text);letter-spacing:-.02em;line-height:1.2}
+    .ccs-subtitle{margin:0;font-size:1.05rem;color:var(--text2);font-weight:400}
+    .ccs-toc-mobile{display:none}
+    .ccs-layout{display:grid;grid-template-columns:220px 1fr;gap:2.5rem;align-items:start}
+    .ccs-sidebar{position:sticky;top:80px}
+    .ccs-toc{display:flex;flex-direction:column;gap:0;border-left:2px solid var(--border);padding-left:0}
+    .ccs-toc-title{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--accent);padding:0 0 .6rem 1rem}
+    .ccs-toc-link{display:block;padding:.4rem 1rem;font-size:.82rem;color:var(--text2);text-decoration:none;border-left:2px solid transparent;margin-left:-2px;transition:color .2s,border-color .2s}
+    .ccs-toc-link:hover{color:var(--text);border-left-color:var(--accent)}
+    .ccs-content{min-width:0}
+    .ccs-intro{font-size:1rem;line-height:1.8;color:var(--text2);margin-bottom:2rem}
+    .ccs-section-header{background:rgba(46,204,113,.05);margin:0 -1.25rem 1.25rem;padding:.75rem 1.25rem;border-radius:4px}
+    .ccs-section-header h2{margin:0;padding:0;font-size:1.5rem;font-weight:700;color:var(--text);border:none;letter-spacing:-.01em}
+    section{margin-bottom:2.5rem}
+    h3{font-size:1.15rem;font-weight:600;margin:1.5rem 0 .6rem;color:var(--text)}
+    p{line-height:1.7;color:var(--text2);margin-bottom:1rem}
+    .ccs-list{list-style:none;padding:0;margin:.75rem 0 1.5rem}
+    .ccs-list li{padding:.4rem 0 .4rem 1.6rem;position:relative;color:var(--text2);line-height:1.65}
+    .ccs-list li::before{content:'';position:absolute;left:.25rem;top:.75rem;width:6px;height:6px;background:var(--accent);border-radius:1px}
+    .ccs-list li strong{color:var(--text)}
+    .ccs-faq-list{display:flex;flex-direction:column;gap:.5rem}
+    .ccs-faq-item{background:var(--bg2);border:1px solid var(--border);border-radius:4px;overflow:hidden}
+    .ccs-faq-question{display:block;padding:1rem 1.25rem;font-size:.95rem;font-weight:600;color:var(--text);cursor:pointer;list-style:none;position:relative;padding-right:2.5rem;transition:background .2s}
+    .ccs-faq-question::-webkit-details-marker{display:none}
+    .ccs-faq-question::after{content:'+';position:absolute;right:1.25rem;top:50%;transform:translateY(-50%);font-size:1.2rem;color:var(--accent);font-weight:700}
+    .ccs-faq-item[open] .ccs-faq-question::after{content:'\2212'}
+    .ccs-faq-item[open] .ccs-faq-question{border-bottom:1px solid var(--border);background:rgba(46,204,113,.03)}
+    .ccs-faq-question:hover{background:rgba(46,204,113,.03)}
+    .ccs-faq-answer{padding:1rem 1.25rem;margin:0;font-size:.9rem;color:var(--text2);line-height:1.7}
+    .ccs-faq-more{font-size:.9rem;margin-top:1rem}
+    .ccs-resources-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.6rem;margin:.5rem 0 1.5rem}
+    .ccs-resource-card{display:flex;align-items:center;justify-content:space-between;padding:.75rem 1rem;background:var(--bg2);border:1px solid var(--border);border-radius:4px;text-decoration:none;border-left:2px solid transparent;transition:border-left-color .2s,color .2s}
+    .ccs-resource-card:hover{border-left-color:var(--accent)}
+    .ccs-resource-name{font-size:.88rem;color:var(--text2);font-weight:500;transition:color .2s}
+    .ccs-resource-card:hover .ccs-resource-name{color:var(--text)}
+    .ccs-resource-arrow{font-size:1rem;color:var(--accent);opacity:0;transition:opacity .2s}
+    .ccs-resource-card:hover .ccs-resource-arrow{opacity:1}
+    @media(max-width:860px){
+      .ccs-layout{grid-template-columns:1fr;gap:0}
+      .ccs-sidebar{display:none}
+      .ccs-toc-mobile{display:flex;gap:.25rem;overflow-x:auto;padding:.75rem 0;margin-bottom:1rem;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+      .ccs-toc-mobile::-webkit-scrollbar{display:none}
+      .ccs-toc-mobile-link{flex-shrink:0;padding:.35rem .75rem;font-size:.78rem;font-weight:600;color:var(--text2);background:var(--bg2);border:1px solid var(--border);border-radius:4px;text-decoration:none;white-space:nowrap;transition:color .2s,border-color .2s}
+      .ccs-toc-mobile-link:hover{color:var(--accent);border-color:var(--accent)}
+      .ccs-header h1{font-size:1.7rem}
+      .ccs-section-header{margin:0 -1rem 1rem;padding:.6rem 1rem}
+      .ccs-resources-grid{grid-template-columns:repeat(2,1fr)}
+    }
+    @media(max-width:600px){
+      .ccs-wrap{padding:0 1rem 1.5rem}
+      .ccs-resources-grid{grid-template-columns:1fr}
+      .ccs-header h1{font-size:1.5rem}
+    }
+  </style>
+  <AuthorBox updated="2026-03-04" />
+</Base>

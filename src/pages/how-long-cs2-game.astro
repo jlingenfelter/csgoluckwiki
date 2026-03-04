@@ -1,0 +1,235 @@
+---
+import Base from '../layouts/Base.astro';
+import AuthorBox from '../components/AuthorBox.astro';
+import { faqSchema, breadcrumbSchema } from '../lib/weapons';
+
+const title = 'How Long Does a CS2 Game Last? All Modes | CSGOLuck Wiki';
+const description = 'CS2 game duration by mode — Competitive, Premier, Wingman, Casual, and Deathmatch. Plan your gaming sessions with accurate time estimates.';
+
+const breadcrumbs = [
+  { name: 'Home', url: '/' },
+  { name: 'CS2 General', url: '/cs2-general-faq' },
+  { name: 'How Long Does a CS2 Game Last?', url: '/how-long-cs2-game' },
+];
+
+const faqs = [
+  {
+    question: 'How long is a Competitive CS2 game?',
+    answer: 'A Competitive CS2 game typically lasts 30 to 45 minutes. It is played as a best-of-24 rounds (first to 13 wins). Close games that go to overtime can last 50 minutes or more.',
+  },
+  {
+    question: 'What is the fastest CS2 game mode?',
+    answer: 'Deathmatch is the fastest mode with a fixed 10-minute timer. Arms Race is also quick at roughly 10-15 minutes. Wingman games are the fastest ranked mode at 15-25 minutes.',
+  },
+  {
+    question: 'How long should I set aside for a CS2 session?',
+    answer: 'For Competitive or Premier, plan for at least 50 minutes to account for queue time, warmup, and potential overtime. For Casual or Deathmatch, 15-20 minutes is usually enough for a couple of games.',
+  },
+  {
+    question: 'Does overtime make CS2 games much longer?',
+    answer: 'Yes, overtime can significantly extend a match. Each overtime period adds 6 rounds (3 per side) and can take 10-15 minutes. Some matches have multiple overtime periods, potentially adding 30+ minutes to the total game time.',
+  },
+];
+
+const breadcrumbSchema_ = breadcrumbSchema(breadcrumbs);
+const faqSchema_ = faqSchema(faqs);
+
+const articleSchema = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": title,
+  "description": description,
+  "author": { "@type": "Person", "name": "Josh Lingenfelter", "url": "https://www.linkedin.com/in/josh-lingenfelter-8157274b/", "jobTitle": "Director", "worksFor": { "@type": "Organization", "name": "CSGOLuck" } },
+  "publisher": { "@type": "Organization", "name": "CSGOLuck Wiki", "url": "https://wiki.csgoluck.com" },
+  "mainEntityOfPage": "https://wiki.csgoluck.com/how-long-cs2-game/",
+  "inLanguage": "en-US"
+});
+
+const sections = [
+  { id: 'competitive', label: 'Competitive Duration' },
+  { id: 'premier', label: 'Premier Timing' },
+  { id: 'wingman', label: 'Wingman Length' },
+  { id: 'casual-dm', label: 'Casual & Deathmatch' },
+  { id: 'factors', label: 'Factors That Change Length' },
+  { id: 'faq', label: 'FAQ' },
+  { id: 'related', label: 'Related Articles' },
+];
+---
+
+<Base title={title} description={description}>
+  <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema_)}></script>
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema_)}></script>
+  <script type="application/ld+json" set:html={articleSchema}></script>
+
+  <div class="hlg-wrap">
+    <nav class="hlg-breadcrumb">
+      <a href="/">Home</a>
+      <span class="hlg-sep">/</span>
+      <a href="/cs2-general-faq/">General</a>
+      <span class="hlg-sep">/</span>
+      <span>How Long Does a CS2 Game Last?</span>
+    </nav>
+
+    <header class="hlg-header">
+      <h1>How Long Does a CS2 Game Last? All Modes</h1>
+      <p class="hlg-subtitle">Accurate game duration estimates for every CS2 mode so you can plan your sessions</p>
+    </header>
+
+    <nav class="hlg-toc-mobile" aria-label="Table of contents">
+      {sections.map((s) => (
+        <a href={`#${s.id}`} class="hlg-toc-mobile-link">{s.label}</a>
+      ))}
+    </nav>
+
+    <div class="hlg-layout">
+      <aside class="hlg-sidebar">
+        <nav class="hlg-toc" aria-label="Table of contents">
+          <span class="hlg-toc-title">Contents</span>
+          {sections.map((s) => (
+            <a href={`#${s.id}`} class="hlg-toc-link">{s.label}</a>
+          ))}
+        </nav>
+      </aside>
+
+      <article class="hlg-content">
+        <p class="hlg-intro">
+          How long does a CS2 game last? It depends on the mode. A quick Deathmatch session wraps up in ten minutes, while a closely contested Competitive match can push past an hour with overtime. Whether you have fifteen minutes or a full evening, this guide helps you pick the right mode for your available time and plan your CS2 gaming sessions.
+        </p>
+
+        <section id="competitive">
+          <div class="hlg-section-header"><h2>Competitive Game Duration</h2></div>
+          <p>Competitive is the standard 5v5 ranked mode in CS2. Games are played as a best-of-24 rounds, with the first team to win 13 rounds taking the match. Each half consists of 12 rounds, and teams switch sides (Terrorist/Counter-Terrorist) at halftime.</p>
+          <p>A typical Competitive game lasts between 30 and 45 minutes. The duration depends heavily on how close the match is. A one-sided game where one team dominates 13-3 or 13-5 will finish in around 30 minutes. A competitive 13-11 game will stretch closer to 45 minutes as more rounds are played and rounds tend to go longer when teams are evenly matched.</p>
+          <p>If the score reaches 12-12, the match enters overtime. Overtime uses sets of 6 additional rounds (3 per side), and each set can add roughly 10-15 minutes. Matches with multiple overtime periods can exceed one hour. Because of overtime potential, it is wise to allocate at least 50 minutes when queuing for Competitive.</p>
+        </section>
+
+        <section id="premier">
+          <div class="hlg-section-header"><h2>Premier Mode Timing</h2></div>
+          <p>Premier uses the same MR12 format as Competitive (first to 13 wins) but adds a map pick-and-ban phase before the game begins. This veto process takes about one to two minutes, slightly extending the overall session time compared to Competitive.</p>
+          <p>Premier games tend to run slightly longer than Competitive because players in this mode generally communicate more, use more utility, and play more methodically. Expect Premier games to last 35 to 50 minutes on average, with overtime-extended matches potentially reaching 60 minutes or more.</p>
+          <p>Premier is the primary ranked mode in CS2 and uses a numerical rating system. Because of the higher stakes and more deliberate playstyle, rounds frequently use more of the available clock time. Budget at least 50 minutes for a Premier session, including queue time and the map veto phase.</p>
+        </section>
+
+        <section id="wingman">
+          <div class="hlg-section-header"><h2>Wingman Game Length</h2></div>
+          <p>Wingman is a 2v2 mode played on smaller sections of standard maps. The format is best-of-16, meaning the first team to 9 round wins takes the match. With fewer players and smaller maps, rounds resolve much faster than in 5v5 modes.</p>
+          <p>Most Wingman games finish in 15 to 25 minutes. The compact map areas mean players make contact quickly, and there is less utility to deploy and fewer angles to clear. One-sided games can end in as little as 10-12 minutes.</p>
+          <p>Wingman is the best ranked option when you have limited time. Even with overtime, Wingman matches rarely exceed 30 minutes. It is an excellent warm-up before jumping into full 5v5 Competitive or Premier, or a solid choice when you only have a short window to play.</p>
+        </section>
+
+        <section id="casual-dm">
+          <div class="hlg-section-header"><h2>Casual and Deathmatch Times</h2></div>
+          <p>Casual and Deathmatch are the quickest CS2 modes and do not affect your competitive rank. They are ideal for warming up, practicing mechanics, or playing when you do not have time for a full ranked game.</p>
+
+          <h3>Casual Mode</h3>
+          <p>Casual mode follows a round-based format similar to Competitive but with larger teams, no friendly fire, and shorter matches. Games typically last 15 to 20 minutes. There is no commitment penalty for leaving a Casual game early, making it a low-pressure environment for practice and experimentation.</p>
+
+          <h3>Deathmatch</h3>
+          <p>Deathmatch has a fixed 10-minute timer per session. Players respawn instantly after being eliminated and the goal is to get the most kills within the time limit. This mode is purely aim-focused with no objectives, economy, or round structure. Many players use Deathmatch as a daily warm-up routine before entering ranked play.</p>
+
+          <h3>Arms Race</h3>
+          <p>Arms Race is a progression-based mode where each kill upgrades your weapon to the next one in a preset sequence. Games last roughly 10-15 minutes depending on how quickly the top player cycles through all weapons. Like Deathmatch, Arms Race features instant respawns and a fast, action-packed pace.</p>
+          <p>Check the <a href="https://www.counter-strike.net/" target="_blank" rel="noopener">official CS2 website</a> for the latest information on available game modes and any changes to mode formats.</p>
+        </section>
+
+        <section id="factors">
+          <div class="hlg-section-header"><h2>Factors That Change Game Length</h2></div>
+          <p>Several variables influence how long any CS2 game actually takes beyond the base estimates. Being aware of these factors helps you budget your time more accurately.</p>
+          <ul class="hlg-list">
+            <li><strong>Score closeness:</strong> The most significant factor. A 13-2 game ends in roughly half the time of a 13-11 game, and overtime can add substantial time</li>
+            <li><strong>Overtime periods:</strong> Each overtime set adds 6 rounds. Multiple overtimes can extend a match by 20-30+ minutes beyond the normal duration</li>
+            <li><strong>Round pacing:</strong> Rounds where the bomb is planted and defused use more time than rounds decided by eliminations. Many bomb plants in a match means a longer game</li>
+            <li><strong>Tactical timeouts:</strong> Each team can call timeouts that pause the game for 30 seconds to a minute. These add up over the course of a match</li>
+            <li><strong>Player disconnects:</strong> If a player disconnects, the match may pause while waiting for reconnection. Repeated disconnects extend the game</li>
+            <li><strong>Queue and warmup time:</strong> Add 2-5 minutes for matchmaking queue time and the warmup period before the match begins</li>
+          </ul>
+          <p>As a practical rule, always add a 10-15 minute buffer to the average duration for any ranked mode. It is far better to have extra time than to need to abandon a match partway through, which results in cooldown penalties.</p>
+        </section>
+
+        <section id="faq">
+          <div class="hlg-section-header"><h2>Frequently Asked Questions</h2></div>
+          <div class="hlg-faq-list">
+            {faqs.map((faq) => (
+              <details class="hlg-faq-item">
+                <summary class="hlg-faq-question">{faq.question}</summary>
+                <p class="hlg-faq-answer">{faq.answer}</p>
+              </details>
+            ))}
+          </div>
+        </section>
+
+        <section id="related">
+          <div class="hlg-section-header"><h2>Related Articles</h2></div>
+          <div class="hlg-resources-grid">
+            <a href="/cs2-general-faq/" class="hlg-resource-card"><span class="hlg-resource-name">General FAQ Hub</span><span class="hlg-resource-arrow">&rarr;</span></a>
+            <a href="/cs2-console-commands/" class="hlg-resource-card"><span class="hlg-resource-name">CS2 Console Commands</span><span class="hlg-resource-arrow">&rarr;</span></a>
+            <a href="/remove-bots-cs2/" class="hlg-resource-card"><span class="hlg-resource-name">How to Remove Bots in CS2</span><span class="hlg-resource-arrow">&rarr;</span></a>
+            <a href="/how-long-cs2-match/" class="hlg-resource-card"><span class="hlg-resource-name">How Long Is a CS2 Match?</span><span class="hlg-resource-arrow">&rarr;</span></a>
+          </div>
+        </section>
+      </article>
+    </div>
+  </div>
+
+  <style>
+    .hlg-wrap{max-width:1100px;margin:0 auto;padding:0 1.5rem 2rem}
+    .hlg-breadcrumb{display:flex;align-items:center;gap:.5rem;padding:1.25rem 0;font-size:.85rem;color:var(--text2)}
+    .hlg-breadcrumb a{color:var(--accent);text-decoration:none}
+    .hlg-breadcrumb a:hover{color:var(--accent2)}
+    .hlg-sep{color:var(--border)}
+    .hlg-header{padding:1.5rem 0 1.25rem;border-bottom:2px solid var(--accent);margin-bottom:1.5rem}
+    .hlg-header h1{margin:0 0 .35rem;font-size:2.2rem;font-weight:800;color:var(--text);letter-spacing:-.02em;line-height:1.2}
+    .hlg-subtitle{margin:0;font-size:1.05rem;color:var(--text2);font-weight:400}
+    .hlg-toc-mobile{display:none}
+    .hlg-layout{display:grid;grid-template-columns:220px 1fr;gap:2.5rem;align-items:start}
+    .hlg-sidebar{position:sticky;top:80px}
+    .hlg-toc{display:flex;flex-direction:column;gap:0;border-left:2px solid var(--border);padding-left:0}
+    .hlg-toc-title{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--accent);padding:0 0 .6rem 1rem}
+    .hlg-toc-link{display:block;padding:.4rem 1rem;font-size:.82rem;color:var(--text2);text-decoration:none;border-left:2px solid transparent;margin-left:-2px;transition:color .2s,border-color .2s}
+    .hlg-toc-link:hover{color:var(--text);border-left-color:var(--accent)}
+    .hlg-content{min-width:0}
+    .hlg-intro{font-size:1rem;line-height:1.8;color:var(--text2);margin-bottom:2rem}
+    .hlg-section-header{background:rgba(46,204,113,.05);margin:0 -1.25rem 1.25rem;padding:.75rem 1.25rem;border-radius:4px}
+    .hlg-section-header h2{margin:0;padding:0;font-size:1.5rem;font-weight:700;color:var(--text);border:none;letter-spacing:-.01em}
+    section{margin-bottom:2.5rem}
+    h3{font-size:1.15rem;font-weight:600;margin:1.5rem 0 .6rem;color:var(--text)}
+    p{line-height:1.7;color:var(--text2);margin-bottom:1rem}
+    .hlg-list{list-style:none;padding:0;margin:.75rem 0 1.5rem}
+    .hlg-list li{padding:.4rem 0 .4rem 1.6rem;position:relative;color:var(--text2);line-height:1.65}
+    .hlg-list li::before{content:'';position:absolute;left:.25rem;top:.75rem;width:6px;height:6px;background:var(--accent);border-radius:1px}
+    .hlg-list li strong{color:var(--text)}
+    .hlg-faq-list{display:flex;flex-direction:column;gap:.5rem}
+    .hlg-faq-item{background:var(--bg2);border:1px solid var(--border);border-radius:4px;overflow:hidden}
+    .hlg-faq-question{display:block;padding:1rem 1.25rem;font-size:.95rem;font-weight:600;color:var(--text);cursor:pointer;list-style:none;position:relative;padding-right:2.5rem;transition:background .2s}
+    .hlg-faq-question::-webkit-details-marker{display:none}
+    .hlg-faq-question::after{content:'+';position:absolute;right:1.25rem;top:50%;transform:translateY(-50%);font-size:1.2rem;color:var(--accent);font-weight:700}
+    .hlg-faq-item[open] .hlg-faq-question::after{content:'\2212'}
+    .hlg-faq-item[open] .hlg-faq-question{border-bottom:1px solid var(--border);background:rgba(46,204,113,.03)}
+    .hlg-faq-question:hover{background:rgba(46,204,113,.03)}
+    .hlg-faq-answer{padding:1rem 1.25rem;margin:0;font-size:.9rem;color:var(--text2);line-height:1.7}
+    .hlg-resources-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.6rem;margin:.5rem 0 1.5rem}
+    .hlg-resource-card{display:flex;align-items:center;justify-content:space-between;padding:.75rem 1rem;background:var(--bg2);border:1px solid var(--border);border-radius:4px;text-decoration:none;border-left:2px solid transparent;transition:border-left-color .2s,color .2s}
+    .hlg-resource-card:hover{border-left-color:var(--accent)}
+    .hlg-resource-name{font-size:.88rem;color:var(--text2);font-weight:500;transition:color .2s}
+    .hlg-resource-card:hover .hlg-resource-name{color:var(--text)}
+    .hlg-resource-arrow{font-size:1rem;color:var(--accent);opacity:0;transition:opacity .2s}
+    .hlg-resource-card:hover .hlg-resource-arrow{opacity:1}
+    @media(max-width:860px){
+      .hlg-layout{grid-template-columns:1fr;gap:0}
+      .hlg-sidebar{display:none}
+      .hlg-toc-mobile{display:flex;gap:.25rem;overflow-x:auto;padding:.75rem 0;margin-bottom:1rem;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+      .hlg-toc-mobile::-webkit-scrollbar{display:none}
+      .hlg-toc-mobile-link{flex-shrink:0;padding:.35rem .75rem;font-size:.78rem;font-weight:600;color:var(--text2);background:var(--bg2);border:1px solid var(--border);border-radius:4px;text-decoration:none;white-space:nowrap;transition:color .2s,border-color .2s}
+      .hlg-toc-mobile-link:hover{color:var(--accent);border-color:var(--accent)}
+      .hlg-header h1{font-size:1.7rem}
+      .hlg-section-header{margin:0 -1rem 1rem;padding:.6rem 1rem}
+      .hlg-resources-grid{grid-template-columns:repeat(2,1fr)}
+    }
+    @media(max-width:600px){
+      .hlg-wrap{padding:0 1rem 1.5rem}
+      .hlg-resources-grid{grid-template-columns:1fr}
+      .hlg-header h1{font-size:1.5rem}
+    }
+  </style>
+  <AuthorBox updated="2026-03-04" />
+</Base>

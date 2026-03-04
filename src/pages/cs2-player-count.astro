@@ -1,0 +1,228 @@
+---
+import Base from '../layouts/Base.astro';
+import AuthorBox from '../components/AuthorBox.astro';
+import { faqSchema, breadcrumbSchema } from '../lib/weapons';
+
+const title = 'CS2 Player Count: How Many Play in 2025? | CSGOLuck Wiki';
+const description = 'Current CS2 player counts, peak concurrent players, and how the playerbase has evolved. Live stats from Steam and historical trends.';
+
+const breadcrumbs = [
+  { name: 'Home', url: '/' },
+  { name: 'Stats & ADR FAQ', url: '/cs2-stats-adr-tracking-faq' },
+  { name: 'Player Count', url: '/cs2-player-count' },
+];
+
+const faqs = [
+  {
+    question: 'How many people play CS2 right now?',
+    answer: 'CS2 player counts change constantly. For current numbers, check Steam Stats or SteamCharts, which provide real-time concurrent player data. CS2 consistently ranks among the most-played games on Steam with hundreds of thousands of concurrent players at any given time.',
+  },
+  {
+    question: 'Is CS2 losing or gaining players?',
+    answer: 'CS2 has maintained a large and active playerbase since its launch. Player counts fluctuate seasonally and around major updates or tournaments. For the most accurate trend data, check SteamCharts which tracks historical monthly averages and peak concurrent players.',
+  },
+  {
+    question: 'What was the CS2 all-time peak player count?',
+    answer: 'CS2 (and CS:GO before it) has achieved record-breaking concurrent player peaks, particularly around major tournament events and game updates. Check SteamCharts for the exact all-time peak number, as records can be broken at any time.',
+  },
+  {
+    question: 'Where can I see live CS2 player stats?',
+    answer: 'Steam Stats (store.steampowered.com/stats) shows real-time player counts for all Steam games. SteamCharts (steamcharts.com) provides more detailed historical data including monthly averages, peak players, and trend graphs.',
+  },
+];
+
+const breadcrumbSchema_ = breadcrumbSchema(breadcrumbs);
+const faqSchema_ = faqSchema(faqs);
+
+const articleSchema = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": title,
+  "description": description,
+  "author": { "@type": "Person", "name": "Josh Lingenfelter", "url": "https://www.linkedin.com/in/josh-lingenfelter-8157274b/", "jobTitle": "Director", "worksFor": { "@type": "Organization", "name": "CSGOLuck" } },
+  "publisher": { "@type": "Organization", "name": "CSGOLuck Wiki", "url": "https://wiki.csgoluck.com" },
+  "mainEntityOfPage": "https://wiki.csgoluck.com/cs2-player-count/",
+  "inLanguage": "en-US"
+});
+
+const sections = [
+  { id: 'current', label: 'Current Numbers' },
+  { id: 'peak', label: 'Peak Players' },
+  { id: 'comparison', label: 'vs Other Games' },
+  { id: 'trends', label: 'Trends Over Time' },
+  { id: 'live-stats', label: 'Live Stats' },
+  { id: 'faq', label: 'FAQ' },
+  { id: 'related', label: 'Related Articles' },
+];
+---
+
+<Base title={title} description={description}>
+  <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema_)}></script>
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema_)}></script>
+  <script type="application/ld+json" set:html={articleSchema}></script>
+
+  <div class="cpc-wrap">
+    <nav class="cpc-breadcrumb">
+      <a href="/">Home</a>
+      <span class="cpc-sep">/</span>
+      <a href="/cs2-stats-adr-tracking-faq/">Stats & ADR FAQ</a>
+      <span class="cpc-sep">/</span>
+      <span>Player Count</span>
+    </nav>
+
+    <header class="cpc-header">
+      <h1>CS2 Player Count: How Many Play in 2025?</h1>
+      <p class="cpc-subtitle">Live player numbers, historical peaks, and how CS2 stacks up against the competition</p>
+    </header>
+
+    <nav class="cpc-toc-mobile" aria-label="Table of contents">
+      {sections.map((s) => (
+        <a href={`#${s.id}`} class="cpc-toc-mobile-link">{s.label}</a>
+      ))}
+    </nav>
+
+    <div class="cpc-layout">
+      <aside class="cpc-sidebar">
+        <nav class="cpc-toc" aria-label="Table of contents">
+          <span class="cpc-toc-title">Contents</span>
+          {sections.map((s) => (
+            <a href={`#${s.id}`} class="cpc-toc-link">{s.label}</a>
+          ))}
+        </nav>
+      </aside>
+
+      <article class="cpc-content">
+        <p class="cpc-intro">
+          The CS2 player count is a frequently searched topic for both current players and those considering jumping into the game. Counter-Strike 2 consistently ranks among the most-played titles on Steam, maintaining a massive concurrent player base that few other games can match. This guide explains where to find live player data, how CS2 compares to other major titles, and what trends have shaped the playerbase over time.
+        </p>
+
+        <section id="current">
+          <div class="cpc-section-header"><h2>Current CS2 Player Numbers</h2></div>
+          <p>CS2 regularly attracts hundreds of thousands of concurrent players at any given moment. The exact number fluctuates throughout the day based on time zones, with peak hours typically occurring during European and North American evening times when the largest player regions are most active.</p>
+          <p>Rather than citing a specific number that would quickly become outdated, we recommend checking real-time player data on <a href="https://store.steampowered.com/stats/" target="_blank" rel="noopener">Steam Stats</a> or <a href="https://steamcharts.com/app/730" target="_blank" rel="noopener">SteamCharts</a>. These sources pull data directly from Steam's API and update continuously throughout the day.</p>
+          <p>What can be said with confidence is that CS2 has sustained its position as one of the top two or three most-played games on Steam since its launch. The franchise's longevity is remarkable — Counter-Strike has maintained a massive playerbase for over two decades across multiple game versions.</p>
+        </section>
+
+        <section id="peak">
+          <div class="cpc-section-header"><h2>Peak Concurrent Players</h2></div>
+          <p>CS2 (and its predecessor CS:GO) has set multiple concurrent player records on Steam. These peaks typically coincide with major events such as the launch of new operations, major game updates, and the biggest esports tournaments.</p>
+          <p>The Counter-Strike franchise has repeatedly broken its own concurrent player records, demonstrating continued growth rather than decline. Each major update or tournament tends to bring both returning players and new ones into the game, pushing peak numbers higher.</p>
+          <p>For the exact all-time peak number, check <a href="https://steamcharts.com/app/730" target="_blank" rel="noopener">SteamCharts</a> which maintains a running record. The peak can be surpassed at any time during a major event, so static numbers in articles quickly become inaccurate.</p>
+          <p>Daily peak concurrent players follow predictable patterns. Weekends see higher peaks than weekdays, and the 24-hour peak typically occurs during European prime time (evening hours CET) when the largest concentration of CS2 players is online simultaneously.</p>
+        </section>
+
+        <section id="comparison">
+          <div class="cpc-section-header"><h2>How CS2 Compares to Other Games</h2></div>
+          <p>On Steam's platform, CS2 consistently ranks at or near the top of the concurrent player charts. It regularly competes with Dota 2 for the title of most-played game on Steam, and both titles frequently surpass all other games by significant margins.</p>
+          <p>Comparing CS2 to games on other platforms is more difficult because not all games report concurrent player numbers publicly. Popular titles like Fortnite, League of Legends, and Valorant do not publish real-time concurrent player data on an ongoing basis, making direct comparisons unreliable.</p>
+          <p>What sets CS2 apart from many competitors is the consistency of its playerbase. While some games experience dramatic spikes followed by steep declines, Counter-Strike has maintained strong player numbers for over a decade. This stability is a testament to the game's core gameplay loop and the active esports ecosystem that surrounds it.</p>
+          <p>The skin economy also plays a role in player retention. The ability to own, trade, and collect cosmetic items creates an additional layer of engagement that keeps players connected to the game even during periods when they play less actively.</p>
+        </section>
+
+        <section id="trends">
+          <div class="cpc-section-header"><h2>Player Count Trends Over Time</h2></div>
+          <p>The Counter-Strike franchise has shown a remarkable growth trajectory. CS:GO launched in 2012 with modest player numbers compared to its predecessor CS 1.6 and Counter-Strike: Source. Over the following decade, it grew steadily to become the most-played game on Steam.</p>
+          <p>The transition from CS:GO to CS2 in September 2023 was a significant moment. CS2 replaced CS:GO entirely rather than launching as a separate game, ensuring the entire existing playerbase transitioned to the new version. This approach prevented the community fragmentation that can occur when sequels split a playerbase.</p>
+          <p>Seasonal patterns are visible in the data. Player counts tend to dip during summer months in the Northern Hemisphere and peak during winter holidays. Major CS2 tournaments (particularly Majors) create noticeable spikes as both players and spectators engage with the game around these events.</p>
+          <p>The introduction of the free-to-play model (with CS:GO going free in 2018) significantly expanded the playerbase. While Prime Status remains available as a paid upgrade, the free entry point lowered the barrier for new players considerably.</p>
+        </section>
+
+        <section id="live-stats">
+          <div class="cpc-section-header"><h2>Where to Check Live Player Stats</h2></div>
+          <ul class="cpc-list">
+            <li><strong><a href="https://store.steampowered.com/stats/" target="_blank" rel="noopener">Steam Stats:</a></strong> Valve's official real-time statistics page. Shows current and 24-hour peak concurrent players for the top games on Steam. The most authoritative source for current numbers.</li>
+            <li><strong><a href="https://steamcharts.com/app/730" target="_blank" rel="noopener">SteamCharts:</a></strong> Provides detailed historical data including monthly average players, monthly peak players, percentage gains and losses, and all-time records. Excellent for trend analysis.</li>
+            <li><strong>SteamDB:</strong> Another community-maintained tracking site that offers charts, historical data, and comparison tools. Useful for cross-game comparisons and detailed statistical analysis.</li>
+          </ul>
+          <p>All of these tools pull data from Steam's public API, so their numbers are consistent and reliable. The differences between them are primarily in how they present and visualize the data rather than in the underlying numbers themselves.</p>
+          <p>For esports viewership data (which is separate from in-game player counts), sites like Escharts and HLTV track tournament viewership numbers across streaming platforms.</p>
+        </section>
+
+        <section id="faq">
+          <div class="cpc-section-header"><h2>Frequently Asked Questions</h2></div>
+          <div class="cpc-faq-list">
+            {faqs.map((faq) => (
+              <details class="cpc-faq-item">
+                <summary class="cpc-faq-question">{faq.question}</summary>
+                <p class="cpc-faq-answer">{faq.answer}</p>
+              </details>
+            ))}
+          </div>
+          <p class="cpc-faq-more">Explore more at our <a href="/cs2-stats-adr-tracking-faq/">Stats & ADR FAQ hub</a>.</p>
+        </section>
+
+        <section id="related">
+          <div class="cpc-section-header"><h2>Related Articles</h2></div>
+          <div class="cpc-resources-grid">
+            <a href="/what-is-adr-cs2/" class="cpc-resource-card"><span class="cpc-resource-name">What Is ADR?</span><span class="cpc-resource-arrow">&rarr;</span></a>
+            <a href="/check-cs2-stats/" class="cpc-resource-card"><span class="cpc-resource-name">Check Your CS2 Stats</span><span class="cpc-resource-arrow">&rarr;</span></a>
+            <a href="/cs2-stats-adr-tracking-faq/" class="cpc-resource-card"><span class="cpc-resource-name">Stats & ADR FAQ</span><span class="cpc-resource-arrow">&rarr;</span></a>
+          </div>
+        </section>
+      </article>
+    </div>
+  </div>
+
+  <style>
+    .cpc-wrap{max-width:1100px;margin:0 auto;padding:0 1.5rem 2rem}
+    .cpc-breadcrumb{display:flex;align-items:center;gap:.5rem;padding:1.25rem 0;font-size:.85rem;color:var(--text2)}
+    .cpc-breadcrumb a{color:var(--accent);text-decoration:none}
+    .cpc-breadcrumb a:hover{color:var(--accent2)}
+    .cpc-sep{color:var(--border)}
+    .cpc-header{padding:1.5rem 0 1.25rem;border-bottom:2px solid var(--accent);margin-bottom:1.5rem}
+    .cpc-header h1{margin:0 0 .35rem;font-size:2.2rem;font-weight:800;color:var(--text);letter-spacing:-.02em;line-height:1.2}
+    .cpc-subtitle{margin:0;font-size:1.05rem;color:var(--text2);font-weight:400}
+    .cpc-toc-mobile{display:none}
+    .cpc-layout{display:grid;grid-template-columns:220px 1fr;gap:2.5rem;align-items:start}
+    .cpc-sidebar{position:sticky;top:80px}
+    .cpc-toc{display:flex;flex-direction:column;gap:0;border-left:2px solid var(--border);padding-left:0}
+    .cpc-toc-title{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--accent);padding:0 0 .6rem 1rem}
+    .cpc-toc-link{display:block;padding:.4rem 1rem;font-size:.82rem;color:var(--text2);text-decoration:none;border-left:2px solid transparent;margin-left:-2px;transition:color .2s,border-color .2s}
+    .cpc-toc-link:hover{color:var(--text);border-left-color:var(--accent)}
+    .cpc-content{min-width:0}
+    .cpc-intro{font-size:1rem;line-height:1.8;color:var(--text2);margin-bottom:2rem}
+    .cpc-section-header{background:rgba(46,204,113,.05);margin:0 -1.25rem 1.25rem;padding:.75rem 1.25rem;border-radius:4px}
+    .cpc-section-header h2{margin:0;padding:0;font-size:1.5rem;font-weight:700;color:var(--text);border:none;letter-spacing:-.01em}
+    section{margin-bottom:2.5rem}
+    h3{font-size:1.15rem;font-weight:600;margin:1.5rem 0 .6rem;color:var(--text)}
+    p{line-height:1.7;color:var(--text2);margin-bottom:1rem}
+    .cpc-list{list-style:none;padding:0;margin:.75rem 0 1.5rem}
+    .cpc-list li{padding:.4rem 0 .4rem 1.6rem;position:relative;color:var(--text2);line-height:1.65}
+    .cpc-list li::before{content:'';position:absolute;left:.25rem;top:.75rem;width:6px;height:6px;background:var(--accent);border-radius:1px}
+    .cpc-list li strong{color:var(--text)}
+    .cpc-faq-list{display:flex;flex-direction:column;gap:.5rem}
+    .cpc-faq-item{background:var(--bg2);border:1px solid var(--border);border-radius:4px;overflow:hidden}
+    .cpc-faq-question{display:block;padding:1rem 1.25rem;font-size:.95rem;font-weight:600;color:var(--text);cursor:pointer;list-style:none;position:relative;padding-right:2.5rem;transition:background .2s}
+    .cpc-faq-question::-webkit-details-marker{display:none}
+    .cpc-faq-question::after{content:'+';position:absolute;right:1.25rem;top:50%;transform:translateY(-50%);font-size:1.2rem;color:var(--accent);font-weight:700}
+    .cpc-faq-item[open] .cpc-faq-question::after{content:'\2212'}
+    .cpc-faq-item[open] .cpc-faq-question{border-bottom:1px solid var(--border);background:rgba(46,204,113,.03)}
+    .cpc-faq-question:hover{background:rgba(46,204,113,.03)}
+    .cpc-faq-answer{padding:1rem 1.25rem;margin:0;font-size:.9rem;color:var(--text2);line-height:1.7}
+    .cpc-faq-more{font-size:.9rem;margin-top:1rem}
+    .cpc-resources-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.6rem;margin:.5rem 0 1.5rem}
+    .cpc-resource-card{display:flex;align-items:center;justify-content:space-between;padding:.75rem 1rem;background:var(--bg2);border:1px solid var(--border);border-radius:4px;text-decoration:none;border-left:2px solid transparent;transition:border-left-color .2s,color .2s}
+    .cpc-resource-card:hover{border-left-color:var(--accent)}
+    .cpc-resource-name{font-size:.88rem;color:var(--text2);font-weight:500;transition:color .2s}
+    .cpc-resource-card:hover .cpc-resource-name{color:var(--text)}
+    .cpc-resource-arrow{font-size:1rem;color:var(--accent);opacity:0;transition:opacity .2s}
+    .cpc-resource-card:hover .cpc-resource-arrow{opacity:1}
+    @media(max-width:860px){
+      .cpc-layout{grid-template-columns:1fr;gap:0}
+      .cpc-sidebar{display:none}
+      .cpc-toc-mobile{display:flex;gap:.25rem;overflow-x:auto;padding:.75rem 0;margin-bottom:1rem;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+      .cpc-toc-mobile::-webkit-scrollbar{display:none}
+      .cpc-toc-mobile-link{flex-shrink:0;padding:.35rem .75rem;font-size:.78rem;font-weight:600;color:var(--text2);background:var(--bg2);border:1px solid var(--border);border-radius:4px;text-decoration:none;white-space:nowrap;transition:color .2s,border-color .2s}
+      .cpc-toc-mobile-link:hover{color:var(--accent);border-color:var(--accent)}
+      .cpc-header h1{font-size:1.7rem}
+      .cpc-section-header{margin:0 -1rem 1rem;padding:.6rem 1rem}
+      .cpc-resources-grid{grid-template-columns:repeat(2,1fr)}
+    }
+    @media(max-width:600px){
+      .cpc-wrap{padding:0 1rem 1.5rem}
+      .cpc-resources-grid{grid-template-columns:1fr}
+      .cpc-header h1{font-size:1.5rem}
+    }
+  </style>
+  <AuthorBox updated="2026-03-04" />
+</Base>

@@ -1,0 +1,230 @@
+---
+import Base from '../layouts/Base.astro';
+import AuthorBox from '../components/AuthorBox.astro';
+import { faqSchema, breadcrumbSchema } from '../lib/weapons';
+
+const title = 'How to Get Cases in CS2: Drop System Guide | CSGOLuck Wiki';
+const description = 'How the CS2 case drop system works — weekly limits, Prime drops, and how to maximize your chances of getting valuable cases.';
+
+const breadcrumbs = [
+  { name: 'Home', url: '/' },
+  { name: 'Skins & Cases FAQ', url: '/cs2-skins-cases-faq' },
+  { name: 'How to Get Cases', url: '/how-to-get-cases-cs2' },
+];
+
+const faqs = [
+  {
+    question: 'How many cases can you get per week in CS2?',
+    answer: 'CS2 limits the number of item drops you receive each week. Once you hit the weekly cap, you will not receive additional drops until the counter resets. The exact number varies, but most players report receiving a handful of drops per week across all item types.',
+  },
+  {
+    question: 'Do you need Prime Status to get case drops?',
+    answer: 'Prime Status significantly improves the quality and frequency of drops. Players without Prime can still receive some drops, but Prime players are eligible for a wider pool of items including weapon cases and exclusive drops.',
+  },
+  {
+    question: 'When do CS2 weekly drops reset?',
+    answer: 'The weekly drop reset happens every Tuesday evening (UTC). After the reset, your drop eligibility refreshes and you can earn new items by playing matches and leveling up your profile.',
+  },
+  {
+    question: 'Can you get rare cases from drops?',
+    answer: 'Drop pools rotate over time. Valve controls which cases are in the active drop pool. Older cases are removed from the pool, which is one reason discontinued cases can become expensive on the Steam Community Market. Check the current active drop pool for up-to-date information.',
+  },
+];
+
+const breadcrumbSchema_ = breadcrumbSchema(breadcrumbs);
+const faqSchema_ = faqSchema(faqs);
+
+const articleSchema = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": title,
+  "description": description,
+  "author": { "@type": "Person", "name": "Josh Lingenfelter", "url": "https://www.linkedin.com/in/josh-lingenfelter-8157274b/", "jobTitle": "Director", "worksFor": { "@type": "Organization", "name": "CSGOLuck" } },
+  "publisher": { "@type": "Organization", "name": "CSGOLuck Wiki", "url": "https://wiki.csgoluck.com" },
+  "mainEntityOfPage": "https://wiki.csgoluck.com/how-to-get-cases-cs2/",
+  "inLanguage": "en-US"
+});
+
+const sections = [
+  { id: 'drop-system', label: 'How Drops Work' },
+  { id: 'weekly-limits', label: 'Weekly Limits' },
+  { id: 'prime-drops', label: 'Prime vs Free' },
+  { id: 'current-cases', label: 'Current Cases' },
+  { id: 'maximize-drops', label: 'Maximize Drops' },
+  { id: 'faq', label: 'FAQ' },
+  { id: 'related', label: 'Related Articles' },
+];
+---
+
+<Base title={title} description={description}>
+  <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema_)}></script>
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema_)}></script>
+  <script type="application/ld+json" set:html={articleSchema}></script>
+
+  <div class="hgc-wrap">
+    <nav class="hgc-breadcrumb">
+      <a href="/">Home</a>
+      <span class="hgc-sep">/</span>
+      <a href="/cs2-skins-cases-faq/">Skins & Cases FAQ</a>
+      <span class="hgc-sep">/</span>
+      <span>How to Get Cases</span>
+    </nav>
+
+    <header class="hgc-header">
+      <h1>How to Get Cases in CS2</h1>
+      <p class="hgc-subtitle">Understanding the drop system, weekly limits, and how to maximize your case earnings</p>
+    </header>
+
+    <nav class="hgc-toc-mobile" aria-label="Table of contents">
+      {sections.map((s) => (
+        <a href={`#${s.id}`} class="hgc-toc-mobile-link">{s.label}</a>
+      ))}
+    </nav>
+
+    <div class="hgc-layout">
+      <aside class="hgc-sidebar">
+        <nav class="hgc-toc" aria-label="Table of contents">
+          <span class="hgc-toc-title">Contents</span>
+          {sections.map((s) => (
+            <a href={`#${s.id}`} class="hgc-toc-link">{s.label}</a>
+          ))}
+        </nav>
+      </aside>
+
+      <article class="hgc-content">
+        <p class="hgc-intro">
+          Learning how to get cases in CS2 is one of the first things new players want to figure out. Cases contain cosmetic weapon skins ranging from common to extraordinarily rare, and they drop for free just by playing the game. However, the drop system has specific rules, weekly caps, and eligibility requirements that determine how many cases you can actually receive. This guide breaks down exactly how the CS2 case drop system works so you can make the most of your playtime.
+        </p>
+
+        <section id="drop-system">
+          <div class="hgc-section-header"><h2>How the Case Drop System Works</h2></div>
+          <p>CS2 uses an item drop system that rewards players with cosmetic items, including weapon cases, simply for playing matches. Drops are awarded at the end of competitive, casual, and other game modes. The system is tied to your Steam profile's weekly XP and level progression.</p>
+          <p>When you earn enough XP to rank up your profile during a given week, you become eligible for an item drop. These drops can include weapon cases, graffiti, and other cosmetic items. The specific item you receive is randomly selected from the current active drop pool.</p>
+          <p>It is important to understand that case drops are not guaranteed after every single match. The system is designed to space out rewards over your play sessions, encouraging regular but not excessive play. Drops are tied to your account progression rather than a simple per-match payout.</p>
+          <p>You can also acquire cases by purchasing them directly from the <a href="https://store.steampowered.com/app/730/CounterStrike_2/" target="_blank" rel="noopener">Steam Store</a> or the <a href="https://steamcommunity.com/market/" target="_blank" rel="noopener">Steam Community Market</a>, where other players list cases for sale. For a full overview of every case in the game, visit our <a href="/cs2-cases/">CS2 cases database</a>.</p>
+        </section>
+
+        <section id="weekly-limits">
+          <div class="hgc-section-header"><h2>Weekly Drop Limits and Resets</h2></div>
+          <p>Valve imposes a weekly cap on the number of item drops each player can receive. This cap resets every Tuesday evening (UTC), giving you a fresh set of drop opportunities each week. Once you have hit your weekly limit, additional playtime will not yield more drops until the reset.</p>
+          <p>The weekly structure is built around earning XP. Each profile rank-up during the week can trigger a drop. After the weekly reset, your XP bonus refreshes, meaning the first few games of the new week tend to award XP more generously, giving you a faster path to that next rank-up and drop.</p>
+          <p>Because of this system, spreading your playtime across multiple sessions throughout the week is generally more efficient than grinding everything in a single sitting. Playing a moderate amount each day ensures you are consistently earning XP toward your next rank-up without hitting the diminishing-returns threshold.</p>
+        </section>
+
+        <section id="prime-drops">
+          <div class="hgc-section-header"><h2>Prime vs Free Drop Rates</h2></div>
+          <p>Prime Status plays a significant role in what you can earn from the drop system. Players who have purchased CS2 Prime Status gain access to a broader and more valuable drop pool compared to free-to-play accounts.</p>
+          <p>Prime players are eligible to receive weapon cases, exclusive skins, and other high-value items. Free-to-play players have a more limited drop pool and generally receive fewer valuable items. Prime Status can be purchased through the <a href="https://store.steampowered.com/app/730/CounterStrike_2/" target="_blank" rel="noopener">Steam Store</a>.</p>
+          <p>If you are serious about collecting cases and skins through gameplay, Prime Status is a worthwhile investment. The improved drop pool and matchmaking benefits make it the recommended path for any player who plans to spend significant time in CS2. Beyond drops, Prime also grants access to ranked competitive matchmaking and other premium features.</p>
+        </section>
+
+        <section id="current-cases">
+          <div class="hgc-section-header"><h2>Which Cases Drop Currently</h2></div>
+          <p>The active drop pool in CS2 rotates over time. Valve periodically adds new cases and retires older ones. Only cases currently in the active drop pool can be obtained through regular gameplay drops.</p>
+          <p>When a case leaves the active drop pool, its supply becomes fixed because no new copies enter circulation through drops. This scarcity often drives up prices on the Steam Community Market, which is why some older cases trade for significantly more than newer ones.</p>
+          <p>To find out which cases are currently dropping, you can check community resources that track the active drop pool, or browse our <a href="/cs2-cases/">complete CS2 cases page</a>. Valve does not always announce drop pool changes in advance, so community tracking is the most reliable way to stay informed.</p>
+          <p>New cases are typically introduced alongside major game updates or operations. When a new case launches, it often commands a premium price for the first few weeks before supply increases and the market stabilizes.</p>
+        </section>
+
+        <section id="maximize-drops">
+          <div class="hgc-section-header"><h2>Tips to Maximize Case Drops</h2></div>
+          <ul class="hgc-list">
+            <li><strong>Play regularly after each Tuesday reset:</strong> Your drop eligibility refreshes weekly, so playing shortly after the reset ensures you start earning XP toward your next drop immediately.</li>
+            <li><strong>Focus on XP-efficient game modes:</strong> Competitive and Premier matches tend to award more XP per session than casual modes, helping you rank up faster and trigger drops sooner.</li>
+            <li><strong>Invest in Prime Status:</strong> The improved drop pool makes a noticeable difference in the quality and value of items you receive over time.</li>
+            <li><strong>Do not grind past the weekly cap:</strong> Once you have exhausted your weekly drops, additional playtime will not earn more items. Spread your sessions across the week instead.</li>
+            <li><strong>Participate in operations when available:</strong> Valve occasionally releases operations that include additional missions, drops, and exclusive cases not found in the standard drop pool.</li>
+          </ul>
+          <p>Want to know what your cases are actually worth opening? Use our <a href="/case-odds-calculator/">case odds calculator</a> to see expected values, or check out our guide on the <a href="/best-cs2-cases-to-open/">best CS2 cases to open</a> for a deeper value analysis.</p>
+        </section>
+
+        <section id="faq">
+          <div class="hgc-section-header"><h2>Frequently Asked Questions</h2></div>
+          <div class="hgc-faq-list">
+            {faqs.map((faq) => (
+              <details class="hgc-faq-item">
+                <summary class="hgc-faq-question">{faq.question}</summary>
+                <p class="hgc-faq-answer">{faq.answer}</p>
+              </details>
+            ))}
+          </div>
+          <p class="hgc-faq-more">Have more questions about CS2 skins and cases? Visit our <a href="/cs2-skins-cases-faq/">Skins & Cases FAQ hub</a> for comprehensive answers.</p>
+        </section>
+
+        <section id="related">
+          <div class="hgc-section-header"><h2>Related Articles</h2></div>
+          <div class="hgc-resources-grid">
+            <a href="/cs2-cases-butterfly-knife/" class="hgc-resource-card"><span class="hgc-resource-name">Cases with Butterfly Knives</span><span class="hgc-resource-arrow">&rarr;</span></a>
+            <a href="/best-cs2-cases-to-open/" class="hgc-resource-card"><span class="hgc-resource-name">Best Cases to Open</span><span class="hgc-resource-arrow">&rarr;</span></a>
+            <a href="/cs2-cases/" class="hgc-resource-card"><span class="hgc-resource-name">All CS2 Cases</span><span class="hgc-resource-arrow">&rarr;</span></a>
+            <a href="/case-odds-calculator/" class="hgc-resource-card"><span class="hgc-resource-name">Case Odds Calculator</span><span class="hgc-resource-arrow">&rarr;</span></a>
+            <a href="/cs2-skins-cases-faq/" class="hgc-resource-card"><span class="hgc-resource-name">Skins & Cases FAQ</span><span class="hgc-resource-arrow">&rarr;</span></a>
+          </div>
+        </section>
+      </article>
+    </div>
+  </div>
+
+  <style>
+    .hgc-wrap{max-width:1100px;margin:0 auto;padding:0 1.5rem 2rem}
+    .hgc-breadcrumb{display:flex;align-items:center;gap:.5rem;padding:1.25rem 0;font-size:.85rem;color:var(--text2)}
+    .hgc-breadcrumb a{color:var(--accent);text-decoration:none}
+    .hgc-breadcrumb a:hover{color:var(--accent2)}
+    .hgc-sep{color:var(--border)}
+    .hgc-header{padding:1.5rem 0 1.25rem;border-bottom:2px solid var(--accent);margin-bottom:1.5rem}
+    .hgc-header h1{margin:0 0 .35rem;font-size:2.2rem;font-weight:800;color:var(--text);letter-spacing:-.02em;line-height:1.2}
+    .hgc-subtitle{margin:0;font-size:1.05rem;color:var(--text2);font-weight:400}
+    .hgc-toc-mobile{display:none}
+    .hgc-layout{display:grid;grid-template-columns:220px 1fr;gap:2.5rem;align-items:start}
+    .hgc-sidebar{position:sticky;top:80px}
+    .hgc-toc{display:flex;flex-direction:column;gap:0;border-left:2px solid var(--border);padding-left:0}
+    .hgc-toc-title{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--accent);padding:0 0 .6rem 1rem}
+    .hgc-toc-link{display:block;padding:.4rem 1rem;font-size:.82rem;color:var(--text2);text-decoration:none;border-left:2px solid transparent;margin-left:-2px;transition:color .2s,border-color .2s}
+    .hgc-toc-link:hover{color:var(--text);border-left-color:var(--accent)}
+    .hgc-content{min-width:0}
+    .hgc-intro{font-size:1rem;line-height:1.8;color:var(--text2);margin-bottom:2rem}
+    .hgc-section-header{background:rgba(46,204,113,.05);margin:0 -1.25rem 1.25rem;padding:.75rem 1.25rem;border-radius:4px}
+    .hgc-section-header h2{margin:0;padding:0;font-size:1.5rem;font-weight:700;color:var(--text);border:none;letter-spacing:-.01em}
+    section{margin-bottom:2.5rem}
+    h3{font-size:1.15rem;font-weight:600;margin:1.5rem 0 .6rem;color:var(--text)}
+    p{line-height:1.7;color:var(--text2);margin-bottom:1rem}
+    .hgc-list{list-style:none;padding:0;margin:.75rem 0 1.5rem}
+    .hgc-list li{padding:.4rem 0 .4rem 1.6rem;position:relative;color:var(--text2);line-height:1.65}
+    .hgc-list li::before{content:'';position:absolute;left:.25rem;top:.75rem;width:6px;height:6px;background:var(--accent);border-radius:1px}
+    .hgc-list li strong{color:var(--text)}
+    .hgc-faq-list{display:flex;flex-direction:column;gap:.5rem}
+    .hgc-faq-item{background:var(--bg2);border:1px solid var(--border);border-radius:4px;overflow:hidden}
+    .hgc-faq-question{display:block;padding:1rem 1.25rem;font-size:.95rem;font-weight:600;color:var(--text);cursor:pointer;list-style:none;position:relative;padding-right:2.5rem;transition:background .2s}
+    .hgc-faq-question::-webkit-details-marker{display:none}
+    .hgc-faq-question::after{content:'+';position:absolute;right:1.25rem;top:50%;transform:translateY(-50%);font-size:1.2rem;color:var(--accent);font-weight:700}
+    .hgc-faq-item[open] .hgc-faq-question::after{content:'\2212'}
+    .hgc-faq-item[open] .hgc-faq-question{border-bottom:1px solid var(--border);background:rgba(46,204,113,.03)}
+    .hgc-faq-question:hover{background:rgba(46,204,113,.03)}
+    .hgc-faq-answer{padding:1rem 1.25rem;margin:0;font-size:.9rem;color:var(--text2);line-height:1.7}
+    .hgc-faq-more{font-size:.9rem;margin-top:1rem}
+    .hgc-resources-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.6rem;margin:.5rem 0 1.5rem}
+    .hgc-resource-card{display:flex;align-items:center;justify-content:space-between;padding:.75rem 1rem;background:var(--bg2);border:1px solid var(--border);border-radius:4px;text-decoration:none;border-left:2px solid transparent;transition:border-left-color .2s,color .2s}
+    .hgc-resource-card:hover{border-left-color:var(--accent)}
+    .hgc-resource-name{font-size:.88rem;color:var(--text2);font-weight:500;transition:color .2s}
+    .hgc-resource-card:hover .hgc-resource-name{color:var(--text)}
+    .hgc-resource-arrow{font-size:1rem;color:var(--accent);opacity:0;transition:opacity .2s}
+    .hgc-resource-card:hover .hgc-resource-arrow{opacity:1}
+    @media(max-width:860px){
+      .hgc-layout{grid-template-columns:1fr;gap:0}
+      .hgc-sidebar{display:none}
+      .hgc-toc-mobile{display:flex;gap:.25rem;overflow-x:auto;padding:.75rem 0;margin-bottom:1rem;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+      .hgc-toc-mobile::-webkit-scrollbar{display:none}
+      .hgc-toc-mobile-link{flex-shrink:0;padding:.35rem .75rem;font-size:.78rem;font-weight:600;color:var(--text2);background:var(--bg2);border:1px solid var(--border);border-radius:4px;text-decoration:none;white-space:nowrap;transition:color .2s,border-color .2s}
+      .hgc-toc-mobile-link:hover{color:var(--accent);border-color:var(--accent)}
+      .hgc-header h1{font-size:1.7rem}
+      .hgc-section-header{margin:0 -1rem 1rem;padding:.6rem 1rem}
+      .hgc-resources-grid{grid-template-columns:repeat(2,1fr)}
+    }
+    @media(max-width:600px){
+      .hgc-wrap{padding:0 1rem 1.5rem}
+      .hgc-resources-grid{grid-template-columns:1fr}
+      .hgc-header h1{font-size:1.5rem}
+    }
+  </style>
+  <AuthorBox updated="2026-03-04" />
+</Base>

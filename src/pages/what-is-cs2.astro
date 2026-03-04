@@ -1,0 +1,234 @@
+---
+import Base from '../layouts/Base.astro';
+import AuthorBox from '../components/AuthorBox.astro';
+import { faqSchema, breadcrumbSchema } from '../lib/weapons';
+
+const title = "What Is CS2? Beginner's Guide to Counter-Strike 2 | CSGOLuck Wiki";
+const description = "New to Counter-Strike 2? Learn what CS2 is, how it differs from CS:GO, and everything beginners need to know to get started.";
+
+const breadcrumbs = [
+  { name: 'Home', url: '/' },
+  { name: 'Game History & FAQ', url: '/cs2-game-history-faq' },
+  { name: 'What Is CS2?', url: '/what-is-cs2' },
+];
+
+const faqs = [
+  {
+    question: 'Is CS2 the same game as CS:GO?',
+    answer: 'CS2 replaced CS:GO as a free upgrade in September 2023. It uses the same Steam app ID but runs on the Source 2 engine with overhauled visuals and mechanics. Learn more in our <a href="/cs2-game-history-faq/">game history FAQ</a>.',
+  },
+  {
+    question: 'Do I need to pay for CS2?',
+    answer: 'No. CS2 is free to download and play on Steam. Optional Prime Status can be purchased for enhanced matchmaking. Visit our <a href="/cs2-game-history-faq/">game history FAQ</a> for more details.',
+  },
+  {
+    question: 'Can I transfer my CS:GO inventory to CS2?',
+    answer: 'Yes. All CS:GO skins, stickers, and items carried over to CS2 automatically since both games share the same Steam app ID. Check our <a href="/cs2-game-history-faq/">game history FAQ</a> for additional questions.',
+  },
+];
+
+const breadcrumbSchema_ = breadcrumbSchema(breadcrumbs);
+const faqSchema_ = faqSchema(faqs);
+
+const articleSchema = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": title,
+  "description": description,
+  "author": { "@type": "Person", "name": "Josh Lingenfelter", "url": "https://www.linkedin.com/in/josh-lingenfelter-8157274b/", "jobTitle": "Director", "worksFor": { "@type": "Organization", "name": "CSGOLuck" } },
+  "publisher": { "@type": "Organization", "name": "CSGOLuck Wiki", "url": "https://wiki.csgoluck.com" },
+  "mainEntityOfPage": "https://wiki.csgoluck.com/what-is-cs2/",
+  "inLanguage": "en-US"
+});
+
+const sections = [
+  { id: 'what-is', label: 'What Is CS2?' },
+  { id: 'differences', label: 'CS2 vs CS:GO' },
+  { id: 'features', label: 'Key Features' },
+  { id: 'getting-started', label: 'Getting Started' },
+  { id: 'worth-playing', label: 'Is CS2 Worth It?' },
+  { id: 'faq', label: 'FAQ' },
+  { id: 'related', label: 'Related Articles' },
+];
+---
+
+<Base title={title} description={description}>
+  <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema_)}></script>
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema_)}></script>
+  <script type="application/ld+json" set:html={articleSchema}></script>
+
+  <div class="wic-wrap">
+    <nav class="wic-breadcrumb">
+      <a href="/">Home</a>
+      <span class="wic-sep">/</span>
+      <a href="/cs2-game-history-faq/">Game History & FAQ</a>
+      <span class="wic-sep">/</span>
+      <span>What Is CS2?</span>
+    </nav>
+
+    <header class="wic-header">
+      <h1>What Is CS2? Beginner's Guide to Counter-Strike 2</h1>
+      <p class="wic-subtitle">Everything newcomers need to know about Valve's flagship tactical shooter</p>
+    </header>
+
+    <nav class="wic-toc-mobile" aria-label="Table of contents">
+      {sections.map((s) => (
+        <a href={`#${s.id}`} class="wic-toc-mobile-link">{s.label}</a>
+      ))}
+    </nav>
+
+    <div class="wic-layout">
+      <aside class="wic-sidebar">
+        <nav class="wic-toc" aria-label="Table of contents">
+          <span class="wic-toc-title">Contents</span>
+          {sections.map((s) => (
+            <a href={`#${s.id}`} class="wic-toc-link">{s.label}</a>
+          ))}
+        </nav>
+      </aside>
+
+      <article class="wic-content">
+        <p class="wic-intro">
+          If you have been hearing about Counter-Strike 2 and wondering what is cs2, you are not alone. CS2 is Valve's latest iteration of the Counter-Strike franchise -- a free-to-play, competitive first-person shooter that pits two teams of five against each other in round-based tactical combat. It launched in September 2023 as a direct replacement for Counter-Strike: Global Offensive, and it runs on the modern Source 2 engine. Whether you are a returning veteran or a complete newcomer, this guide covers everything you need to know.
+        </p>
+
+        <section id="what-is">
+          <div class="wic-section-header"><h2>What Is Counter-Strike 2?</h2></div>
+          <p>Counter-Strike 2 is a competitive multiplayer FPS developed by Valve. Two teams -- Terrorists and Counter-Terrorists -- face off across multiple rounds. Terrorists try to plant a bomb at designated sites or eliminate the opposing team, while Counter-Terrorists work to prevent the plant, defuse the bomb, or eliminate all Terrorists.</p>
+          <p>Each round lasts under two minutes. Between rounds, players use money earned from kills, objectives, and round outcomes to purchase weapons, armor, and utility grenades. This economy system means you cannot simply buy the best gear every round -- managing your team's finances is a core strategic element.</p>
+          <p>CS2 replaced CS:GO entirely on September 27, 2023. It shares the same Steam app ID (730), so all existing CS:GO owners received the upgrade at no cost. The game is available exclusively on PC through <a href="https://www.counter-strike.net/" target="_blank" rel="noopener">Steam</a>.</p>
+        </section>
+
+        <section id="differences">
+          <div class="wic-section-header"><h2>How CS2 Differs from CS:GO</h2></div>
+          <p>While CS2 carries forward the fundamental gameplay of Counter-Strike, the engine change to Source 2 introduced several significant differences:</p>
+          <ul class="wic-list">
+            <li><strong>Source 2 engine:</strong> Rebuilt from the ground up with improved rendering, lighting, and map detail</li>
+            <li><strong>Responsive smoke grenades:</strong> Smokes now react dynamically to bullets, HE grenades, and light sources instead of acting as static walls</li>
+            <li><strong>Sub-tick networking:</strong> Actions are registered at the precise moment they occur rather than waiting for the next server tick, aiming for more accurate hit detection</li>
+            <li><strong>Overhauled maps:</strong> Classic maps received visual upgrades with physically based rendering and improved skyboxes</li>
+            <li><strong>Updated UI:</strong> The buy menu, scoreboard, and overall interface were redesigned for clarity</li>
+          </ul>
+          <p>The gunplay feels familiar to CS:GO veterans, but subtle changes to movement, spray patterns, and grenade behaviour mean there is a learning curve even for experienced players. For a deeper look at the franchise timeline, check our <a href="/counter-strike-history/">full Counter-Strike history</a>.</p>
+        </section>
+
+        <section id="features">
+          <div class="wic-section-header"><h2>Key Features and Gameplay</h2></div>
+          <p>CS2 retains the competitive modes that made CS:GO a global esport while adding refinements to the overall experience:</p>
+          <ul class="wic-list">
+            <li><strong>Competitive mode:</strong> The flagship 5v5 ranked mode with 30 rounds (first to 13 wins, with overtime rules)</li>
+            <li><strong>Premier mode:</strong> Uses the CS Rating system with map bans, providing a more structured ranked experience</li>
+            <li><strong>Casual and deathmatch:</strong> Relaxed modes for warming up or practising without rank pressure</li>
+            <li><strong>Weapon skins:</strong> A massive cosmetic ecosystem carried over from CS:GO, including knives, gloves, and weapon finishes</li>
+            <li><strong>Workshop support:</strong> Community-created maps and game modes accessible through Steam Workshop</li>
+          </ul>
+          <p>The economy system remains central to strategy. Winning rounds, planting bombs, and getting kills all generate cash for the next round's buy phase. Coordinating team purchases -- knowing when to save, when to force-buy, and when to go all-in -- separates good teams from great ones.</p>
+        </section>
+
+        <section id="getting-started">
+          <div class="wic-section-header"><h2>Getting Started with CS2</h2></div>
+          <p>Jumping into CS2 for the first time can feel overwhelming, but the learning curve is manageable if you approach it step by step:</p>
+          <ul class="wic-list">
+            <li><strong>Download from Steam:</strong> CS2 is free. Search for "Counter-Strike 2" on the Steam store or visit the <a href="https://www.counter-strike.net/" target="_blank" rel="noopener">official website</a></li>
+            <li><strong>Start with casual modes:</strong> Play deathmatch and casual to learn maps and weapon handling without ranked pressure</li>
+            <li><strong>Master one weapon:</strong> Pick the AK-47 (T side) or M4A4/M4A1-S (CT side) and learn its spray pattern before expanding your arsenal</li>
+            <li><strong>Learn callouts:</strong> Each map has community-established names for positions -- knowing them lets you communicate effectively with teammates</li>
+            <li><strong>Watch and learn:</strong> Spectating higher-ranked players or professional matches reveals positioning, utility usage, and decision-making that guides do not always capture</li>
+          </ul>
+          <p>For a comprehensive walkthrough of mechanics, movement, and economy management, our <a href="/cs2-guides/beginners-guide/">CS2 beginner's guide</a> covers every fundamental in detail.</p>
+        </section>
+
+        <section id="worth-playing">
+          <div class="wic-section-header"><h2>Is CS2 Worth Playing?</h2></div>
+          <p>Counter-Strike 2 is one of the most-played games on Steam and maintains an active competitive scene with regular Major Championships. The game rewards mechanical skill, teamwork, and strategic thinking in a way that few other shooters match.</p>
+          <p>For newcomers, the free-to-play model removes the financial barrier entirely. You can download the game, play casual and competitive modes, and decide if the experience appeals to you without spending a cent. Prime Status is an optional purchase that provides improved matchmaking and access to item drops, but it is not required to enjoy the core game.</p>
+          <p>For returning CS:GO players, all your skins, rank history, and friends list carried over. The Source 2 engine delivers noticeable visual and performance improvements, and Valve continues to ship updates that refine gameplay and add content. The competitive ecosystem -- from ranked matchmaking to professional esports -- remains one of the most robust in gaming.</p>
+          <p>If you enjoy tactical shooters that reward practice and teamwork, CS2 is absolutely worth your time. See our <a href="/cs2-season-dates/">CS2 season dates</a> guide to learn how the seasonal system and rank resets work.</p>
+        </section>
+
+        <section id="faq">
+          <div class="wic-section-header"><h2>Frequently Asked Questions</h2></div>
+          <div class="wic-faq-list">
+            {faqs.map((faq) => (
+              <details class="wic-faq-item">
+                <summary class="wic-faq-question">{faq.question}</summary>
+                <p class="wic-faq-answer" set:html={faq.answer}></p>
+              </details>
+            ))}
+          </div>
+        </section>
+
+        <section id="related">
+          <div class="wic-section-header"><h2>Related Articles</h2></div>
+          <div class="wic-resources-grid">
+            <a href="/cs2-game-history-faq/" class="wic-resource-card"><span class="wic-resource-name">Game History & FAQ Hub</span><span class="wic-resource-arrow">&rarr;</span></a>
+            <a href="/counter-strike-history/" class="wic-resource-card"><span class="wic-resource-name">Counter-Strike History</span><span class="wic-resource-arrow">&rarr;</span></a>
+            <a href="/cs2-season-dates/" class="wic-resource-card"><span class="wic-resource-name">CS2 Season Dates</span><span class="wic-resource-arrow">&rarr;</span></a>
+            <a href="/cs2-guides/beginners-guide/" class="wic-resource-card"><span class="wic-resource-name">CS2 Beginner's Guide</span><span class="wic-resource-arrow">&rarr;</span></a>
+          </div>
+        </section>
+      </article>
+    </div>
+  </div>
+
+  <style>
+    .wic-wrap{max-width:1100px;margin:0 auto;padding:0 1.5rem 2rem}
+    .wic-breadcrumb{display:flex;align-items:center;gap:.5rem;padding:1.25rem 0;font-size:.85rem;color:var(--text2)}
+    .wic-breadcrumb a{color:var(--accent);text-decoration:none}
+    .wic-breadcrumb a:hover{color:var(--accent2)}
+    .wic-sep{color:var(--border)}
+    .wic-header{padding:1.5rem 0 1.25rem;border-bottom:2px solid var(--accent);margin-bottom:1.5rem}
+    .wic-header h1{margin:0 0 .35rem;font-size:2.2rem;font-weight:800;color:var(--text);letter-spacing:-.02em;line-height:1.2}
+    .wic-subtitle{margin:0;font-size:1.05rem;color:var(--text2);font-weight:400}
+    .wic-toc-mobile{display:none}
+    .wic-layout{display:grid;grid-template-columns:220px 1fr;gap:2.5rem;align-items:start}
+    .wic-sidebar{position:sticky;top:80px}
+    .wic-toc{display:flex;flex-direction:column;gap:0;border-left:2px solid var(--border);padding-left:0}
+    .wic-toc-title{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--accent);padding:0 0 .6rem 1rem}
+    .wic-toc-link{display:block;padding:.4rem 1rem;font-size:.82rem;color:var(--text2);text-decoration:none;border-left:2px solid transparent;margin-left:-2px;transition:color .2s,border-color .2s}
+    .wic-toc-link:hover{color:var(--text);border-left-color:var(--accent)}
+    .wic-content{min-width:0}
+    .wic-intro{font-size:1rem;line-height:1.8;color:var(--text2);margin-bottom:2rem}
+    .wic-section-header{background:rgba(46,204,113,.05);margin:0 -1.25rem 1.25rem;padding:.75rem 1.25rem;border-radius:4px}
+    .wic-section-header h2{margin:0;padding:0;font-size:1.5rem;font-weight:700;color:var(--text);border:none;letter-spacing:-.01em}
+    section{margin-bottom:2.5rem}
+    p{line-height:1.7;color:var(--text2);margin-bottom:1rem}
+    .wic-list{list-style:none;padding:0;margin:.75rem 0 1.5rem}
+    .wic-list li{padding:.4rem 0 .4rem 1.6rem;position:relative;color:var(--text2);line-height:1.65}
+    .wic-list li::before{content:'';position:absolute;left:.25rem;top:.75rem;width:6px;height:6px;background:var(--accent);border-radius:1px}
+    .wic-list li strong{color:var(--text)}
+    .wic-faq-list{display:flex;flex-direction:column;gap:.5rem}
+    .wic-faq-item{background:var(--bg2);border:1px solid var(--border);border-radius:4px;overflow:hidden}
+    .wic-faq-question{display:block;padding:1rem 1.25rem;font-size:.95rem;font-weight:600;color:var(--text);cursor:pointer;list-style:none;position:relative;padding-right:2.5rem;transition:background .2s}
+    .wic-faq-question::-webkit-details-marker{display:none}
+    .wic-faq-question::after{content:'+';position:absolute;right:1.25rem;top:50%;transform:translateY(-50%);font-size:1.2rem;color:var(--accent);font-weight:700}
+    .wic-faq-item[open] .wic-faq-question::after{content:'\2212'}
+    .wic-faq-item[open] .wic-faq-question{border-bottom:1px solid var(--border);background:rgba(46,204,113,.03)}
+    .wic-faq-question:hover{background:rgba(46,204,113,.03)}
+    .wic-faq-answer{padding:1rem 1.25rem;margin:0;font-size:.9rem;color:var(--text2);line-height:1.7}
+    .wic-resources-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.6rem;margin:.5rem 0 1.5rem}
+    .wic-resource-card{display:flex;align-items:center;justify-content:space-between;padding:.75rem 1rem;background:var(--bg2);border:1px solid var(--border);border-radius:4px;text-decoration:none;border-left:2px solid transparent;transition:border-left-color .2s,color .2s}
+    .wic-resource-card:hover{border-left-color:var(--accent)}
+    .wic-resource-name{font-size:.88rem;color:var(--text2);font-weight:500;transition:color .2s}
+    .wic-resource-card:hover .wic-resource-name{color:var(--text)}
+    .wic-resource-arrow{font-size:1rem;color:var(--accent);opacity:0;transition:opacity .2s}
+    .wic-resource-card:hover .wic-resource-arrow{opacity:1}
+    @media(max-width:860px){
+      .wic-layout{grid-template-columns:1fr;gap:0}
+      .wic-sidebar{display:none}
+      .wic-toc-mobile{display:flex;gap:.25rem;overflow-x:auto;padding:.75rem 0;margin-bottom:1rem;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+      .wic-toc-mobile::-webkit-scrollbar{display:none}
+      .wic-toc-mobile-link{flex-shrink:0;padding:.35rem .75rem;font-size:.78rem;font-weight:600;color:var(--text2);background:var(--bg2);border:1px solid var(--border);border-radius:4px;text-decoration:none;white-space:nowrap;transition:color .2s,border-color .2s}
+      .wic-toc-mobile-link:hover{color:var(--accent);border-color:var(--accent)}
+      .wic-header h1{font-size:1.7rem}
+      .wic-section-header{margin:0 -1rem 1rem;padding:.6rem 1rem}
+      .wic-resources-grid{grid-template-columns:repeat(2,1fr)}
+    }
+    @media(max-width:600px){
+      .wic-wrap{padding:0 1rem 1.5rem}
+      .wic-resources-grid{grid-template-columns:1fr}
+      .wic-header h1{font-size:1.5rem}
+    }
+  </style>
+  <AuthorBox updated="2026-03-04" />
+</Base>

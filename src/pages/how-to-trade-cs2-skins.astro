@@ -1,0 +1,242 @@
+---
+import Base from '../layouts/Base.astro';
+import AuthorBox from '../components/AuthorBox.astro';
+import { faqSchema, breadcrumbSchema } from '../lib/weapons';
+
+const title = 'How to Trade CS2 Skins: Complete Guide | CSGOLuck Wiki';
+const description = 'Learn how to trade CS2 skins through Steam trades and third-party platforms. Step-by-step process, trade holds, and safety tips.';
+
+const breadcrumbs = [
+  { name: 'Home', url: '/' },
+  { name: 'Trading & Marketplace FAQ', url: '/cs2-trading-marketplace-faq' },
+  { name: 'How to Trade Skins', url: '/how-to-trade-cs2-skins' },
+];
+
+const faqs = [
+  {
+    question: 'How long is a CS2 trade hold?',
+    answer: 'Trade holds last 15 days if you do not have the Steam Mobile Authenticator enabled. With the authenticator active for at least 7 days, trade holds are removed entirely for most trades. Setting up the Steam Guard Mobile Authenticator is the fastest way to eliminate trade delays.',
+  },
+  {
+    question: 'Can you trade CS2 skins for real money?',
+    answer: 'Steam\'s trading system only supports item-for-item exchanges. To convert skins to real money, you need to use a third-party marketplace that supports cash-out functionality. Always use reputable platforms and be aware of their fees and policies.',
+  },
+  {
+    question: 'Is CS2 skin trading safe?',
+    answer: 'Trading through Steam\'s built-in system is safe as long as you verify trade offers carefully before accepting. The main risks come from phishing links, impersonation scams, and third-party sites. Follow basic security practices like enabling Steam Guard and never sharing your login credentials.',
+  },
+  {
+    question: 'What is the trade cooldown after buying from the Steam Market?',
+    answer: 'Items purchased from the Steam Community Market have a 7-day trade cooldown before they can be traded to another player. This applies to all items bought on the market, not just CS2 skins. Plan accordingly if you intend to trade items soon after purchasing them.',
+  },
+];
+
+const breadcrumbSchema_ = breadcrumbSchema(breadcrumbs);
+const faqSchema_ = faqSchema(faqs);
+
+const articleSchema = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": title,
+  "description": description,
+  "author": { "@type": "Person", "name": "Josh Lingenfelter", "url": "https://www.linkedin.com/in/josh-lingenfelter-8157274b/", "jobTitle": "Director", "worksFor": { "@type": "Organization", "name": "CSGOLuck" } },
+  "publisher": { "@type": "Organization", "name": "CSGOLuck Wiki", "url": "https://wiki.csgoluck.com" },
+  "mainEntityOfPage": "https://wiki.csgoluck.com/how-to-trade-cs2-skins/",
+  "inLanguage": "en-US"
+});
+
+const sections = [
+  { id: 'basics', label: 'Trading Basics' },
+  { id: 'trade-offers', label: 'Trade Offers' },
+  { id: 'trade-holds', label: 'Trade Holds' },
+  { id: 'third-party', label: 'Third-Party Platforms' },
+  { id: 'scams', label: 'Common Scams' },
+  { id: 'faq', label: 'FAQ' },
+  { id: 'related', label: 'Related Articles' },
+];
+---
+
+<Base title={title} description={description}>
+  <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema_)}></script>
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema_)}></script>
+  <script type="application/ld+json" set:html={articleSchema}></script>
+
+  <div class="hts2-wrap">
+    <nav class="hts2-breadcrumb">
+      <a href="/">Home</a>
+      <span class="hts2-sep">/</span>
+      <a href="/cs2-trading-marketplace-faq/">Trading & Marketplace FAQ</a>
+      <span class="hts2-sep">/</span>
+      <span>How to Trade Skins</span>
+    </nav>
+
+    <header class="hts2-header">
+      <h1>How to Trade CS2 Skins</h1>
+      <p class="hts2-subtitle">Step-by-step guide to trading skins through Steam and third-party platforms</p>
+    </header>
+
+    <nav class="hts2-toc-mobile" aria-label="Table of contents">
+      {sections.map((s) => (
+        <a href={`#${s.id}`} class="hts2-toc-mobile-link">{s.label}</a>
+      ))}
+    </nav>
+
+    <div class="hts2-layout">
+      <aside class="hts2-sidebar">
+        <nav class="hts2-toc" aria-label="Table of contents">
+          <span class="hts2-toc-title">Contents</span>
+          {sections.map((s) => (
+            <a href={`#${s.id}`} class="hts2-toc-link">{s.label}</a>
+          ))}
+        </nav>
+      </aside>
+
+      <article class="hts2-content">
+        <p class="hts2-intro">
+          Trading CS2 skins is one of the most popular ways to build your inventory without spending money on the Steam Market. Whether you want to upgrade your loadout, cash out valuable drops, or simply swap items with friends, understanding how to trade CS2 skins safely and efficiently is a core skill for any active player. This guide covers the full trading process from sending your first trade offer to avoiding the most common scams.
+        </p>
+
+        <section id="basics">
+          <div class="hts2-section-header"><h2>Steam Trading Basics</h2></div>
+          <p>CS2 skin trading happens through Steam's built-in trade system. Two players agree to exchange items from their Steam inventories, and Steam handles the transfer. No money changes hands directly through Steam trades — it is strictly item-for-item.</p>
+          <p>Before you can trade, your Steam account needs to meet a few requirements. You must have a Steam account that is not limited (which means you have spent at least $5 on the Steam Store), and your Steam inventory privacy must be set to public so other users can see what you have available.</p>
+          <p>You also need to have the Steam Guard Mobile Authenticator enabled if you want to avoid extended trade holds. Without it, your trades will be held for 15 days before completing, which makes active trading impractical. The authenticator needs to be active for at least 7 days before the trade hold is removed.</p>
+          <p>You can browse other players' inventories using tools like our <a href="/inventory-lookup/">inventory lookup</a> to see what items they have available for trade.</p>
+        </section>
+
+        <section id="trade-offers">
+          <div class="hts2-section-header"><h2>How to Send and Accept Trade Offers</h2></div>
+          <p>Trade offers can be sent through the <a href="https://steamcommunity.com/tradeoffer/" target="_blank" rel="noopener">Steam trade offer interface</a>. Here is the step-by-step process:</p>
+          <ul class="hts2-list">
+            <li><strong>Navigate to the other player's profile:</strong> Find them through your friends list, a community group, or by entering their profile URL directly.</li>
+            <li><strong>Click "Offer a Trade":</strong> This opens the trade window where you can select items from both inventories.</li>
+            <li><strong>Select items to exchange:</strong> Add items from your inventory on the left side and items you want from their inventory on the right side. Both parties need to be offering something (unless one side is intentionally gifting items).</li>
+            <li><strong>Add a message (optional):</strong> You can include a note explaining the trade or providing context.</li>
+            <li><strong>Send the offer:</strong> The recipient will see the trade offer in their Steam notifications and can accept, decline, or counter-offer.</li>
+          </ul>
+          <p>When accepting a trade offer, always verify every item carefully. Check the skin name, wear condition, and any applied stickers. Scammers sometimes switch items at the last moment or list items with misleading names.</p>
+        </section>
+
+        <section id="trade-holds">
+          <div class="hts2-section-header"><h2>Trade Holds and How to Avoid Them</h2></div>
+          <p>Trade holds are a security feature Valve implemented to protect users from unauthorized trades. When a trade hold is active, completed trades are delayed before items actually transfer between accounts.</p>
+          <p>The primary cause of trade holds is not having the Steam Guard Mobile Authenticator enabled. Without it, all trades are held for 15 days. This gives the account owner time to cancel unauthorized trades if their account is compromised.</p>
+          <p>To eliminate trade holds:</p>
+          <ul class="hts2-list">
+            <li><strong>Enable the Steam Guard Mobile Authenticator:</strong> Install the Steam app on your phone and set up the authenticator. After 7 days, your trade holds will be removed.</li>
+            <li><strong>Keep the authenticator active:</strong> Removing and re-adding the authenticator resets the 7-day waiting period.</li>
+            <li><strong>Confirm trades on mobile:</strong> Each trade still requires mobile confirmation, which adds a layer of security without adding delays.</li>
+          </ul>
+          <p>Note that newly purchased items from the Steam Community Market have a separate 7-day trade cooldown regardless of your authenticator status. Items received from case openings also have a 7-day cooldown.</p>
+        </section>
+
+        <section id="third-party">
+          <div class="hts2-section-header"><h2>Third-Party Trading Platforms</h2></div>
+          <p>Beyond direct Steam trades, several third-party platforms facilitate skin trading. These platforms offer features that Steam's native system does not, such as instant trades, price valuation tools, and the ability to sell skins for real currency.</p>
+          <p>Third-party trading platforms generally fall into two categories. Trade-bot sites maintain large inventories and let you instantly swap your items for items from their stock. Peer-to-peer platforms match you with other traders and facilitate the exchange, sometimes supporting cash transactions.</p>
+          <p>When using third-party platforms, the same security principles apply. Only use sites with established reputations, never share your Steam credentials, and always verify trade offers before accepting them. Our guide on <a href="/where-to-buy-cs2-skins/">where to buy CS2 skins</a> includes tips on evaluating third-party marketplace safety.</p>
+          <p>For a comprehensive walkthrough of trading strategies and tools, see the full <a href="/cs2-guides/trading-guide/">CS2 trading guide</a>.</p>
+        </section>
+
+        <section id="scams">
+          <div class="hts2-section-header"><h2>Common Scams to Watch For</h2></div>
+          <p>Trading scams remain one of the biggest risks in the CS2 skin economy. Knowing the most common tactics helps you avoid falling victim to them.</p>
+          <ul class="hts2-list">
+            <li><strong>Item switching:</strong> The scammer adds a valuable item to the trade, then quickly swaps it for a cheaper version before you accept. Always double-check every item in the trade window before clicking accept.</li>
+            <li><strong>Phishing links:</strong> Fake websites that look like Steam login pages are sent via chat messages. These steal your username and password. Always verify you are on the real steamcommunity.com domain.</li>
+            <li><strong>Impersonation:</strong> Scammers create accounts that look like well-known traders or your Steam friends. They then request trades or claim items need to be "verified" through a fake middleman. Always verify identities through Steam's official friend system.</li>
+            <li><strong>Fake middleman schemes:</strong> The scammer suggests using a "trusted" middleman who is actually their accomplice. If a middleman is needed, choose one yourself from a verified list rather than accepting the other party's suggestion.</li>
+            <li><strong>API key scams:</strong> Malicious sites request your Steam API key, then use it to intercept and redirect your trade offers. Regularly check and revoke unknown API keys in your Steam settings.</li>
+          </ul>
+          <p>The golden rule: if something feels off about a trade, cancel it. No single trade is worth risking your entire inventory over.</p>
+        </section>
+
+        <section id="faq">
+          <div class="hts2-section-header"><h2>Frequently Asked Questions</h2></div>
+          <div class="hts2-faq-list">
+            {faqs.map((faq) => (
+              <details class="hts2-faq-item">
+                <summary class="hts2-faq-question">{faq.question}</summary>
+                <p class="hts2-faq-answer">{faq.answer}</p>
+              </details>
+            ))}
+          </div>
+          <p class="hts2-faq-more">Find more answers in our <a href="/cs2-trading-marketplace-faq/">Trading & Marketplace FAQ hub</a>.</p>
+        </section>
+
+        <section id="related">
+          <div class="hts2-section-header"><h2>Related Articles</h2></div>
+          <div class="hts2-resources-grid">
+            <a href="/where-to-buy-cs2-skins/" class="hts2-resource-card"><span class="hts2-resource-name">Where to Buy Skins</span><span class="hts2-resource-arrow">&rarr;</span></a>
+            <a href="/why-cs2-skins-expensive/" class="hts2-resource-card"><span class="hts2-resource-name">Why Skins Are Expensive</span><span class="hts2-resource-arrow">&rarr;</span></a>
+            <a href="/inventory-lookup/" class="hts2-resource-card"><span class="hts2-resource-name">Inventory Lookup</span><span class="hts2-resource-arrow">&rarr;</span></a>
+            <a href="/cs2-guides/trading-guide/" class="hts2-resource-card"><span class="hts2-resource-name">Full Trading Guide</span><span class="hts2-resource-arrow">&rarr;</span></a>
+          </div>
+        </section>
+      </article>
+    </div>
+  </div>
+
+  <style>
+    .hts2-wrap{max-width:1100px;margin:0 auto;padding:0 1.5rem 2rem}
+    .hts2-breadcrumb{display:flex;align-items:center;gap:.5rem;padding:1.25rem 0;font-size:.85rem;color:var(--text2)}
+    .hts2-breadcrumb a{color:var(--accent);text-decoration:none}
+    .hts2-breadcrumb a:hover{color:var(--accent2)}
+    .hts2-sep{color:var(--border)}
+    .hts2-header{padding:1.5rem 0 1.25rem;border-bottom:2px solid var(--accent);margin-bottom:1.5rem}
+    .hts2-header h1{margin:0 0 .35rem;font-size:2.2rem;font-weight:800;color:var(--text);letter-spacing:-.02em;line-height:1.2}
+    .hts2-subtitle{margin:0;font-size:1.05rem;color:var(--text2);font-weight:400}
+    .hts2-toc-mobile{display:none}
+    .hts2-layout{display:grid;grid-template-columns:220px 1fr;gap:2.5rem;align-items:start}
+    .hts2-sidebar{position:sticky;top:80px}
+    .hts2-toc{display:flex;flex-direction:column;gap:0;border-left:2px solid var(--border);padding-left:0}
+    .hts2-toc-title{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--accent);padding:0 0 .6rem 1rem}
+    .hts2-toc-link{display:block;padding:.4rem 1rem;font-size:.82rem;color:var(--text2);text-decoration:none;border-left:2px solid transparent;margin-left:-2px;transition:color .2s,border-color .2s}
+    .hts2-toc-link:hover{color:var(--text);border-left-color:var(--accent)}
+    .hts2-content{min-width:0}
+    .hts2-intro{font-size:1rem;line-height:1.8;color:var(--text2);margin-bottom:2rem}
+    .hts2-section-header{background:rgba(46,204,113,.05);margin:0 -1.25rem 1.25rem;padding:.75rem 1.25rem;border-radius:4px}
+    .hts2-section-header h2{margin:0;padding:0;font-size:1.5rem;font-weight:700;color:var(--text);border:none;letter-spacing:-.01em}
+    section{margin-bottom:2.5rem}
+    h3{font-size:1.15rem;font-weight:600;margin:1.5rem 0 .6rem;color:var(--text)}
+    p{line-height:1.7;color:var(--text2);margin-bottom:1rem}
+    .hts2-list{list-style:none;padding:0;margin:.75rem 0 1.5rem}
+    .hts2-list li{padding:.4rem 0 .4rem 1.6rem;position:relative;color:var(--text2);line-height:1.65}
+    .hts2-list li::before{content:'';position:absolute;left:.25rem;top:.75rem;width:6px;height:6px;background:var(--accent);border-radius:1px}
+    .hts2-list li strong{color:var(--text)}
+    .hts2-faq-list{display:flex;flex-direction:column;gap:.5rem}
+    .hts2-faq-item{background:var(--bg2);border:1px solid var(--border);border-radius:4px;overflow:hidden}
+    .hts2-faq-question{display:block;padding:1rem 1.25rem;font-size:.95rem;font-weight:600;color:var(--text);cursor:pointer;list-style:none;position:relative;padding-right:2.5rem;transition:background .2s}
+    .hts2-faq-question::-webkit-details-marker{display:none}
+    .hts2-faq-question::after{content:'+';position:absolute;right:1.25rem;top:50%;transform:translateY(-50%);font-size:1.2rem;color:var(--accent);font-weight:700}
+    .hts2-faq-item[open] .hts2-faq-question::after{content:'\2212'}
+    .hts2-faq-item[open] .hts2-faq-question{border-bottom:1px solid var(--border);background:rgba(46,204,113,.03)}
+    .hts2-faq-question:hover{background:rgba(46,204,113,.03)}
+    .hts2-faq-answer{padding:1rem 1.25rem;margin:0;font-size:.9rem;color:var(--text2);line-height:1.7}
+    .hts2-faq-more{font-size:.9rem;margin-top:1rem}
+    .hts2-resources-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.6rem;margin:.5rem 0 1.5rem}
+    .hts2-resource-card{display:flex;align-items:center;justify-content:space-between;padding:.75rem 1rem;background:var(--bg2);border:1px solid var(--border);border-radius:4px;text-decoration:none;border-left:2px solid transparent;transition:border-left-color .2s,color .2s}
+    .hts2-resource-card:hover{border-left-color:var(--accent)}
+    .hts2-resource-name{font-size:.88rem;color:var(--text2);font-weight:500;transition:color .2s}
+    .hts2-resource-card:hover .hts2-resource-name{color:var(--text)}
+    .hts2-resource-arrow{font-size:1rem;color:var(--accent);opacity:0;transition:opacity .2s}
+    .hts2-resource-card:hover .hts2-resource-arrow{opacity:1}
+    @media(max-width:860px){
+      .hts2-layout{grid-template-columns:1fr;gap:0}
+      .hts2-sidebar{display:none}
+      .hts2-toc-mobile{display:flex;gap:.25rem;overflow-x:auto;padding:.75rem 0;margin-bottom:1rem;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+      .hts2-toc-mobile::-webkit-scrollbar{display:none}
+      .hts2-toc-mobile-link{flex-shrink:0;padding:.35rem .75rem;font-size:.78rem;font-weight:600;color:var(--text2);background:var(--bg2);border:1px solid var(--border);border-radius:4px;text-decoration:none;white-space:nowrap;transition:color .2s,border-color .2s}
+      .hts2-toc-mobile-link:hover{color:var(--accent);border-color:var(--accent)}
+      .hts2-header h1{font-size:1.7rem}
+      .hts2-section-header{margin:0 -1rem 1rem;padding:.6rem 1rem}
+      .hts2-resources-grid{grid-template-columns:repeat(2,1fr)}
+    }
+    @media(max-width:600px){
+      .hts2-wrap{padding:0 1rem 1.5rem}
+      .hts2-resources-grid{grid-template-columns:1fr}
+      .hts2-header h1{font-size:1.5rem}
+    }
+  </style>
+  <AuthorBox updated="2026-03-04" />
+</Base>

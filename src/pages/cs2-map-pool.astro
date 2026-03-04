@@ -1,0 +1,229 @@
+---
+import Base from '../layouts/Base.astro';
+import AuthorBox from '../components/AuthorBox.astro';
+import { faqSchema, breadcrumbSchema } from '../lib/weapons';
+
+const title = 'CS2 Map Pool 2025: Active Duty Maps | CSGOLuck Wiki';
+const description = 'The current CS2 active duty map pool for 2025. Every competitive map, recent additions, removals, and historical map pool changes.';
+
+const breadcrumbs = [
+  { name: 'Home', url: '/' },
+  { name: 'CS2 Maps & Callouts', url: '/cs2-maps-callouts-faq' },
+  { name: 'CS2 Map Pool', url: '/cs2-map-pool' },
+];
+
+const faqs = [
+  {
+    question: 'How many maps are in the CS2 active duty pool?',
+    answer: 'The CS2 active duty pool typically contains seven maps. As of the latest updates, these are Mirage, Inferno, Dust2, Nuke, Ancient, Anubis, and Vertigo. This can change with game updates, so always check in-game for the current pool.',
+  },
+  {
+    question: 'How often does Valve change the map pool?',
+    answer: 'There is no fixed schedule. Valve changes the map pool based on competitive needs, community feedback, and when new or reworked maps are ready. Changes can happen several times a year or go months without adjustments.',
+  },
+  {
+    question: 'What happened to maps like Cache and Cobblestone?',
+    answer: 'Cache and Cobblestone were removed from the active duty pool during CS:GO and have not been added to CS2. See our Cache in CS2 guide for more details on its status.',
+  },
+  {
+    question: 'Can I play maps outside the active duty pool?',
+    answer: 'Yes. CS2 supports workshop maps that you can download and play in private servers. Some maps may also appear in casual or other non-competitive playlists. See our CS2 workshop maps guide for instructions.',
+  },
+];
+
+const breadcrumbSchema_ = breadcrumbSchema(breadcrumbs);
+const faqSchema_ = faqSchema(faqs);
+
+const articleSchema = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": title,
+  "description": description,
+  "author": { "@type": "Person", "name": "Josh Lingenfelter", "url": "https://www.linkedin.com/in/josh-lingenfelter-8157274b/", "jobTitle": "Director", "worksFor": { "@type": "Organization", "name": "CSGOLuck" } },
+  "publisher": { "@type": "Organization", "name": "CSGOLuck Wiki", "url": "https://wiki.csgoluck.com" },
+  "mainEntityOfPage": "https://wiki.csgoluck.com/cs2-map-pool/",
+  "inLanguage": "en-US"
+});
+
+const sections = [
+  { id: 'active-duty', label: 'Active Duty Maps' },
+  { id: 'recent-changes', label: 'Recent Changes' },
+  { id: 'history', label: 'Map Pool History' },
+  { id: 'reserve-workshop', label: 'Reserve & Workshop' },
+  { id: 'how-valve-selects', label: 'How Valve Selects Maps' },
+  { id: 'faq', label: 'FAQ' },
+  { id: 'related', label: 'Related Articles' },
+];
+---
+
+<Base title={title} description={description}>
+  <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema_)}></script>
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema_)}></script>
+  <script type="application/ld+json" set:html={articleSchema}></script>
+
+  <div class="cmp2-wrap">
+    <nav class="cmp2-breadcrumb">
+      <a href="/">Home</a>
+      <span class="cmp2-sep">/</span>
+      <a href="/cs2-maps-callouts-faq/">Maps & Callouts</a>
+      <span class="cmp2-sep">/</span>
+      <span>CS2 Map Pool</span>
+    </nav>
+
+    <header class="cmp2-header">
+      <h1>CS2 Map Pool 2025: Active Duty Maps</h1>
+      <p class="cmp2-subtitle">The complete guide to every competitive map in Counter-Strike 2</p>
+    </header>
+
+    <nav class="cmp2-toc-mobile" aria-label="Table of contents">
+      {sections.map((s) => (
+        <a href={`#${s.id}`} class="cmp2-toc-mobile-link">{s.label}</a>
+      ))}
+    </nav>
+
+    <div class="cmp2-layout">
+      <aside class="cmp2-sidebar">
+        <nav class="cmp2-toc" aria-label="Table of contents">
+          <span class="cmp2-toc-title">Contents</span>
+          {sections.map((s) => (
+            <a href={`#${s.id}`} class="cmp2-toc-link">{s.label}</a>
+          ))}
+        </nav>
+      </aside>
+
+      <article class="cmp2-content">
+        <p class="cmp2-intro">
+          The CS2 map pool defines which maps are available for competitive and Premier matchmaking. Knowing the active duty maps is essential for every player, whether you are grinding ranked games or following professional tournaments. This guide covers the current active duty pool, recent changes, and the history behind Valve's map selections.
+        </p>
+
+        <section id="active-duty">
+          <div class="cmp2-section-header"><h2>Current Active Duty Maps</h2></div>
+          <p>The active duty map pool is the set of maps available in Competitive and Premier matchmaking. These are also the maps used in professional tournaments and CS2 Majors. As of the latest CS2 updates, the active duty pool includes the following seven maps.</p>
+          <ul class="cmp2-list">
+            <li><strong>Mirage:</strong> A classic three-lane map set in Morocco. Known for its balanced layout and accessible callouts, Mirage is one of the most played maps at all skill levels.</li>
+            <li><strong>Inferno:</strong> Set in an Italian village, Inferno features tight chokepoints and heavy utility usage. The Banana and Apartments areas are iconic battlegrounds for both casual and professional play.</li>
+            <li><strong>Dust2:</strong> The most recognizable Counter-Strike map in history. Dust2's simple layout and long sightlines make it a favourite for aim-focused players.</li>
+            <li><strong>Nuke:</strong> A vertically-oriented map set in a nuclear facility. Nuke's two-floor design and complex rotation paths make it one of the more tactical maps in the pool.</li>
+            <li><strong>Ancient:</strong> A relatively newer addition to the active duty pool. Ancient features Aztec-inspired architecture and a layout that rewards coordinated team play.</li>
+            <li><strong>Anubis:</strong> An Egyptian-themed map added to active duty in CS2. Anubis has quickly become a competitive staple with its unique mid-control dynamics.</li>
+            <li><strong>Vertigo:</strong> A skyscraper map with unconventional vertical gameplay. Vertigo's compact layout leads to fast rotations and aggressive play styles.</li>
+          </ul>
+          <p>Note that this pool can change at any time through CS2 updates. Always check the game client for the most current active duty rotation. You can explore callouts and details for each map on our <a href="/cs2-maps/">CS2 maps page</a>.</p>
+        </section>
+
+        <section id="recent-changes">
+          <div class="cmp2-section-header"><h2>Recent Map Pool Changes</h2></div>
+          <p>Valve makes periodic adjustments to the active duty pool, adding new maps, removing underperforming ones, or swapping maps that need rework time. These changes are announced through CS2 game updates and blog posts on the <a href="https://www.counter-strike.net/" target="_blank" rel="noopener">official Counter-Strike website</a>.</p>
+          <p>The transition from CS:GO to CS2 brought significant map pool changes. Not all CS:GO maps made the jump to CS2 at launch, as each map needed to be rebuilt or updated for the Source 2 engine. Some maps like Overpass and Train that were previously in the active duty pool have seen various changes in their availability.</p>
+          <p>When Valve adds or removes a map, it typically takes effect immediately in matchmaking. Professional tournament organizers usually adopt the new pool for their next scheduled event, though some may complete ongoing tournaments with the previous pool to avoid mid-event disruption.</p>
+        </section>
+
+        <section id="history">
+          <div class="cmp2-section-header"><h2>Map Pool History in CS2</h2></div>
+          <p>The concept of an active duty map pool was introduced during CS:GO's competitive evolution. Before this system, players could queue for any available map, leading to inconsistent competitive experiences. The active duty system standardizes which maps are used in ranked play and professional competition.</p>
+          <p>Over the years, the active duty pool has seen numerous changes. Iconic maps like Cobblestone, Cache, and Train have all rotated in and out. Each change sparks community discussion and requires professional teams to adapt their strategies and map pools.</p>
+          <p>Some of the most notable historical changes include the addition of Vertigo (which was controversial at first but has since become a competitive mainstay), the introduction of Ancient as a replacement for Train, and the addition of Anubis during the CS2 era. Each change reflects Valve's ongoing effort to balance competitive freshness with map quality.</p>
+        </section>
+
+        <section id="reserve-workshop">
+          <div class="cmp2-section-header"><h2>Reserve and Workshop Map Groups</h2></div>
+          <p>Beyond the active duty pool, CS2 supports additional maps through the reserve group and the Steam Workshop. Reserve maps are Valve-made maps that are not part of competitive matchmaking but may appear in casual playlists or can be played on community servers.</p>
+          <p>The <a href="https://steamcommunity.com/workshop/browse/?appid=730" target="_blank" rel="noopener">Steam Workshop</a> hosts thousands of community-created maps ranging from faithful recreations of classic maps to entirely original designs. Workshop maps can be used for practice, custom game modes, and casual play. See our <a href="/cs2-workshop-maps/">CS2 workshop maps guide</a> for instructions on finding and loading them.</p>
+          <p>Some of the most requested maps that are currently not in CS2 include Cache, Cobblestone, and Season. Community members have created workshop versions of these maps, though they are unofficial. For the latest on Cache specifically, see our <a href="/cache-cs2/">Cache in CS2 guide</a>.</p>
+        </section>
+
+        <section id="how-valve-selects">
+          <div class="cmp2-section-header"><h2>How Valve Selects Maps</h2></div>
+          <p>Valve has never published an official set of criteria for active duty map selection, but patterns from past decisions reveal several factors that influence their choices.</p>
+          <p>Competitive balance is paramount. Maps that consistently produce one-sided results (where one side wins far more rounds than the other) are candidates for removal or rework. Valve monitors win rate data across all skill levels and from professional play to evaluate map balance.</p>
+          <p>Community feedback also plays a role. Maps that are broadly unpopular with the player base may be cycled out, while highly requested maps may be fast-tracked for addition. However, Valve also considers map diversity -- they want each map in the pool to offer a distinct tactical experience rather than feeling redundant.</p>
+          <p>Technical quality and visual standards matter as well. As CS2 evolves, maps need to meet current engine capabilities and performance benchmarks. Maps that cause frame rate issues or have unresolved visual bugs may be pulled from rotation until they are fixed. Valve occasionally partners with community mappers who have created standout workshop maps, bringing polished community work into the official game.</p>
+        </section>
+
+        <section id="faq">
+          <div class="cmp2-section-header"><h2>Frequently Asked Questions</h2></div>
+          <div class="cmp2-faq-list">
+            {faqs.map((faq) => (
+              <details class="cmp2-faq-item">
+                <summary class="cmp2-faq-question">{faq.question}</summary>
+                <p class="cmp2-faq-answer">{faq.answer}</p>
+              </details>
+            ))}
+          </div>
+        </section>
+
+        <section id="related">
+          <div class="cmp2-section-header"><h2>Related Articles</h2></div>
+          <div class="cmp2-resources-grid">
+            <a href="/cs2-maps-callouts-faq/" class="cmp2-resource-card"><span class="cmp2-resource-name">Maps & Callouts Hub</span><span class="cmp2-resource-arrow">&rarr;</span></a>
+            <a href="/cache-cs2/" class="cmp2-resource-card"><span class="cmp2-resource-name">Is Cache Coming to CS2?</span><span class="cmp2-resource-arrow">&rarr;</span></a>
+            <a href="/cs2-workshop-maps/" class="cmp2-resource-card"><span class="cmp2-resource-name">CS2 Workshop Maps</span><span class="cmp2-resource-arrow">&rarr;</span></a>
+            <a href="/cs2-maps/" class="cmp2-resource-card"><span class="cmp2-resource-name">All CS2 Maps</span><span class="cmp2-resource-arrow">&rarr;</span></a>
+          </div>
+        </section>
+      </article>
+    </div>
+  </div>
+
+  <style>
+    .cmp2-wrap{max-width:1100px;margin:0 auto;padding:0 1.5rem 2rem}
+    .cmp2-breadcrumb{display:flex;align-items:center;gap:.5rem;padding:1.25rem 0;font-size:.85rem;color:var(--text2)}
+    .cmp2-breadcrumb a{color:var(--accent);text-decoration:none}
+    .cmp2-breadcrumb a:hover{color:var(--accent2)}
+    .cmp2-sep{color:var(--border)}
+    .cmp2-header{padding:1.5rem 0 1.25rem;border-bottom:2px solid var(--accent);margin-bottom:1.5rem}
+    .cmp2-header h1{margin:0 0 .35rem;font-size:2.2rem;font-weight:800;color:var(--text);letter-spacing:-.02em;line-height:1.2}
+    .cmp2-subtitle{margin:0;font-size:1.05rem;color:var(--text2);font-weight:400}
+    .cmp2-toc-mobile{display:none}
+    .cmp2-layout{display:grid;grid-template-columns:220px 1fr;gap:2.5rem;align-items:start}
+    .cmp2-sidebar{position:sticky;top:80px}
+    .cmp2-toc{display:flex;flex-direction:column;gap:0;border-left:2px solid var(--border);padding-left:0}
+    .cmp2-toc-title{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--accent);padding:0 0 .6rem 1rem}
+    .cmp2-toc-link{display:block;padding:.4rem 1rem;font-size:.82rem;color:var(--text2);text-decoration:none;border-left:2px solid transparent;margin-left:-2px;transition:color .2s,border-color .2s}
+    .cmp2-toc-link:hover{color:var(--text);border-left-color:var(--accent)}
+    .cmp2-content{min-width:0}
+    .cmp2-intro{font-size:1rem;line-height:1.8;color:var(--text2);margin-bottom:2rem}
+    .cmp2-section-header{background:rgba(46,204,113,.05);margin:0 -1.25rem 1.25rem;padding:.75rem 1.25rem;border-radius:4px}
+    .cmp2-section-header h2{margin:0;padding:0;font-size:1.5rem;font-weight:700;color:var(--text);border:none;letter-spacing:-.01em}
+    section{margin-bottom:2.5rem}
+    h3{font-size:1.15rem;font-weight:600;margin:1.5rem 0 .6rem;color:var(--text)}
+    p{line-height:1.7;color:var(--text2);margin-bottom:1rem}
+    .cmp2-list{list-style:none;padding:0;margin:.75rem 0 1.5rem}
+    .cmp2-list li{padding:.4rem 0 .4rem 1.6rem;position:relative;color:var(--text2);line-height:1.65}
+    .cmp2-list li::before{content:'';position:absolute;left:.25rem;top:.75rem;width:6px;height:6px;background:var(--accent);border-radius:1px}
+    .cmp2-list li strong{color:var(--text)}
+    .cmp2-faq-list{display:flex;flex-direction:column;gap:.5rem}
+    .cmp2-faq-item{background:var(--bg2);border:1px solid var(--border);border-radius:4px;overflow:hidden}
+    .cmp2-faq-question{display:block;padding:1rem 1.25rem;font-size:.95rem;font-weight:600;color:var(--text);cursor:pointer;list-style:none;position:relative;padding-right:2.5rem;transition:background .2s}
+    .cmp2-faq-question::-webkit-details-marker{display:none}
+    .cmp2-faq-question::after{content:'+';position:absolute;right:1.25rem;top:50%;transform:translateY(-50%);font-size:1.2rem;color:var(--accent);font-weight:700}
+    .cmp2-faq-item[open] .cmp2-faq-question::after{content:'\2212'}
+    .cmp2-faq-item[open] .cmp2-faq-question{border-bottom:1px solid var(--border);background:rgba(46,204,113,.03)}
+    .cmp2-faq-question:hover{background:rgba(46,204,113,.03)}
+    .cmp2-faq-answer{padding:1rem 1.25rem;margin:0;font-size:.9rem;color:var(--text2);line-height:1.7}
+    .cmp2-resources-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.6rem;margin:.5rem 0 1.5rem}
+    .cmp2-resource-card{display:flex;align-items:center;justify-content:space-between;padding:.75rem 1rem;background:var(--bg2);border:1px solid var(--border);border-radius:4px;text-decoration:none;border-left:2px solid transparent;transition:border-left-color .2s,color .2s}
+    .cmp2-resource-card:hover{border-left-color:var(--accent)}
+    .cmp2-resource-name{font-size:.88rem;color:var(--text2);font-weight:500;transition:color .2s}
+    .cmp2-resource-card:hover .cmp2-resource-name{color:var(--text)}
+    .cmp2-resource-arrow{font-size:1rem;color:var(--accent);opacity:0;transition:opacity .2s}
+    .cmp2-resource-card:hover .cmp2-resource-arrow{opacity:1}
+    @media(max-width:860px){
+      .cmp2-layout{grid-template-columns:1fr;gap:0}
+      .cmp2-sidebar{display:none}
+      .cmp2-toc-mobile{display:flex;gap:.25rem;overflow-x:auto;padding:.75rem 0;margin-bottom:1rem;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+      .cmp2-toc-mobile::-webkit-scrollbar{display:none}
+      .cmp2-toc-mobile-link{flex-shrink:0;padding:.35rem .75rem;font-size:.78rem;font-weight:600;color:var(--text2);background:var(--bg2);border:1px solid var(--border);border-radius:4px;text-decoration:none;white-space:nowrap;transition:color .2s,border-color .2s}
+      .cmp2-toc-mobile-link:hover{color:var(--accent);border-color:var(--accent)}
+      .cmp2-header h1{font-size:1.7rem}
+      .cmp2-section-header{margin:0 -1rem 1rem;padding:.6rem 1rem}
+      .cmp2-resources-grid{grid-template-columns:repeat(2,1fr)}
+    }
+    @media(max-width:600px){
+      .cmp2-wrap{padding:0 1rem 1.5rem}
+      .cmp2-resources-grid{grid-template-columns:1fr}
+      .cmp2-header h1{font-size:1.5rem}
+    }
+  </style>
+  <AuthorBox updated="2026-03-04" />
+</Base>

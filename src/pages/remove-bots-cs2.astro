@@ -1,0 +1,276 @@
+---
+import Base from '../layouts/Base.astro';
+import AuthorBox from '../components/AuthorBox.astro';
+import { faqSchema, breadcrumbSchema } from '../lib/weapons';
+
+const title = 'How to Kick & Remove Bots in CS2 | CSGOLuck Wiki';
+const description = 'Remove bots from CS2 private servers using console commands. Step-by-step methods to kick bots and prevent them from joining.';
+
+const breadcrumbs = [
+  { name: 'Home', url: '/' },
+  { name: 'CS2 General', url: '/cs2-general-faq' },
+  { name: 'Remove Bots in CS2', url: '/remove-bots-cs2' },
+];
+
+const faqs = [
+  {
+    question: 'What is the command to remove all bots in CS2?',
+    answer: 'Type "bot_kick" in the console to instantly remove all bots from both teams. This works on any private server where you have access to console commands.',
+  },
+  {
+    question: 'Can I remove bots in official matchmaking?',
+    answer: 'No. Bot management commands only work on private servers. In official Competitive and Premier matchmaking, bots are controlled by Valve\'s server settings and cannot be manually kicked or added.',
+  },
+  {
+    question: 'How do I stop bots from joining after I kick them?',
+    answer: 'Use "bot_quota 0" after kicking bots. This sets the maximum number of bots to zero, preventing the server from automatically adding new bots to fill empty slots.',
+  },
+  {
+    question: 'Can I add bots back after removing them?',
+    answer: 'Yes. Use "bot_add_t" to add a Terrorist bot or "bot_add_ct" to add a Counter-Terrorist bot. You can also set "bot_quota" to a specific number to have the server automatically maintain that many bots.',
+  },
+];
+
+const breadcrumbSchema_ = breadcrumbSchema(breadcrumbs);
+const faqSchema_ = faqSchema(faqs);
+
+const articleSchema = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": title,
+  "description": description,
+  "author": { "@type": "Person", "name": "Josh Lingenfelter", "url": "https://www.linkedin.com/in/josh-lingenfelter-8157274b/", "jobTitle": "Director", "worksFor": { "@type": "Organization", "name": "CSGOLuck" } },
+  "publisher": { "@type": "Organization", "name": "CSGOLuck Wiki", "url": "https://wiki.csgoluck.com" },
+  "mainEntityOfPage": "https://wiki.csgoluck.com/remove-bots-cs2/",
+  "inLanguage": "en-US"
+});
+
+const sections = [
+  { id: 'bot-kick', label: 'Using bot_kick' },
+  { id: 'bot-quota', label: 'Preventing Bots (bot_quota)' },
+  { id: 'specific-bots', label: 'Kicking Specific Bots' },
+  { id: 'practice-commands', label: 'Bot Commands for Practice' },
+  { id: 'when-useful', label: 'When Bots Are Useful' },
+  { id: 'faq', label: 'FAQ' },
+  { id: 'related', label: 'Related Articles' },
+];
+---
+
+<Base title={title} description={description}>
+  <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema_)}></script>
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema_)}></script>
+  <script type="application/ld+json" set:html={articleSchema}></script>
+
+  <div class="rbc-wrap">
+    <nav class="rbc-breadcrumb">
+      <a href="/">Home</a>
+      <span class="rbc-sep">/</span>
+      <a href="/cs2-general-faq/">General</a>
+      <span class="rbc-sep">/</span>
+      <span>Remove Bots in CS2</span>
+    </nav>
+
+    <header class="rbc-header">
+      <h1>How to Remove Bots in CS2</h1>
+      <p class="rbc-subtitle">Console commands to kick, prevent, and manage bots on private servers</p>
+    </header>
+
+    <nav class="rbc-toc-mobile" aria-label="Table of contents">
+      {sections.map((s) => (
+        <a href={`#${s.id}`} class="rbc-toc-mobile-link">{s.label}</a>
+      ))}
+    </nav>
+
+    <div class="rbc-layout">
+      <aside class="rbc-sidebar">
+        <nav class="rbc-toc" aria-label="Table of contents">
+          <span class="rbc-toc-title">Contents</span>
+          {sections.map((s) => (
+            <a href={`#${s.id}`} class="rbc-toc-link">{s.label}</a>
+          ))}
+        </nav>
+      </aside>
+
+      <article class="rbc-content">
+        <p class="rbc-intro">
+          Knowing how to remove bots in CS2 is essential for anyone who practices on private servers. Whether you want an empty server for utility practice, a controlled environment for aim training, or a clean slate for a custom game with friends, bot management commands give you full control. This guide covers every method for kicking, preventing, and managing bots in Counter-Strike 2.
+        </p>
+
+        <section id="bot-kick">
+          <div class="rbc-section-header"><h2>Using bot_kick to Remove Bots</h2></div>
+          <p>The simplest and most commonly used command to remove bots in CS2 is <code>bot_kick</code>. This command instantly removes all bots from the server regardless of which team they are on.</p>
+
+          <h3>How to Use bot_kick</h3>
+          <ul class="rbc-list">
+            <li><strong>Step 1:</strong> Open the developer console by pressing the tilde key (~). If the console is not enabled, see our <a href="/cs2-console-commands/">CS2 console commands guide</a> for setup instructions</li>
+            <li><strong>Step 2:</strong> Type <code>bot_kick</code> and press Enter</li>
+            <li><strong>Step 3:</strong> All bots on both teams will be immediately removed from the server</li>
+          </ul>
+          <p>This command works on any private server or practice session where you have console access. It does not work on official Valve matchmaking servers -- bot behavior in Competitive and Premier is managed by the server.</p>
+
+          <h3>Kicking Bots by Team</h3>
+          <p>You can also remove bots from a specific team rather than all bots at once. This is useful when you want bots on one side but not the other.</p>
+          <ul class="rbc-list">
+            <li><strong>bot_kick t:</strong> Removes all Terrorist bots only</li>
+            <li><strong>bot_kick ct:</strong> Removes all Counter-Terrorist bots only</li>
+          </ul>
+          <p>For example, if you are practicing retakes as a Counter-Terrorist, you might want to keep Terrorist bots on the opposing team while removing any CT bots that the server added to your side.</p>
+        </section>
+
+        <section id="bot-quota">
+          <div class="rbc-section-header"><h2>Preventing Bots from Joining (bot_quota)</h2></div>
+          <p>After kicking bots, the server may automatically add new ones to fill empty player slots. To prevent this, you need to use the <code>bot_quota</code> command, which sets the maximum number of bots the server is allowed to maintain.</p>
+          <ul class="rbc-list">
+            <li><strong>bot_quota 0:</strong> Prevents any bots from being on the server. The server will not add bots to fill empty slots</li>
+            <li><strong>bot_quota 5:</strong> Allows a maximum of 5 bots total across both teams</li>
+            <li><strong>bot_quota 10:</strong> Allows up to 10 bots (useful for filling a full 5v5 game)</li>
+          </ul>
+          <p>The most common workflow is to run both commands together: first <code>bot_kick</code> to clear existing bots, then <code>bot_quota 0</code> to prevent new ones from spawning. This ensures you have a completely bot-free server.</p>
+
+          <h3>bot_quota_mode</h3>
+          <p>The <code>bot_quota_mode</code> command controls how the server decides to add bots. The two main modes are:</p>
+          <ul class="rbc-list">
+            <li><strong>bot_quota_mode normal:</strong> The server maintains the exact number of bots specified by bot_quota at all times</li>
+            <li><strong>bot_quota_mode fill:</strong> The server adds bots to reach the bot_quota number only when there are fewer total players. As human players join, bots are automatically removed</li>
+          </ul>
+          <p>For practice servers, <code>bot_quota_mode normal</code> with <code>bot_quota 0</code> gives you the cleanest empty-server experience. For custom games with friends, <code>bot_quota_mode fill</code> is useful for keeping teams balanced as players join and leave.</p>
+        </section>
+
+        <section id="specific-bots">
+          <div class="rbc-section-header"><h2>Kicking Specific Bot Types</h2></div>
+          <p>CS2 offers additional bot_kick variations that let you target specific bot difficulty levels or individual bots by name.</p>
+          <ul class="rbc-list">
+            <li><strong>bot_kick easy:</strong> Removes only easy-difficulty bots</li>
+            <li><strong>bot_kick normal:</strong> Removes only normal-difficulty bots</li>
+            <li><strong>bot_kick hard:</strong> Removes only hard-difficulty bots</li>
+            <li><strong>bot_kick expert:</strong> Removes only expert-difficulty bots</li>
+          </ul>
+          <p>You can also kick a specific bot by name. Open the console, look at the player list to find the bot's name, and type <code>bot_kick [botname]</code>. This is handy when you want to remove a single bot without affecting others.</p>
+          <p>To control the difficulty of bots that you add, use <code>bot_difficulty [0-3]</code> where 0 is easy and 3 is expert. Set this before adding bots with <code>bot_add</code> to ensure they spawn at the desired skill level. For more console command details, see our <a href="/cs2-commands/">full CS2 commands reference</a>.</p>
+        </section>
+
+        <section id="practice-commands">
+          <div class="rbc-section-header"><h2>Bot Commands for Practice Servers</h2></div>
+          <p>Bots are a critical tool for practice, not just an annoyance to be removed. Here are the most useful bot-related commands for setting up an effective practice environment. For a complete practice server setup, see our <a href="/practice-config/">practice config guide</a>.</p>
+
+          <h3>Adding and Placing Bots</h3>
+          <ul class="rbc-list">
+            <li><strong>bot_add_t:</strong> Adds one bot to the Terrorist team</li>
+            <li><strong>bot_add_ct:</strong> Adds one bot to the Counter-Terrorist team</li>
+            <li><strong>bot_place:</strong> Places a bot at the exact position you are looking at (requires sv_cheats 1)</li>
+            <li><strong>bot_stop 1:</strong> Freezes all bots in place -- they will not move, shoot, or react</li>
+            <li><strong>bot_stop 0:</strong> Unfreezes bots and returns them to normal behavior</li>
+          </ul>
+
+          <h3>Controlling Bot Behavior</h3>
+          <ul class="rbc-list">
+            <li><strong>bot_dont_shoot 1:</strong> Prevents bots from firing their weapons (they will still move and follow orders)</li>
+            <li><strong>bot_knives_only 1:</strong> Forces all bots to only use knives</li>
+            <li><strong>bot_mimic 1:</strong> Makes bots mirror your movement and actions (useful for testing multi-player scenarios)</li>
+            <li><strong>bot_crouch 1:</strong> Forces all bots to crouch (useful for practicing headshot placement on crouched targets)</li>
+          </ul>
+          <p>Combining these commands lets you create highly specific practice scenarios. For example, use <code>bot_stop 1</code> with <code>bot_place</code> to set up static targets at specific positions, or use <code>bot_dont_shoot 1</code> with moving bots to practice tracking without getting killed. Refer to the <a href="https://developer.valvesoftware.com/" target="_blank" rel="noopener">Valve Developer Wiki</a> for additional server commands.</p>
+        </section>
+
+        <section id="when-useful">
+          <div class="rbc-section-header"><h2>When Bots Are Useful to Keep</h2></div>
+          <p>While removing bots is essential for many practice scenarios, there are times when keeping bots is actually beneficial. Before clearing them all, consider whether bots might serve your current training goals.</p>
+          <ul class="rbc-list">
+            <li><strong>Aim training:</strong> Frozen bots at head height make excellent target practice. Use bot_stop and bot_place to create custom aim courses</li>
+            <li><strong>Retake practice:</strong> Add bots to the opposing team and practice retaking bomb sites against AI opponents. While bots are not as unpredictable as humans, they provide a starting point for learning site entries and clearing angles</li>
+            <li><strong>Economy testing:</strong> Keep bots in a full game to test buy strategies and see how different economic scenarios play out over multiple rounds</li>
+            <li><strong>Warm-up partners:</strong> If you are waiting for friends to join a private server, bots can keep the game running and give you something to shoot at in the meantime</li>
+            <li><strong>Movement targets:</strong> Unfreeze bots with bot_dont_shoot to create moving targets that simulate real player movement patterns for tracking practice</li>
+          </ul>
+          <p>The key is having full control over bot behavior. With the commands covered in this guide, you can set up bots exactly the way you need them for any practice scenario, or remove them entirely when they are not needed.</p>
+        </section>
+
+        <section id="faq">
+          <div class="rbc-section-header"><h2>Frequently Asked Questions</h2></div>
+          <div class="rbc-faq-list">
+            {faqs.map((faq) => (
+              <details class="rbc-faq-item">
+                <summary class="rbc-faq-question">{faq.question}</summary>
+                <p class="rbc-faq-answer">{faq.answer}</p>
+              </details>
+            ))}
+          </div>
+        </section>
+
+        <section id="related">
+          <div class="rbc-section-header"><h2>Related Articles</h2></div>
+          <div class="rbc-resources-grid">
+            <a href="/cs2-general-faq/" class="rbc-resource-card"><span class="rbc-resource-name">General FAQ Hub</span><span class="rbc-resource-arrow">&rarr;</span></a>
+            <a href="/cs2-console-commands/" class="rbc-resource-card"><span class="rbc-resource-name">CS2 Console Commands</span><span class="rbc-resource-arrow">&rarr;</span></a>
+            <a href="/how-long-cs2-game/" class="rbc-resource-card"><span class="rbc-resource-name">How Long Does a CS2 Game Last?</span><span class="rbc-resource-arrow">&rarr;</span></a>
+            <a href="/cs2-commands/" class="rbc-resource-card"><span class="rbc-resource-name">CS2 Commands Database</span><span class="rbc-resource-arrow">&rarr;</span></a>
+            <a href="/practice-config/" class="rbc-resource-card"><span class="rbc-resource-name">Practice Config</span><span class="rbc-resource-arrow">&rarr;</span></a>
+          </div>
+        </section>
+      </article>
+    </div>
+  </div>
+
+  <style>
+    .rbc-wrap{max-width:1100px;margin:0 auto;padding:0 1.5rem 2rem}
+    .rbc-breadcrumb{display:flex;align-items:center;gap:.5rem;padding:1.25rem 0;font-size:.85rem;color:var(--text2)}
+    .rbc-breadcrumb a{color:var(--accent);text-decoration:none}
+    .rbc-breadcrumb a:hover{color:var(--accent2)}
+    .rbc-sep{color:var(--border)}
+    .rbc-header{padding:1.5rem 0 1.25rem;border-bottom:2px solid var(--accent);margin-bottom:1.5rem}
+    .rbc-header h1{margin:0 0 .35rem;font-size:2.2rem;font-weight:800;color:var(--text);letter-spacing:-.02em;line-height:1.2}
+    .rbc-subtitle{margin:0;font-size:1.05rem;color:var(--text2);font-weight:400}
+    .rbc-toc-mobile{display:none}
+    .rbc-layout{display:grid;grid-template-columns:220px 1fr;gap:2.5rem;align-items:start}
+    .rbc-sidebar{position:sticky;top:80px}
+    .rbc-toc{display:flex;flex-direction:column;gap:0;border-left:2px solid var(--border);padding-left:0}
+    .rbc-toc-title{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--accent);padding:0 0 .6rem 1rem}
+    .rbc-toc-link{display:block;padding:.4rem 1rem;font-size:.82rem;color:var(--text2);text-decoration:none;border-left:2px solid transparent;margin-left:-2px;transition:color .2s,border-color .2s}
+    .rbc-toc-link:hover{color:var(--text);border-left-color:var(--accent)}
+    .rbc-content{min-width:0}
+    .rbc-intro{font-size:1rem;line-height:1.8;color:var(--text2);margin-bottom:2rem}
+    .rbc-section-header{background:rgba(46,204,113,.05);margin:0 -1.25rem 1.25rem;padding:.75rem 1.25rem;border-radius:4px}
+    .rbc-section-header h2{margin:0;padding:0;font-size:1.5rem;font-weight:700;color:var(--text);border:none;letter-spacing:-.01em}
+    section{margin-bottom:2.5rem}
+    h3{font-size:1.15rem;font-weight:600;margin:1.5rem 0 .6rem;color:var(--text)}
+    p{line-height:1.7;color:var(--text2);margin-bottom:1rem}
+    code{background:var(--bg3);padding:.15rem .4rem;border-radius:3px;font-size:.88rem;color:var(--accent)}
+    .rbc-list{list-style:none;padding:0;margin:.75rem 0 1.5rem}
+    .rbc-list li{padding:.4rem 0 .4rem 1.6rem;position:relative;color:var(--text2);line-height:1.65}
+    .rbc-list li::before{content:'';position:absolute;left:.25rem;top:.75rem;width:6px;height:6px;background:var(--accent);border-radius:1px}
+    .rbc-list li strong{color:var(--text)}
+    .rbc-faq-list{display:flex;flex-direction:column;gap:.5rem}
+    .rbc-faq-item{background:var(--bg2);border:1px solid var(--border);border-radius:4px;overflow:hidden}
+    .rbc-faq-question{display:block;padding:1rem 1.25rem;font-size:.95rem;font-weight:600;color:var(--text);cursor:pointer;list-style:none;position:relative;padding-right:2.5rem;transition:background .2s}
+    .rbc-faq-question::-webkit-details-marker{display:none}
+    .rbc-faq-question::after{content:'+';position:absolute;right:1.25rem;top:50%;transform:translateY(-50%);font-size:1.2rem;color:var(--accent);font-weight:700}
+    .rbc-faq-item[open] .rbc-faq-question::after{content:'\2212'}
+    .rbc-faq-item[open] .rbc-faq-question{border-bottom:1px solid var(--border);background:rgba(46,204,113,.03)}
+    .rbc-faq-question:hover{background:rgba(46,204,113,.03)}
+    .rbc-faq-answer{padding:1rem 1.25rem;margin:0;font-size:.9rem;color:var(--text2);line-height:1.7}
+    .rbc-resources-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.6rem;margin:.5rem 0 1.5rem}
+    .rbc-resource-card{display:flex;align-items:center;justify-content:space-between;padding:.75rem 1rem;background:var(--bg2);border:1px solid var(--border);border-radius:4px;text-decoration:none;border-left:2px solid transparent;transition:border-left-color .2s,color .2s}
+    .rbc-resource-card:hover{border-left-color:var(--accent)}
+    .rbc-resource-name{font-size:.88rem;color:var(--text2);font-weight:500;transition:color .2s}
+    .rbc-resource-card:hover .rbc-resource-name{color:var(--text)}
+    .rbc-resource-arrow{font-size:1rem;color:var(--accent);opacity:0;transition:opacity .2s}
+    .rbc-resource-card:hover .rbc-resource-arrow{opacity:1}
+    @media(max-width:860px){
+      .rbc-layout{grid-template-columns:1fr;gap:0}
+      .rbc-sidebar{display:none}
+      .rbc-toc-mobile{display:flex;gap:.25rem;overflow-x:auto;padding:.75rem 0;margin-bottom:1rem;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+      .rbc-toc-mobile::-webkit-scrollbar{display:none}
+      .rbc-toc-mobile-link{flex-shrink:0;padding:.35rem .75rem;font-size:.78rem;font-weight:600;color:var(--text2);background:var(--bg2);border:1px solid var(--border);border-radius:4px;text-decoration:none;white-space:nowrap;transition:color .2s,border-color .2s}
+      .rbc-toc-mobile-link:hover{color:var(--accent);border-color:var(--accent)}
+      .rbc-header h1{font-size:1.7rem}
+      .rbc-section-header{margin:0 -1rem 1rem;padding:.6rem 1rem}
+      .rbc-resources-grid{grid-template-columns:repeat(2,1fr)}
+    }
+    @media(max-width:600px){
+      .rbc-wrap{padding:0 1rem 1.5rem}
+      .rbc-resources-grid{grid-template-columns:1fr}
+      .rbc-header h1{font-size:1.5rem}
+    }
+  </style>
+  <AuthorBox updated="2026-03-04" />
+</Base>

@@ -1,0 +1,141 @@
+---
+import Base from '../layouts/Base.astro';
+import AuthorBox from '../components/AuthorBox.astro';
+import { faqSchema, breadcrumbSchema } from '../lib/weapons';
+
+const title = 'CS2 Server Status & Technical Issues FAQ | CSGOLuck Wiki';
+const description = 'CS2 servers down? Dealing with jitter, packet loss, or trust factor issues? Find solutions and status checks right here.';
+
+const faqs = [
+  {
+    question: 'Is CS2 down right now?',
+    answer: 'The quickest way to check is the third-party site steamstat.us, which monitors Steam and CS2 server status in real time. You can also check the official Steam Status page or the @CS2 social media accounts for outage announcements. If matchmaking, inventory, or the Steam Community are affected, the problem is almost always on Valve\'s end rather than yours.',
+  },
+  {
+    question: 'Are CS2 servers down?',
+    answer: 'CS2 server outages typically coincide with scheduled Steam maintenance, which happens most Tuesdays, or with major game updates rolling out. Unplanned downtime does occur but rarely lasts more than a few hours. If you cannot connect and others report the same issue, wait for Valve to resolve it. Restarting Steam can also help if servers have just come back online.',
+  },
+  {
+    question: 'What is net jitter in CS2?',
+    answer: 'Net jitter measures the inconsistency in your network latency to the game server. While ping reflects average delay, jitter captures how much that delay fluctuates from packet to packet. High jitter causes unpredictable hit registration, rubber-banding, and laggy player models even when your average ping looks fine. You can monitor it using the net_graph console command in-game.',
+  },
+  {
+    question: 'How to fix net jitter in CS2?',
+    answer: 'Start by switching from Wi-Fi to a wired Ethernet connection, which eliminates the most common source of jitter. Close bandwidth-heavy applications like streaming services or large downloads. Disable any VPN you might be running. If jitter persists, try connecting to closer server regions, updating your router firmware, or configuring QoS settings on your router to prioritize game traffic.',
+  },
+  {
+    question: 'How to fix packet loss in CS2?',
+    answer: 'Packet loss usually stems from your local network or ISP rather than CS2 itself. Use a wired connection, restart your modem and router, and ensure no other devices are saturating your bandwidth. In-game, enable net_graph to confirm the loss. If the problem is consistent, contact your ISP — they can check for issues along the route to Valve\'s servers.',
+  },
+  {
+    question: 'How to check trust factor in CS2?',
+    answer: 'Valve intentionally keeps your Trust Factor score hidden — there is no command or menu that displays a numerical value. You will only see a warning when queuing with friends who have a significantly lower Trust Factor than you. To maintain a healthy Trust Factor, avoid reports, play consistently, keep your Steam account in good standing, and link a phone number to your account.',
+  },
+  {
+    question: 'Is CS2 Prime a one-time purchase?',
+    answer: 'Yes, CS2 Prime Status is a single one-time purchase available through the Steam store. Once bought, it is permanently tied to your account with no recurring fees. Prime players receive access to exclusive item drops, Prime-only matchmaking, and reduced exposure to cheaters. Previously, Prime could be earned by reaching a certain level, but that path was removed.',
+  },
+];
+---
+
+<Base title={title} description={description}>
+  <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema([{name:'Home',url:'/'},{name:'CS2 Server Status & Technical FAQ',url:'/cs2-server-status-technical-faq'}]))}></script>
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema(faqs))}></script>
+
+  <nav class="stf-breadcrumb">
+    <a href="/">Home</a> / <span>CS2 Server Status &amp; Technical FAQ</span>
+  </nav>
+
+  <section class="stf-hero">
+    <h1>CS2 Server Status &amp; Technical Issues FAQ</h1>
+    <p class="stf-hero-desc">Experiencing CS2 server status problems or technical issues like jitter, packet loss, or trust factor warnings? Connection problems are among the most frustrating parts of playing online, and knowing how to diagnose them saves you time. Below are answers to the most common CS2 technical questions players ask.</p>
+  </section>
+
+  <div class="stf-faq-list">
+    {faqs.map(faq => (
+      <details class="stf-faq-item">
+        <summary class="stf-faq-question">{faq.question}</summary>
+        <p class="stf-faq-answer">{faq.answer}</p>
+      </details>
+    ))}
+  </div>
+
+  <section class="stf-related">
+    <h2>Related Articles</h2>
+    <div class="stf-related-grid">
+      <a href="/is-cs2-down/" class="stf-related-card"><span class="stf-related-name">Is CS2 Down? How to Check</span><span class="stf-related-arrow">&rarr;</span></a>
+      <a href="/cs2-fix-net-jitter/" class="stf-related-card"><span class="stf-related-name">How to Fix Net Jitter in CS2</span><span class="stf-related-arrow">&rarr;</span></a>
+      <a href="/cs2-fix-packet-loss/" class="stf-related-card"><span class="stf-related-name">How to Fix Packet Loss in CS2</span><span class="stf-related-arrow">&rarr;</span></a>
+      <a href="/cs2-trust-factor/" class="stf-related-card"><span class="stf-related-name">CS2 Trust Factor Explained</span><span class="stf-related-arrow">&rarr;</span></a>
+    </div>
+  </section>
+
+  <section class="stf-explore">
+    <h2>Explore More</h2>
+    <div class="stf-explore-links">
+      <a href="/cs2-download-platform-faq/">CS2 Download &amp; Platform FAQ</a>
+      <a href="/cs2-settings-config-faq/">CS2 Settings &amp; Config FAQ</a>
+    </div>
+  </section>
+
+  <div class="stf-outbound">
+    <strong>Official Resources:</strong>
+    <a href="https://help.steampowered.com/" target="_blank" rel="noopener noreferrer">Steam Support</a>
+    <a href="https://steamstat.us/" target="_blank" rel="noopener noreferrer">SteamStat.us</a>
+  </div>
+
+  <AuthorBox updated="2026-03-04" />
+</Base>
+
+<style>
+/* ── Breadcrumb ── */
+.stf-breadcrumb{font-size:.82rem;color:var(--text2);margin-bottom:1.25rem;display:flex;gap:.35rem;flex-wrap:wrap}
+.stf-breadcrumb a{color:var(--accent);text-decoration:none}
+.stf-breadcrumb a:hover{text-decoration:underline}
+
+/* ── Hero ── */
+.stf-hero{background:var(--bg2);border:1px solid var(--border);border-radius:4px;padding:2rem;margin-bottom:1.5rem}
+.stf-hero h1{font-family:'Montserrat',sans-serif;font-size:2rem;font-weight:800;margin:0 0 .75rem;color:var(--text)}
+.stf-hero-desc{color:var(--text2);font-size:.95rem;line-height:1.7;margin:0}
+
+/* ── FAQ List ── */
+.stf-faq-list{display:flex;flex-direction:column;gap:.5rem;margin-bottom:2.5rem}
+.stf-faq-item{background:var(--bg2);border:1px solid var(--border);border-radius:4px;overflow:hidden}
+.stf-faq-question{display:block;padding:1rem 1.25rem;font-size:.95rem;font-weight:600;color:var(--text);cursor:pointer;list-style:none;position:relative;padding-right:2.5rem;transition:background .2s}
+.stf-faq-question::-webkit-details-marker{display:none}
+.stf-faq-question::after{content:'+';position:absolute;right:1.25rem;top:50%;transform:translateY(-50%);font-size:1.2rem;color:var(--accent);font-weight:700}
+.stf-faq-item[open] .stf-faq-question::after{content:'\2212'}
+.stf-faq-item[open] .stf-faq-question{border-bottom:1px solid var(--border);background:rgba(46,204,113,.03)}
+.stf-faq-question:hover{background:rgba(46,204,113,.03)}
+.stf-faq-answer{padding:1rem 1.25rem;margin:0;font-size:.9rem;color:var(--text2);line-height:1.7}
+
+/* ── Related Articles ── */
+.stf-related{margin-bottom:2rem}
+.stf-related h2{font-family:'Montserrat',sans-serif;font-size:1.2rem;font-weight:700;color:var(--text);margin:0 0 .75rem;padding-bottom:.5rem;border-bottom:2px solid var(--accent)}
+.stf-related-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:.6rem}
+.stf-related-card{display:flex;align-items:center;justify-content:space-between;padding:.75rem 1rem;background:var(--bg2);border:1px solid var(--border);border-radius:4px;text-decoration:none;border-left:2px solid transparent;transition:border-left-color .2s,color .2s}
+.stf-related-card:hover{border-left-color:var(--accent)}
+.stf-related-name{font-size:.88rem;color:var(--text2);font-weight:500;transition:color .2s}
+.stf-related-card:hover .stf-related-name{color:var(--text)}
+.stf-related-arrow{font-size:1rem;color:var(--accent);opacity:0;transition:opacity .2s}
+.stf-related-card:hover .stf-related-arrow{opacity:1}
+
+/* ── Explore More ── */
+.stf-explore{margin-bottom:2rem}
+.stf-explore h2{font-family:'Montserrat',sans-serif;font-size:1.2rem;font-weight:700;color:var(--text);margin:0 0 .75rem;padding-bottom:.5rem;border-bottom:2px solid var(--accent)}
+.stf-explore-links{display:flex;flex-wrap:wrap;gap:.45rem}
+.stf-explore-links a{color:var(--accent);text-decoration:none;padding:.4rem .75rem;background:var(--bg2);border:1px solid var(--border);border-radius:4px;font-size:.85rem;font-weight:600;transition:border-color .15s,color .15s}
+.stf-explore-links a:hover{border-color:var(--accent);color:var(--text)}
+
+/* ── Outbound Links ── */
+.stf-outbound{display:flex;flex-wrap:wrap;gap:.45rem;align-items:center;margin:1.5rem 0 2rem;font-size:.82rem}
+.stf-outbound strong{color:var(--text);margin-right:.2rem}
+.stf-outbound a{color:var(--accent);text-decoration:none;padding:.2rem .5rem;background:var(--bg2);border:1px solid var(--border);border-radius:4px;transition:border-color .15s}
+.stf-outbound a:hover{border-color:var(--accent)}
+
+/* ── Responsive ── */
+@media(max-width:768px){
+  .stf-hero h1{font-size:1.5rem}
+  .stf-related-grid{grid-template-columns:1fr}
+}
+</style>

@@ -1,0 +1,243 @@
+---
+import Base from '../layouts/Base.astro';
+import AuthorBox from '../components/AuthorBox.astro';
+import { faqSchema, breadcrumbSchema } from '../lib/weapons';
+
+const title = 'What Is ADR in CS2? Fully Explained | CSGOLuck Wiki';
+const description = 'ADR means Average Damage per Round in CS2. Learn what counts as good ADR, how it\'s calculated, and how to improve yours.';
+
+const breadcrumbs = [
+  { name: 'Home', url: '/' },
+  { name: 'Stats & ADR FAQ', url: '/cs2-stats-adr-tracking-faq' },
+  { name: 'What Is ADR', url: '/what-is-adr-cs2' },
+];
+
+const faqs = [
+  {
+    question: 'What does ADR stand for in CS2?',
+    answer: 'ADR stands for Average Damage per Round. It measures the average amount of damage a player deals to enemies in each round of a match. It is one of the most commonly referenced performance metrics in competitive CS2.',
+  },
+  {
+    question: 'Is 80 ADR good in CS2?',
+    answer: 'An ADR of 80 is considered solid for most competitive ranks. It means you are contributing roughly one kill\'s worth of damage per round on average. Professional players typically maintain ADR above 80, with top fraggers often exceeding 90-100 ADR in matches.',
+  },
+  {
+    question: 'Does utility damage count toward ADR?',
+    answer: 'Yes. All damage dealt to enemies counts toward your ADR, including damage from HE grenades, molotovs, and incendiary grenades. This is why proper utility usage can noticeably improve your ADR over time.',
+  },
+  {
+    question: 'How do I check my ADR in CS2?',
+    answer: 'You can see your ADR on the in-game scoreboard during and after matches. Third-party stat tracking sites also provide ADR data across your match history, giving you a longer-term view of your performance trends.',
+  },
+];
+
+const breadcrumbSchema_ = breadcrumbSchema(breadcrumbs);
+const faqSchema_ = faqSchema(faqs);
+
+const articleSchema = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": title,
+  "description": description,
+  "author": { "@type": "Person", "name": "Josh Lingenfelter", "url": "https://www.linkedin.com/in/josh-lingenfelter-8157274b/", "jobTitle": "Director", "worksFor": { "@type": "Organization", "name": "CSGOLuck" } },
+  "publisher": { "@type": "Organization", "name": "CSGOLuck Wiki", "url": "https://wiki.csgoluck.com" },
+  "mainEntityOfPage": "https://wiki.csgoluck.com/what-is-adr-cs2/",
+  "inLanguage": "en-US"
+});
+
+const sections = [
+  { id: 'what-adr', label: 'What ADR Means' },
+  { id: 'calculation', label: 'How It\'s Calculated' },
+  { id: 'good-adr', label: 'Good ADR' },
+  { id: 'benchmarks', label: 'Benchmarks by Rank' },
+  { id: 'improve', label: 'Improving ADR' },
+  { id: 'faq', label: 'FAQ' },
+  { id: 'related', label: 'Related Articles' },
+];
+---
+
+<Base title={title} description={description}>
+  <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema_)}></script>
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema_)}></script>
+  <script type="application/ld+json" set:html={articleSchema}></script>
+
+  <div class="wia-wrap">
+    <nav class="wia-breadcrumb">
+      <a href="/">Home</a>
+      <span class="wia-sep">/</span>
+      <a href="/cs2-stats-adr-tracking-faq/">Stats & ADR FAQ</a>
+      <span class="wia-sep">/</span>
+      <span>What Is ADR</span>
+    </nav>
+
+    <header class="wia-header">
+      <h1>What Is ADR in CS2?</h1>
+      <p class="wia-subtitle">Average Damage per Round explained — what it measures, why it matters, and how to improve it</p>
+    </header>
+
+    <nav class="wia-toc-mobile" aria-label="Table of contents">
+      {sections.map((s) => (
+        <a href={`#${s.id}`} class="wia-toc-mobile-link">{s.label}</a>
+      ))}
+    </nav>
+
+    <div class="wia-layout">
+      <aside class="wia-sidebar">
+        <nav class="wia-toc" aria-label="Table of contents">
+          <span class="wia-toc-title">Contents</span>
+          {sections.map((s) => (
+            <a href={`#${s.id}`} class="wia-toc-link">{s.label}</a>
+          ))}
+        </nav>
+      </aside>
+
+      <article class="wia-content">
+        <p class="wia-intro">
+          ADR is one of the most important performance metrics in CS2, standing for Average Damage per Round. It tells you how much damage a player contributes to the team effort in each round on average, making it a more reliable indicator of consistent performance than simple kill counts. Whether you are tracking your own improvement or evaluating professional players on <a href="https://www.hltv.org/" target="_blank" rel="noopener">HLTV</a>, ADR is a stat you need to understand.
+        </p>
+
+        <section id="what-adr">
+          <div class="wia-section-header"><h2>What ADR Stands For</h2></div>
+          <p>ADR stands for Average Damage per Round. It is calculated by dividing the total damage a player deals to enemies by the number of rounds played in a match. The result is a single number that represents how much damage you contributed, on average, in each round.</p>
+          <p>ADR is widely regarded as a better measure of individual impact than kills alone. A player might have a low kill count but a high ADR if they consistently deal significant damage that teammates finish off. Conversely, a player with many kills but low ADR might be consistently stealing kills on already-damaged enemies.</p>
+          <p>The metric is used extensively in professional CS2 analysis. Tournament broadcasts regularly display player ADR statistics, and sites like HLTV use it as a key component of player ratings. Understanding your own ADR helps you identify whether you are contributing enough damage to your team's success.</p>
+        </section>
+
+        <section id="calculation">
+          <div class="wia-section-header"><h2>How ADR Is Calculated</h2></div>
+          <p>The formula for ADR is straightforward:</p>
+          <p><strong>ADR = Total Damage Dealt to Enemies / Total Rounds Played</strong></p>
+          <p>All damage dealt to enemy players counts toward your total, including:</p>
+          <ul class="wia-list">
+            <li><strong>Gun damage:</strong> Every bullet that hits an enemy, regardless of whether you get the kill.</li>
+            <li><strong>Utility damage:</strong> Damage from HE grenades, molotov cocktails, and incendiary grenades.</li>
+            <li><strong>Knife damage:</strong> Melee damage dealt to enemies.</li>
+            <li><strong>Wallbang damage:</strong> Damage dealt through penetrable surfaces.</li>
+          </ul>
+          <p>Friendly fire damage does not count toward your ADR. Only damage inflicted on enemy players is included in the calculation. Damage to enemy equipment (like the bomb defuser kit) also does not count.</p>
+          <p>Since each player has 100 HP, an ADR of 100 would mean you deal exactly one kill's worth of damage per round on average. In practice, some of that damage is overkill (dealing more than the remaining HP of an enemy), so a player with 100 ADR may not literally get a kill every round.</p>
+        </section>
+
+        <section id="good-adr">
+          <div class="wia-section-header"><h2>What Is a Good ADR in CS2?</h2></div>
+          <p>What qualifies as "good" ADR depends on the context — your rank, role on the team, and the level of competition all matter. However, general benchmarks can help you gauge where you stand.</p>
+          <ul class="wia-list">
+            <li><strong>Below 50 ADR:</strong> Below average for competitive play. This suggests limited engagement in rounds or consistently being eliminated early without dealing damage.</li>
+            <li><strong>50-70 ADR:</strong> Average range for lower to mid-rank competitive players. Room for improvement but contributing to the team.</li>
+            <li><strong>70-85 ADR:</strong> Above average. Solid performance indicating consistent damage output in most rounds.</li>
+            <li><strong>85-100 ADR:</strong> Very good. This puts you in the upper tier of performance and is common among high-ranked players.</li>
+            <li><strong>100+ ADR:</strong> Exceptional. Consistently achieving 100+ ADR means you are having a dominant impact on nearly every round. Top professional players regularly hit this mark in matches.</li>
+          </ul>
+          <p>Keep in mind that ADR should not be the only metric you track. A support player who consistently provides excellent utility usage and information may have lower ADR than the team's entry fragger, but both roles are equally important for winning. Check your full stat profile using tools described in our <a href="/check-cs2-stats/">CS2 stats guide</a>.</p>
+        </section>
+
+        <section id="benchmarks">
+          <div class="wia-section-header"><h2>ADR Benchmarks by Rank</h2></div>
+          <p>While there are no officially published ADR averages by rank, community data and player experience suggest general trends across the CS2 ranking system.</p>
+          <p>Players in lower ranks (Silver through Gold Nova) typically average between 40-65 ADR. At this level, inconsistent aim, poor positioning, and limited utility usage all contribute to lower damage numbers. Many rounds end with players dealing little or no damage because they are caught off-guard or rotate too slowly.</p>
+          <p>Mid-tier players (Master Guardian through Distinguished Master Guardian) generally fall in the 60-80 ADR range. Improved aim and game sense translate directly into more consistent damage output. Players at this level start to use utility more effectively, adding incidental damage from grenades.</p>
+          <p>Higher ranks (Legendary Eagle and above, plus Faceit levels 7-10) commonly see 75-95+ ADR. At these levels, players combine accurate shooting with intelligent positioning and effective utility to maximise damage each round. Professional players and semi-pros regularly maintain 85-110+ ADR across tournaments.</p>
+          <p>These are rough guidelines, not strict boundaries. Your ADR will vary from match to match based on opponents, maps, and your team's playstyle.</p>
+        </section>
+
+        <section id="improve">
+          <div class="wia-section-header"><h2>How to Improve Your ADR</h2></div>
+          <p>Improving your ADR requires a combination of better mechanics, smarter positioning, and more intentional utility usage. Here are the most impactful areas to focus on.</p>
+          <ul class="wia-list">
+            <li><strong>Stay alive longer:</strong> Dead players deal zero damage. Avoiding unnecessary deaths by playing smarter positions and knowing when to fall back directly increases your damage output.</li>
+            <li><strong>Use utility aggressively:</strong> HE grenades and molotovs deal guaranteed damage if aimed correctly. Throwing a well-placed grenade into a common position every round can add significant damage that does not depend on winning aim duels.</li>
+            <li><strong>Improve crosshair placement:</strong> Pre-aiming at head level reduces the adjustment needed when you encounter an enemy, meaning you land more shots before they can react.</li>
+            <li><strong>Trade kills effectively:</strong> When a teammate engages an enemy, be close enough to deal damage to that enemy immediately. Even if you do not get the kill, the damage counts toward your ADR.</li>
+            <li><strong>Play aim-training maps:</strong> Practicing in community aim training maps and deathmatch servers builds the muscle memory needed to land shots consistently during real matches.</li>
+            <li><strong>Review your demos:</strong> Watch rounds where you dealt zero damage. Identify why — were you out of position, rotating too late, or dying without engaging? Each of these has a different fix.</li>
+          </ul>
+        </section>
+
+        <section id="faq">
+          <div class="wia-section-header"><h2>Frequently Asked Questions</h2></div>
+          <div class="wia-faq-list">
+            {faqs.map((faq) => (
+              <details class="wia-faq-item">
+                <summary class="wia-faq-question">{faq.question}</summary>
+                <p class="wia-faq-answer">{faq.answer}</p>
+              </details>
+            ))}
+          </div>
+          <p class="wia-faq-more">Explore more in our <a href="/cs2-stats-adr-tracking-faq/">Stats & ADR FAQ hub</a>.</p>
+        </section>
+
+        <section id="related">
+          <div class="wia-section-header"><h2>Related Articles</h2></div>
+          <div class="wia-resources-grid">
+            <a href="/check-cs2-stats/" class="wia-resource-card"><span class="wia-resource-name">Check Your CS2 Stats</span><span class="wia-resource-arrow">&rarr;</span></a>
+            <a href="/cs2-player-count/" class="wia-resource-card"><span class="wia-resource-name">CS2 Player Count</span><span class="wia-resource-arrow">&rarr;</span></a>
+            <a href="/cs2-stats-adr-tracking-faq/" class="wia-resource-card"><span class="wia-resource-name">Stats & ADR FAQ</span><span class="wia-resource-arrow">&rarr;</span></a>
+          </div>
+        </section>
+      </article>
+    </div>
+  </div>
+
+  <style>
+    .wia-wrap{max-width:1100px;margin:0 auto;padding:0 1.5rem 2rem}
+    .wia-breadcrumb{display:flex;align-items:center;gap:.5rem;padding:1.25rem 0;font-size:.85rem;color:var(--text2)}
+    .wia-breadcrumb a{color:var(--accent);text-decoration:none}
+    .wia-breadcrumb a:hover{color:var(--accent2)}
+    .wia-sep{color:var(--border)}
+    .wia-header{padding:1.5rem 0 1.25rem;border-bottom:2px solid var(--accent);margin-bottom:1.5rem}
+    .wia-header h1{margin:0 0 .35rem;font-size:2.2rem;font-weight:800;color:var(--text);letter-spacing:-.02em;line-height:1.2}
+    .wia-subtitle{margin:0;font-size:1.05rem;color:var(--text2);font-weight:400}
+    .wia-toc-mobile{display:none}
+    .wia-layout{display:grid;grid-template-columns:220px 1fr;gap:2.5rem;align-items:start}
+    .wia-sidebar{position:sticky;top:80px}
+    .wia-toc{display:flex;flex-direction:column;gap:0;border-left:2px solid var(--border);padding-left:0}
+    .wia-toc-title{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--accent);padding:0 0 .6rem 1rem}
+    .wia-toc-link{display:block;padding:.4rem 1rem;font-size:.82rem;color:var(--text2);text-decoration:none;border-left:2px solid transparent;margin-left:-2px;transition:color .2s,border-color .2s}
+    .wia-toc-link:hover{color:var(--text);border-left-color:var(--accent)}
+    .wia-content{min-width:0}
+    .wia-intro{font-size:1rem;line-height:1.8;color:var(--text2);margin-bottom:2rem}
+    .wia-section-header{background:rgba(46,204,113,.05);margin:0 -1.25rem 1.25rem;padding:.75rem 1.25rem;border-radius:4px}
+    .wia-section-header h2{margin:0;padding:0;font-size:1.5rem;font-weight:700;color:var(--text);border:none;letter-spacing:-.01em}
+    section{margin-bottom:2.5rem}
+    h3{font-size:1.15rem;font-weight:600;margin:1.5rem 0 .6rem;color:var(--text)}
+    p{line-height:1.7;color:var(--text2);margin-bottom:1rem}
+    .wia-list{list-style:none;padding:0;margin:.75rem 0 1.5rem}
+    .wia-list li{padding:.4rem 0 .4rem 1.6rem;position:relative;color:var(--text2);line-height:1.65}
+    .wia-list li::before{content:'';position:absolute;left:.25rem;top:.75rem;width:6px;height:6px;background:var(--accent);border-radius:1px}
+    .wia-list li strong{color:var(--text)}
+    .wia-faq-list{display:flex;flex-direction:column;gap:.5rem}
+    .wia-faq-item{background:var(--bg2);border:1px solid var(--border);border-radius:4px;overflow:hidden}
+    .wia-faq-question{display:block;padding:1rem 1.25rem;font-size:.95rem;font-weight:600;color:var(--text);cursor:pointer;list-style:none;position:relative;padding-right:2.5rem;transition:background .2s}
+    .wia-faq-question::-webkit-details-marker{display:none}
+    .wia-faq-question::after{content:'+';position:absolute;right:1.25rem;top:50%;transform:translateY(-50%);font-size:1.2rem;color:var(--accent);font-weight:700}
+    .wia-faq-item[open] .wia-faq-question::after{content:'\2212'}
+    .wia-faq-item[open] .wia-faq-question{border-bottom:1px solid var(--border);background:rgba(46,204,113,.03)}
+    .wia-faq-question:hover{background:rgba(46,204,113,.03)}
+    .wia-faq-answer{padding:1rem 1.25rem;margin:0;font-size:.9rem;color:var(--text2);line-height:1.7}
+    .wia-faq-more{font-size:.9rem;margin-top:1rem}
+    .wia-resources-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.6rem;margin:.5rem 0 1.5rem}
+    .wia-resource-card{display:flex;align-items:center;justify-content:space-between;padding:.75rem 1rem;background:var(--bg2);border:1px solid var(--border);border-radius:4px;text-decoration:none;border-left:2px solid transparent;transition:border-left-color .2s,color .2s}
+    .wia-resource-card:hover{border-left-color:var(--accent)}
+    .wia-resource-name{font-size:.88rem;color:var(--text2);font-weight:500;transition:color .2s}
+    .wia-resource-card:hover .wia-resource-name{color:var(--text)}
+    .wia-resource-arrow{font-size:1rem;color:var(--accent);opacity:0;transition:opacity .2s}
+    .wia-resource-card:hover .wia-resource-arrow{opacity:1}
+    @media(max-width:860px){
+      .wia-layout{grid-template-columns:1fr;gap:0}
+      .wia-sidebar{display:none}
+      .wia-toc-mobile{display:flex;gap:.25rem;overflow-x:auto;padding:.75rem 0;margin-bottom:1rem;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+      .wia-toc-mobile::-webkit-scrollbar{display:none}
+      .wia-toc-mobile-link{flex-shrink:0;padding:.35rem .75rem;font-size:.78rem;font-weight:600;color:var(--text2);background:var(--bg2);border:1px solid var(--border);border-radius:4px;text-decoration:none;white-space:nowrap;transition:color .2s,border-color .2s}
+      .wia-toc-mobile-link:hover{color:var(--accent);border-color:var(--accent)}
+      .wia-header h1{font-size:1.7rem}
+      .wia-section-header{margin:0 -1rem 1rem;padding:.6rem 1rem}
+      .wia-resources-grid{grid-template-columns:repeat(2,1fr)}
+    }
+    @media(max-width:600px){
+      .wia-wrap{padding:0 1rem 1.5rem}
+      .wia-resources-grid{grid-template-columns:1fr}
+      .wia-header h1{font-size:1.5rem}
+    }
+  </style>
+  <AuthorBox updated="2026-03-04" />
+</Base>

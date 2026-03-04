@@ -1,0 +1,238 @@
+---
+import Base from '../layouts/Base.astro';
+import AuthorBox from '../components/AuthorBox.astro';
+import { faqSchema, breadcrumbSchema } from '../lib/weapons';
+
+const title = 'How to Bhop in CS2: Bunny Hopping Guide | CSGOLuck Wiki';
+const description = 'Master bunny hopping in CS2. Learn the scroll wheel technique, timing, and practice methods to bhop consistently in matches.';
+
+const breadcrumbs = [
+  { name: 'Home', url: '/' },
+  { name: 'Gameplay & Practice', url: '/cs2-gameplay-practice-faq/' },
+  { name: 'How to Bhop', url: '/how-to-bhop-cs2/' },
+];
+
+const faqs = [
+  {
+    question: 'Is bunny hopping still possible in CS2?',
+    answer: 'Yes, bunny hopping works in CS2 but Valve limits your speed to around 300 units per second on official servers. You can still gain a small speed advantage, but you won\'t reach the extreme speeds possible on community servers.',
+  },
+  {
+    question: 'Should I use scroll wheel or spacebar for bhopping?',
+    answer: 'Scroll wheel is strongly recommended. It sends multiple jump inputs per scroll, making it far easier to hit the exact frame you need to land and jump again. Most experienced players bind jump to scroll down.',
+  },
+  {
+    question: 'Can I get banned for bunny hopping?',
+    answer: 'No. Bunny hopping using scroll wheel or spacebar is completely legitimate and not bannable on any server. Only external scripts or macros that automate the inputs could potentially trigger anti-cheat detection.',
+  },
+  {
+    question: 'How much faster does bhopping make you?',
+    answer: 'On official servers with the speed cap, bhopping provides a marginal speed boost of roughly 10-15% compared to running with a knife. On community servers without speed limits, experienced players can move significantly faster.',
+  },
+];
+
+const breadcrumbSchema_ = breadcrumbSchema(breadcrumbs);
+const faqSchema_ = faqSchema(faqs);
+
+const articleSchema = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": title,
+  "description": description,
+  "author": { "@type": "Person", "name": "Josh Lingenfelter", "url": "https://www.linkedin.com/in/josh-lingenfelter-8157274b/", "jobTitle": "Director", "worksFor": { "@type": "Organization", "name": "CSGOLuck" } },
+  "publisher": { "@type": "Organization", "name": "CSGOLuck Wiki", "url": "https://wiki.csgoluck.com" },
+  "mainEntityOfPage": "https://wiki.csgoluck.com/how-to-bhop-cs2/",
+  "inLanguage": "en-US"
+});
+
+const sections = [
+  { id: 'what-is-bhopping', label: 'What Is Bunny Hopping?' },
+  { id: 'scroll-technique', label: 'Scroll Wheel Technique' },
+  { id: 'timing-strafing', label: 'Timing & Air Strafing' },
+  { id: 'practice', label: 'Practice Methods' },
+  { id: 'competitive', label: 'Bhopping in Competitive' },
+  { id: 'faq', label: 'FAQ' },
+  { id: 'related', label: 'Related Articles' },
+];
+---
+
+<Base title={title} description={description}>
+  <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema_)}></script>
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema_)}></script>
+  <script type="application/ld+json" set:html={articleSchema}></script>
+
+  <div class="htb-wrap">
+    <nav class="htb-breadcrumb">
+      <a href="/">Home</a>
+      <span class="htb-sep">/</span>
+      <a href="/cs2-gameplay-practice-faq/">Gameplay & Practice</a>
+      <span class="htb-sep">/</span>
+      <span>How to Bhop</span>
+    </nav>
+
+    <header class="htb-header">
+      <h1>How to Bhop in CS2</h1>
+      <p class="htb-subtitle">Master bunny hopping to move faster and outmanoeuvre opponents</p>
+    </header>
+
+    <nav class="htb-toc-mobile" aria-label="Table of contents">
+      {sections.map((s) => (
+        <a href={`#${s.id}`} class="htb-toc-mobile-link">{s.label}</a>
+      ))}
+    </nav>
+
+    <div class="htb-layout">
+      <aside class="htb-sidebar">
+        <nav class="htb-toc" aria-label="Table of contents">
+          <span class="htb-toc-title">Contents</span>
+          {sections.map((s) => (
+            <a href={`#${s.id}`} class="htb-toc-link">{s.label}</a>
+          ))}
+        </nav>
+      </aside>
+
+      <article class="htb-content">
+        <p class="htb-intro">
+          Learning <strong>how to bhop in CS2</strong> gives you a movement advantage that can catch opponents off guard and help you rotate faster. Bunny hopping chains consecutive jumps together with air strafing to maintain and build speed beyond normal running pace. This guide breaks down the technique, timing, and practice methods you need to start bhopping consistently.
+        </p>
+
+        <section id="what-is-bhopping">
+          <div class="htb-section-header"><h2>What Is Bunny Hopping?</h2></div>
+          <p>Bunny hopping (bhopping) is a movement technique where you jump repeatedly the instant you land, combining each jump with air strafes to maintain momentum. Instead of losing speed when you hit the ground, a perfectly timed bhop carries your velocity into the next jump.</p>
+          <p>The technique dates back to the original Quake engine and has been a staple of Counter-Strike movement since the earliest versions. In CS2, Valve has implemented a speed cap on official servers that limits bhop speed to approximately 300 units per second, but even with the cap, bhopping still provides a noticeable speed advantage over standard running. The real value of bhopping lies in making yourself a harder target and reaching positions faster during rotations. For a deeper dive into all movement mechanics, see our <a href="/cs2-guides/movement-guide/">movement guide</a>.</p>
+        </section>
+
+        <section id="scroll-technique">
+          <div class="htb-section-header"><h2>The Scroll Wheel Bhop Technique</h2></div>
+          <p>The scroll wheel is the most reliable way to bhop because it sends multiple jump inputs in rapid succession, dramatically increasing your chances of hitting the perfect frame. Here is how to set it up:</p>
+          <ul class="htb-list">
+            <li><strong>Open your console</strong> and enter: <code>bind mwheeldown +jump</code> -- this binds jump to scrolling your mouse wheel down.</li>
+            <li><strong>Keep spacebar bound</strong> as a backup for regular jumps. You only need scroll wheel for bhopping.</li>
+            <li><strong>To bhop:</strong> Run forward, jump once, and as you are about to land, scroll your mouse wheel down. The rapid inputs will catch the exact landing frame and send you into the next jump.</li>
+          </ul>
+          <p>Some players prefer <code>bind mwheelup +jump</code> instead. Try both directions and use whichever feels more natural. The key is consistency -- pick one and stick with it until the motion becomes muscle memory.</p>
+        </section>
+
+        <section id="timing-strafing">
+          <div class="htb-section-header"><h2>Timing and Air Strafing</h2></div>
+          <p>Scroll wheel handles the jump timing, but air strafing is what actually builds and maintains your speed. Without proper strafing, you will lose momentum with each hop.</p>
+          <ul class="htb-list">
+            <li><strong>Release W:</strong> Once airborne, let go of the W key. Holding W while air strafing reduces your speed gain.</li>
+            <li><strong>Strafe left:</strong> Hold A and smoothly move your mouse to the left. This curves your path and adds velocity.</li>
+            <li><strong>Strafe right:</strong> Hold D and smoothly move your mouse to the right. Alternate between left and right strafes each jump.</li>
+            <li><strong>Stay smooth:</strong> Jerky or fast mouse movements bleed speed. The curve of your strafe should be gradual and controlled.</li>
+          </ul>
+          <p>The rhythm of bhopping is: jump, strafe left, land, jump, strafe right, land, repeat. Each successful strafe adds a small amount of speed. Over several hops, this compounds into noticeably faster movement than running.</p>
+        </section>
+
+        <section id="practice">
+          <div class="htb-section-header"><h2>Practice Methods and Maps</h2></div>
+          <p>Consistent bhopping takes time to develop. These practice methods will accelerate your progress:</p>
+          <ul class="htb-list">
+            <li><strong>Community bhop servers:</strong> Join dedicated bhop servers from the community server browser. These servers have settings optimised for bhopping, including higher air acceleration and no speed cap.</li>
+            <li><strong>Workshop maps:</strong> Browse the <a href="https://steamcommunity.com/workshop/browse/?appid=730" target="_blank" rel="noopener">Steam Workshop</a> for bhop training maps. These provide structured courses with increasing difficulty.</li>
+            <li><strong>Private server practice:</strong> Load any map in a private match and practise bhopping around the map. Use <code>sv_cheats 1</code> and <code>sv_autobunnyhopping 1</code> to practice the strafing component without worrying about jump timing.</li>
+            <li><strong>Enable speed display:</strong> Use <code>cl_showpos 1</code> in console to display your current velocity. This gives you immediate feedback on whether your strafes are gaining or losing speed.</li>
+          </ul>
+          <p>Start with flat, open areas and focus on stringing together three to four consecutive hops. Once you can do that reliably, try navigating around corners and through doorways while bhopping.</p>
+        </section>
+
+        <section id="competitive">
+          <div class="htb-section-header"><h2>Can You Bhop in Competitive?</h2></div>
+          <p>Bhopping works in all CS2 modes including Competitive and Premier, but the speed cap on official Valve servers limits its effectiveness. On official servers, your speed is capped at approximately 300 units per second, meaning you cannot build unlimited momentum like on community servers.</p>
+          <p>That said, bhopping in competitive play is still useful in specific situations:</p>
+          <ul class="htb-list">
+            <li><strong>Rotations:</strong> Chaining a few hops while rotating between bomb sites can shave precious seconds off your arrival time.</li>
+            <li><strong>Peeking:</strong> A well-timed bhop around a corner makes you harder to hit than a standard wide swing.</li>
+            <li><strong>Escaping:</strong> Bhopping away from a disadvantageous fight can save your life in clutch situations.</li>
+            <li><strong>Style points:</strong> Landing a clean bhop chain simply feels good and builds confidence.</li>
+          </ul>
+          <p>The most practical competitive application is situational -- use it when speed matters and the risk of mistiming a jump (and briefly slowing down) is acceptable. For more ways to sharpen your gameplay, read our <a href="/get-better-at-cs2/">tips to get better at CS2</a>.</p>
+        </section>
+
+        <section id="faq">
+          <div class="htb-section-header"><h2>Frequently Asked Questions</h2></div>
+          <div class="htb-faq-list">
+            {faqs.map((faq) => (
+              <details class="htb-faq-item">
+                <summary class="htb-faq-question">{faq.question}</summary>
+                <p class="htb-faq-answer">{faq.answer}</p>
+              </details>
+            ))}
+          </div>
+        </section>
+
+        <section id="related">
+          <div class="htb-section-header"><h2>Related Articles</h2></div>
+          <div class="htb-resources-grid">
+            <a href="/cs2-gameplay-practice-faq/" class="htb-resource-card"><span class="htb-resource-name">Gameplay & Practice Hub</span><span class="htb-resource-arrow">&rarr;</span></a>
+            <a href="/how-to-surf-cs2/" class="htb-resource-card"><span class="htb-resource-name">How to Surf in CS2</span><span class="htb-resource-arrow">&rarr;</span></a>
+            <a href="/get-better-at-cs2/" class="htb-resource-card"><span class="htb-resource-name">Get Better at CS2</span><span class="htb-resource-arrow">&rarr;</span></a>
+            <a href="/cs2-guides/movement-guide/" class="htb-resource-card"><span class="htb-resource-name">Movement Guide</span><span class="htb-resource-arrow">&rarr;</span></a>
+          </div>
+        </section>
+      </article>
+    </div>
+  </div>
+
+  <style>
+    .htb-wrap{max-width:1100px;margin:0 auto;padding:0 1.5rem 2rem}
+    .htb-breadcrumb{display:flex;align-items:center;gap:.5rem;padding:1.25rem 0;font-size:.85rem;color:var(--text2)}
+    .htb-breadcrumb a{color:var(--accent);text-decoration:none}
+    .htb-breadcrumb a:hover{color:var(--accent2)}
+    .htb-sep{color:var(--border)}
+    .htb-header{padding:1.5rem 0 1.25rem;border-bottom:2px solid var(--accent);margin-bottom:1.5rem}
+    .htb-header h1{margin:0 0 .35rem;font-size:2.2rem;font-weight:800;color:var(--text);letter-spacing:-.02em;line-height:1.2}
+    .htb-subtitle{margin:0;font-size:1.05rem;color:var(--text2);font-weight:400}
+    .htb-toc-mobile{display:none}
+    .htb-layout{display:grid;grid-template-columns:220px 1fr;gap:2.5rem;align-items:start}
+    .htb-sidebar{position:sticky;top:80px}
+    .htb-toc{display:flex;flex-direction:column;gap:0;border-left:2px solid var(--border);padding-left:0}
+    .htb-toc-title{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--accent);padding:0 0 .6rem 1rem}
+    .htb-toc-link{display:block;padding:.4rem 1rem;font-size:.82rem;color:var(--text2);text-decoration:none;border-left:2px solid transparent;margin-left:-2px;transition:color .2s,border-color .2s}
+    .htb-toc-link:hover{color:var(--text);border-left-color:var(--accent)}
+    .htb-content{min-width:0}
+    .htb-intro{font-size:1rem;line-height:1.8;color:var(--text2);margin-bottom:2rem}
+    .htb-section-header{background:rgba(46,204,113,.05);margin:0 -1.25rem 1.25rem;padding:.75rem 1.25rem;border-radius:4px}
+    .htb-section-header h2{margin:0;padding:0;font-size:1.5rem;font-weight:700;color:var(--text);border:none;letter-spacing:-.01em}
+    section{margin-bottom:2.5rem}
+    p{line-height:1.7;color:var(--text2);margin-bottom:1rem}
+    .htb-list{list-style:none;padding:0;margin:.75rem 0 1.5rem}
+    .htb-list li{padding:.4rem 0 .4rem 1.6rem;position:relative;color:var(--text2);line-height:1.65}
+    .htb-list li::before{content:'';position:absolute;left:.25rem;top:.75rem;width:6px;height:6px;background:var(--accent);border-radius:1px}
+    .htb-list li strong{color:var(--text)}
+    .htb-faq-list{display:flex;flex-direction:column;gap:.5rem}
+    .htb-faq-item{background:var(--bg2);border:1px solid var(--border);border-radius:4px;overflow:hidden}
+    .htb-faq-question{display:block;padding:1rem 1.25rem;font-size:.95rem;font-weight:600;color:var(--text);cursor:pointer;list-style:none;position:relative;padding-right:2.5rem;transition:background .2s}
+    .htb-faq-question::-webkit-details-marker{display:none}
+    .htb-faq-question::after{content:'+';position:absolute;right:1.25rem;top:50%;transform:translateY(-50%);font-size:1.2rem;color:var(--accent);font-weight:700}
+    .htb-faq-item[open] .htb-faq-question::after{content:'\2212'}
+    .htb-faq-item[open] .htb-faq-question{border-bottom:1px solid var(--border);background:rgba(46,204,113,.03)}
+    .htb-faq-question:hover{background:rgba(46,204,113,.03)}
+    .htb-faq-answer{padding:1rem 1.25rem;margin:0;font-size:.9rem;color:var(--text2);line-height:1.7}
+    .htb-resources-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.6rem;margin:.5rem 0 1.5rem}
+    .htb-resource-card{display:flex;align-items:center;justify-content:space-between;padding:.75rem 1rem;background:var(--bg2);border:1px solid var(--border);border-radius:4px;text-decoration:none;border-left:2px solid transparent;transition:border-left-color .2s,color .2s}
+    .htb-resource-card:hover{border-left-color:var(--accent)}
+    .htb-resource-name{font-size:.88rem;color:var(--text2);font-weight:500;transition:color .2s}
+    .htb-resource-card:hover .htb-resource-name{color:var(--text)}
+    .htb-resource-arrow{font-size:1rem;color:var(--accent);opacity:0;transition:opacity .2s}
+    .htb-resource-card:hover .htb-resource-arrow{opacity:1}
+    @media(max-width:860px){
+      .htb-layout{grid-template-columns:1fr;gap:0}
+      .htb-sidebar{display:none}
+      .htb-toc-mobile{display:flex;gap:.25rem;overflow-x:auto;padding:.75rem 0;margin-bottom:1rem;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+      .htb-toc-mobile::-webkit-scrollbar{display:none}
+      .htb-toc-mobile-link{flex-shrink:0;padding:.35rem .75rem;font-size:.78rem;font-weight:600;color:var(--text2);background:var(--bg2);border:1px solid var(--border);border-radius:4px;text-decoration:none;white-space:nowrap;transition:color .2s,border-color .2s}
+      .htb-toc-mobile-link:hover{color:var(--accent);border-color:var(--accent)}
+      .htb-header h1{font-size:1.7rem}
+      .htb-section-header{margin:0 -1rem 1rem;padding:.6rem 1rem}
+      .htb-resources-grid{grid-template-columns:repeat(2,1fr)}
+    }
+    @media(max-width:600px){
+      .htb-wrap{padding:0 1rem 1.5rem}
+      .htb-resources-grid{grid-template-columns:1fr}
+      .htb-header h1{font-size:1.5rem}
+    }
+  </style>
+  <AuthorBox updated="2026-03-04" />
+</Base>

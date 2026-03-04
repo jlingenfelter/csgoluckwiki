@@ -1,0 +1,284 @@
+---
+import Base from '../layouts/Base.astro';
+import AuthorBox from '../components/AuthorBox.astro';
+import { faqSchema, breadcrumbSchema } from '../lib/weapons';
+
+const title = 'CS2 Console: How to Enable & Use Commands | CSGOLuck Wiki';
+const description = 'Enable the CS2 developer console and learn essential commands for practice, performance, and gameplay customization.';
+
+const breadcrumbs = [
+  { name: 'Home', url: '/' },
+  { name: 'CS2 General', url: '/cs2-general-faq' },
+  { name: 'CS2 Console Commands', url: '/cs2-console-commands' },
+];
+
+const faqs = [
+  {
+    question: 'How do I open the console in CS2?',
+    answer: 'First enable the developer console in Settings > Game > Enable Developer Console. Then press the tilde key (~) during gameplay to open the console. You can rebind this key in your keyboard settings if needed.',
+  },
+  {
+    question: 'Do console commands work in matchmaking?',
+    answer: 'Most console commands are restricted in official matchmaking servers. Commands like sv_cheats, noclip, and god mode only work on private servers where you have admin access. Some client-side commands like crosshair settings work everywhere.',
+  },
+  {
+    question: 'What is sv_cheats and how do I enable it?',
+    answer: 'sv_cheats is a server-side command that unlocks cheat-protected commands for practice and testing. Type "sv_cheats 1" in the console on a private server. It cannot be enabled on official Valve servers.',
+  },
+  {
+    question: 'Can console commands get me banned?',
+    answer: 'Using console commands on private servers or in practice mode will not get you banned. These commands are built into the game for legitimate use. Third-party cheating software is what triggers VAC bans, not console commands.',
+  },
+];
+
+const breadcrumbSchema_ = breadcrumbSchema(breadcrumbs);
+const faqSchema_ = faqSchema(faqs);
+
+const articleSchema = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": title,
+  "description": description,
+  "author": { "@type": "Person", "name": "Josh Lingenfelter", "url": "https://www.linkedin.com/in/josh-lingenfelter-8157274b/", "jobTitle": "Director", "worksFor": { "@type": "Organization", "name": "CSGOLuck" } },
+  "publisher": { "@type": "Organization", "name": "CSGOLuck Wiki", "url": "https://wiki.csgoluck.com" },
+  "mainEntityOfPage": "https://wiki.csgoluck.com/cs2-console-commands/",
+  "inLanguage": "en-US"
+});
+
+const sections = [
+  { id: 'enable', label: 'Enable the Console' },
+  { id: 'opening', label: 'Opening the Console' },
+  { id: 'practice', label: 'Practice Commands' },
+  { id: 'performance', label: 'Performance Commands' },
+  { id: 'fun-utility', label: 'Fun & Utility Commands' },
+  { id: 'faq', label: 'FAQ' },
+  { id: 'related', label: 'Related Articles' },
+];
+---
+
+<Base title={title} description={description}>
+  <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema_)}></script>
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema_)}></script>
+  <script type="application/ld+json" set:html={articleSchema}></script>
+
+  <div class="ccc-wrap">
+    <nav class="ccc-breadcrumb">
+      <a href="/">Home</a>
+      <span class="ccc-sep">/</span>
+      <a href="/cs2-general-faq/">General</a>
+      <span class="ccc-sep">/</span>
+      <span>CS2 Console Commands</span>
+    </nav>
+
+    <header class="ccc-header">
+      <h1>CS2 Console Commands: How to Enable & Use</h1>
+      <p class="ccc-subtitle">Master the developer console for practice, performance tuning, and customization</p>
+    </header>
+
+    <nav class="ccc-toc-mobile" aria-label="Table of contents">
+      {sections.map((s) => (
+        <a href={`#${s.id}`} class="ccc-toc-mobile-link">{s.label}</a>
+      ))}
+    </nav>
+
+    <div class="ccc-layout">
+      <aside class="ccc-sidebar">
+        <nav class="ccc-toc" aria-label="Table of contents">
+          <span class="ccc-toc-title">Contents</span>
+          {sections.map((s) => (
+            <a href={`#${s.id}`} class="ccc-toc-link">{s.label}</a>
+          ))}
+        </nav>
+      </aside>
+
+      <article class="ccc-content">
+        <p class="ccc-intro">
+          CS2 console commands give you direct control over your game settings, practice environment, and performance diagnostics. The developer console is one of the most powerful tools in Counter-Strike 2, letting you fine-tune everything from server settings to visual preferences. This guide covers how to enable the console and the most useful commands for every situation.
+        </p>
+
+        <section id="enable">
+          <div class="ccc-section-header"><h2>How to Enable the Console</h2></div>
+          <p>The developer console is disabled by default in CS2. You need to enable it through the game settings before you can use any console commands. Here is how to turn it on.</p>
+          <ul class="ccc-list">
+            <li><strong>Step 1:</strong> Open CS2 and go to the Settings menu (gear icon)</li>
+            <li><strong>Step 2:</strong> Navigate to the "Game" tab</li>
+            <li><strong>Step 3:</strong> Find "Enable Developer Console (~)" and set it to "Yes"</li>
+            <li><strong>Step 4:</strong> Click "Apply" or close the settings menu to save</li>
+          </ul>
+          <p>You can also enable the console through <a href="/launch-options/">launch options</a> by adding <code>-console</code> to your CS2 launch parameters in Steam. This opens the console automatically when the game starts, which is useful for quickly entering commands before joining a server.</p>
+          <p>Once enabled, the console is available in every game mode and menu screen. The console persists your command history, so you can use the up and down arrow keys to cycle through previously entered commands.</p>
+        </section>
+
+        <section id="opening">
+          <div class="ccc-section-header"><h2>Opening the Console In-Game</h2></div>
+          <p>After enabling the developer console, press the tilde key (~) on your keyboard to open it. This key is located directly below the Escape key on most keyboard layouts. The console appears as a text overlay at the top of your screen where you can type commands.</p>
+          <p>If the tilde key does not work for your keyboard layout (common with non-US keyboard layouts), you can rebind the console key. Go to Settings, then Keyboard/Mouse, and look for the "Toggle Console" binding. Assign it to any key that is convenient for your layout.</p>
+          <p>The console supports auto-completion. Start typing a command name and press Tab to see suggestions. This is helpful when you cannot remember the exact name of a command -- type the first few letters and the console will show all matching options. For a comprehensive list of all available commands, check our <a href="/cs2-commands/">CS2 commands database</a>.</p>
+        </section>
+
+        <section id="practice">
+          <div class="ccc-section-header"><h2>Essential Practice Commands</h2></div>
+          <p>Practice commands are the backbone of any serious CS2 training routine. These commands require <code>sv_cheats 1</code> to be enabled on your private server and will not work in official matchmaking. For a complete practice server setup, see our <a href="/practice-config/">practice config guide</a>.</p>
+
+          <h3>Server Setup</h3>
+          <ul class="ccc-list">
+            <li><strong>sv_cheats 1:</strong> Enables cheat-protected commands (required for most practice commands)</li>
+            <li><strong>mp_warmup_end:</strong> Immediately ends the warmup period</li>
+            <li><strong>mp_restartgame 1:</strong> Restarts the current game after 1 second</li>
+            <li><strong>mp_roundtime_defuse 60:</strong> Sets round time to 60 minutes for extended practice</li>
+            <li><strong>mp_buy_anywhere 1:</strong> Allows buying weapons anywhere on the map</li>
+            <li><strong>mp_buytime 9999:</strong> Extends buy time so you can purchase equipment at any point</li>
+          </ul>
+
+          <h3>Movement and Utility</h3>
+          <ul class="ccc-list">
+            <li><strong>noclip:</strong> Toggles flying mode -- fly through walls and terrain freely</li>
+            <li><strong>god:</strong> Toggles invincibility (god mode)</li>
+            <li><strong>give weapon_[name]:</strong> Gives yourself a specific weapon (e.g., give weapon_ak47)</li>
+            <li><strong>sv_infinite_ammo 1:</strong> Unlimited ammunition for all weapons</li>
+            <li><strong>sv_grenade_trajectory_prac_pipreview 1:</strong> Shows grenade trajectory preview before throwing</li>
+            <li><strong>sv_grenade_trajectory_prac_trailtime 10:</strong> Shows grenade path trail for 10 seconds after throwing</li>
+          </ul>
+
+          <h3>Bot Management</h3>
+          <ul class="ccc-list">
+            <li><strong>bot_add_t / bot_add_ct:</strong> Adds a bot to the specified team</li>
+            <li><strong>bot_kick:</strong> Removes all bots from the server</li>
+            <li><strong>bot_stop 1:</strong> Freezes all bots in place (useful for target practice)</li>
+            <li><strong>bot_place:</strong> Places a bot at your crosshair position</li>
+          </ul>
+          <p>For detailed bot management including removing specific bots, see our guide on <a href="/remove-bots-cs2/">how to remove bots in CS2</a>.</p>
+        </section>
+
+        <section id="performance">
+          <div class="ccc-section-header"><h2>Performance and Network Commands</h2></div>
+          <p>Performance commands help you monitor and optimize your CS2 experience. These commands are especially useful for diagnosing frame rate issues, network problems, and ensuring your game is running smoothly. Most of these work without sv_cheats enabled. For more on technical settings, consult the <a href="https://developer.valvesoftware.com/" target="_blank" rel="noopener">Valve Developer Wiki</a>.</p>
+
+          <h3>Frame Rate and Performance</h3>
+          <ul class="ccc-list">
+            <li><strong>cl_showfps 1:</strong> Displays your current frames per second in the corner of the screen</li>
+            <li><strong>fps_max [value]:</strong> Caps your frame rate at the specified value (0 for uncapped)</li>
+            <li><strong>r_drawtracers_firstperson 0:</strong> Disables first-person weapon tracers for a cleaner visual</li>
+          </ul>
+
+          <h3>Network Diagnostics</h3>
+          <ul class="ccc-list">
+            <li><strong>net_graph 1:</strong> Displays detailed network statistics including ping, packet loss, and tickrate</li>
+            <li><strong>cl_updaterate [value]:</strong> Sets the rate at which your client receives updates from the server</li>
+            <li><strong>rate [value]:</strong> Sets the maximum data rate for your connection (default is usually sufficient)</li>
+          </ul>
+          <p>Monitoring your net_graph during games helps identify whether performance issues are caused by your hardware (low FPS), your network (high ping or packet loss), or the server itself. If you notice consistent packet loss, the issue is likely with your internet connection rather than the game.</p>
+        </section>
+
+        <section id="fun-utility">
+          <div class="ccc-section-header"><h2>Fun and Utility Commands</h2></div>
+          <p>Beyond practice and performance, the console offers commands for customization and entertainment on private servers. These commands add variety to custom games with friends or let you experiment with the game engine.</p>
+
+          <h3>Visual and Audio</h3>
+          <ul class="ccc-list">
+            <li><strong>cl_crosshairsize [value]:</strong> Adjusts crosshair size (part of the extensive crosshair customization suite)</li>
+            <li><strong>cl_crosshaircolor [0-5]:</strong> Changes crosshair color preset</li>
+            <li><strong>voice_scale [0-1]:</strong> Adjusts the volume of voice chat relative to other game sounds</li>
+            <li><strong>snd_headphone_pan_exponent [value]:</strong> Adjusts how sounds are panned for headphones</li>
+          </ul>
+
+          <h3>Server and Game Settings</h3>
+          <ul class="ccc-list">
+            <li><strong>changelevel [map_name]:</strong> Changes the current map on your private server</li>
+            <li><strong>sv_password [password]:</strong> Sets a password for your private server</li>
+            <li><strong>host_timescale [value]:</strong> Changes game speed (requires sv_cheats 1). Values below 1 slow the game down, above 1 speed it up</li>
+            <li><strong>thirdperson / firstperson:</strong> Toggles between third-person and first-person camera (requires sv_cheats 1)</li>
+          </ul>
+          <p>These commands only affect private servers and practice sessions. They cannot be used to gain any advantage in official matchmaking. Experiment freely -- you cannot break anything on your own server.</p>
+        </section>
+
+        <section id="faq">
+          <div class="ccc-section-header"><h2>Frequently Asked Questions</h2></div>
+          <div class="ccc-faq-list">
+            {faqs.map((faq) => (
+              <details class="ccc-faq-item">
+                <summary class="ccc-faq-question">{faq.question}</summary>
+                <p class="ccc-faq-answer">{faq.answer}</p>
+              </details>
+            ))}
+          </div>
+        </section>
+
+        <section id="related">
+          <div class="ccc-section-header"><h2>Related Articles</h2></div>
+          <div class="ccc-resources-grid">
+            <a href="/cs2-general-faq/" class="ccc-resource-card"><span class="ccc-resource-name">General FAQ Hub</span><span class="ccc-resource-arrow">&rarr;</span></a>
+            <a href="/how-long-cs2-game/" class="ccc-resource-card"><span class="ccc-resource-name">How Long Does a CS2 Game Last?</span><span class="ccc-resource-arrow">&rarr;</span></a>
+            <a href="/remove-bots-cs2/" class="ccc-resource-card"><span class="ccc-resource-name">How to Remove Bots in CS2</span><span class="ccc-resource-arrow">&rarr;</span></a>
+            <a href="/cs2-commands/" class="ccc-resource-card"><span class="ccc-resource-name">CS2 Commands Database</span><span class="ccc-resource-arrow">&rarr;</span></a>
+            <a href="/launch-options/" class="ccc-resource-card"><span class="ccc-resource-name">Launch Options</span><span class="ccc-resource-arrow">&rarr;</span></a>
+            <a href="/practice-config/" class="ccc-resource-card"><span class="ccc-resource-name">Practice Config</span><span class="ccc-resource-arrow">&rarr;</span></a>
+          </div>
+        </section>
+      </article>
+    </div>
+  </div>
+
+  <style>
+    .ccc-wrap{max-width:1100px;margin:0 auto;padding:0 1.5rem 2rem}
+    .ccc-breadcrumb{display:flex;align-items:center;gap:.5rem;padding:1.25rem 0;font-size:.85rem;color:var(--text2)}
+    .ccc-breadcrumb a{color:var(--accent);text-decoration:none}
+    .ccc-breadcrumb a:hover{color:var(--accent2)}
+    .ccc-sep{color:var(--border)}
+    .ccc-header{padding:1.5rem 0 1.25rem;border-bottom:2px solid var(--accent);margin-bottom:1.5rem}
+    .ccc-header h1{margin:0 0 .35rem;font-size:2.2rem;font-weight:800;color:var(--text);letter-spacing:-.02em;line-height:1.2}
+    .ccc-subtitle{margin:0;font-size:1.05rem;color:var(--text2);font-weight:400}
+    .ccc-toc-mobile{display:none}
+    .ccc-layout{display:grid;grid-template-columns:220px 1fr;gap:2.5rem;align-items:start}
+    .ccc-sidebar{position:sticky;top:80px}
+    .ccc-toc{display:flex;flex-direction:column;gap:0;border-left:2px solid var(--border);padding-left:0}
+    .ccc-toc-title{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--accent);padding:0 0 .6rem 1rem}
+    .ccc-toc-link{display:block;padding:.4rem 1rem;font-size:.82rem;color:var(--text2);text-decoration:none;border-left:2px solid transparent;margin-left:-2px;transition:color .2s,border-color .2s}
+    .ccc-toc-link:hover{color:var(--text);border-left-color:var(--accent)}
+    .ccc-content{min-width:0}
+    .ccc-intro{font-size:1rem;line-height:1.8;color:var(--text2);margin-bottom:2rem}
+    .ccc-section-header{background:rgba(46,204,113,.05);margin:0 -1.25rem 1.25rem;padding:.75rem 1.25rem;border-radius:4px}
+    .ccc-section-header h2{margin:0;padding:0;font-size:1.5rem;font-weight:700;color:var(--text);border:none;letter-spacing:-.01em}
+    section{margin-bottom:2.5rem}
+    h3{font-size:1.15rem;font-weight:600;margin:1.5rem 0 .6rem;color:var(--text)}
+    p{line-height:1.7;color:var(--text2);margin-bottom:1rem}
+    code{background:var(--bg3);padding:.15rem .4rem;border-radius:3px;font-size:.88rem;color:var(--accent)}
+    .ccc-list{list-style:none;padding:0;margin:.75rem 0 1.5rem}
+    .ccc-list li{padding:.4rem 0 .4rem 1.6rem;position:relative;color:var(--text2);line-height:1.65}
+    .ccc-list li::before{content:'';position:absolute;left:.25rem;top:.75rem;width:6px;height:6px;background:var(--accent);border-radius:1px}
+    .ccc-list li strong{color:var(--text)}
+    .ccc-faq-list{display:flex;flex-direction:column;gap:.5rem}
+    .ccc-faq-item{background:var(--bg2);border:1px solid var(--border);border-radius:4px;overflow:hidden}
+    .ccc-faq-question{display:block;padding:1rem 1.25rem;font-size:.95rem;font-weight:600;color:var(--text);cursor:pointer;list-style:none;position:relative;padding-right:2.5rem;transition:background .2s}
+    .ccc-faq-question::-webkit-details-marker{display:none}
+    .ccc-faq-question::after{content:'+';position:absolute;right:1.25rem;top:50%;transform:translateY(-50%);font-size:1.2rem;color:var(--accent);font-weight:700}
+    .ccc-faq-item[open] .ccc-faq-question::after{content:'\2212'}
+    .ccc-faq-item[open] .ccc-faq-question{border-bottom:1px solid var(--border);background:rgba(46,204,113,.03)}
+    .ccc-faq-question:hover{background:rgba(46,204,113,.03)}
+    .ccc-faq-answer{padding:1rem 1.25rem;margin:0;font-size:.9rem;color:var(--text2);line-height:1.7}
+    .ccc-resources-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.6rem;margin:.5rem 0 1.5rem}
+    .ccc-resource-card{display:flex;align-items:center;justify-content:space-between;padding:.75rem 1rem;background:var(--bg2);border:1px solid var(--border);border-radius:4px;text-decoration:none;border-left:2px solid transparent;transition:border-left-color .2s,color .2s}
+    .ccc-resource-card:hover{border-left-color:var(--accent)}
+    .ccc-resource-name{font-size:.88rem;color:var(--text2);font-weight:500;transition:color .2s}
+    .ccc-resource-card:hover .ccc-resource-name{color:var(--text)}
+    .ccc-resource-arrow{font-size:1rem;color:var(--accent);opacity:0;transition:opacity .2s}
+    .ccc-resource-card:hover .ccc-resource-arrow{opacity:1}
+    @media(max-width:860px){
+      .ccc-layout{grid-template-columns:1fr;gap:0}
+      .ccc-sidebar{display:none}
+      .ccc-toc-mobile{display:flex;gap:.25rem;overflow-x:auto;padding:.75rem 0;margin-bottom:1rem;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+      .ccc-toc-mobile::-webkit-scrollbar{display:none}
+      .ccc-toc-mobile-link{flex-shrink:0;padding:.35rem .75rem;font-size:.78rem;font-weight:600;color:var(--text2);background:var(--bg2);border:1px solid var(--border);border-radius:4px;text-decoration:none;white-space:nowrap;transition:color .2s,border-color .2s}
+      .ccc-toc-mobile-link:hover{color:var(--accent);border-color:var(--accent)}
+      .ccc-header h1{font-size:1.7rem}
+      .ccc-section-header{margin:0 -1rem 1rem;padding:.6rem 1rem}
+      .ccc-resources-grid{grid-template-columns:repeat(2,1fr)}
+    }
+    @media(max-width:600px){
+      .ccc-wrap{padding:0 1rem 1.5rem}
+      .ccc-resources-grid{grid-template-columns:1fr}
+      .ccc-header h1{font-size:1.5rem}
+    }
+  </style>
+  <AuthorBox updated="2026-03-04" />
+</Base>

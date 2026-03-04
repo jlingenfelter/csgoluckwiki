@@ -1,0 +1,244 @@
+---
+import Base from '../layouts/Base.astro';
+import AuthorBox from '../components/AuthorBox.astro';
+import { faqSchema, breadcrumbSchema } from '../lib/weapons';
+
+const title = 'Where to Buy CS2 Skins: Safe Marketplaces | CSGOLuck Wiki';
+const description = 'Compare the safest CS2 skin marketplaces. Steam Community Market, third-party platforms, and what to look for when buying skins.';
+
+const breadcrumbs = [
+  { name: 'Home', url: '/' },
+  { name: 'Trading & Marketplace FAQ', url: '/cs2-trading-marketplace-faq' },
+  { name: 'Where to Buy Skins', url: '/where-to-buy-cs2-skins' },
+];
+
+const faqs = [
+  {
+    question: 'Is the Steam Community Market the safest place to buy CS2 skins?',
+    answer: 'The Steam Community Market is the most secure option because transactions are handled entirely within Steam\'s ecosystem. You are protected by Steam\'s buyer policies, and items are delivered instantly. The trade-off is higher fees and sometimes higher prices compared to third-party alternatives.',
+  },
+  {
+    question: 'Are third-party CS2 skin marketplaces safe?',
+    answer: 'Reputable third-party marketplaces can be safe, but due diligence is essential. Look for platforms with established reputations, secure payment processing, positive community feedback, and transparent fee structures. Avoid sites with no verifiable history or that ask for unusual account access.',
+  },
+  {
+    question: 'How do I avoid getting scammed when buying CS2 skins?',
+    answer: 'Stick to well-known marketplaces, never share your Steam login credentials with any third-party site, verify item details before purchasing, and be skeptical of deals that seem too good to be true. Always check a site\'s reputation in CS2 community forums before making purchases.',
+  },
+  {
+    question: 'Why are CS2 skins cheaper on third-party sites?',
+    answer: 'Third-party marketplaces typically charge lower transaction fees than Steam\'s marketplace, which allows sellers to list items at lower prices while still receiving comparable payouts. Some platforms also have promotional pricing or loyalty programs that further reduce costs.',
+  },
+];
+
+const breadcrumbSchema_ = breadcrumbSchema(breadcrumbs);
+const faqSchema_ = faqSchema(faqs);
+
+const articleSchema = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": title,
+  "description": description,
+  "author": { "@type": "Person", "name": "Josh Lingenfelter", "url": "https://www.linkedin.com/in/josh-lingenfelter-8157274b/", "jobTitle": "Director", "worksFor": { "@type": "Organization", "name": "CSGOLuck" } },
+  "publisher": { "@type": "Organization", "name": "CSGOLuck Wiki", "url": "https://wiki.csgoluck.com" },
+  "mainEntityOfPage": "https://wiki.csgoluck.com/where-to-buy-cs2-skins/",
+  "inLanguage": "en-US"
+});
+
+const sections = [
+  { id: 'steam-market', label: 'Steam Market' },
+  { id: 'third-party', label: 'Third-Party Sites' },
+  { id: 'scam-sites', label: 'Spotting Scams' },
+  { id: 'price-comparison', label: 'Price Comparison' },
+  { id: 'safety-checklist', label: 'Safety Checklist' },
+  { id: 'faq', label: 'FAQ' },
+  { id: 'related', label: 'Related Articles' },
+];
+---
+
+<Base title={title} description={description}>
+  <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema_)}></script>
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema_)}></script>
+  <script type="application/ld+json" set:html={articleSchema}></script>
+
+  <div class="wbs-wrap">
+    <nav class="wbs-breadcrumb">
+      <a href="/">Home</a>
+      <span class="wbs-sep">/</span>
+      <a href="/cs2-trading-marketplace-faq/">Trading & Marketplace FAQ</a>
+      <span class="wbs-sep">/</span>
+      <span>Where to Buy Skins</span>
+    </nav>
+
+    <header class="wbs-header">
+      <h1>Where to Buy CS2 Skins</h1>
+      <p class="wbs-subtitle">A comparison of safe marketplaces for purchasing CS2 weapon skins and knives</p>
+    </header>
+
+    <nav class="wbs-toc-mobile" aria-label="Table of contents">
+      {sections.map((s) => (
+        <a href={`#${s.id}`} class="wbs-toc-mobile-link">{s.label}</a>
+      ))}
+    </nav>
+
+    <div class="wbs-layout">
+      <aside class="wbs-sidebar">
+        <nav class="wbs-toc" aria-label="Table of contents">
+          <span class="wbs-toc-title">Contents</span>
+          {sections.map((s) => (
+            <a href={`#${s.id}`} class="wbs-toc-link">{s.label}</a>
+          ))}
+        </nav>
+      </aside>
+
+      <article class="wbs-content">
+        <p class="wbs-intro">
+          Knowing where to buy CS2 skins safely is essential whether you are picking up your first weapon finish or adding a rare knife to your collection. The marketplace landscape includes Steam's own platform and a range of third-party alternatives, each with different pricing, fees, and security considerations. This guide compares your options so you can shop with confidence and avoid common pitfalls.
+        </p>
+
+        <section id="steam-market">
+          <div class="wbs-section-header"><h2>Steam Community Market</h2></div>
+          <p>The <a href="https://steamcommunity.com/market/" target="_blank" rel="noopener">Steam Community Market</a> is the official marketplace operated by Valve. It is the default and most straightforward place to buy CS2 skins. Transactions happen entirely within Steam, items are delivered to your inventory instantly, and you are protected by Valve's marketplace policies.</p>
+          <p>The primary downside of the Steam Community Market is cost. Steam charges a combined fee of approximately 15% on each transaction (including a Valve fee and a CS2-specific fee). This fee gets passed on to buyers through higher listing prices, since sellers price their items to account for the cut they lose.</p>
+          <p>Another limitation is that Steam Wallet funds cannot be withdrawn as real money. Any balance you have in your Steam Wallet stays within Steam's ecosystem. If you sell an item on the Steam Market, the proceeds can only be used for future Steam purchases.</p>
+          <p>Despite these drawbacks, the Steam Market remains the safest option for most buyers. There is no risk of third-party fraud, no trade holds beyond the standard waiting periods, and no need to trust an external company with your payment or items.</p>
+        </section>
+
+        <section id="third-party">
+          <div class="wbs-section-header"><h2>Popular Third-Party Marketplaces</h2></div>
+          <p>Third-party skin marketplaces have grown into a significant part of the CS2 economy. These platforms typically offer lower prices than the Steam Market because they charge smaller transaction fees, which benefits both buyers and sellers.</p>
+          <p>Reputable third-party platforms generally work by having sellers deposit their skins into the platform's system. Buyers then purchase skins using real currency or cryptocurrency, and the platform facilitates delivery via Steam trade offers. Some platforms use peer-to-peer models where buyers and sellers are matched directly.</p>
+          <p>When choosing a third-party marketplace, look for the following:</p>
+          <ul class="wbs-list">
+            <li><strong>Established reputation:</strong> Platforms that have been operating for several years with positive community feedback are generally more trustworthy.</li>
+            <li><strong>Secure payment options:</strong> Legitimate sites offer standard payment methods like credit cards and PayPal with proper encryption.</li>
+            <li><strong>Transparent fees:</strong> Reputable platforms clearly display their fee structure before you commit to a purchase.</li>
+            <li><strong>Buyer protection:</strong> Look for sites that offer refund policies or dispute resolution for transactions that go wrong.</li>
+          </ul>
+          <p>For a deeper dive into the trading process, check our <a href="/cs2-guides/trading-guide/">comprehensive trading guide</a>.</p>
+        </section>
+
+        <section id="scam-sites">
+          <div class="wbs-section-header"><h2>How to Spot Scam Sites</h2></div>
+          <p>Unfortunately, the CS2 skin market attracts scammers. Knowing the warning signs can save you from losing money or compromising your Steam account.</p>
+          <ul class="wbs-list">
+            <li><strong>Prices that are too good to be true:</strong> If a site offers skins at 50% or more below market value, it is almost certainly a scam. Legitimate marketplaces may offer modest discounts, but not dramatic ones.</li>
+            <li><strong>Requests for Steam login credentials:</strong> No legitimate marketplace needs your Steam username and password. Some sites use Steam's official OpenID for authentication, which is safe — but never enter your credentials on a non-Steam page.</li>
+            <li><strong>No verifiable company information:</strong> Scam sites often lack contact details, company registration information, or a physical address. Legitimate businesses are transparent about who operates them.</li>
+            <li><strong>Fake trust indicators:</strong> Some scam sites fabricate reviews, social media followings, or endorsements. Cross-reference any claims with independent community resources like Reddit or HLTV forums.</li>
+            <li><strong>Pressure tactics:</strong> Sites that create artificial urgency with countdown timers or claims that a deal is about to expire are using manipulation techniques common to scam operations.</li>
+          </ul>
+          <p>When in doubt, search for the site's name along with terms like "review" or "scam" in CS2 community forums before making any transactions.</p>
+        </section>
+
+        <section id="price-comparison">
+          <div class="wbs-section-header"><h2>Price Comparison Tips</h2></div>
+          <p>Smart buying starts with comparing prices across multiple platforms. The same skin can be listed at significantly different prices depending on the marketplace, so a few minutes of comparison shopping can save you a meaningful amount.</p>
+          <p>Use our <a href="/price-tracker/">price tracker</a> tool to see pricing across multiple sources at once. This eliminates the need to manually check each platform individually and gives you a clear picture of the current market rate for any item.</p>
+          <p>Keep in mind that prices on third-party sites are often quoted in different currencies or may not include all applicable fees upfront. Always calculate the total cost including fees before comparing directly with Steam Market prices. Factor in the <a href="/float-checker/">float value</a> and any pattern-specific pricing when comparing seemingly identical listings.</p>
+          <p>Timing also matters. Skin prices can fluctuate around major CS2 tournaments, game updates, and new case releases. Monitoring <a href="/market-trends/">market trends</a> can help you identify good buying opportunities.</p>
+        </section>
+
+        <section id="safety-checklist">
+          <div class="wbs-section-header"><h2>Buyer Safety Checklist</h2></div>
+          <ul class="wbs-list">
+            <li><strong>Enable Steam Guard:</strong> Two-factor authentication is essential for protecting your account and items. Without it, you are significantly more vulnerable to account theft.</li>
+            <li><strong>Verify the item before completing purchase:</strong> Check the skin name, wear condition, float value, and any stickers or special attributes. Scammers sometimes list items with misleading names or screenshots.</li>
+            <li><strong>Never click suspicious links:</strong> Phishing links that mimic Steam login pages are one of the most common scam vectors. Always verify the URL in your browser's address bar.</li>
+            <li><strong>Use a dedicated email for trading:</strong> Keeping your trading email separate from your primary email adds an extra layer of security.</li>
+            <li><strong>Start with small purchases:</strong> When trying a new marketplace for the first time, make a small purchase first to verify the process works correctly before committing larger amounts.</li>
+            <li><strong>Research the platform independently:</strong> Check reviews on Reddit, Steam forums, and other community resources before using any third-party marketplace.</li>
+          </ul>
+        </section>
+
+        <section id="faq">
+          <div class="wbs-section-header"><h2>Frequently Asked Questions</h2></div>
+          <div class="wbs-faq-list">
+            {faqs.map((faq) => (
+              <details class="wbs-faq-item">
+                <summary class="wbs-faq-question">{faq.question}</summary>
+                <p class="wbs-faq-answer">{faq.answer}</p>
+              </details>
+            ))}
+          </div>
+          <p class="wbs-faq-more">More trading and marketplace questions at our <a href="/cs2-trading-marketplace-faq/">Trading & Marketplace FAQ hub</a>.</p>
+        </section>
+
+        <section id="related">
+          <div class="wbs-section-header"><h2>Related Articles</h2></div>
+          <div class="wbs-resources-grid">
+            <a href="/how-to-trade-cs2-skins/" class="wbs-resource-card"><span class="wbs-resource-name">How to Trade Skins</span><span class="wbs-resource-arrow">&rarr;</span></a>
+            <a href="/why-cs2-skins-expensive/" class="wbs-resource-card"><span class="wbs-resource-name">Why Skins Are Expensive</span><span class="wbs-resource-arrow">&rarr;</span></a>
+            <a href="/market-trends/" class="wbs-resource-card"><span class="wbs-resource-name">Market Trends</span><span class="wbs-resource-arrow">&rarr;</span></a>
+            <a href="/price-tracker/" class="wbs-resource-card"><span class="wbs-resource-name">Price Tracker</span><span class="wbs-resource-arrow">&rarr;</span></a>
+            <a href="/float-checker/" class="wbs-resource-card"><span class="wbs-resource-name">Float Checker</span><span class="wbs-resource-arrow">&rarr;</span></a>
+            <a href="/cs2-guides/trading-guide/" class="wbs-resource-card"><span class="wbs-resource-name">Trading Guide</span><span class="wbs-resource-arrow">&rarr;</span></a>
+          </div>
+        </section>
+      </article>
+    </div>
+  </div>
+
+  <style>
+    .wbs-wrap{max-width:1100px;margin:0 auto;padding:0 1.5rem 2rem}
+    .wbs-breadcrumb{display:flex;align-items:center;gap:.5rem;padding:1.25rem 0;font-size:.85rem;color:var(--text2)}
+    .wbs-breadcrumb a{color:var(--accent);text-decoration:none}
+    .wbs-breadcrumb a:hover{color:var(--accent2)}
+    .wbs-sep{color:var(--border)}
+    .wbs-header{padding:1.5rem 0 1.25rem;border-bottom:2px solid var(--accent);margin-bottom:1.5rem}
+    .wbs-header h1{margin:0 0 .35rem;font-size:2.2rem;font-weight:800;color:var(--text);letter-spacing:-.02em;line-height:1.2}
+    .wbs-subtitle{margin:0;font-size:1.05rem;color:var(--text2);font-weight:400}
+    .wbs-toc-mobile{display:none}
+    .wbs-layout{display:grid;grid-template-columns:220px 1fr;gap:2.5rem;align-items:start}
+    .wbs-sidebar{position:sticky;top:80px}
+    .wbs-toc{display:flex;flex-direction:column;gap:0;border-left:2px solid var(--border);padding-left:0}
+    .wbs-toc-title{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--accent);padding:0 0 .6rem 1rem}
+    .wbs-toc-link{display:block;padding:.4rem 1rem;font-size:.82rem;color:var(--text2);text-decoration:none;border-left:2px solid transparent;margin-left:-2px;transition:color .2s,border-color .2s}
+    .wbs-toc-link:hover{color:var(--text);border-left-color:var(--accent)}
+    .wbs-content{min-width:0}
+    .wbs-intro{font-size:1rem;line-height:1.8;color:var(--text2);margin-bottom:2rem}
+    .wbs-section-header{background:rgba(46,204,113,.05);margin:0 -1.25rem 1.25rem;padding:.75rem 1.25rem;border-radius:4px}
+    .wbs-section-header h2{margin:0;padding:0;font-size:1.5rem;font-weight:700;color:var(--text);border:none;letter-spacing:-.01em}
+    section{margin-bottom:2.5rem}
+    h3{font-size:1.15rem;font-weight:600;margin:1.5rem 0 .6rem;color:var(--text)}
+    p{line-height:1.7;color:var(--text2);margin-bottom:1rem}
+    .wbs-list{list-style:none;padding:0;margin:.75rem 0 1.5rem}
+    .wbs-list li{padding:.4rem 0 .4rem 1.6rem;position:relative;color:var(--text2);line-height:1.65}
+    .wbs-list li::before{content:'';position:absolute;left:.25rem;top:.75rem;width:6px;height:6px;background:var(--accent);border-radius:1px}
+    .wbs-list li strong{color:var(--text)}
+    .wbs-faq-list{display:flex;flex-direction:column;gap:.5rem}
+    .wbs-faq-item{background:var(--bg2);border:1px solid var(--border);border-radius:4px;overflow:hidden}
+    .wbs-faq-question{display:block;padding:1rem 1.25rem;font-size:.95rem;font-weight:600;color:var(--text);cursor:pointer;list-style:none;position:relative;padding-right:2.5rem;transition:background .2s}
+    .wbs-faq-question::-webkit-details-marker{display:none}
+    .wbs-faq-question::after{content:'+';position:absolute;right:1.25rem;top:50%;transform:translateY(-50%);font-size:1.2rem;color:var(--accent);font-weight:700}
+    .wbs-faq-item[open] .wbs-faq-question::after{content:'\2212'}
+    .wbs-faq-item[open] .wbs-faq-question{border-bottom:1px solid var(--border);background:rgba(46,204,113,.03)}
+    .wbs-faq-question:hover{background:rgba(46,204,113,.03)}
+    .wbs-faq-answer{padding:1rem 1.25rem;margin:0;font-size:.9rem;color:var(--text2);line-height:1.7}
+    .wbs-faq-more{font-size:.9rem;margin-top:1rem}
+    .wbs-resources-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.6rem;margin:.5rem 0 1.5rem}
+    .wbs-resource-card{display:flex;align-items:center;justify-content:space-between;padding:.75rem 1rem;background:var(--bg2);border:1px solid var(--border);border-radius:4px;text-decoration:none;border-left:2px solid transparent;transition:border-left-color .2s,color .2s}
+    .wbs-resource-card:hover{border-left-color:var(--accent)}
+    .wbs-resource-name{font-size:.88rem;color:var(--text2);font-weight:500;transition:color .2s}
+    .wbs-resource-card:hover .wbs-resource-name{color:var(--text)}
+    .wbs-resource-arrow{font-size:1rem;color:var(--accent);opacity:0;transition:opacity .2s}
+    .wbs-resource-card:hover .wbs-resource-arrow{opacity:1}
+    @media(max-width:860px){
+      .wbs-layout{grid-template-columns:1fr;gap:0}
+      .wbs-sidebar{display:none}
+      .wbs-toc-mobile{display:flex;gap:.25rem;overflow-x:auto;padding:.75rem 0;margin-bottom:1rem;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+      .wbs-toc-mobile::-webkit-scrollbar{display:none}
+      .wbs-toc-mobile-link{flex-shrink:0;padding:.35rem .75rem;font-size:.78rem;font-weight:600;color:var(--text2);background:var(--bg2);border:1px solid var(--border);border-radius:4px;text-decoration:none;white-space:nowrap;transition:color .2s,border-color .2s}
+      .wbs-toc-mobile-link:hover{color:var(--accent);border-color:var(--accent)}
+      .wbs-header h1{font-size:1.7rem}
+      .wbs-section-header{margin:0 -1rem 1rem;padding:.6rem 1rem}
+      .wbs-resources-grid{grid-template-columns:repeat(2,1fr)}
+    }
+    @media(max-width:600px){
+      .wbs-wrap{padding:0 1rem 1.5rem}
+      .wbs-resources-grid{grid-template-columns:1fr}
+      .wbs-header h1{font-size:1.5rem}
+    }
+  </style>
+  <AuthorBox updated="2026-03-04" />
+</Base>

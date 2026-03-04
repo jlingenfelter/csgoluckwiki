@@ -1,0 +1,236 @@
+---
+import Base from '../layouts/Base.astro';
+import AuthorBox from '../components/AuthorBox.astro';
+import { faqSchema, breadcrumbSchema } from '../lib/weapons';
+
+const title = 'Can You Play CS2 on Mac? Options Explained | CSGOLuck Wiki';
+const description = "CS2 doesn't natively support macOS. Learn your options for playing Counter-Strike 2 on a Mac, including Boot Camp and alternatives.";
+
+const breadcrumbs = [
+  { name: 'Home', url: '/' },
+  { name: 'Download & Platform FAQ', url: '/cs2-download-platform-faq' },
+  { name: 'CS2 on Mac', url: '/cs2-on-mac' },
+];
+
+const faqs = [
+  {
+    question: 'Can you play CS2 on a Mac natively?',
+    answer: 'No. Valve dropped macOS support when transitioning from CS:GO to CS2. The game only runs natively on Windows and Linux. See our <a href="/cs2-download-platform-faq/">download & platform FAQ</a> for more.',
+  },
+  {
+    question: 'Does Boot Camp work for CS2 on Mac?',
+    answer: 'Boot Camp works on Intel-based Macs, allowing you to install Windows and run CS2 natively through that partition. However, Boot Camp is not available on Apple Silicon (M1/M2/M3/M4) Macs. Visit our <a href="/cs2-download-platform-faq/">download & platform FAQ</a> for details.',
+  },
+  {
+    question: 'Will Valve ever add Mac support to CS2?',
+    answer: 'Valve has not announced any plans to bring CS2 to macOS. Given the technical demands of the Source 2 engine and the small Mac gaming market share, native support seems unlikely. Check our <a href="/cs2-download-platform-faq/">download & platform FAQ</a> for updates.',
+  },
+];
+
+const breadcrumbSchema_ = breadcrumbSchema(breadcrumbs);
+const faqSchema_ = faqSchema(faqs);
+
+const articleSchema = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": title,
+  "description": description,
+  "author": { "@type": "Person", "name": "Josh Lingenfelter", "url": "https://www.linkedin.com/in/josh-lingenfelter-8157274b/", "jobTitle": "Director", "worksFor": { "@type": "Organization", "name": "CSGOLuck" } },
+  "publisher": { "@type": "Organization", "name": "CSGOLuck Wiki", "url": "https://wiki.csgoluck.com" },
+  "mainEntityOfPage": "https://wiki.csgoluck.com/cs2-on-mac/",
+  "inLanguage": "en-US"
+});
+
+const sections = [
+  { id: 'support', label: 'macOS Support Status' },
+  { id: 'why-dropped', label: 'Why Mac Was Dropped' },
+  { id: 'bootcamp', label: 'Boot Camp Option' },
+  { id: 'cloud-gaming', label: 'Cloud Gaming' },
+  { id: 'settings', label: 'Best Settings for Mac' },
+  { id: 'faq', label: 'FAQ' },
+  { id: 'related', label: 'Related Articles' },
+];
+---
+
+<Base title={title} description={description}>
+  <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema_)}></script>
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema_)}></script>
+  <script type="application/ld+json" set:html={articleSchema}></script>
+
+  <div class="com-wrap">
+    <nav class="com-breadcrumb">
+      <a href="/">Home</a>
+      <span class="com-sep">/</span>
+      <a href="/cs2-download-platform-faq/">Download & Platform FAQ</a>
+      <span class="com-sep">/</span>
+      <span>CS2 on Mac</span>
+    </nav>
+
+    <header class="com-header">
+      <h1>Can You Play CS2 on Mac? Options Explained</h1>
+      <p class="com-subtitle">Your options for running Counter-Strike 2 on macOS hardware</p>
+    </header>
+
+    <nav class="com-toc-mobile" aria-label="Table of contents">
+      {sections.map((s) => (
+        <a href={`#${s.id}`} class="com-toc-mobile-link">{s.label}</a>
+      ))}
+    </nav>
+
+    <div class="com-layout">
+      <aside class="com-sidebar">
+        <nav class="com-toc" aria-label="Table of contents">
+          <span class="com-toc-title">Contents</span>
+          {sections.map((s) => (
+            <a href={`#${s.id}`} class="com-toc-link">{s.label}</a>
+          ))}
+        </nav>
+      </aside>
+
+      <article class="com-content">
+        <p class="com-intro">
+          Playing cs2 on mac is not as straightforward as it once was with CS:GO. When Valve launched Counter-Strike 2 in September 2023, macOS support was dropped entirely. The game runs natively on Windows and Linux only. If you own a Mac and want to play CS2, you still have options -- but they all involve workarounds. This guide covers why Valve made this decision and what alternatives are available to Mac users.
+        </p>
+
+        <section id="support">
+          <div class="com-section-header"><h2>Does CS2 Support macOS?</h2></div>
+          <p>No. Counter-Strike 2 does not run natively on macOS. When CS2 replaced CS:GO on <a href="https://store.steampowered.com/app/730/CounterStrike_2/" target="_blank" rel="noopener">Steam</a>, the macOS version was removed. If you previously played CS:GO on a Mac, that client is no longer available.</p>
+          <p>The Steam store page for CS2 lists Windows and SteamOS/Linux as the only supported operating systems. Attempting to install CS2 through Steam on a Mac will show that the game is not compatible with your current platform.</p>
+          <p>This was a significant change for Mac users who had been playing CS:GO for years. While CS:GO's Mac version had performance limitations compared to its Windows counterpart, it was functional and allowed millions of Mac users to participate in casual and competitive play.</p>
+        </section>
+
+        <section id="why-dropped">
+          <div class="com-section-header"><h2>Why Valve Dropped Mac Support</h2></div>
+          <p>Valve has not published an official detailed explanation, but several factors likely contributed to the decision:</p>
+          <ul class="com-list">
+            <li><strong>Source 2 engine requirements:</strong> The Source 2 engine relies heavily on Vulkan for rendering. macOS does not support Vulkan natively, requiring a translation layer (MoltenVK) that adds complexity and overhead</li>
+            <li><strong>Apple Silicon transition:</strong> Apple's shift from Intel to ARM-based M-series chips created additional compatibility challenges. Boot Camp is not available on Apple Silicon Macs, further limiting options</li>
+            <li><strong>Small market share:</strong> Mac gamers represent a small fraction of the CS player base. The engineering effort to maintain a separate macOS build with acceptable performance may not have been justified</li>
+            <li><strong>Performance gaps:</strong> Even when CS:GO supported Mac, frame rates and input latency lagged behind Windows. The increased demands of Source 2 would have widened this gap</li>
+          </ul>
+          <p>The combination of technical hurdles and limited return likely made Mac support impractical for a game where competitive performance matters as much as it does in Counter-Strike.</p>
+        </section>
+
+        <section id="bootcamp">
+          <div class="com-section-header"><h2>How to Play CS2 on Mac (Boot Camp)</h2></div>
+          <p>If you own an Intel-based Mac, Boot Camp remains the most reliable method for running CS2. Boot Camp is Apple's built-in utility that lets you install Windows on a separate partition of your Mac's drive, allowing you to boot directly into Windows.</p>
+          <p>Here is the general process:</p>
+          <ul class="com-list">
+            <li><strong>Check compatibility:</strong> Boot Camp is only available on Intel Macs. If you have an M1, M2, M3, or M4 Mac, this method will not work</li>
+            <li><strong>Free up disk space:</strong> You will need at least 64 GB for Windows plus the CS2 installation (roughly 30 GB). A 128 GB Windows partition is recommended</li>
+            <li><strong>Use Boot Camp Assistant:</strong> Open Boot Camp Assistant from your Utilities folder. It will guide you through downloading Windows and partitioning your drive</li>
+            <li><strong>Install Windows:</strong> Follow the prompts to install Windows 10 or 11 on the new partition</li>
+            <li><strong>Install Steam and CS2:</strong> Once in Windows, download Steam and install CS2 as you would on any PC</li>
+          </ul>
+          <p>Performance will depend on your Mac's hardware. Macs with discrete GPUs (such as the 16-inch MacBook Pro with AMD Radeon graphics) will perform significantly better than models with integrated graphics. Expect to run CS2 on lower settings than a dedicated gaming PC.</p>
+        </section>
+
+        <section id="cloud-gaming">
+          <div class="com-section-header"><h2>Cloud Gaming Alternatives</h2></div>
+          <p>For Apple Silicon Mac users who cannot use Boot Camp, cloud gaming services offer another path to playing CS2. These services run the game on remote servers and stream the video to your Mac.</p>
+          <ul class="com-list">
+            <li><strong>GeForce NOW:</strong> NVIDIA's cloud gaming service supports CS2. You link your Steam account and stream the game to your Mac through a browser or the GeForce NOW app. A stable, low-latency internet connection is essential</li>
+            <li><strong>Shadow PC:</strong> Provides a full Windows PC in the cloud that you access remotely. You can install Steam and CS2 directly on your Shadow instance</li>
+            <li><strong>Other services:</strong> Various cloud PC providers offer similar functionality, though availability and pricing vary by region</li>
+          </ul>
+          <p>The main drawback of cloud gaming for a competitive shooter like CS2 is latency. Even with a fast internet connection, the additional input lag from streaming can be noticeable in a game where milliseconds matter. Cloud gaming works well for casual play but may frustrate players aiming for high competitive ranks.</p>
+        </section>
+
+        <section id="settings">
+          <div class="com-section-header"><h2>Best Mac-Compatible Settings</h2></div>
+          <p>Whether running CS2 through Boot Camp or a cloud service, optimising your settings is critical for a playable experience on Mac hardware:</p>
+          <ul class="com-list">
+            <li><strong>Resolution:</strong> Drop to 1080p or lower if frame rates are unstable. Competitive players often run lower resolutions even on powerful PCs</li>
+            <li><strong>Graphics quality:</strong> Set all visual options to Low or Medium. Shadows, anti-aliasing, and shader detail are the biggest performance drains</li>
+            <li><strong>V-Sync:</strong> Turn it off. V-Sync adds input lag, which is unacceptable in competitive play</li>
+            <li><strong>Multicore rendering:</strong> Enable this if available. It allows the game to utilise multiple CPU cores</li>
+            <li><strong>Close background apps:</strong> Quit everything you do not need. Safari, Spotify, and other apps consume RAM and CPU cycles that CS2 needs</li>
+          </ul>
+          <p>For a comprehensive settings guide, including launch options that can improve performance, check out our <a href="/is-cs2-free/">guide on getting CS2</a> and the <a href="/cs2-on-console/">console platform status</a> page for comparison.</p>
+        </section>
+
+        <section id="faq">
+          <div class="com-section-header"><h2>Frequently Asked Questions</h2></div>
+          <div class="com-faq-list">
+            {faqs.map((faq) => (
+              <details class="com-faq-item">
+                <summary class="com-faq-question">{faq.question}</summary>
+                <p class="com-faq-answer" set:html={faq.answer}></p>
+              </details>
+            ))}
+          </div>
+        </section>
+
+        <section id="related">
+          <div class="com-section-header"><h2>Related Articles</h2></div>
+          <div class="com-resources-grid">
+            <a href="/cs2-download-platform-faq/" class="com-resource-card"><span class="com-resource-name">Download & Platform FAQ Hub</span><span class="com-resource-arrow">&rarr;</span></a>
+            <a href="/is-cs2-free/" class="com-resource-card"><span class="com-resource-name">Is CS2 Free?</span><span class="com-resource-arrow">&rarr;</span></a>
+            <a href="/cs2-on-console/" class="com-resource-card"><span class="com-resource-name">CS2 on Console</span><span class="com-resource-arrow">&rarr;</span></a>
+          </div>
+        </section>
+      </article>
+    </div>
+  </div>
+
+  <style>
+    .com-wrap{max-width:1100px;margin:0 auto;padding:0 1.5rem 2rem}
+    .com-breadcrumb{display:flex;align-items:center;gap:.5rem;padding:1.25rem 0;font-size:.85rem;color:var(--text2)}
+    .com-breadcrumb a{color:var(--accent);text-decoration:none}
+    .com-breadcrumb a:hover{color:var(--accent2)}
+    .com-sep{color:var(--border)}
+    .com-header{padding:1.5rem 0 1.25rem;border-bottom:2px solid var(--accent);margin-bottom:1.5rem}
+    .com-header h1{margin:0 0 .35rem;font-size:2.2rem;font-weight:800;color:var(--text);letter-spacing:-.02em;line-height:1.2}
+    .com-subtitle{margin:0;font-size:1.05rem;color:var(--text2);font-weight:400}
+    .com-toc-mobile{display:none}
+    .com-layout{display:grid;grid-template-columns:220px 1fr;gap:2.5rem;align-items:start}
+    .com-sidebar{position:sticky;top:80px}
+    .com-toc{display:flex;flex-direction:column;gap:0;border-left:2px solid var(--border);padding-left:0}
+    .com-toc-title{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--accent);padding:0 0 .6rem 1rem}
+    .com-toc-link{display:block;padding:.4rem 1rem;font-size:.82rem;color:var(--text2);text-decoration:none;border-left:2px solid transparent;margin-left:-2px;transition:color .2s,border-color .2s}
+    .com-toc-link:hover{color:var(--text);border-left-color:var(--accent)}
+    .com-content{min-width:0}
+    .com-intro{font-size:1rem;line-height:1.8;color:var(--text2);margin-bottom:2rem}
+    .com-section-header{background:rgba(46,204,113,.05);margin:0 -1.25rem 1.25rem;padding:.75rem 1.25rem;border-radius:4px}
+    .com-section-header h2{margin:0;padding:0;font-size:1.5rem;font-weight:700;color:var(--text);border:none;letter-spacing:-.01em}
+    section{margin-bottom:2.5rem}
+    p{line-height:1.7;color:var(--text2);margin-bottom:1rem}
+    .com-list{list-style:none;padding:0;margin:.75rem 0 1.5rem}
+    .com-list li{padding:.4rem 0 .4rem 1.6rem;position:relative;color:var(--text2);line-height:1.65}
+    .com-list li::before{content:'';position:absolute;left:.25rem;top:.75rem;width:6px;height:6px;background:var(--accent);border-radius:1px}
+    .com-list li strong{color:var(--text)}
+    .com-faq-list{display:flex;flex-direction:column;gap:.5rem}
+    .com-faq-item{background:var(--bg2);border:1px solid var(--border);border-radius:4px;overflow:hidden}
+    .com-faq-question{display:block;padding:1rem 1.25rem;font-size:.95rem;font-weight:600;color:var(--text);cursor:pointer;list-style:none;position:relative;padding-right:2.5rem;transition:background .2s}
+    .com-faq-question::-webkit-details-marker{display:none}
+    .com-faq-question::after{content:'+';position:absolute;right:1.25rem;top:50%;transform:translateY(-50%);font-size:1.2rem;color:var(--accent);font-weight:700}
+    .com-faq-item[open] .com-faq-question::after{content:'\2212'}
+    .com-faq-item[open] .com-faq-question{border-bottom:1px solid var(--border);background:rgba(46,204,113,.03)}
+    .com-faq-question:hover{background:rgba(46,204,113,.03)}
+    .com-faq-answer{padding:1rem 1.25rem;margin:0;font-size:.9rem;color:var(--text2);line-height:1.7}
+    .com-resources-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.6rem;margin:.5rem 0 1.5rem}
+    .com-resource-card{display:flex;align-items:center;justify-content:space-between;padding:.75rem 1rem;background:var(--bg2);border:1px solid var(--border);border-radius:4px;text-decoration:none;border-left:2px solid transparent;transition:border-left-color .2s,color .2s}
+    .com-resource-card:hover{border-left-color:var(--accent)}
+    .com-resource-name{font-size:.88rem;color:var(--text2);font-weight:500;transition:color .2s}
+    .com-resource-card:hover .com-resource-name{color:var(--text)}
+    .com-resource-arrow{font-size:1rem;color:var(--accent);opacity:0;transition:opacity .2s}
+    .com-resource-card:hover .com-resource-arrow{opacity:1}
+    @media(max-width:860px){
+      .com-layout{grid-template-columns:1fr;gap:0}
+      .com-sidebar{display:none}
+      .com-toc-mobile{display:flex;gap:.25rem;overflow-x:auto;padding:.75rem 0;margin-bottom:1rem;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+      .com-toc-mobile::-webkit-scrollbar{display:none}
+      .com-toc-mobile-link{flex-shrink:0;padding:.35rem .75rem;font-size:.78rem;font-weight:600;color:var(--text2);background:var(--bg2);border:1px solid var(--border);border-radius:4px;text-decoration:none;white-space:nowrap;transition:color .2s,border-color .2s}
+      .com-toc-mobile-link:hover{color:var(--accent);border-color:var(--accent)}
+      .com-header h1{font-size:1.7rem}
+      .com-section-header{margin:0 -1rem 1rem;padding:.6rem 1rem}
+      .com-resources-grid{grid-template-columns:repeat(2,1fr)}
+    }
+    @media(max-width:600px){
+      .com-wrap{padding:0 1rem 1.5rem}
+      .com-resources-grid{grid-template-columns:1fr}
+      .com-header h1{font-size:1.5rem}
+    }
+  </style>
+  <AuthorBox updated="2026-03-04" />
+</Base>

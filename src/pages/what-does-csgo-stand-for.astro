@@ -1,0 +1,214 @@
+---
+import Base from '../layouts/Base.astro';
+import AuthorBox from '../components/AuthorBox.astro';
+import { faqSchema, breadcrumbSchema } from '../lib/weapons';
+
+const title = 'What Does CS:GO Stand For? Names Explained | CSGOLuck Wiki';
+const description = 'CS:GO stands for Counter-Strike: Global Offensive. Learn about every CS version name, abbreviation, and how the franchise evolved.';
+
+const breadcrumbs = [
+  { name: 'Home', url: '/' },
+  { name: 'Game History & FAQ', url: '/cs2-game-history-faq' },
+  { name: 'What Does CS:GO Stand For?', url: '/what-does-csgo-stand-for' },
+];
+
+const faqs = [
+  {
+    question: 'What does CS:GO stand for?',
+    answer: 'CS:GO stands for Counter-Strike: Global Offensive. It was the fourth major release in the Counter-Strike franchise, launched in 2012. For more, see our <a href="/cs2-game-history-faq/">game history FAQ</a>.',
+  },
+  {
+    question: 'Why is CS2 still called CS:GO on some sites?',
+    answer: 'Because CS2 replaced CS:GO using the same Steam app ID (730), some databases, stat trackers, and marketplaces still reference the old name. The official name is now Counter-Strike 2. Check our <a href="/cs2-game-history-faq/">game history FAQ</a> for details.',
+  },
+  {
+    question: 'What does CS2 stand for?',
+    answer: 'CS2 is shorthand for Counter-Strike 2 — the current version of the franchise running on the Source 2 engine. Visit our <a href="/cs2-game-history-faq/">game history FAQ</a> for the full naming timeline.',
+  },
+];
+
+const breadcrumbSchema_ = breadcrumbSchema(breadcrumbs);
+const faqSchema_ = faqSchema(faqs);
+
+const articleSchema = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": title,
+  "description": description,
+  "author": { "@type": "Person", "name": "Josh Lingenfelter", "url": "https://www.linkedin.com/in/josh-lingenfelter-8157274b/", "jobTitle": "Director", "worksFor": { "@type": "Organization", "name": "CSGOLuck" } },
+  "publisher": { "@type": "Organization", "name": "CSGOLuck Wiki", "url": "https://wiki.csgoluck.com" },
+  "mainEntityOfPage": "https://wiki.csgoluck.com/what-does-csgo-stand-for/",
+  "inLanguage": "en-US"
+});
+
+const sections = [
+  { id: 'meaning', label: 'What CS:GO Stands For' },
+  { id: 'versions', label: 'Every Version & Abbreviation' },
+  { id: 'name-change', label: 'Why the Name Changed' },
+  { id: 'same-game', label: 'CS2 vs CS:GO — Same Game?' },
+  { id: 'faq', label: 'FAQ' },
+  { id: 'related', label: 'Related Articles' },
+];
+---
+
+<Base title={title} description={description}>
+  <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema_)}></script>
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema_)}></script>
+  <script type="application/ld+json" set:html={articleSchema}></script>
+
+  <div class="wdc-wrap">
+    <nav class="wdc-breadcrumb">
+      <a href="/">Home</a>
+      <span class="wdc-sep">/</span>
+      <a href="/cs2-game-history-faq/">Game History & FAQ</a>
+      <span class="wdc-sep">/</span>
+      <span>What Does CS:GO Stand For?</span>
+    </nav>
+
+    <header class="wdc-header">
+      <h1>What Does CS:GO Stand For? Names Explained</h1>
+      <p class="wdc-subtitle">A quick breakdown of every Counter-Strike name and abbreviation</p>
+    </header>
+
+    <nav class="wdc-toc-mobile" aria-label="Table of contents">
+      {sections.map((s) => (
+        <a href={`#${s.id}`} class="wdc-toc-mobile-link">{s.label}</a>
+      ))}
+    </nav>
+
+    <div class="wdc-layout">
+      <aside class="wdc-sidebar">
+        <nav class="wdc-toc" aria-label="Table of contents">
+          <span class="wdc-toc-title">Contents</span>
+          {sections.map((s) => (
+            <a href={`#${s.id}`} class="wdc-toc-link">{s.label}</a>
+          ))}
+        </nav>
+      </aside>
+
+      <article class="wdc-content">
+        <p class="wdc-intro">
+          If you have ever asked what does csgo stand for, the answer is simple: Counter-Strike: Global Offensive. But the Counter-Strike franchise has gone through multiple names, versions, and abbreviations over its 25-plus year history. Understanding what each name means -- and why Valve eventually dropped the "Global Offensive" subtitle -- helps make sense of the game's evolution from a Half-Life mod to the competitive powerhouse it is today.
+        </p>
+
+        <section id="meaning">
+          <div class="wdc-section-header"><h2>What CS:GO Stands For</h2></div>
+          <p>CS:GO is an abbreviation for <strong>Counter-Strike: Global Offensive</strong>. Valve released it in August 2012 as the fourth major title in the Counter-Strike franchise. The "Global Offensive" subtitle reflected the game's ambition to unite the fragmented competitive communities that had formed around Counter-Strike 1.6 and Counter-Strike: Source.</p>
+          <p>The "CS" portion stands for Counter-Strike, which has been the franchise name since the original 1999 mod. The colon and "GO" suffix differentiated this version from its predecessors. Players quickly shortened the full name to "CS:GO" or simply "CSGO" in everyday conversation, forums, and social media.</p>
+          <p>CS:GO went on to become the most popular version of Counter-Strike ever released, regularly reaching over a million concurrent players on Steam before it was replaced by Counter-Strike 2 in September 2023.</p>
+        </section>
+
+        <section id="versions">
+          <div class="wdc-section-header"><h2>Every Counter-Strike Version and Abbreviation</h2></div>
+          <p>The Counter-Strike franchise includes several distinct releases, each with its own community shorthand:</p>
+          <ul class="wdc-list">
+            <li><strong>CS (Counter-Strike):</strong> The original 2000 release, evolved from the 1999 Half-Life mod</li>
+            <li><strong>CS 1.6 (Counter-Strike 1.6):</strong> The definitive patch of the original game, released in 2003 alongside Steam</li>
+            <li><strong>CS:CZ (Counter-Strike: Condition Zero):</strong> A 2004 single-player-focused spinoff with bot campaigns</li>
+            <li><strong>CS:S (Counter-Strike: Source):</strong> The 2004 Source engine rebuild with updated graphics and physics</li>
+            <li><strong>CS:GO (Counter-Strike: Global Offensive):</strong> The 2012 release that unified the competitive scene</li>
+            <li><strong>CS2 (Counter-Strike 2):</strong> The current version, launched September 2023 on the Source 2 engine</li>
+          </ul>
+          <p>Each abbreviation became standard within the community. If someone says "1.6," they mean the original competitive Counter-Strike. "Source" or "CSS" refers to the 2004 engine rebuild. And "GO" or "CSGO" refers to the 2012 version that CS2 eventually replaced. For the full story behind each release, see our complete <a href="/counter-strike-history/">Counter-Strike history</a>.</p>
+        </section>
+
+        <section id="name-change">
+          <div class="wdc-section-header"><h2>Why Valve Changed the Name to CS2</h2></div>
+          <p>When Valve announced Counter-Strike 2 in March 2023, the decision to drop "Global Offensive" signalled a clean break. The name change reflected the magnitude of the technical overhaul -- CS2 runs on the entirely new Source 2 engine, which powers responsive smoke grenades, sub-tick networking, and a visual refresh across every map.</p>
+          <p>Naming the game "Counter-Strike 2" also simplified the franchise branding. Rather than adding another subtitle, Valve chose a numbered sequel title that emphasised the generational leap. The "2" communicates that this is the next major chapter, not just an update or expansion pack.</p>
+          <p>Despite the new name, CS2 shares the same Steam app ID (730) as CS:GO. This means your <a href="https://store.steampowered.com/app/730/CounterStrike_2/" target="_blank" rel="noopener">Steam library</a> entry simply updated in place. Your skins, service medals, and friends list carried over seamlessly. The continuity is technical -- the rebranding is purely about identity and marketing.</p>
+        </section>
+
+        <section id="same-game">
+          <div class="wdc-section-header"><h2>CS2 vs CS:GO -- Same Game?</h2></div>
+          <p>This is one of the most common questions new and returning players ask. Technically, CS2 occupies the same Steam listing as CS:GO, so in that narrow sense they share an identity. But in practice, CS2 is a substantially different product.</p>
+          <p>The engine, rendering pipeline, networking model, and smoke grenade system are all new. Maps have been rebuilt or significantly reworked to take advantage of Source 2 features. The user interface was redesigned, and the ranking system was overhauled with the introduction of the CS Rating in Premier mode.</p>
+          <p>That said, the core gameplay loop is the same: buy weapons, play rounds, plant or defuse the bomb. If you played CS:GO, you will recognise everything immediately even though the technology underneath changed. Movement, spray control, and map knowledge still transfer. Think of it like moving from a well-worn car to a new model of the same brand -- the controls are familiar, but the experience feels different.</p>
+          <p>For a full explanation of what CS2 brings to the table, read our guide on <a href="/what-is-cs2/">what CS2 is</a>.</p>
+        </section>
+
+        <section id="faq">
+          <div class="wdc-section-header"><h2>Frequently Asked Questions</h2></div>
+          <div class="wdc-faq-list">
+            {faqs.map((faq) => (
+              <details class="wdc-faq-item">
+                <summary class="wdc-faq-question">{faq.question}</summary>
+                <p class="wdc-faq-answer" set:html={faq.answer}></p>
+              </details>
+            ))}
+          </div>
+        </section>
+
+        <section id="related">
+          <div class="wdc-section-header"><h2>Related Articles</h2></div>
+          <div class="wdc-resources-grid">
+            <a href="/cs2-game-history-faq/" class="wdc-resource-card"><span class="wdc-resource-name">Game History & FAQ Hub</span><span class="wdc-resource-arrow">&rarr;</span></a>
+            <a href="/counter-strike-history/" class="wdc-resource-card"><span class="wdc-resource-name">Counter-Strike History</span><span class="wdc-resource-arrow">&rarr;</span></a>
+            <a href="/what-is-cs2/" class="wdc-resource-card"><span class="wdc-resource-name">What Is CS2?</span><span class="wdc-resource-arrow">&rarr;</span></a>
+          </div>
+        </section>
+      </article>
+    </div>
+  </div>
+
+  <style>
+    .wdc-wrap{max-width:1100px;margin:0 auto;padding:0 1.5rem 2rem}
+    .wdc-breadcrumb{display:flex;align-items:center;gap:.5rem;padding:1.25rem 0;font-size:.85rem;color:var(--text2)}
+    .wdc-breadcrumb a{color:var(--accent);text-decoration:none}
+    .wdc-breadcrumb a:hover{color:var(--accent2)}
+    .wdc-sep{color:var(--border)}
+    .wdc-header{padding:1.5rem 0 1.25rem;border-bottom:2px solid var(--accent);margin-bottom:1.5rem}
+    .wdc-header h1{margin:0 0 .35rem;font-size:2.2rem;font-weight:800;color:var(--text);letter-spacing:-.02em;line-height:1.2}
+    .wdc-subtitle{margin:0;font-size:1.05rem;color:var(--text2);font-weight:400}
+    .wdc-toc-mobile{display:none}
+    .wdc-layout{display:grid;grid-template-columns:220px 1fr;gap:2.5rem;align-items:start}
+    .wdc-sidebar{position:sticky;top:80px}
+    .wdc-toc{display:flex;flex-direction:column;gap:0;border-left:2px solid var(--border);padding-left:0}
+    .wdc-toc-title{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--accent);padding:0 0 .6rem 1rem}
+    .wdc-toc-link{display:block;padding:.4rem 1rem;font-size:.82rem;color:var(--text2);text-decoration:none;border-left:2px solid transparent;margin-left:-2px;transition:color .2s,border-color .2s}
+    .wdc-toc-link:hover{color:var(--text);border-left-color:var(--accent)}
+    .wdc-content{min-width:0}
+    .wdc-intro{font-size:1rem;line-height:1.8;color:var(--text2);margin-bottom:2rem}
+    .wdc-section-header{background:rgba(46,204,113,.05);margin:0 -1.25rem 1.25rem;padding:.75rem 1.25rem;border-radius:4px}
+    .wdc-section-header h2{margin:0;padding:0;font-size:1.5rem;font-weight:700;color:var(--text);border:none;letter-spacing:-.01em}
+    section{margin-bottom:2.5rem}
+    p{line-height:1.7;color:var(--text2);margin-bottom:1rem}
+    .wdc-list{list-style:none;padding:0;margin:.75rem 0 1.5rem}
+    .wdc-list li{padding:.4rem 0 .4rem 1.6rem;position:relative;color:var(--text2);line-height:1.65}
+    .wdc-list li::before{content:'';position:absolute;left:.25rem;top:.75rem;width:6px;height:6px;background:var(--accent);border-radius:1px}
+    .wdc-list li strong{color:var(--text)}
+    .wdc-faq-list{display:flex;flex-direction:column;gap:.5rem}
+    .wdc-faq-item{background:var(--bg2);border:1px solid var(--border);border-radius:4px;overflow:hidden}
+    .wdc-faq-question{display:block;padding:1rem 1.25rem;font-size:.95rem;font-weight:600;color:var(--text);cursor:pointer;list-style:none;position:relative;padding-right:2.5rem;transition:background .2s}
+    .wdc-faq-question::-webkit-details-marker{display:none}
+    .wdc-faq-question::after{content:'+';position:absolute;right:1.25rem;top:50%;transform:translateY(-50%);font-size:1.2rem;color:var(--accent);font-weight:700}
+    .wdc-faq-item[open] .wdc-faq-question::after{content:'\2212'}
+    .wdc-faq-item[open] .wdc-faq-question{border-bottom:1px solid var(--border);background:rgba(46,204,113,.03)}
+    .wdc-faq-question:hover{background:rgba(46,204,113,.03)}
+    .wdc-faq-answer{padding:1rem 1.25rem;margin:0;font-size:.9rem;color:var(--text2);line-height:1.7}
+    .wdc-resources-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.6rem;margin:.5rem 0 1.5rem}
+    .wdc-resource-card{display:flex;align-items:center;justify-content:space-between;padding:.75rem 1rem;background:var(--bg2);border:1px solid var(--border);border-radius:4px;text-decoration:none;border-left:2px solid transparent;transition:border-left-color .2s,color .2s}
+    .wdc-resource-card:hover{border-left-color:var(--accent)}
+    .wdc-resource-name{font-size:.88rem;color:var(--text2);font-weight:500;transition:color .2s}
+    .wdc-resource-card:hover .wdc-resource-name{color:var(--text)}
+    .wdc-resource-arrow{font-size:1rem;color:var(--accent);opacity:0;transition:opacity .2s}
+    .wdc-resource-card:hover .wdc-resource-arrow{opacity:1}
+    @media(max-width:860px){
+      .wdc-layout{grid-template-columns:1fr;gap:0}
+      .wdc-sidebar{display:none}
+      .wdc-toc-mobile{display:flex;gap:.25rem;overflow-x:auto;padding:.75rem 0;margin-bottom:1rem;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+      .wdc-toc-mobile::-webkit-scrollbar{display:none}
+      .wdc-toc-mobile-link{flex-shrink:0;padding:.35rem .75rem;font-size:.78rem;font-weight:600;color:var(--text2);background:var(--bg2);border:1px solid var(--border);border-radius:4px;text-decoration:none;white-space:nowrap;transition:color .2s,border-color .2s}
+      .wdc-toc-mobile-link:hover{color:var(--accent);border-color:var(--accent)}
+      .wdc-header h1{font-size:1.7rem}
+      .wdc-section-header{margin:0 -1rem 1rem;padding:.6rem 1rem}
+      .wdc-resources-grid{grid-template-columns:repeat(2,1fr)}
+    }
+    @media(max-width:600px){
+      .wdc-wrap{padding:0 1rem 1.5rem}
+      .wdc-resources-grid{grid-template-columns:1fr}
+      .wdc-header h1{font-size:1.5rem}
+    }
+  </style>
+  <AuthorBox updated="2026-03-04" />
+</Base>

@@ -1,0 +1,246 @@
+---
+const title = 'Redirecting to CSGOLuck | CSGOLuck Wiki';
+const description = 'You are being redirected to CSGOLuck.com';
+---
+<!DOCTYPE html>
+<html lang="en" style="background:#0d0e12">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>{title}</title>
+<meta name="robots" content="noindex, nofollow" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
+<style>
+  :root{--bg:#0d0e12;--bg2:#13141a;--bg3:#1a1c24;--text:#fff;--text2:#909090;--accent:#2ecc71;--border:#242630;
+    --consumer:#b0c3d9;--industrial:#5e98d9;--milspec:#4b69ff;--restricted:#8847ff;--classified:#d32ce6;--covert:#eb4b4b;--gold:#ffd700}
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{background:var(--bg);color:var(--text);font-family:'Montserrat',sans-serif;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:1.5rem;overflow:hidden}
+
+  /* Logo */
+  .go-logo-wrap{margin-bottom:1.5rem}
+  .go-logo{height:30px;width:auto}
+
+  /* Case opening container */
+  .co-wrap{width:100%;max-width:600px;position:relative;margin-bottom:2rem}
+
+  /* Pointer triangle */
+  .co-pointer{width:0;height:0;border-left:10px solid transparent;border-right:10px solid transparent;border-top:14px solid var(--gold);margin:0 auto .5rem;filter:drop-shadow(0 0 6px rgba(255,215,0,.5));z-index:5;position:relative}
+
+  /* Reel viewport */
+  .co-viewport{width:100%;height:100px;overflow:hidden;position:relative;border:2px solid var(--border);border-radius:4px;background:var(--bg2)}
+  .co-viewport::before,.co-viewport::after{content:'';position:absolute;top:0;bottom:0;width:60px;z-index:3;pointer-events:none}
+  .co-viewport::before{left:0;background:linear-gradient(to right,var(--bg2),transparent)}
+  .co-viewport::after{right:0;background:linear-gradient(to left,var(--bg2),transparent)}
+
+  /* Center line */
+  .co-center-line{position:absolute;top:0;bottom:0;left:50%;width:2px;background:var(--gold);z-index:4;transform:translateX(-50%);box-shadow:0 0 8px rgba(255,215,0,.4)}
+
+  /* Strip */
+  .co-strip{display:flex;position:absolute;top:0;left:0;height:100%;will-change:transform}
+
+  /* Individual items */
+  .co-item{width:100px;height:100px;flex-shrink:0;display:flex;flex-direction:column;align-items:center;justify-content:center;border-right:1px solid rgba(255,255,255,.06);position:relative;overflow:hidden}
+  .co-item::after{content:'';position:absolute;bottom:0;left:0;right:0;height:3px}
+  .co-item[data-r="consumer"]::after{background:var(--consumer)}
+  .co-item[data-r="industrial"]::after{background:var(--industrial)}
+  .co-item[data-r="milspec"]::after{background:var(--milspec)}
+  .co-item[data-r="restricted"]::after{background:var(--restricted)}
+  .co-item[data-r="classified"]::after{background:var(--classified)}
+  .co-item[data-r="covert"]::after{background:var(--covert)}
+  .co-item[data-r="gold"]::after{background:var(--gold);height:3px;box-shadow:0 0 10px rgba(255,215,0,.6)}
+
+  /* Item icon (weapon silhouette) */
+  .co-icon{font-size:2rem;opacity:.7;margin-bottom:.25rem;filter:grayscale(.2)}
+  .co-item[data-r="gold"] .co-icon{opacity:1;filter:none;font-size:2.2rem}
+
+  /* Item label */
+  .co-label{font-size:.55rem;text-transform:uppercase;letter-spacing:.03em;opacity:.5;font-weight:600}
+  .co-item[data-r="gold"] .co-label{color:var(--gold);opacity:1;font-weight:700}
+
+  /* Win reveal */
+  .co-reveal{opacity:0;transform:translateY(10px);transition:opacity .5s,transform .5s;max-width:480px;margin:0 auto}
+  .co-reveal.show{opacity:1;transform:translateY(0)}
+
+  .co-prize{background:linear-gradient(135deg,#1a1400 0%,#2a2000 50%,#1a1400 100%);border:2px solid var(--gold);border-radius:6px;padding:1.75rem 2rem;position:relative;overflow:hidden}
+  .co-prize::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at center,rgba(255,215,0,.08) 0%,transparent 70%);pointer-events:none}
+
+  .co-prize-badge{display:inline-block;background:var(--gold);color:#000;font-weight:800;font-size:.7rem;text-transform:uppercase;letter-spacing:.06em;padding:.3rem .7rem;border-radius:3px;margin-bottom:.75rem}
+
+  .co-prize-title{font-size:1.5rem;font-weight:900;color:var(--gold);margin-bottom:.25rem;text-shadow:0 0 20px rgba(255,215,0,.3)}
+  .co-prize-sub{font-size:1.1rem;font-weight:700;color:var(--text);margin-bottom:.15rem}
+  .co-prize-plus{font-size:.85rem;color:var(--gold);font-weight:700;margin-bottom:1rem}
+
+  .co-cta{display:inline-block;background:var(--gold);color:#000;font-weight:800;font-size:.95rem;text-transform:uppercase;letter-spacing:.04em;padding:.75rem 2rem;border-radius:4px;text-decoration:none;transition:transform .15s,box-shadow .15s;box-shadow:0 4px 15px rgba(255,215,0,.3)}
+  .co-cta:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(255,215,0,.4)}
+
+  .go-back{display:inline-block;margin-top:1rem;font-size:.78rem;color:var(--text2);text-decoration:none}
+  .go-back:hover{color:var(--accent)}
+
+  /* Gold glow pulse on win */
+  @keyframes goldPulse{0%,100%{box-shadow:0 0 10px rgba(255,215,0,.2),inset 0 0 10px rgba(255,215,0,.05)}50%{box-shadow:0 0 25px rgba(255,215,0,.4),inset 0 0 20px rgba(255,215,0,.1)}}
+  .co-prize.glow{animation:goldPulse 2s ease-in-out infinite}
+
+  /* Confetti */
+  .co-confetti{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:10;overflow:hidden}
+  .confetti-piece{position:absolute;width:8px;height:8px;top:-10px;opacity:0}
+
+  @keyframes confettiFall{0%{opacity:1;transform:translateY(0) rotate(0deg)}100%{opacity:0;transform:translateY(100vh) rotate(720deg)}}
+
+  /* Responsive */
+  @media(max-width:480px){
+    .co-item{width:80px;height:80px}
+    .co-viewport{height:80px}
+    .co-icon{font-size:1.6rem}
+    .co-prize-title{font-size:1.2rem}
+    .co-prize{padding:1.25rem 1.5rem}
+  }
+</style>
+</head>
+<body>
+
+<div class="go-logo-wrap">
+  <img src="/images/csgoluck-logo.png" alt="CSGOLuck" class="go-logo" />
+</div>
+
+<div class="co-wrap">
+  <div class="co-pointer"></div>
+  <div class="co-viewport">
+    <div class="co-center-line"></div>
+    <div class="co-strip" id="coStrip"></div>
+  </div>
+</div>
+
+<div class="co-reveal" id="coReveal">
+  <div class="co-prize" id="coPrize">
+    <div class="co-prize-badge">★ Exclusive Offer Unlocked ★</div>
+    <div class="co-prize-title">100% Deposit Bonus</div>
+    <div class="co-prize-plus">+ 10 Free Cases</div>
+    <div class="co-prize-sub">Claim Your Reward</div>
+    <br/>
+    <a href="https://csgoluck.com/r/WIKIPEDIA" class="co-cta" rel="nofollow noopener" id="claimBtn">Claim Now →</a>
+  </div>
+  <a href="/" class="go-back">&larr; Back to CSGOLuck Wiki</a>
+</div>
+
+<div class="co-confetti" id="coConfetti"></div>
+
+<script is:inline>
+(function() {
+  // Item pool with rarities and weapon icons
+  var rarities = [
+    { r: 'consumer', icon: '🔫', label: 'Consumer', weight: 30 },
+    { r: 'industrial', icon: '🔫', label: 'Industrial', weight: 25 },
+    { r: 'milspec', icon: '🔫', label: 'Mil-Spec', weight: 20 },
+    { r: 'restricted', icon: '⚔️', label: 'Restricted', weight: 12 },
+    { r: 'classified', icon: '🗡️', label: 'Classified', weight: 8 },
+    { r: 'covert', icon: '💎', label: 'Covert', weight: 5 }
+  ];
+
+  var weaponNames = ['AK-47','M4A4','AWP','USP-S','Glock','Desert Eagle','P250','MP9','MAC-10','FAMAS','Galil','AUG','SG 553','P90','Nova','XM1014','SSG 08','Five-SeveN','Tec-9','UMP-45'];
+
+  function pickRarity() {
+    var total = 0;
+    for (var i = 0; i < rarities.length; i++) total += rarities[i].weight;
+    var roll = Math.random() * total;
+    var cum = 0;
+    for (var i = 0; i < rarities.length; i++) {
+      cum += rarities[i].weight;
+      if (roll <= cum) return rarities[i];
+    }
+    return rarities[0];
+  }
+
+  // Build the strip: ~60 items, with gold item placed at a specific position
+  var strip = document.getElementById('coStrip');
+  var totalItems = 60;
+  var goldIndex = 50; // Gold item near the end so there's a long spin
+  var itemWidth = window.innerWidth <= 480 ? 80 : 100;
+
+  for (var i = 0; i < totalItems; i++) {
+    var div = document.createElement('div');
+    div.className = 'co-item';
+
+    if (i === goldIndex) {
+      div.setAttribute('data-r', 'gold');
+      div.innerHTML = '<span class="co-icon">⭐</span><span class="co-label">★ BONUS ★</span>';
+    } else {
+      var rar = pickRarity();
+      div.setAttribute('data-r', rar.r);
+      var wn = weaponNames[Math.floor(Math.random() * weaponNames.length)];
+      div.innerHTML = '<span class="co-icon">' + rar.icon + '</span><span class="co-label">' + wn + '</span>';
+    }
+    strip.appendChild(div);
+  }
+
+  // Calculate where to stop: center the gold item in the viewport
+  var viewport = document.querySelector('.co-viewport');
+  var vpWidth = viewport.offsetWidth;
+  var targetOffset = (goldIndex * itemWidth) + (itemWidth / 2) - (vpWidth / 2);
+  // Add slight random offset for realism (land slightly off-center)
+  targetOffset += (Math.random() * 20) - 10;
+
+  // Animate using requestAnimationFrame with easing
+  var startTime = null;
+  var duration = 5000; // 5 seconds spin
+  var startPos = 0;
+
+  function easeOutQuart(t) {
+    return 1 - Math.pow(1 - t, 4);
+  }
+
+  function animate(timestamp) {
+    if (!startTime) startTime = timestamp;
+    var elapsed = timestamp - startTime;
+    var progress = Math.min(elapsed / duration, 1);
+    var easedProgress = easeOutQuart(progress);
+    var currentPos = startPos + (targetOffset - startPos) * easedProgress;
+
+    strip.style.transform = 'translateX(' + (-currentPos) + 'px)';
+
+    if (progress < 1) {
+      requestAnimationFrame(animate);
+    } else {
+      // Spin complete — reveal the prize
+      setTimeout(showReveal, 400);
+    }
+  }
+
+  function showReveal() {
+    var reveal = document.getElementById('coReveal');
+    var prize = document.getElementById('coPrize');
+    reveal.classList.add('show');
+    prize.classList.add('glow');
+    spawnConfetti();
+
+    // Auto-redirect after 5 seconds
+    setTimeout(function() {
+      window.location.href = 'https://csgoluck.com/r/WIKIPEDIA';
+    }, 5000);
+  }
+
+  function spawnConfetti() {
+    var container = document.getElementById('coConfetti');
+    var colors = ['#ffd700','#eb4b4b','#2ecc71','#4b69ff','#d32ce6','#ff6b6b','#5e98d9'];
+    for (var i = 0; i < 50; i++) {
+      var piece = document.createElement('div');
+      piece.className = 'confetti-piece';
+      piece.style.left = Math.random() * 100 + '%';
+      piece.style.background = colors[Math.floor(Math.random() * colors.length)];
+      piece.style.width = (Math.random() * 8 + 4) + 'px';
+      piece.style.height = (Math.random() * 8 + 4) + 'px';
+      piece.style.borderRadius = Math.random() > 0.5 ? '50%' : '0';
+      piece.style.animation = 'confettiFall ' + (Math.random() * 2 + 1.5) + 's ease-out ' + (Math.random() * 0.5) + 's forwards';
+      container.appendChild(piece);
+    }
+  }
+
+  // Start the animation after a brief delay
+  setTimeout(function() {
+    requestAnimationFrame(animate);
+  }, 600);
+})();
+</script>
+</body>
+</html>

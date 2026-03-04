@@ -1,0 +1,239 @@
+---
+import Base from '../layouts/Base.astro';
+import AuthorBox from '../components/AuthorBox.astro';
+import { faqSchema, breadcrumbSchema } from '../lib/weapons';
+
+const title = 'FACEIT CS2 Guide: Levels, Elo & Setup | CSGOLuck Wiki';
+const description = 'Getting started with FACEIT for CS2 — how levels and ELO work, creating an account, and tips for climbing the FACEIT ladder.';
+
+const breadcrumbs = [
+  { name: 'Home', url: '/' },
+  { name: 'Ranks & Competitive', url: '/cs2-ranks-competitive-faq/' },
+  { name: 'FACEIT CS2 Guide', url: '/faceit-cs2-guide/' },
+];
+
+const faqs = [
+  {
+    question: 'Is FACEIT free to play for CS2?',
+    answer: 'Yes, FACEIT offers a free tier where you can play matches and earn Elo. Premium and subscription plans add features like map vetoing, detailed stats, and access to premium-only queues.',
+  },
+  {
+    question: 'What Elo do you start at on FACEIT?',
+    answer: 'New FACEIT accounts typically start around 1,000 Elo, which corresponds to Level 3. Your starting level may vary slightly based on calibration matches.',
+  },
+  {
+    question: 'How many FACEIT levels are there?',
+    answer: 'FACEIT uses 10 levels. Level 1 is the lowest (below 801 Elo) and Level 10 is the highest (2,001+ Elo). Each level corresponds to a specific Elo range.',
+  },
+  {
+    question: 'Can I link my Steam account to FACEIT?',
+    answer: 'Yes, you must link your Steam account during the FACEIT signup process. This connects your CS2 game to the FACEIT anti-cheat client and matchmaking system.',
+  },
+];
+
+const breadcrumbSchema_ = breadcrumbSchema(breadcrumbs);
+const faqSchema_ = faqSchema(faqs);
+
+const articleSchema = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": title,
+  "description": description,
+  "author": { "@type": "Person", "name": "Josh Lingenfelter", "url": "https://www.linkedin.com/in/josh-lingenfelter-8157274b/", "jobTitle": "Director", "worksFor": { "@type": "Organization", "name": "CSGOLuck" } },
+  "publisher": { "@type": "Organization", "name": "CSGOLuck Wiki", "url": "https://wiki.csgoluck.com" },
+  "mainEntityOfPage": "https://wiki.csgoluck.com/faceit-cs2-guide/",
+  "inLanguage": "en-US"
+});
+
+const sections = [
+  { id: 'what-is-faceit', label: 'What Is FACEIT?' },
+  { id: 'levels-elo', label: 'Levels & Elo' },
+  { id: 'setup', label: 'Setting Up' },
+  { id: 'free-vs-premium', label: 'Free vs Premium' },
+  { id: 'climbing-tips', label: 'Climbing Tips' },
+  { id: 'faq', label: 'FAQ' },
+  { id: 'related', label: 'Related Articles' },
+];
+---
+
+<Base title={title} description={description}>
+  <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema_)}></script>
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema_)}></script>
+  <script type="application/ld+json" set:html={articleSchema}></script>
+
+  <div class="fcg-wrap">
+    <nav class="fcg-breadcrumb">
+      <a href="/">Home</a>
+      <span class="fcg-sep">/</span>
+      <a href="/cs2-ranks-competitive-faq/">Ranks & Competitive</a>
+      <span class="fcg-sep">/</span>
+      <span>FACEIT CS2 Guide</span>
+    </nav>
+
+    <header class="fcg-header">
+      <h1>FACEIT CS2 Guide: Levels, Elo & Setup</h1>
+      <p class="fcg-subtitle">Everything you need to get started and climb the FACEIT ladder</p>
+    </header>
+
+    <nav class="fcg-toc-mobile" aria-label="Table of contents">
+      {sections.map((s) => (
+        <a href={`#${s.id}`} class="fcg-toc-mobile-link">{s.label}</a>
+      ))}
+    </nav>
+
+    <div class="fcg-layout">
+      <aside class="fcg-sidebar">
+        <nav class="fcg-toc" aria-label="Table of contents">
+          <span class="fcg-toc-title">Contents</span>
+          {sections.map((s) => (
+            <a href={`#${s.id}`} class="fcg-toc-link">{s.label}</a>
+          ))}
+        </nav>
+      </aside>
+
+      <article class="fcg-content">
+        <p class="fcg-intro">
+          <strong>FACEIT CS2</strong> is the most popular third-party competitive platform for Counter-Strike 2 players who want better anti-cheat, more structured matches, and a separate ranking ladder. Whether you are brand new to FACEIT or looking to understand how the Elo system works, this guide walks you through everything from account setup to climbing the ranks.
+        </p>
+
+        <section id="what-is-faceit">
+          <div class="fcg-section-header"><h2>What Is FACEIT?</h2></div>
+          <p>FACEIT is a third-party matchmaking platform that runs its own servers, anti-cheat system, and ranking ladder for CS2. Players use FACEIT when they want a higher-quality competitive experience than the built-in matchmaking provides. The platform is used by both casual grinders and aspiring professionals.</p>
+          <p>The main draws of FACEIT include its proprietary anti-cheat client, which runs at the kernel level and is generally considered more effective than Valve's VAC system. Matches are played on 128-tick servers (compared to Valve's sub-tick system), and the platform provides detailed post-match statistics. You can sign up and start playing at <a href="https://www.faceit.com/" target="_blank" rel="noopener">faceit.com</a>.</p>
+        </section>
+
+        <section id="levels-elo">
+          <div class="fcg-section-header"><h2>How FACEIT Levels and Elo Work</h2></div>
+          <p>FACEIT uses an Elo-based rating system with 10 skill levels. Your Elo score determines your level, and each win or loss adjusts it based on the relative skill of both teams.</p>
+          <ul class="fcg-list">
+            <li><strong>Levels 1-3 (below 1,050 Elo):</strong> Beginner range where new players calibrate and learn the platform.</li>
+            <li><strong>Levels 4-6 (1,050-1,550 Elo):</strong> Intermediate range covering average to above-average players.</li>
+            <li><strong>Levels 7-8 (1,550-1,850 Elo):</strong> Advanced players with solid fundamentals and game sense.</li>
+            <li><strong>Levels 9-10 (1,850+ Elo):</strong> High-level players, including semi-professionals and aspiring pros.</li>
+          </ul>
+          <p>The amount of Elo you gain or lose per match depends on the average Elo of each team. Beating a higher-rated team yields more Elo, while losing to a lower-rated team costs more. Typical gains and losses range from about 20 to 35 points per match.</p>
+        </section>
+
+        <section id="setup">
+          <div class="fcg-section-header"><h2>Setting Up Your FACEIT Account</h2></div>
+          <p>Getting started with FACEIT takes just a few minutes:</p>
+          <ul class="fcg-list">
+            <li><strong>Step 1:</strong> Visit <a href="https://www.faceit.com/" target="_blank" rel="noopener">faceit.com</a> and create an account using your email or Steam login.</li>
+            <li><strong>Step 2:</strong> Link your Steam account so FACEIT can verify your CS2 ownership and track your matches.</li>
+            <li><strong>Step 3:</strong> Download and install the FACEIT anti-cheat client. This is required for all matches and must be running before you queue.</li>
+            <li><strong>Step 4:</strong> Play your initial calibration matches. These determine your starting Elo and level.</li>
+          </ul>
+          <p>Make sure your Steam profile is set to public during setup so FACEIT can read your game data. Once linked, you can queue for matches directly through the FACEIT website or desktop client.</p>
+        </section>
+
+        <section id="free-vs-premium">
+          <div class="fcg-section-header"><h2>FACEIT Free vs Premium</h2></div>
+          <p>FACEIT offers both a free tier and paid subscription plans. Here is how they compare:</p>
+          <ul class="fcg-list">
+            <li><strong>Free tier:</strong> Full access to matchmaking, Elo tracking, and basic statistics. You play in the standard free queue with other free players.</li>
+            <li><strong>FACEIT Premium:</strong> Adds map vetoing, access to premium-only queues (which tend to have better match quality), expanded statistics, and priority support.</li>
+            <li><strong>FACEIT Hubs & Leagues:</strong> Paid hubs and leagues offer organised competition with prizes, specific rulesets, and community moderation.</li>
+          </ul>
+          <p>For most players, the free tier is a perfectly good starting point. If you find yourself playing FACEIT regularly and want cleaner matches with map selection, upgrading to Premium is worth considering. The premium queue generally has fewer leavers and a higher average skill level.</p>
+        </section>
+
+        <section id="climbing-tips">
+          <div class="fcg-section-header"><h2>Tips for Climbing FACEIT Ranks</h2></div>
+          <p>Climbing on FACEIT requires more than just good aim. Here are practical strategies to help you gain Elo consistently:</p>
+          <ul class="fcg-list">
+            <li><strong>Warm up before queueing:</strong> Play a deathmatch or aim training map for 15-20 minutes before your first FACEIT match of the day.</li>
+            <li><strong>Communicate with your team:</strong> FACEIT matches are more competitive than casual matchmaking. Clear callouts and coordinated utility usage make a significant difference.</li>
+            <li><strong>Play during peak hours:</strong> Queue times are faster and match quality is generally better when more players are online, typically during evenings and weekends.</li>
+            <li><strong>Review your stats:</strong> FACEIT provides detailed match statistics. Identify your weakest areas -- whether that is opening duels, clutch rounds, or utility damage -- and focus on improving them.</li>
+            <li><strong>Queue with teammates:</strong> Solo queue is viable, but playing with at least one or two friends significantly improves coordination and consistency.</li>
+          </ul>
+          <p>If you are also looking to improve your fundamental skills, check out our <a href="/unlock-premier-cs2/">Premier unlock guide</a> and the <a href="/cs2-premier-vs-faceit/">Premier vs FACEIT comparison</a> to decide which platform best fits your current level.</p>
+        </section>
+
+        <section id="faq">
+          <div class="fcg-section-header"><h2>Frequently Asked Questions</h2></div>
+          <div class="fcg-faq-list">
+            {faqs.map((faq) => (
+              <details class="fcg-faq-item">
+                <summary class="fcg-faq-question">{faq.question}</summary>
+                <p class="fcg-faq-answer">{faq.answer}</p>
+              </details>
+            ))}
+          </div>
+        </section>
+
+        <section id="related">
+          <div class="fcg-section-header"><h2>Related Articles</h2></div>
+          <div class="fcg-resources-grid">
+            <a href="/cs2-ranks-competitive-faq/" class="fcg-resource-card"><span class="fcg-resource-name">Ranks & Competitive Hub</span><span class="fcg-resource-arrow">&rarr;</span></a>
+            <a href="/unlock-premier-cs2/" class="fcg-resource-card"><span class="fcg-resource-name">Unlock Premier Mode</span><span class="fcg-resource-arrow">&rarr;</span></a>
+            <a href="/cs2-premier-vs-faceit/" class="fcg-resource-card"><span class="fcg-resource-name">Premier vs FACEIT</span><span class="fcg-resource-arrow">&rarr;</span></a>
+            <a href="/cs2-ranks-explained/" class="fcg-resource-card"><span class="fcg-resource-name">CS2 Ranks Explained</span><span class="fcg-resource-arrow">&rarr;</span></a>
+            <a href="/cs2-rank-distribution/" class="fcg-resource-card"><span class="fcg-resource-name">Rank Distribution</span><span class="fcg-resource-arrow">&rarr;</span></a>
+          </div>
+        </section>
+      </article>
+    </div>
+  </div>
+
+  <style>
+    .fcg-wrap{max-width:1100px;margin:0 auto;padding:0 1.5rem 2rem}
+    .fcg-breadcrumb{display:flex;align-items:center;gap:.5rem;padding:1.25rem 0;font-size:.85rem;color:var(--text2)}
+    .fcg-breadcrumb a{color:var(--accent);text-decoration:none}
+    .fcg-breadcrumb a:hover{color:var(--accent2)}
+    .fcg-sep{color:var(--border)}
+    .fcg-header{padding:1.5rem 0 1.25rem;border-bottom:2px solid var(--accent);margin-bottom:1.5rem}
+    .fcg-header h1{margin:0 0 .35rem;font-size:2.2rem;font-weight:800;color:var(--text);letter-spacing:-.02em;line-height:1.2}
+    .fcg-subtitle{margin:0;font-size:1.05rem;color:var(--text2);font-weight:400}
+    .fcg-toc-mobile{display:none}
+    .fcg-layout{display:grid;grid-template-columns:220px 1fr;gap:2.5rem;align-items:start}
+    .fcg-sidebar{position:sticky;top:80px}
+    .fcg-toc{display:flex;flex-direction:column;gap:0;border-left:2px solid var(--border);padding-left:0}
+    .fcg-toc-title{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--accent);padding:0 0 .6rem 1rem}
+    .fcg-toc-link{display:block;padding:.4rem 1rem;font-size:.82rem;color:var(--text2);text-decoration:none;border-left:2px solid transparent;margin-left:-2px;transition:color .2s,border-color .2s}
+    .fcg-toc-link:hover{color:var(--text);border-left-color:var(--accent)}
+    .fcg-content{min-width:0}
+    .fcg-intro{font-size:1rem;line-height:1.8;color:var(--text2);margin-bottom:2rem}
+    .fcg-section-header{background:rgba(46,204,113,.05);margin:0 -1.25rem 1.25rem;padding:.75rem 1.25rem;border-radius:4px}
+    .fcg-section-header h2{margin:0;padding:0;font-size:1.5rem;font-weight:700;color:var(--text);border:none;letter-spacing:-.01em}
+    section{margin-bottom:2.5rem}
+    p{line-height:1.7;color:var(--text2);margin-bottom:1rem}
+    .fcg-list{list-style:none;padding:0;margin:.75rem 0 1.5rem}
+    .fcg-list li{padding:.4rem 0 .4rem 1.6rem;position:relative;color:var(--text2);line-height:1.65}
+    .fcg-list li::before{content:'';position:absolute;left:.25rem;top:.75rem;width:6px;height:6px;background:var(--accent);border-radius:1px}
+    .fcg-list li strong{color:var(--text)}
+    .fcg-faq-list{display:flex;flex-direction:column;gap:.5rem}
+    .fcg-faq-item{background:var(--bg2);border:1px solid var(--border);border-radius:4px;overflow:hidden}
+    .fcg-faq-question{display:block;padding:1rem 1.25rem;font-size:.95rem;font-weight:600;color:var(--text);cursor:pointer;list-style:none;position:relative;padding-right:2.5rem;transition:background .2s}
+    .fcg-faq-question::-webkit-details-marker{display:none}
+    .fcg-faq-question::after{content:'+';position:absolute;right:1.25rem;top:50%;transform:translateY(-50%);font-size:1.2rem;color:var(--accent);font-weight:700}
+    .fcg-faq-item[open] .fcg-faq-question::after{content:'\2212'}
+    .fcg-faq-item[open] .fcg-faq-question{border-bottom:1px solid var(--border);background:rgba(46,204,113,.03)}
+    .fcg-faq-question:hover{background:rgba(46,204,113,.03)}
+    .fcg-faq-answer{padding:1rem 1.25rem;margin:0;font-size:.9rem;color:var(--text2);line-height:1.7}
+    .fcg-resources-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.6rem;margin:.5rem 0 1.5rem}
+    .fcg-resource-card{display:flex;align-items:center;justify-content:space-between;padding:.75rem 1rem;background:var(--bg2);border:1px solid var(--border);border-radius:4px;text-decoration:none;border-left:2px solid transparent;transition:border-left-color .2s,color .2s}
+    .fcg-resource-card:hover{border-left-color:var(--accent)}
+    .fcg-resource-name{font-size:.88rem;color:var(--text2);font-weight:500;transition:color .2s}
+    .fcg-resource-card:hover .fcg-resource-name{color:var(--text)}
+    .fcg-resource-arrow{font-size:1rem;color:var(--accent);opacity:0;transition:opacity .2s}
+    .fcg-resource-card:hover .fcg-resource-arrow{opacity:1}
+    @media(max-width:860px){
+      .fcg-layout{grid-template-columns:1fr;gap:0}
+      .fcg-sidebar{display:none}
+      .fcg-toc-mobile{display:flex;gap:.25rem;overflow-x:auto;padding:.75rem 0;margin-bottom:1rem;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+      .fcg-toc-mobile::-webkit-scrollbar{display:none}
+      .fcg-toc-mobile-link{flex-shrink:0;padding:.35rem .75rem;font-size:.78rem;font-weight:600;color:var(--text2);background:var(--bg2);border:1px solid var(--border);border-radius:4px;text-decoration:none;white-space:nowrap;transition:color .2s,border-color .2s}
+      .fcg-toc-mobile-link:hover{color:var(--accent);border-color:var(--accent)}
+      .fcg-header h1{font-size:1.7rem}
+      .fcg-section-header{margin:0 -1rem 1rem;padding:.6rem 1rem}
+      .fcg-resources-grid{grid-template-columns:repeat(2,1fr)}
+    }
+    @media(max-width:600px){
+      .fcg-wrap{padding:0 1rem 1.5rem}
+      .fcg-resources-grid{grid-template-columns:1fr}
+      .fcg-header h1{font-size:1.5rem}
+    }
+  </style>
+  <AuthorBox updated="2026-03-04" />
+</Base>

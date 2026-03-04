@@ -1,0 +1,127 @@
+---
+import Base from '../layouts/Base.astro';
+import AuthorBox from '../components/AuthorBox.astro';
+import { faqSchema, breadcrumbSchema } from '../lib/weapons';
+
+const title = 'CS2 Skin Trading & Marketplace FAQ | CSGOLuck Wiki';
+const description = 'Where to buy and sell CS2 skins, how trading works, inventory valuation, and why skins cost so much. Your trading questions answered.';
+
+const faqs = [
+  {
+    question: 'Where can I buy CS2 skins?',
+    answer: 'The Steam Community Market is the official marketplace, though it charges a 15% combined fee on sales. Third-party platforms like Skinport, Buff163, DMarket, and SkinBaron typically offer lower fees (2-7%) and often better prices. Always verify that any third-party site is reputable before transacting. Check our <a href="/price-tracker/">price tracker</a> to compare prices across multiple marketplaces before buying.',
+  },
+  {
+    question: 'Where can I sell CS2 skins?',
+    answer: 'You can sell on the Steam Community Market for Steam Wallet funds, or use third-party marketplaces to receive real money via bank transfer or PayPal. Popular cashout platforms include Skinport, SkinBaron, and Buff163. Fees vary — Steam takes 15%, while most third-party sites charge between 2% and 10%. Compare current offers using our <a href="/market-trends/">market trends</a> page to maximize your return.',
+  },
+  {
+    question: 'How to trade CS2 skins?',
+    answer: 'To trade directly with another player, send them a trade offer through Steam. Go to their Steam profile, select "Offer a Trade," and add the items each side will exchange. Both parties must confirm the trade through the Steam Mobile Authenticator. There is a seven-day trade hold on newly purchased items unless both users have had the authenticator active for at least fifteen days. Read our <a href="/cs2-guides/trading-guide/">trading guide</a> for best practices.',
+  },
+  {
+    question: 'How much is my CS2 inventory worth?',
+    answer: 'Use our <a href="/inventory-lookup/">inventory lookup tool</a> to get an instant valuation of your entire CS2 inventory. The tool pulls live prices from multiple marketplaces and shows you a total value breakdown by item. Keep in mind that actual cashout value is typically 70-90% of listed market prices depending on which platform you use and current demand levels.',
+  },
+  {
+    question: 'Why are CS2 skins so expensive?',
+    answer: 'Skin prices are driven by scarcity, demand, and the game\'s massive player base. Rare items like knives, gloves, and covert-tier weapon skins have very low drop rates. Discontinued items and skins with unique patterns — such as Case Hardened blue gems — become more valuable over time as supply shrinks. The active trading economy and collectible nature of skins also contribute. See our <a href="/cs2-guides/skins-investing-guide/">skins investing guide</a> for deeper analysis.',
+  },
+];
+---
+
+<Base title={title} description={description}>
+  <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema([{name:'Home',url:'/'},{name:'CS2 Skin Trading & Marketplace FAQ',url:'/cs2-trading-marketplace-faq'}]))}></script>
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema(faqs))}></script>
+
+  <nav class="tmf-breadcrumb">
+    <a href="/">Home</a> / <span>CS2 Skin Trading &amp; Marketplace FAQ</span>
+  </nav>
+
+  <section class="tmf-hero">
+    <h1>CS2 Skin Trading &amp; Marketplace FAQ</h1>
+    <p class="tmf-hero-desc">The CS2 skin trading marketplace is one of the largest virtual economies in gaming, with millions of transactions happening daily across Steam and third-party platforms. Whether you are buying your first skin, selling your inventory for real money, or wondering why certain items cost thousands, these answers explain how the CS2 trading ecosystem works.</p>
+  </section>
+
+  <div class="tmf-faq-list">
+    {faqs.map(faq => (
+      <details class="tmf-faq-item">
+        <summary class="tmf-faq-question">{faq.question}</summary>
+        <div class="tmf-faq-answer" set:html={faq.answer}></div>
+      </details>
+    ))}
+  </div>
+
+  <section class="tmf-related">
+    <h2>Related Articles</h2>
+    <div class="tmf-related-grid">
+      <a href="/where-to-buy-cs2-skins/" class="tmf-related-card"><span class="tmf-related-name">Where to Buy CS2 Skins</span><span class="tmf-related-arrow">&rarr;</span></a>
+      <a href="/how-to-trade-cs2-skins/" class="tmf-related-card"><span class="tmf-related-name">How to Trade CS2 Skins</span><span class="tmf-related-arrow">&rarr;</span></a>
+      <a href="/why-cs2-skins-expensive/" class="tmf-related-card"><span class="tmf-related-name">Why CS2 Skins Are So Expensive</span><span class="tmf-related-arrow">&rarr;</span></a>
+      <a href="/market-trends/" class="tmf-related-card"><span class="tmf-related-name">Market Trends</span><span class="tmf-related-arrow">&rarr;</span></a>
+      <a href="/price-tracker/" class="tmf-related-card"><span class="tmf-related-name">Price Tracker</span><span class="tmf-related-arrow">&rarr;</span></a>
+      <a href="/inventory-lookup/" class="tmf-related-card"><span class="tmf-related-name">Inventory Lookup Tool</span><span class="tmf-related-arrow">&rarr;</span></a>
+      <a href="/cs2-guides/trading-guide/" class="tmf-related-card"><span class="tmf-related-name">Complete Trading Guide</span><span class="tmf-related-arrow">&rarr;</span></a>
+      <a href="/cs2-guides/skins-investing-guide/" class="tmf-related-card"><span class="tmf-related-name">Skins Investing Guide</span><span class="tmf-related-arrow">&rarr;</span></a>
+    </div>
+  </section>
+
+  <section class="tmf-explore">
+    <h2>Explore More</h2>
+    <div class="tmf-explore-links">
+      <a href="/cs2-skins-cases-faq/">CS2 Skins &amp; Cases FAQ</a>
+      <a href="/cs2-stats-adr-tracking-faq/">CS2 Stats &amp; Tracking FAQ</a>
+    </div>
+  </section>
+
+  <AuthorBox updated="2026-03-04" />
+</Base>
+
+<style>
+/* ── Breadcrumb ── */
+.tmf-breadcrumb{font-size:.82rem;color:var(--text2);margin-bottom:1.25rem;display:flex;gap:.35rem;flex-wrap:wrap}
+.tmf-breadcrumb a{color:var(--accent);text-decoration:none}
+.tmf-breadcrumb a:hover{text-decoration:underline}
+
+/* ── Hero ── */
+.tmf-hero{background:var(--bg2);border:1px solid var(--border);border-radius:4px;padding:2rem;margin-bottom:1.5rem}
+.tmf-hero h1{font-family:'Montserrat',sans-serif;font-size:2rem;font-weight:800;margin:0 0 .75rem;color:var(--text)}
+.tmf-hero-desc{color:var(--text2);font-size:.95rem;line-height:1.7;margin:0}
+
+/* ── FAQ List ── */
+.tmf-faq-list{display:flex;flex-direction:column;gap:.5rem;margin-bottom:2.5rem}
+.tmf-faq-item{background:var(--bg2);border:1px solid var(--border);border-radius:4px;overflow:hidden}
+.tmf-faq-question{display:block;padding:1rem 1.25rem;font-size:.95rem;font-weight:600;color:var(--text);cursor:pointer;list-style:none;position:relative;padding-right:2.5rem;transition:background .2s}
+.tmf-faq-question::-webkit-details-marker{display:none}
+.tmf-faq-question::after{content:'+';position:absolute;right:1.25rem;top:50%;transform:translateY(-50%);font-size:1.2rem;color:var(--accent);font-weight:700}
+.tmf-faq-item[open] .tmf-faq-question::after{content:'\2212'}
+.tmf-faq-item[open] .tmf-faq-question{border-bottom:1px solid var(--border);background:rgba(46,204,113,.03)}
+.tmf-faq-question:hover{background:rgba(46,204,113,.03)}
+.tmf-faq-answer{padding:1rem 1.25rem;margin:0;font-size:.9rem;color:var(--text2);line-height:1.7}
+.tmf-faq-answer a{color:var(--accent);text-decoration:none}
+.tmf-faq-answer a:hover{text-decoration:underline}
+
+/* ── Related Articles ── */
+.tmf-related{margin-bottom:2rem}
+.tmf-related h2{font-family:'Montserrat',sans-serif;font-size:1.2rem;font-weight:700;color:var(--text);margin:0 0 .75rem;padding-bottom:.5rem;border-bottom:2px solid var(--accent)}
+.tmf-related-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:.6rem}
+.tmf-related-card{display:flex;align-items:center;justify-content:space-between;padding:.75rem 1rem;background:var(--bg2);border:1px solid var(--border);border-radius:4px;text-decoration:none;border-left:2px solid transparent;transition:border-left-color .2s,color .2s}
+.tmf-related-card:hover{border-left-color:var(--accent)}
+.tmf-related-name{font-size:.88rem;color:var(--text2);font-weight:500;transition:color .2s}
+.tmf-related-card:hover .tmf-related-name{color:var(--text)}
+.tmf-related-arrow{font-size:1rem;color:var(--accent);opacity:0;transition:opacity .2s}
+.tmf-related-card:hover .tmf-related-arrow{opacity:1}
+
+/* ── Explore More ── */
+.tmf-explore{margin-bottom:2rem}
+.tmf-explore h2{font-family:'Montserrat',sans-serif;font-size:1.2rem;font-weight:700;color:var(--text);margin:0 0 .75rem;padding-bottom:.5rem;border-bottom:2px solid var(--accent)}
+.tmf-explore-links{display:flex;flex-wrap:wrap;gap:.45rem}
+.tmf-explore-links a{color:var(--accent);text-decoration:none;padding:.4rem .75rem;background:var(--bg2);border:1px solid var(--border);border-radius:4px;font-size:.85rem;font-weight:600;transition:border-color .15s,color .15s}
+.tmf-explore-links a:hover{border-color:var(--accent);color:var(--text)}
+
+/* ── Responsive ── */
+@media(max-width:768px){
+  .tmf-hero h1{font-size:1.5rem}
+  .tmf-related-grid{grid-template-columns:1fr}
+}
+</style>

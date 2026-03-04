@@ -1,0 +1,226 @@
+---
+import Base from '../layouts/Base.astro';
+import AuthorBox from '../components/AuthorBox.astro';
+import { faqSchema, breadcrumbSchema } from '../lib/weapons';
+
+const title = 'Is CS2 Free to Play? Free vs Prime Explained | CSGOLuck Wiki';
+const description = 'Yes, CS2 is free to play — but Prime status unlocks extra features. Learn the differences and whether Prime is worth it.';
+
+const breadcrumbs = [
+  { name: 'Home', url: '/' },
+  { name: 'Download & Platform FAQ', url: '/cs2-download-platform-faq' },
+  { name: 'Is CS2 Free?', url: '/is-cs2-free' },
+];
+
+const faqs = [
+  {
+    question: 'Is CS2 completely free?',
+    answer: 'Yes. CS2 is free to download and play on Steam. You can access all core game modes including competitive without paying anything. See our <a href="/cs2-download-platform-faq/">download & platform FAQ</a> for more.',
+  },
+  {
+    question: 'What is the difference between free and Prime in CS2?',
+    answer: 'Prime Status provides access to exclusive item drops, Prime-only matchmaking, and souvenir items during Major tournaments. Free players can still play all game modes but miss these extras. Check our <a href="/cs2-download-platform-faq/">download & platform FAQ</a> for details.',
+  },
+  {
+    question: 'How much does CS2 Prime Status cost?',
+    answer: 'CS2 Prime Status is available as a one-time purchase on Steam. The price varies by region. Visit the <a href="/cs2-download-platform-faq/">download & platform FAQ</a> for current pricing information.',
+  },
+];
+
+const breadcrumbSchema_ = breadcrumbSchema(breadcrumbs);
+const faqSchema_ = faqSchema(faqs);
+
+const articleSchema = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": title,
+  "description": description,
+  "author": { "@type": "Person", "name": "Josh Lingenfelter", "url": "https://www.linkedin.com/in/josh-lingenfelter-8157274b/", "jobTitle": "Director", "worksFor": { "@type": "Organization", "name": "CSGOLuck" } },
+  "publisher": { "@type": "Organization", "name": "CSGOLuck Wiki", "url": "https://wiki.csgoluck.com" },
+  "mainEntityOfPage": "https://wiki.csgoluck.com/is-cs2-free/",
+  "inLanguage": "en-US"
+});
+
+const sections = [
+  { id: 'free-to-play', label: 'Is CS2 Free?' },
+  { id: 'free-version', label: 'Free Version Features' },
+  { id: 'prime-status', label: 'What Is Prime Status?' },
+  { id: 'free-vs-prime', label: 'Free vs Prime' },
+  { id: 'worth-it', label: 'Is Prime Worth It?' },
+  { id: 'faq', label: 'FAQ' },
+  { id: 'related', label: 'Related Articles' },
+];
+---
+
+<Base title={title} description={description}>
+  <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema_)}></script>
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema_)}></script>
+  <script type="application/ld+json" set:html={articleSchema}></script>
+
+  <div class="icf-wrap">
+    <nav class="icf-breadcrumb">
+      <a href="/">Home</a>
+      <span class="icf-sep">/</span>
+      <a href="/cs2-download-platform-faq/">Download & Platform FAQ</a>
+      <span class="icf-sep">/</span>
+      <span>Is CS2 Free?</span>
+    </nav>
+
+    <header class="icf-header">
+      <h1>Is CS2 Free to Play? Free vs Prime Explained</h1>
+      <p class="icf-subtitle">Everything you need to know about CS2's pricing model and Prime Status</p>
+    </header>
+
+    <nav class="icf-toc-mobile" aria-label="Table of contents">
+      {sections.map((s) => (
+        <a href={`#${s.id}`} class="icf-toc-mobile-link">{s.label}</a>
+      ))}
+    </nav>
+
+    <div class="icf-layout">
+      <aside class="icf-sidebar">
+        <nav class="icf-toc" aria-label="Table of contents">
+          <span class="icf-toc-title">Contents</span>
+          {sections.map((s) => (
+            <a href={`#${s.id}`} class="icf-toc-link">{s.label}</a>
+          ))}
+        </nav>
+      </aside>
+
+      <article class="icf-content">
+        <p class="icf-intro">
+          One of the most common questions from newcomers is whether is cs2 free to play. The short answer: yes. Counter-Strike 2 is completely free to download and play on Steam. You can jump into competitive matches, casual modes, and deathmatch without spending a cent. However, Valve offers an optional upgrade called Prime Status that unlocks additional features. This guide explains exactly what you get for free, what Prime adds, and whether the upgrade is worth your money.
+        </p>
+
+        <section id="free-to-play">
+          <div class="icf-section-header"><h2>Is CS2 Free to Download and Play?</h2></div>
+          <p>Yes. Counter-Strike 2 has been free to play since it inherited the free-to-play model from CS:GO in December 2018. You can download it directly from <a href="https://store.steampowered.com/app/730/CounterStrike_2/" target="_blank" rel="noopener">Steam</a> at no cost. There is no trial period, no level cap, and no time restriction -- the full game is available permanently once you install it.</p>
+          <p>The free-to-play model lowered the barrier to entry for millions of players worldwide. All you need is a Steam account and a PC that meets the minimum system requirements. From there, you have access to every game mode the core experience offers.</p>
+        </section>
+
+        <section id="free-version">
+          <div class="icf-section-header"><h2>What You Get with the Free Version</h2></div>
+          <p>Free CS2 players have access to the full gameplay experience:</p>
+          <ul class="icf-list">
+            <li><strong>All game modes:</strong> Competitive, Premier, casual, deathmatch, wingman, and Arms Race</li>
+            <li><strong>All maps:</strong> Every map in the active pool is playable</li>
+            <li><strong>Ranked matchmaking:</strong> You can play competitive and Premier matches and earn a CS Rating</li>
+            <li><strong>Skin marketplace:</strong> You can buy, sell, and trade weapon skins on the Steam Community Market</li>
+            <li><strong>Workshop maps:</strong> Community-created content is accessible through the Steam Workshop</li>
+          </ul>
+          <p>The free version does not limit your gameplay in any meaningful way. You can reach the highest ranks, play in all modes, and participate in the full CS2 experience without purchasing anything.</p>
+        </section>
+
+        <section id="prime-status">
+          <div class="icf-section-header"><h2>What Is CS2 Prime Status?</h2></div>
+          <p>Prime Status is an optional one-time purchase available on the Steam store. Originally introduced in CS:GO to combat cheating and smurfing, Prime separates players into a dedicated matchmaking pool and adds several bonus features.</p>
+          <p>When you have Prime Status, your account is flagged for Prime-exclusive matchmaking. This means you are matched against other Prime players, which generally results in fewer encounters with new or suspicious accounts. Prime also unlocks the ability to receive random item drops -- including weapon skins, cases, and graffiti -- after matches.</p>
+          <p>During Major Championship events, Prime players are eligible to receive souvenir packages when watching matches through the CS2 client or on Steam. These packages contain special souvenir weapon skins that commemorate specific tournament rounds.</p>
+        </section>
+
+        <section id="free-vs-prime">
+          <div class="icf-section-header"><h2>Free vs Prime -- Key Differences</h2></div>
+          <p>Here is a direct comparison of what each tier includes:</p>
+          <ul class="icf-list">
+            <li><strong>Matchmaking pool:</strong> Free players are matched together; Prime players get their own pool with generally higher account quality</li>
+            <li><strong>Item drops:</strong> Only Prime players receive random weapon skin and case drops after matches</li>
+            <li><strong>Souvenir packages:</strong> Only Prime players can earn souvenir drops during Major tournaments</li>
+            <li><strong>XP and service medals:</strong> Prime players earn XP that progresses service medals and profile rank</li>
+            <li><strong>Gameplay access:</strong> Identical -- both tiers play the same maps, modes, and ranked systems</li>
+          </ul>
+          <p>The core gameplay experience is the same. Prime does not give you better weapons, faster movement, or any competitive advantage. The differences are entirely around matchmaking quality and cosmetic rewards.</p>
+        </section>
+
+        <section id="worth-it">
+          <div class="icf-section-header"><h2>Is Prime Worth Buying?</h2></div>
+          <p>Whether Prime is worth the purchase depends on how seriously you plan to play CS2 and how much you value cosmetic drops.</p>
+          <p>If you are committed to competitive play and plan to invest significant time into CS2, Prime is generally recommended. The Prime matchmaking pool tends to have fewer brand-new accounts, which can mean a more consistent experience. The item drops -- while not guaranteed to be valuable -- occasionally include skins and cases worth selling on the Steam Market, which can recoup some of the initial cost over time.</p>
+          <p>If you are a casual player who mainly enjoys deathmatch or occasional competitive matches with friends, the free version is perfectly adequate. You are not missing out on any gameplay features, and the cosmetic drops are a nice bonus rather than a necessity.</p>
+          <p>For players concerned about matchmaking quality and cheaters, it is worth noting that Valve's anti-cheat system (VAC) applies to all players regardless of Prime status. Prime matchmaking adds an additional layer of account quality filtering, but it is not a guarantee of cheat-free matches. For information on other factors affecting match quality, see our guide on <a href="/cs2-on-mac/">playing CS2 on different platforms</a> and <a href="/cs2-system-requirements/">system requirements</a>.</p>
+        </section>
+
+        <section id="faq">
+          <div class="icf-section-header"><h2>Frequently Asked Questions</h2></div>
+          <div class="icf-faq-list">
+            {faqs.map((faq) => (
+              <details class="icf-faq-item">
+                <summary class="icf-faq-question">{faq.question}</summary>
+                <p class="icf-faq-answer" set:html={faq.answer}></p>
+              </details>
+            ))}
+          </div>
+        </section>
+
+        <section id="related">
+          <div class="icf-section-header"><h2>Related Articles</h2></div>
+          <div class="icf-resources-grid">
+            <a href="/cs2-download-platform-faq/" class="icf-resource-card"><span class="icf-resource-name">Download & Platform FAQ Hub</span><span class="icf-resource-arrow">&rarr;</span></a>
+            <a href="/cs2-on-mac/" class="icf-resource-card"><span class="icf-resource-name">CS2 on Mac</span><span class="icf-resource-arrow">&rarr;</span></a>
+            <a href="/cs2-system-requirements/" class="icf-resource-card"><span class="icf-resource-name">CS2 System Requirements</span><span class="icf-resource-arrow">&rarr;</span></a>
+          </div>
+        </section>
+      </article>
+    </div>
+  </div>
+
+  <style>
+    .icf-wrap{max-width:1100px;margin:0 auto;padding:0 1.5rem 2rem}
+    .icf-breadcrumb{display:flex;align-items:center;gap:.5rem;padding:1.25rem 0;font-size:.85rem;color:var(--text2)}
+    .icf-breadcrumb a{color:var(--accent);text-decoration:none}
+    .icf-breadcrumb a:hover{color:var(--accent2)}
+    .icf-sep{color:var(--border)}
+    .icf-header{padding:1.5rem 0 1.25rem;border-bottom:2px solid var(--accent);margin-bottom:1.5rem}
+    .icf-header h1{margin:0 0 .35rem;font-size:2.2rem;font-weight:800;color:var(--text);letter-spacing:-.02em;line-height:1.2}
+    .icf-subtitle{margin:0;font-size:1.05rem;color:var(--text2);font-weight:400}
+    .icf-toc-mobile{display:none}
+    .icf-layout{display:grid;grid-template-columns:220px 1fr;gap:2.5rem;align-items:start}
+    .icf-sidebar{position:sticky;top:80px}
+    .icf-toc{display:flex;flex-direction:column;gap:0;border-left:2px solid var(--border);padding-left:0}
+    .icf-toc-title{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--accent);padding:0 0 .6rem 1rem}
+    .icf-toc-link{display:block;padding:.4rem 1rem;font-size:.82rem;color:var(--text2);text-decoration:none;border-left:2px solid transparent;margin-left:-2px;transition:color .2s,border-color .2s}
+    .icf-toc-link:hover{color:var(--text);border-left-color:var(--accent)}
+    .icf-content{min-width:0}
+    .icf-intro{font-size:1rem;line-height:1.8;color:var(--text2);margin-bottom:2rem}
+    .icf-section-header{background:rgba(46,204,113,.05);margin:0 -1.25rem 1.25rem;padding:.75rem 1.25rem;border-radius:4px}
+    .icf-section-header h2{margin:0;padding:0;font-size:1.5rem;font-weight:700;color:var(--text);border:none;letter-spacing:-.01em}
+    section{margin-bottom:2.5rem}
+    p{line-height:1.7;color:var(--text2);margin-bottom:1rem}
+    .icf-list{list-style:none;padding:0;margin:.75rem 0 1.5rem}
+    .icf-list li{padding:.4rem 0 .4rem 1.6rem;position:relative;color:var(--text2);line-height:1.65}
+    .icf-list li::before{content:'';position:absolute;left:.25rem;top:.75rem;width:6px;height:6px;background:var(--accent);border-radius:1px}
+    .icf-list li strong{color:var(--text)}
+    .icf-faq-list{display:flex;flex-direction:column;gap:.5rem}
+    .icf-faq-item{background:var(--bg2);border:1px solid var(--border);border-radius:4px;overflow:hidden}
+    .icf-faq-question{display:block;padding:1rem 1.25rem;font-size:.95rem;font-weight:600;color:var(--text);cursor:pointer;list-style:none;position:relative;padding-right:2.5rem;transition:background .2s}
+    .icf-faq-question::-webkit-details-marker{display:none}
+    .icf-faq-question::after{content:'+';position:absolute;right:1.25rem;top:50%;transform:translateY(-50%);font-size:1.2rem;color:var(--accent);font-weight:700}
+    .icf-faq-item[open] .icf-faq-question::after{content:'\2212'}
+    .icf-faq-item[open] .icf-faq-question{border-bottom:1px solid var(--border);background:rgba(46,204,113,.03)}
+    .icf-faq-question:hover{background:rgba(46,204,113,.03)}
+    .icf-faq-answer{padding:1rem 1.25rem;margin:0;font-size:.9rem;color:var(--text2);line-height:1.7}
+    .icf-resources-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.6rem;margin:.5rem 0 1.5rem}
+    .icf-resource-card{display:flex;align-items:center;justify-content:space-between;padding:.75rem 1rem;background:var(--bg2);border:1px solid var(--border);border-radius:4px;text-decoration:none;border-left:2px solid transparent;transition:border-left-color .2s,color .2s}
+    .icf-resource-card:hover{border-left-color:var(--accent)}
+    .icf-resource-name{font-size:.88rem;color:var(--text2);font-weight:500;transition:color .2s}
+    .icf-resource-card:hover .icf-resource-name{color:var(--text)}
+    .icf-resource-arrow{font-size:1rem;color:var(--accent);opacity:0;transition:opacity .2s}
+    .icf-resource-card:hover .icf-resource-arrow{opacity:1}
+    @media(max-width:860px){
+      .icf-layout{grid-template-columns:1fr;gap:0}
+      .icf-sidebar{display:none}
+      .icf-toc-mobile{display:flex;gap:.25rem;overflow-x:auto;padding:.75rem 0;margin-bottom:1rem;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+      .icf-toc-mobile::-webkit-scrollbar{display:none}
+      .icf-toc-mobile-link{flex-shrink:0;padding:.35rem .75rem;font-size:.78rem;font-weight:600;color:var(--text2);background:var(--bg2);border:1px solid var(--border);border-radius:4px;text-decoration:none;white-space:nowrap;transition:color .2s,border-color .2s}
+      .icf-toc-mobile-link:hover{color:var(--accent);border-color:var(--accent)}
+      .icf-header h1{font-size:1.7rem}
+      .icf-section-header{margin:0 -1rem 1rem;padding:.6rem 1rem}
+      .icf-resources-grid{grid-template-columns:repeat(2,1fr)}
+    }
+    @media(max-width:600px){
+      .icf-wrap{padding:0 1rem 1.5rem}
+      .icf-resources-grid{grid-template-columns:1fr}
+      .icf-header h1{font-size:1.5rem}
+    }
+  </style>
+  <AuthorBox updated="2026-03-04" />
+</Base>

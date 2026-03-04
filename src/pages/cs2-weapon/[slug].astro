@@ -1,7 +1,7 @@
 ---
 import Base from '../../layouts/Base.astro';
 import ExploreMore from '../../components/ExploreMore.astro';
-import { WEAPONS, WEAPON_CATEGORIES, getWeaponBySlug, getWeaponsByCategory, breadcrumbSchema, faqSchema } from '../../lib/weapons';
+import { WEAPONS, WEAPON_CATEGORIES, getWeaponBySlug, getWeaponsByCategory, getWeaponImage, breadcrumbSchema, faqSchema } from '../../lib/weapons';
 import { getSkinsByWeapon, RARITY_COLORS, RARITY_BG, getLowestPrice, getHighestPrice } from '../../lib/skins';
 import { PRO_PLAYERS } from '../../lib/pro-players';
 
@@ -25,6 +25,7 @@ const relatedWeapons = getWeaponsByCategory(weapon.category)
 
 const categoryInfo = WEAPON_CATEGORIES.find(c => c.slug === weapon.category);
 const categoryLabel = categoryInfo?.name || weapon.category.charAt(0).toUpperCase() + weapon.category.slice(1);
+const weaponImage = getWeaponImage(weapon.slug);
 
 const teamLabels: Record<string, string> = { ct: 'Counter-Terrorist', t: 'Terrorist', both: 'Both Sides' };
 const teamLabel = teamLabels[weapon.team] || weapon.team;
@@ -88,7 +89,11 @@ const premiumSkins = skinsWithPrice.filter(s => s.low > 50).sort((a, b) => b.low
   <header class="wp-hero">
     <div class="wp-hero-left">
       <div class="wp-hero-img-wrap">
-        <span class="wp-hero-placeholder">{weapon.name.substring(0, 3)}</span>
+        {weaponImage ? (
+          <img src={weaponImage} alt={weapon.name} class="wp-hero-weapon-img" loading="eager" />
+        ) : (
+          <span class="wp-hero-placeholder">{weapon.name.substring(0, 3)}</span>
+        )}
       </div>
     </div>
     <div class="wp-hero-right">
@@ -396,6 +401,12 @@ const premiumSkins = skinsWithPrice.filter(s => s.low > 50).sort((a, b) => b.low
     align-items: center;
     justify-content: center;
     overflow: hidden;
+  }
+  .wp-hero-weapon-img {
+    width: 80%;
+    height: auto;
+    object-fit: contain;
+    filter: drop-shadow(0 4px 12px rgba(0,0,0,.4));
   }
   .wp-hero-placeholder {
     font-size: 2.5rem;

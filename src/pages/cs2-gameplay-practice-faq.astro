@@ -1,0 +1,143 @@
+---
+import Base from '../layouts/Base.astro';
+import AuthorBox from '../components/AuthorBox.astro';
+import { faqSchema, breadcrumbSchema } from '../lib/weapons';
+
+const title = 'CS2 Gameplay & Practice FAQ | CSGOLuck Wiki';
+const description = 'Learn to surf, bhop, 1v1, practice smokes, and improve at CS2. Practical gameplay tips and practice methods explained.';
+
+const faqs = [
+  {
+    question: 'How to surf in CS2?',
+    answer: 'Surfing is a community movement mode where you glide along angled ramps by strafing into them. Browse the Steam Workshop or community server browser for surf maps — search for "surf" in the tags. Once on a ramp, hold A or D to press into the surface without using W, and move your mouse gently in the direction you want to travel. Surf builds mouse control and air-strafe skills that transfer directly to competitive play.',
+  },
+  {
+    question: 'How to 1v1 in CS2?',
+    answer: 'The easiest way to 1v1 a friend is through community servers — search the server browser for "1v1 arena" maps. Alternatively, you can set up a private match using console commands: start a local server, use mp_teammates_are_enemies 1, and invite your friend. Workshop maps like aim_map and various 1v1 arena maps provide purpose-built layouts for dueling practice.',
+  },
+  {
+    question: 'How to bhop in CS2?',
+    answer: 'Bunny hopping means chaining jumps to maintain or build speed. As you land, immediately jump again while air-strafing with A or D and matching your mouse movement to the strafe direction. In CS2, bhop is harder than in CS:GO because Valve applies a speed cap that limits consecutive hops. Practice on community bhop servers or <a href="/workshop-maps/">workshop maps</a> designed for the technique to develop timing and rhythm.',
+  },
+  {
+    question: 'How to defuse the bomb in CS2?',
+    answer: 'As a Counter-Terrorist, walk up to the planted bomb and hold your use key (default E) for the full defuse duration. Without a defuse kit, it takes ten seconds. With a kit — purchased for $400 during the buy phase — defuse time drops to five seconds. You must stand still and remain alive for the entire duration. Teammates should provide cover while you defuse.',
+  },
+  {
+    question: 'How to practice smokes in CS2?',
+    answer: 'Load a private server with practice commands enabled using our <a href="/practice-config/">practice config</a>. Key commands include sv_cheats 1, sv_infinite_ammo 1, mp_roundtime_defuse 60, and bind a key to noclip for quick repositioning. CS2\'s responsive smoke grenades make lineup practice essential. Study lineups from guides or YouTube, then drill them until you can land each smoke consistently under pressure.',
+  },
+  {
+    question: 'How to get better at CS2?',
+    answer: 'Improvement comes from focused, consistent practice. Warm up daily with deathmatch or aim trainers for fifteen to thirty minutes. Master two or three maps before expanding your pool. Learn essential smokes and flashes for each map you play. Review your demo recordings to identify repeated mistakes. Study how professionals approach the same situations you struggle with. Read our <a href="/cs2-guides/beginners-guide/">beginner\'s guide</a> for a structured starting path.',
+  },
+];
+---
+
+<Base title={title} description={description}>
+  <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema([{name:'Home',url:'/'},{name:'CS2 Gameplay & Practice FAQ',url:'/cs2-gameplay-practice-faq'}]))}></script>
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema(faqs))}></script>
+
+  <nav class="gpf-breadcrumb">
+    <a href="/">Home</a> / <span>CS2 Gameplay &amp; Practice FAQ</span>
+  </nav>
+
+  <section class="gpf-hero">
+    <h1>CS2 Gameplay &amp; Practice FAQ</h1>
+    <p class="gpf-hero-desc">Getting better at CS2 requires the right gameplay knowledge and practice tips. Whether you want to learn surfing, nail bunny hops, set up 1v1s with friends, or drill smoke lineups efficiently, these answers cover the practical side of improving at Counter-Strike 2. For a full walkthrough of fundamentals, see our <a href="/cs2-guides/movement-guide/">movement guide</a>.</p>
+  </section>
+
+  <div class="gpf-faq-list">
+    {faqs.map(faq => (
+      <details class="gpf-faq-item">
+        <summary class="gpf-faq-question">{faq.question}</summary>
+        <div class="gpf-faq-answer" set:html={faq.answer}></div>
+      </details>
+    ))}
+  </div>
+
+  <section class="gpf-related">
+    <h2>Related Articles</h2>
+    <div class="gpf-related-grid">
+      <a href="/how-to-surf-cs2/" class="gpf-related-card"><span class="gpf-related-name">How to Surf in CS2</span><span class="gpf-related-arrow">&rarr;</span></a>
+      <a href="/how-to-bhop-cs2/" class="gpf-related-card"><span class="gpf-related-name">How to Bhop in CS2</span><span class="gpf-related-arrow">&rarr;</span></a>
+      <a href="/how-to-1v1-cs2/" class="gpf-related-card"><span class="gpf-related-name">How to 1v1 in CS2</span><span class="gpf-related-arrow">&rarr;</span></a>
+      <a href="/practice-smokes-cs2/" class="gpf-related-card"><span class="gpf-related-name">How to Practice Smokes</span><span class="gpf-related-arrow">&rarr;</span></a>
+      <a href="/get-better-at-cs2/" class="gpf-related-card"><span class="gpf-related-name">How to Get Better at CS2</span><span class="gpf-related-arrow">&rarr;</span></a>
+      <a href="/cs2-guides/beginners-guide/" class="gpf-related-card"><span class="gpf-related-name">CS2 Beginner's Guide</span><span class="gpf-related-arrow">&rarr;</span></a>
+      <a href="/workshop-maps/" class="gpf-related-card"><span class="gpf-related-name">Workshop Maps Collection</span><span class="gpf-related-arrow">&rarr;</span></a>
+    </div>
+  </section>
+
+  <section class="gpf-explore">
+    <h2>Explore More</h2>
+    <div class="gpf-explore-links">
+      <a href="/cs2-settings-config-faq/">CS2 Settings &amp; Config FAQ</a>
+      <a href="/cs2-maps-callouts-faq/">CS2 Maps &amp; Callouts FAQ</a>
+    </div>
+  </section>
+
+  <div class="gpf-outbound">
+    <strong>Official Resources:</strong>
+    <a href="https://www.counter-strike.net/" target="_blank" rel="noopener noreferrer">Counter-Strike.net</a>
+  </div>
+
+  <AuthorBox updated="2026-03-04" />
+</Base>
+
+<style>
+/* ── Breadcrumb ── */
+.gpf-breadcrumb{font-size:.82rem;color:var(--text2);margin-bottom:1.25rem;display:flex;gap:.35rem;flex-wrap:wrap}
+.gpf-breadcrumb a{color:var(--accent);text-decoration:none}
+.gpf-breadcrumb a:hover{text-decoration:underline}
+
+/* ── Hero ── */
+.gpf-hero{background:var(--bg2);border:1px solid var(--border);border-radius:4px;padding:2rem;margin-bottom:1.5rem}
+.gpf-hero h1{font-family:'Montserrat',sans-serif;font-size:2rem;font-weight:800;margin:0 0 .75rem;color:var(--text)}
+.gpf-hero-desc{color:var(--text2);font-size:.95rem;line-height:1.7;margin:0}
+.gpf-hero-desc a{color:var(--accent);text-decoration:none}
+.gpf-hero-desc a:hover{text-decoration:underline}
+
+/* ── FAQ List ── */
+.gpf-faq-list{display:flex;flex-direction:column;gap:.5rem;margin-bottom:2.5rem}
+.gpf-faq-item{background:var(--bg2);border:1px solid var(--border);border-radius:4px;overflow:hidden}
+.gpf-faq-question{display:block;padding:1rem 1.25rem;font-size:.95rem;font-weight:600;color:var(--text);cursor:pointer;list-style:none;position:relative;padding-right:2.5rem;transition:background .2s}
+.gpf-faq-question::-webkit-details-marker{display:none}
+.gpf-faq-question::after{content:'+';position:absolute;right:1.25rem;top:50%;transform:translateY(-50%);font-size:1.2rem;color:var(--accent);font-weight:700}
+.gpf-faq-item[open] .gpf-faq-question::after{content:'\2212'}
+.gpf-faq-item[open] .gpf-faq-question{border-bottom:1px solid var(--border);background:rgba(46,204,113,.03)}
+.gpf-faq-question:hover{background:rgba(46,204,113,.03)}
+.gpf-faq-answer{padding:1rem 1.25rem;margin:0;font-size:.9rem;color:var(--text2);line-height:1.7}
+.gpf-faq-answer a{color:var(--accent);text-decoration:none}
+.gpf-faq-answer a:hover{text-decoration:underline}
+
+/* ── Related Articles ── */
+.gpf-related{margin-bottom:2rem}
+.gpf-related h2{font-family:'Montserrat',sans-serif;font-size:1.2rem;font-weight:700;color:var(--text);margin:0 0 .75rem;padding-bottom:.5rem;border-bottom:2px solid var(--accent)}
+.gpf-related-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:.6rem}
+.gpf-related-card{display:flex;align-items:center;justify-content:space-between;padding:.75rem 1rem;background:var(--bg2);border:1px solid var(--border);border-radius:4px;text-decoration:none;border-left:2px solid transparent;transition:border-left-color .2s,color .2s}
+.gpf-related-card:hover{border-left-color:var(--accent)}
+.gpf-related-name{font-size:.88rem;color:var(--text2);font-weight:500;transition:color .2s}
+.gpf-related-card:hover .gpf-related-name{color:var(--text)}
+.gpf-related-arrow{font-size:1rem;color:var(--accent);opacity:0;transition:opacity .2s}
+.gpf-related-card:hover .gpf-related-arrow{opacity:1}
+
+/* ── Explore More ── */
+.gpf-explore{margin-bottom:2rem}
+.gpf-explore h2{font-family:'Montserrat',sans-serif;font-size:1.2rem;font-weight:700;color:var(--text);margin:0 0 .75rem;padding-bottom:.5rem;border-bottom:2px solid var(--accent)}
+.gpf-explore-links{display:flex;flex-wrap:wrap;gap:.45rem}
+.gpf-explore-links a{color:var(--accent);text-decoration:none;padding:.4rem .75rem;background:var(--bg2);border:1px solid var(--border);border-radius:4px;font-size:.85rem;font-weight:600;transition:border-color .15s,color .15s}
+.gpf-explore-links a:hover{border-color:var(--accent);color:var(--text)}
+
+/* ── Outbound Links ── */
+.gpf-outbound{display:flex;flex-wrap:wrap;gap:.45rem;align-items:center;margin:1.5rem 0 2rem;font-size:.82rem}
+.gpf-outbound strong{color:var(--text);margin-right:.2rem}
+.gpf-outbound a{color:var(--accent);text-decoration:none;padding:.2rem .5rem;background:var(--bg2);border:1px solid var(--border);border-radius:4px;transition:border-color .15s}
+.gpf-outbound a:hover{border-color:var(--accent)}
+
+/* ── Responsive ── */
+@media(max-width:768px){
+  .gpf-hero h1{font-size:1.5rem}
+  .gpf-related-grid{grid-template-columns:1fr}
+}
+</style>

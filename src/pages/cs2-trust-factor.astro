@@ -1,0 +1,238 @@
+---
+import Base from '../layouts/Base.astro';
+import AuthorBox from '../components/AuthorBox.astro';
+import { faqSchema, breadcrumbSchema } from '../lib/weapons';
+
+const title = 'CS2 Trust Factor: How to Check & Improve | CSGOLuck Wiki';
+const description = 'CS2 Trust Factor affects your matchmaking experience. Learn how it works, how to check your status, and proven ways to improve it.';
+
+const breadcrumbs = [
+  { name: 'Home', url: '/' },
+  { name: 'Server Status & Technical FAQ', url: '/cs2-server-status-technical-faq' },
+  { name: 'Trust Factor', url: '/cs2-trust-factor' },
+];
+
+const faqs = [
+  {
+    question: 'Can I see my exact Trust Factor score?',
+    answer: 'No. Valve does not display a numerical Trust Factor value. You can only get indirect indicators, such as a warning message when queuing with a friend who has a significantly lower Trust Factor. See our <a href="/cs2-server-status-technical-faq/">server status FAQ</a> for more.',
+  },
+  {
+    question: 'Does getting reported lower my Trust Factor?',
+    answer: 'Being reported can affect your Trust Factor, but Valve has stated that the system accounts for false reports. Occasional reports from frustrated opponents should not cause lasting damage to a legitimately clean account. Visit our <a href="/cs2-server-status-technical-faq/">server status FAQ</a> for details.',
+  },
+  {
+    question: 'How long does it take to improve Trust Factor?',
+    answer: 'There is no fixed timeline. Consistent positive behaviour over weeks or months gradually improves your Trust Factor. Avoid abandoning matches, being reported frequently, or engaging in unsporting conduct. Check our <a href="/cs2-server-status-technical-faq/">server status FAQ</a> for more tips.',
+  },
+];
+
+const breadcrumbSchema_ = breadcrumbSchema(breadcrumbs);
+const faqSchema_ = faqSchema(faqs);
+
+const articleSchema = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": title,
+  "description": description,
+  "author": { "@type": "Person", "name": "Josh Lingenfelter", "url": "https://www.linkedin.com/in/josh-lingenfelter-8157274b/", "jobTitle": "Director", "worksFor": { "@type": "Organization", "name": "CSGOLuck" } },
+  "publisher": { "@type": "Organization", "name": "CSGOLuck Wiki", "url": "https://wiki.csgoluck.com" },
+  "mainEntityOfPage": "https://wiki.csgoluck.com/cs2-trust-factor/",
+  "inLanguage": "en-US"
+});
+
+const sections = [
+  { id: 'what-is', label: 'What Is Trust Factor?' },
+  { id: 'matchmaking', label: 'How It Affects Matchmaking' },
+  { id: 'check', label: 'How to Check' },
+  { id: 'improve', label: 'Ways to Improve' },
+  { id: 'myths', label: 'Common Myths' },
+  { id: 'faq', label: 'FAQ' },
+  { id: 'related', label: 'Related Articles' },
+];
+---
+
+<Base title={title} description={description}>
+  <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema_)}></script>
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema_)}></script>
+  <script type="application/ld+json" set:html={articleSchema}></script>
+
+  <div class="ctf-wrap">
+    <nav class="ctf-breadcrumb">
+      <a href="/">Home</a>
+      <span class="ctf-sep">/</span>
+      <a href="/cs2-server-status-technical-faq/">Server Status & Technical FAQ</a>
+      <span class="ctf-sep">/</span>
+      <span>Trust Factor</span>
+    </nav>
+
+    <header class="ctf-header">
+      <h1>CS2 Trust Factor: How to Check & Improve</h1>
+      <p class="ctf-subtitle">Understand the system that shapes your matchmaking experience</p>
+    </header>
+
+    <nav class="ctf-toc-mobile" aria-label="Table of contents">
+      {sections.map((s) => (
+        <a href={`#${s.id}`} class="ctf-toc-mobile-link">{s.label}</a>
+      ))}
+    </nav>
+
+    <div class="ctf-layout">
+      <aside class="ctf-sidebar">
+        <nav class="ctf-toc" aria-label="Table of contents">
+          <span class="ctf-toc-title">Contents</span>
+          {sections.map((s) => (
+            <a href={`#${s.id}`} class="ctf-toc-link">{s.label}</a>
+          ))}
+        </nav>
+      </aside>
+
+      <article class="ctf-content">
+        <p class="ctf-intro">
+          Your cs2 trust factor plays a significant but often invisible role in the quality of your matchmaking experience. Introduced during the CS:GO era and carried forward into CS2, Trust Factor is Valve's system for evaluating account behaviour and matching players with others of similar trustworthiness. A high Trust Factor generally means cleaner matches with fewer cheaters and griefers, while a low Trust Factor can land you in games with more disruptive players. Here is how the system works and what you can do to improve it.
+        </p>
+
+        <section id="what-is">
+          <div class="ctf-section-header"><h2>What Is Trust Factor in CS2?</h2></div>
+          <p>Trust Factor is a behind-the-scenes rating system that Valve uses to assess the quality and legitimacy of your Steam account. It takes into account multiple signals from both your CS2 activity and your broader Steam behaviour to generate a trust score. This score then influences who you get matched with in competitive and Premier modes.</p>
+          <p>Valve has deliberately kept the exact factors and weighting of Trust Factor opaque to prevent gaming the system. What they have publicly confirmed is that the system considers your Steam account history, your in-game behaviour patterns, and community reports. The goal is to match trustworthy players together and isolate problematic accounts into separate matchmaking pools.</p>
+          <p>Trust Factor was first introduced in CS:GO in November 2017 as an alternative to Prime matchmaking. Over time, it became the primary matchmaking quality system, with Prime Status serving as one of many inputs rather than a separate queue. In CS2, Trust Factor continues to operate in the background of all ranked matchmaking. For additional context on CS2's systems, see the <a href="https://blog.counter-strike.net/" target="_blank" rel="noopener">official Counter-Strike blog</a>.</p>
+        </section>
+
+        <section id="matchmaking">
+          <div class="ctf-section-header"><h2>How Trust Factor Affects Matchmaking</h2></div>
+          <p>Trust Factor directly influences which players you encounter in matchmaking. Here is how the system shapes your experience:</p>
+          <ul class="ctf-list">
+            <li><strong>Player pool filtering:</strong> The matchmaking system prioritises pairing you with players who have similar Trust Factor scores. High-trust players tend to encounter other high-trust players</li>
+            <li><strong>Queue times:</strong> If your Trust Factor is very low, you may experience longer queue times as the system searches for other low-trust accounts to fill the lobby</li>
+            <li><strong>Match quality:</strong> Higher Trust Factor generally correlates with fewer cheaters, less griefing, and more cooperative teammates. This is the system's primary purpose</li>
+            <li><strong>Party warnings:</strong> When you queue with a friend who has a significantly lower Trust Factor, CS2 displays a yellow warning message. This warns you that match quality may be affected because the system needs to accommodate the lower-trust player</li>
+          </ul>
+          <p>Trust Factor is separate from your CS Rating or competitive rank. You can be highly skilled with a low Trust Factor (if your account behaviour is poor) or lower ranked with a high Trust Factor (if your account is clean and well-established).</p>
+        </section>
+
+        <section id="check">
+          <div class="ctf-section-header"><h2>How to Check Your Trust Factor</h2></div>
+          <p>Valve does not provide a direct way to view your Trust Factor score. There is no number, grade, or indicator on your profile. However, you can get indirect signals about your Trust Factor status:</p>
+          <ul class="ctf-list">
+            <li><strong>Friend queue warnings:</strong> If friends consistently see a yellow warning when queuing with you, your Trust Factor is likely lower than theirs. If no one in your usual party sees warnings, your Trust Factor is at least on par with theirs</li>
+            <li><strong>Match quality patterns:</strong> If you repeatedly encounter suspected cheaters, griefers, or toxic players despite playing at stable ranks, your Trust Factor may be lower than average</li>
+            <li><strong>Account age and history:</strong> Newer accounts inherently start with lower Trust Factor. If you recently created a new Steam account, expect lower Trust Factor until the account matures</li>
+            <li><strong>Steam Support page:</strong> While not directly displaying Trust Factor, <a href="https://help.steampowered.com/" target="_blank" rel="noopener">Steam Support</a> can sometimes provide information about your account standing if you submit a query</li>
+          </ul>
+          <p>The lack of transparency is intentional. Valve does not want players to be able to reverse-engineer the exact formula, as that would make it easier to artificially inflate scores.</p>
+        </section>
+
+        <section id="improve">
+          <div class="ctf-section-header"><h2>Ways to Improve Your Trust Factor</h2></div>
+          <p>While Valve has not published the exact formula, the community and Valve's public statements point to several factors that positively influence Trust Factor:</p>
+          <ul class="ctf-list">
+            <li><strong>Play regularly and complete matches:</strong> Consistent playtime without abandoning matches signals a legitimate player. Finishing games even when losing demonstrates commitment</li>
+            <li><strong>Maintain a clean VAC record:</strong> Any VAC bans, game bans, or trade bans on your account severely damage Trust Factor. Keeping a clean record is essential</li>
+            <li><strong>Use Prime Status:</strong> Having Prime Status is one of the known Trust Factor inputs. While it is not the only factor, it contributes positively to your score</li>
+            <li><strong>Build Steam account value:</strong> Accounts with more games, higher Steam level, and longer history tend to receive higher Trust Factor scores. This makes it harder for throwaway accounts to game the system</li>
+            <li><strong>Avoid reports:</strong> While the system accounts for false reports, consistently receiving reports for cheating, griefing, or abusive communication can lower your Trust Factor over time</li>
+            <li><strong>Verify your phone number:</strong> Linking a phone number to your Steam account adds a layer of identity verification that positively affects Trust Factor</li>
+            <li><strong>Do not grief or team-kill:</strong> Intentional team damage, blocking teammates, or using exploits triggers automated detection that impacts Trust Factor</li>
+          </ul>
+          <p>Improving Trust Factor is a gradual process. There is no quick fix or reset button. Consistent positive behaviour over weeks and months is the only reliable path to improvement.</p>
+        </section>
+
+        <section id="myths">
+          <div class="ctf-section-header"><h2>Common Trust Factor Myths</h2></div>
+          <p>Several misconceptions about Trust Factor circulate in the community. Here are the most common myths debunked:</p>
+          <ul class="ctf-list">
+            <li><strong>Myth: Buying skins improves Trust Factor.</strong> There is no evidence that spending money on in-game cosmetics affects Trust Factor. Account value (game library size, Steam level) may matter, but not individual cosmetic purchases</li>
+            <li><strong>Myth: Reporting other players improves your Trust Factor.</strong> Reporting opponents does not boost your own score. Excessive false reporting could theoretically count against you, though Valve has not confirmed this</li>
+            <li><strong>Myth: Playing more hours per day raises Trust Factor faster.</strong> Quality of play matters more than raw hours. Playing 2 hours cleanly is better than grinding 8 hours while being toxic</li>
+            <li><strong>Myth: Trust Factor resets with each CS2 update.</strong> Trust Factor persists across updates. It is tied to your Steam account, not to a specific game version</li>
+            <li><strong>Myth: You can pay to reset Trust Factor.</strong> There is no legitimate way to pay for a Trust Factor reset. Any service claiming to offer this is a scam</li>
+          </ul>
+          <p>The bottom line is straightforward: play the game honestly, treat other players with respect, maintain a clean account, and your Trust Factor will take care of itself over time. For related matchmaking topics, check if <a href="/is-cs2-down/">CS2 servers are down</a> and learn about <a href="/cs2-fix-net-jitter/">fixing net jitter</a> for a smoother experience.</p>
+        </section>
+
+        <section id="faq">
+          <div class="ctf-section-header"><h2>Frequently Asked Questions</h2></div>
+          <div class="ctf-faq-list">
+            {faqs.map((faq) => (
+              <details class="ctf-faq-item">
+                <summary class="ctf-faq-question">{faq.question}</summary>
+                <p class="ctf-faq-answer" set:html={faq.answer}></p>
+              </details>
+            ))}
+          </div>
+        </section>
+
+        <section id="related">
+          <div class="ctf-section-header"><h2>Related Articles</h2></div>
+          <div class="ctf-resources-grid">
+            <a href="/cs2-server-status-technical-faq/" class="ctf-resource-card"><span class="ctf-resource-name">Server Status & Technical FAQ Hub</span><span class="ctf-resource-arrow">&rarr;</span></a>
+            <a href="/is-cs2-down/" class="ctf-resource-card"><span class="ctf-resource-name">Is CS2 Down?</span><span class="ctf-resource-arrow">&rarr;</span></a>
+            <a href="/cs2-fix-net-jitter/" class="ctf-resource-card"><span class="ctf-resource-name">Fix Net Jitter</span><span class="ctf-resource-arrow">&rarr;</span></a>
+          </div>
+        </section>
+      </article>
+    </div>
+  </div>
+
+  <style>
+    .ctf-wrap{max-width:1100px;margin:0 auto;padding:0 1.5rem 2rem}
+    .ctf-breadcrumb{display:flex;align-items:center;gap:.5rem;padding:1.25rem 0;font-size:.85rem;color:var(--text2)}
+    .ctf-breadcrumb a{color:var(--accent);text-decoration:none}
+    .ctf-breadcrumb a:hover{color:var(--accent2)}
+    .ctf-sep{color:var(--border)}
+    .ctf-header{padding:1.5rem 0 1.25rem;border-bottom:2px solid var(--accent);margin-bottom:1.5rem}
+    .ctf-header h1{margin:0 0 .35rem;font-size:2.2rem;font-weight:800;color:var(--text);letter-spacing:-.02em;line-height:1.2}
+    .ctf-subtitle{margin:0;font-size:1.05rem;color:var(--text2);font-weight:400}
+    .ctf-toc-mobile{display:none}
+    .ctf-layout{display:grid;grid-template-columns:220px 1fr;gap:2.5rem;align-items:start}
+    .ctf-sidebar{position:sticky;top:80px}
+    .ctf-toc{display:flex;flex-direction:column;gap:0;border-left:2px solid var(--border);padding-left:0}
+    .ctf-toc-title{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--accent);padding:0 0 .6rem 1rem}
+    .ctf-toc-link{display:block;padding:.4rem 1rem;font-size:.82rem;color:var(--text2);text-decoration:none;border-left:2px solid transparent;margin-left:-2px;transition:color .2s,border-color .2s}
+    .ctf-toc-link:hover{color:var(--text);border-left-color:var(--accent)}
+    .ctf-content{min-width:0}
+    .ctf-intro{font-size:1rem;line-height:1.8;color:var(--text2);margin-bottom:2rem}
+    .ctf-section-header{background:rgba(46,204,113,.05);margin:0 -1.25rem 1.25rem;padding:.75rem 1.25rem;border-radius:4px}
+    .ctf-section-header h2{margin:0;padding:0;font-size:1.5rem;font-weight:700;color:var(--text);border:none;letter-spacing:-.01em}
+    section{margin-bottom:2.5rem}
+    p{line-height:1.7;color:var(--text2);margin-bottom:1rem}
+    .ctf-list{list-style:none;padding:0;margin:.75rem 0 1.5rem}
+    .ctf-list li{padding:.4rem 0 .4rem 1.6rem;position:relative;color:var(--text2);line-height:1.65}
+    .ctf-list li::before{content:'';position:absolute;left:.25rem;top:.75rem;width:6px;height:6px;background:var(--accent);border-radius:1px}
+    .ctf-list li strong{color:var(--text)}
+    .ctf-faq-list{display:flex;flex-direction:column;gap:.5rem}
+    .ctf-faq-item{background:var(--bg2);border:1px solid var(--border);border-radius:4px;overflow:hidden}
+    .ctf-faq-question{display:block;padding:1rem 1.25rem;font-size:.95rem;font-weight:600;color:var(--text);cursor:pointer;list-style:none;position:relative;padding-right:2.5rem;transition:background .2s}
+    .ctf-faq-question::-webkit-details-marker{display:none}
+    .ctf-faq-question::after{content:'+';position:absolute;right:1.25rem;top:50%;transform:translateY(-50%);font-size:1.2rem;color:var(--accent);font-weight:700}
+    .ctf-faq-item[open] .ctf-faq-question::after{content:'\2212'}
+    .ctf-faq-item[open] .ctf-faq-question{border-bottom:1px solid var(--border);background:rgba(46,204,113,.03)}
+    .ctf-faq-question:hover{background:rgba(46,204,113,.03)}
+    .ctf-faq-answer{padding:1rem 1.25rem;margin:0;font-size:.9rem;color:var(--text2);line-height:1.7}
+    .ctf-resources-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.6rem;margin:.5rem 0 1.5rem}
+    .ctf-resource-card{display:flex;align-items:center;justify-content:space-between;padding:.75rem 1rem;background:var(--bg2);border:1px solid var(--border);border-radius:4px;text-decoration:none;border-left:2px solid transparent;transition:border-left-color .2s,color .2s}
+    .ctf-resource-card:hover{border-left-color:var(--accent)}
+    .ctf-resource-name{font-size:.88rem;color:var(--text2);font-weight:500;transition:color .2s}
+    .ctf-resource-card:hover .ctf-resource-name{color:var(--text)}
+    .ctf-resource-arrow{font-size:1rem;color:var(--accent);opacity:0;transition:opacity .2s}
+    .ctf-resource-card:hover .ctf-resource-arrow{opacity:1}
+    @media(max-width:860px){
+      .ctf-layout{grid-template-columns:1fr;gap:0}
+      .ctf-sidebar{display:none}
+      .ctf-toc-mobile{display:flex;gap:.25rem;overflow-x:auto;padding:.75rem 0;margin-bottom:1rem;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+      .ctf-toc-mobile::-webkit-scrollbar{display:none}
+      .ctf-toc-mobile-link{flex-shrink:0;padding:.35rem .75rem;font-size:.78rem;font-weight:600;color:var(--text2);background:var(--bg2);border:1px solid var(--border);border-radius:4px;text-decoration:none;white-space:nowrap;transition:color .2s,border-color .2s}
+      .ctf-toc-mobile-link:hover{color:var(--accent);border-color:var(--accent)}
+      .ctf-header h1{font-size:1.7rem}
+      .ctf-section-header{margin:0 -1rem 1rem;padding:.6rem 1rem}
+      .ctf-resources-grid{grid-template-columns:repeat(2,1fr)}
+    }
+    @media(max-width:600px){
+      .ctf-wrap{padding:0 1rem 1.5rem}
+      .ctf-resources-grid{grid-template-columns:1fr}
+      .ctf-header h1{font-size:1.5rem}
+    }
+  </style>
+  <AuthorBox updated="2026-03-04" />
+</Base>

@@ -1,0 +1,235 @@
+---
+import Base from '../layouts/Base.astro';
+import AuthorBox from '../components/AuthorBox.astro';
+import { faqSchema, breadcrumbSchema } from '../lib/weapons';
+
+const title = 'Why Are CS2 Skins So Expensive? | CSGOLuck Wiki';
+const description = 'The economics behind CS2 skin prices — rarity, float values, patterns, and market dynamics that drive skins to thousands of dollars.';
+
+const breadcrumbs = [
+  { name: 'Home', url: '/' },
+  { name: 'Trading & Marketplace FAQ', url: '/cs2-trading-marketplace-faq' },
+  { name: 'Why Skins Are Expensive', url: '/why-cs2-skins-expensive' },
+];
+
+const faqs = [
+  {
+    question: 'What makes some CS2 skins worth thousands of dollars?',
+    answer: 'The combination of extreme rarity, high demand, and limited supply drives prices to extraordinary levels. Skins from discontinued cases, with rare pattern variations (like blue gem Case Hardened), in Factory New condition, and with StatTrak technology can all compound to create exceptionally valuable items.',
+  },
+  {
+    question: 'Do CS2 skin prices go up over time?',
+    answer: 'Many skins appreciate in value over time, particularly those from discontinued cases where supply is permanently fixed. However, prices can also decline due to new case releases, game updates, or shifts in community preferences. Skin investing carries real risk and no returns are guaranteed.',
+  },
+  {
+    question: 'Why are knives more expensive than gun skins?',
+    answer: 'Knives are significantly rarer than gun skins. The roughly 0.26% drop rate from cases makes them scarce, and every player can see your knife during gameplay (it is always visible), which increases desirability. The combination of rarity and visibility drives premium pricing.',
+  },
+  {
+    question: 'Does float value affect CS2 skin prices?',
+    answer: 'Yes, significantly. Float value determines a skin\'s visual condition, and lower float values (closer to Factory New) generally command higher prices. Extremely low or extremely high float values can attract collectors who prize the rarity of near-perfect or maximally worn appearances.',
+  },
+];
+
+const breadcrumbSchema_ = breadcrumbSchema(breadcrumbs);
+const faqSchema_ = faqSchema(faqs);
+
+const articleSchema = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": title,
+  "description": description,
+  "author": { "@type": "Person", "name": "Josh Lingenfelter", "url": "https://www.linkedin.com/in/josh-lingenfelter-8157274b/", "jobTitle": "Director", "worksFor": { "@type": "Organization", "name": "CSGOLuck" } },
+  "publisher": { "@type": "Organization", "name": "CSGOLuck Wiki", "url": "https://wiki.csgoluck.com" },
+  "mainEntityOfPage": "https://wiki.csgoluck.com/why-cs2-skins-expensive/",
+  "inLanguage": "en-US"
+});
+
+const sections = [
+  { id: 'supply-demand', label: 'Supply & Demand' },
+  { id: 'rarity', label: 'Rarity Tiers' },
+  { id: 'float', label: 'Float Values' },
+  { id: 'patterns', label: 'Special Patterns' },
+  { id: 'speculation', label: 'Speculation' },
+  { id: 'faq', label: 'FAQ' },
+  { id: 'related', label: 'Related Articles' },
+];
+---
+
+<Base title={title} description={description}>
+  <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema_)}></script>
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema_)}></script>
+  <script type="application/ld+json" set:html={articleSchema}></script>
+
+  <div class="wse-wrap">
+    <nav class="wse-breadcrumb">
+      <a href="/">Home</a>
+      <span class="wse-sep">/</span>
+      <a href="/cs2-trading-marketplace-faq/">Trading & Marketplace FAQ</a>
+      <span class="wse-sep">/</span>
+      <span>Why Skins Are Expensive</span>
+    </nav>
+
+    <header class="wse-header">
+      <h1>Why Are CS2 Skins So Expensive?</h1>
+      <p class="wse-subtitle">The economics, rarity mechanics, and market forces behind CS2 skin pricing</p>
+    </header>
+
+    <nav class="wse-toc-mobile" aria-label="Table of contents">
+      {sections.map((s) => (
+        <a href={`#${s.id}`} class="wse-toc-mobile-link">{s.label}</a>
+      ))}
+    </nav>
+
+    <div class="wse-layout">
+      <aside class="wse-sidebar">
+        <nav class="wse-toc" aria-label="Table of contents">
+          <span class="wse-toc-title">Contents</span>
+          {sections.map((s) => (
+            <a href={`#${s.id}`} class="wse-toc-link">{s.label}</a>
+          ))}
+        </nav>
+      </aside>
+
+      <article class="wse-content">
+        <p class="wse-intro">
+          CS2 skins range from a few cents to tens of thousands of dollars, and understanding why CS2 skins are so expensive requires looking at the economics built into the game's item system. From artificially scarce drop rates to collector-driven demand for specific patterns, multiple forces converge to push prices far beyond what most people expect for virtual cosmetic items. This guide explains every major factor behind CS2 skin pricing.
+        </p>
+
+        <section id="supply-demand">
+          <div class="wse-section-header"><h2>Supply and Demand Economics</h2></div>
+          <p>At the most fundamental level, CS2 skin prices are driven by the same economic forces that govern any market: supply and demand. CS2 has maintained one of the largest and most active player bases in PC gaming for over a decade, creating consistent demand for cosmetic items.</p>
+          <p>On the supply side, Valve controls how skins enter the economy. New skins come from case openings, trade-up contracts, and occasional in-game drops. Once a case leaves the active drop pool, the supply of its skins becomes permanently fixed — no new copies will ever be generated through gameplay. This built-in scarcity mechanism means older skins become rarer over time as copies are lost to trade bans, abandoned accounts, and market attrition.</p>
+          <p>The <a href="https://steamcommunity.com/market/" target="_blank" rel="noopener">Steam Community Market</a> provides a transparent marketplace where buyers and sellers set prices freely. When demand exceeds supply for a particular skin, prices rise. When new alternatives enter the market (such as similar-looking skins from a new case), demand may shift and prices adjust accordingly.</p>
+        </section>
+
+        <section id="rarity">
+          <div class="wse-section-header"><h2>Rarity Tiers and Drop Rates</h2></div>
+          <p>Every weapon case in CS2 contains items across multiple rarity tiers, each with dramatically different drop rates. The rarity tier is the single biggest determinant of a skin's baseline price.</p>
+          <ul class="wse-list">
+            <li><strong>Consumer Grade (white):</strong> The most common skins, typically worth very little because supply is enormous.</li>
+            <li><strong>Industrial Grade (light blue):</strong> Slightly less common but still very affordable.</li>
+            <li><strong>Mil-Spec (blue):</strong> The most common tier from case openings. These make up the bulk of what players receive.</li>
+            <li><strong>Restricted (purple):</strong> Noticeably rarer than Mil-Spec, starting to hold moderate value.</li>
+            <li><strong>Classified (pink):</strong> Rare enough to be a notable pull from a case opening.</li>
+            <li><strong>Covert (red):</strong> Very rare. Popular Covert skins can be quite valuable.</li>
+            <li><strong>Knives and Gloves (gold):</strong> Approximately 0.26% drop rate. Their extreme rarity is the primary reason knives command premium prices.</li>
+          </ul>
+          <p>The exponential scarcity between tiers means that Covert skins might be hundreds of times rarer than Mil-Spec skins from the same case. Knives are rarer still, which is why even the least popular knife skins cost significantly more than the most desirable rifle skins.</p>
+        </section>
+
+        <section id="float">
+          <div class="wse-section-header"><h2>Float Values and Skin Condition</h2></div>
+          <p>Every CS2 skin has a float value — a decimal number between 0 and 1 that determines the skin's visual wear. Lower float values correspond to cleaner, less worn appearances. Float is assigned randomly when a skin is created and can never be changed.</p>
+          <p>Float value maps to five wear categories: Factory New (0.00-0.07), Minimal Wear (0.07-0.15), Field-Tested (0.15-0.38), Well-Worn (0.38-0.45), and Battle-Scarred (0.45-1.00). Factory New skins generally command the highest prices because they look the cleanest.</p>
+          <p>Collector demand pushes prices even further at the extremes. Skins with extremely low float values (very close to 0.00) attract premium-paying collectors because they represent the best possible condition. Conversely, some collectors seek out the highest possible float values for their uniquely destroyed aesthetic. Use our <a href="/float-checker/">float checker</a> to inspect any skin's exact float value, and read the <a href="/cs2-guides/float-guide/">float value guide</a> for a complete explanation of how the system works.</p>
+          <p>Not every skin can exist in every wear category. Some skins have restricted float ranges — for instance, a skin might only drop between 0.06 and 0.80, meaning Factory New versions are possible but extremely rare, which drives their price up substantially.</p>
+        </section>
+
+        <section id="patterns">
+          <div class="wse-section-header"><h2>Special Patterns and Finishes</h2></div>
+          <p>Beyond float value, certain skin finishes have random pattern variations that can dramatically affect pricing. The most famous example is the Case Hardened finish, where each skin gets a unique distribution of blue and gold colouring based on its pattern seed.</p>
+          <p>Case Hardened skins with patterns that are mostly blue (known as "blue gems") can sell for many times more than standard versions of the same skin. The pattern seed is a number assigned at creation, and certain seeds are known to produce desirable colour distributions. A Factory New AK-47 Case Hardened with a prized blue gem pattern is one of the most valuable non-knife items in the game.</p>
+          <p>Other finishes with pattern-dependent pricing include Fade (where the colour gradient can be more or less complete), Doppler (which comes in multiple "phases" with different colour schemes), and Marble Fade (where the distribution of colours varies by pattern). These variations create layers of value within what appears to be the same skin at first glance.</p>
+          <p>Sticker combinations and souvenir status add yet another dimension. Skins applied with rare tournament stickers — especially from older events — or souvenir skins signed by famous professional players can carry enormous premiums based on their historical significance.</p>
+        </section>
+
+        <section id="speculation">
+          <div class="wse-section-header"><h2>The Role of Speculation and Investing</h2></div>
+          <p>A significant portion of CS2 skin demand comes not from players who want to use the skins, but from speculators who view them as investments. The track record of many CS2 skins appreciating in value over the years has attracted a community of investors who buy and hold skins, cases, and stickers as alternative assets.</p>
+          <p>This speculative activity has real effects on pricing. When investors buy up supply of a particular skin or case, it reduces availability and pushes prices higher. Conversely, when investors sell off holdings (perhaps during a market downturn or when they cash out), supply floods the market and prices can drop.</p>
+          <p>Major game events also trigger speculative behaviour. Announcements of new cases, operations, or game updates can cause rapid price movements as traders try to anticipate how new content will affect the value of existing items. For insights into these dynamics, check our <a href="/market-trends/">market trends</a> page and the <a href="/cs2-guides/skins-investing-guide/">skins investing guide</a>.</p>
+          <p>It is worth noting that skin investing carries real financial risk. Prices can decline as well as rise, and there is no guarantee that any skin will appreciate in value. Valve could also make changes to the game's economy that fundamentally alter how skins work. Treat skin collecting as a hobby first and an investment second.</p>
+        </section>
+
+        <section id="faq">
+          <div class="wse-section-header"><h2>Frequently Asked Questions</h2></div>
+          <div class="wse-faq-list">
+            {faqs.map((faq) => (
+              <details class="wse-faq-item">
+                <summary class="wse-faq-question">{faq.question}</summary>
+                <p class="wse-faq-answer">{faq.answer}</p>
+              </details>
+            ))}
+          </div>
+          <p class="wse-faq-more">Browse more questions in our <a href="/cs2-trading-marketplace-faq/">Trading & Marketplace FAQ hub</a>.</p>
+        </section>
+
+        <section id="related">
+          <div class="wse-section-header"><h2>Related Articles</h2></div>
+          <div class="wse-resources-grid">
+            <a href="/where-to-buy-cs2-skins/" class="wse-resource-card"><span class="wse-resource-name">Where to Buy Skins</span><span class="wse-resource-arrow">&rarr;</span></a>
+            <a href="/how-to-trade-cs2-skins/" class="wse-resource-card"><span class="wse-resource-name">How to Trade Skins</span><span class="wse-resource-arrow">&rarr;</span></a>
+            <a href="/float-checker/" class="wse-resource-card"><span class="wse-resource-name">Float Checker</span><span class="wse-resource-arrow">&rarr;</span></a>
+            <a href="/cs2-guides/float-guide/" class="wse-resource-card"><span class="wse-resource-name">Float Value Guide</span><span class="wse-resource-arrow">&rarr;</span></a>
+            <a href="/cs2-guides/skins-investing-guide/" class="wse-resource-card"><span class="wse-resource-name">Skins Investing Guide</span><span class="wse-resource-arrow">&rarr;</span></a>
+            <a href="/market-trends/" class="wse-resource-card"><span class="wse-resource-name">Market Trends</span><span class="wse-resource-arrow">&rarr;</span></a>
+          </div>
+        </section>
+      </article>
+    </div>
+  </div>
+
+  <style>
+    .wse-wrap{max-width:1100px;margin:0 auto;padding:0 1.5rem 2rem}
+    .wse-breadcrumb{display:flex;align-items:center;gap:.5rem;padding:1.25rem 0;font-size:.85rem;color:var(--text2)}
+    .wse-breadcrumb a{color:var(--accent);text-decoration:none}
+    .wse-breadcrumb a:hover{color:var(--accent2)}
+    .wse-sep{color:var(--border)}
+    .wse-header{padding:1.5rem 0 1.25rem;border-bottom:2px solid var(--accent);margin-bottom:1.5rem}
+    .wse-header h1{margin:0 0 .35rem;font-size:2.2rem;font-weight:800;color:var(--text);letter-spacing:-.02em;line-height:1.2}
+    .wse-subtitle{margin:0;font-size:1.05rem;color:var(--text2);font-weight:400}
+    .wse-toc-mobile{display:none}
+    .wse-layout{display:grid;grid-template-columns:220px 1fr;gap:2.5rem;align-items:start}
+    .wse-sidebar{position:sticky;top:80px}
+    .wse-toc{display:flex;flex-direction:column;gap:0;border-left:2px solid var(--border);padding-left:0}
+    .wse-toc-title{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--accent);padding:0 0 .6rem 1rem}
+    .wse-toc-link{display:block;padding:.4rem 1rem;font-size:.82rem;color:var(--text2);text-decoration:none;border-left:2px solid transparent;margin-left:-2px;transition:color .2s,border-color .2s}
+    .wse-toc-link:hover{color:var(--text);border-left-color:var(--accent)}
+    .wse-content{min-width:0}
+    .wse-intro{font-size:1rem;line-height:1.8;color:var(--text2);margin-bottom:2rem}
+    .wse-section-header{background:rgba(46,204,113,.05);margin:0 -1.25rem 1.25rem;padding:.75rem 1.25rem;border-radius:4px}
+    .wse-section-header h2{margin:0;padding:0;font-size:1.5rem;font-weight:700;color:var(--text);border:none;letter-spacing:-.01em}
+    section{margin-bottom:2.5rem}
+    h3{font-size:1.15rem;font-weight:600;margin:1.5rem 0 .6rem;color:var(--text)}
+    p{line-height:1.7;color:var(--text2);margin-bottom:1rem}
+    .wse-list{list-style:none;padding:0;margin:.75rem 0 1.5rem}
+    .wse-list li{padding:.4rem 0 .4rem 1.6rem;position:relative;color:var(--text2);line-height:1.65}
+    .wse-list li::before{content:'';position:absolute;left:.25rem;top:.75rem;width:6px;height:6px;background:var(--accent);border-radius:1px}
+    .wse-list li strong{color:var(--text)}
+    .wse-faq-list{display:flex;flex-direction:column;gap:.5rem}
+    .wse-faq-item{background:var(--bg2);border:1px solid var(--border);border-radius:4px;overflow:hidden}
+    .wse-faq-question{display:block;padding:1rem 1.25rem;font-size:.95rem;font-weight:600;color:var(--text);cursor:pointer;list-style:none;position:relative;padding-right:2.5rem;transition:background .2s}
+    .wse-faq-question::-webkit-details-marker{display:none}
+    .wse-faq-question::after{content:'+';position:absolute;right:1.25rem;top:50%;transform:translateY(-50%);font-size:1.2rem;color:var(--accent);font-weight:700}
+    .wse-faq-item[open] .wse-faq-question::after{content:'\2212'}
+    .wse-faq-item[open] .wse-faq-question{border-bottom:1px solid var(--border);background:rgba(46,204,113,.03)}
+    .wse-faq-question:hover{background:rgba(46,204,113,.03)}
+    .wse-faq-answer{padding:1rem 1.25rem;margin:0;font-size:.9rem;color:var(--text2);line-height:1.7}
+    .wse-faq-more{font-size:.9rem;margin-top:1rem}
+    .wse-resources-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.6rem;margin:.5rem 0 1.5rem}
+    .wse-resource-card{display:flex;align-items:center;justify-content:space-between;padding:.75rem 1rem;background:var(--bg2);border:1px solid var(--border);border-radius:4px;text-decoration:none;border-left:2px solid transparent;transition:border-left-color .2s,color .2s}
+    .wse-resource-card:hover{border-left-color:var(--accent)}
+    .wse-resource-name{font-size:.88rem;color:var(--text2);font-weight:500;transition:color .2s}
+    .wse-resource-card:hover .wse-resource-name{color:var(--text)}
+    .wse-resource-arrow{font-size:1rem;color:var(--accent);opacity:0;transition:opacity .2s}
+    .wse-resource-card:hover .wse-resource-arrow{opacity:1}
+    @media(max-width:860px){
+      .wse-layout{grid-template-columns:1fr;gap:0}
+      .wse-sidebar{display:none}
+      .wse-toc-mobile{display:flex;gap:.25rem;overflow-x:auto;padding:.75rem 0;margin-bottom:1rem;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+      .wse-toc-mobile::-webkit-scrollbar{display:none}
+      .wse-toc-mobile-link{flex-shrink:0;padding:.35rem .75rem;font-size:.78rem;font-weight:600;color:var(--text2);background:var(--bg2);border:1px solid var(--border);border-radius:4px;text-decoration:none;white-space:nowrap;transition:color .2s,border-color .2s}
+      .wse-toc-mobile-link:hover{color:var(--accent);border-color:var(--accent)}
+      .wse-header h1{font-size:1.7rem}
+      .wse-section-header{margin:0 -1rem 1rem;padding:.6rem 1rem}
+      .wse-resources-grid{grid-template-columns:repeat(2,1fr)}
+    }
+    @media(max-width:600px){
+      .wse-wrap{padding:0 1rem 1.5rem}
+      .wse-resources-grid{grid-template-columns:1fr}
+      .wse-header h1{font-size:1.5rem}
+    }
+  </style>
+  <AuthorBox updated="2026-03-04" />
+</Base>

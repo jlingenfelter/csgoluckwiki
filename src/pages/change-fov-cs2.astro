@@ -1,0 +1,226 @@
+---
+import Base from '../layouts/Base.astro';
+import AuthorBox from '../components/AuthorBox.astro';
+import { faqSchema, breadcrumbSchema } from '../lib/weapons';
+
+const title = 'How to Change FOV in CS2 | CSGOLuck Wiki';
+const description = 'Change your field of view in CS2 using viewmodel commands. Understand the difference between viewmodel FOV and world FOV.';
+
+const breadcrumbs = [
+  { name: 'Home', url: '/' },
+  { name: 'Settings & Config', url: '/cs2-settings-config-faq/' },
+  { name: 'Change FOV', url: '/change-fov-cs2/' },
+];
+
+const faqs = [
+  {
+    question: 'Can I change the actual world FOV in CS2?',
+    answer: 'No. CS2 locks the world field of view at a fixed value for competitive fairness. What you can change is the viewmodel FOV, which adjusts how your weapon and arms appear on screen. This does not change your actual field of vision.',
+  },
+  {
+    question: 'What is the default viewmodel FOV in CS2?',
+    answer: 'The default viewmodel FOV in CS2 is 60. Most competitive players increase this to 68 (the maximum) for a wider view of their weapon model that feels less obstructive.',
+  },
+  {
+    question: 'Does changing viewmodel FOV give a competitive advantage?',
+    answer: 'Changing viewmodel FOV does not affect your actual field of vision or what you can see in the game world. It only changes the appearance of your weapon model. It is a visual preference, not a competitive advantage.',
+  },
+];
+
+const breadcrumbSchema_ = breadcrumbSchema(breadcrumbs);
+const faqSchema_ = faqSchema(faqs);
+
+const articleSchema = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": title,
+  "description": description,
+  "author": { "@type": "Person", "name": "Josh Lingenfelter", "url": "https://www.linkedin.com/in/josh-lingenfelter-8157274b/", "jobTitle": "Director", "worksFor": { "@type": "Organization", "name": "CSGOLuck" } },
+  "publisher": { "@type": "Organization", "name": "CSGOLuck Wiki", "url": "https://wiki.csgoluck.com" },
+  "mainEntityOfPage": "https://wiki.csgoluck.com/change-fov-cs2/",
+  "inLanguage": "en-US"
+});
+
+const sections = [
+  { id: 'understanding-fov', label: 'Understanding FOV' },
+  { id: 'viewmodel-vs-world', label: 'Viewmodel vs World FOV' },
+  { id: 'how-to-change', label: 'How to Change It' },
+  { id: 'best-settings', label: 'Best Settings' },
+  { id: 'pro-preferences', label: 'Pro Player Preferences' },
+  { id: 'faq', label: 'FAQ' },
+  { id: 'related', label: 'Related Articles' },
+];
+---
+
+<Base title={title} description={description}>
+  <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema_)}></script>
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema_)}></script>
+  <script type="application/ld+json" set:html={articleSchema}></script>
+
+  <div class="cfc-wrap">
+    <nav class="cfc-breadcrumb">
+      <a href="/">Home</a>
+      <span class="cfc-sep">/</span>
+      <a href="/cs2-settings-config-faq/">Settings & Config</a>
+      <span class="cfc-sep">/</span>
+      <span>Change FOV</span>
+    </nav>
+
+    <header class="cfc-header">
+      <h1>How to Change FOV in CS2</h1>
+      <p class="cfc-subtitle">Adjust your viewmodel field of view for a cleaner competitive experience</p>
+    </header>
+
+    <nav class="cfc-toc-mobile" aria-label="Table of contents">
+      {sections.map((s) => (
+        <a href={`#${s.id}`} class="cfc-toc-mobile-link">{s.label}</a>
+      ))}
+    </nav>
+
+    <div class="cfc-layout">
+      <aside class="cfc-sidebar">
+        <nav class="cfc-toc" aria-label="Table of contents">
+          <span class="cfc-toc-title">Contents</span>
+          {sections.map((s) => (
+            <a href={`#${s.id}`} class="cfc-toc-link">{s.label}</a>
+          ))}
+        </nav>
+      </aside>
+
+      <article class="cfc-content">
+        <p class="cfc-intro">
+          Understanding <strong>how to change FOV in CS2</strong> is a common question, but the answer is more nuanced than many players expect. CS2 does not allow you to change the actual world field of view -- what you can adjust is the viewmodel FOV, which controls how your weapon and hands appear on screen. This guide explains the difference and shows you exactly how to customise it.
+        </p>
+
+        <section id="understanding-fov">
+          <div class="cfc-section-header"><h2>Understanding FOV in CS2</h2></div>
+          <p>Field of view (FOV) determines how much of the game world you can see at any given moment. A wider FOV shows more of the environment but makes objects appear smaller. A narrower FOV shows less but makes things appear larger and closer.</p>
+          <p>In many FPS games, you can freely adjust the world FOV. CS2, however, locks the world FOV at a fixed value to maintain competitive integrity -- no player can gain a wider field of vision than another. The aspect ratio of your resolution does affect horizontal FOV (wider resolutions see slightly more), but the vertical FOV remains fixed. Learn more about Source engine conventions at the <a href="https://developer.valvesoftware.com/" target="_blank" rel="noopener">Valve Developer Community</a>.</p>
+        </section>
+
+        <section id="viewmodel-vs-world">
+          <div class="cfc-section-header"><h2>Viewmodel FOV vs World FOV</h2></div>
+          <p>These are two completely different things, and the distinction is important:</p>
+          <ul class="cfc-list">
+            <li><strong>World FOV:</strong> Determines how much of the game environment you can see. This is fixed in CS2 and cannot be changed. Your resolution's aspect ratio has a minor influence, but the base value is locked.</li>
+            <li><strong>Viewmodel FOV:</strong> Controls the rendering of your weapon model, arms, and gloves on screen. A higher viewmodel FOV pushes your weapon further away from the camera, giving you a wider view of the model. A lower value pulls it closer.</li>
+          </ul>
+          <p>Changing viewmodel FOV is purely cosmetic. It does not change what enemies or map geometry you can see -- it only changes how much screen space your weapon occupies. Most players prefer a higher viewmodel FOV because it feels less cluttered.</p>
+        </section>
+
+        <section id="how-to-change">
+          <div class="cfc-section-header"><h2>How to Change Viewmodel FOV</h2></div>
+          <p>You can change viewmodel FOV through the in-game settings menu or with console commands:</p>
+          <ul class="cfc-list">
+            <li><strong>In-game menu:</strong> Go to Settings, then Game, then scroll to the Viewmodel section. You will find a slider for "Viewmodel Field of View" that ranges from 54 to 68.</li>
+            <li><strong>Console command:</strong> Open the developer console and type <code>viewmodel_fov 68</code> (or any value between 54 and 68). The change takes effect immediately.</li>
+            <li><strong>Save it permanently:</strong> Add <code>viewmodel_fov 68</code> to your autoexec.cfg file so it loads automatically every time you start CS2.</li>
+          </ul>
+          <p>The allowed range is 54 to 68. Values outside this range will be clamped by the game. Most competitive players set this to 68 for maximum weapon model distance. For help setting up your autoexec, see our <a href="/cs2-guides/config-guide/">config guide</a>.</p>
+        </section>
+
+        <section id="best-settings">
+          <div class="cfc-section-header"><h2>Best FOV Settings for Competitive</h2></div>
+          <p>While FOV is ultimately personal preference, here are the most common competitive choices:</p>
+          <ul class="cfc-list">
+            <li><strong>Viewmodel FOV 68:</strong> The most popular setting among competitive players. Pushes the weapon model as far back as possible, giving the cleanest view.</li>
+            <li><strong>Viewmodel FOV 60:</strong> The default setting. Some players prefer this because the weapon feels more centred and prominent on screen.</li>
+            <li><strong>Viewmodel FOV 54:</strong> Rarely used in competitive play. The weapon model is very close and takes up significant screen space.</li>
+          </ul>
+          <p>Pair your viewmodel FOV with appropriate viewmodel offset settings (x, y, z positions) for a fully customised weapon position. Our <a href="/cs2-viewmodel-settings/">viewmodel settings guide</a> covers all the offset commands and popular presets.</p>
+        </section>
+
+        <section id="pro-preferences">
+          <div class="cfc-section-header"><h2>Pro Player FOV Preferences</h2></div>
+          <p>The vast majority of professional CS2 players use a viewmodel FOV of 68. This is such a common choice that it is essentially the standard at the competitive level. However, the weapon positioning (offsets) varies more widely.</p>
+          <p>Some pros prefer a "classic" viewmodel that resembles the CS 1.6 weapon position, while others use the default CS2 positioning. The viewmodel FOV itself is almost universally set to the maximum. You can browse specific pro player configurations on our <a href="/pro-players/">pro player settings page</a> to see exactly what the best players use.</p>
+          <p>For a deeper dive into how pros customise their crosshairs alongside viewmodel settings, visit our <a href="/crosshair-generator/">crosshair generator</a>.</p>
+        </section>
+
+        <section id="faq">
+          <div class="cfc-section-header"><h2>Frequently Asked Questions</h2></div>
+          <div class="cfc-faq-list">
+            {faqs.map((faq) => (
+              <details class="cfc-faq-item">
+                <summary class="cfc-faq-question">{faq.question}</summary>
+                <p class="cfc-faq-answer">{faq.answer}</p>
+              </details>
+            ))}
+          </div>
+        </section>
+
+        <section id="related">
+          <div class="cfc-section-header"><h2>Related Articles</h2></div>
+          <div class="cfc-resources-grid">
+            <a href="/cs2-settings-config-faq/" class="cfc-resource-card"><span class="cfc-resource-name">Settings & Config Hub</span><span class="cfc-resource-arrow">&rarr;</span></a>
+            <a href="/show-fps-cs2/" class="cfc-resource-card"><span class="cfc-resource-name">Show FPS in CS2</span><span class="cfc-resource-arrow">&rarr;</span></a>
+            <a href="/cs2-viewmodel-settings/" class="cfc-resource-card"><span class="cfc-resource-name">Viewmodel Settings</span><span class="cfc-resource-arrow">&rarr;</span></a>
+            <a href="/crosshair-generator/" class="cfc-resource-card"><span class="cfc-resource-name">Crosshair Generator</span><span class="cfc-resource-arrow">&rarr;</span></a>
+            <a href="/cs2-guides/config-guide/" class="cfc-resource-card"><span class="cfc-resource-name">Config Guide</span><span class="cfc-resource-arrow">&rarr;</span></a>
+          </div>
+        </section>
+      </article>
+    </div>
+  </div>
+
+  <style>
+    .cfc-wrap{max-width:1100px;margin:0 auto;padding:0 1.5rem 2rem}
+    .cfc-breadcrumb{display:flex;align-items:center;gap:.5rem;padding:1.25rem 0;font-size:.85rem;color:var(--text2)}
+    .cfc-breadcrumb a{color:var(--accent);text-decoration:none}
+    .cfc-breadcrumb a:hover{color:var(--accent2)}
+    .cfc-sep{color:var(--border)}
+    .cfc-header{padding:1.5rem 0 1.25rem;border-bottom:2px solid var(--accent);margin-bottom:1.5rem}
+    .cfc-header h1{margin:0 0 .35rem;font-size:2.2rem;font-weight:800;color:var(--text);letter-spacing:-.02em;line-height:1.2}
+    .cfc-subtitle{margin:0;font-size:1.05rem;color:var(--text2);font-weight:400}
+    .cfc-toc-mobile{display:none}
+    .cfc-layout{display:grid;grid-template-columns:220px 1fr;gap:2.5rem;align-items:start}
+    .cfc-sidebar{position:sticky;top:80px}
+    .cfc-toc{display:flex;flex-direction:column;gap:0;border-left:2px solid var(--border);padding-left:0}
+    .cfc-toc-title{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--accent);padding:0 0 .6rem 1rem}
+    .cfc-toc-link{display:block;padding:.4rem 1rem;font-size:.82rem;color:var(--text2);text-decoration:none;border-left:2px solid transparent;margin-left:-2px;transition:color .2s,border-color .2s}
+    .cfc-toc-link:hover{color:var(--text);border-left-color:var(--accent)}
+    .cfc-content{min-width:0}
+    .cfc-intro{font-size:1rem;line-height:1.8;color:var(--text2);margin-bottom:2rem}
+    .cfc-section-header{background:rgba(46,204,113,.05);margin:0 -1.25rem 1.25rem;padding:.75rem 1.25rem;border-radius:4px}
+    .cfc-section-header h2{margin:0;padding:0;font-size:1.5rem;font-weight:700;color:var(--text);border:none;letter-spacing:-.01em}
+    section{margin-bottom:2.5rem}
+    p{line-height:1.7;color:var(--text2);margin-bottom:1rem}
+    .cfc-list{list-style:none;padding:0;margin:.75rem 0 1.5rem}
+    .cfc-list li{padding:.4rem 0 .4rem 1.6rem;position:relative;color:var(--text2);line-height:1.65}
+    .cfc-list li::before{content:'';position:absolute;left:.25rem;top:.75rem;width:6px;height:6px;background:var(--accent);border-radius:1px}
+    .cfc-list li strong{color:var(--text)}
+    .cfc-faq-list{display:flex;flex-direction:column;gap:.5rem}
+    .cfc-faq-item{background:var(--bg2);border:1px solid var(--border);border-radius:4px;overflow:hidden}
+    .cfc-faq-question{display:block;padding:1rem 1.25rem;font-size:.95rem;font-weight:600;color:var(--text);cursor:pointer;list-style:none;position:relative;padding-right:2.5rem;transition:background .2s}
+    .cfc-faq-question::-webkit-details-marker{display:none}
+    .cfc-faq-question::after{content:'+';position:absolute;right:1.25rem;top:50%;transform:translateY(-50%);font-size:1.2rem;color:var(--accent);font-weight:700}
+    .cfc-faq-item[open] .cfc-faq-question::after{content:'\2212'}
+    .cfc-faq-item[open] .cfc-faq-question{border-bottom:1px solid var(--border);background:rgba(46,204,113,.03)}
+    .cfc-faq-question:hover{background:rgba(46,204,113,.03)}
+    .cfc-faq-answer{padding:1rem 1.25rem;margin:0;font-size:.9rem;color:var(--text2);line-height:1.7}
+    .cfc-resources-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.6rem;margin:.5rem 0 1.5rem}
+    .cfc-resource-card{display:flex;align-items:center;justify-content:space-between;padding:.75rem 1rem;background:var(--bg2);border:1px solid var(--border);border-radius:4px;text-decoration:none;border-left:2px solid transparent;transition:border-left-color .2s,color .2s}
+    .cfc-resource-card:hover{border-left-color:var(--accent)}
+    .cfc-resource-name{font-size:.88rem;color:var(--text2);font-weight:500;transition:color .2s}
+    .cfc-resource-card:hover .cfc-resource-name{color:var(--text)}
+    .cfc-resource-arrow{font-size:1rem;color:var(--accent);opacity:0;transition:opacity .2s}
+    .cfc-resource-card:hover .cfc-resource-arrow{opacity:1}
+    @media(max-width:860px){
+      .cfc-layout{grid-template-columns:1fr;gap:0}
+      .cfc-sidebar{display:none}
+      .cfc-toc-mobile{display:flex;gap:.25rem;overflow-x:auto;padding:.75rem 0;margin-bottom:1rem;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+      .cfc-toc-mobile::-webkit-scrollbar{display:none}
+      .cfc-toc-mobile-link{flex-shrink:0;padding:.35rem .75rem;font-size:.78rem;font-weight:600;color:var(--text2);background:var(--bg2);border:1px solid var(--border);border-radius:4px;text-decoration:none;white-space:nowrap;transition:color .2s,border-color .2s}
+      .cfc-toc-mobile-link:hover{color:var(--accent);border-color:var(--accent)}
+      .cfc-header h1{font-size:1.7rem}
+      .cfc-section-header{margin:0 -1rem 1rem;padding:.6rem 1rem}
+      .cfc-resources-grid{grid-template-columns:repeat(2,1fr)}
+    }
+    @media(max-width:600px){
+      .cfc-wrap{padding:0 1rem 1.5rem}
+      .cfc-resources-grid{grid-template-columns:1fr}
+      .cfc-header h1{font-size:1.5rem}
+    }
+  </style>
+  <AuthorBox updated="2026-03-04" />
+</Base>

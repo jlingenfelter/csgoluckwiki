@@ -1,0 +1,234 @@
+---
+import Base from '../layouts/Base.astro';
+import AuthorBox from '../components/AuthorBox.astro';
+import { faqSchema, breadcrumbSchema } from '../lib/weapons';
+
+const title = 'CS2 Season Dates & Rewards Guide | CSGOLuck Wiki';
+const description = 'When does each CS2 season start and end? Season schedule, rewards, rank resets, and what happens between seasons explained.';
+
+const breadcrumbs = [
+  { name: 'Home', url: '/' },
+  { name: 'Game History & FAQ', url: '/cs2-game-history-faq' },
+  { name: 'CS2 Season Dates', url: '/cs2-season-dates' },
+];
+
+const faqs = [
+  {
+    question: 'How long does a CS2 season last?',
+    answer: 'CS2 seasons have typically lasted around two to three months, though Valve has not committed to a fixed schedule. Season length can vary based on updates and content releases. See our <a href="/cs2-game-history-faq/">game history FAQ</a> for more.',
+  },
+  {
+    question: 'Do I lose my rank when a new season starts?',
+    answer: 'Your CS Rating resets at the start of each new season in Premier mode. You will need to play placement matches to establish your new rating. Competitive map-based ranks also undergo a soft reset. Check our <a href="/cs2-game-history-faq/">game history FAQ</a> for details.',
+  },
+  {
+    question: 'What rewards do you get at the end of a CS2 season?',
+    answer: 'Players receive a season coin that reflects their highest achieved CS Rating tier during the season. The coin is displayed on your profile. Visit our <a href="/cs2-game-history-faq/">game history FAQ</a> for the full breakdown.',
+  },
+];
+
+const breadcrumbSchema_ = breadcrumbSchema(breadcrumbs);
+const faqSchema_ = faqSchema(faqs);
+
+const articleSchema = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": title,
+  "description": description,
+  "author": { "@type": "Person", "name": "Josh Lingenfelter", "url": "https://www.linkedin.com/in/josh-lingenfelter-8157274b/", "jobTitle": "Director", "worksFor": { "@type": "Organization", "name": "CSGOLuck" } },
+  "publisher": { "@type": "Organization", "name": "CSGOLuck Wiki", "url": "https://wiki.csgoluck.com" },
+  "mainEntityOfPage": "https://wiki.csgoluck.com/cs2-season-dates/",
+  "inLanguage": "en-US"
+});
+
+const sections = [
+  { id: 'current', label: 'Current Season Dates' },
+  { id: 'how-seasons-work', label: 'How Seasons Work' },
+  { id: 'rewards', label: 'Rewards & Rank Resets' },
+  { id: 'between-seasons', label: 'Between Seasons' },
+  { id: 'tips', label: 'End-of-Season Tips' },
+  { id: 'faq', label: 'FAQ' },
+  { id: 'related', label: 'Related Articles' },
+];
+---
+
+<Base title={title} description={description}>
+  <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema_)}></script>
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema_)}></script>
+  <script type="application/ld+json" set:html={articleSchema}></script>
+
+  <div class="csd-wrap">
+    <nav class="csd-breadcrumb">
+      <a href="/">Home</a>
+      <span class="csd-sep">/</span>
+      <a href="/cs2-game-history-faq/">Game History & FAQ</a>
+      <span class="csd-sep">/</span>
+      <span>CS2 Season Dates</span>
+    </nav>
+
+    <header class="csd-header">
+      <h1>CS2 Season Dates & Rewards Guide</h1>
+      <p class="csd-subtitle">Track the current season timeline, rewards, and what to expect at reset</p>
+    </header>
+
+    <nav class="csd-toc-mobile" aria-label="Table of contents">
+      {sections.map((s) => (
+        <a href={`#${s.id}`} class="csd-toc-mobile-link">{s.label}</a>
+      ))}
+    </nav>
+
+    <div class="csd-layout">
+      <aside class="csd-sidebar">
+        <nav class="csd-toc" aria-label="Table of contents">
+          <span class="csd-toc-title">Contents</span>
+          {sections.map((s) => (
+            <a href={`#${s.id}`} class="csd-toc-link">{s.label}</a>
+          ))}
+        </nav>
+      </aside>
+
+      <article class="csd-content">
+        <p class="csd-intro">
+          Knowing the cs2 season dates helps you plan your competitive grind, track reward deadlines, and understand when rank resets are coming. Counter-Strike 2 uses a seasonal system tied to its Premier ranked mode, where each season brings a fresh CS Rating, new rewards, and updated map pools. Below is everything you need to know about how seasons work, when they start and end, and how to make the most of each one.
+        </p>
+
+        <section id="current">
+          <div class="csd-section-header"><h2>Current CS2 Season Dates</h2></div>
+          <p>Valve does not always announce season dates far in advance. Historically, CS2 seasons have launched alongside major game updates. Here is what we know about the seasonal timeline:</p>
+          <ul class="csd-list">
+            <li><strong>Season 1:</strong> Launched with CS2's full release in September 2023</li>
+            <li><strong>Season 2:</strong> Began in early 2024 following the first major post-launch update</li>
+            <li><strong>Subsequent seasons:</strong> Have continued on a roughly quarterly cadence, though exact dates shift based on Valve's development cycle</li>
+          </ul>
+          <p>The best way to track the current season is through the CS2 main menu, which displays a countdown timer when the season end approaches. You can also monitor the <a href="https://www.counter-strike.net/" target="_blank" rel="noopener">official Counter-Strike website</a> for announcements about upcoming season transitions.</p>
+        </section>
+
+        <section id="how-seasons-work">
+          <div class="csd-section-header"><h2>How CS2 Seasons Work</h2></div>
+          <p>Each CS2 season is a defined time period during which your performance in Premier mode contributes to your CS Rating -- a numerical value that determines your rank tier (from the lowest grey tier through green, blue, purple, pink, red, and the coveted gold tier at the top).</p>
+          <p>During a season, you play matches that increase or decrease your CS Rating based on wins and losses. The system tracks your peak rating achieved during the season, which determines the tier of your season-end reward. This means a losing streak at the very end will not cost you a reward you already earned at your peak.</p>
+          <p>Seasons also influence the active map pool. While changes are not guaranteed every season, Valve has used season transitions as an opportunity to rotate maps in and out of the competitive and Premier pools. Keep an eye on patch notes during season transitions for any map changes. For more on ranks themselves, see our <a href="/cs2-rank-distribution/">rank distribution</a> breakdown and the <a href="/cs2-ranks-competitive-faq/">competitive ranks FAQ</a>.</p>
+        </section>
+
+        <section id="rewards">
+          <div class="csd-section-header"><h2>Season Rewards and Rank Resets</h2></div>
+          <p>At the end of each season, players receive a commemorative season coin. The coin's colour and design correspond to the highest CS Rating tier you reached during that season. These coins appear on your CS2 profile and serve as a permanent record of your seasonal achievements.</p>
+          <p>The reward tiers align with the CS Rating colour system:</p>
+          <ul class="csd-list">
+            <li><strong>Grey:</strong> CS Rating below 5,000</li>
+            <li><strong>Light blue:</strong> 5,000 - 9,999</li>
+            <li><strong>Blue:</strong> 10,000 - 14,999</li>
+            <li><strong>Purple:</strong> 15,000 - 19,999</li>
+            <li><strong>Pink:</strong> 20,000 - 24,999</li>
+            <li><strong>Red:</strong> 25,000 - 29,999</li>
+            <li><strong>Gold:</strong> 30,000+</li>
+          </ul>
+          <p>When a new season begins, your CS Rating resets. You will need to complete placement matches to re-establish your rating. Placement results are influenced by your previous season performance, so you will not start completely from scratch -- but expect some rating adjustment as the system recalibrates.</p>
+        </section>
+
+        <section id="between-seasons">
+          <div class="csd-section-header"><h2>What Happens Between Seasons</h2></div>
+          <p>The gap between seasons is typically brief -- sometimes just a day or two for server-side updates. During this transition window, Premier matchmaking may be temporarily unavailable while Valve processes end-of-season rewards and prepares the new season infrastructure.</p>
+          <p>Competitive mode (map-based ranks) remains available during transitions, though these ranks may also undergo a soft reset. Casual modes, deathmatch, and community servers continue operating normally regardless of season status.</p>
+          <p>Season transitions are also when Valve tends to deploy larger gameplay patches. These can include weapon balance changes, map updates, anti-cheat improvements, and new features. Checking the <a href="https://www.counter-strike.net/" target="_blank" rel="noopener">official CS2 blog</a> during these windows is worthwhile.</p>
+        </section>
+
+        <section id="tips">
+          <div class="csd-section-header"><h2>Tips for End-of-Season Play</h2></div>
+          <p>The final weeks of a season present both opportunity and risk. Here is how to approach them wisely:</p>
+          <ul class="csd-list">
+            <li><strong>Check your peak rating:</strong> Your reward is based on your highest achieved rating, not your current one. If you have already hit your target tier, playing more carries no reward risk</li>
+            <li><strong>Push for the next tier early:</strong> Do not wait until the last day. Tilt and losing streaks are more damaging under time pressure</li>
+            <li><strong>Warm up properly:</strong> Play deathmatch or casual before jumping into Premier to ensure your aim is sharp</li>
+            <li><strong>Queue with consistent teammates:</strong> End-of-season matchmaking can be volatile. Playing with a regular group reduces randomness</li>
+            <li><strong>Review your demos:</strong> Identify recurring mistakes from losses. Even small adjustments to positioning or utility usage can flip close matches</li>
+          </ul>
+          <p>If you are on the cusp of a new tier and feel tilted or fatigued, it is better to stop and return the next day. Chasing rating while frustrated rarely ends well.</p>
+        </section>
+
+        <section id="faq">
+          <div class="csd-section-header"><h2>Frequently Asked Questions</h2></div>
+          <div class="csd-faq-list">
+            {faqs.map((faq) => (
+              <details class="csd-faq-item">
+                <summary class="csd-faq-question">{faq.question}</summary>
+                <p class="csd-faq-answer" set:html={faq.answer}></p>
+              </details>
+            ))}
+          </div>
+        </section>
+
+        <section id="related">
+          <div class="csd-section-header"><h2>Related Articles</h2></div>
+          <div class="csd-resources-grid">
+            <a href="/cs2-game-history-faq/" class="csd-resource-card"><span class="csd-resource-name">Game History & FAQ Hub</span><span class="csd-resource-arrow">&rarr;</span></a>
+            <a href="/counter-strike-history/" class="csd-resource-card"><span class="csd-resource-name">Counter-Strike History</span><span class="csd-resource-arrow">&rarr;</span></a>
+            <a href="/what-is-cs2/" class="csd-resource-card"><span class="csd-resource-name">What Is CS2?</span><span class="csd-resource-arrow">&rarr;</span></a>
+            <a href="/cs2-rank-distribution/" class="csd-resource-card"><span class="csd-resource-name">CS2 Rank Distribution</span><span class="csd-resource-arrow">&rarr;</span></a>
+          </div>
+        </section>
+      </article>
+    </div>
+  </div>
+
+  <style>
+    .csd-wrap{max-width:1100px;margin:0 auto;padding:0 1.5rem 2rem}
+    .csd-breadcrumb{display:flex;align-items:center;gap:.5rem;padding:1.25rem 0;font-size:.85rem;color:var(--text2)}
+    .csd-breadcrumb a{color:var(--accent);text-decoration:none}
+    .csd-breadcrumb a:hover{color:var(--accent2)}
+    .csd-sep{color:var(--border)}
+    .csd-header{padding:1.5rem 0 1.25rem;border-bottom:2px solid var(--accent);margin-bottom:1.5rem}
+    .csd-header h1{margin:0 0 .35rem;font-size:2.2rem;font-weight:800;color:var(--text);letter-spacing:-.02em;line-height:1.2}
+    .csd-subtitle{margin:0;font-size:1.05rem;color:var(--text2);font-weight:400}
+    .csd-toc-mobile{display:none}
+    .csd-layout{display:grid;grid-template-columns:220px 1fr;gap:2.5rem;align-items:start}
+    .csd-sidebar{position:sticky;top:80px}
+    .csd-toc{display:flex;flex-direction:column;gap:0;border-left:2px solid var(--border);padding-left:0}
+    .csd-toc-title{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--accent);padding:0 0 .6rem 1rem}
+    .csd-toc-link{display:block;padding:.4rem 1rem;font-size:.82rem;color:var(--text2);text-decoration:none;border-left:2px solid transparent;margin-left:-2px;transition:color .2s,border-color .2s}
+    .csd-toc-link:hover{color:var(--text);border-left-color:var(--accent)}
+    .csd-content{min-width:0}
+    .csd-intro{font-size:1rem;line-height:1.8;color:var(--text2);margin-bottom:2rem}
+    .csd-section-header{background:rgba(46,204,113,.05);margin:0 -1.25rem 1.25rem;padding:.75rem 1.25rem;border-radius:4px}
+    .csd-section-header h2{margin:0;padding:0;font-size:1.5rem;font-weight:700;color:var(--text);border:none;letter-spacing:-.01em}
+    section{margin-bottom:2.5rem}
+    p{line-height:1.7;color:var(--text2);margin-bottom:1rem}
+    .csd-list{list-style:none;padding:0;margin:.75rem 0 1.5rem}
+    .csd-list li{padding:.4rem 0 .4rem 1.6rem;position:relative;color:var(--text2);line-height:1.65}
+    .csd-list li::before{content:'';position:absolute;left:.25rem;top:.75rem;width:6px;height:6px;background:var(--accent);border-radius:1px}
+    .csd-list li strong{color:var(--text)}
+    .csd-faq-list{display:flex;flex-direction:column;gap:.5rem}
+    .csd-faq-item{background:var(--bg2);border:1px solid var(--border);border-radius:4px;overflow:hidden}
+    .csd-faq-question{display:block;padding:1rem 1.25rem;font-size:.95rem;font-weight:600;color:var(--text);cursor:pointer;list-style:none;position:relative;padding-right:2.5rem;transition:background .2s}
+    .csd-faq-question::-webkit-details-marker{display:none}
+    .csd-faq-question::after{content:'+';position:absolute;right:1.25rem;top:50%;transform:translateY(-50%);font-size:1.2rem;color:var(--accent);font-weight:700}
+    .csd-faq-item[open] .csd-faq-question::after{content:'\2212'}
+    .csd-faq-item[open] .csd-faq-question{border-bottom:1px solid var(--border);background:rgba(46,204,113,.03)}
+    .csd-faq-question:hover{background:rgba(46,204,113,.03)}
+    .csd-faq-answer{padding:1rem 1.25rem;margin:0;font-size:.9rem;color:var(--text2);line-height:1.7}
+    .csd-resources-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.6rem;margin:.5rem 0 1.5rem}
+    .csd-resource-card{display:flex;align-items:center;justify-content:space-between;padding:.75rem 1rem;background:var(--bg2);border:1px solid var(--border);border-radius:4px;text-decoration:none;border-left:2px solid transparent;transition:border-left-color .2s,color .2s}
+    .csd-resource-card:hover{border-left-color:var(--accent)}
+    .csd-resource-name{font-size:.88rem;color:var(--text2);font-weight:500;transition:color .2s}
+    .csd-resource-card:hover .csd-resource-name{color:var(--text)}
+    .csd-resource-arrow{font-size:1rem;color:var(--accent);opacity:0;transition:opacity .2s}
+    .csd-resource-card:hover .csd-resource-arrow{opacity:1}
+    @media(max-width:860px){
+      .csd-layout{grid-template-columns:1fr;gap:0}
+      .csd-sidebar{display:none}
+      .csd-toc-mobile{display:flex;gap:.25rem;overflow-x:auto;padding:.75rem 0;margin-bottom:1rem;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+      .csd-toc-mobile::-webkit-scrollbar{display:none}
+      .csd-toc-mobile-link{flex-shrink:0;padding:.35rem .75rem;font-size:.78rem;font-weight:600;color:var(--text2);background:var(--bg2);border:1px solid var(--border);border-radius:4px;text-decoration:none;white-space:nowrap;transition:color .2s,border-color .2s}
+      .csd-toc-mobile-link:hover{color:var(--accent);border-color:var(--accent)}
+      .csd-header h1{font-size:1.7rem}
+      .csd-section-header{margin:0 -1rem 1rem;padding:.6rem 1rem}
+      .csd-resources-grid{grid-template-columns:repeat(2,1fr)}
+    }
+    @media(max-width:600px){
+      .csd-wrap{padding:0 1rem 1.5rem}
+      .csd-resources-grid{grid-template-columns:1fr}
+      .csd-header h1{font-size:1.5rem}
+    }
+  </style>
+  <AuthorBox updated="2026-03-04" />
+</Base>

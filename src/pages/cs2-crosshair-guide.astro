@@ -1,0 +1,249 @@
+---
+import Base from '../layouts/Base.astro';
+import AuthorBox from '../components/AuthorBox.astro';
+import { faqSchema, breadcrumbSchema } from '../lib/weapons';
+
+const title = 'CS2 Crosshair Guide: Change, Copy & Import | CSGOLuck Wiki';
+const description = 'How to change, copy, and import crosshair codes in CS2. Customize your crosshair with commands or the in-game menu.';
+
+const breadcrumbs = [
+  { name: 'Home', url: '/' },
+  { name: 'Settings & Config', url: '/cs2-settings-config-faq/' },
+  { name: 'Crosshair Guide', url: '/cs2-crosshair-guide/' },
+];
+
+const faqs = [
+  {
+    question: 'How do I copy someone else\'s crosshair in CS2?',
+    answer: 'You can copy a crosshair by using a share code. Ask the player for their crosshair share code, then apply it in the CS2 crosshair settings menu by pasting it into the share code field. You can also copy crosshairs from spectating a player during a match.',
+  },
+  {
+    question: 'What is the best crosshair for CS2?',
+    answer: 'There is no single best crosshair -- it depends on personal preference. Most competitive players use a small static crosshair (size 1-3, gap -2 to 0, thickness 0-1) with a visible color like green or cyan. Experiment to find what works best for your eyes.',
+  },
+  {
+    question: 'Can I use a dot crosshair in CS2?',
+    answer: 'Yes. Set crosshair size to 0 and enable the center dot. This creates a dot-only crosshair. Some players prefer this for precise aiming, though most competitive players use a small cross for better target acquisition.',
+  },
+  {
+    question: 'Do crosshair share codes work across all accounts?',
+    answer: 'Yes. Crosshair share codes are universal in CS2. Any valid share code can be applied on any account, making it easy to share crosshair configurations with friends or copy pro player setups.',
+  },
+];
+
+const breadcrumbSchema_ = breadcrumbSchema(breadcrumbs);
+const faqSchema_ = faqSchema(faqs);
+
+const articleSchema = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": title,
+  "description": description,
+  "author": { "@type": "Person", "name": "Josh Lingenfelter", "url": "https://www.linkedin.com/in/josh-lingenfelter-8157274b/", "jobTitle": "Director", "worksFor": { "@type": "Organization", "name": "CSGOLuck" } },
+  "publisher": { "@type": "Organization", "name": "CSGOLuck Wiki", "url": "https://wiki.csgoluck.com" },
+  "mainEntityOfPage": "https://wiki.csgoluck.com/cs2-crosshair-guide/",
+  "inLanguage": "en-US"
+});
+
+const sections = [
+  { id: 'how-to-change', label: 'Changing Your Crosshair' },
+  { id: 'share-codes', label: 'Share Codes' },
+  { id: 'importing', label: 'Importing Codes' },
+  { id: 'console-commands', label: 'Console Commands' },
+  { id: 'best-settings', label: 'Best Settings' },
+  { id: 'faq', label: 'FAQ' },
+  { id: 'related', label: 'Related Articles' },
+];
+---
+
+<Base title={title} description={description}>
+  <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema_)}></script>
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema_)}></script>
+  <script type="application/ld+json" set:html={articleSchema}></script>
+
+  <div class="cxg-wrap">
+    <nav class="cxg-breadcrumb">
+      <a href="/">Home</a>
+      <span class="cxg-sep">/</span>
+      <a href="/cs2-settings-config-faq/">Settings & Config</a>
+      <span class="cxg-sep">/</span>
+      <span>Crosshair Guide</span>
+    </nav>
+
+    <header class="cxg-header">
+      <h1>CS2 Crosshair Guide: Change, Copy & Import</h1>
+      <p class="cxg-subtitle">Everything you need to customise your crosshair for competitive play</p>
+    </header>
+
+    <nav class="cxg-toc-mobile" aria-label="Table of contents">
+      {sections.map((s) => (
+        <a href={`#${s.id}`} class="cxg-toc-mobile-link">{s.label}</a>
+      ))}
+    </nav>
+
+    <div class="cxg-layout">
+      <aside class="cxg-sidebar">
+        <nav class="cxg-toc" aria-label="Table of contents">
+          <span class="cxg-toc-title">Contents</span>
+          {sections.map((s) => (
+            <a href={`#${s.id}`} class="cxg-toc-link">{s.label}</a>
+          ))}
+        </nav>
+      </aside>
+
+      <article class="cxg-content">
+        <p class="cxg-intro">
+          Your <strong>CS2 crosshair</strong> is one of the most personal settings in the game. It directly affects how you aim, track targets, and place headshots. CS2 offers multiple ways to change, share, and import crosshair configurations -- from the in-game menu to console commands to share codes. This guide covers all of them so you can find and apply the perfect crosshair for your play style.
+        </p>
+
+        <section id="how-to-change">
+          <div class="cxg-section-header"><h2>How to Change Your Crosshair in CS2</h2></div>
+          <p>The simplest way to change your crosshair is through the in-game settings:</p>
+          <ul class="cxg-list">
+            <li><strong>Step 1:</strong> Open CS2 and go to Settings, then Game.</li>
+            <li><strong>Step 2:</strong> Scroll to the Crosshair section. Here you will find visual sliders and options for every crosshair parameter.</li>
+            <li><strong>Step 3:</strong> Adjust the settings using the live preview. CS2 shows your crosshair changes in real-time so you can see exactly what you are building.</li>
+            <li><strong>Step 4:</strong> Your changes save automatically. The crosshair you design will persist across sessions.</li>
+          </ul>
+          <p>The in-game editor is intuitive and covers all parameters: style, size, gap, thickness, color, outline, dot, and dynamic behaviour. For more advanced customisation, use the console commands described below. You can also use our <a href="/crosshair-generator/">crosshair generator</a> tool to build and preview crosshairs with full control.</p>
+        </section>
+
+        <section id="share-codes">
+          <div class="cxg-section-header"><h2>Using Crosshair Share Codes</h2></div>
+          <p>CS2 includes a crosshair share code system that lets you export your crosshair as a short code string and share it with anyone. Here is how it works:</p>
+          <ul class="cxg-list">
+            <li><strong>Getting your share code:</strong> In the crosshair settings menu, click "Share or Export" to generate your crosshair share code. Copy this code to share it.</li>
+            <li><strong>Sharing with others:</strong> Send the code via Discord, Steam chat, or any messaging platform. The recipient can apply it to their own game.</li>
+            <li><strong>Copying during spectating:</strong> While spectating a player in a match, you can copy their crosshair directly from the spectator UI.</li>
+          </ul>
+          <p>Share codes are the easiest way to try pro player crosshairs or share configurations with teammates. Browse our <a href="/crosshair-codes/">crosshair codes database</a> for a curated collection of popular crosshairs.</p>
+        </section>
+
+        <section id="importing">
+          <div class="cxg-section-header"><h2>Importing Crosshair Codes</h2></div>
+          <p>To import a crosshair share code you have received:</p>
+          <ul class="cxg-list">
+            <li><strong>Step 1:</strong> Open CS2 and go to Settings, then Game, then the Crosshair section.</li>
+            <li><strong>Step 2:</strong> Find the "Share or Import" option and click it.</li>
+            <li><strong>Step 3:</strong> Paste the share code into the input field.</li>
+            <li><strong>Step 4:</strong> Click "Apply" and the crosshair will update immediately in the preview and in-game.</li>
+          </ul>
+          <p>If the code does not work, make sure you copied it completely including the "CSGO-" prefix. Codes from CS:GO may not work in CS2 depending on when they were generated. For the latest compatible codes, check <a href="https://www.counter-strike.net/" target="_blank" rel="noopener">counter-strike.net</a> or our crosshair tools.</p>
+        </section>
+
+        <section id="console-commands">
+          <div class="cxg-section-header"><h2>Console Commands for Crosshair Customization</h2></div>
+          <p>For players who prefer precise control, console commands let you set exact values for every crosshair parameter:</p>
+          <ul class="cxg-list">
+            <li><strong>cl_crosshairsize [value]:</strong> Controls the length of the crosshair lines. Common values range from 1 to 5.</li>
+            <li><strong>cl_crosshairgap [value]:</strong> Sets the gap between the centre and the crosshair lines. Negative values pull lines closer to centre.</li>
+            <li><strong>cl_crosshairthickness [value]:</strong> Controls line thickness. Values of 0 to 1.5 are most common.</li>
+            <li><strong>cl_crosshaircolor [0-5]:</strong> Sets the crosshair color. Use value 5 for custom RGB colours set with cl_crosshaircolor_R, _G, _B commands.</li>
+            <li><strong>cl_crosshairstyle [0-5]:</strong> Determines crosshair behaviour. Style 4 is the classic static crosshair used by most competitive players.</li>
+            <li><strong>cl_crosshairdot [0/1]:</strong> Toggles the centre dot on or off.</li>
+            <li><strong>cl_crosshair_outlinethickness [value]:</strong> Adds a dark outline for visibility against bright surfaces.</li>
+          </ul>
+          <p>Save your preferred commands in your autoexec.cfg file to load them automatically. Our <a href="/cs2-guides/crosshair-guide/">detailed crosshair guide</a> covers every parameter and explains the visual impact of each setting.</p>
+        </section>
+
+        <section id="best-settings">
+          <div class="cxg-section-header"><h2>Best Crosshair Settings for Visibility</h2></div>
+          <p>A competitive crosshair should be visible against all backgrounds without being distracting. Here are proven guidelines:</p>
+          <ul class="cxg-list">
+            <li><strong>Color:</strong> Green (color 1) is the most popular because it contrasts well against most map textures. Cyan and yellow are also common choices.</li>
+            <li><strong>Size and gap:</strong> Small crosshairs (size 1-3, gap -2 to 0) are preferred by most competitive players. They allow precise placement without obscuring the target.</li>
+            <li><strong>Outline:</strong> Adding a thin outline (0.5-1) ensures visibility against bright surfaces like skyboxes and white walls.</li>
+            <li><strong>Style:</strong> Static crosshairs (style 4 or 5) are the competitive standard. Dynamic crosshairs that expand when moving can be distracting and provide little useful feedback in competitive play.</li>
+            <li><strong>Thickness:</strong> Keep thickness at 0 to 1. Thicker crosshairs can obscure headshot angles at long range.</li>
+          </ul>
+          <p>The most important thing is that your crosshair feels comfortable to you. Try several configurations in deathmatch before committing to one for competitive play.</p>
+        </section>
+
+        <section id="faq">
+          <div class="cxg-section-header"><h2>Frequently Asked Questions</h2></div>
+          <div class="cxg-faq-list">
+            {faqs.map((faq) => (
+              <details class="cxg-faq-item">
+                <summary class="cxg-faq-question">{faq.question}</summary>
+                <p class="cxg-faq-answer">{faq.answer}</p>
+              </details>
+            ))}
+          </div>
+        </section>
+
+        <section id="related">
+          <div class="cxg-section-header"><h2>Related Articles</h2></div>
+          <div class="cxg-resources-grid">
+            <a href="/cs2-settings-config-faq/" class="cxg-resource-card"><span class="cxg-resource-name">Settings & Config Hub</span><span class="cxg-resource-arrow">&rarr;</span></a>
+            <a href="/cs2-viewmodel-settings/" class="cxg-resource-card"><span class="cxg-resource-name">Viewmodel Settings</span><span class="cxg-resource-arrow">&rarr;</span></a>
+            <a href="/show-fps-cs2/" class="cxg-resource-card"><span class="cxg-resource-name">Show FPS in CS2</span><span class="cxg-resource-arrow">&rarr;</span></a>
+            <a href="/crosshair-generator/" class="cxg-resource-card"><span class="cxg-resource-name">Crosshair Generator</span><span class="cxg-resource-arrow">&rarr;</span></a>
+            <a href="/crosshair-codes/" class="cxg-resource-card"><span class="cxg-resource-name">Crosshair Codes</span><span class="cxg-resource-arrow">&rarr;</span></a>
+            <a href="/cs2-guides/crosshair-guide/" class="cxg-resource-card"><span class="cxg-resource-name">Detailed Crosshair Guide</span><span class="cxg-resource-arrow">&rarr;</span></a>
+          </div>
+        </section>
+      </article>
+    </div>
+  </div>
+
+  <style>
+    .cxg-wrap{max-width:1100px;margin:0 auto;padding:0 1.5rem 2rem}
+    .cxg-breadcrumb{display:flex;align-items:center;gap:.5rem;padding:1.25rem 0;font-size:.85rem;color:var(--text2)}
+    .cxg-breadcrumb a{color:var(--accent);text-decoration:none}
+    .cxg-breadcrumb a:hover{color:var(--accent2)}
+    .cxg-sep{color:var(--border)}
+    .cxg-header{padding:1.5rem 0 1.25rem;border-bottom:2px solid var(--accent);margin-bottom:1.5rem}
+    .cxg-header h1{margin:0 0 .35rem;font-size:2.2rem;font-weight:800;color:var(--text);letter-spacing:-.02em;line-height:1.2}
+    .cxg-subtitle{margin:0;font-size:1.05rem;color:var(--text2);font-weight:400}
+    .cxg-toc-mobile{display:none}
+    .cxg-layout{display:grid;grid-template-columns:220px 1fr;gap:2.5rem;align-items:start}
+    .cxg-sidebar{position:sticky;top:80px}
+    .cxg-toc{display:flex;flex-direction:column;gap:0;border-left:2px solid var(--border);padding-left:0}
+    .cxg-toc-title{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--accent);padding:0 0 .6rem 1rem}
+    .cxg-toc-link{display:block;padding:.4rem 1rem;font-size:.82rem;color:var(--text2);text-decoration:none;border-left:2px solid transparent;margin-left:-2px;transition:color .2s,border-color .2s}
+    .cxg-toc-link:hover{color:var(--text);border-left-color:var(--accent)}
+    .cxg-content{min-width:0}
+    .cxg-intro{font-size:1rem;line-height:1.8;color:var(--text2);margin-bottom:2rem}
+    .cxg-section-header{background:rgba(46,204,113,.05);margin:0 -1.25rem 1.25rem;padding:.75rem 1.25rem;border-radius:4px}
+    .cxg-section-header h2{margin:0;padding:0;font-size:1.5rem;font-weight:700;color:var(--text);border:none;letter-spacing:-.01em}
+    section{margin-bottom:2.5rem}
+    p{line-height:1.7;color:var(--text2);margin-bottom:1rem}
+    .cxg-list{list-style:none;padding:0;margin:.75rem 0 1.5rem}
+    .cxg-list li{padding:.4rem 0 .4rem 1.6rem;position:relative;color:var(--text2);line-height:1.65}
+    .cxg-list li::before{content:'';position:absolute;left:.25rem;top:.75rem;width:6px;height:6px;background:var(--accent);border-radius:1px}
+    .cxg-list li strong{color:var(--text)}
+    .cxg-faq-list{display:flex;flex-direction:column;gap:.5rem}
+    .cxg-faq-item{background:var(--bg2);border:1px solid var(--border);border-radius:4px;overflow:hidden}
+    .cxg-faq-question{display:block;padding:1rem 1.25rem;font-size:.95rem;font-weight:600;color:var(--text);cursor:pointer;list-style:none;position:relative;padding-right:2.5rem;transition:background .2s}
+    .cxg-faq-question::-webkit-details-marker{display:none}
+    .cxg-faq-question::after{content:'+';position:absolute;right:1.25rem;top:50%;transform:translateY(-50%);font-size:1.2rem;color:var(--accent);font-weight:700}
+    .cxg-faq-item[open] .cxg-faq-question::after{content:'\2212'}
+    .cxg-faq-item[open] .cxg-faq-question{border-bottom:1px solid var(--border);background:rgba(46,204,113,.03)}
+    .cxg-faq-question:hover{background:rgba(46,204,113,.03)}
+    .cxg-faq-answer{padding:1rem 1.25rem;margin:0;font-size:.9rem;color:var(--text2);line-height:1.7}
+    .cxg-resources-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.6rem;margin:.5rem 0 1.5rem}
+    .cxg-resource-card{display:flex;align-items:center;justify-content:space-between;padding:.75rem 1rem;background:var(--bg2);border:1px solid var(--border);border-radius:4px;text-decoration:none;border-left:2px solid transparent;transition:border-left-color .2s,color .2s}
+    .cxg-resource-card:hover{border-left-color:var(--accent)}
+    .cxg-resource-name{font-size:.88rem;color:var(--text2);font-weight:500;transition:color .2s}
+    .cxg-resource-card:hover .cxg-resource-name{color:var(--text)}
+    .cxg-resource-arrow{font-size:1rem;color:var(--accent);opacity:0;transition:opacity .2s}
+    .cxg-resource-card:hover .cxg-resource-arrow{opacity:1}
+    @media(max-width:860px){
+      .cxg-layout{grid-template-columns:1fr;gap:0}
+      .cxg-sidebar{display:none}
+      .cxg-toc-mobile{display:flex;gap:.25rem;overflow-x:auto;padding:.75rem 0;margin-bottom:1rem;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+      .cxg-toc-mobile::-webkit-scrollbar{display:none}
+      .cxg-toc-mobile-link{flex-shrink:0;padding:.35rem .75rem;font-size:.78rem;font-weight:600;color:var(--text2);background:var(--bg2);border:1px solid var(--border);border-radius:4px;text-decoration:none;white-space:nowrap;transition:color .2s,border-color .2s}
+      .cxg-toc-mobile-link:hover{color:var(--accent);border-color:var(--accent)}
+      .cxg-header h1{font-size:1.7rem}
+      .cxg-section-header{margin:0 -1rem 1rem;padding:.6rem 1rem}
+      .cxg-resources-grid{grid-template-columns:repeat(2,1fr)}
+    }
+    @media(max-width:600px){
+      .cxg-wrap{padding:0 1rem 1.5rem}
+      .cxg-resources-grid{grid-template-columns:1fr}
+      .cxg-header h1{font-size:1.5rem}
+    }
+  </style>
+  <AuthorBox updated="2026-03-04" />
+</Base>

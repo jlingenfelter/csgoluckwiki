@@ -1,0 +1,237 @@
+---
+import Base from '../layouts/Base.astro';
+import AuthorBox from '../components/AuthorBox.astro';
+import { faqSchema, breadcrumbSchema } from '../lib/weapons';
+
+const title = 'Cheapest CS2 Knives: Budget Options in 2025 | CSGOLuck Wiki';
+const description = 'The most affordable CS2 knives available right now. Budget-friendly options across all knife types with current market prices.';
+
+const breadcrumbs = [
+  { name: 'Home', url: '/' },
+  { name: 'Skins & Cases FAQ', url: '/cs2-skins-cases-faq' },
+  { name: 'Cheapest Knives', url: '/cheapest-cs2-knives' },
+];
+
+const faqs = [
+  {
+    question: 'What is the cheapest knife type in CS2?',
+    answer: 'The most affordable knife types tend to be the Navaja Knife, Gut Knife, and Flip Knife, particularly in less popular skin finishes and lower wear conditions like Battle-Scarred. Prices change regularly, so check the Steam Community Market for current listings.',
+  },
+  {
+    question: 'Is it cheaper to buy or unbox a CS2 knife?',
+    answer: 'Buying a knife directly from the Steam Community Market or a trusted third-party marketplace is almost always cheaper than trying to unbox one. The odds of getting a knife from a case are roughly 0.26%, meaning you would typically spend far more on cases and keys before receiving a knife drop.',
+  },
+  {
+    question: 'Do CS2 knife prices go up over time?',
+    answer: 'Many CS2 knives do appreciate in value over time, especially those from discontinued cases. However, prices are influenced by many factors including new case releases, game updates, and market speculation. There is no guarantee any specific knife will increase in value.',
+  },
+  {
+    question: 'Where can I find the best deals on CS2 knives?',
+    answer: 'Compare prices across the Steam Community Market and reputable third-party marketplaces. Third-party sites often offer lower prices because they charge smaller fees than Steam\'s marketplace. Always verify a site is legitimate before making purchases.',
+  },
+];
+
+const breadcrumbSchema_ = breadcrumbSchema(breadcrumbs);
+const faqSchema_ = faqSchema(faqs);
+
+const articleSchema = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": title,
+  "description": description,
+  "author": { "@type": "Person", "name": "Josh Lingenfelter", "url": "https://www.linkedin.com/in/josh-lingenfelter-8157274b/", "jobTitle": "Director", "worksFor": { "@type": "Organization", "name": "CSGOLuck" } },
+  "publisher": { "@type": "Organization", "name": "CSGOLuck Wiki", "url": "https://wiki.csgoluck.com" },
+  "mainEntityOfPage": "https://wiki.csgoluck.com/cheapest-cs2-knives/",
+  "inLanguage": "en-US"
+});
+
+const sections = [
+  { id: 'affordable-types', label: 'Affordable Types' },
+  { id: 'by-category', label: 'By Category' },
+  { id: 'best-deals', label: 'Best Deals' },
+  { id: 'pricing-factors', label: 'Pricing Factors' },
+  { id: 'best-value', label: 'Best Value Knives' },
+  { id: 'faq', label: 'FAQ' },
+  { id: 'related', label: 'Related Articles' },
+];
+---
+
+<Base title={title} description={description}>
+  <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema_)}></script>
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema_)}></script>
+  <script type="application/ld+json" set:html={articleSchema}></script>
+
+  <div class="cck-wrap">
+    <nav class="cck-breadcrumb">
+      <a href="/">Home</a>
+      <span class="cck-sep">/</span>
+      <a href="/cs2-skins-cases-faq/">Skins & Cases FAQ</a>
+      <span class="cck-sep">/</span>
+      <span>Cheapest Knives</span>
+    </nav>
+
+    <header class="cck-header">
+      <h1>Cheapest CS2 Knives</h1>
+      <p class="cck-subtitle">Budget-friendly knife options across every category for cost-conscious collectors</p>
+    </header>
+
+    <nav class="cck-toc-mobile" aria-label="Table of contents">
+      {sections.map((s) => (
+        <a href={`#${s.id}`} class="cck-toc-mobile-link">{s.label}</a>
+      ))}
+    </nav>
+
+    <div class="cck-layout">
+      <aside class="cck-sidebar">
+        <nav class="cck-toc" aria-label="Table of contents">
+          <span class="cck-toc-title">Contents</span>
+          {sections.map((s) => (
+            <a href={`#${s.id}`} class="cck-toc-link">{s.label}</a>
+          ))}
+        </nav>
+      </aside>
+
+      <article class="cck-content">
+        <p class="cck-intro">
+          Owning a knife in CS2 is a milestone for many players, but premium knives can cost a fortune. The good news is that there are legitimately affordable options across multiple knife types. If you are looking for the cheapest CS2 knives that still look great in-game, this guide breaks down the most budget-friendly options by category, where to find deals, and what factors influence knife pricing.
+        </p>
+
+        <section id="affordable-types">
+          <div class="cck-section-header"><h2>Most Affordable Knife Types in CS2</h2></div>
+          <p>Not all knife types carry the same price tag. The knife model itself is one of the biggest factors in pricing because some designs are simply more popular than others. Less popular knife models tend to be significantly cheaper across all skin finishes.</p>
+          <p>The Navaja Knife is typically the most affordable knife type in CS2. Its compact design does not appeal to everyone, which keeps demand and prices lower. The Gut Knife is another consistently budget-friendly option — it was one of the original knife types and its relatively simple design keeps it at the lower end of the market.</p>
+          <p>Other knife types that generally cost less than premium models include the Flip Knife, Shadow Daggers, and the Falchion Knife. While none of these are necessarily cheap in absolute terms, they represent the entry point for knife ownership and are substantially more affordable than karambits, butterfly knives, or M9 Bayonets.</p>
+        </section>
+
+        <section id="by-category">
+          <div class="cck-section-header"><h2>Budget Knives by Category</h2></div>
+          <p>Within each knife type, certain skin finishes are more affordable than others. Here are the skin categories that tend to sit at the lowest price points.</p>
+          <ul class="cck-list">
+            <li><strong>Vanilla (no skin):</strong> Knives without a painted finish. For some knife types, the vanilla version is actually among the cheapest since it has no rarity tier beyond the knife itself.</li>
+            <li><strong>Safari Mesh:</strong> One of the least sought-after finishes, consistently among the cheapest for every knife type that offers it.</li>
+            <li><strong>Urban Masked:</strong> Similar to Safari Mesh in demand, this camouflage pattern keeps prices low across all knife models.</li>
+            <li><strong>Scorched:</strong> The burnt orange appearance of Scorched knives does not appeal to most collectors, making it a reliable budget option.</li>
+            <li><strong>Boreal Forest:</strong> Green camouflage finish that, while functional, does not command premium prices.</li>
+            <li><strong>Forest DDPAT:</strong> Another nature-themed finish that stays affordable due to lower demand.</li>
+          </ul>
+          <p>The wear condition also matters significantly. Battle-Scarred versions of any skin finish are typically the cheapest, followed by Well-Worn. For a deeper look at how wear affects skins, see our <a href="/cs2-skins/knives/">knife skins database</a>.</p>
+        </section>
+
+        <section id="best-deals">
+          <div class="cck-section-header"><h2>Where to Find the Best Knife Deals</h2></div>
+          <p>The <a href="https://steamcommunity.com/market/" target="_blank" rel="noopener">Steam Community Market</a> is the most straightforward place to buy knives, but it is not always the cheapest. Steam takes a significant cut from every transaction, which gets built into listing prices.</p>
+          <p>Third-party marketplaces often offer lower prices because they charge smaller transaction fees. However, you need to ensure you are using a reputable platform. Our guide on <a href="/where-to-buy-cs2-skins/">where to buy CS2 skins</a> covers how to identify safe marketplaces and avoid scams.</p>
+          <p>Trading is another option. You can sometimes acquire knives for less than market value by trading with other players, though this requires patience and knowledge of fair trade values. Check our <a href="/cs2-guides/trading-guide/">trading guide</a> for tips on getting started. Use our <a href="/price-tracker/">price tracker</a> and <a href="/market-trends/">market trends</a> tools to monitor pricing before making a purchase.</p>
+        </section>
+
+        <section id="pricing-factors">
+          <div class="cck-section-header"><h2>Factors That Affect Knife Pricing</h2></div>
+          <p>Understanding what drives knife prices helps you identify genuine deals versus overpriced listings. Several key factors determine how much any given knife costs on the market.</p>
+          <ul class="cck-list">
+            <li><strong>Knife type popularity:</strong> Karambits, butterfly knives, and M9 Bayonets command premiums purely based on demand for the model. Less popular models like the Navaja and Gut Knife stay cheaper.</li>
+            <li><strong>Skin finish rarity:</strong> Doppler, Fade, and Marble Fade finishes are highly desirable and always cost more than Safari Mesh or Scorched.</li>
+            <li><strong>Wear condition:</strong> Factory New is the most expensive condition, with prices dropping through Minimal Wear, Field-Tested, Well-Worn, and Battle-Scarred.</li>
+            <li><strong>StatTrak:</strong> StatTrak versions of any knife cost more than their non-StatTrak equivalents because they track kill counts.</li>
+            <li><strong>Pattern index:</strong> Some skins like Case Hardened have valuable pattern variations (blue gems) that dramatically increase price for specific pattern seeds.</li>
+            <li><strong>Supply and market timing:</strong> New case releases can shift prices as supply changes. Major sales events and tournament periods can also affect pricing.</li>
+          </ul>
+        </section>
+
+        <section id="best-value">
+          <div class="cck-section-header"><h2>Best Value-for-Money Knives</h2></div>
+          <p>The best value knives are not necessarily the absolute cheapest — they offer a good balance between visual appeal and affordability. Here are some combinations worth considering.</p>
+          <p>The <strong>Flip Knife</strong> offers one of the best value propositions. It has a satisfying animation, a clean design, and its prices tend to be moderate compared to premium knife types. Finishes like Rust Coat or Night in Field-Tested condition can look surprisingly good without breaking the bank.</p>
+          <p>The <strong>Falchion Knife</strong> with a Vanilla or Blue Steel finish offers a distinctive look at a competitive price point. Its unique draw animation appeals to players who want something different from the standard knife types.</p>
+          <p>For players who simply want any knife at the lowest possible price, a <strong>Navaja Knife</strong> or <strong>Gut Knife</strong> in Safari Mesh or Scorched Battle-Scarred will be the entry point. While these are not the most visually impressive options, they still give you a knife in your loadout at the lowest cost available.</p>
+        </section>
+
+        <section id="faq">
+          <div class="cck-section-header"><h2>Frequently Asked Questions</h2></div>
+          <div class="cck-faq-list">
+            {faqs.map((faq) => (
+              <details class="cck-faq-item">
+                <summary class="cck-faq-question">{faq.question}</summary>
+                <p class="cck-faq-answer">{faq.answer}</p>
+              </details>
+            ))}
+          </div>
+          <p class="cck-faq-more">Browse more skin and case questions in our <a href="/cs2-skins-cases-faq/">Skins & Cases FAQ hub</a>.</p>
+        </section>
+
+        <section id="related">
+          <div class="cck-section-header"><h2>Related Articles</h2></div>
+          <div class="cck-resources-grid">
+            <a href="/cs2-cases-butterfly-knife/" class="cck-resource-card"><span class="cck-resource-name">Butterfly Knife Cases</span><span class="cck-resource-arrow">&rarr;</span></a>
+            <a href="/best-cs2-cases-to-open/" class="cck-resource-card"><span class="cck-resource-name">Best Cases to Open</span><span class="cck-resource-arrow">&rarr;</span></a>
+            <a href="/market-trends/" class="cck-resource-card"><span class="cck-resource-name">Market Trends</span><span class="cck-resource-arrow">&rarr;</span></a>
+            <a href="/price-tracker/" class="cck-resource-card"><span class="cck-resource-name">Price Tracker</span><span class="cck-resource-arrow">&rarr;</span></a>
+            <a href="/cs2-skins/knives/" class="cck-resource-card"><span class="cck-resource-name">Knife Skins Database</span><span class="cck-resource-arrow">&rarr;</span></a>
+          </div>
+        </section>
+      </article>
+    </div>
+  </div>
+
+  <style>
+    .cck-wrap{max-width:1100px;margin:0 auto;padding:0 1.5rem 2rem}
+    .cck-breadcrumb{display:flex;align-items:center;gap:.5rem;padding:1.25rem 0;font-size:.85rem;color:var(--text2)}
+    .cck-breadcrumb a{color:var(--accent);text-decoration:none}
+    .cck-breadcrumb a:hover{color:var(--accent2)}
+    .cck-sep{color:var(--border)}
+    .cck-header{padding:1.5rem 0 1.25rem;border-bottom:2px solid var(--accent);margin-bottom:1.5rem}
+    .cck-header h1{margin:0 0 .35rem;font-size:2.2rem;font-weight:800;color:var(--text);letter-spacing:-.02em;line-height:1.2}
+    .cck-subtitle{margin:0;font-size:1.05rem;color:var(--text2);font-weight:400}
+    .cck-toc-mobile{display:none}
+    .cck-layout{display:grid;grid-template-columns:220px 1fr;gap:2.5rem;align-items:start}
+    .cck-sidebar{position:sticky;top:80px}
+    .cck-toc{display:flex;flex-direction:column;gap:0;border-left:2px solid var(--border);padding-left:0}
+    .cck-toc-title{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--accent);padding:0 0 .6rem 1rem}
+    .cck-toc-link{display:block;padding:.4rem 1rem;font-size:.82rem;color:var(--text2);text-decoration:none;border-left:2px solid transparent;margin-left:-2px;transition:color .2s,border-color .2s}
+    .cck-toc-link:hover{color:var(--text);border-left-color:var(--accent)}
+    .cck-content{min-width:0}
+    .cck-intro{font-size:1rem;line-height:1.8;color:var(--text2);margin-bottom:2rem}
+    .cck-section-header{background:rgba(46,204,113,.05);margin:0 -1.25rem 1.25rem;padding:.75rem 1.25rem;border-radius:4px}
+    .cck-section-header h2{margin:0;padding:0;font-size:1.5rem;font-weight:700;color:var(--text);border:none;letter-spacing:-.01em}
+    section{margin-bottom:2.5rem}
+    h3{font-size:1.15rem;font-weight:600;margin:1.5rem 0 .6rem;color:var(--text)}
+    p{line-height:1.7;color:var(--text2);margin-bottom:1rem}
+    .cck-list{list-style:none;padding:0;margin:.75rem 0 1.5rem}
+    .cck-list li{padding:.4rem 0 .4rem 1.6rem;position:relative;color:var(--text2);line-height:1.65}
+    .cck-list li::before{content:'';position:absolute;left:.25rem;top:.75rem;width:6px;height:6px;background:var(--accent);border-radius:1px}
+    .cck-list li strong{color:var(--text)}
+    .cck-faq-list{display:flex;flex-direction:column;gap:.5rem}
+    .cck-faq-item{background:var(--bg2);border:1px solid var(--border);border-radius:4px;overflow:hidden}
+    .cck-faq-question{display:block;padding:1rem 1.25rem;font-size:.95rem;font-weight:600;color:var(--text);cursor:pointer;list-style:none;position:relative;padding-right:2.5rem;transition:background .2s}
+    .cck-faq-question::-webkit-details-marker{display:none}
+    .cck-faq-question::after{content:'+';position:absolute;right:1.25rem;top:50%;transform:translateY(-50%);font-size:1.2rem;color:var(--accent);font-weight:700}
+    .cck-faq-item[open] .cck-faq-question::after{content:'\2212'}
+    .cck-faq-item[open] .cck-faq-question{border-bottom:1px solid var(--border);background:rgba(46,204,113,.03)}
+    .cck-faq-question:hover{background:rgba(46,204,113,.03)}
+    .cck-faq-answer{padding:1rem 1.25rem;margin:0;font-size:.9rem;color:var(--text2);line-height:1.7}
+    .cck-faq-more{font-size:.9rem;margin-top:1rem}
+    .cck-resources-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.6rem;margin:.5rem 0 1.5rem}
+    .cck-resource-card{display:flex;align-items:center;justify-content:space-between;padding:.75rem 1rem;background:var(--bg2);border:1px solid var(--border);border-radius:4px;text-decoration:none;border-left:2px solid transparent;transition:border-left-color .2s,color .2s}
+    .cck-resource-card:hover{border-left-color:var(--accent)}
+    .cck-resource-name{font-size:.88rem;color:var(--text2);font-weight:500;transition:color .2s}
+    .cck-resource-card:hover .cck-resource-name{color:var(--text)}
+    .cck-resource-arrow{font-size:1rem;color:var(--accent);opacity:0;transition:opacity .2s}
+    .cck-resource-card:hover .cck-resource-arrow{opacity:1}
+    @media(max-width:860px){
+      .cck-layout{grid-template-columns:1fr;gap:0}
+      .cck-sidebar{display:none}
+      .cck-toc-mobile{display:flex;gap:.25rem;overflow-x:auto;padding:.75rem 0;margin-bottom:1rem;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+      .cck-toc-mobile::-webkit-scrollbar{display:none}
+      .cck-toc-mobile-link{flex-shrink:0;padding:.35rem .75rem;font-size:.78rem;font-weight:600;color:var(--text2);background:var(--bg2);border:1px solid var(--border);border-radius:4px;text-decoration:none;white-space:nowrap;transition:color .2s,border-color .2s}
+      .cck-toc-mobile-link:hover{color:var(--accent);border-color:var(--accent)}
+      .cck-header h1{font-size:1.7rem}
+      .cck-section-header{margin:0 -1rem 1rem;padding:.6rem 1rem}
+      .cck-resources-grid{grid-template-columns:repeat(2,1fr)}
+    }
+    @media(max-width:600px){
+      .cck-wrap{padding:0 1rem 1.5rem}
+      .cck-resources-grid{grid-template-columns:1fr}
+      .cck-header h1{font-size:1.5rem}
+    }
+  </style>
+  <AuthorBox updated="2026-03-04" />
+</Base>

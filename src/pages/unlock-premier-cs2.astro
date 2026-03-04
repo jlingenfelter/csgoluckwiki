@@ -1,0 +1,239 @@
+---
+import Base from '../layouts/Base.astro';
+import AuthorBox from '../components/AuthorBox.astro';
+import { faqSchema, breadcrumbSchema } from '../lib/weapons';
+
+const title = 'How to Unlock Premier Mode in CS2 | CSGOLuck Wiki';
+const description = 'Step-by-step guide to unlocking Premier mode in CS2. Learn the requirements, level needed, and tips to get Premier access fast.';
+
+const breadcrumbs = [
+  { name: 'Home', url: '/' },
+  { name: 'Ranks & Competitive', url: '/cs2-ranks-competitive-faq/' },
+  { name: 'Unlock Premier', url: '/unlock-premier-cs2/' },
+];
+
+const faqs = [
+  {
+    question: 'What level do I need to unlock Premier in CS2?',
+    answer: 'You need to reach a certain profile level and complete placement matches in Competitive mode before Premier becomes available. Valve has adjusted these requirements over time, so check the latest in-game requirements.',
+  },
+  {
+    question: 'Can I play Premier without a Prime account?',
+    answer: 'Premier mode is only available to players with Prime status. Prime was previously purchasable, but is now earned through gameplay progression.',
+  },
+  {
+    question: 'How long does it take to unlock Premier?',
+    answer: 'The time varies depending on how much you play. Expect to spend several sessions completing the required Competitive wins and reaching the necessary profile level before Premier opens up.',
+  },
+  {
+    question: 'Is Premier better than regular Competitive?',
+    answer: 'Premier uses a numeric rating system (CS Rating) and the active map pool with a pick-ban phase. Many players prefer it for a more structured and transparent ranking experience. See our full comparison at /cs2-premier-vs-faceit/ for details.',
+  },
+];
+
+const breadcrumbSchema_ = breadcrumbSchema(breadcrumbs);
+const faqSchema_ = faqSchema(faqs);
+
+const articleSchema = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": title,
+  "description": description,
+  "author": { "@type": "Person", "name": "Josh Lingenfelter", "url": "https://www.linkedin.com/in/josh-lingenfelter-8157274b/", "jobTitle": "Director", "worksFor": { "@type": "Organization", "name": "CSGOLuck" } },
+  "publisher": { "@type": "Organization", "name": "CSGOLuck Wiki", "url": "https://wiki.csgoluck.com" },
+  "mainEntityOfPage": "https://wiki.csgoluck.com/unlock-premier-cs2/",
+  "inLanguage": "en-US"
+});
+
+const sections = [
+  { id: 'what-is-premier', label: 'What Is Premier Mode?' },
+  { id: 'requirements', label: 'Requirements' },
+  { id: 'step-by-step', label: 'Step-by-Step Unlock' },
+  { id: 'faster-unlocking', label: 'Tips for Faster Unlocking' },
+  { id: 'premier-vs-competitive', label: 'Premier vs Competitive' },
+  { id: 'faq', label: 'FAQ' },
+  { id: 'related', label: 'Related Articles' },
+];
+---
+
+<Base title={title} description={description}>
+  <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema_)}></script>
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema_)}></script>
+  <script type="application/ld+json" set:html={articleSchema}></script>
+
+  <div class="upc-wrap">
+    <nav class="upc-breadcrumb">
+      <a href="/">Home</a>
+      <span class="upc-sep">/</span>
+      <a href="/cs2-ranks-competitive-faq/">Ranks & Competitive</a>
+      <span class="upc-sep">/</span>
+      <span>Unlock Premier</span>
+    </nav>
+
+    <header class="upc-header">
+      <h1>How to Unlock Premier Mode in CS2</h1>
+      <p class="upc-subtitle">Get access to CS2's premier ranking experience with a numeric CS Rating</p>
+    </header>
+
+    <nav class="upc-toc-mobile" aria-label="Table of contents">
+      {sections.map((s) => (
+        <a href={`#${s.id}`} class="upc-toc-mobile-link">{s.label}</a>
+      ))}
+    </nav>
+
+    <div class="upc-layout">
+      <aside class="upc-sidebar">
+        <nav class="upc-toc" aria-label="Table of contents">
+          <span class="upc-toc-title">Contents</span>
+          {sections.map((s) => (
+            <a href={`#${s.id}`} class="upc-toc-link">{s.label}</a>
+          ))}
+        </nav>
+      </aside>
+
+      <article class="upc-content">
+        <p class="upc-intro">
+          If you are wondering <strong>how to unlock Premier in CS2</strong>, you are not alone. Premier mode is the flagship competitive experience in Counter-Strike 2, featuring a transparent numeric rating system and a map pick-ban phase. Below you will find every requirement and step needed to gain access, along with tips to speed up the process.
+        </p>
+
+        <section id="what-is-premier">
+          <div class="upc-section-header"><h2>What Is Premier Mode?</h2></div>
+          <p>Premier is CS2's primary ranked mode. Unlike the older Competitive queue where you select specific maps and receive a skill group badge, Premier assigns you a <strong>CS Rating</strong> -- a numeric score that rises or falls with each match result. The mode uses the full Active Duty map pool, and each match begins with a pick-ban phase where the two teams take turns eliminating maps until one remains.</p>
+          <p>Premier is designed to be the definitive competitive ladder within CS2. Your CS Rating places you on a global leaderboard, giving you a concrete measure of your improvement over time. It is the mode that most closely mirrors professional match formats, making it the go-to choice for players serious about climbing the ranks. For a deeper look at how rating tiers work, visit our <a href="/cs2-rank-distribution/">CS2 rank distribution</a> page.</p>
+        </section>
+
+        <section id="requirements">
+          <div class="upc-section-header"><h2>Requirements to Unlock Premier</h2></div>
+          <p>Before you can queue for Premier, you must meet several requirements set by Valve. These gates exist to deter new accounts from jumping straight into the highest-stakes mode and to reduce smurfing.</p>
+          <ul class="upc-list">
+            <li><strong>Prime Status:</strong> Your Steam account must have Prime status. This was once a separate purchase but is now earned through gameplay.</li>
+            <li><strong>Profile Level:</strong> You need to reach a specific profile level through earning XP in other game modes such as Competitive, Casual, and Deathmatch.</li>
+            <li><strong>Competitive Wins:</strong> Valve requires a number of wins in the standard Competitive queue before Premier access is granted. This ensures you understand core match mechanics.</li>
+            <li><strong>Phone Number Verification:</strong> Your Steam account should have a verified phone number attached for added security.</li>
+          </ul>
+          <p>Keep in mind that Valve occasionally adjusts these thresholds through updates, so always check the in-game notice on the Premier queue button for the latest requirements. You can also review patch changes on the <a href="https://www.counter-strike.net/" target="_blank" rel="noopener">official Counter-Strike site</a>.</p>
+        </section>
+
+        <section id="step-by-step">
+          <div class="upc-section-header"><h2>Step-by-Step Unlock Process</h2></div>
+          <p>Here is the general path from a fresh account to Premier access:</p>
+          <ul class="upc-list">
+            <li><strong>Step 1 -- Earn Prime Status:</strong> Play through the required amount of casual and competitive matches to earn Prime. Check your profile for progress.</li>
+            <li><strong>Step 2 -- Play Competitive Matches:</strong> Queue for the standard Competitive mode and focus on accumulating wins. Each win contributes to your profile level and progresses you toward the Premier unlock threshold.</li>
+            <li><strong>Step 3 -- Reach the Required Level:</strong> Continue earning XP through matches until your profile level meets the minimum for Premier. XP is granted at the end of each match based on your performance and the mode played.</li>
+            <li><strong>Step 4 -- Complete Placement:</strong> Once the Premier button becomes active, queue up and complete your placement matches. After these matches, you will receive your initial CS Rating.</li>
+          </ul>
+          <p>After placement, your CS Rating will fluctuate based on wins and losses. Check out our <a href="/cs2-guides/ranks-guide/">ranks guide</a> for a full explanation of rating tiers and how the system calculates your score.</p>
+        </section>
+
+        <section id="faster-unlocking">
+          <div class="upc-section-header"><h2>Tips for Faster Unlocking</h2></div>
+          <p>If you want to reach Premier as quickly as possible, consider these practical tips:</p>
+          <ul class="upc-list">
+            <li><strong>Focus on Competitive wins:</strong> Wins grant substantially more XP than losses. Prioritise Competitive queue over Casual or Deathmatch for the best XP-to-time ratio.</li>
+            <li><strong>Play during XP bonus weeks:</strong> Valve periodically awards bonus XP. Take advantage of these windows to accelerate your level progression.</li>
+            <li><strong>Queue with a consistent group:</strong> Playing with reliable teammates raises your win rate, which means faster levelling.</li>
+            <li><strong>Complete weekly missions:</strong> When available, in-game missions provide additional XP that stacks with match rewards.</li>
+            <li><strong>Stay consistent:</strong> Regular play sessions are more productive than occasional marathon sessions. Consistent daily games help you improve faster and earn steady XP.</li>
+          </ul>
+        </section>
+
+        <section id="premier-vs-competitive">
+          <div class="upc-section-header"><h2>Premier vs Competitive Differences</h2></div>
+          <p>Both Premier and Competitive are 5v5 ranked modes, but they differ in several important ways:</p>
+          <ul class="upc-list">
+            <li><strong>Rating system:</strong> Premier uses a numeric CS Rating visible on leaderboards. Competitive uses traditional skill group badges (Silver, Gold Nova, etc.).</li>
+            <li><strong>Map selection:</strong> Premier uses a pick-ban phase across the entire Active Duty pool. Competitive lets you select specific maps before queueing.</li>
+            <li><strong>Match structure:</strong> Both play MR12 (first to 13 rounds), but the pick-ban adds a strategic layer before the match even starts.</li>
+            <li><strong>Player perception:</strong> Many serious players view Premier as the "real" ranked mode, since the numeric rating provides clearer feedback on your skill level.</li>
+          </ul>
+          <p>If you are still deciding which modes to focus on, read our detailed <a href="/cs2-premier-vs-faceit/">Premier vs FACEIT vs Competitive comparison</a> for a full breakdown. You can also learn how each ranking system works in our <a href="/cs2-ranks-explained/">CS2 ranks explained</a> article.</p>
+        </section>
+
+        <section id="faq">
+          <div class="upc-section-header"><h2>Frequently Asked Questions</h2></div>
+          <div class="upc-faq-list">
+            {faqs.map((faq) => (
+              <details class="upc-faq-item">
+                <summary class="upc-faq-question">{faq.question}</summary>
+                <p class="upc-faq-answer">{faq.answer}</p>
+              </details>
+            ))}
+          </div>
+        </section>
+
+        <section id="related">
+          <div class="upc-section-header"><h2>Related Articles</h2></div>
+          <div class="upc-resources-grid">
+            <a href="/cs2-ranks-competitive-faq/" class="upc-resource-card"><span class="upc-resource-name">Ranks & Competitive Hub</span><span class="upc-resource-arrow">&rarr;</span></a>
+            <a href="/cs2-ranks-explained/" class="upc-resource-card"><span class="upc-resource-name">CS2 Ranks Explained</span><span class="upc-resource-arrow">&rarr;</span></a>
+            <a href="/faceit-cs2-guide/" class="upc-resource-card"><span class="upc-resource-name">FACEIT CS2 Guide</span><span class="upc-resource-arrow">&rarr;</span></a>
+            <a href="/cs2-rank-distribution/" class="upc-resource-card"><span class="upc-resource-name">Rank Distribution</span><span class="upc-resource-arrow">&rarr;</span></a>
+            <a href="/cs2-guides/ranks-guide/" class="upc-resource-card"><span class="upc-resource-name">Ranking System Guide</span><span class="upc-resource-arrow">&rarr;</span></a>
+          </div>
+        </section>
+      </article>
+    </div>
+  </div>
+
+  <style>
+    .upc-wrap{max-width:1100px;margin:0 auto;padding:0 1.5rem 2rem}
+    .upc-breadcrumb{display:flex;align-items:center;gap:.5rem;padding:1.25rem 0;font-size:.85rem;color:var(--text2)}
+    .upc-breadcrumb a{color:var(--accent);text-decoration:none}
+    .upc-breadcrumb a:hover{color:var(--accent2)}
+    .upc-sep{color:var(--border)}
+    .upc-header{padding:1.5rem 0 1.25rem;border-bottom:2px solid var(--accent);margin-bottom:1.5rem}
+    .upc-header h1{margin:0 0 .35rem;font-size:2.2rem;font-weight:800;color:var(--text);letter-spacing:-.02em;line-height:1.2}
+    .upc-subtitle{margin:0;font-size:1.05rem;color:var(--text2);font-weight:400}
+    .upc-toc-mobile{display:none}
+    .upc-layout{display:grid;grid-template-columns:220px 1fr;gap:2.5rem;align-items:start}
+    .upc-sidebar{position:sticky;top:80px}
+    .upc-toc{display:flex;flex-direction:column;gap:0;border-left:2px solid var(--border);padding-left:0}
+    .upc-toc-title{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--accent);padding:0 0 .6rem 1rem}
+    .upc-toc-link{display:block;padding:.4rem 1rem;font-size:.82rem;color:var(--text2);text-decoration:none;border-left:2px solid transparent;margin-left:-2px;transition:color .2s,border-color .2s}
+    .upc-toc-link:hover{color:var(--text);border-left-color:var(--accent)}
+    .upc-content{min-width:0}
+    .upc-intro{font-size:1rem;line-height:1.8;color:var(--text2);margin-bottom:2rem}
+    .upc-section-header{background:rgba(46,204,113,.05);margin:0 -1.25rem 1.25rem;padding:.75rem 1.25rem;border-radius:4px}
+    .upc-section-header h2{margin:0;padding:0;font-size:1.5rem;font-weight:700;color:var(--text);border:none;letter-spacing:-.01em}
+    section{margin-bottom:2.5rem}
+    p{line-height:1.7;color:var(--text2);margin-bottom:1rem}
+    .upc-list{list-style:none;padding:0;margin:.75rem 0 1.5rem}
+    .upc-list li{padding:.4rem 0 .4rem 1.6rem;position:relative;color:var(--text2);line-height:1.65}
+    .upc-list li::before{content:'';position:absolute;left:.25rem;top:.75rem;width:6px;height:6px;background:var(--accent);border-radius:1px}
+    .upc-list li strong{color:var(--text)}
+    .upc-faq-list{display:flex;flex-direction:column;gap:.5rem}
+    .upc-faq-item{background:var(--bg2);border:1px solid var(--border);border-radius:4px;overflow:hidden}
+    .upc-faq-question{display:block;padding:1rem 1.25rem;font-size:.95rem;font-weight:600;color:var(--text);cursor:pointer;list-style:none;position:relative;padding-right:2.5rem;transition:background .2s}
+    .upc-faq-question::-webkit-details-marker{display:none}
+    .upc-faq-question::after{content:'+';position:absolute;right:1.25rem;top:50%;transform:translateY(-50%);font-size:1.2rem;color:var(--accent);font-weight:700}
+    .upc-faq-item[open] .upc-faq-question::after{content:'\2212'}
+    .upc-faq-item[open] .upc-faq-question{border-bottom:1px solid var(--border);background:rgba(46,204,113,.03)}
+    .upc-faq-question:hover{background:rgba(46,204,113,.03)}
+    .upc-faq-answer{padding:1rem 1.25rem;margin:0;font-size:.9rem;color:var(--text2);line-height:1.7}
+    .upc-resources-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.6rem;margin:.5rem 0 1.5rem}
+    .upc-resource-card{display:flex;align-items:center;justify-content:space-between;padding:.75rem 1rem;background:var(--bg2);border:1px solid var(--border);border-radius:4px;text-decoration:none;border-left:2px solid transparent;transition:border-left-color .2s,color .2s}
+    .upc-resource-card:hover{border-left-color:var(--accent)}
+    .upc-resource-name{font-size:.88rem;color:var(--text2);font-weight:500;transition:color .2s}
+    .upc-resource-card:hover .upc-resource-name{color:var(--text)}
+    .upc-resource-arrow{font-size:1rem;color:var(--accent);opacity:0;transition:opacity .2s}
+    .upc-resource-card:hover .upc-resource-arrow{opacity:1}
+    @media(max-width:860px){
+      .upc-layout{grid-template-columns:1fr;gap:0}
+      .upc-sidebar{display:none}
+      .upc-toc-mobile{display:flex;gap:.25rem;overflow-x:auto;padding:.75rem 0;margin-bottom:1rem;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+      .upc-toc-mobile::-webkit-scrollbar{display:none}
+      .upc-toc-mobile-link{flex-shrink:0;padding:.35rem .75rem;font-size:.78rem;font-weight:600;color:var(--text2);background:var(--bg2);border:1px solid var(--border);border-radius:4px;text-decoration:none;white-space:nowrap;transition:color .2s,border-color .2s}
+      .upc-toc-mobile-link:hover{color:var(--accent);border-color:var(--accent)}
+      .upc-header h1{font-size:1.7rem}
+      .upc-section-header{margin:0 -1rem 1rem;padding:.6rem 1rem}
+      .upc-resources-grid{grid-template-columns:repeat(2,1fr)}
+    }
+    @media(max-width:600px){
+      .upc-wrap{padding:0 1rem 1.5rem}
+      .upc-resources-grid{grid-template-columns:1fr}
+      .upc-header h1{font-size:1.5rem}
+    }
+  </style>
+  <AuthorBox updated="2026-03-04" />
+</Base>

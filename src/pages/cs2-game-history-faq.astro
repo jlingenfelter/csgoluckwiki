@@ -1,0 +1,137 @@
+---
+import Base from '../layouts/Base.astro';
+import AuthorBox from '../components/AuthorBox.astro';
+import { faqSchema, breadcrumbSchema } from '../lib/weapons';
+
+const title = 'CS2 & CS:GO History & Release Dates FAQ | CSGOLuck Wiki';
+const description = 'Everything about CS2 and CS:GO history — release dates, game versions, ownership, and season schedules. Your questions answered.';
+
+const faqs = [
+  {
+    question: 'When did CS2 and CS:GO come out?',
+    answer: 'Counter-Strike: Global Offensive launched on August 21, 2012 across PC, PlayStation 3, and Xbox 360. Valve officially replaced it with Counter-Strike 2 on September 27, 2023, deploying CS2 as a free update through Steam. The transition meant CS:GO was no longer available as a standalone title — every existing installation converted to CS2 automatically.',
+  },
+  {
+    question: 'What does CS:GO stand for?',
+    answer: 'CS:GO stands for Counter-Strike: Global Offensive. The "Global Offensive" subtitle was chosen to signal a worldwide competitive focus when Valve and Hidden Path Entertainment developed the fourth mainline Counter-Strike title. The abbreviation became one of the most recognised acronyms in esports history during the game\'s eleven-year lifespan.',
+  },
+  {
+    question: 'What is CS2?',
+    answer: 'CS2, short for Counter-Strike 2, is the latest iteration of Valve\'s tactical first-person shooter franchise. Built on the Source 2 engine, it introduces revamped graphics, responsive smoke grenades that react to bullets and explosions, overhauled tick-rate architecture with sub-tick updates, and refined map lighting. CS2 replaced CS:GO entirely and carries forward all player inventories and ranks.',
+  },
+  {
+    question: 'How old is CS:GO and CS2?',
+    answer: 'CS:GO was released in August 2012 and ran for roughly eleven years before its retirement. CS2 launched in September 2023, making it a relatively young title. The broader Counter-Strike franchise, however, dates back to June 1999 when the original mod for Half-Life first appeared — giving the series over two decades of competitive history.',
+  },
+  {
+    question: 'Who made and owns CS2?',
+    answer: 'Valve Corporation both developed and publishes Counter-Strike 2. Valve is a privately held company headquartered in Bellevue, Washington, and also operates Steam, the largest PC gaming distribution platform. The original Counter-Strike began as a community mod by Minh Le and Jess Cliffe before Valve acquired the rights and hired the creators.',
+  },
+  {
+    question: 'When does the CS2 season end?',
+    answer: 'CS2 competitive seasons typically run for several months, with Valve announcing exact start and end dates through the official Counter-Strike blog and in-game notifications. Season resets affect your Premier rating — at the end of each season, ratings are partially recalibrated. Check the in-game dashboard or the official Counter-Strike website for the current season schedule.',
+  },
+];
+---
+
+<Base title={title} description={description}>
+  <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema([{name:'Home',url:'/'},{name:'CS2 & CS:GO History FAQ',url:'/cs2-game-history-faq'}]))}></script>
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema(faqs))}></script>
+
+  <nav class="ghf-breadcrumb">
+    <a href="/">Home</a> / <span>CS2 &amp; CS:GO History FAQ</span>
+  </nav>
+
+  <section class="ghf-hero">
+    <h1>CS2 &amp; CS:GO History &amp; Release Dates FAQ</h1>
+    <p class="ghf-hero-desc">The CS2 and CS:GO history stretches back over two decades, from a Half-Life mod released in 1999 to a Source 2-powered competitive shooter played by millions today. Below you will find clear answers to the most common questions about Counter-Strike release dates, game versions, franchise ownership, and competitive season timelines.</p>
+  </section>
+
+  <div class="ghf-faq-list">
+    {faqs.map(faq => (
+      <details class="ghf-faq-item">
+        <summary class="ghf-faq-question">{faq.question}</summary>
+        <p class="ghf-faq-answer">{faq.answer}</p>
+      </details>
+    ))}
+  </div>
+
+  <section class="ghf-related">
+    <h2>Related Articles</h2>
+    <div class="ghf-related-grid">
+      <a href="/counter-strike-history/" class="ghf-related-card"><span class="ghf-related-name">Complete Counter-Strike History</span><span class="ghf-related-arrow">&rarr;</span></a>
+      <a href="/what-is-cs2/" class="ghf-related-card"><span class="ghf-related-name">What Is CS2?</span><span class="ghf-related-arrow">&rarr;</span></a>
+      <a href="/what-does-csgo-stand-for/" class="ghf-related-card"><span class="ghf-related-name">What Does CS:GO Stand For?</span><span class="ghf-related-arrow">&rarr;</span></a>
+      <a href="/cs2-season-dates/" class="ghf-related-card"><span class="ghf-related-name">CS2 Season Dates &amp; Schedule</span><span class="ghf-related-arrow">&rarr;</span></a>
+    </div>
+  </section>
+
+  <section class="ghf-explore">
+    <h2>Explore More</h2>
+    <div class="ghf-explore-links">
+      <a href="/cs2-download-platform-faq/">CS2 Download &amp; Platform FAQ</a>
+      <a href="/cs2-general-faq/">CS2 General FAQ</a>
+    </div>
+  </section>
+
+  <div class="ghf-outbound">
+    <strong>Official Resources:</strong>
+    <a href="https://store.steampowered.com/app/730/CounterStrike_2/" target="_blank" rel="noopener noreferrer">CS2 on Steam</a>
+    <a href="https://www.counter-strike.net/" target="_blank" rel="noopener noreferrer">Counter-Strike.net</a>
+  </div>
+
+  <AuthorBox updated="2026-03-04" />
+</Base>
+
+<style>
+/* ── Breadcrumb ── */
+.ghf-breadcrumb{font-size:.82rem;color:var(--text2);margin-bottom:1.25rem;display:flex;gap:.35rem;flex-wrap:wrap}
+.ghf-breadcrumb a{color:var(--accent);text-decoration:none}
+.ghf-breadcrumb a:hover{text-decoration:underline}
+
+/* ── Hero ── */
+.ghf-hero{background:var(--bg2);border:1px solid var(--border);border-radius:4px;padding:2rem;margin-bottom:1.5rem}
+.ghf-hero h1{font-family:'Montserrat',sans-serif;font-size:2rem;font-weight:800;margin:0 0 .75rem;color:var(--text)}
+.ghf-hero-desc{color:var(--text2);font-size:.95rem;line-height:1.7;margin:0}
+
+/* ── FAQ List ── */
+.ghf-faq-list{display:flex;flex-direction:column;gap:.5rem;margin-bottom:2.5rem}
+.ghf-faq-item{background:var(--bg2);border:1px solid var(--border);border-radius:4px;overflow:hidden}
+.ghf-faq-question{display:block;padding:1rem 1.25rem;font-size:.95rem;font-weight:600;color:var(--text);cursor:pointer;list-style:none;position:relative;padding-right:2.5rem;transition:background .2s}
+.ghf-faq-question::-webkit-details-marker{display:none}
+.ghf-faq-question::after{content:'+';position:absolute;right:1.25rem;top:50%;transform:translateY(-50%);font-size:1.2rem;color:var(--accent);font-weight:700}
+.ghf-faq-item[open] .ghf-faq-question::after{content:'\2212'}
+.ghf-faq-item[open] .ghf-faq-question{border-bottom:1px solid var(--border);background:rgba(46,204,113,.03)}
+.ghf-faq-question:hover{background:rgba(46,204,113,.03)}
+.ghf-faq-answer{padding:1rem 1.25rem;margin:0;font-size:.9rem;color:var(--text2);line-height:1.7}
+
+/* ── Related Articles ── */
+.ghf-related{margin-bottom:2rem}
+.ghf-related h2{font-family:'Montserrat',sans-serif;font-size:1.2rem;font-weight:700;color:var(--text);margin:0 0 .75rem;padding-bottom:.5rem;border-bottom:2px solid var(--accent)}
+.ghf-related-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:.6rem}
+.ghf-related-card{display:flex;align-items:center;justify-content:space-between;padding:.75rem 1rem;background:var(--bg2);border:1px solid var(--border);border-radius:4px;text-decoration:none;border-left:2px solid transparent;transition:border-left-color .2s,color .2s}
+.ghf-related-card:hover{border-left-color:var(--accent)}
+.ghf-related-name{font-size:.88rem;color:var(--text2);font-weight:500;transition:color .2s}
+.ghf-related-card:hover .ghf-related-name{color:var(--text)}
+.ghf-related-arrow{font-size:1rem;color:var(--accent);opacity:0;transition:opacity .2s}
+.ghf-related-card:hover .ghf-related-arrow{opacity:1}
+
+/* ── Explore More ── */
+.ghf-explore{margin-bottom:2rem}
+.ghf-explore h2{font-family:'Montserrat',sans-serif;font-size:1.2rem;font-weight:700;color:var(--text);margin:0 0 .75rem;padding-bottom:.5rem;border-bottom:2px solid var(--accent)}
+.ghf-explore-links{display:flex;flex-wrap:wrap;gap:.45rem}
+.ghf-explore-links a{color:var(--accent);text-decoration:none;padding:.4rem .75rem;background:var(--bg2);border:1px solid var(--border);border-radius:4px;font-size:.85rem;font-weight:600;transition:border-color .15s,color .15s}
+.ghf-explore-links a:hover{border-color:var(--accent);color:var(--text)}
+
+/* ── Outbound Links ── */
+.ghf-outbound{display:flex;flex-wrap:wrap;gap:.45rem;align-items:center;margin:1.5rem 0 2rem;font-size:.82rem}
+.ghf-outbound strong{color:var(--text);margin-right:.2rem}
+.ghf-outbound a{color:var(--accent);text-decoration:none;padding:.2rem .5rem;background:var(--bg2);border:1px solid var(--border);border-radius:4px;transition:border-color .15s}
+.ghf-outbound a:hover{border-color:var(--accent)}
+
+/* ── Responsive ── */
+@media(max-width:768px){
+  .ghf-hero h1{font-size:1.5rem}
+  .ghf-related-grid{grid-template-columns:1fr}
+}
+</style>

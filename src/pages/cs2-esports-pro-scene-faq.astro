@@ -1,0 +1,134 @@
+---
+import Base from '../layouts/Base.astro';
+import AuthorBox from '../components/AuthorBox.astro';
+import { faqSchema, breadcrumbSchema } from '../lib/weapons';
+
+const title = 'CS2 Esports & Pro Scene FAQ | CSGOLuck Wiki';
+const description = 'When the next CS2 Major is, match lengths and round counts, and where to watch CS2 esports live. Your pro scene questions answered.';
+
+const faqs = [
+  {
+    question: 'When is the next CS2 Major?',
+    answer: 'Valve typically hosts two Major Championships per year — one in the spring and one in the fall. Exact dates and host cities are announced on the official Counter-Strike blog and social media channels several months in advance. Majors feature a multi-million dollar prize pool and are the most prestigious events in Counter-Strike competitive play. Check <a href="https://www.hltv.org/" target="_blank" rel="noopener noreferrer">HLTV.org</a> for the latest schedule and qualified teams.',
+  },
+  {
+    question: 'How long is a CS2 match?',
+    answer: 'A standard competitive or Premier match typically lasts 30 to 50 minutes depending on how many rounds are played and whether overtime is needed. Regulation consists of up to 24 rounds in the MR12 format (first to 13 wins). If the score reaches 12-12, overtime rounds extend the match. Professional best-of-three series can run two to three hours total across all maps.',
+  },
+  {
+    question: 'How many rounds in a CS2 match?',
+    answer: 'CS2 uses the MR12 format for competitive and Premier modes, meaning each half consists of 12 rounds for a maximum of 24 rounds in regulation. The first team to win 13 rounds takes the map. If the score is tied 12-12, overtime is played in sets of six additional rounds (three per side). Professional matches follow the same format across each map in a best-of-one or best-of-three series.',
+  },
+  {
+    question: 'Where to watch CS2 esports?',
+    answer: 'Major tournaments are broadcast live on Twitch, YouTube, and occasionally Steam.tv. HLTV.org is the central hub for CS2 esports — it hosts schedules, live scoreboards, VODs, and links to official streams for every significant event. Individual tournament organizers like ESL, BLAST, and PGL also run their own Twitch and YouTube channels. In-game GOTV allows you to spectate Major matches directly from CS2.',
+  },
+];
+---
+
+<Base title={title} description={description}>
+  <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema([{name:'Home',url:'/'},{name:'CS2 Esports & Pro Scene FAQ',url:'/cs2-esports-pro-scene-faq'}]))}></script>
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema(faqs))}></script>
+
+  <nav class="epf-breadcrumb">
+    <a href="/">Home</a> / <span>CS2 Esports &amp; Pro Scene FAQ</span>
+  </nav>
+
+  <section class="epf-hero">
+    <h1>CS2 Esports &amp; Pro Scene FAQ</h1>
+    <p class="epf-hero-desc">CS2 esports and Majors are the pinnacle of competitive Counter-Strike, drawing millions of viewers worldwide. Whether you are new to watching professional CS2 or a seasoned fan looking for schedule details, this FAQ covers when the next Major is, how matches are structured, and where to catch all the action live. Explore our <a href="/pro-players/">pro player database</a> and <a href="/pro-teams/">team profiles</a> for more.</p>
+  </section>
+
+  <div class="epf-faq-list">
+    {faqs.map(faq => (
+      <details class="epf-faq-item">
+        <summary class="epf-faq-question">{faq.question}</summary>
+        <div class="epf-faq-answer" set:html={faq.answer}></div>
+      </details>
+    ))}
+  </div>
+
+  <section class="epf-related">
+    <h2>Related Articles</h2>
+    <div class="epf-related-grid">
+      <a href="/next-cs2-major/" class="epf-related-card"><span class="epf-related-name">When Is the Next CS2 Major?</span><span class="epf-related-arrow">&rarr;</span></a>
+      <a href="/how-long-cs2-match/" class="epf-related-card"><span class="epf-related-name">How Long Is a CS2 Match?</span><span class="epf-related-arrow">&rarr;</span></a>
+      <a href="/where-to-watch-cs2/" class="epf-related-card"><span class="epf-related-name">Where to Watch CS2 Esports</span><span class="epf-related-arrow">&rarr;</span></a>
+      <a href="/pro-players/" class="epf-related-card"><span class="epf-related-name">Pro Player Settings Database</span><span class="epf-related-arrow">&rarr;</span></a>
+      <a href="/pro-teams/" class="epf-related-card"><span class="epf-related-name">Pro Team Profiles</span><span class="epf-related-arrow">&rarr;</span></a>
+    </div>
+  </section>
+
+  <section class="epf-explore">
+    <h2>Explore More</h2>
+    <div class="epf-explore-links">
+      <a href="/cs2-ranks-competitive-faq/">CS2 Ranks &amp; Competitive FAQ</a>
+      <a href="/cs2-stats-adr-tracking-faq/">CS2 Stats &amp; Tracking FAQ</a>
+    </div>
+  </section>
+
+  <div class="epf-outbound">
+    <strong>Official Resources:</strong>
+    <a href="https://www.hltv.org/" target="_blank" rel="noopener noreferrer">HLTV.org</a>
+    <a href="https://www.counter-strike.net/" target="_blank" rel="noopener noreferrer">Counter-Strike.net</a>
+  </div>
+
+  <AuthorBox updated="2026-03-04" />
+</Base>
+
+<style>
+/* ── Breadcrumb ── */
+.epf-breadcrumb{font-size:.82rem;color:var(--text2);margin-bottom:1.25rem;display:flex;gap:.35rem;flex-wrap:wrap}
+.epf-breadcrumb a{color:var(--accent);text-decoration:none}
+.epf-breadcrumb a:hover{text-decoration:underline}
+
+/* ── Hero ── */
+.epf-hero{background:var(--bg2);border:1px solid var(--border);border-radius:4px;padding:2rem;margin-bottom:1.5rem}
+.epf-hero h1{font-family:'Montserrat',sans-serif;font-size:2rem;font-weight:800;margin:0 0 .75rem;color:var(--text)}
+.epf-hero-desc{color:var(--text2);font-size:.95rem;line-height:1.7;margin:0}
+.epf-hero-desc a{color:var(--accent);text-decoration:none}
+.epf-hero-desc a:hover{text-decoration:underline}
+
+/* ── FAQ List ── */
+.epf-faq-list{display:flex;flex-direction:column;gap:.5rem;margin-bottom:2.5rem}
+.epf-faq-item{background:var(--bg2);border:1px solid var(--border);border-radius:4px;overflow:hidden}
+.epf-faq-question{display:block;padding:1rem 1.25rem;font-size:.95rem;font-weight:600;color:var(--text);cursor:pointer;list-style:none;position:relative;padding-right:2.5rem;transition:background .2s}
+.epf-faq-question::-webkit-details-marker{display:none}
+.epf-faq-question::after{content:'+';position:absolute;right:1.25rem;top:50%;transform:translateY(-50%);font-size:1.2rem;color:var(--accent);font-weight:700}
+.epf-faq-item[open] .epf-faq-question::after{content:'\2212'}
+.epf-faq-item[open] .epf-faq-question{border-bottom:1px solid var(--border);background:rgba(46,204,113,.03)}
+.epf-faq-question:hover{background:rgba(46,204,113,.03)}
+.epf-faq-answer{padding:1rem 1.25rem;margin:0;font-size:.9rem;color:var(--text2);line-height:1.7}
+.epf-faq-answer a{color:var(--accent);text-decoration:none}
+.epf-faq-answer a:hover{text-decoration:underline}
+
+/* ── Related Articles ── */
+.epf-related{margin-bottom:2rem}
+.epf-related h2{font-family:'Montserrat',sans-serif;font-size:1.2rem;font-weight:700;color:var(--text);margin:0 0 .75rem;padding-bottom:.5rem;border-bottom:2px solid var(--accent)}
+.epf-related-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:.6rem}
+.epf-related-card{display:flex;align-items:center;justify-content:space-between;padding:.75rem 1rem;background:var(--bg2);border:1px solid var(--border);border-radius:4px;text-decoration:none;border-left:2px solid transparent;transition:border-left-color .2s,color .2s}
+.epf-related-card:hover{border-left-color:var(--accent)}
+.epf-related-name{font-size:.88rem;color:var(--text2);font-weight:500;transition:color .2s}
+.epf-related-card:hover .epf-related-name{color:var(--text)}
+.epf-related-arrow{font-size:1rem;color:var(--accent);opacity:0;transition:opacity .2s}
+.epf-related-card:hover .epf-related-arrow{opacity:1}
+
+/* ── Explore More ── */
+.epf-explore{margin-bottom:2rem}
+.epf-explore h2{font-family:'Montserrat',sans-serif;font-size:1.2rem;font-weight:700;color:var(--text);margin:0 0 .75rem;padding-bottom:.5rem;border-bottom:2px solid var(--accent)}
+.epf-explore-links{display:flex;flex-wrap:wrap;gap:.45rem}
+.epf-explore-links a{color:var(--accent);text-decoration:none;padding:.4rem .75rem;background:var(--bg2);border:1px solid var(--border);border-radius:4px;font-size:.85rem;font-weight:600;transition:border-color .15s,color .15s}
+.epf-explore-links a:hover{border-color:var(--accent);color:var(--text)}
+
+/* ── Outbound Links ── */
+.epf-outbound{display:flex;flex-wrap:wrap;gap:.45rem;align-items:center;margin:1.5rem 0 2rem;font-size:.82rem}
+.epf-outbound strong{color:var(--text);margin-right:.2rem}
+.epf-outbound a{color:var(--accent);text-decoration:none;padding:.2rem .5rem;background:var(--bg2);border:1px solid var(--border);border-radius:4px;transition:border-color .15s}
+.epf-outbound a:hover{border-color:var(--accent)}
+
+/* ── Responsive ── */
+@media(max-width:768px){
+  .epf-hero h1{font-size:1.5rem}
+  .epf-related-grid{grid-template-columns:1fr}
+}
+</style>

@@ -1,0 +1,222 @@
+---
+import Base from '../layouts/Base.astro';
+import AuthorBox from '../components/AuthorBox.astro';
+import { faqSchema, breadcrumbSchema } from '../lib/weapons';
+
+const title = 'Is Cache Coming to CS2? Everything We Know | CSGOLuck Wiki';
+const description = "Cache hasn't been added to CS2 yet. Here's everything we know about its status, why it's missing, and when it might return.";
+
+const breadcrumbs = [
+  { name: 'Home', url: '/' },
+  { name: 'CS2 Maps & Callouts', url: '/cs2-maps-callouts-faq' },
+  { name: 'Cache in CS2', url: '/cache-cs2' },
+];
+
+const faqs = [
+  {
+    question: 'Is Cache officially in CS2?',
+    answer: 'No. As of the latest updates, Cache has not been officially added to CS2 by Valve. There is no confirmed date for its inclusion. Check the official Counter-Strike website or HLTV for any announcements.',
+  },
+  {
+    question: 'Can I play Cache through the Steam Workshop?',
+    answer: 'Community members have created workshop versions of Cache for CS2. You can find and subscribe to these through the Steam Workshop, though they are unofficial recreations and may differ from the original layout. See our guide on CS2 workshop maps for how to load them.',
+  },
+  {
+    question: 'Why was Cache removed from CS:GO before CS2?',
+    answer: 'Cache was moved to the reserve map pool in CS:GO before the transition to CS2. Valve periodically rotates maps in and out of the active duty pool based on competitive balance, player feedback, and the need for visual or gameplay updates.',
+  },
+  {
+    question: 'What maps are currently in the CS2 active duty pool?',
+    answer: 'The current CS2 active duty pool includes Mirage, Inferno, Dust2, Nuke, Ancient, Anubis, and Vertigo. This can change with updates, so check the game for the latest pool. See our CS2 map pool guide for full details.',
+  },
+];
+
+const breadcrumbSchema_ = breadcrumbSchema(breadcrumbs);
+const faqSchema_ = faqSchema(faqs);
+
+const articleSchema = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": title,
+  "description": description,
+  "author": { "@type": "Person", "name": "Josh Lingenfelter", "url": "https://www.linkedin.com/in/josh-lingenfelter-8157274b/", "jobTitle": "Director", "worksFor": { "@type": "Organization", "name": "CSGOLuck" } },
+  "publisher": { "@type": "Organization", "name": "CSGOLuck Wiki", "url": "https://wiki.csgoluck.com" },
+  "mainEntityOfPage": "https://wiki.csgoluck.com/cache-cs2/",
+  "inLanguage": "en-US"
+});
+
+const sections = [
+  { id: 'status', label: 'Current Status' },
+  { id: 'why-missing', label: 'Why Cache Is Missing' },
+  { id: 'history', label: 'Cache History' },
+  { id: 'community', label: 'Community Projects' },
+  { id: 'will-it-return', label: 'Will Cache Return?' },
+  { id: 'faq', label: 'FAQ' },
+  { id: 'related', label: 'Related Articles' },
+];
+---
+
+<Base title={title} description={description}>
+  <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema_)}></script>
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema_)}></script>
+  <script type="application/ld+json" set:html={articleSchema}></script>
+
+  <div class="cac-wrap">
+    <nav class="cac-breadcrumb">
+      <a href="/">Home</a>
+      <span class="cac-sep">/</span>
+      <a href="/cs2-maps-callouts-faq/">Maps & Callouts</a>
+      <span class="cac-sep">/</span>
+      <span>Cache in CS2</span>
+    </nav>
+
+    <header class="cac-header">
+      <h1>Is Cache Coming to CS2? Everything We Know</h1>
+      <p class="cac-subtitle">The current status of one of Counter-Strike's most beloved maps</p>
+    </header>
+
+    <nav class="cac-toc-mobile" aria-label="Table of contents">
+      {sections.map((s) => (
+        <a href={`#${s.id}`} class="cac-toc-mobile-link">{s.label}</a>
+      ))}
+    </nav>
+
+    <div class="cac-layout">
+      <aside class="cac-sidebar">
+        <nav class="cac-toc" aria-label="Table of contents">
+          <span class="cac-toc-title">Contents</span>
+          {sections.map((s) => (
+            <a href={`#${s.id}`} class="cac-toc-link">{s.label}</a>
+          ))}
+        </nav>
+      </aside>
+
+      <article class="cac-content">
+        <p class="cac-intro">
+          Cache CS2 remains one of the most requested maps in the Counter-Strike community. Despite its long history as a competitive staple, Cache has not been added to Counter-Strike 2's official map pool. Below we cover everything known about its current status, the reasons behind its absence, and whether players can expect to see it return.
+        </p>
+
+        <section id="status">
+          <div class="cac-section-header"><h2>Current Status of Cache in CS2</h2></div>
+          <p>As of the latest CS2 updates, Cache is not available in the official game. It is not part of the active duty competitive map pool, the reserve group, or any other official map rotation. Valve has not made any public announcement regarding plans to add Cache to CS2.</p>
+          <p>The current active duty pool consists of seven maps: Mirage, Inferno, Dust2, Nuke, Ancient, Anubis, and Vertigo. You can find full details on the current rotation in our <a href="/cs2-map-pool/">CS2 map pool guide</a>. Cache is conspicuously absent from both the competitive and casual playlists.</p>
+          <p>Players who want to experience Cache in CS2 can look to community-created <a href="/cs2-workshop-maps/">workshop maps</a> as an unofficial alternative. However, these recreations are maintained by community members and may not perfectly replicate the original experience.</p>
+        </section>
+
+        <section id="why-missing">
+          <div class="cac-section-header"><h2>Why Cache Isn't in CS2 Yet</h2></div>
+          <p>There are several reasons why Cache has not made the jump to CS2. Understanding the context helps set realistic expectations about if and when it might return.</p>
+          <p>First, Cache is unique among competitive Counter-Strike maps because it was primarily developed and maintained by a community mapper (FMPONE) rather than Valve's internal team. This means porting Cache to the Source 2 engine requires collaboration between Valve and the map's creator, which may involve different timelines and priorities than Valve-owned maps.</p>
+          <p>Second, the transition from CS:GO to CS2 involved significant engine changes. Maps need to be rebuilt or heavily modified to work with Source 2's new lighting, physics, and rendering systems. This is not a simple copy-paste process -- each map requires substantial work to meet the visual and technical standards of CS2.</p>
+          <p>Third, Valve has been methodical about adding maps to CS2, focusing on the core competitive pool first and gradually expanding. Maps that were in the reserve pool in CS:GO (where Cache sat before the transition) have lower priority than active duty maps.</p>
+        </section>
+
+        <section id="history">
+          <div class="cac-section-header"><h2>History of Cache in Counter-Strike</h2></div>
+          <p>Cache has a rich history in the Counter-Strike franchise. The map was originally created by community mapper Sal "Volcano" Garozzo and later refined in collaboration with FMPONE. It was first introduced to CS:GO's competitive scene and quickly became a fan favourite for its balanced layout and fast-paced gameplay.</p>
+          <p>The map was set in the Chernobyl Exclusion Zone near the Pripyat nuclear power plant, giving it a distinctive visual theme. Its layout featured two bomb sites connected by a central mid area, with multiple entry points and rotation paths that rewarded both tactical play and individual skill.</p>
+          <p>Cache was part of the CS:GO active duty map pool for several years before being moved to the reserve pool. During its time in active duty, it was a staple of professional tournaments and one of the most played maps at Major championships. FMPONE released a visual overhaul of Cache in 2019 that updated the map's appearance while maintaining its competitive layout. You can explore all current <a href="/cs2-maps/">CS2 maps</a> on the wiki.</p>
+        </section>
+
+        <section id="community">
+          <div class="cac-section-header"><h2>Community Cache Projects</h2></div>
+          <p>The Counter-Strike community has not waited for an official release. Several community mappers have created their own versions of Cache for CS2 using the Source 2 Workshop tools. These unofficial ports attempt to recreate the classic layout within the new engine.</p>
+          <p>You can find community Cache maps on the <a href="https://steamcommunity.com/workshop/browse/?appid=730" target="_blank" rel="noopener">Steam Workshop</a>. Search for "Cache" and sort by most popular or most recent to find the best-maintained versions. Keep in mind that community maps may have differences in timing, visual quality, and gameplay feel compared to what an official Valve-approved version would offer.</p>
+          <p>To play these community maps, you need to subscribe to them on the Workshop and then load them through the console or practice mode. Our guide on <a href="/cs2-workshop-maps/">CS2 workshop maps</a> walks through the full process of finding, downloading, and loading custom maps in CS2.</p>
+        </section>
+
+        <section id="will-it-return">
+          <div class="cac-section-header"><h2>Will Cache Return to CS2?</h2></div>
+          <p>The honest answer is that nobody outside of Valve knows for certain. There has been no official confirmation that Cache will be added to CS2, and Valve is famously tight-lipped about upcoming content. Any claims about confirmed release dates for Cache in CS2 should be treated as speculation.</p>
+          <p>That said, there are reasons for cautious optimism. Cache remains one of the most popular and well-regarded maps in Counter-Strike history. The community demand is significant, and FMPONE has remained active in the mapping community. Valve has also shown willingness to expand the CS2 map pool over time, adding maps that were not part of the initial launch.</p>
+          <p>The best approach is to keep an eye on the <a href="https://www.counter-strike.net/" target="_blank" rel="noopener">official Counter-Strike website</a> and CS2 update notes for any announcements. When Valve does add or change maps in the pool, they typically announce it through game updates and blog posts. Until then, community workshop versions remain the only way to experience Cache in CS2.</p>
+        </section>
+
+        <section id="faq">
+          <div class="cac-section-header"><h2>Frequently Asked Questions</h2></div>
+          <div class="cac-faq-list">
+            {faqs.map((faq) => (
+              <details class="cac-faq-item">
+                <summary class="cac-faq-question">{faq.question}</summary>
+                <p class="cac-faq-answer">{faq.answer}</p>
+              </details>
+            ))}
+          </div>
+        </section>
+
+        <section id="related">
+          <div class="cac-section-header"><h2>Related Articles</h2></div>
+          <div class="cac-resources-grid">
+            <a href="/cs2-maps-callouts-faq/" class="cac-resource-card"><span class="cac-resource-name">Maps & Callouts Hub</span><span class="cac-resource-arrow">&rarr;</span></a>
+            <a href="/cs2-map-pool/" class="cac-resource-card"><span class="cac-resource-name">CS2 Map Pool 2025</span><span class="cac-resource-arrow">&rarr;</span></a>
+            <a href="/cs2-workshop-maps/" class="cac-resource-card"><span class="cac-resource-name">CS2 Workshop Maps</span><span class="cac-resource-arrow">&rarr;</span></a>
+            <a href="/cs2-maps/" class="cac-resource-card"><span class="cac-resource-name">All CS2 Maps</span><span class="cac-resource-arrow">&rarr;</span></a>
+            <a href="/workshop-maps/" class="cac-resource-card"><span class="cac-resource-name">Workshop Maps</span><span class="cac-resource-arrow">&rarr;</span></a>
+          </div>
+        </section>
+      </article>
+    </div>
+  </div>
+
+  <style>
+    .cac-wrap{max-width:1100px;margin:0 auto;padding:0 1.5rem 2rem}
+    .cac-breadcrumb{display:flex;align-items:center;gap:.5rem;padding:1.25rem 0;font-size:.85rem;color:var(--text2)}
+    .cac-breadcrumb a{color:var(--accent);text-decoration:none}
+    .cac-breadcrumb a:hover{color:var(--accent2)}
+    .cac-sep{color:var(--border)}
+    .cac-header{padding:1.5rem 0 1.25rem;border-bottom:2px solid var(--accent);margin-bottom:1.5rem}
+    .cac-header h1{margin:0 0 .35rem;font-size:2.2rem;font-weight:800;color:var(--text);letter-spacing:-.02em;line-height:1.2}
+    .cac-subtitle{margin:0;font-size:1.05rem;color:var(--text2);font-weight:400}
+    .cac-toc-mobile{display:none}
+    .cac-layout{display:grid;grid-template-columns:220px 1fr;gap:2.5rem;align-items:start}
+    .cac-sidebar{position:sticky;top:80px}
+    .cac-toc{display:flex;flex-direction:column;gap:0;border-left:2px solid var(--border);padding-left:0}
+    .cac-toc-title{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--accent);padding:0 0 .6rem 1rem}
+    .cac-toc-link{display:block;padding:.4rem 1rem;font-size:.82rem;color:var(--text2);text-decoration:none;border-left:2px solid transparent;margin-left:-2px;transition:color .2s,border-color .2s}
+    .cac-toc-link:hover{color:var(--text);border-left-color:var(--accent)}
+    .cac-content{min-width:0}
+    .cac-intro{font-size:1rem;line-height:1.8;color:var(--text2);margin-bottom:2rem}
+    .cac-section-header{background:rgba(46,204,113,.05);margin:0 -1.25rem 1.25rem;padding:.75rem 1.25rem;border-radius:4px}
+    .cac-section-header h2{margin:0;padding:0;font-size:1.5rem;font-weight:700;color:var(--text);border:none;letter-spacing:-.01em}
+    section{margin-bottom:2.5rem}
+    h3{font-size:1.15rem;font-weight:600;margin:1.5rem 0 .6rem;color:var(--text)}
+    p{line-height:1.7;color:var(--text2);margin-bottom:1rem}
+    .cac-list{list-style:none;padding:0;margin:.75rem 0 1.5rem}
+    .cac-list li{padding:.4rem 0 .4rem 1.6rem;position:relative;color:var(--text2);line-height:1.65}
+    .cac-list li::before{content:'';position:absolute;left:.25rem;top:.75rem;width:6px;height:6px;background:var(--accent);border-radius:1px}
+    .cac-list li strong{color:var(--text)}
+    .cac-faq-list{display:flex;flex-direction:column;gap:.5rem}
+    .cac-faq-item{background:var(--bg2);border:1px solid var(--border);border-radius:4px;overflow:hidden}
+    .cac-faq-question{display:block;padding:1rem 1.25rem;font-size:.95rem;font-weight:600;color:var(--text);cursor:pointer;list-style:none;position:relative;padding-right:2.5rem;transition:background .2s}
+    .cac-faq-question::-webkit-details-marker{display:none}
+    .cac-faq-question::after{content:'+';position:absolute;right:1.25rem;top:50%;transform:translateY(-50%);font-size:1.2rem;color:var(--accent);font-weight:700}
+    .cac-faq-item[open] .cac-faq-question::after{content:'\2212'}
+    .cac-faq-item[open] .cac-faq-question{border-bottom:1px solid var(--border);background:rgba(46,204,113,.03)}
+    .cac-faq-question:hover{background:rgba(46,204,113,.03)}
+    .cac-faq-answer{padding:1rem 1.25rem;margin:0;font-size:.9rem;color:var(--text2);line-height:1.7}
+    .cac-resources-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.6rem;margin:.5rem 0 1.5rem}
+    .cac-resource-card{display:flex;align-items:center;justify-content:space-between;padding:.75rem 1rem;background:var(--bg2);border:1px solid var(--border);border-radius:4px;text-decoration:none;border-left:2px solid transparent;transition:border-left-color .2s,color .2s}
+    .cac-resource-card:hover{border-left-color:var(--accent)}
+    .cac-resource-name{font-size:.88rem;color:var(--text2);font-weight:500;transition:color .2s}
+    .cac-resource-card:hover .cac-resource-name{color:var(--text)}
+    .cac-resource-arrow{font-size:1rem;color:var(--accent);opacity:0;transition:opacity .2s}
+    .cac-resource-card:hover .cac-resource-arrow{opacity:1}
+    @media(max-width:860px){
+      .cac-layout{grid-template-columns:1fr;gap:0}
+      .cac-sidebar{display:none}
+      .cac-toc-mobile{display:flex;gap:.25rem;overflow-x:auto;padding:.75rem 0;margin-bottom:1rem;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+      .cac-toc-mobile::-webkit-scrollbar{display:none}
+      .cac-toc-mobile-link{flex-shrink:0;padding:.35rem .75rem;font-size:.78rem;font-weight:600;color:var(--text2);background:var(--bg2);border:1px solid var(--border);border-radius:4px;text-decoration:none;white-space:nowrap;transition:color .2s,border-color .2s}
+      .cac-toc-mobile-link:hover{color:var(--accent);border-color:var(--accent)}
+      .cac-header h1{font-size:1.7rem}
+      .cac-section-header{margin:0 -1rem 1rem;padding:.6rem 1rem}
+      .cac-resources-grid{grid-template-columns:repeat(2,1fr)}
+    }
+    @media(max-width:600px){
+      .cac-wrap{padding:0 1rem 1.5rem}
+      .cac-resources-grid{grid-template-columns:1fr}
+      .cac-header h1{font-size:1.5rem}
+    }
+  </style>
+  <AuthorBox updated="2026-03-04" />
+</Base>

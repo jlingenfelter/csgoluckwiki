@@ -1,0 +1,238 @@
+---
+import Base from '../layouts/Base.astro';
+import AuthorBox from '../components/AuthorBox.astro';
+import { faqSchema, breadcrumbSchema } from '../lib/weapons';
+
+const title = "How to Surf in CS2: Beginner's Guide | CSGOLuck Wiki";
+const description = 'Learn how to surf in CS2 with this complete beginner\'s guide. Master the basics of air strafing and find the best surf maps.';
+
+const breadcrumbs = [
+  { name: 'Home', url: '/' },
+  { name: 'Gameplay & Practice', url: '/cs2-gameplay-practice-faq/' },
+  { name: 'How to Surf', url: '/how-to-surf-cs2/' },
+];
+
+const faqs = [
+  {
+    question: 'Is surfing in CS2 different from CS:GO?',
+    answer: 'The core mechanics are the same, but CS2\'s updated Source 2 engine has slightly different physics. Some surf maps have been updated for CS2 while others are still being ported from CS:GO.',
+  },
+  {
+    question: 'Do I need any special settings to surf?',
+    answer: 'Most surf servers automatically adjust your settings when you join. However, having a comfortable sensitivity and disabling mouse acceleration helps. Some players also bind their jump to the scroll wheel for consistency.',
+  },
+  {
+    question: 'Can surfing improve my competitive play?',
+    answer: 'Yes. Surfing develops air strafing skills, mouse control, and spatial awareness that directly transfer to competitive matches, especially during movement-heavy situations like peeking and repositioning.',
+  },
+  {
+    question: 'What are the best surf maps for beginners?',
+    answer: 'Popular beginner-friendly surf maps include surf_beginner, surf_utopia, and surf_mesa. These maps have wide ramps and forgiving angles that help you learn the basics before moving to harder maps.',
+  },
+];
+
+const breadcrumbSchema_ = breadcrumbSchema(breadcrumbs);
+const faqSchema_ = faqSchema(faqs);
+
+const articleSchema = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": title,
+  "description": description,
+  "author": { "@type": "Person", "name": "Josh Lingenfelter", "url": "https://www.linkedin.com/in/josh-lingenfelter-8157274b/", "jobTitle": "Director", "worksFor": { "@type": "Organization", "name": "CSGOLuck" } },
+  "publisher": { "@type": "Organization", "name": "CSGOLuck Wiki", "url": "https://wiki.csgoluck.com" },
+  "mainEntityOfPage": "https://wiki.csgoluck.com/how-to-surf-cs2/",
+  "inLanguage": "en-US"
+});
+
+const sections = [
+  { id: 'what-is-surfing', label: 'What Is Surfing?' },
+  { id: 'mechanics', label: 'Surf Mechanics' },
+  { id: 'find-servers', label: 'Finding Servers' },
+  { id: 'best-maps', label: 'Best Beginner Maps' },
+  { id: 'tips', label: 'Tips to Improve' },
+  { id: 'faq', label: 'FAQ' },
+  { id: 'related', label: 'Related Articles' },
+];
+---
+
+<Base title={title} description={description}>
+  <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema_)}></script>
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema_)}></script>
+  <script type="application/ld+json" set:html={articleSchema}></script>
+
+  <div class="hts-wrap">
+    <nav class="hts-breadcrumb">
+      <a href="/">Home</a>
+      <span class="hts-sep">/</span>
+      <a href="/cs2-gameplay-practice-faq/">Gameplay & Practice</a>
+      <span class="hts-sep">/</span>
+      <span>How to Surf</span>
+    </nav>
+
+    <header class="hts-header">
+      <h1>How to Surf in CS2</h1>
+      <p class="hts-subtitle">A beginner-friendly introduction to one of Counter-Strike's most beloved community modes</p>
+    </header>
+
+    <nav class="hts-toc-mobile" aria-label="Table of contents">
+      {sections.map((s) => (
+        <a href={`#${s.id}`} class="hts-toc-mobile-link">{s.label}</a>
+      ))}
+    </nav>
+
+    <div class="hts-layout">
+      <aside class="hts-sidebar">
+        <nav class="hts-toc" aria-label="Table of contents">
+          <span class="hts-toc-title">Contents</span>
+          {sections.map((s) => (
+            <a href={`#${s.id}`} class="hts-toc-link">{s.label}</a>
+          ))}
+        </nav>
+      </aside>
+
+      <article class="hts-content">
+        <p class="hts-intro">
+          Learning <strong>how to surf in CS2</strong> opens up one of Counter-Strike's most unique community experiences. Surfing involves gliding along angled ramps using air strafing mechanics, and it is both a relaxing pastime and a legitimate way to improve your mouse control. This guide covers the fundamentals so you can start riding ramps in no time.
+        </p>
+
+        <section id="what-is-surfing">
+          <div class="hts-section-header"><h2>What Is Surfing in CS2?</h2></div>
+          <p>Surfing is a community game mode built around the Source engine's air-movement physics. Players glide along tilted surfaces (ramps) by holding strafe keys and gently moving their mouse to control direction and speed. There is no actual "surf" mechanic built into CS2 -- it is an emergent behaviour that the community discovered and turned into its own mini-game.</p>
+          <p>Surf maps range from beginner-friendly courses with wide, gentle ramps to expert-level obstacle courses that require pixel-perfect mouse control. The goal on most maps is to reach the end as quickly as possible, though many players simply enjoy the meditative flow of gliding through the course. Surfing is also a great way to build the <a href="/cs2-guides/movement-guide/">movement skills</a> that transfer directly to competitive play.</p>
+        </section>
+
+        <section id="mechanics">
+          <div class="hts-section-header"><h2>Basic Surf Mechanics Explained</h2></div>
+          <p>The core of surfing relies on air strafing -- using your A and D keys in combination with smooth mouse movements to control your trajectory while airborne. Here is how the basic mechanics work:</p>
+          <ul class="hts-list">
+            <li><strong>Landing on a ramp:</strong> Approach a ramp from above and land on its surface. If the ramp slopes to your right, hold A (strafe left). If it slopes to your left, hold D (strafe right). This keeps you glued to the surface.</li>
+            <li><strong>Gaining speed:</strong> Move your mouse gently in the direction you are strafing. The smoother your mouse movement, the more speed you gain. Jerky movements bleed speed.</li>
+            <li><strong>Leaving a ramp:</strong> When you reach the end of a ramp, release the strafe key. Your momentum carries you through the air to the next ramp or platform.</li>
+            <li><strong>Air strafing between ramps:</strong> While airborne, hold A and move your mouse left to curve left, or hold D and move your mouse right to curve right. This lets you navigate between ramps and adjust your trajectory.</li>
+          </ul>
+          <p>The most important rule in surfing: never hold W while on a ramp. Pressing W while on a surf ramp kills your speed and sends you sliding off. Only use A and D while actively surfing.</p>
+        </section>
+
+        <section id="find-servers">
+          <div class="hts-section-header"><h2>How to Find and Join Surf Servers</h2></div>
+          <p>There are several ways to access surf content in CS2:</p>
+          <ul class="hts-list">
+            <li><strong>Community server browser:</strong> Open CS2, go to Play, and select Community Server Browser. Filter by typing "surf" in the search bar. You will see a list of active surf servers you can join directly.</li>
+            <li><strong>Steam Workshop:</strong> Browse surf maps on the <a href="https://steamcommunity.com/workshop/browse/?appid=730" target="_blank" rel="noopener">Steam Workshop</a> and subscribe to the ones you want. You can then load them in a private match to practice alone.</li>
+            <li><strong>Favourites:</strong> When you find a surf server you enjoy, add it to your favourites for quick access in future sessions.</li>
+          </ul>
+          <p>Community surf servers typically have the necessary settings pre-configured, including extended air acceleration and no fall damage. If you load a <a href="/workshop-maps/">workshop map</a> locally, you may need to adjust these settings through console commands.</p>
+        </section>
+
+        <section id="best-maps">
+          <div class="hts-section-header"><h2>Best Surf Maps for Beginners</h2></div>
+          <p>Starting with the right maps makes learning much less frustrating. These maps feature wide ramps, gentle angles, and forgiving layouts:</p>
+          <ul class="hts-list">
+            <li><strong>surf_beginner:</strong> Designed specifically for first-time surfers. Wide ramps and simple routes teach the basics without overwhelming you.</li>
+            <li><strong>surf_utopia:</strong> A classic beginner map with straightforward stages that gradually increase in difficulty. Great for learning ramp transitions.</li>
+            <li><strong>surf_mesa:</strong> A popular Tier 1 map with clean visuals and approachable geometry. Many surf servers run this map frequently.</li>
+            <li><strong>surf_kitsune:</strong> A visually appealing beginner map that introduces basic air strafing between ramps without punishing small mistakes.</li>
+          </ul>
+          <p>As you improve, you can progress to Tier 2 and Tier 3 maps which introduce tighter ramps, sharper angles, and more complex routing. Most community servers label maps by difficulty tier so you can choose appropriately.</p>
+        </section>
+
+        <section id="tips">
+          <div class="hts-section-header"><h2>Tips to Improve Your Surfing</h2></div>
+          <p>Surfing rewards patience and smooth inputs. Here are practical tips to progress faster:</p>
+          <ul class="hts-list">
+            <li><strong>Lower your sensitivity:</strong> A lower sensitivity makes it easier to produce the smooth, controlled mouse movements that surfing requires. Many experienced surfers use a sensitivity lower than their competitive setting.</li>
+            <li><strong>Focus on smoothness over speed:</strong> Speed comes naturally as your technique improves. Trying to go fast before mastering control leads to falling off ramps constantly.</li>
+            <li><strong>Watch experienced surfers:</strong> Join a server and spectate high-level players to see how they approach ramps, manage speed, and navigate transitions.</li>
+            <li><strong>Practice one map repeatedly:</strong> Pick a single beginner map and run it until you can complete it consistently. Building muscle memory on one map teaches fundamentals that apply everywhere.</li>
+            <li><strong>Use the scroll wheel for jumping:</strong> Binding jump to your scroll wheel gives more consistent timing when launching off ramps, which is also useful for <a href="/how-to-bhop-cs2/">bunny hopping</a>.</li>
+          </ul>
+        </section>
+
+        <section id="faq">
+          <div class="hts-section-header"><h2>Frequently Asked Questions</h2></div>
+          <div class="hts-faq-list">
+            {faqs.map((faq) => (
+              <details class="hts-faq-item">
+                <summary class="hts-faq-question">{faq.question}</summary>
+                <p class="hts-faq-answer">{faq.answer}</p>
+              </details>
+            ))}
+          </div>
+        </section>
+
+        <section id="related">
+          <div class="hts-section-header"><h2>Related Articles</h2></div>
+          <div class="hts-resources-grid">
+            <a href="/cs2-gameplay-practice-faq/" class="hts-resource-card"><span class="hts-resource-name">Gameplay & Practice Hub</span><span class="hts-resource-arrow">&rarr;</span></a>
+            <a href="/how-to-bhop-cs2/" class="hts-resource-card"><span class="hts-resource-name">How to Bhop in CS2</span><span class="hts-resource-arrow">&rarr;</span></a>
+            <a href="/how-to-1v1-cs2/" class="hts-resource-card"><span class="hts-resource-name">How to 1v1 in CS2</span><span class="hts-resource-arrow">&rarr;</span></a>
+            <a href="/workshop-maps/" class="hts-resource-card"><span class="hts-resource-name">Workshop Maps</span><span class="hts-resource-arrow">&rarr;</span></a>
+            <a href="/cs2-guides/movement-guide/" class="hts-resource-card"><span class="hts-resource-name">Movement Guide</span><span class="hts-resource-arrow">&rarr;</span></a>
+          </div>
+        </section>
+      </article>
+    </div>
+  </div>
+
+  <style>
+    .hts-wrap{max-width:1100px;margin:0 auto;padding:0 1.5rem 2rem}
+    .hts-breadcrumb{display:flex;align-items:center;gap:.5rem;padding:1.25rem 0;font-size:.85rem;color:var(--text2)}
+    .hts-breadcrumb a{color:var(--accent);text-decoration:none}
+    .hts-breadcrumb a:hover{color:var(--accent2)}
+    .hts-sep{color:var(--border)}
+    .hts-header{padding:1.5rem 0 1.25rem;border-bottom:2px solid var(--accent);margin-bottom:1.5rem}
+    .hts-header h1{margin:0 0 .35rem;font-size:2.2rem;font-weight:800;color:var(--text);letter-spacing:-.02em;line-height:1.2}
+    .hts-subtitle{margin:0;font-size:1.05rem;color:var(--text2);font-weight:400}
+    .hts-toc-mobile{display:none}
+    .hts-layout{display:grid;grid-template-columns:220px 1fr;gap:2.5rem;align-items:start}
+    .hts-sidebar{position:sticky;top:80px}
+    .hts-toc{display:flex;flex-direction:column;gap:0;border-left:2px solid var(--border);padding-left:0}
+    .hts-toc-title{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--accent);padding:0 0 .6rem 1rem}
+    .hts-toc-link{display:block;padding:.4rem 1rem;font-size:.82rem;color:var(--text2);text-decoration:none;border-left:2px solid transparent;margin-left:-2px;transition:color .2s,border-color .2s}
+    .hts-toc-link:hover{color:var(--text);border-left-color:var(--accent)}
+    .hts-content{min-width:0}
+    .hts-intro{font-size:1rem;line-height:1.8;color:var(--text2);margin-bottom:2rem}
+    .hts-section-header{background:rgba(46,204,113,.05);margin:0 -1.25rem 1.25rem;padding:.75rem 1.25rem;border-radius:4px}
+    .hts-section-header h2{margin:0;padding:0;font-size:1.5rem;font-weight:700;color:var(--text);border:none;letter-spacing:-.01em}
+    section{margin-bottom:2.5rem}
+    p{line-height:1.7;color:var(--text2);margin-bottom:1rem}
+    .hts-list{list-style:none;padding:0;margin:.75rem 0 1.5rem}
+    .hts-list li{padding:.4rem 0 .4rem 1.6rem;position:relative;color:var(--text2);line-height:1.65}
+    .hts-list li::before{content:'';position:absolute;left:.25rem;top:.75rem;width:6px;height:6px;background:var(--accent);border-radius:1px}
+    .hts-list li strong{color:var(--text)}
+    .hts-faq-list{display:flex;flex-direction:column;gap:.5rem}
+    .hts-faq-item{background:var(--bg2);border:1px solid var(--border);border-radius:4px;overflow:hidden}
+    .hts-faq-question{display:block;padding:1rem 1.25rem;font-size:.95rem;font-weight:600;color:var(--text);cursor:pointer;list-style:none;position:relative;padding-right:2.5rem;transition:background .2s}
+    .hts-faq-question::-webkit-details-marker{display:none}
+    .hts-faq-question::after{content:'+';position:absolute;right:1.25rem;top:50%;transform:translateY(-50%);font-size:1.2rem;color:var(--accent);font-weight:700}
+    .hts-faq-item[open] .hts-faq-question::after{content:'\2212'}
+    .hts-faq-item[open] .hts-faq-question{border-bottom:1px solid var(--border);background:rgba(46,204,113,.03)}
+    .hts-faq-question:hover{background:rgba(46,204,113,.03)}
+    .hts-faq-answer{padding:1rem 1.25rem;margin:0;font-size:.9rem;color:var(--text2);line-height:1.7}
+    .hts-resources-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.6rem;margin:.5rem 0 1.5rem}
+    .hts-resource-card{display:flex;align-items:center;justify-content:space-between;padding:.75rem 1rem;background:var(--bg2);border:1px solid var(--border);border-radius:4px;text-decoration:none;border-left:2px solid transparent;transition:border-left-color .2s,color .2s}
+    .hts-resource-card:hover{border-left-color:var(--accent)}
+    .hts-resource-name{font-size:.88rem;color:var(--text2);font-weight:500;transition:color .2s}
+    .hts-resource-card:hover .hts-resource-name{color:var(--text)}
+    .hts-resource-arrow{font-size:1rem;color:var(--accent);opacity:0;transition:opacity .2s}
+    .hts-resource-card:hover .hts-resource-arrow{opacity:1}
+    @media(max-width:860px){
+      .hts-layout{grid-template-columns:1fr;gap:0}
+      .hts-sidebar{display:none}
+      .hts-toc-mobile{display:flex;gap:.25rem;overflow-x:auto;padding:.75rem 0;margin-bottom:1rem;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+      .hts-toc-mobile::-webkit-scrollbar{display:none}
+      .hts-toc-mobile-link{flex-shrink:0;padding:.35rem .75rem;font-size:.78rem;font-weight:600;color:var(--text2);background:var(--bg2);border:1px solid var(--border);border-radius:4px;text-decoration:none;white-space:nowrap;transition:color .2s,border-color .2s}
+      .hts-toc-mobile-link:hover{color:var(--accent);border-color:var(--accent)}
+      .hts-header h1{font-size:1.7rem}
+      .hts-section-header{margin:0 -1rem 1rem;padding:.6rem 1rem}
+      .hts-resources-grid{grid-template-columns:repeat(2,1fr)}
+    }
+    @media(max-width:600px){
+      .hts-wrap{padding:0 1rem 1.5rem}
+      .hts-resources-grid{grid-template-columns:1fr}
+      .hts-header h1{font-size:1.5rem}
+    }
+  </style>
+  <AuthorBox updated="2026-03-04" />
+</Base>

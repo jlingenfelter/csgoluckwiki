@@ -1,0 +1,133 @@
+---
+import Base from '../layouts/Base.astro';
+import AuthorBox from '../components/AuthorBox.astro';
+import { faqSchema, breadcrumbSchema } from '../lib/weapons';
+
+const title = 'CS2 Skins, Knives & Cases FAQ | CSGOLuck Wiki';
+const description = 'How to get cases and free skins, which cases have butterfly knives or karambits, and the best cases to open. All your CS2 skin questions answered.';
+
+const faqs = [
+  {
+    question: 'How to get cases in CS2?',
+    answer: 'Cases drop randomly at the end of competitive, casual, and other official game modes. You are eligible for drops each week, and the pool resets on Tuesdays with the weekly care package. Prime Status holders receive more frequent and higher-quality drops. You can also purchase cases directly from the Steam Community Market, where common cases often sell for just a few cents.',
+  },
+  {
+    question: 'How to get free CS2 skins?',
+    answer: 'Free skins come from end-of-match drops during official game modes — these are typically low-tier consumer or industrial grade items. Weekly care packages for Prime players include a guaranteed item. You can also earn skins by completing operation missions when an operation is active. Trading up ten lower-grade skins through the trade-up contract system produces one skin of the next rarity tier.',
+  },
+  {
+    question: 'What CS2 cases have butterfly knives?',
+    answer: 'Butterfly knives can be unboxed from the Operation Breakout Weapon Case, the Spectrum Case, the Spectrum 2 Case, the Fracture Case, and the Operation Riptide Case, among others. Each case that contains butterfly knives will list them in the rare special items pool. Check our <a href="/cs2-cases/">case database</a> or use the <a href="/case-odds-calculator/">case odds calculator</a> to see exactly which cases include butterfly knives and the approximate odds.',
+  },
+  {
+    question: 'What CS2 cases have karambits?',
+    answer: 'Karambits appear as rare special items in several cases including the Chroma Case, Chroma 2 Case, Chroma 3 Case, Gamma Case, Gamma 2 Case, Spectrum Case, and Spectrum 2 Case. Cases released in different eras feature different knife pools. Browse our <a href="/cs2-cases/">complete case listings</a> to filter by knife type and see which cases currently offer karambits.',
+  },
+  {
+    question: 'What is the cheapest knife in CS2?',
+    answer: 'The cheapest knives on the Steam Market are typically the Navaja Knife or Gut Knife in Battle-Scarred condition with less popular finishes like Safari Mesh or Scorched. Prices fluctuate with market conditions, but the most affordable options generally start in the range of tens of dollars. Check our <a href="/float-checker/">float checker</a> and the <a href="/cs2-skins/">skin database</a> for current pricing across all knife types.',
+  },
+  {
+    question: 'What is the best case to open in CS2?',
+    answer: 'There is no objectively "best" case since all cases have roughly similar odds for rare items. However, cases with higher-value rare drops — like the Kilowatt Case, Revolution Case, or Dreams & Nightmares Case — offer better potential returns if you hit a rare unbox. Keep in mind that opening cases is not a reliable way to profit; the expected value is negative on average. Use our <a href="/case-odds-calculator/">case odds calculator</a> to compare expected returns.',
+  },
+];
+---
+
+<Base title={title} description={description}>
+  <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema([{name:'Home',url:'/'},{name:'CS2 Skins, Knives & Cases FAQ',url:'/cs2-skins-cases-faq'}]))}></script>
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema(faqs))}></script>
+
+  <nav class="skf-breadcrumb">
+    <a href="/">Home</a> / <span>CS2 Skins, Knives &amp; Cases FAQ</span>
+  </nav>
+
+  <section class="skf-hero">
+    <h1>CS2 Skins, Knives &amp; Cases FAQ</h1>
+    <p class="skf-hero-desc">CS2 skins and cases are a massive part of the Counter-Strike ecosystem, from free drops to rare knife unboxings. Whether you want to know how cases work, which ones contain butterfly knives or karambits, or what the cheapest knife option is, this FAQ has you covered. Browse our full <a href="/cs2-skins/">skin database</a> and <a href="/cs2-cases/">case listings</a> for live pricing.</p>
+  </section>
+
+  <div class="skf-faq-list">
+    {faqs.map(faq => (
+      <details class="skf-faq-item">
+        <summary class="skf-faq-question">{faq.question}</summary>
+        <div class="skf-faq-answer" set:html={faq.answer}></div>
+      </details>
+    ))}
+  </div>
+
+  <section class="skf-related">
+    <h2>Related Articles</h2>
+    <div class="skf-related-grid">
+      <a href="/how-to-get-cases-cs2/" class="skf-related-card"><span class="skf-related-name">How to Get Cases in CS2</span><span class="skf-related-arrow">&rarr;</span></a>
+      <a href="/cs2-cases-butterfly-knife/" class="skf-related-card"><span class="skf-related-name">Cases with Butterfly Knives</span><span class="skf-related-arrow">&rarr;</span></a>
+      <a href="/cs2-cases-karambit/" class="skf-related-card"><span class="skf-related-name">Cases with Karambits</span><span class="skf-related-arrow">&rarr;</span></a>
+      <a href="/cheapest-cs2-knives/" class="skf-related-card"><span class="skf-related-name">Cheapest CS2 Knives</span><span class="skf-related-arrow">&rarr;</span></a>
+      <a href="/best-cs2-cases-to-open/" class="skf-related-card"><span class="skf-related-name">Best Cases to Open</span><span class="skf-related-arrow">&rarr;</span></a>
+      <a href="/cs2-skins/" class="skf-related-card"><span class="skf-related-name">Full Skin Database</span><span class="skf-related-arrow">&rarr;</span></a>
+      <a href="/cs2-cases/" class="skf-related-card"><span class="skf-related-name">All CS2 Cases</span><span class="skf-related-arrow">&rarr;</span></a>
+      <a href="/case-odds-calculator/" class="skf-related-card"><span class="skf-related-name">Case Odds Calculator</span><span class="skf-related-arrow">&rarr;</span></a>
+    </div>
+  </section>
+
+  <section class="skf-explore">
+    <h2>Explore More</h2>
+    <div class="skf-explore-links">
+      <a href="/cs2-trading-marketplace-faq/">CS2 Trading &amp; Marketplace FAQ</a>
+      <a href="/cs2-stats-adr-tracking-faq/">CS2 Stats &amp; Tracking FAQ</a>
+    </div>
+  </section>
+
+  <AuthorBox updated="2026-03-04" />
+</Base>
+
+<style>
+/* ── Breadcrumb ── */
+.skf-breadcrumb{font-size:.82rem;color:var(--text2);margin-bottom:1.25rem;display:flex;gap:.35rem;flex-wrap:wrap}
+.skf-breadcrumb a{color:var(--accent);text-decoration:none}
+.skf-breadcrumb a:hover{text-decoration:underline}
+
+/* ── Hero ── */
+.skf-hero{background:var(--bg2);border:1px solid var(--border);border-radius:4px;padding:2rem;margin-bottom:1.5rem}
+.skf-hero h1{font-family:'Montserrat',sans-serif;font-size:2rem;font-weight:800;margin:0 0 .75rem;color:var(--text)}
+.skf-hero-desc{color:var(--text2);font-size:.95rem;line-height:1.7;margin:0}
+.skf-hero-desc a{color:var(--accent);text-decoration:none}
+.skf-hero-desc a:hover{text-decoration:underline}
+
+/* ── FAQ List ── */
+.skf-faq-list{display:flex;flex-direction:column;gap:.5rem;margin-bottom:2.5rem}
+.skf-faq-item{background:var(--bg2);border:1px solid var(--border);border-radius:4px;overflow:hidden}
+.skf-faq-question{display:block;padding:1rem 1.25rem;font-size:.95rem;font-weight:600;color:var(--text);cursor:pointer;list-style:none;position:relative;padding-right:2.5rem;transition:background .2s}
+.skf-faq-question::-webkit-details-marker{display:none}
+.skf-faq-question::after{content:'+';position:absolute;right:1.25rem;top:50%;transform:translateY(-50%);font-size:1.2rem;color:var(--accent);font-weight:700}
+.skf-faq-item[open] .skf-faq-question::after{content:'\2212'}
+.skf-faq-item[open] .skf-faq-question{border-bottom:1px solid var(--border);background:rgba(46,204,113,.03)}
+.skf-faq-question:hover{background:rgba(46,204,113,.03)}
+.skf-faq-answer{padding:1rem 1.25rem;margin:0;font-size:.9rem;color:var(--text2);line-height:1.7}
+.skf-faq-answer a{color:var(--accent);text-decoration:none}
+.skf-faq-answer a:hover{text-decoration:underline}
+
+/* ── Related Articles ── */
+.skf-related{margin-bottom:2rem}
+.skf-related h2{font-family:'Montserrat',sans-serif;font-size:1.2rem;font-weight:700;color:var(--text);margin:0 0 .75rem;padding-bottom:.5rem;border-bottom:2px solid var(--accent)}
+.skf-related-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:.6rem}
+.skf-related-card{display:flex;align-items:center;justify-content:space-between;padding:.75rem 1rem;background:var(--bg2);border:1px solid var(--border);border-radius:4px;text-decoration:none;border-left:2px solid transparent;transition:border-left-color .2s,color .2s}
+.skf-related-card:hover{border-left-color:var(--accent)}
+.skf-related-name{font-size:.88rem;color:var(--text2);font-weight:500;transition:color .2s}
+.skf-related-card:hover .skf-related-name{color:var(--text)}
+.skf-related-arrow{font-size:1rem;color:var(--accent);opacity:0;transition:opacity .2s}
+.skf-related-card:hover .skf-related-arrow{opacity:1}
+
+/* ── Explore More ── */
+.skf-explore{margin-bottom:2rem}
+.skf-explore h2{font-family:'Montserrat',sans-serif;font-size:1.2rem;font-weight:700;color:var(--text);margin:0 0 .75rem;padding-bottom:.5rem;border-bottom:2px solid var(--accent)}
+.skf-explore-links{display:flex;flex-wrap:wrap;gap:.45rem}
+.skf-explore-links a{color:var(--accent);text-decoration:none;padding:.4rem .75rem;background:var(--bg2);border:1px solid var(--border);border-radius:4px;font-size:.85rem;font-weight:600;transition:border-color .15s,color .15s}
+.skf-explore-links a:hover{border-color:var(--accent);color:var(--text)}
+
+/* ── Responsive ── */
+@media(max-width:768px){
+  .skf-hero h1{font-size:1.5rem}
+  .skf-related-grid{grid-template-columns:1fr}
+}
+</style>

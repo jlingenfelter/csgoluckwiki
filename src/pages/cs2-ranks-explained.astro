@@ -1,0 +1,234 @@
+---
+import Base from '../layouts/Base.astro';
+import AuthorBox from '../components/AuthorBox.astro';
+import { faqSchema, breadcrumbSchema } from '../lib/weapons';
+
+const title = 'CS2 Ranks Explained: All Ranking Systems | CSGOLuck Wiki';
+const description = 'How CS2 ranking works across Premier, Competitive, and Wingman. Understand Rating, ELO, and how to climb ranks effectively.';
+
+const breadcrumbs = [
+  { name: 'Home', url: '/' },
+  { name: 'Ranks & Competitive', url: '/cs2-ranks-competitive-faq/' },
+  { name: 'CS2 Ranks Explained', url: '/cs2-ranks-explained/' },
+];
+
+const faqs = [
+  {
+    question: 'How many ranks are there in CS2?',
+    answer: 'CS2 has 18 traditional Competitive skill groups (from Silver I to Global Elite) plus the Premier numeric rating system which ranges from 0 to over 30,000. Wingman uses its own separate set of the same 18 skill groups.',
+  },
+  {
+    question: 'Does my Competitive rank affect my Premier rating?',
+    answer: 'No, Competitive skill groups and Premier CS Rating are tracked independently. Your performance in one mode does not directly affect the other.',
+  },
+  {
+    question: 'How often do CS2 ranks reset?',
+    answer: 'Premier ratings undergo seasonal resets where your rating is partially adjusted at the start of each new CS2 season. Competitive skill groups can also decay if you do not play for an extended period.',
+  },
+  {
+    question: 'What is the average CS2 rank?',
+    answer: 'In Competitive, the average skill group hovers around Gold Nova II to Gold Nova Master. In Premier, the median CS Rating sits in the mid-range tiers. Check our rank distribution page for the latest data.',
+  },
+];
+
+const breadcrumbSchema_ = breadcrumbSchema(breadcrumbs);
+const faqSchema_ = faqSchema(faqs);
+
+const articleSchema = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": title,
+  "description": description,
+  "author": { "@type": "Person", "name": "Josh Lingenfelter", "url": "https://www.linkedin.com/in/josh-lingenfelter-8157274b/", "jobTitle": "Director", "worksFor": { "@type": "Organization", "name": "CSGOLuck" } },
+  "publisher": { "@type": "Organization", "name": "CSGOLuck Wiki", "url": "https://wiki.csgoluck.com" },
+  "mainEntityOfPage": "https://wiki.csgoluck.com/cs2-ranks-explained/",
+  "inLanguage": "en-US"
+});
+
+const sections = [
+  { id: 'overview', label: 'Overview' },
+  { id: 'premier-rating', label: 'Premier Rating' },
+  { id: 'competitive-groups', label: 'Competitive Skill Groups' },
+  { id: 'wingman', label: 'Wingman Ranks' },
+  { id: 'rank-up', label: 'How to Rank Up' },
+  { id: 'faq', label: 'FAQ' },
+  { id: 'related', label: 'Related Articles' },
+];
+---
+
+<Base title={title} description={description}>
+  <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema_)}></script>
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema_)}></script>
+  <script type="application/ld+json" set:html={articleSchema}></script>
+
+  <div class="cre-wrap">
+    <nav class="cre-breadcrumb">
+      <a href="/">Home</a>
+      <span class="cre-sep">/</span>
+      <a href="/cs2-ranks-competitive-faq/">Ranks & Competitive</a>
+      <span class="cre-sep">/</span>
+      <span>CS2 Ranks Explained</span>
+    </nav>
+
+    <header class="cre-header">
+      <h1>CS2 Ranks Explained</h1>
+      <p class="cre-subtitle">A complete breakdown of every ranking system in Counter-Strike 2</p>
+    </header>
+
+    <nav class="cre-toc-mobile" aria-label="Table of contents">
+      {sections.map((s) => (
+        <a href={`#${s.id}`} class="cre-toc-mobile-link">{s.label}</a>
+      ))}
+    </nav>
+
+    <div class="cre-layout">
+      <aside class="cre-sidebar">
+        <nav class="cre-toc" aria-label="Table of contents">
+          <span class="cre-toc-title">Contents</span>
+          {sections.map((s) => (
+            <a href={`#${s.id}`} class="cre-toc-link">{s.label}</a>
+          ))}
+        </nav>
+      </aside>
+
+      <article class="cre-content">
+        <p class="cre-intro">
+          Understanding how <strong>CS2 ranks explained</strong> work is essential for anyone looking to track their progress and improve. Counter-Strike 2 features multiple ranking systems across its game modes, and each one measures your skill differently. This guide covers Premier Rating, Competitive skill groups, and Wingman ranks so you know exactly where you stand and how to climb.
+        </p>
+
+        <section id="overview">
+          <div class="cre-section-header"><h2>Overview of CS2 Ranking Systems</h2></div>
+          <p>CS2 uses three separate ranking systems, one for each of its main competitive modes. Your rank in one mode has no direct impact on another, meaning you can be highly rated in Premier while sitting at a lower skill group in Competitive.</p>
+          <ul class="cre-list">
+            <li><strong>Premier:</strong> A numeric CS Rating from 0 to 30,000+ that places you on a global leaderboard. This is the primary ranked experience.</li>
+            <li><strong>Competitive:</strong> Traditional skill group badges ranging from Silver I to Global Elite. You select specific maps to queue.</li>
+            <li><strong>Wingman:</strong> A 2v2 mode with its own separate skill group rankings, independent of Competitive.</li>
+          </ul>
+          <p>All three systems use a variant of the Elo algorithm behind the scenes, though Valve has not published the exact formula. Wins, losses, round differential, and individual performance all factor into your rating movement. For a visual breakdown of where players sit, check our <a href="/cs2-rank-distribution/">rank distribution page</a>.</p>
+        </section>
+
+        <section id="premier-rating">
+          <div class="cre-section-header"><h2>Premier Rating Explained</h2></div>
+          <p>Premier is the headline mode in CS2 and uses a transparent numeric rating. After completing your placement matches, you receive a CS Rating that changes after every game. Wins push the number up; losses pull it down.</p>
+          <p>Your CS Rating is grouped into colour-coded tiers that correspond to broad skill brackets. Each tier spans a range of roughly 5,000 points, though the exact boundaries can shift between seasons. At the top end, the highest-rated players appear on regional and global leaderboards.</p>
+          <p>Seasons in Premier reset your rating partially. You will not drop back to zero, but your rating may be adjusted downward at the start of a new season, requiring a few matches to settle into your true position again. If you have not yet unlocked Premier, read our step-by-step <a href="/unlock-premier-cs2/">unlock Premier guide</a>.</p>
+        </section>
+
+        <section id="competitive-groups">
+          <div class="cre-section-header"><h2>Competitive Skill Groups</h2></div>
+          <p>The Competitive mode retains the classic CS:GO-style skill groups. There are 18 ranks in total:</p>
+          <ul class="cre-list">
+            <li><strong>Silver I through Silver Elite Master:</strong> The entry-level ranks where new players typically land after placement.</li>
+            <li><strong>Gold Nova I through Gold Nova Master:</strong> The average range where the bulk of the player base sits.</li>
+            <li><strong>Master Guardian I through Distinguished Master Guardian:</strong> Above-average players who demonstrate solid fundamentals.</li>
+            <li><strong>Legendary Eagle through Global Elite:</strong> The top tier, reserved for highly skilled players.</li>
+          </ul>
+          <p>In Competitive, you pick your maps before queueing, and each map has its own separate rank. This means you might be Master Guardian on Mirage but Gold Nova on Inferno if you play one map far more than another. The system encourages you to diversify your map pool or specialise depending on your goals.</p>
+        </section>
+
+        <section id="wingman">
+          <div class="cre-section-header"><h2>Wingman Ranks</h2></div>
+          <p>Wingman is a 2v2 mode played on smaller maps or restricted areas of standard maps. It uses the same 18 skill group badges as Competitive, but your Wingman rank is entirely separate. You can be Global Elite in Wingman and Silver in Competitive -- the two do not interact.</p>
+          <p>Because Wingman matches are shorter and involve fewer players, rank changes can feel more volatile. A single strong or weak performance has a more noticeable impact on your skill group compared to a full 5v5 match. Wingman is a great way to warm up and practice mechanics in a lower-stakes ranked environment.</p>
+        </section>
+
+        <section id="rank-up">
+          <div class="cre-section-header"><h2>How to Rank Up Faster</h2></div>
+          <p>No matter which mode you play, the fundamentals of climbing are the same:</p>
+          <ul class="cre-list">
+            <li><strong>Win consistently:</strong> Wins are the single most important factor. Focus on improving your win rate rather than chasing individual stats.</li>
+            <li><strong>Perform well in losses:</strong> While the exact formula is unknown, strong individual performance in a losing match may reduce the amount of rating you lose.</li>
+            <li><strong>Queue with reliable teammates:</strong> Communication and coordination directly translate to more wins, especially at higher ranks.</li>
+            <li><strong>Focus on fundamentals:</strong> Crosshair placement, utility usage, and economy management are the building blocks. See our <a href="/cs2-guides/ranks-guide/">comprehensive ranks guide</a> for detailed strategies.</li>
+            <li><strong>Avoid tilt-queueing:</strong> If you lose two or three in a row, take a break. Playing frustrated leads to poor decisions and further losses.</li>
+          </ul>
+          <p>You can also explore third-party platforms like <a href="/faceit-cs2-guide/">FACEIT</a> for an alternative competitive environment with its own ranking ladder. Some players find that practising on FACEIT improves their in-game rating as well.</p>
+        </section>
+
+        <section id="faq">
+          <div class="cre-section-header"><h2>Frequently Asked Questions</h2></div>
+          <div class="cre-faq-list">
+            {faqs.map((faq) => (
+              <details class="cre-faq-item">
+                <summary class="cre-faq-question">{faq.question}</summary>
+                <p class="cre-faq-answer">{faq.answer}</p>
+              </details>
+            ))}
+          </div>
+        </section>
+
+        <section id="related">
+          <div class="cre-section-header"><h2>Related Articles</h2></div>
+          <div class="cre-resources-grid">
+            <a href="/cs2-ranks-competitive-faq/" class="cre-resource-card"><span class="cre-resource-name">Ranks & Competitive Hub</span><span class="cre-resource-arrow">&rarr;</span></a>
+            <a href="/unlock-premier-cs2/" class="cre-resource-card"><span class="cre-resource-name">Unlock Premier Mode</span><span class="cre-resource-arrow">&rarr;</span></a>
+            <a href="/cs2-premier-vs-faceit/" class="cre-resource-card"><span class="cre-resource-name">Premier vs FACEIT</span><span class="cre-resource-arrow">&rarr;</span></a>
+            <a href="/cs2-rank-distribution/" class="cre-resource-card"><span class="cre-resource-name">Rank Distribution</span><span class="cre-resource-arrow">&rarr;</span></a>
+            <a href="/cs2-guides/ranks-guide/" class="cre-resource-card"><span class="cre-resource-name">Ranking System Guide</span><span class="cre-resource-arrow">&rarr;</span></a>
+          </div>
+        </section>
+      </article>
+    </div>
+  </div>
+
+  <style>
+    .cre-wrap{max-width:1100px;margin:0 auto;padding:0 1.5rem 2rem}
+    .cre-breadcrumb{display:flex;align-items:center;gap:.5rem;padding:1.25rem 0;font-size:.85rem;color:var(--text2)}
+    .cre-breadcrumb a{color:var(--accent);text-decoration:none}
+    .cre-breadcrumb a:hover{color:var(--accent2)}
+    .cre-sep{color:var(--border)}
+    .cre-header{padding:1.5rem 0 1.25rem;border-bottom:2px solid var(--accent);margin-bottom:1.5rem}
+    .cre-header h1{margin:0 0 .35rem;font-size:2.2rem;font-weight:800;color:var(--text);letter-spacing:-.02em;line-height:1.2}
+    .cre-subtitle{margin:0;font-size:1.05rem;color:var(--text2);font-weight:400}
+    .cre-toc-mobile{display:none}
+    .cre-layout{display:grid;grid-template-columns:220px 1fr;gap:2.5rem;align-items:start}
+    .cre-sidebar{position:sticky;top:80px}
+    .cre-toc{display:flex;flex-direction:column;gap:0;border-left:2px solid var(--border);padding-left:0}
+    .cre-toc-title{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--accent);padding:0 0 .6rem 1rem}
+    .cre-toc-link{display:block;padding:.4rem 1rem;font-size:.82rem;color:var(--text2);text-decoration:none;border-left:2px solid transparent;margin-left:-2px;transition:color .2s,border-color .2s}
+    .cre-toc-link:hover{color:var(--text);border-left-color:var(--accent)}
+    .cre-content{min-width:0}
+    .cre-intro{font-size:1rem;line-height:1.8;color:var(--text2);margin-bottom:2rem}
+    .cre-section-header{background:rgba(46,204,113,.05);margin:0 -1.25rem 1.25rem;padding:.75rem 1.25rem;border-radius:4px}
+    .cre-section-header h2{margin:0;padding:0;font-size:1.5rem;font-weight:700;color:var(--text);border:none;letter-spacing:-.01em}
+    section{margin-bottom:2.5rem}
+    p{line-height:1.7;color:var(--text2);margin-bottom:1rem}
+    .cre-list{list-style:none;padding:0;margin:.75rem 0 1.5rem}
+    .cre-list li{padding:.4rem 0 .4rem 1.6rem;position:relative;color:var(--text2);line-height:1.65}
+    .cre-list li::before{content:'';position:absolute;left:.25rem;top:.75rem;width:6px;height:6px;background:var(--accent);border-radius:1px}
+    .cre-list li strong{color:var(--text)}
+    .cre-faq-list{display:flex;flex-direction:column;gap:.5rem}
+    .cre-faq-item{background:var(--bg2);border:1px solid var(--border);border-radius:4px;overflow:hidden}
+    .cre-faq-question{display:block;padding:1rem 1.25rem;font-size:.95rem;font-weight:600;color:var(--text);cursor:pointer;list-style:none;position:relative;padding-right:2.5rem;transition:background .2s}
+    .cre-faq-question::-webkit-details-marker{display:none}
+    .cre-faq-question::after{content:'+';position:absolute;right:1.25rem;top:50%;transform:translateY(-50%);font-size:1.2rem;color:var(--accent);font-weight:700}
+    .cre-faq-item[open] .cre-faq-question::after{content:'\2212'}
+    .cre-faq-item[open] .cre-faq-question{border-bottom:1px solid var(--border);background:rgba(46,204,113,.03)}
+    .cre-faq-question:hover{background:rgba(46,204,113,.03)}
+    .cre-faq-answer{padding:1rem 1.25rem;margin:0;font-size:.9rem;color:var(--text2);line-height:1.7}
+    .cre-resources-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.6rem;margin:.5rem 0 1.5rem}
+    .cre-resource-card{display:flex;align-items:center;justify-content:space-between;padding:.75rem 1rem;background:var(--bg2);border:1px solid var(--border);border-radius:4px;text-decoration:none;border-left:2px solid transparent;transition:border-left-color .2s,color .2s}
+    .cre-resource-card:hover{border-left-color:var(--accent)}
+    .cre-resource-name{font-size:.88rem;color:var(--text2);font-weight:500;transition:color .2s}
+    .cre-resource-card:hover .cre-resource-name{color:var(--text)}
+    .cre-resource-arrow{font-size:1rem;color:var(--accent);opacity:0;transition:opacity .2s}
+    .cre-resource-card:hover .cre-resource-arrow{opacity:1}
+    @media(max-width:860px){
+      .cre-layout{grid-template-columns:1fr;gap:0}
+      .cre-sidebar{display:none}
+      .cre-toc-mobile{display:flex;gap:.25rem;overflow-x:auto;padding:.75rem 0;margin-bottom:1rem;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+      .cre-toc-mobile::-webkit-scrollbar{display:none}
+      .cre-toc-mobile-link{flex-shrink:0;padding:.35rem .75rem;font-size:.78rem;font-weight:600;color:var(--text2);background:var(--bg2);border:1px solid var(--border);border-radius:4px;text-decoration:none;white-space:nowrap;transition:color .2s,border-color .2s}
+      .cre-toc-mobile-link:hover{color:var(--accent);border-color:var(--accent)}
+      .cre-header h1{font-size:1.7rem}
+      .cre-section-header{margin:0 -1rem 1rem;padding:.6rem 1rem}
+      .cre-resources-grid{grid-template-columns:repeat(2,1fr)}
+    }
+    @media(max-width:600px){
+      .cre-wrap{padding:0 1rem 1.5rem}
+      .cre-resources-grid{grid-template-columns:1fr}
+      .cre-header h1{font-size:1.5rem}
+    }
+  </style>
+  <AuthorBox updated="2026-03-04" />
+</Base>

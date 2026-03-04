@@ -1,0 +1,221 @@
+---
+import Base from '../layouts/Base.astro';
+import AuthorBox from '../components/AuthorBox.astro';
+import { faqSchema, breadcrumbSchema } from '../lib/weapons';
+
+const title = 'CS:GO to CS2: The Full Counter-Strike History | CSGOLuck Wiki';
+const description = 'From a Half-Life mod to CS2 — the complete history of Counter-Strike across every version. Explore the timeline and key moments.';
+
+const breadcrumbs = [
+  { name: 'Home', url: '/' },
+  { name: 'Game History & FAQ', url: '/cs2-game-history-faq' },
+  { name: 'Counter-Strike History', url: '/counter-strike-history' },
+];
+
+const faqs = [
+  {
+    question: 'How many Counter-Strike games have there been?',
+    answer: 'There have been four main releases: the original Counter-Strike (2000), Counter-Strike: Condition Zero (2004), Counter-Strike: Source (2004), Counter-Strike: Global Offensive (2012), and Counter-Strike 2 (2023). Learn more in our <a href="/cs2-game-history-faq/">game history FAQ</a>.',
+  },
+  {
+    question: 'Is CS2 a sequel or an update to CS:GO?',
+    answer: 'CS2 replaced CS:GO as a free update on Steam in September 2023. It uses the same Steam app ID (730), so all CS:GO owners automatically received CS2. See our <a href="/cs2-game-history-faq/">game history FAQ</a> for details.',
+  },
+  {
+    question: 'Can you still play CS:GO?',
+    answer: 'No. When CS2 launched, it fully replaced CS:GO. The original CS:GO client is no longer available to play. Visit our <a href="/cs2-game-history-faq/">game history FAQ</a> for more information.',
+  },
+];
+
+const breadcrumbSchema_ = breadcrumbSchema(breadcrumbs);
+const faqSchema_ = faqSchema(faqs);
+
+const articleSchema = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": title,
+  "description": description,
+  "author": { "@type": "Person", "name": "Josh Lingenfelter", "url": "https://www.linkedin.com/in/josh-lingenfelter-8157274b/", "jobTitle": "Director", "worksFor": { "@type": "Organization", "name": "CSGOLuck" } },
+  "publisher": { "@type": "Organization", "name": "CSGOLuck Wiki", "url": "https://wiki.csgoluck.com" },
+  "mainEntityOfPage": "https://wiki.csgoluck.com/counter-strike-history/",
+  "inLanguage": "en-US"
+});
+
+const sections = [
+  { id: 'origins', label: 'Origins (1999-2000)' },
+  { id: 'cs16', label: 'Counter-Strike 1.6' },
+  { id: 'source', label: 'Counter-Strike: Source' },
+  { id: 'csgo', label: 'CS:GO Launch & Growth' },
+  { id: 'cs2', label: 'The Transition to CS2' },
+  { id: 'legacy', label: 'Legacy & Esports Impact' },
+  { id: 'faq', label: 'FAQ' },
+  { id: 'related', label: 'Related Articles' },
+];
+---
+
+<Base title={title} description={description}>
+  <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema_)}></script>
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema_)}></script>
+  <script type="application/ld+json" set:html={articleSchema}></script>
+
+  <div class="csh-wrap">
+    <nav class="csh-breadcrumb">
+      <a href="/">Home</a>
+      <span class="csh-sep">/</span>
+      <a href="/cs2-game-history-faq/">Game History & FAQ</a>
+      <span class="csh-sep">/</span>
+      <span>Counter-Strike History</span>
+    </nav>
+
+    <header class="csh-header">
+      <h1>CS:GO to CS2: The Full Counter-Strike History</h1>
+      <p class="csh-subtitle">From a 1999 Half-Life mod to one of the biggest competitive shooters ever made</p>
+    </header>
+
+    <nav class="csh-toc-mobile" aria-label="Table of contents">
+      {sections.map((s) => (
+        <a href={`#${s.id}`} class="csh-toc-mobile-link">{s.label}</a>
+      ))}
+    </nav>
+
+    <div class="csh-layout">
+      <aside class="csh-sidebar">
+        <nav class="csh-toc" aria-label="Table of contents">
+          <span class="csh-toc-title">Contents</span>
+          {sections.map((s) => (
+            <a href={`#${s.id}`} class="csh-toc-link">{s.label}</a>
+          ))}
+        </nav>
+      </aside>
+
+      <article class="csh-content">
+        <p class="csh-intro">
+          The counter strike history spans over two decades, beginning as a humble Half-Life modification and evolving into one of the most influential first-person shooters ever created. From the earliest beta builds shared between college students in 1999 to the Source 2-powered Counter-Strike 2 that millions play today, each chapter of the franchise reshaped competitive gaming. This timeline covers every major version, the pivotal moments that defined them, and the lasting mark Counter-Strike has left on the industry.
+        </p>
+
+        <section id="origins">
+          <div class="csh-section-header"><h2>Origins as a Half-Life Mod (1999-2000)</h2></div>
+          <p>Counter-Strike started as a free modification for Valve's 1998 hit, Half-Life. Two modders -- Minh Le and Jess Cliffe -- released the first public beta in June 1999. The concept was simple: one team played as terrorists attempting to plant a bomb or hold hostages, while the other played as counter-terrorists trying to stop them.</p>
+          <p>The mod gained traction fast. By the time beta 5.0 arrived later that year, thousands of players were downloading it from community fan sites. Valve noticed and acquired the rights to Counter-Strike in April 2000, hiring both Le and Cliffe. The retail version shipped in November 2000 as a standalone product, bundling Half-Life and the mod together.</p>
+          <p>Those early years established the core formula that persists today: round-based economy, no respawns, and a focus on precise gunplay rather than regenerating health or perks. It was a formula that rewarded skill, communication, and practice above all else.</p>
+        </section>
+
+        <section id="cs16">
+          <div class="csh-section-header"><h2>The Counter-Strike 1.6 Era</h2></div>
+          <p>Counter-Strike 1.6 became the definitive version of the original game after its release in 2003 alongside Valve's Steam platform. For many players, 1.6 is where competitive Counter-Strike truly began. Internet cafes around the world -- particularly in Europe and Asia -- filled with players grinding matches on Dust2, Inferno, and Nuke.</p>
+          <p>Competitive leagues like the Cyberathlete Professional League (CPL) and the Electronic Sports League (ESL) built their flagship tournaments around 1.6. Teams such as Ninjas in Pyjamas, SK Gaming, and compLexity became household names within the gaming community. Prize pools were modest by modern standards, but the prestige of winning a major 1.6 event was immense.</p>
+          <p>Counter-Strike 1.6 also saw the release of Counter-Strike: Condition Zero in 2004 -- a single-player-focused spinoff that Valve developed with several third-party studios. Condition Zero never caught on competitively but introduced new players to the franchise through its bot-based campaigns and tutorial system.</p>
+        </section>
+
+        <section id="source">
+          <div class="csh-section-header"><h2>Counter-Strike: Source</h2></div>
+          <p>In November 2004, Valve released Counter-Strike: Source alongside Half-Life 2. Built on the Source engine, it featured updated graphics, ragdoll physics, and revamped maps. The visual leap was significant -- surfaces reacted to bullet impacts, objects could be knocked around, and character models looked far more detailed than anything in 1.6.</p>
+          <p>However, Source divided the community. Many competitive players felt the gunplay was less precise than 1.6, with hitboxes and movement mechanics that favoured a different style of play. As a result, the competitive scene split: some tournaments ran Source events while others stuck with 1.6. Neither community shrank, but both operated largely in parallel.</p>
+          <p>Source did excel as a platform for community content. Custom maps, game modes, and mods thrived thanks to the flexibility of the Source engine. Surf maps, zombie escape modes, and jailbreak servers all emerged from this era and remain popular concepts in Counter-Strike to this day.</p>
+        </section>
+
+        <section id="csgo">
+          <div class="csh-section-header"><h2>CS:GO Launch and Growth</h2></div>
+          <p>Counter-Strike: Global Offensive launched in August 2012 with the goal of unifying the fractured community. Initially developed by Hidden Path Entertainment and later taken over by Valve, CS:GO ran on an updated version of the Source engine and aimed to combine the best elements of both 1.6 and Source.</p>
+          <p>The early months were rocky. CS:GO launched at a budget price of $14.99, and many veterans were sceptical of the movement, spray patterns, and visual design. Player counts were modest -- lower than both 1.6 and Source combined. Valve steadily iterated, adding competitive matchmaking, the Arms Deal weapon-skin update in 2013, and regular balance patches that refined the gameplay.</p>
+          <p>The Arms Deal update proved transformative. It introduced weapon skins and the case-opening system, creating an in-game economy that drove engagement and attracted entirely new audiences. Valve also launched the Major Championship system, partnering with tournament organisers to host events with substantial prize pools and in-game viewer rewards. By 2016, CS:GO was consistently one of the most-played games on Steam, and by its final years it regularly exceeded a million concurrent players.</p>
+          <p>CS:GO went free-to-play in December 2018, opening the door even wider and introducing the Prime Status system to separate paid and free accounts in matchmaking. This move pushed player counts to new heights and cemented CS:GO's place as a top-tier esport. For an overview of how CS2 compares, see our guide on <a href="/what-is-cs2/">what CS2 is</a>.</p>
+        </section>
+
+        <section id="cs2">
+          <div class="csh-section-header"><h2>The Transition to CS2</h2></div>
+          <p>Valve announced Counter-Strike 2 in March 2023 and released it as a free upgrade on September 27, 2023. Unlike previous transitions, CS2 was not a separate purchase -- it replaced CS:GO entirely within the same Steam listing (app ID 730). Every CS:GO player received CS2 automatically, and the old client was retired.</p>
+          <p>CS2 is built on the Source 2 engine, bringing a suite of technical improvements. Responsive smoke grenades that react to bullets, grenades, and lighting were among the headline features. Sub-tick networking replaced the 64-tick and 128-tick server model, aiming to make every action register at the exact moment it occurred regardless of tick rate. Overhauled maps with physically based rendering and dynamic lighting modernised the game's visual identity.</p>
+          <p>The transition was not without controversy. Several features beloved in CS:GO -- including certain community maps, game modes, and workshop tools -- were absent at launch. Valve has been gradually re-introducing content and refining systems since release. Despite the growing pains, CS2 maintains a massive active player base and continues the franchise's competitive tradition through Major Championships and a thriving third-party tournament circuit. For more on the naming convention, see <a href="/what-does-csgo-stand-for/">what CS:GO stands for</a>.</p>
+        </section>
+
+        <section id="legacy">
+          <div class="csh-section-header"><h2>Legacy and Impact on Esports</h2></div>
+          <p>Counter-Strike's influence on competitive gaming is difficult to overstate. It was among the first titles to establish a structured tournament ecosystem, and its format -- two halves, economy management, round-based elimination -- has been studied and imitated by countless games that followed.</p>
+          <p>The franchise helped launch the careers of some of the most recognised esports professionals in history. Players who competed in 1.6 transitioned to CS:GO and built global fanbases, while organisations that started as small CS clans grew into multi-game esports conglomerates worth millions. Counter-Strike Majors now offer prize pools exceeding one million dollars and draw hundreds of thousands of concurrent viewers on streaming platforms.</p>
+          <p>Beyond esports, Counter-Strike pioneered the in-game cosmetics economy that dominates modern free-to-play games. The skin trading ecosystem that emerged from CS:GO's Arms Deal update created an entire marketplace culture, influencing how other developers approach monetisation. The <a href="https://www.counter-strike.net/" target="_blank" rel="noopener">official Counter-Strike website</a> remains the central hub for news, updates, and patch notes, while the game itself is available on <a href="https://store.steampowered.com/app/730/CounterStrike_2/" target="_blank" rel="noopener">Steam</a>.</p>
+          <p>From LAN parties in the early 2000s to sold-out arenas today, Counter-Strike has remained relevant for over 25 years. Each new version preserved the skill-based core while modernising the technology around it -- a formula that shows no signs of slowing down.</p>
+        </section>
+
+        <section id="faq">
+          <div class="csh-section-header"><h2>Frequently Asked Questions</h2></div>
+          <div class="csh-faq-list">
+            {faqs.map((faq) => (
+              <details class="csh-faq-item">
+                <summary class="csh-faq-question">{faq.question}</summary>
+                <p class="csh-faq-answer" set:html={faq.answer}></p>
+              </details>
+            ))}
+          </div>
+        </section>
+
+        <section id="related">
+          <div class="csh-section-header"><h2>Related Articles</h2></div>
+          <div class="csh-resources-grid">
+            <a href="/cs2-game-history-faq/" class="csh-resource-card"><span class="csh-resource-name">Game History & FAQ Hub</span><span class="csh-resource-arrow">&rarr;</span></a>
+            <a href="/what-is-cs2/" class="csh-resource-card"><span class="csh-resource-name">What Is CS2?</span><span class="csh-resource-arrow">&rarr;</span></a>
+            <a href="/what-does-csgo-stand-for/" class="csh-resource-card"><span class="csh-resource-name">What Does CS:GO Stand For?</span><span class="csh-resource-arrow">&rarr;</span></a>
+          </div>
+        </section>
+      </article>
+    </div>
+  </div>
+
+  <style>
+    .csh-wrap{max-width:1100px;margin:0 auto;padding:0 1.5rem 2rem}
+    .csh-breadcrumb{display:flex;align-items:center;gap:.5rem;padding:1.25rem 0;font-size:.85rem;color:var(--text2)}
+    .csh-breadcrumb a{color:var(--accent);text-decoration:none}
+    .csh-breadcrumb a:hover{color:var(--accent2)}
+    .csh-sep{color:var(--border)}
+    .csh-header{padding:1.5rem 0 1.25rem;border-bottom:2px solid var(--accent);margin-bottom:1.5rem}
+    .csh-header h1{margin:0 0 .35rem;font-size:2.2rem;font-weight:800;color:var(--text);letter-spacing:-.02em;line-height:1.2}
+    .csh-subtitle{margin:0;font-size:1.05rem;color:var(--text2);font-weight:400}
+    .csh-toc-mobile{display:none}
+    .csh-layout{display:grid;grid-template-columns:220px 1fr;gap:2.5rem;align-items:start}
+    .csh-sidebar{position:sticky;top:80px}
+    .csh-toc{display:flex;flex-direction:column;gap:0;border-left:2px solid var(--border);padding-left:0}
+    .csh-toc-title{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--accent);padding:0 0 .6rem 1rem}
+    .csh-toc-link{display:block;padding:.4rem 1rem;font-size:.82rem;color:var(--text2);text-decoration:none;border-left:2px solid transparent;margin-left:-2px;transition:color .2s,border-color .2s}
+    .csh-toc-link:hover{color:var(--text);border-left-color:var(--accent)}
+    .csh-content{min-width:0}
+    .csh-intro{font-size:1rem;line-height:1.8;color:var(--text2);margin-bottom:2rem}
+    .csh-section-header{background:rgba(46,204,113,.05);margin:0 -1.25rem 1.25rem;padding:.75rem 1.25rem;border-radius:4px}
+    .csh-section-header h2{margin:0;padding:0;font-size:1.5rem;font-weight:700;color:var(--text);border:none;letter-spacing:-.01em}
+    section{margin-bottom:2.5rem}
+    h3{font-size:1.15rem;font-weight:600;margin:1.5rem 0 .6rem;color:var(--text)}
+    p{line-height:1.7;color:var(--text2);margin-bottom:1rem}
+    .csh-faq-list{display:flex;flex-direction:column;gap:.5rem}
+    .csh-faq-item{background:var(--bg2);border:1px solid var(--border);border-radius:4px;overflow:hidden}
+    .csh-faq-question{display:block;padding:1rem 1.25rem;font-size:.95rem;font-weight:600;color:var(--text);cursor:pointer;list-style:none;position:relative;padding-right:2.5rem;transition:background .2s}
+    .csh-faq-question::-webkit-details-marker{display:none}
+    .csh-faq-question::after{content:'+';position:absolute;right:1.25rem;top:50%;transform:translateY(-50%);font-size:1.2rem;color:var(--accent);font-weight:700}
+    .csh-faq-item[open] .csh-faq-question::after{content:'\2212'}
+    .csh-faq-item[open] .csh-faq-question{border-bottom:1px solid var(--border);background:rgba(46,204,113,.03)}
+    .csh-faq-question:hover{background:rgba(46,204,113,.03)}
+    .csh-faq-answer{padding:1rem 1.25rem;margin:0;font-size:.9rem;color:var(--text2);line-height:1.7}
+    .csh-resources-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.6rem;margin:.5rem 0 1.5rem}
+    .csh-resource-card{display:flex;align-items:center;justify-content:space-between;padding:.75rem 1rem;background:var(--bg2);border:1px solid var(--border);border-radius:4px;text-decoration:none;border-left:2px solid transparent;transition:border-left-color .2s,color .2s}
+    .csh-resource-card:hover{border-left-color:var(--accent)}
+    .csh-resource-name{font-size:.88rem;color:var(--text2);font-weight:500;transition:color .2s}
+    .csh-resource-card:hover .csh-resource-name{color:var(--text)}
+    .csh-resource-arrow{font-size:1rem;color:var(--accent);opacity:0;transition:opacity .2s}
+    .csh-resource-card:hover .csh-resource-arrow{opacity:1}
+    @media(max-width:860px){
+      .csh-layout{grid-template-columns:1fr;gap:0}
+      .csh-sidebar{display:none}
+      .csh-toc-mobile{display:flex;gap:.25rem;overflow-x:auto;padding:.75rem 0;margin-bottom:1rem;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+      .csh-toc-mobile::-webkit-scrollbar{display:none}
+      .csh-toc-mobile-link{flex-shrink:0;padding:.35rem .75rem;font-size:.78rem;font-weight:600;color:var(--text2);background:var(--bg2);border:1px solid var(--border);border-radius:4px;text-decoration:none;white-space:nowrap;transition:color .2s,border-color .2s}
+      .csh-toc-mobile-link:hover{color:var(--accent);border-color:var(--accent)}
+      .csh-header h1{font-size:1.7rem}
+      .csh-section-header{margin:0 -1rem 1rem;padding:.6rem 1rem}
+      .csh-resources-grid{grid-template-columns:repeat(2,1fr)}
+    }
+    @media(max-width:600px){
+      .csh-wrap{padding:0 1rem 1.5rem}
+      .csh-resources-grid{grid-template-columns:1fr}
+      .csh-header h1{font-size:1.5rem}
+    }
+  </style>
+  <AuthorBox updated="2026-03-04" />
+</Base>

@@ -1,0 +1,262 @@
+---
+import Base from '../layouts/Base.astro';
+import AuthorBox from '../components/AuthorBox.astro';
+import { faqSchema, breadcrumbSchema } from '../lib/weapons';
+
+const title = 'How to Get Better at CS2: 10 Tips | CSGOLuck Wiki';
+const description = 'Want to improve at CS2? These 10 practical tips cover aim, movement, game sense, economy, and settings to help you rank up.';
+
+const breadcrumbs = [
+  { name: 'Home', url: '/' },
+  { name: 'Gameplay & Practice', url: '/cs2-gameplay-practice-faq/' },
+  { name: 'Get Better at CS2', url: '/get-better-at-cs2/' },
+];
+
+const faqs = [
+  {
+    question: 'How long does it take to get good at CS2?',
+    answer: 'Improvement timelines vary widely based on prior FPS experience. Most players see noticeable improvement within a few weeks of focused practice, but reaching a high level typically takes months or even years of consistent play.',
+  },
+  {
+    question: 'Is aim or game sense more important?',
+    answer: 'Both matter, but at lower ranks, improving your aim and crosshair placement delivers the fastest results. As you climb higher, game sense, utility usage, and positioning become increasingly decisive.',
+  },
+  {
+    question: 'Should I use aim trainers or just play matches?',
+    answer: 'A combination of both is ideal. Aim trainers and workshop maps help build raw mechanical skill in a controlled environment, while matches develop game sense, communication, and decision-making under pressure.',
+  },
+  {
+    question: 'What sensitivity should I use?',
+    answer: 'There is no single correct sensitivity, but most competitive players use a relatively low eDPI (effective DPI). Use our crosshair generator and sensitivity converter tools to find a starting point, then adjust based on comfort.',
+  },
+  {
+    question: 'How often should I practice?',
+    answer: 'Consistent daily practice, even just 20-30 minutes of focused aim training before playing matches, is more effective than occasional long sessions. Regularity builds muscle memory faster than volume.',
+  },
+];
+
+const breadcrumbSchema_ = breadcrumbSchema(breadcrumbs);
+const faqSchema_ = faqSchema(faqs);
+
+const articleSchema = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": title,
+  "description": description,
+  "author": { "@type": "Person", "name": "Josh Lingenfelter", "url": "https://www.linkedin.com/in/josh-lingenfelter-8157274b/", "jobTitle": "Director", "worksFor": { "@type": "Organization", "name": "CSGOLuck" } },
+  "publisher": { "@type": "Organization", "name": "CSGOLuck Wiki", "url": "https://wiki.csgoluck.com" },
+  "mainEntityOfPage": "https://wiki.csgoluck.com/get-better-at-cs2/",
+  "inLanguage": "en-US"
+});
+
+const sections = [
+  { id: 'crosshair-placement', label: 'Crosshair Placement' },
+  { id: 'recoil-control', label: 'Recoil Control' },
+  { id: 'economy', label: 'Economy' },
+  { id: 'game-sense', label: 'Game Sense' },
+  { id: 'settings', label: 'Settings & Hardware' },
+  { id: 'practice', label: 'Practice With Purpose' },
+  { id: 'utility', label: 'Smokes & Flashes' },
+  { id: 'demos', label: 'Review Demos' },
+  { id: 'teamplay', label: 'Play With a Team' },
+  { id: 'consistency', label: 'Stay Consistent' },
+  { id: 'faq', label: 'FAQ' },
+  { id: 'related', label: 'Related Articles' },
+];
+---
+
+<Base title={title} description={description}>
+  <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema_)}></script>
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema_)}></script>
+  <script type="application/ld+json" set:html={articleSchema}></script>
+
+  <div class="gbc-wrap">
+    <nav class="gbc-breadcrumb">
+      <a href="/">Home</a>
+      <span class="gbc-sep">/</span>
+      <a href="/cs2-gameplay-practice-faq/">Gameplay & Practice</a>
+      <span class="gbc-sep">/</span>
+      <span>Get Better at CS2</span>
+    </nav>
+
+    <header class="gbc-header">
+      <h1>How to Get Better at CS2</h1>
+      <p class="gbc-subtitle">10 practical tips to improve your aim, game sense, and ranking</p>
+    </header>
+
+    <nav class="gbc-toc-mobile" aria-label="Table of contents">
+      {sections.map((s) => (
+        <a href={`#${s.id}`} class="gbc-toc-mobile-link">{s.label}</a>
+      ))}
+    </nav>
+
+    <div class="gbc-layout">
+      <aside class="gbc-sidebar">
+        <nav class="gbc-toc" aria-label="Table of contents">
+          <span class="gbc-toc-title">Contents</span>
+          {sections.map((s) => (
+            <a href={`#${s.id}`} class="gbc-toc-link">{s.label}</a>
+          ))}
+        </nav>
+      </aside>
+
+      <article class="gbc-content">
+        <p class="gbc-intro">
+          Figuring out <strong>how to get better at CS2</strong> comes down to deliberate practice across several skill areas. Raw aim only gets you so far -- you also need smart positioning, efficient economy management, and solid communication. These 10 tips cover the most impactful improvements you can make right now, whether you are new to Counter-Strike or stuck at a plateau. For a complete foundation, also check out our <a href="/cs2-guides/beginners-guide/">beginner's guide</a>.
+        </p>
+
+        <section id="crosshair-placement">
+          <div class="gbc-section-header"><h2>Master Your Crosshair Placement</h2></div>
+          <p>Crosshair placement is the single fastest way to improve your kill rate. The concept is simple: always keep your crosshair at head height and pre-aimed at the angle where an enemy is most likely to appear. This minimises the distance you need to flick, turning many fights into one-tap kills before your opponent can react.</p>
+          <p>Practice by walking through competitive maps and consciously adjusting your crosshair to every corner and doorway at head level. Over time, this becomes automatic. Use our <a href="/crosshair-generator/">crosshair generator</a> to design a crosshair that makes head-level tracking easy on your eyes.</p>
+        </section>
+
+        <section id="recoil-control">
+          <div class="gbc-section-header"><h2>Learn Recoil Control Basics</h2></div>
+          <p>Every weapon in CS2 has a fixed spray pattern. Learning to pull your mouse in the opposite direction of the pattern keeps your bullets landing where you aim. Start with one rifle -- the AK-47 for Terrorists or the M4 for Counter-Terrorists -- and drill its pattern until it feels natural.</p>
+          <p>Load a practice map and spray at a wall to see the pattern. Then practice pulling down and to the sides to counteract it. Once you can land a full spray consistently on a wall, move to bots and eventually real opponents. Check our <a href="/cs2-guides/aim-guide/">aim guide</a> for detailed spray pattern breakdowns.</p>
+        </section>
+
+        <section id="economy">
+          <div class="gbc-section-header"><h2>Understand the CS2 Economy</h2></div>
+          <p>The economy system determines which rounds you can buy weapons and which rounds you should save. Buying when your team cannot afford a full loadout wastes money and puts you at a disadvantage in future rounds.</p>
+          <p>The key principles are: buy together as a team, eco when funds are low, and force-buy only when the strategic situation demands it. Understanding loss bonus mechanics and knowing when to save versus when to spend is a skill that separates good players from great ones. Our <a href="/cs2-guides/economy-guide/">economy guide</a> covers buy cycles and decision-making in depth.</p>
+        </section>
+
+        <section id="game-sense">
+          <div class="gbc-section-header"><h2>Develop Game Sense and Positioning</h2></div>
+          <p>Game sense is the ability to predict what opponents will do based on the information available. It develops through experience, but you can accelerate it by actively thinking about what the enemy team is likely doing at each point in a round.</p>
+          <p>Good positioning means putting yourself in spots where you have an advantage -- cover, an off-angle, or a crossfire with a teammate. Avoid standing in the open, and always have a plan for where to fall back if your position is compromised. Watch how professional players position themselves during site holds and retakes for inspiration.</p>
+        </section>
+
+        <section id="settings">
+          <div class="gbc-section-header"><h2>Optimize Your Settings and Hardware</h2></div>
+          <p>Your in-game settings directly impact your ability to aim and react. Make sure you have configured the following:</p>
+          <ul class="gbc-list">
+            <li><strong>Sensitivity:</strong> Most competitive players use a low effective DPI (eDPI). Find a sens that lets you do a comfortable 180-degree turn with a full swipe of your mousepad.</li>
+            <li><strong>Resolution and display:</strong> Higher frame rates are more important than resolution. Many players use stretched or lower resolutions to maintain high FPS.</li>
+            <li><strong>Audio:</strong> Good headphones and proper audio settings let you hear footsteps and utility accurately. Spatial awareness through sound is a competitive advantage.</li>
+          </ul>
+          <p>Visit our <a href="/aim-training/">aim training page</a> for exercises that help you dial in your sensitivity, and check the <a href="/crosshair-generator/">crosshair generator</a> to fine-tune your reticle.</p>
+        </section>
+
+        <section id="practice">
+          <div class="gbc-section-header"><h2>Practice With Purpose</h2></div>
+          <p>Unfocused play does not lead to improvement. Every practice session should target a specific skill. Spend 15-20 minutes in aim training before queueing, and consciously focus on one aspect of your play during each match -- whether that is crosshair placement, utility timing, or communication.</p>
+          <p>Workshop maps, community deathmatch servers, and aim trainers all provide excellent environments for targeted practice. The key is intentionality: know what you are working on before you start.</p>
+        </section>
+
+        <section id="utility">
+          <div class="gbc-section-header"><h2>Learn Essential Smokes and Flashes</h2></div>
+          <p>You do not need to memorise every lineup in the game, but knowing three to five key smokes per map dramatically increases your round win rate. Smokes block critical sightlines for site entries, and well-timed flashbangs blind defenders as you push.</p>
+          <p>Start with the most common executes on your favourite maps and learn the smokes needed for those takes. Our <a href="/practice-smokes-cs2/">smoke practice guide</a> shows you how to set up your practice environment, and the <a href="/cs2-guides/grenade-guide/">grenade guide</a> covers all utility types.</p>
+        </section>
+
+        <section id="demos">
+          <div class="gbc-section-header"><h2>Review Your Demos</h2></div>
+          <p>Watching your own gameplay from a third-person perspective reveals mistakes you do not notice in the moment. After a loss, download the demo and focus on rounds where you died -- were you out of position? Did you miss information? Did you dry-peek without utility?</p>
+          <p>Even reviewing one demo per week creates a feedback loop that accelerates improvement. Look for recurring patterns in your deaths rather than fixating on individual aim misses.</p>
+        </section>
+
+        <section id="teamplay">
+          <div class="gbc-section-header"><h2>Play With a Team</h2></div>
+          <p>CS2 is a team game, and communication is one of the most underrated skills. Queuing with even one or two friends who communicate callouts and coordinate buys gives you a significant edge over a disorganised solo queue team.</p>
+          <p>If you do solo queue, make an effort to use your microphone. Call out enemy positions, coordinate utility, and give encouragement. Positive communication often wins close rounds that would otherwise be lost to confusion.</p>
+        </section>
+
+        <section id="consistency">
+          <div class="gbc-section-header"><h2>Stay Consistent and Patient</h2></div>
+          <p>Improvement in CS2 is not linear. You will have days where everything clicks and days where nothing works. The players who reach high ranks are the ones who show up consistently, practice deliberately, and avoid tilting after bad sessions.</p>
+          <p>Set small, achievable goals -- learn one new smoke this week, improve your headshot percentage by a few points, or communicate more clearly in matches. Over time, these small gains compound into significant skill growth.</p>
+        </section>
+
+        <section id="faq">
+          <div class="gbc-section-header"><h2>Frequently Asked Questions</h2></div>
+          <div class="gbc-faq-list">
+            {faqs.map((faq) => (
+              <details class="gbc-faq-item">
+                <summary class="gbc-faq-question">{faq.question}</summary>
+                <p class="gbc-faq-answer">{faq.answer}</p>
+              </details>
+            ))}
+          </div>
+        </section>
+
+        <section id="related">
+          <div class="gbc-section-header"><h2>Related Articles</h2></div>
+          <div class="gbc-resources-grid">
+            <a href="/cs2-gameplay-practice-faq/" class="gbc-resource-card"><span class="gbc-resource-name">Gameplay & Practice Hub</span><span class="gbc-resource-arrow">&rarr;</span></a>
+            <a href="/how-to-bhop-cs2/" class="gbc-resource-card"><span class="gbc-resource-name">How to Bhop</span><span class="gbc-resource-arrow">&rarr;</span></a>
+            <a href="/practice-smokes-cs2/" class="gbc-resource-card"><span class="gbc-resource-name">Practice Smokes</span><span class="gbc-resource-arrow">&rarr;</span></a>
+            <a href="/crosshair-generator/" class="gbc-resource-card"><span class="gbc-resource-name">Crosshair Generator</span><span class="gbc-resource-arrow">&rarr;</span></a>
+            <a href="/cs2-guides/aim-guide/" class="gbc-resource-card"><span class="gbc-resource-name">Aim Guide</span><span class="gbc-resource-arrow">&rarr;</span></a>
+            <a href="/cs2-guides/economy-guide/" class="gbc-resource-card"><span class="gbc-resource-name">Economy Guide</span><span class="gbc-resource-arrow">&rarr;</span></a>
+            <a href="/cs2-guides/beginners-guide/" class="gbc-resource-card"><span class="gbc-resource-name">Beginner's Guide</span><span class="gbc-resource-arrow">&rarr;</span></a>
+            <a href="/aim-training/" class="gbc-resource-card"><span class="gbc-resource-name">Aim Training</span><span class="gbc-resource-arrow">&rarr;</span></a>
+          </div>
+        </section>
+      </article>
+    </div>
+  </div>
+
+  <style>
+    .gbc-wrap{max-width:1100px;margin:0 auto;padding:0 1.5rem 2rem}
+    .gbc-breadcrumb{display:flex;align-items:center;gap:.5rem;padding:1.25rem 0;font-size:.85rem;color:var(--text2)}
+    .gbc-breadcrumb a{color:var(--accent);text-decoration:none}
+    .gbc-breadcrumb a:hover{color:var(--accent2)}
+    .gbc-sep{color:var(--border)}
+    .gbc-header{padding:1.5rem 0 1.25rem;border-bottom:2px solid var(--accent);margin-bottom:1.5rem}
+    .gbc-header h1{margin:0 0 .35rem;font-size:2.2rem;font-weight:800;color:var(--text);letter-spacing:-.02em;line-height:1.2}
+    .gbc-subtitle{margin:0;font-size:1.05rem;color:var(--text2);font-weight:400}
+    .gbc-toc-mobile{display:none}
+    .gbc-layout{display:grid;grid-template-columns:220px 1fr;gap:2.5rem;align-items:start}
+    .gbc-sidebar{position:sticky;top:80px}
+    .gbc-toc{display:flex;flex-direction:column;gap:0;border-left:2px solid var(--border);padding-left:0}
+    .gbc-toc-title{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--accent);padding:0 0 .6rem 1rem}
+    .gbc-toc-link{display:block;padding:.4rem 1rem;font-size:.82rem;color:var(--text2);text-decoration:none;border-left:2px solid transparent;margin-left:-2px;transition:color .2s,border-color .2s}
+    .gbc-toc-link:hover{color:var(--text);border-left-color:var(--accent)}
+    .gbc-content{min-width:0}
+    .gbc-intro{font-size:1rem;line-height:1.8;color:var(--text2);margin-bottom:2rem}
+    .gbc-section-header{background:rgba(46,204,113,.05);margin:0 -1.25rem 1.25rem;padding:.75rem 1.25rem;border-radius:4px}
+    .gbc-section-header h2{margin:0;padding:0;font-size:1.5rem;font-weight:700;color:var(--text);border:none;letter-spacing:-.01em}
+    section{margin-bottom:2.5rem}
+    p{line-height:1.7;color:var(--text2);margin-bottom:1rem}
+    .gbc-list{list-style:none;padding:0;margin:.75rem 0 1.5rem}
+    .gbc-list li{padding:.4rem 0 .4rem 1.6rem;position:relative;color:var(--text2);line-height:1.65}
+    .gbc-list li::before{content:'';position:absolute;left:.25rem;top:.75rem;width:6px;height:6px;background:var(--accent);border-radius:1px}
+    .gbc-list li strong{color:var(--text)}
+    .gbc-faq-list{display:flex;flex-direction:column;gap:.5rem}
+    .gbc-faq-item{background:var(--bg2);border:1px solid var(--border);border-radius:4px;overflow:hidden}
+    .gbc-faq-question{display:block;padding:1rem 1.25rem;font-size:.95rem;font-weight:600;color:var(--text);cursor:pointer;list-style:none;position:relative;padding-right:2.5rem;transition:background .2s}
+    .gbc-faq-question::-webkit-details-marker{display:none}
+    .gbc-faq-question::after{content:'+';position:absolute;right:1.25rem;top:50%;transform:translateY(-50%);font-size:1.2rem;color:var(--accent);font-weight:700}
+    .gbc-faq-item[open] .gbc-faq-question::after{content:'\2212'}
+    .gbc-faq-item[open] .gbc-faq-question{border-bottom:1px solid var(--border);background:rgba(46,204,113,.03)}
+    .gbc-faq-question:hover{background:rgba(46,204,113,.03)}
+    .gbc-faq-answer{padding:1rem 1.25rem;margin:0;font-size:.9rem;color:var(--text2);line-height:1.7}
+    .gbc-resources-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.6rem;margin:.5rem 0 1.5rem}
+    .gbc-resource-card{display:flex;align-items:center;justify-content:space-between;padding:.75rem 1rem;background:var(--bg2);border:1px solid var(--border);border-radius:4px;text-decoration:none;border-left:2px solid transparent;transition:border-left-color .2s,color .2s}
+    .gbc-resource-card:hover{border-left-color:var(--accent)}
+    .gbc-resource-name{font-size:.88rem;color:var(--text2);font-weight:500;transition:color .2s}
+    .gbc-resource-card:hover .gbc-resource-name{color:var(--text)}
+    .gbc-resource-arrow{font-size:1rem;color:var(--accent);opacity:0;transition:opacity .2s}
+    .gbc-resource-card:hover .gbc-resource-arrow{opacity:1}
+    @media(max-width:860px){
+      .gbc-layout{grid-template-columns:1fr;gap:0}
+      .gbc-sidebar{display:none}
+      .gbc-toc-mobile{display:flex;gap:.25rem;overflow-x:auto;padding:.75rem 0;margin-bottom:1rem;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+      .gbc-toc-mobile::-webkit-scrollbar{display:none}
+      .gbc-toc-mobile-link{flex-shrink:0;padding:.35rem .75rem;font-size:.78rem;font-weight:600;color:var(--text2);background:var(--bg2);border:1px solid var(--border);border-radius:4px;text-decoration:none;white-space:nowrap;transition:color .2s,border-color .2s}
+      .gbc-toc-mobile-link:hover{color:var(--accent);border-color:var(--accent)}
+      .gbc-header h1{font-size:1.7rem}
+      .gbc-section-header{margin:0 -1rem 1rem;padding:.6rem 1rem}
+      .gbc-resources-grid{grid-template-columns:repeat(2,1fr)}
+    }
+    @media(max-width:600px){
+      .gbc-wrap{padding:0 1rem 1.5rem}
+      .gbc-resources-grid{grid-template-columns:1fr}
+      .gbc-header h1{font-size:1.5rem}
+    }
+  </style>
+  <AuthorBox updated="2026-03-04" />
+</Base>

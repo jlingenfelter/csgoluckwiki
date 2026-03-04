@@ -1,0 +1,240 @@
+---
+import Base from '../layouts/Base.astro';
+import AuthorBox from '../components/AuthorBox.astro';
+import { faqSchema, breadcrumbSchema } from '../lib/weapons';
+
+const title = 'How to Show FPS in CS2: 3 Methods | CSGOLuck Wiki';
+const description = 'Show your FPS in CS2 using console commands, Steam overlay, or third-party tools. Three quick methods with step-by-step instructions.';
+
+const breadcrumbs = [
+  { name: 'Home', url: '/' },
+  { name: 'Settings & Config', url: '/cs2-settings-config-faq/' },
+  { name: 'Show FPS', url: '/show-fps-cs2/' },
+];
+
+const faqs = [
+  {
+    question: 'What is a good FPS for CS2?',
+    answer: 'For competitive play, aim for at least 200+ FPS to ensure smooth gameplay and minimal input lag. Players with 144Hz or 240Hz monitors should target FPS that matches or exceeds their refresh rate.',
+  },
+  {
+    question: 'Does showing FPS affect performance?',
+    answer: 'The impact is negligible. Console commands like cl_showfps and the Steam overlay use minimal resources. Third-party overlay tools may have a slightly higher footprint but are still insignificant on modern hardware.',
+  },
+  {
+    question: 'Why does my FPS drop during gameplay?',
+    answer: 'FPS drops commonly occur during smoke grenades, multiple flashbangs, or large firefights with many players visible. Lowering shader quality, shadow detail, and effect settings can help stabilize FPS during these moments.',
+  },
+];
+
+const breadcrumbSchema_ = breadcrumbSchema(breadcrumbs);
+const faqSchema_ = faqSchema(faqs);
+
+const articleSchema = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": title,
+  "description": description,
+  "author": { "@type": "Person", "name": "Josh Lingenfelter", "url": "https://www.linkedin.com/in/josh-lingenfelter-8157274b/", "jobTitle": "Director", "worksFor": { "@type": "Organization", "name": "CSGOLuck" } },
+  "publisher": { "@type": "Organization", "name": "CSGOLuck Wiki", "url": "https://wiki.csgoluck.com" },
+  "mainEntityOfPage": "https://wiki.csgoluck.com/show-fps-cs2/",
+  "inLanguage": "en-US"
+});
+
+const sections = [
+  { id: 'console-command', label: 'Console Command' },
+  { id: 'steam-overlay', label: 'Steam Overlay' },
+  { id: 'third-party', label: 'Third-Party Tools' },
+  { id: 'which-method', label: 'Which Method to Use' },
+  { id: 'optimizing-fps', label: 'Optimizing FPS' },
+  { id: 'faq', label: 'FAQ' },
+  { id: 'related', label: 'Related Articles' },
+];
+---
+
+<Base title={title} description={description}>
+  <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema_)}></script>
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema_)}></script>
+  <script type="application/ld+json" set:html={articleSchema}></script>
+
+  <div class="sfc-wrap">
+    <nav class="sfc-breadcrumb">
+      <a href="/">Home</a>
+      <span class="sfc-sep">/</span>
+      <a href="/cs2-settings-config-faq/">Settings & Config</a>
+      <span class="sfc-sep">/</span>
+      <span>Show FPS</span>
+    </nav>
+
+    <header class="sfc-header">
+      <h1>How to Show FPS in CS2</h1>
+      <p class="sfc-subtitle">Three methods to display your frame rate and monitor performance</p>
+    </header>
+
+    <nav class="sfc-toc-mobile" aria-label="Table of contents">
+      {sections.map((s) => (
+        <a href={`#${s.id}`} class="sfc-toc-mobile-link">{s.label}</a>
+      ))}
+    </nav>
+
+    <div class="sfc-layout">
+      <aside class="sfc-sidebar">
+        <nav class="sfc-toc" aria-label="Table of contents">
+          <span class="sfc-toc-title">Contents</span>
+          {sections.map((s) => (
+            <a href={`#${s.id}`} class="sfc-toc-link">{s.label}</a>
+          ))}
+        </nav>
+      </aside>
+
+      <article class="sfc-content">
+        <p class="sfc-intro">
+          Knowing <strong>how to show FPS in CS2</strong> helps you monitor performance, diagnose frame drops, and verify that your settings are delivering smooth gameplay. There are three straightforward methods: a built-in console command, the Steam overlay, and third-party tools. Below you will find step-by-step instructions for each.
+        </p>
+
+        <section id="console-command">
+          <div class="sfc-section-header"><h2>Method 1 -- Console Command (cl_showfps)</h2></div>
+          <p>The fastest way to display your FPS is through the developer console. This method works entirely within CS2 and requires no external software.</p>
+          <ul class="sfc-list">
+            <li><strong>Step 1:</strong> Make sure the developer console is enabled. Go to Settings, then Game, and set "Enable Developer Console" to Yes.</li>
+            <li><strong>Step 2:</strong> Press the tilde key (~) to open the console.</li>
+            <li><strong>Step 3:</strong> Type <code>cl_showfps 1</code> and press Enter. Your FPS counter will appear in the top-left corner of the screen.</li>
+            <li><strong>Step 4:</strong> To disable it, type <code>cl_showfps 0</code>.</li>
+          </ul>
+          <p>The <code>cl_showfps</code> command has several modes. Using <code>cl_showfps 1</code> shows a basic FPS counter. Values of 2 through 5 display additional information like frame time, render time, and server performance. For most players, <code>cl_showfps 1</code> is all you need. You can also use <code>net_graph 1</code> for a more detailed overlay that includes network information alongside FPS.</p>
+        </section>
+
+        <section id="steam-overlay">
+          <div class="sfc-section-header"><h2>Method 2 -- Steam FPS Overlay</h2></div>
+          <p>Steam has a built-in FPS counter that works across all Steam games, including CS2. It is minimal and unobtrusive.</p>
+          <ul class="sfc-list">
+            <li><strong>Step 1:</strong> Open Steam and go to Steam (menu) then Settings.</li>
+            <li><strong>Step 2:</strong> Navigate to the "In Game" section.</li>
+            <li><strong>Step 3:</strong> Find "In-game FPS counter" and set it to your preferred screen corner (top-left, top-right, bottom-left, or bottom-right).</li>
+            <li><strong>Step 4:</strong> Optionally enable "High contrast color" for better visibility against dark backgrounds.</li>
+          </ul>
+          <p>The Steam overlay FPS counter is small and clean, making it a good choice if you want a persistent counter that does not clutter your screen. It updates in real-time and works without any in-game commands.</p>
+        </section>
+
+        <section id="third-party">
+          <div class="sfc-section-header"><h2>Method 3 -- Third-Party Overlays</h2></div>
+          <p>GPU manufacturers provide their own overlay tools that display FPS along with additional hardware metrics:</p>
+          <ul class="sfc-list">
+            <li><strong>NVIDIA GeForce Experience:</strong> Press Alt+R to toggle the performance overlay. Shows FPS, GPU temperature, clock speeds, and more.</li>
+            <li><strong>AMD Adrenalin Software:</strong> Enable the performance overlay in Adrenalin settings. Displays FPS, GPU usage, VRAM, and temperatures.</li>
+            <li><strong>MSI Afterburner + RivaTuner:</strong> A popular combination that works with any GPU. Highly customizable -- you can display FPS, frame time, CPU/GPU usage, temperatures, and clock speeds.</li>
+          </ul>
+          <p>Third-party overlays are ideal if you want to monitor hardware performance alongside FPS. They help identify whether CPU or GPU bottlenecks are causing frame drops. For more information on system-level commands, visit the <a href="https://developer.valvesoftware.com/" target="_blank" rel="noopener">Valve Developer Community</a>.</p>
+        </section>
+
+        <section id="which-method">
+          <div class="sfc-section-header"><h2>Which Method to Use and When</h2></div>
+          <p>Each method has its strengths depending on your needs:</p>
+          <ul class="sfc-list">
+            <li><strong>cl_showfps:</strong> Best for quick checks during gameplay. No setup required beyond enabling the console. Use <code>net_graph 1</code> if you also want network stats.</li>
+            <li><strong>Steam overlay:</strong> Best for a persistent, minimal counter that works across all games. Set it once and forget it.</li>
+            <li><strong>Third-party tools:</strong> Best for troubleshooting performance issues. Use when you need to see GPU temperature, CPU usage, and frame time alongside FPS.</li>
+          </ul>
+          <p>Most competitive CS2 players use either the console command or Steam overlay for everyday monitoring. Third-party tools are pulled out when something feels off and you need to diagnose the cause.</p>
+        </section>
+
+        <section id="optimizing-fps">
+          <div class="sfc-section-header"><h2>Optimizing Your FPS</h2></div>
+          <p>Once you can see your FPS, the next step is making sure it stays high and stable. Here are the most impactful settings to adjust:</p>
+          <ul class="sfc-list">
+            <li><strong>Shadow Quality:</strong> Lowering shadow quality provides one of the biggest FPS gains. Set to Low or Medium.</li>
+            <li><strong>Shader Detail:</strong> Reducing shader detail improves FPS without drastically changing how the game looks.</li>
+            <li><strong>Global Shadow Quality:</strong> Set to Medium or Low. High shadow quality is one of the most demanding settings.</li>
+            <li><strong>Anti-Aliasing:</strong> MSAA is expensive. Consider using FXAA or disabling anti-aliasing entirely for maximum FPS.</li>
+            <li><strong>Launch options:</strong> Add performance-related launch options through Steam. Visit our <a href="/launch-options/">launch options guide</a> for recommended settings.</li>
+          </ul>
+          <p>For a comprehensive walkthrough of every graphics setting and its performance impact, read our <a href="/cs2-guides/fps-optimization-guide/">FPS optimization guide</a>.</p>
+        </section>
+
+        <section id="faq">
+          <div class="sfc-section-header"><h2>Frequently Asked Questions</h2></div>
+          <div class="sfc-faq-list">
+            {faqs.map((faq) => (
+              <details class="sfc-faq-item">
+                <summary class="sfc-faq-question">{faq.question}</summary>
+                <p class="sfc-faq-answer">{faq.answer}</p>
+              </details>
+            ))}
+          </div>
+        </section>
+
+        <section id="related">
+          <div class="sfc-section-header"><h2>Related Articles</h2></div>
+          <div class="sfc-resources-grid">
+            <a href="/cs2-settings-config-faq/" class="sfc-resource-card"><span class="sfc-resource-name">Settings & Config Hub</span><span class="sfc-resource-arrow">&rarr;</span></a>
+            <a href="/change-fov-cs2/" class="sfc-resource-card"><span class="sfc-resource-name">Change FOV in CS2</span><span class="sfc-resource-arrow">&rarr;</span></a>
+            <a href="/cs2-viewmodel-settings/" class="sfc-resource-card"><span class="sfc-resource-name">Viewmodel Settings</span><span class="sfc-resource-arrow">&rarr;</span></a>
+            <a href="/cs2-guides/fps-optimization-guide/" class="sfc-resource-card"><span class="sfc-resource-name">FPS Optimization Guide</span><span class="sfc-resource-arrow">&rarr;</span></a>
+            <a href="/launch-options/" class="sfc-resource-card"><span class="sfc-resource-name">Launch Options</span><span class="sfc-resource-arrow">&rarr;</span></a>
+          </div>
+        </section>
+      </article>
+    </div>
+  </div>
+
+  <style>
+    .sfc-wrap{max-width:1100px;margin:0 auto;padding:0 1.5rem 2rem}
+    .sfc-breadcrumb{display:flex;align-items:center;gap:.5rem;padding:1.25rem 0;font-size:.85rem;color:var(--text2)}
+    .sfc-breadcrumb a{color:var(--accent);text-decoration:none}
+    .sfc-breadcrumb a:hover{color:var(--accent2)}
+    .sfc-sep{color:var(--border)}
+    .sfc-header{padding:1.5rem 0 1.25rem;border-bottom:2px solid var(--accent);margin-bottom:1.5rem}
+    .sfc-header h1{margin:0 0 .35rem;font-size:2.2rem;font-weight:800;color:var(--text);letter-spacing:-.02em;line-height:1.2}
+    .sfc-subtitle{margin:0;font-size:1.05rem;color:var(--text2);font-weight:400}
+    .sfc-toc-mobile{display:none}
+    .sfc-layout{display:grid;grid-template-columns:220px 1fr;gap:2.5rem;align-items:start}
+    .sfc-sidebar{position:sticky;top:80px}
+    .sfc-toc{display:flex;flex-direction:column;gap:0;border-left:2px solid var(--border);padding-left:0}
+    .sfc-toc-title{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--accent);padding:0 0 .6rem 1rem}
+    .sfc-toc-link{display:block;padding:.4rem 1rem;font-size:.82rem;color:var(--text2);text-decoration:none;border-left:2px solid transparent;margin-left:-2px;transition:color .2s,border-color .2s}
+    .sfc-toc-link:hover{color:var(--text);border-left-color:var(--accent)}
+    .sfc-content{min-width:0}
+    .sfc-intro{font-size:1rem;line-height:1.8;color:var(--text2);margin-bottom:2rem}
+    .sfc-section-header{background:rgba(46,204,113,.05);margin:0 -1.25rem 1.25rem;padding:.75rem 1.25rem;border-radius:4px}
+    .sfc-section-header h2{margin:0;padding:0;font-size:1.5rem;font-weight:700;color:var(--text);border:none;letter-spacing:-.01em}
+    section{margin-bottom:2.5rem}
+    p{line-height:1.7;color:var(--text2);margin-bottom:1rem}
+    .sfc-list{list-style:none;padding:0;margin:.75rem 0 1.5rem}
+    .sfc-list li{padding:.4rem 0 .4rem 1.6rem;position:relative;color:var(--text2);line-height:1.65}
+    .sfc-list li::before{content:'';position:absolute;left:.25rem;top:.75rem;width:6px;height:6px;background:var(--accent);border-radius:1px}
+    .sfc-list li strong{color:var(--text)}
+    .sfc-faq-list{display:flex;flex-direction:column;gap:.5rem}
+    .sfc-faq-item{background:var(--bg2);border:1px solid var(--border);border-radius:4px;overflow:hidden}
+    .sfc-faq-question{display:block;padding:1rem 1.25rem;font-size:.95rem;font-weight:600;color:var(--text);cursor:pointer;list-style:none;position:relative;padding-right:2.5rem;transition:background .2s}
+    .sfc-faq-question::-webkit-details-marker{display:none}
+    .sfc-faq-question::after{content:'+';position:absolute;right:1.25rem;top:50%;transform:translateY(-50%);font-size:1.2rem;color:var(--accent);font-weight:700}
+    .sfc-faq-item[open] .sfc-faq-question::after{content:'\2212'}
+    .sfc-faq-item[open] .sfc-faq-question{border-bottom:1px solid var(--border);background:rgba(46,204,113,.03)}
+    .sfc-faq-question:hover{background:rgba(46,204,113,.03)}
+    .sfc-faq-answer{padding:1rem 1.25rem;margin:0;font-size:.9rem;color:var(--text2);line-height:1.7}
+    .sfc-resources-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.6rem;margin:.5rem 0 1.5rem}
+    .sfc-resource-card{display:flex;align-items:center;justify-content:space-between;padding:.75rem 1rem;background:var(--bg2);border:1px solid var(--border);border-radius:4px;text-decoration:none;border-left:2px solid transparent;transition:border-left-color .2s,color .2s}
+    .sfc-resource-card:hover{border-left-color:var(--accent)}
+    .sfc-resource-name{font-size:.88rem;color:var(--text2);font-weight:500;transition:color .2s}
+    .sfc-resource-card:hover .sfc-resource-name{color:var(--text)}
+    .sfc-resource-arrow{font-size:1rem;color:var(--accent);opacity:0;transition:opacity .2s}
+    .sfc-resource-card:hover .sfc-resource-arrow{opacity:1}
+    @media(max-width:860px){
+      .sfc-layout{grid-template-columns:1fr;gap:0}
+      .sfc-sidebar{display:none}
+      .sfc-toc-mobile{display:flex;gap:.25rem;overflow-x:auto;padding:.75rem 0;margin-bottom:1rem;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+      .sfc-toc-mobile::-webkit-scrollbar{display:none}
+      .sfc-toc-mobile-link{flex-shrink:0;padding:.35rem .75rem;font-size:.78rem;font-weight:600;color:var(--text2);background:var(--bg2);border:1px solid var(--border);border-radius:4px;text-decoration:none;white-space:nowrap;transition:color .2s,border-color .2s}
+      .sfc-toc-mobile-link:hover{color:var(--accent);border-color:var(--accent)}
+      .sfc-header h1{font-size:1.7rem}
+      .sfc-section-header{margin:0 -1rem 1rem;padding:.6rem 1rem}
+      .sfc-resources-grid{grid-template-columns:repeat(2,1fr)}
+    }
+    @media(max-width:600px){
+      .sfc-wrap{padding:0 1rem 1.5rem}
+      .sfc-resources-grid{grid-template-columns:1fr}
+      .sfc-header h1{font-size:1.5rem}
+    }
+  </style>
+  <AuthorBox updated="2026-03-04" />
+</Base>

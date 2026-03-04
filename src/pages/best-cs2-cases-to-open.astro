@@ -1,0 +1,230 @@
+---
+import Base from '../layouts/Base.astro';
+import AuthorBox from '../components/AuthorBox.astro';
+import { faqSchema, breadcrumbSchema } from '../lib/weapons';
+
+const title = 'Best CS2 Cases to Open: Value Breakdown | CSGOLuck Wiki';
+const description = 'Which CS2 cases offer the best return on investment? Value analysis of every active case to help you make smarter unboxing decisions.';
+
+const breadcrumbs = [
+  { name: 'Home', url: '/' },
+  { name: 'Skins & Cases FAQ', url: '/cs2-skins-cases-faq' },
+  { name: 'Best Cases to Open', url: '/best-cs2-cases-to-open' },
+];
+
+const faqs = [
+  {
+    question: 'Is opening CS2 cases profitable?',
+    answer: 'On average, no. The expected value of items received from opening cases is lower than the combined cost of the case and key. Case opening is a form of entertainment, not investment. Some players get lucky with rare drops, but the mathematics consistently favour the house over large sample sizes.',
+  },
+  {
+    question: 'Which CS2 case has the highest expected return?',
+    answer: 'The case with the best expected return changes as market prices shift. Generally, cases with highly valued rare skins (like expensive knife finishes or popular covert-tier skins) offer better expected value. Use our case odds calculator for current comparisons based on live market data.',
+  },
+  {
+    question: 'Should I open cheap or expensive cases?',
+    answer: 'Cheaper cases cost less per opening but may also contain less valuable items. Expensive cases can have higher expected returns in absolute terms but also cost more to open. The key metric is expected value relative to opening cost, not the raw price of the case.',
+  },
+  {
+    question: 'How many cases do you need to open to get a knife?',
+    answer: 'With approximately 0.26% odds, you would statistically expect to open around 385 cases before receiving a knife or gloves. However, this is an average — some players get knives much sooner, and many open far more without one. Each opening is an independent event.',
+  },
+];
+
+const breadcrumbSchema_ = breadcrumbSchema(breadcrumbs);
+const faqSchema_ = faqSchema(faqs);
+
+const articleSchema = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": title,
+  "description": description,
+  "author": { "@type": "Person", "name": "Josh Lingenfelter", "url": "https://www.linkedin.com/in/josh-lingenfelter-8157274b/", "jobTitle": "Director", "worksFor": { "@type": "Organization", "name": "CSGOLuck" } },
+  "publisher": { "@type": "Organization", "name": "CSGOLuck Wiki", "url": "https://wiki.csgoluck.com" },
+  "mainEntityOfPage": "https://wiki.csgoluck.com/best-cs2-cases-to-open/",
+  "inLanguage": "en-US"
+});
+
+const sections = [
+  { id: 'evaluate', label: 'Evaluating Value' },
+  { id: 'best-return', label: 'Best Returns' },
+  { id: 'rare-drops', label: 'Rare Drops' },
+  { id: 'avoid', label: 'Cases to Avoid' },
+  { id: 'odds-reality', label: 'Odds Reality' },
+  { id: 'faq', label: 'FAQ' },
+  { id: 'related', label: 'Related Articles' },
+];
+---
+
+<Base title={title} description={description}>
+  <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema_)}></script>
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema_)}></script>
+  <script type="application/ld+json" set:html={articleSchema}></script>
+
+  <div class="bco-wrap">
+    <nav class="bco-breadcrumb">
+      <a href="/">Home</a>
+      <span class="bco-sep">/</span>
+      <a href="/cs2-skins-cases-faq/">Skins & Cases FAQ</a>
+      <span class="bco-sep">/</span>
+      <span>Best Cases to Open</span>
+    </nav>
+
+    <header class="bco-header">
+      <h1>Best CS2 Cases to Open</h1>
+      <p class="bco-subtitle">An honest value breakdown to help you decide which cases are worth your money</p>
+    </header>
+
+    <nav class="bco-toc-mobile" aria-label="Table of contents">
+      {sections.map((s) => (
+        <a href={`#${s.id}`} class="bco-toc-mobile-link">{s.label}</a>
+      ))}
+    </nav>
+
+    <div class="bco-layout">
+      <aside class="bco-sidebar">
+        <nav class="bco-toc" aria-label="Table of contents">
+          <span class="bco-toc-title">Contents</span>
+          {sections.map((s) => (
+            <a href={`#${s.id}`} class="bco-toc-link">{s.label}</a>
+          ))}
+        </nav>
+      </aside>
+
+      <article class="bco-content">
+        <p class="bco-intro">
+          Figuring out the best CS2 cases to open requires looking beyond flashy skin previews and understanding the actual mathematics of case opening. Not all cases are created equal — some offer meaningfully better expected returns than others based on the value of their contents relative to their opening cost. This guide provides an honest framework for evaluating cases so you can make informed decisions with your money.
+        </p>
+
+        <section id="evaluate">
+          <div class="bco-section-header"><h2>How to Evaluate Case Value</h2></div>
+          <p>The value of opening a case comes down to a simple calculation: what is the expected return compared to the cost of opening? The opening cost is the case price plus the key price (currently around $2.49 for most keys on the <a href="https://store.steampowered.com/app/730/CounterStrike_2/" target="_blank" rel="noopener">Steam Store</a>).</p>
+          <p>Expected value is calculated by multiplying the market price of each possible item by its drop probability, then summing those values. Community-estimated drop rates break down roughly as follows: Mil-Spec (blue) items make up the vast majority of drops, followed by Restricted (purple), Classified (pink), Covert (red), and the extremely rare knife/gloves tier.</p>
+          <p>A case is considered high-value if its expected return is close to or above its opening cost. However, it is critical to understand that even the best cases typically have an expected value below their opening cost. The house always has an edge built into the system. Use our <a href="/case-odds-calculator/">case odds calculator</a> to run these numbers for any case using current market prices.</p>
+        </section>
+
+        <section id="best-return">
+          <div class="bco-section-header"><h2>Cases with the Best Expected Return</h2></div>
+          <p>The cases with the best expected returns tend to share specific characteristics. They typically have one or more highly valued Covert (red) tier skins, a desirable knife collection, and a case price that has not been inflated by collector demand.</p>
+          <p>Newer cases that are still in the active drop pool usually have lower case prices since supply is high. This means more of your budget goes toward the key rather than the case, which keeps the total opening cost down. Older discontinued cases may contain rare and valuable skins, but the inflated case price often erases any expected-value advantage.</p>
+          <p>Cases with popular Covert-tier skins — those that the community values highly for their appearance — tend to offer better returns because even common items from these cases may hold decent resale value. When the blue and purple tier items are worth more, the overall expected value improves.</p>
+          <p>Market prices shift constantly, so the best case to open today may not be the best case next month. Regularly checking expected values against current market data is the only way to stay informed. Our <a href="/cs2-cases/">CS2 cases database</a> and <a href="/market-trends/">market trends</a> page can help with this analysis.</p>
+        </section>
+
+        <section id="rare-drops">
+          <div class="bco-section-header"><h2>Highest-Value Rare Drops by Case</h2></div>
+          <p>The rare special items tier (knives and gloves) is where the truly valuable drops live. Different cases feature different knife and glove collections, and some collections are worth considerably more than others on the market.</p>
+          <p>Cases featuring knife collections that include karambits, butterfly knives, and M9 Bayonets tend to have higher-value rare drops. These knife types consistently command premium prices across all skin finishes. Cases with the Chroma, Gamma, or Spectrum knife collections are particularly well-regarded for this reason.</p>
+          <p>Gloves cases introduced glove drops alongside knives. Sport Gloves and Specialist Gloves in popular finishes (such as Fade, Crimson Kimono, and Emerald Web) can rival or exceed knife prices, adding another layer of value to cases that include them.</p>
+          <p>Remember that these rare drops are extremely unlikely to occur on any given opening. The rare tier exists as a theoretical maximum return, not a realistic expectation. Factor in the combined probability when assessing how much the rare pool actually contributes to a case's expected value.</p>
+        </section>
+
+        <section id="avoid">
+          <div class="bco-section-header"><h2>Cases to Avoid Opening</h2></div>
+          <p>Some cases offer particularly poor expected returns and are generally not worth opening from a value perspective. These include:</p>
+          <ul class="bco-list">
+            <li><strong>Heavily inflated discontinued cases:</strong> Cases that cost many times more than a standard key eat into your expected return before you even open them. Unless you are targeting a specific rare skin for personal use, these are poor value.</li>
+            <li><strong>Cases with low-value item pools:</strong> If even the Covert and Classified tier skins in a case sell for minimal amounts, the expected return will be very poor. Check the market value of a case's top-tier items before opening.</li>
+            <li><strong>Cases with saturated supply:</strong> Some older cases have been opened so many times that the market is flooded with their items, depressing prices across all rarity tiers.</li>
+          </ul>
+          <p>The general rule is straightforward: if the combined cost of the case and key significantly exceeds the expected value of the contents, your money is better spent elsewhere — whether that means opening a different case or buying the specific skin you want directly.</p>
+        </section>
+
+        <section id="odds-reality">
+          <div class="bco-section-header"><h2>The Reality of Case Opening Odds</h2></div>
+          <p>Transparency about odds is important. Opening CS2 cases is statistically not profitable on average. The system is designed so that Valve and the market take a cut, meaning the average player will receive items worth less than they spent on cases and keys over a large sample size.</p>
+          <p>The roughly 0.26% chance of a knife means you could expect to open approximately 385 cases before receiving one statistically. At current key prices alone (not counting case costs), that represents a significant investment with no guarantee of a valuable return.</p>
+          <p>The vast majority of case openings result in Mil-Spec (blue) tier items that are worth only a fraction of the opening cost. Pink and red tier items create exciting moments but occur infrequently enough that they rarely offset the cumulative cost of all the blue drops in between.</p>
+          <p>None of this means case opening cannot be enjoyable — many players open cases purely for entertainment, treating the cost as money spent on a fun experience rather than an investment. Just go in with realistic expectations and a budget you are comfortable losing. If you want a specific skin, buying it directly from the market is almost always the more economical choice.</p>
+        </section>
+
+        <section id="faq">
+          <div class="bco-section-header"><h2>Frequently Asked Questions</h2></div>
+          <div class="bco-faq-list">
+            {faqs.map((faq) => (
+              <details class="bco-faq-item">
+                <summary class="bco-faq-question">{faq.question}</summary>
+                <p class="bco-faq-answer">{faq.answer}</p>
+              </details>
+            ))}
+          </div>
+          <p class="bco-faq-more">More questions answered at our <a href="/cs2-skins-cases-faq/">Skins & Cases FAQ hub</a>.</p>
+        </section>
+
+        <section id="related">
+          <div class="bco-section-header"><h2>Related Articles</h2></div>
+          <div class="bco-resources-grid">
+            <a href="/how-to-get-cases-cs2/" class="bco-resource-card"><span class="bco-resource-name">How to Get Cases</span><span class="bco-resource-arrow">&rarr;</span></a>
+            <a href="/cheapest-cs2-knives/" class="bco-resource-card"><span class="bco-resource-name">Cheapest CS2 Knives</span><span class="bco-resource-arrow">&rarr;</span></a>
+            <a href="/case-odds-calculator/" class="bco-resource-card"><span class="bco-resource-name">Case Odds Calculator</span><span class="bco-resource-arrow">&rarr;</span></a>
+            <a href="/cs2-cases/" class="bco-resource-card"><span class="bco-resource-name">All CS2 Cases</span><span class="bco-resource-arrow">&rarr;</span></a>
+            <a href="/market-trends/" class="bco-resource-card"><span class="bco-resource-name">Market Trends</span><span class="bco-resource-arrow">&rarr;</span></a>
+          </div>
+        </section>
+      </article>
+    </div>
+  </div>
+
+  <style>
+    .bco-wrap{max-width:1100px;margin:0 auto;padding:0 1.5rem 2rem}
+    .bco-breadcrumb{display:flex;align-items:center;gap:.5rem;padding:1.25rem 0;font-size:.85rem;color:var(--text2)}
+    .bco-breadcrumb a{color:var(--accent);text-decoration:none}
+    .bco-breadcrumb a:hover{color:var(--accent2)}
+    .bco-sep{color:var(--border)}
+    .bco-header{padding:1.5rem 0 1.25rem;border-bottom:2px solid var(--accent);margin-bottom:1.5rem}
+    .bco-header h1{margin:0 0 .35rem;font-size:2.2rem;font-weight:800;color:var(--text);letter-spacing:-.02em;line-height:1.2}
+    .bco-subtitle{margin:0;font-size:1.05rem;color:var(--text2);font-weight:400}
+    .bco-toc-mobile{display:none}
+    .bco-layout{display:grid;grid-template-columns:220px 1fr;gap:2.5rem;align-items:start}
+    .bco-sidebar{position:sticky;top:80px}
+    .bco-toc{display:flex;flex-direction:column;gap:0;border-left:2px solid var(--border);padding-left:0}
+    .bco-toc-title{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--accent);padding:0 0 .6rem 1rem}
+    .bco-toc-link{display:block;padding:.4rem 1rem;font-size:.82rem;color:var(--text2);text-decoration:none;border-left:2px solid transparent;margin-left:-2px;transition:color .2s,border-color .2s}
+    .bco-toc-link:hover{color:var(--text);border-left-color:var(--accent)}
+    .bco-content{min-width:0}
+    .bco-intro{font-size:1rem;line-height:1.8;color:var(--text2);margin-bottom:2rem}
+    .bco-section-header{background:rgba(46,204,113,.05);margin:0 -1.25rem 1.25rem;padding:.75rem 1.25rem;border-radius:4px}
+    .bco-section-header h2{margin:0;padding:0;font-size:1.5rem;font-weight:700;color:var(--text);border:none;letter-spacing:-.01em}
+    section{margin-bottom:2.5rem}
+    h3{font-size:1.15rem;font-weight:600;margin:1.5rem 0 .6rem;color:var(--text)}
+    p{line-height:1.7;color:var(--text2);margin-bottom:1rem}
+    .bco-list{list-style:none;padding:0;margin:.75rem 0 1.5rem}
+    .bco-list li{padding:.4rem 0 .4rem 1.6rem;position:relative;color:var(--text2);line-height:1.65}
+    .bco-list li::before{content:'';position:absolute;left:.25rem;top:.75rem;width:6px;height:6px;background:var(--accent);border-radius:1px}
+    .bco-list li strong{color:var(--text)}
+    .bco-faq-list{display:flex;flex-direction:column;gap:.5rem}
+    .bco-faq-item{background:var(--bg2);border:1px solid var(--border);border-radius:4px;overflow:hidden}
+    .bco-faq-question{display:block;padding:1rem 1.25rem;font-size:.95rem;font-weight:600;color:var(--text);cursor:pointer;list-style:none;position:relative;padding-right:2.5rem;transition:background .2s}
+    .bco-faq-question::-webkit-details-marker{display:none}
+    .bco-faq-question::after{content:'+';position:absolute;right:1.25rem;top:50%;transform:translateY(-50%);font-size:1.2rem;color:var(--accent);font-weight:700}
+    .bco-faq-item[open] .bco-faq-question::after{content:'\2212'}
+    .bco-faq-item[open] .bco-faq-question{border-bottom:1px solid var(--border);background:rgba(46,204,113,.03)}
+    .bco-faq-question:hover{background:rgba(46,204,113,.03)}
+    .bco-faq-answer{padding:1rem 1.25rem;margin:0;font-size:.9rem;color:var(--text2);line-height:1.7}
+    .bco-faq-more{font-size:.9rem;margin-top:1rem}
+    .bco-resources-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.6rem;margin:.5rem 0 1.5rem}
+    .bco-resource-card{display:flex;align-items:center;justify-content:space-between;padding:.75rem 1rem;background:var(--bg2);border:1px solid var(--border);border-radius:4px;text-decoration:none;border-left:2px solid transparent;transition:border-left-color .2s,color .2s}
+    .bco-resource-card:hover{border-left-color:var(--accent)}
+    .bco-resource-name{font-size:.88rem;color:var(--text2);font-weight:500;transition:color .2s}
+    .bco-resource-card:hover .bco-resource-name{color:var(--text)}
+    .bco-resource-arrow{font-size:1rem;color:var(--accent);opacity:0;transition:opacity .2s}
+    .bco-resource-card:hover .bco-resource-arrow{opacity:1}
+    @media(max-width:860px){
+      .bco-layout{grid-template-columns:1fr;gap:0}
+      .bco-sidebar{display:none}
+      .bco-toc-mobile{display:flex;gap:.25rem;overflow-x:auto;padding:.75rem 0;margin-bottom:1rem;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+      .bco-toc-mobile::-webkit-scrollbar{display:none}
+      .bco-toc-mobile-link{flex-shrink:0;padding:.35rem .75rem;font-size:.78rem;font-weight:600;color:var(--text2);background:var(--bg2);border:1px solid var(--border);border-radius:4px;text-decoration:none;white-space:nowrap;transition:color .2s,border-color .2s}
+      .bco-toc-mobile-link:hover{color:var(--accent);border-color:var(--accent)}
+      .bco-header h1{font-size:1.7rem}
+      .bco-section-header{margin:0 -1rem 1rem;padding:.6rem 1rem}
+      .bco-resources-grid{grid-template-columns:repeat(2,1fr)}
+    }
+    @media(max-width:600px){
+      .bco-wrap{padding:0 1rem 1.5rem}
+      .bco-resources-grid{grid-template-columns:1fr}
+      .bco-header h1{font-size:1.5rem}
+    }
+  </style>
+  <AuthorBox updated="2026-03-04" />
+</Base>

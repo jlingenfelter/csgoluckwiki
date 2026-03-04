@@ -1,0 +1,236 @@
+---
+import Base from '../layouts/Base.astro';
+import AuthorBox from '../components/AuthorBox.astro';
+import { faqSchema, breadcrumbSchema } from '../lib/weapons';
+
+const title = 'How to Fix Packet Loss in CS2 | CSGOLuck Wiki';
+const description = 'Packet loss ruining your CS2 matches? Follow these steps to diagnose, reduce, and fix packet loss for stable online gameplay.';
+
+const breadcrumbs = [
+  { name: 'Home', url: '/' },
+  { name: 'Server Status & Technical FAQ', url: '/cs2-server-status-technical-faq' },
+  { name: 'Fix Packet Loss', url: '/cs2-fix-packet-loss' },
+];
+
+const faqs = [
+  {
+    question: 'What does packet loss look like in CS2?',
+    answer: 'Packet loss causes players to teleport or rubber-band, shots to not register, and actions to feel delayed or skipped. The net graph shows packet loss as a percentage. See our <a href="/cs2-server-status-technical-faq/">server status FAQ</a> for more.',
+  },
+  {
+    question: 'Is 1% packet loss bad in CS2?',
+    answer: 'Even 1% packet loss is noticeable in a fast-paced game like CS2. Ideally you want 0% packet loss. Anything above 2-3% will significantly degrade your experience. Visit our <a href="/cs2-server-status-technical-faq/">server status FAQ</a> for details.',
+  },
+  {
+    question: 'Can my ISP cause packet loss?',
+    answer: 'Yes. ISP congestion, faulty infrastructure, and poor routing are among the most common causes of packet loss. A traceroute can help identify where packets are being dropped. Check our <a href="/cs2-server-status-technical-faq/">server status FAQ</a> for troubleshooting tips.',
+  },
+];
+
+const breadcrumbSchema_ = breadcrumbSchema(breadcrumbs);
+const faqSchema_ = faqSchema(faqs);
+
+const articleSchema = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": title,
+  "description": description,
+  "author": { "@type": "Person", "name": "Josh Lingenfelter", "url": "https://www.linkedin.com/in/josh-lingenfelter-8157274b/", "jobTitle": "Director", "worksFor": { "@type": "Organization", "name": "CSGOLuck" } },
+  "publisher": { "@type": "Organization", "name": "CSGOLuck Wiki", "url": "https://wiki.csgoluck.com" },
+  "mainEntityOfPage": "https://wiki.csgoluck.com/cs2-fix-packet-loss/",
+  "inLanguage": "en-US"
+});
+
+const sections = [
+  { id: 'what-is', label: 'What Is Packet Loss?' },
+  { id: 'check', label: 'How to Check' },
+  { id: 'causes-fixes', label: 'Causes & Fixes' },
+  { id: 'commands', label: 'Network Commands' },
+  { id: 'router-isp', label: 'Router & ISP' },
+  { id: 'faq', label: 'FAQ' },
+  { id: 'related', label: 'Related Articles' },
+];
+---
+
+<Base title={title} description={description}>
+  <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema_)}></script>
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema_)}></script>
+  <script type="application/ld+json" set:html={articleSchema}></script>
+
+  <div class="fpl-wrap">
+    <nav class="fpl-breadcrumb">
+      <a href="/">Home</a>
+      <span class="fpl-sep">/</span>
+      <a href="/cs2-server-status-technical-faq/">Server Status & Technical FAQ</a>
+      <span class="fpl-sep">/</span>
+      <span>Fix Packet Loss</span>
+    </nav>
+
+    <header class="fpl-header">
+      <h1>How to Fix Packet Loss in CS2</h1>
+      <p class="fpl-subtitle">Diagnose dropped packets and restore stable connectivity for competitive play</p>
+    </header>
+
+    <nav class="fpl-toc-mobile" aria-label="Table of contents">
+      {sections.map((s) => (
+        <a href={`#${s.id}`} class="fpl-toc-mobile-link">{s.label}</a>
+      ))}
+    </nav>
+
+    <div class="fpl-layout">
+      <aside class="fpl-sidebar">
+        <nav class="fpl-toc" aria-label="Table of contents">
+          <span class="fpl-toc-title">Contents</span>
+          {sections.map((s) => (
+            <a href={`#${s.id}`} class="fpl-toc-link">{s.label}</a>
+          ))}
+        </nav>
+      </aside>
+
+      <article class="fpl-content">
+        <p class="fpl-intro">
+          Dealing with cs2 packet loss fix issues is one of the most frustrating experiences in competitive Counter-Strike. Packet loss means data packets travelling between your PC and the game server are being dropped -- they never arrive. The result is rubber-banding, teleporting enemies, unregistered shots, and an overall feeling that the game is fighting against you. This guide walks through how to identify, diagnose, and fix packet loss step by step.
+        </p>
+
+        <section id="what-is">
+          <div class="fpl-section-header"><h2>What Is Packet Loss in CS2?</h2></div>
+          <p>Every action you take in CS2 -- moving, shooting, throwing a grenade -- is sent to the game server as a network packet. Simultaneously, the server sends packets back to your client with information about what other players are doing. Packet loss occurs when some of these packets fail to reach their destination.</p>
+          <p>Even small amounts of packet loss create problems in CS2. A lost packet containing your shot input means the server never processes that shot. A lost packet from the server means an enemy's movement skips frames on your screen. At high levels of competitive play, even 1% packet loss creates a noticeable disadvantage.</p>
+          <p>Packet loss differs from high ping. High ping means all packets are delayed but still arrive. Packet loss means some packets never arrive at all. The distinction matters because the fixes are different -- latency issues are about distance and routing, while packet loss is about connection stability and reliability.</p>
+        </section>
+
+        <section id="check">
+          <div class="fpl-section-header"><h2>How to Check for Packet Loss</h2></div>
+          <p>CS2 provides built-in tools to monitor packet loss in real time:</p>
+          <ul class="fpl-list">
+            <li><strong>Net graph:</strong> Open the console and type <code>cq_netgraph 1</code>. This overlays network statistics on your screen, including packet loss percentage for both incoming and outgoing packets</li>
+            <li><strong>Scoreboard indicators:</strong> CS2 displays warning icons when network issues are detected. A broken chain-link icon indicates packet loss</li>
+            <li><strong>Windows command line:</strong> Open Command Prompt and run <code>ping -n 100 google.com</code> to test your general connection. Lost packets here indicate a problem outside of CS2</li>
+          </ul>
+          <p>If the net graph shows packet loss only during certain moments (like when many grenades explode or lots of players are in view), the issue may be related to your PC's processing power rather than your network. If loss is constant, it is a network problem.</p>
+        </section>
+
+        <section id="causes-fixes">
+          <div class="fpl-section-header"><h2>Common Causes and Fixes</h2></div>
+          <p>Work through these fixes systematically. After each change, play a match or two and check your net graph to see if packet loss has improved:</p>
+          <ul class="fpl-list">
+            <li><strong>Switch to Ethernet:</strong> Wi-Fi is the number one cause of packet loss for gamers. An Ethernet cable provides a direct, interference-free connection to your router. If running a cable is impractical, consider powerline adapters as an alternative</li>
+            <li><strong>Restart network hardware:</strong> Power cycle your modem and router by unplugging them for 30 seconds. This clears overloaded buffers and refreshes connections to your ISP</li>
+            <li><strong>Close competing applications:</strong> Streaming, large downloads, cloud sync, and video calls all consume bandwidth. Pause or close them while playing</li>
+            <li><strong>Check cables:</strong> Damaged or loose Ethernet cables cause intermittent packet loss. Try a different cable if yours is old or shows visible wear</li>
+            <li><strong>Update network drivers:</strong> Outdated network adapter drivers can cause packet handling issues. Check your motherboard or adapter manufacturer's website for the latest drivers</li>
+            <li><strong>Disable background network services:</strong> Windows Update, OneDrive sync, and antivirus cloud features can spike network usage unpredictably. Temporarily disable them while gaming</li>
+            <li><strong>Test on a different device:</strong> If another PC or console on the same network also shows packet loss (via a speed test), the problem is with your router, modem, or ISP</li>
+          </ul>
+        </section>
+
+        <section id="commands">
+          <div class="fpl-section-header"><h2>Network Optimization Commands</h2></div>
+          <p>CS2 offers several console commands and launch options that can help manage packet loss effects. Note that these do not eliminate the root cause but can mitigate the impact:</p>
+          <ul class="fpl-list">
+            <li><strong><code>rate 786432</code>:</strong> Sets the maximum data rate between your client and the server. The default and maximum value of 786432 ensures you are not artificially limiting your bandwidth</li>
+            <li><strong><code>cl_interp_ratio 1</code>:</strong> Reduces interpolation, making the game use fewer buffered frames. This feels more responsive but is less forgiving of packet loss. Use <code>cl_interp_ratio 2</code> if you experience frequent loss</li>
+            <li><strong>Max acceptable ping setting:</strong> Lowering this in game settings forces matchmaking to select closer servers, which generally have fewer routing hops and less chance of packet loss</li>
+          </ul>
+          <p>For a comprehensive list of launch options and console commands, see our <a href="/launch-options/">launch options guide</a>. These tweaks complement the network fixes above but should not be relied on as the sole solution.</p>
+        </section>
+
+        <section id="router-isp">
+          <div class="fpl-section-header"><h2>Router and ISP Troubleshooting</h2></div>
+          <p>If local fixes have not resolved your packet loss, the issue likely lies with your router hardware or ISP infrastructure:</p>
+          <ul class="fpl-list">
+            <li><strong>Update router firmware:</strong> Log into your router's admin panel (usually at 192.168.1.1 or 192.168.0.1) and check for firmware updates. Manufacturers fix packet handling bugs in firmware updates</li>
+            <li><strong>Check router age:</strong> Routers older than 5-6 years may struggle with modern network demands. Consider upgrading to a newer model with better packet processing capabilities</li>
+            <li><strong>Enable/configure QoS:</strong> Quality of Service settings can prioritise game traffic over other network traffic. Configure CS2 or Steam as high priority in your router's QoS settings</li>
+            <li><strong>Run a traceroute:</strong> Use <code>tracert</code> (Windows) or <code>traceroute</code> (macOS/Linux) to a CS2 server IP. Look for hops with high latency or timeouts -- these indicate where packets are being lost</li>
+            <li><strong>Contact your ISP:</strong> Share your traceroute results with your ISP's technical support team. Request they check for congestion or faulty equipment along the route. Ask specifically about packet loss at the identified hops</li>
+          </ul>
+          <p>If your ISP is unable to resolve persistent packet loss, consider whether alternative providers are available. Fibre optic connections generally provide the most reliable packet delivery. For more network troubleshooting, see our guide on <a href="/cs2-fix-net-jitter/">fixing net jitter</a> and check if <a href="/is-cs2-down/">CS2 servers are down</a> to rule out server-side issues. You can also refer to <a href="https://help.steampowered.com/" target="_blank" rel="noopener">Steam Support</a> for additional networking guidance.</p>
+        </section>
+
+        <section id="faq">
+          <div class="fpl-section-header"><h2>Frequently Asked Questions</h2></div>
+          <div class="fpl-faq-list">
+            {faqs.map((faq) => (
+              <details class="fpl-faq-item">
+                <summary class="fpl-faq-question">{faq.question}</summary>
+                <p class="fpl-faq-answer" set:html={faq.answer}></p>
+              </details>
+            ))}
+          </div>
+        </section>
+
+        <section id="related">
+          <div class="fpl-section-header"><h2>Related Articles</h2></div>
+          <div class="fpl-resources-grid">
+            <a href="/cs2-server-status-technical-faq/" class="fpl-resource-card"><span class="fpl-resource-name">Server Status & Technical FAQ Hub</span><span class="fpl-resource-arrow">&rarr;</span></a>
+            <a href="/cs2-fix-net-jitter/" class="fpl-resource-card"><span class="fpl-resource-name">Fix Net Jitter</span><span class="fpl-resource-arrow">&rarr;</span></a>
+            <a href="/cs2-trust-factor/" class="fpl-resource-card"><span class="fpl-resource-name">CS2 Trust Factor</span><span class="fpl-resource-arrow">&rarr;</span></a>
+            <a href="/launch-options/" class="fpl-resource-card"><span class="fpl-resource-name">Launch Options</span><span class="fpl-resource-arrow">&rarr;</span></a>
+          </div>
+        </section>
+      </article>
+    </div>
+  </div>
+
+  <style>
+    .fpl-wrap{max-width:1100px;margin:0 auto;padding:0 1.5rem 2rem}
+    .fpl-breadcrumb{display:flex;align-items:center;gap:.5rem;padding:1.25rem 0;font-size:.85rem;color:var(--text2)}
+    .fpl-breadcrumb a{color:var(--accent);text-decoration:none}
+    .fpl-breadcrumb a:hover{color:var(--accent2)}
+    .fpl-sep{color:var(--border)}
+    .fpl-header{padding:1.5rem 0 1.25rem;border-bottom:2px solid var(--accent);margin-bottom:1.5rem}
+    .fpl-header h1{margin:0 0 .35rem;font-size:2.2rem;font-weight:800;color:var(--text);letter-spacing:-.02em;line-height:1.2}
+    .fpl-subtitle{margin:0;font-size:1.05rem;color:var(--text2);font-weight:400}
+    .fpl-toc-mobile{display:none}
+    .fpl-layout{display:grid;grid-template-columns:220px 1fr;gap:2.5rem;align-items:start}
+    .fpl-sidebar{position:sticky;top:80px}
+    .fpl-toc{display:flex;flex-direction:column;gap:0;border-left:2px solid var(--border);padding-left:0}
+    .fpl-toc-title{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--accent);padding:0 0 .6rem 1rem}
+    .fpl-toc-link{display:block;padding:.4rem 1rem;font-size:.82rem;color:var(--text2);text-decoration:none;border-left:2px solid transparent;margin-left:-2px;transition:color .2s,border-color .2s}
+    .fpl-toc-link:hover{color:var(--text);border-left-color:var(--accent)}
+    .fpl-content{min-width:0}
+    .fpl-intro{font-size:1rem;line-height:1.8;color:var(--text2);margin-bottom:2rem}
+    .fpl-section-header{background:rgba(46,204,113,.05);margin:0 -1.25rem 1.25rem;padding:.75rem 1.25rem;border-radius:4px}
+    .fpl-section-header h2{margin:0;padding:0;font-size:1.5rem;font-weight:700;color:var(--text);border:none;letter-spacing:-.01em}
+    section{margin-bottom:2.5rem}
+    p{line-height:1.7;color:var(--text2);margin-bottom:1rem}
+    .fpl-list{list-style:none;padding:0;margin:.75rem 0 1.5rem}
+    .fpl-list li{padding:.4rem 0 .4rem 1.6rem;position:relative;color:var(--text2);line-height:1.65}
+    .fpl-list li::before{content:'';position:absolute;left:.25rem;top:.75rem;width:6px;height:6px;background:var(--accent);border-radius:1px}
+    .fpl-list li strong{color:var(--text)}
+    .fpl-faq-list{display:flex;flex-direction:column;gap:.5rem}
+    .fpl-faq-item{background:var(--bg2);border:1px solid var(--border);border-radius:4px;overflow:hidden}
+    .fpl-faq-question{display:block;padding:1rem 1.25rem;font-size:.95rem;font-weight:600;color:var(--text);cursor:pointer;list-style:none;position:relative;padding-right:2.5rem;transition:background .2s}
+    .fpl-faq-question::-webkit-details-marker{display:none}
+    .fpl-faq-question::after{content:'+';position:absolute;right:1.25rem;top:50%;transform:translateY(-50%);font-size:1.2rem;color:var(--accent);font-weight:700}
+    .fpl-faq-item[open] .fpl-faq-question::after{content:'\2212'}
+    .fpl-faq-item[open] .fpl-faq-question{border-bottom:1px solid var(--border);background:rgba(46,204,113,.03)}
+    .fpl-faq-question:hover{background:rgba(46,204,113,.03)}
+    .fpl-faq-answer{padding:1rem 1.25rem;margin:0;font-size:.9rem;color:var(--text2);line-height:1.7}
+    .fpl-resources-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.6rem;margin:.5rem 0 1.5rem}
+    .fpl-resource-card{display:flex;align-items:center;justify-content:space-between;padding:.75rem 1rem;background:var(--bg2);border:1px solid var(--border);border-radius:4px;text-decoration:none;border-left:2px solid transparent;transition:border-left-color .2s,color .2s}
+    .fpl-resource-card:hover{border-left-color:var(--accent)}
+    .fpl-resource-name{font-size:.88rem;color:var(--text2);font-weight:500;transition:color .2s}
+    .fpl-resource-card:hover .fpl-resource-name{color:var(--text)}
+    .fpl-resource-arrow{font-size:1rem;color:var(--accent);opacity:0;transition:opacity .2s}
+    .fpl-resource-card:hover .fpl-resource-arrow{opacity:1}
+    @media(max-width:860px){
+      .fpl-layout{grid-template-columns:1fr;gap:0}
+      .fpl-sidebar{display:none}
+      .fpl-toc-mobile{display:flex;gap:.25rem;overflow-x:auto;padding:.75rem 0;margin-bottom:1rem;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+      .fpl-toc-mobile::-webkit-scrollbar{display:none}
+      .fpl-toc-mobile-link{flex-shrink:0;padding:.35rem .75rem;font-size:.78rem;font-weight:600;color:var(--text2);background:var(--bg2);border:1px solid var(--border);border-radius:4px;text-decoration:none;white-space:nowrap;transition:color .2s,border-color .2s}
+      .fpl-toc-mobile-link:hover{color:var(--accent);border-color:var(--accent)}
+      .fpl-header h1{font-size:1.7rem}
+      .fpl-section-header{margin:0 -1rem 1rem;padding:.6rem 1rem}
+      .fpl-resources-grid{grid-template-columns:repeat(2,1fr)}
+    }
+    @media(max-width:600px){
+      .fpl-wrap{padding:0 1rem 1.5rem}
+      .fpl-resources-grid{grid-template-columns:1fr}
+      .fpl-header h1{font-size:1.5rem}
+    }
+  </style>
+  <AuthorBox updated="2026-03-04" />
+</Base>

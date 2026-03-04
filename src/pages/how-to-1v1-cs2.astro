@@ -1,0 +1,248 @@
+---
+import Base from '../layouts/Base.astro';
+import AuthorBox from '../components/AuthorBox.astro';
+import { faqSchema, breadcrumbSchema } from '../lib/weapons';
+
+const title = 'How to 1v1 in CS2: Setup Guide | CSGOLuck Wiki';
+const description = 'Set up private or public 1v1 servers in CS2. Learn the console commands, workshop maps, and best settings for 1v1 practice.';
+
+const breadcrumbs = [
+  { name: 'Home', url: '/' },
+  { name: 'Gameplay & Practice', url: '/cs2-gameplay-practice-faq/' },
+  { name: 'How to 1v1', url: '/how-to-1v1-cs2/' },
+];
+
+const faqs = [
+  {
+    question: 'Can I 1v1 a friend in CS2 without a workshop map?',
+    answer: 'Yes. You can create a private match on any standard map and use console commands to set the round rules, starting money, and respawn settings for a 1v1 experience.',
+  },
+  {
+    question: 'What are the best console commands for 1v1?',
+    answer: 'Key commands include mp_roundtime_defuse 60, mp_startmoney 16000, mp_buy_anywhere 1, mp_warmup_end, and sv_infinite_ammo 1. These give both players full access to weapons and plenty of round time.',
+  },
+  {
+    question: 'Are there dedicated 1v1 servers in CS2?',
+    answer: 'Yes, many community servers run 1v1 arena modes where players are matched against each other on small maps. Use the community server browser and search for "1v1" to find them.',
+  },
+  {
+    question: 'Does 1v1 practice actually help in competitive?',
+    answer: 'Absolutely. 1v1 practice isolates your aim duels, peeking technique, and crosshair placement in a controlled environment. It is one of the most efficient ways to improve raw fragging ability.',
+  },
+];
+
+const breadcrumbSchema_ = breadcrumbSchema(breadcrumbs);
+const faqSchema_ = faqSchema(faqs);
+
+const articleSchema = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": title,
+  "description": description,
+  "author": { "@type": "Person", "name": "Josh Lingenfelter", "url": "https://www.linkedin.com/in/josh-lingenfelter-8157274b/", "jobTitle": "Director", "worksFor": { "@type": "Organization", "name": "CSGOLuck" } },
+  "publisher": { "@type": "Organization", "name": "CSGOLuck Wiki", "url": "https://wiki.csgoluck.com" },
+  "mainEntityOfPage": "https://wiki.csgoluck.com/how-to-1v1-cs2/",
+  "inLanguage": "en-US"
+});
+
+const sections = [
+  { id: 'private-server', label: 'Private 1v1 Server' },
+  { id: 'console-commands', label: 'Console Commands' },
+  { id: 'workshop-maps', label: 'Workshop Maps' },
+  { id: 'public-servers', label: 'Public 1v1 Servers' },
+  { id: 'tips', label: 'Practice Tips' },
+  { id: 'faq', label: 'FAQ' },
+  { id: 'related', label: 'Related Articles' },
+];
+---
+
+<Base title={title} description={description}>
+  <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema_)}></script>
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema_)}></script>
+  <script type="application/ld+json" set:html={articleSchema}></script>
+
+  <div class="hto-wrap">
+    <nav class="hto-breadcrumb">
+      <a href="/">Home</a>
+      <span class="hto-sep">/</span>
+      <a href="/cs2-gameplay-practice-faq/">Gameplay & Practice</a>
+      <span class="hto-sep">/</span>
+      <span>How to 1v1</span>
+    </nav>
+
+    <header class="hto-header">
+      <h1>How to 1v1 in CS2</h1>
+      <p class="hto-subtitle">Set up the perfect 1v1 environment for aim practice and friendly duels</p>
+    </header>
+
+    <nav class="hto-toc-mobile" aria-label="Table of contents">
+      {sections.map((s) => (
+        <a href={`#${s.id}`} class="hto-toc-mobile-link">{s.label}</a>
+      ))}
+    </nav>
+
+    <div class="hto-layout">
+      <aside class="hto-sidebar">
+        <nav class="hto-toc" aria-label="Table of contents">
+          <span class="hto-toc-title">Contents</span>
+          {sections.map((s) => (
+            <a href={`#${s.id}`} class="hto-toc-link">{s.label}</a>
+          ))}
+        </nav>
+      </aside>
+
+      <article class="hto-content">
+        <p class="hto-intro">
+          Knowing <strong>how to 1v1 in CS2</strong> is essential for anyone who wants to sharpen their aim duels and warm up with friends. Whether you prefer a private match with custom settings or a public arena server, CS2 offers several ways to set up focused 1v1 practice. This guide covers the commands, maps, and tips you need to get started.
+        </p>
+
+        <section id="private-server">
+          <div class="hto-section-header"><h2>Setting Up a Private 1v1 Server</h2></div>
+          <p>The simplest way to 1v1 a friend is to host a private match. Here is the process:</p>
+          <ul class="hto-list">
+            <li><strong>Step 1:</strong> From the CS2 main menu, go to Play and select Practice or Private Queue. Choose any map -- smaller maps work best for 1v1.</li>
+            <li><strong>Step 2:</strong> Set the lobby to invite-only and invite your friend through Steam.</li>
+            <li><strong>Step 3:</strong> Once in the match, open the developer console (press the tilde key ~) and enter the <a href="/cs2-commands/">console commands</a> listed in the next section to configure the match for 1v1 play.</li>
+            <li><strong>Step 4:</strong> Start playing. You can restart the match at any time with <code>mp_restartgame 1</code>.</li>
+          </ul>
+          <p>If you have a pre-built configuration file for practice, you can execute it with the <code>exec</code> command. Check our <a href="/practice-config/">practice config guide</a> for ready-made configs you can drop into your CS2 folder.</p>
+        </section>
+
+        <section id="console-commands">
+          <div class="hto-section-header"><h2>Essential Console Commands for 1v1</h2></div>
+          <p>These commands configure the match for a clean 1v1 experience. Enter them in the developer console after loading into a private match:</p>
+          <ul class="hto-list">
+            <li><strong>mp_roundtime_defuse 60</strong> -- Sets round time to 60 minutes so you are not rushed.</li>
+            <li><strong>mp_startmoney 16000</strong> -- Gives both players maximum starting money for full buy access.</li>
+            <li><strong>mp_buy_anywhere 1</strong> -- Allows buying weapons from any location on the map.</li>
+            <li><strong>mp_buytime 9999</strong> -- Extends the buy period for the entire round.</li>
+            <li><strong>mp_freezetime 0</strong> -- Removes the freeze time at the start of each round.</li>
+            <li><strong>mp_warmup_end</strong> -- Ends warmup immediately so you can start playing.</li>
+            <li><strong>sv_cheats 1</strong> -- Required for some practice commands.</li>
+            <li><strong>mp_restartgame 1</strong> -- Restarts the match to apply changes cleanly.</li>
+          </ul>
+          <p>For infinite ammo during warmup, add <code>sv_infinite_ammo 1</code>. For automatic respawns, use <code>mp_respawn_on_death_ct 1</code> and <code>mp_respawn_on_death_t 1</code>.</p>
+        </section>
+
+        <section id="workshop-maps">
+          <div class="hto-section-header"><h2>Best 1v1 Workshop Maps</h2></div>
+          <p>Workshop maps designed for 1v1 offer purpose-built arenas that are far better than playing on full-sized competitive maps. Browse and subscribe through the <a href="https://steamcommunity.com/workshop/browse/?appid=730" target="_blank" rel="noopener">Steam Workshop</a>.</p>
+          <ul class="hto-list">
+            <li><strong>aim_map:</strong> The classic aim map with a simple, symmetrical layout. Clean sightlines and no clutter make it perfect for raw aim duels.</li>
+            <li><strong>1v1 Arena maps:</strong> Multi-level arena maps that rotate players through different weapon matchups. Great for varied practice.</li>
+            <li><strong>aim_redline:</strong> A popular aim map with long and short angles, testing both rifling and close-quarters combat.</li>
+            <li><strong>Aim Botz:</strong> While primarily a solo aim trainer, it can be loaded for 1v1 practice with modified settings.</li>
+          </ul>
+          <p>After subscribing to a workshop map, you can load it from the Workshop Maps section in the Play menu. For more map recommendations, visit our <a href="/workshop-maps/">workshop maps directory</a>.</p>
+        </section>
+
+        <section id="public-servers">
+          <div class="hto-section-header"><h2>Joining Public 1v1 Servers</h2></div>
+          <p>If you want to 1v1 random opponents without the setup hassle, public community servers are the way to go:</p>
+          <ul class="hto-list">
+            <li><strong>Community Server Browser:</strong> Open CS2, go to Play, and select Community Server Browser. Type "1v1" or "aim arena" in the search filter.</li>
+            <li><strong>How arenas work:</strong> Most 1v1 servers use an arena system where you are paired against another player. Winners move up to higher arenas while losers move down, creating a natural skill ladder within the server.</li>
+            <li><strong>Weapon rotation:</strong> Many arena servers rotate through different weapons each round -- rifles, pistols, AWP, deagle -- giving you practice with a variety of guns.</li>
+          </ul>
+          <p>Public 1v1 servers are an excellent warmup routine before competitive matches. The short, intense duels quickly sharpen your crosshair placement and reaction time.</p>
+        </section>
+
+        <section id="tips">
+          <div class="hto-section-header"><h2>Tips for Effective 1v1 Practice</h2></div>
+          <p>Getting the most out of 1v1 sessions requires intentional practice, not just mindless fragging:</p>
+          <ul class="hto-list">
+            <li><strong>Focus on one skill at a time:</strong> Spend a session working specifically on headshot accuracy, then another on peeking technique. Trying to improve everything at once dilutes your focus.</li>
+            <li><strong>Vary your weapons:</strong> Do not just practice with the AK-47 or M4. Include pistol rounds, AWP duels, and SMG fights to become well-rounded.</li>
+            <li><strong>Practice against better players:</strong> Playing against someone slightly above your level pushes you to improve faster than farming easy kills.</li>
+            <li><strong>Use the same sensitivity:</strong> Always practice with your competitive sensitivity. Changing your sens for practice creates inconsistency.</li>
+            <li><strong>Limit sessions:</strong> Focused 20-30 minute 1v1 sessions are more productive than hour-long grinds where fatigue sets in and bad habits form.</li>
+          </ul>
+        </section>
+
+        <section id="faq">
+          <div class="hto-section-header"><h2>Frequently Asked Questions</h2></div>
+          <div class="hto-faq-list">
+            {faqs.map((faq) => (
+              <details class="hto-faq-item">
+                <summary class="hto-faq-question">{faq.question}</summary>
+                <p class="hto-faq-answer">{faq.answer}</p>
+              </details>
+            ))}
+          </div>
+        </section>
+
+        <section id="related">
+          <div class="hto-section-header"><h2>Related Articles</h2></div>
+          <div class="hto-resources-grid">
+            <a href="/cs2-gameplay-practice-faq/" class="hto-resource-card"><span class="hto-resource-name">Gameplay & Practice Hub</span><span class="hto-resource-arrow">&rarr;</span></a>
+            <a href="/practice-smokes-cs2/" class="hto-resource-card"><span class="hto-resource-name">Practice Smokes</span><span class="hto-resource-arrow">&rarr;</span></a>
+            <a href="/how-to-surf-cs2/" class="hto-resource-card"><span class="hto-resource-name">How to Surf in CS2</span><span class="hto-resource-arrow">&rarr;</span></a>
+            <a href="/practice-config/" class="hto-resource-card"><span class="hto-resource-name">Practice Config</span><span class="hto-resource-arrow">&rarr;</span></a>
+            <a href="/cs2-commands/" class="hto-resource-card"><span class="hto-resource-name">CS2 Commands</span><span class="hto-resource-arrow">&rarr;</span></a>
+          </div>
+        </section>
+      </article>
+    </div>
+  </div>
+
+  <style>
+    .hto-wrap{max-width:1100px;margin:0 auto;padding:0 1.5rem 2rem}
+    .hto-breadcrumb{display:flex;align-items:center;gap:.5rem;padding:1.25rem 0;font-size:.85rem;color:var(--text2)}
+    .hto-breadcrumb a{color:var(--accent);text-decoration:none}
+    .hto-breadcrumb a:hover{color:var(--accent2)}
+    .hto-sep{color:var(--border)}
+    .hto-header{padding:1.5rem 0 1.25rem;border-bottom:2px solid var(--accent);margin-bottom:1.5rem}
+    .hto-header h1{margin:0 0 .35rem;font-size:2.2rem;font-weight:800;color:var(--text);letter-spacing:-.02em;line-height:1.2}
+    .hto-subtitle{margin:0;font-size:1.05rem;color:var(--text2);font-weight:400}
+    .hto-toc-mobile{display:none}
+    .hto-layout{display:grid;grid-template-columns:220px 1fr;gap:2.5rem;align-items:start}
+    .hto-sidebar{position:sticky;top:80px}
+    .hto-toc{display:flex;flex-direction:column;gap:0;border-left:2px solid var(--border);padding-left:0}
+    .hto-toc-title{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--accent);padding:0 0 .6rem 1rem}
+    .hto-toc-link{display:block;padding:.4rem 1rem;font-size:.82rem;color:var(--text2);text-decoration:none;border-left:2px solid transparent;margin-left:-2px;transition:color .2s,border-color .2s}
+    .hto-toc-link:hover{color:var(--text);border-left-color:var(--accent)}
+    .hto-content{min-width:0}
+    .hto-intro{font-size:1rem;line-height:1.8;color:var(--text2);margin-bottom:2rem}
+    .hto-section-header{background:rgba(46,204,113,.05);margin:0 -1.25rem 1.25rem;padding:.75rem 1.25rem;border-radius:4px}
+    .hto-section-header h2{margin:0;padding:0;font-size:1.5rem;font-weight:700;color:var(--text);border:none;letter-spacing:-.01em}
+    section{margin-bottom:2.5rem}
+    p{line-height:1.7;color:var(--text2);margin-bottom:1rem}
+    .hto-list{list-style:none;padding:0;margin:.75rem 0 1.5rem}
+    .hto-list li{padding:.4rem 0 .4rem 1.6rem;position:relative;color:var(--text2);line-height:1.65}
+    .hto-list li::before{content:'';position:absolute;left:.25rem;top:.75rem;width:6px;height:6px;background:var(--accent);border-radius:1px}
+    .hto-list li strong{color:var(--text)}
+    .hto-faq-list{display:flex;flex-direction:column;gap:.5rem}
+    .hto-faq-item{background:var(--bg2);border:1px solid var(--border);border-radius:4px;overflow:hidden}
+    .hto-faq-question{display:block;padding:1rem 1.25rem;font-size:.95rem;font-weight:600;color:var(--text);cursor:pointer;list-style:none;position:relative;padding-right:2.5rem;transition:background .2s}
+    .hto-faq-question::-webkit-details-marker{display:none}
+    .hto-faq-question::after{content:'+';position:absolute;right:1.25rem;top:50%;transform:translateY(-50%);font-size:1.2rem;color:var(--accent);font-weight:700}
+    .hto-faq-item[open] .hto-faq-question::after{content:'\2212'}
+    .hto-faq-item[open] .hto-faq-question{border-bottom:1px solid var(--border);background:rgba(46,204,113,.03)}
+    .hto-faq-question:hover{background:rgba(46,204,113,.03)}
+    .hto-faq-answer{padding:1rem 1.25rem;margin:0;font-size:.9rem;color:var(--text2);line-height:1.7}
+    .hto-resources-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.6rem;margin:.5rem 0 1.5rem}
+    .hto-resource-card{display:flex;align-items:center;justify-content:space-between;padding:.75rem 1rem;background:var(--bg2);border:1px solid var(--border);border-radius:4px;text-decoration:none;border-left:2px solid transparent;transition:border-left-color .2s,color .2s}
+    .hto-resource-card:hover{border-left-color:var(--accent)}
+    .hto-resource-name{font-size:.88rem;color:var(--text2);font-weight:500;transition:color .2s}
+    .hto-resource-card:hover .hto-resource-name{color:var(--text)}
+    .hto-resource-arrow{font-size:1rem;color:var(--accent);opacity:0;transition:opacity .2s}
+    .hto-resource-card:hover .hto-resource-arrow{opacity:1}
+    @media(max-width:860px){
+      .hto-layout{grid-template-columns:1fr;gap:0}
+      .hto-sidebar{display:none}
+      .hto-toc-mobile{display:flex;gap:.25rem;overflow-x:auto;padding:.75rem 0;margin-bottom:1rem;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+      .hto-toc-mobile::-webkit-scrollbar{display:none}
+      .hto-toc-mobile-link{flex-shrink:0;padding:.35rem .75rem;font-size:.78rem;font-weight:600;color:var(--text2);background:var(--bg2);border:1px solid var(--border);border-radius:4px;text-decoration:none;white-space:nowrap;transition:color .2s,border-color .2s}
+      .hto-toc-mobile-link:hover{color:var(--accent);border-color:var(--accent)}
+      .hto-header h1{font-size:1.7rem}
+      .hto-section-header{margin:0 -1rem 1rem;padding:.6rem 1rem}
+      .hto-resources-grid{grid-template-columns:repeat(2,1fr)}
+    }
+    @media(max-width:600px){
+      .hto-wrap{padding:0 1rem 1.5rem}
+      .hto-resources-grid{grid-template-columns:1fr}
+      .hto-header h1{font-size:1.5rem}
+    }
+  </style>
+  <AuthorBox updated="2026-03-04" />
+</Base>

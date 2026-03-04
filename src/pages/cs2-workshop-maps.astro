@@ -1,0 +1,249 @@
+---
+import Base from '../layouts/Base.astro';
+import AuthorBox from '../components/AuthorBox.astro';
+import { faqSchema, breadcrumbSchema } from '../lib/weapons';
+
+const title = 'How to Play Workshop Maps in CS2 | CSGOLuck Wiki';
+const description = 'Step-by-step guide to downloading and playing workshop maps in CS2. Find, subscribe, and load custom maps for practice and fun.';
+
+const breadcrumbs = [
+  { name: 'Home', url: '/' },
+  { name: 'CS2 Maps & Callouts', url: '/cs2-maps-callouts-faq' },
+  { name: 'CS2 Workshop Maps', url: '/cs2-workshop-maps' },
+];
+
+const faqs = [
+  {
+    question: 'Are CS2 workshop maps free?',
+    answer: 'Yes, all workshop maps on Steam are free to download and play. You just need to own CS2 (which is also free-to-play) and have a Steam account to subscribe to workshop content.',
+  },
+  {
+    question: 'Can I play workshop maps with friends?',
+    answer: 'Yes. You can host a private server with a workshop map and invite friends to join. Load the map through the console and have friends connect to your server via the in-game friend system or by sharing your server IP.',
+  },
+  {
+    question: 'Do workshop maps work in competitive matchmaking?',
+    answer: 'No. Workshop maps are only available in private servers, practice mode, and community servers. Competitive and Premier matchmaking only use official active duty maps from the current map pool.',
+  },
+  {
+    question: 'How do I remove a workshop map I no longer want?',
+    answer: 'Go to the map\'s Steam Workshop page and click "Unsubscribe." The map files will be removed from your CS2 installation the next time Steam syncs your subscriptions.',
+  },
+];
+
+const breadcrumbSchema_ = breadcrumbSchema(breadcrumbs);
+const faqSchema_ = faqSchema(faqs);
+
+const articleSchema = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": title,
+  "description": description,
+  "author": { "@type": "Person", "name": "Josh Lingenfelter", "url": "https://www.linkedin.com/in/josh-lingenfelter-8157274b/", "jobTitle": "Director", "worksFor": { "@type": "Organization", "name": "CSGOLuck" } },
+  "publisher": { "@type": "Organization", "name": "CSGOLuck Wiki", "url": "https://wiki.csgoluck.com" },
+  "mainEntityOfPage": "https://wiki.csgoluck.com/cs2-workshop-maps/",
+  "inLanguage": "en-US"
+});
+
+const sections = [
+  { id: 'what-are', label: 'What Are Workshop Maps?' },
+  { id: 'finding', label: 'Finding Maps' },
+  { id: 'subscribing', label: 'Subscribing & Downloading' },
+  { id: 'loading', label: 'Loading Maps In-Game' },
+  { id: 'best-maps', label: 'Best Maps by Category' },
+  { id: 'faq', label: 'FAQ' },
+  { id: 'related', label: 'Related Articles' },
+];
+---
+
+<Base title={title} description={description}>
+  <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema_)}></script>
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema_)}></script>
+  <script type="application/ld+json" set:html={articleSchema}></script>
+
+  <div class="cwm-wrap">
+    <nav class="cwm-breadcrumb">
+      <a href="/">Home</a>
+      <span class="cwm-sep">/</span>
+      <a href="/cs2-maps-callouts-faq/">Maps & Callouts</a>
+      <span class="cwm-sep">/</span>
+      <span>CS2 Workshop Maps</span>
+    </nav>
+
+    <header class="cwm-header">
+      <h1>How to Play Workshop Maps in CS2</h1>
+      <p class="cwm-subtitle">Find, download, and load custom maps for practice, aim training, and fun</p>
+    </header>
+
+    <nav class="cwm-toc-mobile" aria-label="Table of contents">
+      {sections.map((s) => (
+        <a href={`#${s.id}`} class="cwm-toc-mobile-link">{s.label}</a>
+      ))}
+    </nav>
+
+    <div class="cwm-layout">
+      <aside class="cwm-sidebar">
+        <nav class="cwm-toc" aria-label="Table of contents">
+          <span class="cwm-toc-title">Contents</span>
+          {sections.map((s) => (
+            <a href={`#${s.id}`} class="cwm-toc-link">{s.label}</a>
+          ))}
+        </nav>
+      </aside>
+
+      <article class="cwm-content">
+        <p class="cwm-intro">
+          CS2 workshop maps unlock a massive library of community-created content beyond the official map pool. From dedicated aim training arenas to recreations of classic Counter-Strike maps, the Steam Workshop offers thousands of free maps that can dramatically improve your practice routine and add variety to your gameplay. This guide walks you through the entire process of finding, downloading, and playing workshop maps in CS2.
+        </p>
+
+        <section id="what-are">
+          <div class="cwm-section-header"><h2>What Are Workshop Maps?</h2></div>
+          <p>Workshop maps are custom maps created by the Counter-Strike community using Valve's map-making tools and shared through the Steam Workshop platform. Anyone with the necessary skills can create and publish a map, making the Workshop a constantly growing repository of player-made content.</p>
+          <p>These maps serve a wide range of purposes. Some are designed specifically for aim training, offering controlled environments where you can practice your flick shots, tracking, and spray control. Others recreate classic maps from previous Counter-Strike titles that have not been officially ported to CS2. Utility practice maps help you learn smoke, flash, and molotov lineups for competitive play.</p>
+          <p>Workshop maps are completely free and can be used in private servers or practice sessions. They are not available in official matchmaking -- only Valve's <a href="/cs2-map-pool/">active duty maps</a> appear in Competitive and Premier modes. However, community servers can host any workshop map, so you may encounter them in casual play as well.</p>
+        </section>
+
+        <section id="finding">
+          <div class="cwm-section-header"><h2>How to Find Workshop Maps</h2></div>
+          <p>The primary place to discover CS2 workshop maps is the <a href="https://steamcommunity.com/workshop/browse/?appid=730" target="_blank" rel="noopener">Steam Workshop for Counter-Strike 2</a>. You can access the Workshop through the Steam client or a web browser.</p>
+          <p>The Workshop offers several ways to browse and discover maps. You can sort by most popular (all time), trending, most recent, or most subscribed. The search function lets you find specific maps by name. Tags and categories help narrow results to map types like "aim training," "defuse," "competitive," or "fun."</p>
+          <p>When evaluating a workshop map, look at the subscriber count, star rating, and recent comments. Maps with high subscriber counts and positive ratings are generally well-made and regularly maintained. Check the upload and update dates -- actively maintained maps receive bug fixes and improvements over time. Reading the map description can also reveal important details about compatibility, features, and recommended settings.</p>
+        </section>
+
+        <section id="subscribing">
+          <div class="cwm-section-header"><h2>Subscribing and Downloading Maps</h2></div>
+          <p>To download a workshop map, you need to "subscribe" to it on the Steam Workshop. Here is the step-by-step process.</p>
+          <ul class="cwm-list">
+            <li><strong>Step 1:</strong> Find the map you want on the Steam Workshop (either through the Steam client or web browser)</li>
+            <li><strong>Step 2:</strong> Click the green "Subscribe" button on the map's Workshop page</li>
+            <li><strong>Step 3:</strong> Steam will automatically download the map files to your CS2 installation</li>
+            <li><strong>Step 4:</strong> Launch CS2 -- the map will be available to load once the download completes</li>
+          </ul>
+          <p>The download happens automatically in the background. Larger maps may take a few minutes depending on your internet connection. You can subscribe to multiple maps at once, and Steam will queue and download them all.</p>
+          <p>To manage your subscriptions, go to your Steam Workshop subscriptions page. From there you can see all maps you are subscribed to, check for updates, and unsubscribe from maps you no longer want. Unsubscribing removes the map files from your installation.</p>
+        </section>
+
+        <section id="loading">
+          <div class="cwm-section-header"><h2>Loading Workshop Maps In-Game</h2></div>
+          <p>Once you have subscribed to a map and it has finished downloading, there are several ways to load it in CS2.</p>
+
+          <h3>Through the Practice Menu</h3>
+          <p>The simplest method is to use CS2's Practice mode. From the main menu, select Play, then Practice. Workshop maps you have subscribed to should appear in the map selection list alongside official maps. Select the map and start a local server.</p>
+
+          <h3>Using Console Commands</h3>
+          <p>For more control, you can load workshop maps through the developer console. First, make sure the console is enabled in your game settings. Open the console (default key is the tilde ~ key) and use the following commands:</p>
+          <ul class="cwm-list">
+            <li><strong>map workshop/[map_id]/[map_name]:</strong> Loads a specific workshop map by its ID and filename</li>
+            <li><strong>ds_workshop_listmaps:</strong> Lists all subscribed workshop maps with their IDs</li>
+          </ul>
+          <p>If you are not sure of the exact map ID, use the list command first to see all available workshop maps. The map ID corresponds to the number in the Workshop page URL for that map. See our <a href="/practice-config/">practice config guide</a> for additional server setup commands that pair well with workshop maps.</p>
+
+          <h3>On Community Servers</h3>
+          <p>Many community servers host workshop maps for multiplayer play. When you connect to a server running a workshop map, CS2 will automatically download it if you do not already have it. Browse community server lists or join servers through third-party platforms to find specific workshop maps in a multiplayer setting.</p>
+        </section>
+
+        <section id="best-maps">
+          <div class="cwm-section-header"><h2>Best Workshop Maps by Category</h2></div>
+          <p>The Workshop contains thousands of maps, but certain categories are particularly popular and useful for improving your CS2 gameplay. Here are the most valuable types of workshop maps to look for.</p>
+
+          <h3>Aim Training Maps</h3>
+          <p>Aim training maps place you in controlled environments with bot targets or moving objects to help you practice your shooting mechanics. Look for maps that offer adjustable difficulty, different training modes (flicking, tracking, spray control), and performance tracking. These maps are one of the fastest ways to improve your mechanical aim.</p>
+
+          <h3>Utility Practice Maps</h3>
+          <p>Utility maps help you learn smoke grenades, flashbangs, molotov, and HE grenade lineups for competitive maps. The best utility maps mark landing positions and show throw trajectories, making it easy to memorize lineups for ranked play. Search for utility maps specific to each <a href="/cs2-maps/">active duty map</a>.</p>
+
+          <h3>Movement and Surf Maps</h3>
+          <p>Movement maps focus on teaching advanced movement techniques like bunny hopping, surfing, and KZ climbing. These maps range from beginner-friendly to extremely challenging and are excellent for developing overall movement control and game sense.</p>
+
+          <h3>Classic Map Recreations</h3>
+          <p>Community mappers have recreated beloved maps from previous Counter-Strike games that are not yet in CS2 officially. Maps like <a href="/cache-cs2/">Cache</a> and others can be found as workshop recreations, letting you play on familiar layouts within the CS2 engine. Browse the full list of official and community <a href="/workshop-maps/">workshop maps</a> on the wiki.</p>
+        </section>
+
+        <section id="faq">
+          <div class="cwm-section-header"><h2>Frequently Asked Questions</h2></div>
+          <div class="cwm-faq-list">
+            {faqs.map((faq) => (
+              <details class="cwm-faq-item">
+                <summary class="cwm-faq-question">{faq.question}</summary>
+                <p class="cwm-faq-answer">{faq.answer}</p>
+              </details>
+            ))}
+          </div>
+        </section>
+
+        <section id="related">
+          <div class="cwm-section-header"><h2>Related Articles</h2></div>
+          <div class="cwm-resources-grid">
+            <a href="/cs2-maps-callouts-faq/" class="cwm-resource-card"><span class="cwm-resource-name">Maps & Callouts Hub</span><span class="cwm-resource-arrow">&rarr;</span></a>
+            <a href="/cache-cs2/" class="cwm-resource-card"><span class="cwm-resource-name">Is Cache Coming to CS2?</span><span class="cwm-resource-arrow">&rarr;</span></a>
+            <a href="/cs2-map-pool/" class="cwm-resource-card"><span class="cwm-resource-name">CS2 Map Pool 2025</span><span class="cwm-resource-arrow">&rarr;</span></a>
+            <a href="/workshop-maps/" class="cwm-resource-card"><span class="cwm-resource-name">Workshop Maps</span><span class="cwm-resource-arrow">&rarr;</span></a>
+            <a href="/practice-config/" class="cwm-resource-card"><span class="cwm-resource-name">Practice Config</span><span class="cwm-resource-arrow">&rarr;</span></a>
+          </div>
+        </section>
+      </article>
+    </div>
+  </div>
+
+  <style>
+    .cwm-wrap{max-width:1100px;margin:0 auto;padding:0 1.5rem 2rem}
+    .cwm-breadcrumb{display:flex;align-items:center;gap:.5rem;padding:1.25rem 0;font-size:.85rem;color:var(--text2)}
+    .cwm-breadcrumb a{color:var(--accent);text-decoration:none}
+    .cwm-breadcrumb a:hover{color:var(--accent2)}
+    .cwm-sep{color:var(--border)}
+    .cwm-header{padding:1.5rem 0 1.25rem;border-bottom:2px solid var(--accent);margin-bottom:1.5rem}
+    .cwm-header h1{margin:0 0 .35rem;font-size:2.2rem;font-weight:800;color:var(--text);letter-spacing:-.02em;line-height:1.2}
+    .cwm-subtitle{margin:0;font-size:1.05rem;color:var(--text2);font-weight:400}
+    .cwm-toc-mobile{display:none}
+    .cwm-layout{display:grid;grid-template-columns:220px 1fr;gap:2.5rem;align-items:start}
+    .cwm-sidebar{position:sticky;top:80px}
+    .cwm-toc{display:flex;flex-direction:column;gap:0;border-left:2px solid var(--border);padding-left:0}
+    .cwm-toc-title{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--accent);padding:0 0 .6rem 1rem}
+    .cwm-toc-link{display:block;padding:.4rem 1rem;font-size:.82rem;color:var(--text2);text-decoration:none;border-left:2px solid transparent;margin-left:-2px;transition:color .2s,border-color .2s}
+    .cwm-toc-link:hover{color:var(--text);border-left-color:var(--accent)}
+    .cwm-content{min-width:0}
+    .cwm-intro{font-size:1rem;line-height:1.8;color:var(--text2);margin-bottom:2rem}
+    .cwm-section-header{background:rgba(46,204,113,.05);margin:0 -1.25rem 1.25rem;padding:.75rem 1.25rem;border-radius:4px}
+    .cwm-section-header h2{margin:0;padding:0;font-size:1.5rem;font-weight:700;color:var(--text);border:none;letter-spacing:-.01em}
+    section{margin-bottom:2.5rem}
+    h3{font-size:1.15rem;font-weight:600;margin:1.5rem 0 .6rem;color:var(--text)}
+    p{line-height:1.7;color:var(--text2);margin-bottom:1rem}
+    .cwm-list{list-style:none;padding:0;margin:.75rem 0 1.5rem}
+    .cwm-list li{padding:.4rem 0 .4rem 1.6rem;position:relative;color:var(--text2);line-height:1.65}
+    .cwm-list li::before{content:'';position:absolute;left:.25rem;top:.75rem;width:6px;height:6px;background:var(--accent);border-radius:1px}
+    .cwm-list li strong{color:var(--text)}
+    .cwm-faq-list{display:flex;flex-direction:column;gap:.5rem}
+    .cwm-faq-item{background:var(--bg2);border:1px solid var(--border);border-radius:4px;overflow:hidden}
+    .cwm-faq-question{display:block;padding:1rem 1.25rem;font-size:.95rem;font-weight:600;color:var(--text);cursor:pointer;list-style:none;position:relative;padding-right:2.5rem;transition:background .2s}
+    .cwm-faq-question::-webkit-details-marker{display:none}
+    .cwm-faq-question::after{content:'+';position:absolute;right:1.25rem;top:50%;transform:translateY(-50%);font-size:1.2rem;color:var(--accent);font-weight:700}
+    .cwm-faq-item[open] .cwm-faq-question::after{content:'\2212'}
+    .cwm-faq-item[open] .cwm-faq-question{border-bottom:1px solid var(--border);background:rgba(46,204,113,.03)}
+    .cwm-faq-question:hover{background:rgba(46,204,113,.03)}
+    .cwm-faq-answer{padding:1rem 1.25rem;margin:0;font-size:.9rem;color:var(--text2);line-height:1.7}
+    .cwm-resources-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.6rem;margin:.5rem 0 1.5rem}
+    .cwm-resource-card{display:flex;align-items:center;justify-content:space-between;padding:.75rem 1rem;background:var(--bg2);border:1px solid var(--border);border-radius:4px;text-decoration:none;border-left:2px solid transparent;transition:border-left-color .2s,color .2s}
+    .cwm-resource-card:hover{border-left-color:var(--accent)}
+    .cwm-resource-name{font-size:.88rem;color:var(--text2);font-weight:500;transition:color .2s}
+    .cwm-resource-card:hover .cwm-resource-name{color:var(--text)}
+    .cwm-resource-arrow{font-size:1rem;color:var(--accent);opacity:0;transition:opacity .2s}
+    .cwm-resource-card:hover .cwm-resource-arrow{opacity:1}
+    @media(max-width:860px){
+      .cwm-layout{grid-template-columns:1fr;gap:0}
+      .cwm-sidebar{display:none}
+      .cwm-toc-mobile{display:flex;gap:.25rem;overflow-x:auto;padding:.75rem 0;margin-bottom:1rem;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+      .cwm-toc-mobile::-webkit-scrollbar{display:none}
+      .cwm-toc-mobile-link{flex-shrink:0;padding:.35rem .75rem;font-size:.78rem;font-weight:600;color:var(--text2);background:var(--bg2);border:1px solid var(--border);border-radius:4px;text-decoration:none;white-space:nowrap;transition:color .2s,border-color .2s}
+      .cwm-toc-mobile-link:hover{color:var(--accent);border-color:var(--accent)}
+      .cwm-header h1{font-size:1.7rem}
+      .cwm-section-header{margin:0 -1rem 1rem;padding:.6rem 1rem}
+      .cwm-resources-grid{grid-template-columns:repeat(2,1fr)}
+    }
+    @media(max-width:600px){
+      .cwm-wrap{padding:0 1rem 1.5rem}
+      .cwm-resources-grid{grid-template-columns:1fr}
+      .cwm-header h1{font-size:1.5rem}
+    }
+  </style>
+  <AuthorBox updated="2026-03-04" />
+</Base>

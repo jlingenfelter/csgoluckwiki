@@ -1,0 +1,231 @@
+---
+import Base from '../layouts/Base.astro';
+import AuthorBox from '../components/AuthorBox.astro';
+import { faqSchema, breadcrumbSchema } from '../lib/weapons';
+
+const title = 'What Is StatTrak in CS2? Kill Counters Explained | CSGOLuck Wiki';
+const description = 'StatTrak weapons in CS2 track your confirmed kills on a digital counter. Learn how they work, which skins have them, and their value.';
+
+const breadcrumbs = [
+  { name: 'Home', url: '/' },
+  { name: 'Stats & ADR FAQ', url: '/cs2-stats-adr-tracking-faq' },
+  { name: 'What Is StatTrak', url: '/what-is-stattrak-cs2' },
+];
+
+const faqs = [
+  {
+    question: 'Does StatTrak count all kills or just competitive kills?',
+    answer: 'StatTrak counts kills across all game modes, not just competitive matches. Every confirmed kill with that weapon increments the counter, whether you are playing competitive, casual, deathmatch, or any other mode.',
+  },
+  {
+    question: 'Can you transfer StatTrak kills between skins?',
+    answer: 'Yes. Valve introduced StatTrak Swap Tools that allow you to transfer your kill count from one StatTrak weapon to another StatTrak weapon of the same type. The swap tool consumes both the source kills and itself during the transfer.',
+  },
+  {
+    question: 'Are StatTrak skins rarer than normal skins?',
+    answer: 'StatTrak versions of skins exist alongside non-StatTrak versions in case drops. When you unbox a skin, there is approximately a 10% chance it will be the StatTrak variant. This lower probability means fewer StatTrak copies exist, making them rarer and more expensive.',
+  },
+  {
+    question: 'Do StatTrak knives exist?',
+    answer: 'Yes. Knives can drop as StatTrak versions from cases. StatTrak knives are among the rarest and most expensive items in CS2 because they combine the already-low knife drop rate with the additional 10% StatTrak chance, making them exceptionally uncommon.',
+  },
+];
+
+const breadcrumbSchema_ = breadcrumbSchema(breadcrumbs);
+const faqSchema_ = faqSchema(faqs);
+
+const articleSchema = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": title,
+  "description": description,
+  "author": { "@type": "Person", "name": "Josh Lingenfelter", "url": "https://www.linkedin.com/in/josh-lingenfelter-8157274b/", "jobTitle": "Director", "worksFor": { "@type": "Organization", "name": "CSGOLuck" } },
+  "publisher": { "@type": "Organization", "name": "CSGOLuck Wiki", "url": "https://wiki.csgoluck.com" },
+  "mainEntityOfPage": "https://wiki.csgoluck.com/what-is-stattrak-cs2/",
+  "inLanguage": "en-US"
+});
+
+const sections = [
+  { id: 'what-stattrak', label: 'What StatTrak Means' },
+  { id: 'how-works', label: 'How It Works' },
+  { id: 'pricing', label: 'StatTrak Pricing' },
+  { id: 'which-weapons', label: 'Which Weapons' },
+  { id: 'reset', label: 'Resetting Counter' },
+  { id: 'faq', label: 'FAQ' },
+  { id: 'related', label: 'Related Articles' },
+];
+---
+
+<Base title={title} description={description}>
+  <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema_)}></script>
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema_)}></script>
+  <script type="application/ld+json" set:html={articleSchema}></script>
+
+  <div class="wist-wrap">
+    <nav class="wist-breadcrumb">
+      <a href="/">Home</a>
+      <span class="wist-sep">/</span>
+      <a href="/cs2-stats-adr-tracking-faq/">Stats & ADR FAQ</a>
+      <span class="wist-sep">/</span>
+      <span>What Is StatTrak</span>
+    </nav>
+
+    <header class="wist-header">
+      <h1>What Is StatTrak in CS2?</h1>
+      <p class="wist-subtitle">Kill counter weapons explained — how they work, their value, and everything you need to know</p>
+    </header>
+
+    <nav class="wist-toc-mobile" aria-label="Table of contents">
+      {sections.map((s) => (
+        <a href={`#${s.id}`} class="wist-toc-mobile-link">{s.label}</a>
+      ))}
+    </nav>
+
+    <div class="wist-layout">
+      <aside class="wist-sidebar">
+        <nav class="wist-toc" aria-label="Table of contents">
+          <span class="wist-toc-title">Contents</span>
+          {sections.map((s) => (
+            <a href={`#${s.id}`} class="wist-toc-link">{s.label}</a>
+          ))}
+        </nav>
+      </aside>
+
+      <article class="wist-content">
+        <p class="wist-intro">
+          StatTrak is a special attribute found on certain CS2 weapon skins that adds a digital kill counter to the weapon model. Understanding what StatTrak means in CS2 is important for anyone buying, trading, or collecting skins, because StatTrak versions of skins are consistently more valuable than their standard counterparts. This guide explains exactly how StatTrak works, which weapons can have it, and what it means for pricing.
+        </p>
+
+        <section id="what-stattrak">
+          <div class="wist-section-header"><h2>What StatTrak Means</h2></div>
+          <p>StatTrak is a technology applied to CS2 weapon skins that tracks the number of confirmed kills you get with that weapon. The kill count is displayed on a small digital LED counter built into the weapon's model, visible both to you during gameplay and to anyone who inspects your weapon.</p>
+          <p>The StatTrak designation appears in the weapon's name — for example, "StatTrak AK-47 | Redline" versus a standard "AK-47 | Redline." The prefix immediately identifies the weapon as having the kill-tracking feature and signals its higher rarity and value to other players.</p>
+          <p>StatTrak was introduced alongside the original Arms Deal update in CS:GO and has remained a core part of the skin ecosystem since. It adds a personalisation element beyond pure aesthetics — your kill count is unique to your gameplay and cannot be faked, making it a badge of experience with that particular weapon.</p>
+        </section>
+
+        <section id="how-works">
+          <div class="wist-section-header"><h2>How StatTrak Weapons Work</h2></div>
+          <p>When you get a kill with a StatTrak weapon, the counter increments by one. The counter tracks kills across all game modes including competitive, casual, deathmatch, and community servers. There is no distinction between ranked and unranked kills.</p>
+          <p>The counter is tied to the specific skin, not to your account. If you trade or sell a StatTrak weapon, the kill count goes with it. The new owner will see your accumulated kills on the counter. This means StatTrak weapons with very high kill counts can carry their own history and sometimes attract collectors who value weapons with significant kill tallies.</p>
+          <p>Only kills that you personally get with the weapon count toward the StatTrak total. Assists, team kills, and deaths do not affect the counter. The weapon must be the one that delivers the killing blow for the count to increment.</p>
+          <p>Visually, the LED counter is positioned on the weapon model and glows with a digital readout. In CS2, the counter display is well-integrated into weapon models and is clearly visible during normal gameplay and weapon inspection animations.</p>
+        </section>
+
+        <section id="pricing">
+          <div class="wist-section-header"><h2>StatTrak vs Non-StatTrak Pricing</h2></div>
+          <p>StatTrak versions of any skin are consistently more expensive than their non-StatTrak equivalents. The price premium varies depending on the skin's rarity tier and overall value, but StatTrak typically adds anywhere from a modest percentage to a significant multiplier on top of the base price.</p>
+          <p>The price premium exists because StatTrak skins are rarer. When a skin drops from a case opening, there is approximately a 10% chance it will be StatTrak. This means for every 10 copies of a particular skin that enter circulation, only about 1 is StatTrak, creating a roughly 9:1 supply ratio.</p>
+          <p>For inexpensive Mil-Spec (blue) skins, the StatTrak premium might only be a small absolute amount, since even the non-StatTrak version has little value. For expensive Covert (red) skins or knives, the StatTrak premium can represent a substantial dollar amount because the percentage premium is applied to a much larger base price.</p>
+          <p>StatTrak knives represent the pinnacle of rarity. The already-tiny knife drop rate combined with the 10% StatTrak chance makes StatTrak knives extraordinarily uncommon. A StatTrak knife in a desirable skin finish and Factory New condition can be among the most expensive items on the entire market. Browse current pricing on our <a href="/cs2-skins/">skins database</a> or use the <a href="/float-checker/">float checker</a> to verify specific items.</p>
+        </section>
+
+        <section id="which-weapons">
+          <div class="wist-section-header"><h2>Which Weapons Can Be StatTrak</h2></div>
+          <p>StatTrak is available on weapon skins that drop from weapon cases. This includes skins for all weapon categories — pistols, SMGs, rifles, shotguns, machine guns, and knives. If a weapon skin comes from a case, it has a chance of being StatTrak.</p>
+          <p>Not all skins in the game can be StatTrak, however. Some skin sources do not support the StatTrak attribute:</p>
+          <ul class="wist-list">
+            <li><strong>Case skins:</strong> Can be StatTrak (approximately 10% chance).</li>
+            <li><strong>Collection skins (map drops):</strong> Cannot be StatTrak. Skins that drop from specific maps or collections never have the StatTrak attribute.</li>
+            <li><strong>Trade-up contract results:</strong> Can be StatTrak only if all 10 input skins are StatTrak.</li>
+            <li><strong>Souvenir skins:</strong> Cannot be StatTrak. Souvenir skins from tournament drops have their own special gold stickers instead.</li>
+          </ul>
+          <p>This distinction matters for collectors and traders because it affects the total supply of StatTrak versions for any given skin. Case-exclusive skins have StatTrak variants, while collection-exclusive skins do not.</p>
+        </section>
+
+        <section id="reset">
+          <div class="wist-section-header"><h2>Can You Reset a StatTrak Counter?</h2></div>
+          <p>Yes. Valve offers a StatTrak Swap Tool that lets you transfer the kill count between two StatTrak weapons of the same type. You can also effectively reset a counter by swapping the kills to another weapon or by using a swap tool with a weapon that has zero kills.</p>
+          <p>The StatTrak Swap Tool is purchased from the <a href="https://store.steampowered.com/app/730/CounterStrike_2/" target="_blank" rel="noopener">in-game store</a>. It requires two StatTrak weapons of the same weapon type (for example, two StatTrak AK-47 skins). The tool transfers the kill count from one to the other, and the tool is consumed in the process.</p>
+          <p>Some players prefer StatTrak weapons with zero kills so they can build their own count from scratch. Others actively seek out weapons with very high kill counts as a form of collectible history. This creates an interesting dynamic where both zero-kill and high-kill StatTrak weapons can have appeal depending on the buyer.</p>
+          <p>There is no way to simply delete or reset a counter without using a swap tool. The kill count is a permanent attribute of the weapon until it is transferred through the official swap mechanism.</p>
+        </section>
+
+        <section id="faq">
+          <div class="wist-section-header"><h2>Frequently Asked Questions</h2></div>
+          <div class="wist-faq-list">
+            {faqs.map((faq) => (
+              <details class="wist-faq-item">
+                <summary class="wist-faq-question">{faq.question}</summary>
+                <p class="wist-faq-answer">{faq.answer}</p>
+              </details>
+            ))}
+          </div>
+          <p class="wist-faq-more">More questions in our <a href="/cs2-stats-adr-tracking-faq/">Stats & ADR FAQ hub</a>.</p>
+        </section>
+
+        <section id="related">
+          <div class="wist-section-header"><h2>Related Articles</h2></div>
+          <div class="wist-resources-grid">
+            <a href="/what-is-adr-cs2/" class="wist-resource-card"><span class="wist-resource-name">What Is ADR?</span><span class="wist-resource-arrow">&rarr;</span></a>
+            <a href="/check-cs2-stats/" class="wist-resource-card"><span class="wist-resource-name">Check Your CS2 Stats</span><span class="wist-resource-arrow">&rarr;</span></a>
+            <a href="/cs2-skins/" class="wist-resource-card"><span class="wist-resource-name">CS2 Skins Database</span><span class="wist-resource-arrow">&rarr;</span></a>
+            <a href="/float-checker/" class="wist-resource-card"><span class="wist-resource-name">Float Checker</span><span class="wist-resource-arrow">&rarr;</span></a>
+          </div>
+        </section>
+      </article>
+    </div>
+  </div>
+
+  <style>
+    .wist-wrap{max-width:1100px;margin:0 auto;padding:0 1.5rem 2rem}
+    .wist-breadcrumb{display:flex;align-items:center;gap:.5rem;padding:1.25rem 0;font-size:.85rem;color:var(--text2)}
+    .wist-breadcrumb a{color:var(--accent);text-decoration:none}
+    .wist-breadcrumb a:hover{color:var(--accent2)}
+    .wist-sep{color:var(--border)}
+    .wist-header{padding:1.5rem 0 1.25rem;border-bottom:2px solid var(--accent);margin-bottom:1.5rem}
+    .wist-header h1{margin:0 0 .35rem;font-size:2.2rem;font-weight:800;color:var(--text);letter-spacing:-.02em;line-height:1.2}
+    .wist-subtitle{margin:0;font-size:1.05rem;color:var(--text2);font-weight:400}
+    .wist-toc-mobile{display:none}
+    .wist-layout{display:grid;grid-template-columns:220px 1fr;gap:2.5rem;align-items:start}
+    .wist-sidebar{position:sticky;top:80px}
+    .wist-toc{display:flex;flex-direction:column;gap:0;border-left:2px solid var(--border);padding-left:0}
+    .wist-toc-title{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--accent);padding:0 0 .6rem 1rem}
+    .wist-toc-link{display:block;padding:.4rem 1rem;font-size:.82rem;color:var(--text2);text-decoration:none;border-left:2px solid transparent;margin-left:-2px;transition:color .2s,border-color .2s}
+    .wist-toc-link:hover{color:var(--text);border-left-color:var(--accent)}
+    .wist-content{min-width:0}
+    .wist-intro{font-size:1rem;line-height:1.8;color:var(--text2);margin-bottom:2rem}
+    .wist-section-header{background:rgba(46,204,113,.05);margin:0 -1.25rem 1.25rem;padding:.75rem 1.25rem;border-radius:4px}
+    .wist-section-header h2{margin:0;padding:0;font-size:1.5rem;font-weight:700;color:var(--text);border:none;letter-spacing:-.01em}
+    section{margin-bottom:2.5rem}
+    h3{font-size:1.15rem;font-weight:600;margin:1.5rem 0 .6rem;color:var(--text)}
+    p{line-height:1.7;color:var(--text2);margin-bottom:1rem}
+    .wist-list{list-style:none;padding:0;margin:.75rem 0 1.5rem}
+    .wist-list li{padding:.4rem 0 .4rem 1.6rem;position:relative;color:var(--text2);line-height:1.65}
+    .wist-list li::before{content:'';position:absolute;left:.25rem;top:.75rem;width:6px;height:6px;background:var(--accent);border-radius:1px}
+    .wist-list li strong{color:var(--text)}
+    .wist-faq-list{display:flex;flex-direction:column;gap:.5rem}
+    .wist-faq-item{background:var(--bg2);border:1px solid var(--border);border-radius:4px;overflow:hidden}
+    .wist-faq-question{display:block;padding:1rem 1.25rem;font-size:.95rem;font-weight:600;color:var(--text);cursor:pointer;list-style:none;position:relative;padding-right:2.5rem;transition:background .2s}
+    .wist-faq-question::-webkit-details-marker{display:none}
+    .wist-faq-question::after{content:'+';position:absolute;right:1.25rem;top:50%;transform:translateY(-50%);font-size:1.2rem;color:var(--accent);font-weight:700}
+    .wist-faq-item[open] .wist-faq-question::after{content:'\2212'}
+    .wist-faq-item[open] .wist-faq-question{border-bottom:1px solid var(--border);background:rgba(46,204,113,.03)}
+    .wist-faq-question:hover{background:rgba(46,204,113,.03)}
+    .wist-faq-answer{padding:1rem 1.25rem;margin:0;font-size:.9rem;color:var(--text2);line-height:1.7}
+    .wist-faq-more{font-size:.9rem;margin-top:1rem}
+    .wist-resources-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.6rem;margin:.5rem 0 1.5rem}
+    .wist-resource-card{display:flex;align-items:center;justify-content:space-between;padding:.75rem 1rem;background:var(--bg2);border:1px solid var(--border);border-radius:4px;text-decoration:none;border-left:2px solid transparent;transition:border-left-color .2s,color .2s}
+    .wist-resource-card:hover{border-left-color:var(--accent)}
+    .wist-resource-name{font-size:.88rem;color:var(--text2);font-weight:500;transition:color .2s}
+    .wist-resource-card:hover .wist-resource-name{color:var(--text)}
+    .wist-resource-arrow{font-size:1rem;color:var(--accent);opacity:0;transition:opacity .2s}
+    .wist-resource-card:hover .wist-resource-arrow{opacity:1}
+    @media(max-width:860px){
+      .wist-layout{grid-template-columns:1fr;gap:0}
+      .wist-sidebar{display:none}
+      .wist-toc-mobile{display:flex;gap:.25rem;overflow-x:auto;padding:.75rem 0;margin-bottom:1rem;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+      .wist-toc-mobile::-webkit-scrollbar{display:none}
+      .wist-toc-mobile-link{flex-shrink:0;padding:.35rem .75rem;font-size:.78rem;font-weight:600;color:var(--text2);background:var(--bg2);border:1px solid var(--border);border-radius:4px;text-decoration:none;white-space:nowrap;transition:color .2s,border-color .2s}
+      .wist-toc-mobile-link:hover{color:var(--accent);border-color:var(--accent)}
+      .wist-header h1{font-size:1.7rem}
+      .wist-section-header{margin:0 -1rem 1rem;padding:.6rem 1rem}
+      .wist-resources-grid{grid-template-columns:repeat(2,1fr)}
+    }
+    @media(max-width:600px){
+      .wist-wrap{padding:0 1rem 1.5rem}
+      .wist-resources-grid{grid-template-columns:1fr}
+      .wist-header h1{font-size:1.5rem}
+    }
+  </style>
+  <AuthorBox updated="2026-03-04" />
+</Base>

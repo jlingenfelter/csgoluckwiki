@@ -22,6 +22,56 @@ export interface Weapon {
   tags: string[];
 }
 
+// Steam CDN weapon render images (slug → internal weapon name)
+const WEAPON_IMAGE_MAP: Record<string, string> = {
+  'ak-47': 'weapon_ak47',
+  'm4a4': 'weapon_m4a1',
+  'm4a1-s': 'weapon_m4a1_silencer',
+  'awp': 'weapon_awp',
+  'ssg-08': 'weapon_ssg08',
+  'galil-ar': 'weapon_galilar',
+  'famas': 'weapon_famas',
+  'aug': 'weapon_aug',
+  'sg-553': 'weapon_sg556',
+  'scar-20': 'weapon_scar20',
+  'g3sg1': 'weapon_g3sg1',
+  'mac-10': 'weapon_mac10',
+  'mp9': 'weapon_mp9',
+  'mp7': 'weapon_mp7',
+  'ump-45': 'weapon_ump45',
+  'p90': 'weapon_p90',
+  'mp5-sd': 'weapon_mp5sd',
+  'pp-bizon': 'weapon_bizon',
+  'glock-18': 'weapon_glock',
+  'usp-s': 'weapon_usp_silencer',
+  'p2000': 'weapon_hkp2000',
+  'p250': 'weapon_p250',
+  'five-seven': 'weapon_fiveseven',
+  'tec-9': 'weapon_tec9',
+  'cz75-auto': 'weapon_cz75a',
+  'desert-eagle': 'weapon_deagle',
+  'dual-berettas': 'weapon_elite',
+  'r8-revolver': 'weapon_revolver',
+  'nova': 'weapon_nova',
+  'xm1014': 'weapon_xm1014',
+  'mag-7': 'weapon_mag7',
+  'sawed-off': 'weapon_sawedoff',
+  'm249': 'weapon_m249',
+  'negev': 'weapon_negev',
+  'he-grenade': 'weapon_hegrenade',
+  'smoke-grenade': 'weapon_smokegrenade',
+  'flashbang': 'weapon_flashbang',
+  'molotov': 'weapon_molotov',
+  'incendiary-grenade': 'weapon_incgrenade',
+  'decoy-grenade': 'weapon_decoy',
+};
+
+export function getWeaponImage(slug: string): string | null {
+  const name = WEAPON_IMAGE_MAP[slug];
+  if (!name) return null;
+  return `https://steamcdn-a.akamaihd.net/apps/730/icons/econ/weapons/base_weapons/${name}.png`;
+}
+
 export const WEAPON_CATEGORIES = [
   { slug: 'rifle', name: 'Rifles', icon: '🔫', description: 'Assault rifles and scoped marksman weapons that form the core of every competitive loadout.' },
   { slug: 'smg', name: 'SMGs', icon: '🔧', description: 'Budget-friendly automatic firearms with rapid fire rates, perfect for anti-eco setups and tight quarters.' },

@@ -1,0 +1,251 @@
+---
+import Base from '../layouts/Base.astro';
+import AuthorBox from '../components/AuthorBox.astro';
+import { faqSchema, breadcrumbSchema } from '../lib/weapons';
+
+const title = 'How to Practice Smokes in CS2 | CSGOLuck Wiki';
+const description = 'Best methods and workshop maps for practicing smoke lineups in CS2. Set up your practice server and learn smokes efficiently.';
+
+const breadcrumbs = [
+  { name: 'Home', url: '/' },
+  { name: 'Gameplay & Practice', url: '/cs2-gameplay-practice-faq/' },
+  { name: 'Practice Smokes', url: '/practice-smokes-cs2/' },
+];
+
+const faqs = [
+  {
+    question: 'How many smokes should I learn per map?',
+    answer: 'Start with 3-5 essential smokes per map. Focus on the smokes that cover the most common chokepoints and site entries. You can expand your lineup library over time as you become more comfortable.',
+  },
+  {
+    question: 'Do CS2 smokes work differently than CS:GO smokes?',
+    answer: 'Yes. CS2 uses volumetric smoke grenades that interact with the environment dynamically. Smokes can be pushed by HE grenades and react to geometry differently. Many CS:GO lineups needed to be updated for CS2.',
+  },
+  {
+    question: 'What is the best way to memorise smoke lineups?',
+    answer: 'Repetition is key. Load a practice server, throw the same smoke 10-15 times until the lineup feels automatic, then move to the next one. Grouping smokes by execute (e.g., all A-site smokes for Mirage) helps create muscle memory for real match situations.',
+  },
+  {
+    question: 'Can I practice smokes without a workshop map?',
+    answer: 'Yes. Load any competitive map in a private match with practice commands enabled. You can throw unlimited grenades and use noclip to check where your smokes land from different angles.',
+  },
+];
+
+const breadcrumbSchema_ = breadcrumbSchema(breadcrumbs);
+const faqSchema_ = faqSchema(faqs);
+
+const articleSchema = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": title,
+  "description": description,
+  "author": { "@type": "Person", "name": "Josh Lingenfelter", "url": "https://www.linkedin.com/in/josh-lingenfelter-8157274b/", "jobTitle": "Director", "worksFor": { "@type": "Organization", "name": "CSGOLuck" } },
+  "publisher": { "@type": "Organization", "name": "CSGOLuck Wiki", "url": "https://wiki.csgoluck.com" },
+  "mainEntityOfPage": "https://wiki.csgoluck.com/practice-smokes-cs2/",
+  "inLanguage": "en-US"
+});
+
+const sections = [
+  { id: 'practice-server', label: 'Practice Server Setup' },
+  { id: 'commands', label: 'Practice Commands' },
+  { id: 'workshop-maps', label: 'Workshop Maps' },
+  { id: 'methodology', label: 'Learning Methodology' },
+  { id: 'map-priorities', label: 'Map-Specific Priorities' },
+  { id: 'faq', label: 'FAQ' },
+  { id: 'related', label: 'Related Articles' },
+];
+---
+
+<Base title={title} description={description}>
+  <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema_)}></script>
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema_)}></script>
+  <script type="application/ld+json" set:html={articleSchema}></script>
+
+  <div class="psc-wrap">
+    <nav class="psc-breadcrumb">
+      <a href="/">Home</a>
+      <span class="psc-sep">/</span>
+      <a href="/cs2-gameplay-practice-faq/">Gameplay & Practice</a>
+      <span class="psc-sep">/</span>
+      <span>Practice Smokes</span>
+    </nav>
+
+    <header class="psc-header">
+      <h1>How to Practice Smokes in CS2</h1>
+      <p class="psc-subtitle">Set up your practice environment and learn smoke lineups efficiently</p>
+    </header>
+
+    <nav class="psc-toc-mobile" aria-label="Table of contents">
+      {sections.map((s) => (
+        <a href={`#${s.id}`} class="psc-toc-mobile-link">{s.label}</a>
+      ))}
+    </nav>
+
+    <div class="psc-layout">
+      <aside class="psc-sidebar">
+        <nav class="psc-toc" aria-label="Table of contents">
+          <span class="psc-toc-title">Contents</span>
+          {sections.map((s) => (
+            <a href={`#${s.id}`} class="psc-toc-link">{s.label}</a>
+          ))}
+        </nav>
+      </aside>
+
+      <article class="psc-content">
+        <p class="psc-intro">
+          Knowing <strong>how to practice smokes in CS2</strong> separates average players from those who consistently win rounds through utility control. Smoke grenades block sightlines, enable safe site entries, and deny information. This guide shows you how to set up the perfect practice environment and build a reliable lineup library for your favourite maps.
+        </p>
+
+        <section id="practice-server">
+          <div class="psc-section-header"><h2>Setting Up a Smoke Practice Server</h2></div>
+          <p>The fastest way to practise smokes is in a private match with practice commands enabled. Here is how to set it up:</p>
+          <ul class="psc-list">
+            <li><strong>Step 1:</strong> Launch CS2 and start a private match on the map you want to practise (e.g., Mirage, Inferno, Dust 2).</li>
+            <li><strong>Step 2:</strong> Open the developer console and enter the practice commands listed below. These give you infinite grenades, unlimited money, and the ability to fly around the map.</li>
+            <li><strong>Step 3:</strong> Start throwing smokes. Use noclip to fly to the landing spot and verify your lineup is accurate.</li>
+          </ul>
+          <p>If you prefer a ready-made setup, our <a href="/practice-config/">practice config</a> page has downloadable configs that apply all the necessary commands with a single <code>exec</code> command.</p>
+        </section>
+
+        <section id="commands">
+          <div class="psc-section-header"><h2>Essential Practice Commands</h2></div>
+          <p>Enter these commands in the developer console to create an ideal smoke practice environment:</p>
+          <ul class="psc-list">
+            <li><strong>sv_cheats 1</strong> -- Enables cheat commands required for practice features.</li>
+            <li><strong>sv_infinite_ammo 1</strong> -- Gives you unlimited ammunition and grenades.</li>
+            <li><strong>sv_grenade_trajectory_prac_pipreview 1</strong> -- Shows the trajectory path of thrown grenades.</li>
+            <li><strong>mp_roundtime_defuse 60</strong> -- Extends round time so you can practice without restarting.</li>
+            <li><strong>mp_startmoney 16000</strong> -- Gives maximum starting money for full utility access.</li>
+            <li><strong>mp_buy_anywhere 1</strong> -- Allows purchasing grenades from any position on the map.</li>
+            <li><strong>mp_buytime 9999</strong> -- Lets you buy throughout the entire round.</li>
+            <li><strong>noclip</strong> -- Toggles fly mode so you can check smoke landing positions from any angle.</li>
+            <li><strong>bind key noclip</strong> -- Binds noclip to a convenient key for quick toggling (e.g., <code>bind v noclip</code>).</li>
+          </ul>
+          <p>The trajectory preview command is especially valuable because it draws the path your grenade takes through the air, letting you see exactly where adjustments are needed. For a full list of useful commands, visit our <a href="/cs2-commands/">CS2 commands reference</a>.</p>
+        </section>
+
+        <section id="workshop-maps">
+          <div class="psc-section-header"><h2>Best Workshop Maps for Smokes</h2></div>
+          <p>Several community-made workshop maps are specifically designed for grenade practice. Browse and subscribe through the <a href="https://steamcommunity.com/workshop/browse/?appid=730" target="_blank" rel="noopener">Steam Workshop</a>.</p>
+          <ul class="psc-list">
+            <li><strong>Yprac maps:</strong> The Yprac series offers guided practice modes for most Active Duty maps. Each map includes pre-set lineups with visual guides showing you exactly where to stand and aim.</li>
+            <li><strong>Smoke Practice (per map):</strong> Dedicated smoke practice maps exist for individual competitive maps, showing common lineups with on-screen instructions.</li>
+            <li><strong>Grenade Training:</strong> General grenade training maps teach fundamental throwing mechanics across all grenade types -- smokes, flashes, molotovs, and HE grenades.</li>
+          </ul>
+          <p>Workshop maps are particularly useful for beginners because they show you where to stand and where to aim, removing the guesswork from learning new lineups. For more map recommendations, see our <a href="/workshop-maps/">workshop maps directory</a>.</p>
+        </section>
+
+        <section id="methodology">
+          <div class="psc-section-header"><h2>Learning Lineup Methodology</h2></div>
+          <p>The key to retaining smoke lineups long-term is structured, repetitive practice. Here is an efficient approach:</p>
+          <ul class="psc-list">
+            <li><strong>Group smokes by execute:</strong> Learn all the smokes for a single site take together. For example, learn the A-site Mirage execute smokes (CT, stairs, jungle) as a set rather than learning one smoke from five different maps.</li>
+            <li><strong>Repeat each smoke 10-15 times:</strong> Stand in the lineup position, aim at the reference point, and throw. Do this until you can land the smoke consistently without thinking about it.</li>
+            <li><strong>Test under pressure:</strong> After learning a lineup in practice, use it in deathmatch or casual games to see if you can execute it with enemies around. Pressure changes everything.</li>
+            <li><strong>Create a personal reference:</strong> Take screenshots of your lineup positions and reference points. Having a quick visual reference helps you refresh your memory before a competitive session.</li>
+            <li><strong>Review periodically:</strong> Revisit lineups you have already learned every week or two to keep them sharp. Muscle memory fades without maintenance.</li>
+          </ul>
+          <p>For a broader look at utility usage in competitive play, check out our <a href="/cs2-guides/grenade-guide/">grenade guide</a>.</p>
+        </section>
+
+        <section id="map-priorities">
+          <div class="psc-section-header"><h2>Map-Specific Smoke Priorities</h2></div>
+          <p>Each map has a handful of must-know smokes that appear in almost every round. Here are the priorities for the most popular maps:</p>
+          <ul class="psc-list">
+            <li><strong>Mirage:</strong> A-site window, A-site CT, A-site stairs, B-site short corner, mid window. See our <a href="/lineups/mirage/">Mirage lineups page</a> for detailed guides.</li>
+            <li><strong>Inferno:</strong> Banana CT, A-site cross, A-site arch, library, mid. Visit our <a href="/lineups/inferno/">Inferno lineups page</a> for specifics.</li>
+            <li><strong>Dust 2:</strong> A-site cross, A-site long corner, B-site doors, mid doors from T-spawn.</li>
+            <li><strong>Anubis:</strong> B-site connector, A-site palace, mid control smokes.</li>
+            <li><strong>Nuke:</strong> Outside smokes, A-site main, ramp room entry.</li>
+          </ul>
+          <p>Start with the map you play most frequently and learn three to five key smokes before expanding to other maps. Quality beats quantity when it comes to utility knowledge.</p>
+        </section>
+
+        <section id="faq">
+          <div class="psc-section-header"><h2>Frequently Asked Questions</h2></div>
+          <div class="psc-faq-list">
+            {faqs.map((faq) => (
+              <details class="psc-faq-item">
+                <summary class="psc-faq-question">{faq.question}</summary>
+                <p class="psc-faq-answer">{faq.answer}</p>
+              </details>
+            ))}
+          </div>
+        </section>
+
+        <section id="related">
+          <div class="psc-section-header"><h2>Related Articles</h2></div>
+          <div class="psc-resources-grid">
+            <a href="/cs2-gameplay-practice-faq/" class="psc-resource-card"><span class="psc-resource-name">Gameplay & Practice Hub</span><span class="psc-resource-arrow">&rarr;</span></a>
+            <a href="/how-to-1v1-cs2/" class="psc-resource-card"><span class="psc-resource-name">How to 1v1 in CS2</span><span class="psc-resource-arrow">&rarr;</span></a>
+            <a href="/get-better-at-cs2/" class="psc-resource-card"><span class="psc-resource-name">Get Better at CS2</span><span class="psc-resource-arrow">&rarr;</span></a>
+            <a href="/practice-config/" class="psc-resource-card"><span class="psc-resource-name">Practice Config</span><span class="psc-resource-arrow">&rarr;</span></a>
+            <a href="/workshop-maps/" class="psc-resource-card"><span class="psc-resource-name">Workshop Maps</span><span class="psc-resource-arrow">&rarr;</span></a>
+            <a href="/cs2-guides/grenade-guide/" class="psc-resource-card"><span class="psc-resource-name">Grenade Guide</span><span class="psc-resource-arrow">&rarr;</span></a>
+          </div>
+        </section>
+      </article>
+    </div>
+  </div>
+
+  <style>
+    .psc-wrap{max-width:1100px;margin:0 auto;padding:0 1.5rem 2rem}
+    .psc-breadcrumb{display:flex;align-items:center;gap:.5rem;padding:1.25rem 0;font-size:.85rem;color:var(--text2)}
+    .psc-breadcrumb a{color:var(--accent);text-decoration:none}
+    .psc-breadcrumb a:hover{color:var(--accent2)}
+    .psc-sep{color:var(--border)}
+    .psc-header{padding:1.5rem 0 1.25rem;border-bottom:2px solid var(--accent);margin-bottom:1.5rem}
+    .psc-header h1{margin:0 0 .35rem;font-size:2.2rem;font-weight:800;color:var(--text);letter-spacing:-.02em;line-height:1.2}
+    .psc-subtitle{margin:0;font-size:1.05rem;color:var(--text2);font-weight:400}
+    .psc-toc-mobile{display:none}
+    .psc-layout{display:grid;grid-template-columns:220px 1fr;gap:2.5rem;align-items:start}
+    .psc-sidebar{position:sticky;top:80px}
+    .psc-toc{display:flex;flex-direction:column;gap:0;border-left:2px solid var(--border);padding-left:0}
+    .psc-toc-title{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--accent);padding:0 0 .6rem 1rem}
+    .psc-toc-link{display:block;padding:.4rem 1rem;font-size:.82rem;color:var(--text2);text-decoration:none;border-left:2px solid transparent;margin-left:-2px;transition:color .2s,border-color .2s}
+    .psc-toc-link:hover{color:var(--text);border-left-color:var(--accent)}
+    .psc-content{min-width:0}
+    .psc-intro{font-size:1rem;line-height:1.8;color:var(--text2);margin-bottom:2rem}
+    .psc-section-header{background:rgba(46,204,113,.05);margin:0 -1.25rem 1.25rem;padding:.75rem 1.25rem;border-radius:4px}
+    .psc-section-header h2{margin:0;padding:0;font-size:1.5rem;font-weight:700;color:var(--text);border:none;letter-spacing:-.01em}
+    section{margin-bottom:2.5rem}
+    p{line-height:1.7;color:var(--text2);margin-bottom:1rem}
+    .psc-list{list-style:none;padding:0;margin:.75rem 0 1.5rem}
+    .psc-list li{padding:.4rem 0 .4rem 1.6rem;position:relative;color:var(--text2);line-height:1.65}
+    .psc-list li::before{content:'';position:absolute;left:.25rem;top:.75rem;width:6px;height:6px;background:var(--accent);border-radius:1px}
+    .psc-list li strong{color:var(--text)}
+    .psc-faq-list{display:flex;flex-direction:column;gap:.5rem}
+    .psc-faq-item{background:var(--bg2);border:1px solid var(--border);border-radius:4px;overflow:hidden}
+    .psc-faq-question{display:block;padding:1rem 1.25rem;font-size:.95rem;font-weight:600;color:var(--text);cursor:pointer;list-style:none;position:relative;padding-right:2.5rem;transition:background .2s}
+    .psc-faq-question::-webkit-details-marker{display:none}
+    .psc-faq-question::after{content:'+';position:absolute;right:1.25rem;top:50%;transform:translateY(-50%);font-size:1.2rem;color:var(--accent);font-weight:700}
+    .psc-faq-item[open] .psc-faq-question::after{content:'\2212'}
+    .psc-faq-item[open] .psc-faq-question{border-bottom:1px solid var(--border);background:rgba(46,204,113,.03)}
+    .psc-faq-question:hover{background:rgba(46,204,113,.03)}
+    .psc-faq-answer{padding:1rem 1.25rem;margin:0;font-size:.9rem;color:var(--text2);line-height:1.7}
+    .psc-resources-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.6rem;margin:.5rem 0 1.5rem}
+    .psc-resource-card{display:flex;align-items:center;justify-content:space-between;padding:.75rem 1rem;background:var(--bg2);border:1px solid var(--border);border-radius:4px;text-decoration:none;border-left:2px solid transparent;transition:border-left-color .2s,color .2s}
+    .psc-resource-card:hover{border-left-color:var(--accent)}
+    .psc-resource-name{font-size:.88rem;color:var(--text2);font-weight:500;transition:color .2s}
+    .psc-resource-card:hover .psc-resource-name{color:var(--text)}
+    .psc-resource-arrow{font-size:1rem;color:var(--accent);opacity:0;transition:opacity .2s}
+    .psc-resource-card:hover .psc-resource-arrow{opacity:1}
+    @media(max-width:860px){
+      .psc-layout{grid-template-columns:1fr;gap:0}
+      .psc-sidebar{display:none}
+      .psc-toc-mobile{display:flex;gap:.25rem;overflow-x:auto;padding:.75rem 0;margin-bottom:1rem;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+      .psc-toc-mobile::-webkit-scrollbar{display:none}
+      .psc-toc-mobile-link{flex-shrink:0;padding:.35rem .75rem;font-size:.78rem;font-weight:600;color:var(--text2);background:var(--bg2);border:1px solid var(--border);border-radius:4px;text-decoration:none;white-space:nowrap;transition:color .2s,border-color .2s}
+      .psc-toc-mobile-link:hover{color:var(--accent);border-color:var(--accent)}
+      .psc-header h1{font-size:1.7rem}
+      .psc-section-header{margin:0 -1rem 1rem;padding:.6rem 1rem}
+      .psc-resources-grid{grid-template-columns:repeat(2,1fr)}
+    }
+    @media(max-width:600px){
+      .psc-wrap{padding:0 1rem 1.5rem}
+      .psc-resources-grid{grid-template-columns:1fr}
+      .psc-header h1{font-size:1.5rem}
+    }
+  </style>
+  <AuthorBox updated="2026-03-04" />
+</Base>

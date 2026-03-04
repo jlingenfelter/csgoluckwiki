@@ -1,0 +1,222 @@
+---
+import Base from '../layouts/Base.astro';
+import AuthorBox from '../components/AuthorBox.astro';
+import { faqSchema, breadcrumbSchema } from '../lib/weapons';
+
+const title = 'Next CS2 Major: 2025 Tournament Schedule | CSGOLuck Wiki';
+const description = 'When is the next CS2 Major? Current schedule, confirmed dates, host cities, and how to follow the competitive CS2 calendar.';
+
+const breadcrumbs = [
+  { name: 'Home', url: '/' },
+  { name: 'CS2 Esports & Pro Scene', url: '/cs2-esports-pro-scene-faq' },
+  { name: 'Next CS2 Major', url: '/next-cs2-major' },
+];
+
+const faqs = [
+  {
+    question: 'How often are CS2 Majors held?',
+    answer: 'Valve typically schedules two CS2 Majors per year, one in the first half and one in the second half. Check HLTV or the official Counter-Strike site for confirmed dates as the schedule can shift.',
+  },
+  {
+    question: 'How long does a CS2 Major last?',
+    answer: 'A CS2 Major typically spans about two weeks, including the Challengers Stage, Legends Stage, and Champions Stage (playoffs). For more on match durations, see our guide on how long CS2 matches take.',
+  },
+  {
+    question: 'Where can I watch the next CS2 Major?',
+    answer: 'CS2 Majors are broadcast on Twitch, YouTube, and through in-game GOTV. Check our guide on where to watch CS2 for all available platforms and channels.',
+  },
+  {
+    question: 'How do teams qualify for a CS2 Major?',
+    answer: 'Teams qualify through Regional Major Rankings (RMR) events. The top teams from each region earn spots in the Challengers Stage. Previously high-placing teams may receive direct invitations to later stages.',
+  },
+];
+
+const breadcrumbSchema_ = breadcrumbSchema(breadcrumbs);
+const faqSchema_ = faqSchema(faqs);
+
+const articleSchema = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": title,
+  "description": description,
+  "author": { "@type": "Person", "name": "Josh Lingenfelter", "url": "https://www.linkedin.com/in/josh-lingenfelter-8157274b/", "jobTitle": "Director", "worksFor": { "@type": "Organization", "name": "CSGOLuck" } },
+  "publisher": { "@type": "Organization", "name": "CSGOLuck Wiki", "url": "https://wiki.csgoluck.com" },
+  "mainEntityOfPage": "https://wiki.csgoluck.com/next-cs2-major/",
+  "inLanguage": "en-US"
+});
+
+const sections = [
+  { id: 'what-is-major', label: 'What Is a CS2 Major?' },
+  { id: 'next-major', label: 'Next Major Details' },
+  { id: 'schedule', label: '2025 Tournament Schedule' },
+  { id: 'qualification', label: 'How Qualification Works' },
+  { id: 'where-to-watch', label: 'Where to Watch' },
+  { id: 'faq', label: 'FAQ' },
+  { id: 'related', label: 'Related Articles' },
+];
+---
+
+<Base title={title} description={description}>
+  <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema_)}></script>
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema_)}></script>
+  <script type="application/ld+json" set:html={articleSchema}></script>
+
+  <div class="ncm-wrap">
+    <nav class="ncm-breadcrumb">
+      <a href="/">Home</a>
+      <span class="ncm-sep">/</span>
+      <a href="/cs2-esports-pro-scene-faq/">Esports & Pro Scene</a>
+      <span class="ncm-sep">/</span>
+      <span>Next CS2 Major</span>
+    </nav>
+
+    <header class="ncm-header">
+      <h1>Next CS2 Major: 2025 Tournament Schedule</h1>
+      <p class="ncm-subtitle">Stay up to date with confirmed Major dates, host cities, and the competitive CS2 calendar</p>
+    </header>
+
+    <nav class="ncm-toc-mobile" aria-label="Table of contents">
+      {sections.map((s) => (
+        <a href={`#${s.id}`} class="ncm-toc-mobile-link">{s.label}</a>
+      ))}
+    </nav>
+
+    <div class="ncm-layout">
+      <aside class="ncm-sidebar">
+        <nav class="ncm-toc" aria-label="Table of contents">
+          <span class="ncm-toc-title">Contents</span>
+          {sections.map((s) => (
+            <a href={`#${s.id}`} class="ncm-toc-link">{s.label}</a>
+          ))}
+        </nav>
+      </aside>
+
+      <article class="ncm-content">
+        <p class="ncm-intro">
+          The next CS2 Major is the most anticipated event on the competitive Counter-Strike calendar. Majors are Valve-sponsored tournaments that bring together the best teams in the world for million-dollar prize pools and the chance to etch their names into esports history. Below you will find everything we know about upcoming Majors, the broader 2025 tournament schedule, and how to follow every match.
+        </p>
+
+        <section id="what-is-major">
+          <div class="ncm-section-header"><h2>What Is a CS2 Major?</h2></div>
+          <p>A CS2 Major Championship is the highest tier of competitive Counter-Strike tournament. These events are directly sponsored and sanctioned by Valve, the developer of Counter-Strike 2, and carry prize pools of $1,250,000 or more. Majors have been a cornerstone of the Counter-Strike esports ecosystem since the first Major in 2013.</p>
+          <p>What separates Majors from other premier-level tournaments is Valve's direct involvement. Valve provides the prize pool funding, establishes the format rules, and sells exclusive in-game sticker capsules featuring competing teams and players. Revenue from those sticker sales is shared with the participating organizations and players, making Majors one of the most lucrative events in esports.</p>
+          <p>Majors also serve as the definitive ranking benchmark for CS2 teams. A Major title is widely considered the most prestigious achievement in competitive Counter-Strike, and Major victories carry enormous weight when evaluating a team's legacy. You can browse current <a href="/pro-teams/">pro teams</a> and <a href="/pro-players/">pro player settings</a> on the wiki.</p>
+        </section>
+
+        <section id="next-major">
+          <div class="ncm-section-header"><h2>Next Major Confirmed Details</h2></div>
+          <p>Valve typically announces Major details several months before the event. Because schedules, host cities, and exact dates can change or be announced at any time, always verify the latest information on <a href="https://www.hltv.org/" target="_blank" rel="noopener">HLTV.org</a> or the <a href="https://www.counter-strike.net/" target="_blank" rel="noopener">official Counter-Strike website</a>.</p>
+          <p>Historically, Valve has held two Majors per year -- one in the spring and one in the fall. Host cities rotate globally, with previous Majors taking place in cities like Copenhagen, Paris, Rio de Janeiro, Antwerp, and Stockholm. Each Major is run by a third-party tournament organizer (such as PGL, ESL, or BLAST) selected by Valve.</p>
+          <p>When a Major is officially announced, Valve publishes the host city, venue, dates, tournament organizer, and format details. Keep an eye on the Counter-Strike blog and HLTV's event page for confirmed announcements. If specific 2025 dates have not yet been confirmed at the time you are reading this, check those sources for the most current information.</p>
+        </section>
+
+        <section id="schedule">
+          <div class="ncm-section-header"><h2>2025 CS2 Tournament Schedule</h2></div>
+          <p>Beyond the Majors, the CS2 competitive calendar is packed with premier and tier-one events throughout the year. Major tournament organizers like ESL, BLAST, and PGL each run their own circuits that feed into the broader competitive ecosystem.</p>
+          <p>Key annual events and series to watch include the BLAST Premier circuit (Spring and Fall seasons plus the World Final), IEM (Intel Extreme Masters) events hosted by ESL in various cities, and PGL-organized tournaments. These events feature top-tier teams competing for substantial prize pools and crucial ranking points.</p>
+          <p>The tournament calendar typically intensifies around Major qualifying periods, when Regional Major Ranking (RMR) events determine which teams earn spots at the next Major. Between RMR events and the Majors themselves, there is rarely a month without significant professional CS2 competition. For the most accurate and up-to-date schedule, <a href="https://www.hltv.org/" target="_blank" rel="noopener">HLTV's events page</a> maintains a comprehensive calendar of all upcoming tournaments.</p>
+        </section>
+
+        <section id="qualification">
+          <div class="ncm-section-header"><h2>How Major Qualification Works</h2></div>
+          <p>Qualifying for a CS2 Major is a multi-stage process designed to ensure the best teams in every region have a path to the championship. The system revolves around Regional Major Rankings (RMR) events.</p>
+          <p>Before each Major, Valve designates RMR tournaments for each competitive region -- typically Europe, the Americas, and Asia. Teams earn RMR points by performing well in qualifying tournaments throughout the season. The top teams from each region based on accumulated RMR points receive invitations to the Major.</p>
+          <p>The Major itself uses a three-stage format. The Challengers Stage features the lowest-seeded qualifying teams battling in a Swiss-system bracket. Teams that advance move to the Legends Stage, where they face higher-seeded squads who earned direct entry based on prior Major performance. Finally, the top teams from the Legends Stage compete in the Champions Stage -- a single-elimination playoff bracket that determines the Major champion.</p>
+          <p>Teams that place well at one Major can earn "Legends" status, granting them a direct invitation to the Legends Stage of the following Major. This rewards consistency and gives top teams a meaningful advantage in the qualification structure.</p>
+        </section>
+
+        <section id="where-to-watch">
+          <div class="ncm-section-header"><h2>Where to Watch Major Events</h2></div>
+          <p>CS2 Majors are broadcast across multiple platforms to reach the widest possible audience. The primary streams are hosted on <a href="https://www.twitch.tv/esl_csgo" target="_blank" rel="noopener">Twitch</a> and YouTube, with the tournament organizer running the official broadcast. Additional language streams cover dozens of languages for international viewers.</p>
+          <p><a href="https://www.hltv.org/" target="_blank" rel="noopener">HLTV</a> provides live match pages with scoreboards, statistics, and embedded streams for every Major match. It is the go-to destination for following results in real time even if you cannot watch the video feed.</p>
+          <p>You can also watch Major matches directly inside Counter-Strike 2 using GOTV. This in-game spectating system lets you control the camera freely, watch from any player's perspective, and experience the match with full game audio. GOTV is especially popular for fans who want a more immersive viewing experience. For a full breakdown of every viewing option, see our guide on <a href="/where-to-watch-cs2/">where to watch CS2 esports</a>.</p>
+        </section>
+
+        <section id="faq">
+          <div class="ncm-section-header"><h2>Frequently Asked Questions</h2></div>
+          <div class="ncm-faq-list">
+            {faqs.map((faq) => (
+              <details class="ncm-faq-item">
+                <summary class="ncm-faq-question">{faq.question}</summary>
+                <p class="ncm-faq-answer">{faq.answer}</p>
+              </details>
+            ))}
+          </div>
+        </section>
+
+        <section id="related">
+          <div class="ncm-section-header"><h2>Related Articles</h2></div>
+          <div class="ncm-resources-grid">
+            <a href="/cs2-esports-pro-scene-faq/" class="ncm-resource-card"><span class="ncm-resource-name">Esports & Pro Scene Hub</span><span class="ncm-resource-arrow">&rarr;</span></a>
+            <a href="/how-long-cs2-match/" class="ncm-resource-card"><span class="ncm-resource-name">How Long Is a CS2 Match?</span><span class="ncm-resource-arrow">&rarr;</span></a>
+            <a href="/where-to-watch-cs2/" class="ncm-resource-card"><span class="ncm-resource-name">Where to Watch CS2</span><span class="ncm-resource-arrow">&rarr;</span></a>
+            <a href="/pro-players/" class="ncm-resource-card"><span class="ncm-resource-name">Pro Player Settings</span><span class="ncm-resource-arrow">&rarr;</span></a>
+            <a href="/pro-teams/" class="ncm-resource-card"><span class="ncm-resource-name">Pro Teams</span><span class="ncm-resource-arrow">&rarr;</span></a>
+          </div>
+        </section>
+      </article>
+    </div>
+  </div>
+
+  <style>
+    .ncm-wrap{max-width:1100px;margin:0 auto;padding:0 1.5rem 2rem}
+    .ncm-breadcrumb{display:flex;align-items:center;gap:.5rem;padding:1.25rem 0;font-size:.85rem;color:var(--text2)}
+    .ncm-breadcrumb a{color:var(--accent);text-decoration:none}
+    .ncm-breadcrumb a:hover{color:var(--accent2)}
+    .ncm-sep{color:var(--border)}
+    .ncm-header{padding:1.5rem 0 1.25rem;border-bottom:2px solid var(--accent);margin-bottom:1.5rem}
+    .ncm-header h1{margin:0 0 .35rem;font-size:2.2rem;font-weight:800;color:var(--text);letter-spacing:-.02em;line-height:1.2}
+    .ncm-subtitle{margin:0;font-size:1.05rem;color:var(--text2);font-weight:400}
+    .ncm-toc-mobile{display:none}
+    .ncm-layout{display:grid;grid-template-columns:220px 1fr;gap:2.5rem;align-items:start}
+    .ncm-sidebar{position:sticky;top:80px}
+    .ncm-toc{display:flex;flex-direction:column;gap:0;border-left:2px solid var(--border);padding-left:0}
+    .ncm-toc-title{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--accent);padding:0 0 .6rem 1rem}
+    .ncm-toc-link{display:block;padding:.4rem 1rem;font-size:.82rem;color:var(--text2);text-decoration:none;border-left:2px solid transparent;margin-left:-2px;transition:color .2s,border-color .2s}
+    .ncm-toc-link:hover{color:var(--text);border-left-color:var(--accent)}
+    .ncm-content{min-width:0}
+    .ncm-intro{font-size:1rem;line-height:1.8;color:var(--text2);margin-bottom:2rem}
+    .ncm-section-header{background:rgba(46,204,113,.05);margin:0 -1.25rem 1.25rem;padding:.75rem 1.25rem;border-radius:4px}
+    .ncm-section-header h2{margin:0;padding:0;font-size:1.5rem;font-weight:700;color:var(--text);border:none;letter-spacing:-.01em}
+    section{margin-bottom:2.5rem}
+    h3{font-size:1.15rem;font-weight:600;margin:1.5rem 0 .6rem;color:var(--text)}
+    p{line-height:1.7;color:var(--text2);margin-bottom:1rem}
+    .ncm-list{list-style:none;padding:0;margin:.75rem 0 1.5rem}
+    .ncm-list li{padding:.4rem 0 .4rem 1.6rem;position:relative;color:var(--text2);line-height:1.65}
+    .ncm-list li::before{content:'';position:absolute;left:.25rem;top:.75rem;width:6px;height:6px;background:var(--accent);border-radius:1px}
+    .ncm-list li strong{color:var(--text)}
+    .ncm-faq-list{display:flex;flex-direction:column;gap:.5rem}
+    .ncm-faq-item{background:var(--bg2);border:1px solid var(--border);border-radius:4px;overflow:hidden}
+    .ncm-faq-question{display:block;padding:1rem 1.25rem;font-size:.95rem;font-weight:600;color:var(--text);cursor:pointer;list-style:none;position:relative;padding-right:2.5rem;transition:background .2s}
+    .ncm-faq-question::-webkit-details-marker{display:none}
+    .ncm-faq-question::after{content:'+';position:absolute;right:1.25rem;top:50%;transform:translateY(-50%);font-size:1.2rem;color:var(--accent);font-weight:700}
+    .ncm-faq-item[open] .ncm-faq-question::after{content:'\2212'}
+    .ncm-faq-item[open] .ncm-faq-question{border-bottom:1px solid var(--border);background:rgba(46,204,113,.03)}
+    .ncm-faq-question:hover{background:rgba(46,204,113,.03)}
+    .ncm-faq-answer{padding:1rem 1.25rem;margin:0;font-size:.9rem;color:var(--text2);line-height:1.7}
+    .ncm-resources-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.6rem;margin:.5rem 0 1.5rem}
+    .ncm-resource-card{display:flex;align-items:center;justify-content:space-between;padding:.75rem 1rem;background:var(--bg2);border:1px solid var(--border);border-radius:4px;text-decoration:none;border-left:2px solid transparent;transition:border-left-color .2s,color .2s}
+    .ncm-resource-card:hover{border-left-color:var(--accent)}
+    .ncm-resource-name{font-size:.88rem;color:var(--text2);font-weight:500;transition:color .2s}
+    .ncm-resource-card:hover .ncm-resource-name{color:var(--text)}
+    .ncm-resource-arrow{font-size:1rem;color:var(--accent);opacity:0;transition:opacity .2s}
+    .ncm-resource-card:hover .ncm-resource-arrow{opacity:1}
+    @media(max-width:860px){
+      .ncm-layout{grid-template-columns:1fr;gap:0}
+      .ncm-sidebar{display:none}
+      .ncm-toc-mobile{display:flex;gap:.25rem;overflow-x:auto;padding:.75rem 0;margin-bottom:1rem;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+      .ncm-toc-mobile::-webkit-scrollbar{display:none}
+      .ncm-toc-mobile-link{flex-shrink:0;padding:.35rem .75rem;font-size:.78rem;font-weight:600;color:var(--text2);background:var(--bg2);border:1px solid var(--border);border-radius:4px;text-decoration:none;white-space:nowrap;transition:color .2s,border-color .2s}
+      .ncm-toc-mobile-link:hover{color:var(--accent);border-color:var(--accent)}
+      .ncm-header h1{font-size:1.7rem}
+      .ncm-section-header{margin:0 -1rem 1rem;padding:.6rem 1rem}
+      .ncm-resources-grid{grid-template-columns:repeat(2,1fr)}
+    }
+    @media(max-width:600px){
+      .ncm-wrap{padding:0 1rem 1.5rem}
+      .ncm-resources-grid{grid-template-columns:1fr}
+      .ncm-header h1{font-size:1.5rem}
+    }
+  </style>
+  <AuthorBox updated="2026-03-04" />
+</Base>
