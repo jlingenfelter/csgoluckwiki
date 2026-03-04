@@ -1,0 +1,35 @@
+name: Refresh CSGOLuck Prices
+
+on:
+  schedule:
+    - cron: '0 * * * *'  # Every hour on the hour
+  workflow_dispatch: {}   # Allow manual trigger
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Fetch SkinDeck prices
+        env:
+          SKINDECK_API_KEY: ${{ secrets.SKINDECK_API_KEY }}
+        run: node scripts/fetch-skindeck-prices.mjs
+
+      - name: Check for changes
+        id: diff
+        run: |
+          git diff --quiet src/lib/skindeck-data.json && echo "changed=false" >> $GITHUB_OUTPUT || echo "changed=true" >> $GITHUB_OUTPUT
+
+      - name: Commit & push
+        if: steps.diff.outputs.changed == 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add src/lib/skindeck-data.json
+          git commit -m "Update CSGOLuck prices [automated]"
+          git push
