@@ -644,59 +644,21 @@ const listingDesc = (skin.listingCount ?? 0) > 10000 ? 'widely available with hi
       )}
     </div>
 
-    <!-- Steam Market Price -->
-    {skin.prices.length > 0 && (
+    <!-- Marketplace Prices -->
+    {skin.prices.length > 0 ? (
       <div class="wi-market" id="marketplace-list">
         <div class="wi-market-head">
-          <span class="wi-market-title">Steam Market Price</span>
+          <span class="wi-market-title">Market Prices</span>
           <span class="wi-market-wear" id="mp-wear-indicator">{defaultWear?.wear || ''}</span>
         </div>
         {skin.prices.map((wearData, wearIdx) => {
-          const steamPrice = wearData.providers?.steam;
-          const mp = getMarketplace('steam');
+          const cl = csgoluckPrices[wearIdx];
+          const providers = wearData.providers
+            ? Object.entries(wearData.providers).filter(([k, v]) => v > 0 && !BLOCKED_PROVIDERS.has(k)).sort((a, b) => a[1] - b[1])
+            : [];
           return (
             <div class={`wi-market-group ${wearIdx === 0 ? '' : 'hidden'}`} data-mp-row={wearIdx}>
-              {steamPrice && steamPrice > 0 ? (
-                <div class="wi-market-row">
-                  <div class="wi-market-left">
-                    <span class="wi-market-icon" style={`background:${mp.color}`}>
-                      {mp.domain ? <img src={`https://www.google.com/s2/favicons?domain=${mp.domain}&sz=64`} alt={mp.name} loading="lazy" /> : mp.icon}
-                    </span>
-                    <span class="wi-market-name">{mp.name}</span>
-                  </div>
-                  <div class="wi-market-right">
-                    <span class="wi-market-amount">${steamPrice.toFixed(2)}</span>
-                    <a href={getMarketplaceUrl('steam')} target="_blank" rel="noopener noreferrer nofollow" class="wi-market-link">View Listing</a>
-                  </div>
-                </div>
-              ) : (
-                <p class="wi-nodata">No Steam Market data for this condition</p>
-              )}
-            </div>
-          );
-        })}
-      </div>
-    )}
-
-    {skin.prices.length === 0 && (
-      <div class="wi-panel">
-        <p class="wi-nodata">No pricing data at this time. Visit marketplaces directly for current listings.</p>
-      </div>
-    )}
-
-    <!-- CSGOLuck Market Price -->
-    {hasCsgoluckPrice && (
-      <div class="wi-market wi-csgoluck-market" id="csgoluck-price-list">
-        <div class="wi-market-head wi-csgoluck-head">
-          <div class="wi-csgoluck-brand">
-            <img src="/images/csgoluck-logo.png" alt="CSGOLuck" class="wi-csgoluck-logo" loading="lazy" />
-            <span class="wi-market-title">CSGOLuck Price</span>
-          </div>
-          <span class="wi-market-wear" id="cl-wear-indicator">{defaultWear?.wear || ''}</span>
-        </div>
-        {csgoluckPrices.map((cl, wearIdx) => (
-          <div class={`wi-market-group ${wearIdx === 0 ? '' : 'hidden'}`} data-cl-row={wearIdx}>
-            {cl.price !== null ? (
+              {/* CSGOLuck — always first */}
               <div class="wi-market-row wi-csgoluck-row">
                 <div class="wi-market-left">
                   <span class="wi-market-icon wi-csgoluck-icon">
@@ -704,32 +666,51 @@ const listingDesc = (skin.listingCount ?? 0) > 10000 ? 'widely available with hi
                   </span>
                   <div class="wi-csgoluck-info">
                     <span class="wi-market-name">CSGOLuck</span>
-                    <span class="wi-csgoluck-count">{cl.count} listing{cl.count !== 1 ? 's' : ''} available</span>
+                    {cl?.price !== null ? (
+                      <span class="wi-csgoluck-count">{cl.count} listing{cl.count !== 1 ? 's' : ''}</span>
+                    ) : (
+                      <span class="wi-csgoluck-count">No listings</span>
+                    )}
                   </div>
                 </div>
                 <div class="wi-market-right">
-                  <span class="wi-market-amount wi-csgoluck-price">${cl.price.toFixed(2)}</span>
-                  <a href="/go/" rel="nofollow" class="wi-csgoluck-buy">Buy on CSGOLuck</a>
+                  {cl?.price !== null ? (
+                    <>
+                      <span class="wi-market-amount wi-csgoluck-price">${cl.price.toFixed(2)}</span>
+                      <a href="/go/" rel="nofollow" class="wi-csgoluck-buy">Buy</a>
+                    </>
+                  ) : (
+                    <a href="/go/" rel="nofollow" class="wi-csgoluck-buy">Browse</a>
+                  )}
                 </div>
               </div>
-            ) : (
-              <p class="wi-nodata">No CSGOLuck listings for this condition</p>
-            )}
-          </div>
-        ))}
+              {/* All other marketplaces sorted by price */}
+              {providers.map(([key, price]) => {
+                const mp = getMarketplace(key);
+                return (
+                  <div class="wi-market-row">
+                    <div class="wi-market-left">
+                      <span class="wi-market-icon" style={`background:${mp.color}`}>
+                        {mp.domain ? <img src={`https://www.google.com/s2/favicons?domain=${mp.domain}&sz=64`} alt={mp.name} loading="lazy" /> : mp.icon}
+                      </span>
+                      <span class="wi-market-name">{mp.name}</span>
+                    </div>
+                    <div class="wi-market-right">
+                      <span class="wi-market-amount">${price.toFixed(2)}</span>
+                    </div>
+                  </div>
+                );
+              })}
+              {providers.length === 0 && (
+                <p class="wi-nodata">No third-party price data for this condition</p>
+              )}
+            </div>
+          );
+        })}
       </div>
-    )}
-
-    <!-- CSGOLuck CTA (fallback when no price data) -->
-    {!hasCsgoluckPrice && (
-      <div class="wi-cta">
-        <div class="wi-cta-body">
-          <div class="wi-cta-copy">
-            <strong>Looking for this skin?</strong>
-            <span>Browse skins on CSGOLuck.com</span>
-          </div>
-          <a href="/go/" rel="nofollow" class="wi-cta-action">Visit CSGOLuck</a>
-        </div>
+    ) : (
+      <div class="wi-panel">
+        <p class="wi-nodata">No pricing data at this time.</p>
       </div>
     )}
 
@@ -1137,10 +1118,8 @@ const listingDesc = (skin.listingCount ?? 0) > 10000 ? 'widely available with hi
 document.addEventListener('DOMContentLoaded', () => {
   const condTabs = document.querySelectorAll('.wi-cond-tab');
   const mpGroups = document.querySelectorAll('[data-mp-row]');
-  const clGroups = document.querySelectorAll('[data-cl-row]');
   const wearLabel = document.getElementById('active-wear-label');
   const mpWearIndicator = document.getElementById('mp-wear-indicator');
-  const clWearIndicator = document.getElementById('cl-wear-indicator');
 
   condTabs.forEach(btn => {
     btn.addEventListener('click', () => {
@@ -1152,13 +1131,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
       if (wearLabel) wearLabel.textContent = wear;
       if (mpWearIndicator) mpWearIndicator.textContent = wear;
-      if (clWearIndicator) clWearIndicator.textContent = wear;
 
       mpGroups.forEach(r => {
         r.classList.toggle('hidden', r.getAttribute('data-mp-row') !== idx);
-      });
-      clGroups.forEach(r => {
-        r.classList.toggle('hidden', r.getAttribute('data-cl-row') !== idx);
       });
     });
   });
@@ -1403,15 +1378,15 @@ document.addEventListener('DOMContentLoaded', () => {
 .wi-market-title{font-size:.85rem;font-weight:700;color:var(--text)}
 .wi-market-wear{font-size:.75rem;color:#2ecc71;font-weight:600}
 .wi-market-group.hidden{display:none}
-.wi-market-row{display:flex;align-items:center;justify-content:space-between;padding:.75rem 1rem;border-left:3px solid #2ecc71}
-.wi-market-left{display:flex;align-items:center;gap:.7rem}
-.wi-market-icon{width:36px;height:36px;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:.6rem;font-weight:800;color:#fff;overflow:hidden;flex-shrink:0}
+.wi-market-group{max-height:480px;overflow-y:auto}
+.wi-market-row{display:flex;align-items:center;justify-content:space-between;padding:.55rem 1rem;border-bottom:1px solid rgba(255,255,255,.03)}
+.wi-market-row:last-child{border-bottom:none}
+.wi-market-left{display:flex;align-items:center;gap:.6rem}
+.wi-market-icon{width:28px;height:28px;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:.55rem;font-weight:800;color:#fff;overflow:hidden;flex-shrink:0}
 .wi-market-icon img{width:100%;height:100%;object-fit:contain}
-.wi-market-name{font-size:.88rem;font-weight:600;color:var(--text)}
+.wi-market-name{font-size:.82rem;font-weight:600;color:var(--text)}
 .wi-market-right{display:flex;align-items:center;gap:.8rem}
-.wi-market-amount{font-size:1.1rem;font-weight:800;color:#2ecc71}
-.wi-market-link{display:inline-block;padding:.4rem .9rem;background:#2ecc71;color:#fff;border-radius:4px;font-size:.78rem;font-weight:700;text-decoration:none;white-space:nowrap;transition:background .15s}
-.wi-market-link:hover{background:#27ae60;color:#fff}
+.wi-market-amount{font-size:.92rem;font-weight:700;color:var(--text)}
 
 /* ── CTA ────────────────────────────────────────────────── */
 .wi-cta{border:1px solid rgba(46,204,113,.25);border-radius:4px;background:var(--bg2)}
@@ -1422,19 +1397,15 @@ document.addEventListener('DOMContentLoaded', () => {
 .wi-cta-action{display:inline-block;padding:.5rem 1.2rem;background:#2ecc71;color:#fff;border-radius:4px;font-weight:700;font-size:.85rem;text-decoration:none;white-space:nowrap;transition:background .15s}
 .wi-cta-action:hover{background:#27ae60;color:#fff}
 
-/* ── CSGOLuck Market ───────────────────────────────────── */
-.wi-csgoluck-market{border-color:rgba(46,204,113,.35);margin-top:.6rem}
-.wi-csgoluck-head{background:rgba(46,204,113,.06)}
-.wi-csgoluck-brand{display:flex;align-items:center;gap:.5rem}
-.wi-csgoluck-logo{height:18px;width:auto}
-.wi-csgoluck-row{border-left:3px solid #2ecc71}
+/* ── CSGOLuck Row (pinned top) ────────────────────────── */
+.wi-csgoluck-row{background:rgba(46,204,113,.06);border-left:3px solid #2ecc71;padding:.65rem 1rem;border-bottom:1px solid var(--border)}
 .wi-csgoluck-icon{background:#1a1c24 !important;padding:2px}
 .wi-csgoluck-icon img{width:100%;height:100%;object-fit:contain}
 .wi-csgoluck-info{display:flex;flex-direction:column}
-.wi-csgoluck-count{font-size:.7rem;color:var(--text2)}
-.wi-csgoluck-price{font-size:1.15rem;font-weight:900;color:#2ecc71}
-.wi-csgoluck-buy{display:inline-block;padding:.45rem 1rem;background:#2ecc71;color:#fff;border-radius:4px;font-size:.78rem;font-weight:700;text-decoration:none;white-space:nowrap;transition:background .15s,transform .15s}
-.wi-csgoluck-buy:hover{background:#27ae60;color:#fff;transform:translateY(-1px)}
+.wi-csgoluck-count{font-size:.65rem;color:var(--text2)}
+.wi-csgoluck-price{font-size:1rem;font-weight:900;color:#2ecc71}
+.wi-csgoluck-buy{display:inline-block;padding:.35rem .85rem;background:#2ecc71;color:#fff;border-radius:4px;font-size:.75rem;font-weight:700;text-decoration:none;white-space:nowrap;transition:background .15s}
+.wi-csgoluck-buy:hover{background:#27ae60;color:#fff}
 
 .wi-nodata{color:var(--text2);font-size:.85rem;padding:1rem;text-align:center;margin:0}
 
