@@ -1,1 +1,35 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y=".9em" font-size="90">🎯</text></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <defs>
+    <clipPath id="circClip"><circle cx="50" cy="50" r="50"/></clipPath>
+  </defs>
+  <!-- Dark background -->
+  <circle cx="50" cy="50" r="50" fill="#1a1c24"/>
+  <!-- Outer chip ring -->
+  <circle cx="50" cy="50" r="44" fill="none" stroke="#2a2d37" stroke-width="8"/>
+  <!-- Green notches around edge (poker chip style) -->
+  <g stroke="#2ecc71" stroke-width="8" stroke-linecap="round" fill="none">
+    <line x1="50" y1="2" x2="50" y2="10"/>
+    <line x1="50" y1="90" x2="50" y2="98"/>
+    <line x1="2" y1="50" x2="10" y2="50"/>
+    <line x1="90" y1="50" x2="98" y2="50"/>
+    <line x1="16" y1="16" x2="21.5" y2="21.5"/>
+    <line x1="78.5" y1="78.5" x2="84" y2="84"/>
+    <line x1="84" y1="16" x2="78.5" y2="21.5"/>
+    <line x1="21.5" y1="78.5" x2="16" y2="84"/>
+  </g>
+  <!-- Inner white circle -->
+  <circle cx="50" cy="50" r="30" fill="#f0f0f0"/>
+  <!-- Four-leaf clover -->
+  <g fill="#2ecc71" transform="translate(50,50)">
+    <!-- Top leaf -->
+    <ellipse cx="0" cy="-8" rx="7" ry="9" transform="rotate(0)"/>
+    <!-- Right leaf -->
+    <ellipse cx="8" cy="0" rx="9" ry="7" transform="rotate(0)"/>
+    <!-- Bottom leaf -->
+    <ellipse cx="0" cy="8" rx="7" ry="9" transform="rotate(0)"/>
+    <!-- Left leaf -->
+    <ellipse cx="-8" cy="0" rx="9" ry="7" transform="rotate(0)"/>
+    <!-- Center dot -->
+    <circle cx="0" cy="0" r="3" fill="#1a1c24"/>
+  </g>
+</svg>
