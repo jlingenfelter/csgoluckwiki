@@ -27,16 +27,18 @@ const breadcrumbs = [
   { name: map.name, url: '/cs2-maps/' + map.slug + '/' },
 ];
 
+const ctCalloutNames = calloutsByArea.ct.slice(0, 4).map(c => c.name).join(', ');
+const tCalloutNames = calloutsByArea.t.slice(0, 3).map(c => c.name).join(', ');
 const faqItems = [
-  { question: 'What are the key callouts on ' + map.name + '?', answer: map.name + ' has ' + map.callouts.length + ' major callout positions organized across CT side, T side, and mid areas. Learning these callouts is essential for team communication during competitive matches.' },
-  { question: 'How should CTs defend ' + map.name + '?', answer: 'CT defense on ' + map.name + ' should focus on playing tight angles, gathering early information with utility, and rotating based on T-side executes. Crossfire setups and controlled aggression help maintain site control.' },
-  { question: 'What is the best T-side strategy for ' + map.name + '?', answer: 'The best T-side approach depends on your utility and team coordination. Default setups that gather information before committing to a site are generally safest. Fast executes work best when you have full utility.' },
-  { question: 'How important is mid control on ' + map.name + '?', answer: 'Mid control is crucial on ' + map.name + ' as it provides rotation options and map control for both sides. Teams that control mid gain significant strategic advantage in round planning.' },
-  { question: 'What utility should I prioritize on ' + map.name + '?', answer: 'Prioritize smokes for key choke points, flashbangs for entry support, and molotovs for clearing common positions. Full utility on ' + map.name + ' typically costs around $1000-1500 per player.' },
+  { question: 'What are the callouts on ' + map.name + ' in CS2?', answer: map.name + ' has ' + map.callouts.length + ' callouts split across ' + calloutsByArea.ct.length + ' CT positions (' + ctCalloutNames + ', etc.), ' + calloutsByArea.t.length + ' T positions (' + tCalloutNames + ', etc.), and ' + calloutsByArea.mid.length + ' mid-map areas. Memorizing these callouts is the fastest way to improve your competitive communication.' },
+  { question: 'How many callouts does ' + map.name + ' have?', answer: map.name + ' has ' + map.callouts.length + ' named positions in total. The CT side has ' + calloutsByArea.ct.length + ' callouts, the T side has ' + calloutsByArea.t.length + ', and mid has ' + calloutsByArea.mid.length + ' positions.' },
+  { question: 'What are the most important ' + map.name + ' callouts to learn first?', answer: 'Start with the bombsite callouts (A Site and B Site), then learn the main approach routes and mid positions. Once you know the core callouts you can communicate site takes, retakes, and enemy positions to your team effectively.' },
+  { question: 'Where can I find ' + map.name + ' smoke and flash lineups?', answer: 'Check our dedicated ' + map.name + ' lineups guide for step-by-step smoke, flash, molotov, and HE grenade lineups with difficulty ratings and use-case explanations.' },
+  { question: 'What is the best strategy for ' + map.name + '?', answer: 'The best strategy depends on your side and team coordination. On T side, default setups that gather information before committing work best. On CT side, crossfire setups and smart utility usage help maintain site control. See the strategies section above for specific ' + map.name + ' tactics.' },
 ];
 
-const pageTitle = map.name + ' Callouts, Strategies & Guide — CS2 Map Guide | CSGOLuck Wiki';
-const pageDesc = 'Complete ' + map.name + ' guide for CS2 with ' + map.callouts.length + ' callouts, tactical tips, and strategies for both T and CT sides. Master every position on ' + map.name + '.';
+const pageTitle = map.name + ' Callouts — All ' + map.callouts.length + ' Positions with Radar Map | CSGOLuck Wiki';
+const pageDesc = 'Every ' + map.name + ' callout in CS2 with an interactive radar map. ' + calloutsByArea.ct.length + ' CT positions, ' + calloutsByArea.t.length + ' T positions, ' + calloutsByArea.mid.length + ' mid callouts, plus strategies and tips for competitive play.';
 
 const radarImageUrl = layout ? layout.radarImageUrl : '';
 ---
@@ -54,8 +56,8 @@ const radarImageUrl = layout ? layout.radarImageUrl : '';
 
       <!-- Left-aligned header instead of centered hero -->
       <header class="md-header">
-        <h1 class="md-map-title">{map.name}</h1>
-        <p class="md-map-desc">{map.description} Practice your utility throws with our <a href={'/lineups/' + map.slug + '/'} style="color:var(--accent)">{map.name} lineups guide</a>, or load up a <a href="/practice-config/" style="color:var(--accent)">practice config</a> to drill positions offline.</p>
+        <h1 class="md-map-title">{map.name} Callouts</h1>
+        <p class="md-map-desc">All {map.callouts.length} {map.name} callout positions for CS2 competitive play. {map.description} Practice your utility throws with our <a href={'/lineups/' + map.slug + '/'} style="color:var(--accent)">{map.name} lineups guide</a>, or load up a <a href="/practice-config/" style="color:var(--accent)">practice config</a> to drill positions offline.</p>
         <div class="md-tag-row">
           {map.tags.map((tag) => (
             <span class="md-tag">{tag}</span>
