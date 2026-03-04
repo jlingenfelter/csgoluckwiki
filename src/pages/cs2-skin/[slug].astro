@@ -7,6 +7,7 @@ import { skinDetailImage, skinRelatedImage } from '../../lib/imageOptimize';
 import { getPlayersUsingSkin } from '../../lib/pro-players';
 import { getCasesForSkin } from '../../lib/cases';
 import { getCollectionImage } from '../../lib/collection-images';
+import skindeckRaw from '../../lib/skindeck-data.json';
 
 export async function getStaticPaths() {
   return SKINS.map(skin => ({
@@ -329,6 +330,31 @@ function getTopProviders(wearData: typeof defaultWear) {
     .sort((a, b) => a[1] - b[1])
     .slice(0, 3);
 }
+
+// ── CSGOLuck Market Prices (via SkinDeck) ─────────────────────────────────
+const skindeckItems: Record<string, { price: number; marketPrice: number | null; count: number }> = (skindeckRaw as any).items || {};
+
+const csgoluckPrices = skin.prices.map(p => {
+  const hashName = `${skin.weapon} | ${skin.name} (${p.wear})`;
+  const item = skindeckItems[hashName];
+  return {
+    wear: p.wear,
+    price: item?.price ?? null as number | null,
+    count: item?.count ?? 0,
+  };
+});
+
+const csgoluckStPrices = (skin.statTrakPrices || []).map(p => {
+  const hashName = `StatTrak\u2122 ${skin.weapon} | ${skin.name} (${p.wear})`;
+  const item = skindeckItems[hashName];
+  return {
+    wear: p.wear,
+    price: item?.price ?? null as number | null,
+    count: item?.count ?? 0,
+  };
+});
+
+const hasCsgoluckPrice = csgoluckPrices.some(p => p.price !== null);
 
 // ── SEO Title & Description ────────────────────────────────────────────────
 const title = `${skin.weapon} | ${skin.name} — Price, Float, Details | CSGOLuck Wiki`;
@@ -658,16 +684,54 @@ const listingDesc = (skin.listingCount ?? 0) > 10000 ? 'widely available with hi
       </div>
     )}
 
-    <!-- CSGOLuck CTA -->
-    <div class="wi-cta">
-      <div class="wi-cta-body">
-        <div class="wi-cta-copy">
-          <strong>Looking for this skin?</strong>
-          <span>Try CSGOLuck.com for a chance to win it</span>
+    <!-- CSGOLuck Market Price -->
+    {hasCsgoluckPrice && (
+      <div class="wi-market wi-csgoluck-market" id="csgoluck-price-list">
+        <div class="wi-market-head wi-csgoluck-head">
+          <div class="wi-csgoluck-brand">
+            <img src="/images/csgoluck-logo.png" alt="CSGOLuck" class="wi-csgoluck-logo" loading="lazy" />
+            <span class="wi-market-title">CSGOLuck Price</span>
+          </div>
+          <span class="wi-market-wear" id="cl-wear-indicator">{defaultWear?.wear || ''}</span>
         </div>
-        <a href="/go/" rel="nofollow" class="wi-cta-action">Visit CSGOLuck</a>
+        {csgoluckPrices.map((cl, wearIdx) => (
+          <div class={`wi-market-group ${wearIdx === 0 ? '' : 'hidden'}`} data-cl-row={wearIdx}>
+            {cl.price !== null ? (
+              <div class="wi-market-row wi-csgoluck-row">
+                <div class="wi-market-left">
+                  <span class="wi-market-icon wi-csgoluck-icon">
+                    <img src="/images/csgoluck-logo.png" alt="CSGOLuck" loading="lazy" />
+                  </span>
+                  <div class="wi-csgoluck-info">
+                    <span class="wi-market-name">CSGOLuck</span>
+                    <span class="wi-csgoluck-count">{cl.count} listing{cl.count !== 1 ? 's' : ''} available</span>
+                  </div>
+                </div>
+                <div class="wi-market-right">
+                  <span class="wi-market-amount wi-csgoluck-price">${cl.price.toFixed(2)}</span>
+                  <a href="/go/" rel="nofollow" class="wi-csgoluck-buy">Buy on CSGOLuck</a>
+                </div>
+              </div>
+            ) : (
+              <p class="wi-nodata">No CSGOLuck listings for this condition</p>
+            )}
+          </div>
+        ))}
       </div>
-    </div>
+    )}
+
+    <!-- CSGOLuck CTA (fallback when no price data) -->
+    {!hasCsgoluckPrice && (
+      <div class="wi-cta">
+        <div class="wi-cta-body">
+          <div class="wi-cta-copy">
+            <strong>Looking for this skin?</strong>
+            <span>Browse skins on CSGOLuck.com</span>
+          </div>
+          <a href="/go/" rel="nofollow" class="wi-cta-action">Visit CSGOLuck</a>
+        </div>
+      </div>
+    )}
 
     <!-- Pro Players Using This Skin -->
     {playersUsingSkin.length > 0 && (
@@ -1073,8 +1137,10 @@ const listingDesc = (skin.listingCount ?? 0) > 10000 ? 'widely available with hi
 document.addEventListener('DOMContentLoaded', () => {
   const condTabs = document.querySelectorAll('.wi-cond-tab');
   const mpGroups = document.querySelectorAll('[data-mp-row]');
+  const clGroups = document.querySelectorAll('[data-cl-row]');
   const wearLabel = document.getElementById('active-wear-label');
   const mpWearIndicator = document.getElementById('mp-wear-indicator');
+  const clWearIndicator = document.getElementById('cl-wear-indicator');
 
   condTabs.forEach(btn => {
     btn.addEventListener('click', () => {
@@ -1086,9 +1152,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
       if (wearLabel) wearLabel.textContent = wear;
       if (mpWearIndicator) mpWearIndicator.textContent = wear;
+      if (clWearIndicator) clWearIndicator.textContent = wear;
 
       mpGroups.forEach(r => {
         r.classList.toggle('hidden', r.getAttribute('data-mp-row') !== idx);
+      });
+      clGroups.forEach(r => {
+        r.classList.toggle('hidden', r.getAttribute('data-cl-row') !== idx);
       });
     });
   });
@@ -1351,6 +1421,20 @@ document.addEventListener('DOMContentLoaded', () => {
 .wi-cta-copy span{color:var(--text2);font-size:.82rem}
 .wi-cta-action{display:inline-block;padding:.5rem 1.2rem;background:#2ecc71;color:#fff;border-radius:4px;font-weight:700;font-size:.85rem;text-decoration:none;white-space:nowrap;transition:background .15s}
 .wi-cta-action:hover{background:#27ae60;color:#fff}
+
+/* ── CSGOLuck Market ───────────────────────────────────── */
+.wi-csgoluck-market{border-color:rgba(46,204,113,.35);margin-top:.6rem}
+.wi-csgoluck-head{background:rgba(46,204,113,.06)}
+.wi-csgoluck-brand{display:flex;align-items:center;gap:.5rem}
+.wi-csgoluck-logo{height:18px;width:auto}
+.wi-csgoluck-row{border-left:3px solid #2ecc71}
+.wi-csgoluck-icon{background:#1a1c24 !important;padding:2px}
+.wi-csgoluck-icon img{width:100%;height:100%;object-fit:contain}
+.wi-csgoluck-info{display:flex;flex-direction:column}
+.wi-csgoluck-count{font-size:.7rem;color:var(--text2)}
+.wi-csgoluck-price{font-size:1.15rem;font-weight:900;color:#2ecc71}
+.wi-csgoluck-buy{display:inline-block;padding:.45rem 1rem;background:#2ecc71;color:#fff;border-radius:4px;font-size:.78rem;font-weight:700;text-decoration:none;white-space:nowrap;transition:background .15s,transform .15s}
+.wi-csgoluck-buy:hover{background:#27ae60;color:#fff;transform:translateY(-1px)}
 
 .wi-nodata{color:var(--text2);font-size:.85rem;padding:1rem;text-align:center;margin:0}
 
