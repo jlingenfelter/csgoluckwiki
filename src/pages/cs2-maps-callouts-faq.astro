@@ -28,6 +28,13 @@ const faqs = [
     answer: 'In competitive and Premier modes, each map uses the MR12 format — 12 rounds per half, for a maximum of 24 rounds in regulation. The first team to win 13 rounds wins the map. If the score reaches 12-12, overtime consists of additional six-round sets (three rounds per side) until one team pulls ahead. Casual modes use shorter formats. Use our <a href="/practice-config/">practice config</a> to customize round settings in private matches.',
   },
 ];
+
+const cards = [
+  { href: '/cache-cs2/', title: 'Is Cache Coming to CS2?', excerpt: 'Current status, why it was removed, and what we know about a return.' },
+  { href: '/cs2-map-pool/', title: 'How Many Maps Are in CS2?', excerpt: 'Active duty pool, rotation history, and current competitive maps.' },
+  { href: '/cs2-workshop-maps/', title: 'How to Play Workshop Maps', excerpt: 'Subscribe, install, and launch community-created maps.' },
+  { href: '/cs2-rounds-per-match/', title: 'How Many Rounds Per Map?', excerpt: 'MR12 regulation format, overtime rules, and casual mode differences.' },
+];
 ---
 
 <Base title={title} description={description}>
@@ -43,26 +50,19 @@ const faqs = [
     <p class="mcf-hero-desc">Understanding CS2 maps and callouts is key to competitive success. From the active duty map pool to workshop creations and the ongoing Cache debate, this FAQ covers the most common map-related questions. Explore our full <a href="/cs2-maps/">map database</a> for callout guides and detailed breakdowns of every playable map.</p>
   </section>
 
-  <div class="mcf-faq-list">
-    {faqs.map(faq => (
-      <details class="mcf-faq-item">
-        <summary class="mcf-faq-question">{faq.question}</summary>
-        <div class="mcf-faq-answer" set:html={faq.answer}></div>
-      </details>
+  <p class="mcf-intro">Click any question below for a detailed answer.</p>
+
+  <div class="mcf-faq-grid">
+    {cards.map(card => (
+      <a href={card.href} class="mcf-faq-card">
+        <div class="mcf-faq-card-content">
+          <span class="mcf-faq-card-q">{card.title}</span>
+          <p class="mcf-faq-card-excerpt">{card.excerpt}</p>
+        </div>
+        <span class="mcf-faq-card-arrow">&rarr;</span>
+      </a>
     ))}
   </div>
-
-  <section class="mcf-related">
-    <h2>Related Articles</h2>
-    <div class="mcf-related-grid">
-      <a href="/cache-cs2/" class="mcf-related-card"><span class="mcf-related-name">Cache in CS2 — Status Update</span><span class="mcf-related-arrow">&rarr;</span></a>
-      <a href="/cs2-map-pool/" class="mcf-related-card"><span class="mcf-related-name">Current CS2 Map Pool</span><span class="mcf-related-arrow">&rarr;</span></a>
-      <a href="/cs2-workshop-maps/" class="mcf-related-card"><span class="mcf-related-name">Best CS2 Workshop Maps</span><span class="mcf-related-arrow">&rarr;</span></a>
-      <a href="/cs2-maps/" class="mcf-related-card"><span class="mcf-related-name">All CS2 Maps &amp; Callouts</span><span class="mcf-related-arrow">&rarr;</span></a>
-      <a href="/workshop-maps/" class="mcf-related-card"><span class="mcf-related-name">Workshop Maps Collection</span><span class="mcf-related-arrow">&rarr;</span></a>
-      <a href="/practice-config/" class="mcf-related-card"><span class="mcf-related-name">Practice Config Generator</span><span class="mcf-related-arrow">&rarr;</span></a>
-    </div>
-  </section>
 
   <section class="mcf-explore">
     <h2>Explore More</h2>
@@ -93,29 +93,18 @@ const faqs = [
 .mcf-hero-desc a{color:var(--accent);text-decoration:none}
 .mcf-hero-desc a:hover{text-decoration:underline}
 
-/* ── FAQ List ── */
-.mcf-faq-list{display:flex;flex-direction:column;gap:.5rem;margin-bottom:2.5rem}
-.mcf-faq-item{background:var(--bg2);border:1px solid var(--border);border-radius:4px;overflow:hidden}
-.mcf-faq-question{display:block;padding:1rem 1.25rem;font-size:.95rem;font-weight:600;color:var(--text);cursor:pointer;list-style:none;position:relative;padding-right:2.5rem;transition:background .2s}
-.mcf-faq-question::-webkit-details-marker{display:none}
-.mcf-faq-question::after{content:'+';position:absolute;right:1.25rem;top:50%;transform:translateY(-50%);font-size:1.2rem;color:var(--accent);font-weight:700}
-.mcf-faq-item[open] .mcf-faq-question::after{content:'\2212'}
-.mcf-faq-item[open] .mcf-faq-question{border-bottom:1px solid var(--border);background:rgba(46,204,113,.03)}
-.mcf-faq-question:hover{background:rgba(46,204,113,.03)}
-.mcf-faq-answer{padding:1rem 1.25rem;margin:0;font-size:.9rem;color:var(--text2);line-height:1.7}
-.mcf-faq-answer a{color:var(--accent);text-decoration:none}
-.mcf-faq-answer a:hover{text-decoration:underline}
+/* ── Intro ── */
+.mcf-intro{font-size:.9rem;color:var(--text2);margin:0 0 1.25rem;line-height:1.6}
 
-/* ── Related Articles ── */
-.mcf-related{margin-bottom:2rem}
-.mcf-related h2{font-family:'Montserrat',sans-serif;font-size:1.2rem;font-weight:700;color:var(--text);margin:0 0 .75rem;padding-bottom:.5rem;border-bottom:2px solid var(--accent)}
-.mcf-related-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:.6rem}
-.mcf-related-card{display:flex;align-items:center;justify-content:space-between;padding:.75rem 1rem;background:var(--bg2);border:1px solid var(--border);border-radius:4px;text-decoration:none;border-left:2px solid transparent;transition:border-left-color .2s,color .2s}
-.mcf-related-card:hover{border-left-color:var(--accent)}
-.mcf-related-name{font-size:.88rem;color:var(--text2);font-weight:500;transition:color .2s}
-.mcf-related-card:hover .mcf-related-name{color:var(--text)}
-.mcf-related-arrow{font-size:1rem;color:var(--accent);opacity:0;transition:opacity .2s}
-.mcf-related-card:hover .mcf-related-arrow{opacity:1}
+/* ── FAQ Card Grid ── */
+.mcf-faq-grid{display:grid;grid-template-columns:1fr;gap:.75rem;margin-bottom:2.5rem}
+.mcf-faq-card{display:flex;align-items:center;justify-content:space-between;padding:1.25rem;background:var(--bg2);border:1px solid var(--border);border-radius:4px;text-decoration:none;border-left:3px solid transparent;transition:border-left-color .2s,background .15s}
+.mcf-faq-card:hover{border-left-color:var(--accent);background:rgba(46,204,113,.03)}
+.mcf-faq-card-content{flex:1}
+.mcf-faq-card-q{font-size:.95rem;font-weight:600;color:var(--text);margin:0 0 .25rem;display:block}
+.mcf-faq-card-excerpt{font-size:.82rem;color:var(--text2);margin:0;line-height:1.5}
+.mcf-faq-card-arrow{font-size:1.1rem;color:var(--accent);margin-left:1rem;opacity:0;transition:opacity .2s}
+.mcf-faq-card:hover .mcf-faq-card-arrow{opacity:1}
 
 /* ── Explore More ── */
 .mcf-explore{margin-bottom:2rem}
@@ -133,6 +122,5 @@ const faqs = [
 /* ── Responsive ── */
 @media(max-width:768px){
   .mcf-hero h1{font-size:1.5rem}
-  .mcf-related-grid{grid-template-columns:1fr}
 }
 </style>

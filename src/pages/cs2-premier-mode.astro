@@ -1,0 +1,253 @@
+---
+import Base from '../layouts/Base.astro';
+import AuthorBox from '../components/AuthorBox.astro';
+import { faqSchema, breadcrumbSchema } from '../lib/weapons';
+
+const title = 'What Is Premier Mode in CS2? CS Rating, Map Veto & More | CSGOLuck Wiki';
+const description = 'Premier is CS2\'s flagship ranked mode featuring map veto, CS Rating, and leaderboards. Learn how it works, how to unlock it, and tips to climb.';
+
+const breadcrumbs = [
+  { name: 'Home', url: '/' },
+  { name: 'Ranks & Competitive FAQ', url: '/cs2-ranks-competitive-faq' },
+  { name: 'CS2 Premier Mode', url: '/cs2-premier-mode' },
+];
+
+const faqs = [
+  {
+    question: 'How do I unlock Premier mode in CS2?',
+    answer: 'You need to reach Level 10 by earning XP in other game modes such as Competitive, Casual, or Deathmatch. Once you hit Level 10, Premier becomes available in the Play menu. See our <a href="/unlock-premier-cs2/">full unlock guide</a> for a step-by-step walkthrough.',
+  },
+  {
+    question: 'What is a good CS Rating in Premier?',
+    answer: 'The average CS Rating sits around 10,000–12,000. Ratings above 15,000 place you in the top tier of players, while 20,000+ is considered elite. Check our <a href="/cs2-rank-distribution/">rank distribution page</a> for the full breakdown by percentile.',
+  },
+  {
+    question: 'Can I play Premier with friends of different ranks?',
+    answer: 'Yes, but CS2 applies a skill gap restriction. You can queue with friends whose CS Rating is within a certain range of your own. If the gap is too large, you will not be able to queue together. This prevents boosting and ensures fair matches for all players.',
+  },
+  {
+    question: 'Is Premier the same as Competitive?',
+    answer: 'No. Premier uses a numeric CS Rating instead of skill groups, features a map pick-and-ban phase before each match, and feeds into global and regional leaderboards. Competitive uses the traditional 18-tier skill group system and lets you select specific maps to queue for. See our <a href="/cs2-ranks-competitive-faq/">ranks & competitive FAQ</a> for a detailed comparison.',
+  },
+];
+
+const breadcrumbSchema_ = breadcrumbSchema(breadcrumbs);
+const faqSchema_ = faqSchema(faqs);
+
+const articleSchema = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": title,
+  "description": description,
+  "author": { "@type": "Person", "name": "Josh Lingenfelter", "url": "https://www.linkedin.com/in/josh-lingenfelter-8157274b/", "jobTitle": "Director", "worksFor": { "@type": "Organization", "name": "CSGOLuck" } },
+  "publisher": { "@type": "Organization", "name": "CSGOLuck Wiki", "url": "https://wiki.csgoluck.com" },
+  "mainEntityOfPage": "https://wiki.csgoluck.com/cs2-premier-mode/",
+  "inLanguage": "en-US"
+});
+
+const sections = [
+  { id: 'what-is-premier', label: 'What Is Premier' },
+  { id: 'cs-rating', label: 'CS Rating System' },
+  { id: 'map-veto', label: 'Map Veto Phase' },
+  { id: 'leaderboards', label: 'Leaderboards' },
+  { id: 'how-to-unlock', label: 'How to Unlock' },
+  { id: 'tips', label: 'Tips to Climb' },
+  { id: 'faq', label: 'FAQ' },
+  { id: 'related', label: 'Related Articles' },
+];
+---
+
+<Base title={title} description={description}>
+  <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema_)}></script>
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema_)}></script>
+  <script type="application/ld+json" set:html={articleSchema}></script>
+
+  <div class="cpm-wrap">
+    <nav class="cpm-breadcrumb">
+      <a href="/">Home</a>
+      <span class="cpm-sep">/</span>
+      <a href="/cs2-ranks-competitive-faq/">Ranks & Competitive FAQ</a>
+      <span class="cpm-sep">/</span>
+      <span>CS2 Premier Mode</span>
+    </nav>
+
+    <header class="cpm-header">
+      <h1>What Is Premier Mode in CS2? CS Rating, Map Veto & More</h1>
+      <p class="cpm-subtitle">The complete guide to CS2's flagship ranked experience with numeric ratings and leaderboards</p>
+    </header>
+
+    <nav class="cpm-toc-mobile" aria-label="Table of contents">
+      {sections.map((s) => (
+        <a href={`#${s.id}`} class="cpm-toc-mobile-link">{s.label}</a>
+      ))}
+    </nav>
+
+    <div class="cpm-layout">
+      <aside class="cpm-sidebar">
+        <nav class="cpm-toc" aria-label="Table of contents">
+          <span class="cpm-toc-title">Contents</span>
+          {sections.map((s) => (
+            <a href={`#${s.id}`} class="cpm-toc-link">{s.label}</a>
+          ))}
+        </nav>
+      </aside>
+
+      <article class="cpm-content">
+        <p class="cpm-intro">
+          Premier is the flagship ranked game mode in Counter-Strike 2, replacing the old Competitive matchmaking as the primary competitive experience. Unlike traditional Competitive mode, Premier uses a numeric CS Rating instead of skill groups, features a strategic map pick-and-ban phase before every match, and places players on global and regional leaderboards. It is designed to be the definitive way to measure and improve your skill in CS2, mirroring the competitive format seen in professional play more closely than any other public matchmaking option.
+        </p>
+
+        <section id="what-is-premier">
+          <div class="cpm-section-header"><h2>What Is Premier Mode?</h2></div>
+          <p>Premier mode is a 5v5 bomb defusal ranked experience in CS2 that was introduced alongside the game's launch in September 2023. It represents Valve's vision for the core competitive experience, combining structured map selection with a transparent rating system.</p>
+          <p>Every Premier match begins with a map veto phase where both teams alternately ban maps from the active duty pool until one remains. This ensures players cannot simply farm a single map and adds a layer of strategic depth before the first round even starts. The result is a competitive environment that rewards versatility across the entire map pool.</p>
+          <p>Premier is available to all players who have reached Level 10 through other game modes. Once unlocked, players complete placement matches to receive their initial CS Rating, which then adjusts after every match based on performance and results.</p>
+        </section>
+
+        <section id="cs-rating">
+          <div class="cpm-section-header"><h2>CS Rating System</h2></div>
+          <p>The CS Rating is a numeric value that represents your skill level in Premier mode. Unlike the traditional skill group system used in Competitive (Silver I through Global Elite), the CS Rating provides a precise, transparent number that moves up or down after every match.</p>
+          <p>Ratings typically range from around 1,000 for new or lower-skilled players to 30,000+ for the very best in the world. The distribution roughly breaks down as follows:</p>
+          <ul class="cpm-list">
+            <li><strong>Below 5,000:</strong> Beginner tier, learning fundamentals</li>
+            <li><strong>5,000 – 10,000:</strong> Intermediate players developing game sense and mechanics</li>
+            <li><strong>10,000 – 15,000:</strong> Above average, solid understanding of CS2 fundamentals</li>
+            <li><strong>15,000 – 20,000:</strong> High-level players with strong aim and strategy</li>
+            <li><strong>20,000 – 25,000:</strong> Elite tier, top percentile of the player base</li>
+            <li><strong>25,000+:</strong> Professional-level or semi-professional skill</li>
+          </ul>
+          <p>Your CS Rating adjusts after every match. Wins against higher-rated opponents award more rating points, while losses to lower-rated opponents result in larger rating decreases. Individual performance metrics such as kills, deaths, and MVPs also influence rating changes to a lesser degree.</p>
+          <p>CS Rating resets occur at the start of each CS2 major season. During a reset, ratings are partially compressed toward the median, requiring players to recalibrate through placement matches. This prevents rating inflation over time and gives everyone a fresh opportunity to climb.</p>
+        </section>
+
+        <section id="map-veto">
+          <div class="cpm-section-header"><h2>Map Veto Phase</h2></div>
+          <p>Before every Premier match, both teams participate in a map pick-and-ban phase. The process works similarly to professional tournament map vetoes:</p>
+          <ul class="cpm-list">
+            <li><strong>Step 1:</strong> Both teams see the full active duty map pool (currently 7 maps)</li>
+            <li><strong>Step 2:</strong> Teams alternate banning maps one at a time</li>
+            <li><strong>Step 3:</strong> The last remaining map is played</li>
+          </ul>
+          <p>Each team has a limited time window to make their ban selection. If a team fails to ban in time, a random map from their remaining options is banned automatically. The veto phase adds strategic depth because teams must consider their own map strengths while also anticipating what maps their opponents might be comfortable on.</p>
+          <p>Being proficient on all active duty maps is a significant advantage in Premier. Players who can only play two or three maps well will frequently find themselves on unfamiliar territory when opponents ban their preferred picks. Expanding your map pool is one of the most effective long-term strategies for climbing in Premier.</p>
+        </section>
+
+        <section id="leaderboards">
+          <div class="cpm-section-header"><h2>Leaderboards</h2></div>
+          <p>Premier mode features global and regional leaderboards that rank players by their CS Rating. These leaderboards are visible in-game and provide public recognition for top-performing players in each region.</p>
+          <p>Leaderboard placements are updated in real-time as players complete matches. Reaching the top of your regional leaderboard is a prestigious achievement and serves as a pathway to visibility in the competitive CS2 community. Many semi-professional and aspiring professional players use their Premier leaderboard standing as a credential when seeking team opportunities.</p>
+          <p>Regional leaderboards are divided by geographic area, so you compete against players in your own region rather than the entire global player base. This provides a more meaningful ranking context since matchmaking primarily pairs you with players from your region anyway.</p>
+        </section>
+
+        <section id="how-to-unlock">
+          <div class="cpm-section-header"><h2>How to Unlock Premier</h2></div>
+          <p>Premier mode is locked behind a level requirement to ensure new players have basic familiarity with CS2 before entering the most competitive queue. Here is how to unlock it:</p>
+          <ul class="cpm-list">
+            <li><strong>Reach Level 10:</strong> Earn XP by playing any game mode including Casual, Deathmatch, Arms Race, or standard Competitive</li>
+            <li><strong>Complete placement matches:</strong> Once unlocked, play through your placement matches to receive your initial CS Rating</li>
+            <li><strong>Phone number verification:</strong> A verified phone number linked to your Steam account may be required for Premier access in some regions</li>
+          </ul>
+          <p>The leveling process typically takes 10 to 20 hours of gameplay depending on the modes you play and your performance. Competitive mode awards the most XP per hour, while Casual and Deathmatch are faster to queue into but provide less XP per match. For a complete walkthrough, see our <a href="/unlock-premier-cs2/">Premier unlock guide</a>.</p>
+        </section>
+
+        <section id="tips">
+          <div class="cpm-section-header"><h2>Tips to Climb in Premier</h2></div>
+          <p>Improving your CS Rating in Premier requires a combination of mechanical skill, game knowledge, and strategic consistency. Here are proven strategies for climbing:</p>
+          <ul class="cpm-list">
+            <li><strong>Learn all active duty maps:</strong> The map veto system punishes one-map specialists. Spend time learning callouts, utility lineups, and common strategies on every map in the pool</li>
+            <li><strong>Warm up before queuing:</strong> Spend 15 to 20 minutes in Deathmatch or an aim trainer before your first Premier game. Cold aim leads to lost opening duels and early rating drops</li>
+            <li><strong>Focus on consistency over highlight plays:</strong> The rating system rewards steady performance across many matches more than occasional spectacular games. Avoid risky plays that are as likely to lose you rounds as win them</li>
+            <li><strong>Play with a consistent group:</strong> Queuing with players you know and communicate well with provides a significant advantage over solo queue in terms of coordination and morale</li>
+            <li><strong>Review your demos:</strong> CS2 saves demos of your Premier matches. Watching them back reveals positioning mistakes, missed opportunities, and patterns that opponents exploit</li>
+            <li><strong>Manage your economy:</strong> Force-buying every round bleeds money and leads to disadvantaged gun rounds. Follow standard buy/save patterns and coordinate with your team</li>
+          </ul>
+          <p>Climbing in Premier is a marathon, not a sprint. Rating changes are modest after individual matches, so focus on improving your play over weeks and months rather than fixating on short-term results.</p>
+        </section>
+
+        <section id="faq">
+          <div class="cpm-section-header"><h2>Frequently Asked Questions</h2></div>
+          <div class="cpm-faq-list">
+            {faqs.map((faq) => (
+              <details class="cpm-faq-item">
+                <summary class="cpm-faq-question">{faq.question}</summary>
+                <p class="cpm-faq-answer" set:html={faq.answer}></p>
+              </details>
+            ))}
+          </div>
+        </section>
+
+        <section id="related">
+          <div class="cpm-section-header"><h2>Related Articles</h2></div>
+          <div class="cpm-resources-grid">
+            <a href="/cs2-ranks-explained/" class="cpm-resource-card"><span class="cpm-resource-name">CS2 Ranks Explained</span><span class="cpm-resource-arrow">&rarr;</span></a>
+            <a href="/unlock-premier-cs2/" class="cpm-resource-card"><span class="cpm-resource-name">Unlock Premier in CS2</span><span class="cpm-resource-arrow">&rarr;</span></a>
+            <a href="/cs2-rank-distribution/" class="cpm-resource-card"><span class="cpm-resource-name">CS2 Rank Distribution</span><span class="cpm-resource-arrow">&rarr;</span></a>
+            <a href="/cs2-wingman-mode/" class="cpm-resource-card"><span class="cpm-resource-name">CS2 Wingman Mode</span><span class="cpm-resource-arrow">&rarr;</span></a>
+            <a href="/cs2-ranks-competitive-faq/" class="cpm-resource-card"><span class="cpm-resource-name">Ranks & Competitive FAQ</span><span class="cpm-resource-arrow">&rarr;</span></a>
+          </div>
+        </section>
+      </article>
+    </div>
+  </div>
+
+  <style>
+    .cpm-wrap{max-width:1100px;margin:0 auto;padding:0 1.5rem 2rem}
+    .cpm-breadcrumb{display:flex;align-items:center;gap:.5rem;padding:1.25rem 0;font-size:.85rem;color:var(--text2)}
+    .cpm-breadcrumb a{color:var(--accent);text-decoration:none}
+    .cpm-breadcrumb a:hover{color:var(--accent2)}
+    .cpm-sep{color:var(--border)}
+    .cpm-header{padding:1.5rem 0 1.25rem;border-bottom:2px solid var(--accent);margin-bottom:1.5rem}
+    .cpm-header h1{margin:0 0 .35rem;font-size:2.2rem;font-weight:800;color:var(--text);letter-spacing:-.02em;line-height:1.2}
+    .cpm-subtitle{margin:0;font-size:1.05rem;color:var(--text2);font-weight:400}
+    .cpm-toc-mobile{display:none}
+    .cpm-layout{display:grid;grid-template-columns:220px 1fr;gap:2.5rem;align-items:start}
+    .cpm-sidebar{position:sticky;top:80px}
+    .cpm-toc{display:flex;flex-direction:column;gap:0;border-left:2px solid var(--border);padding-left:0}
+    .cpm-toc-title{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--accent);padding:0 0 .6rem 1rem}
+    .cpm-toc-link{display:block;padding:.4rem 1rem;font-size:.82rem;color:var(--text2);text-decoration:none;border-left:2px solid transparent;margin-left:-2px;transition:color .2s,border-color .2s}
+    .cpm-toc-link:hover{color:var(--text);border-left-color:var(--accent)}
+    .cpm-content{min-width:0}
+    .cpm-intro{font-size:1rem;line-height:1.8;color:var(--text2);margin-bottom:2rem}
+    .cpm-section-header{background:rgba(46,204,113,.05);margin:0 -1.25rem 1.25rem;padding:.75rem 1.25rem;border-radius:4px}
+    .cpm-section-header h2{margin:0;padding:0;font-size:1.5rem;font-weight:700;color:var(--text);border:none;letter-spacing:-.01em}
+    section{margin-bottom:2.5rem}
+    p{line-height:1.7;color:var(--text2);margin-bottom:1rem}
+    .cpm-list{list-style:none;padding:0;margin:.75rem 0 1.5rem}
+    .cpm-list li{padding:.4rem 0 .4rem 1.6rem;position:relative;color:var(--text2);line-height:1.65}
+    .cpm-list li::before{content:'';position:absolute;left:.25rem;top:.75rem;width:6px;height:6px;background:var(--accent);border-radius:1px}
+    .cpm-list li strong{color:var(--text)}
+    .cpm-faq-list{display:flex;flex-direction:column;gap:.5rem}
+    .cpm-faq-item{background:var(--bg2);border:1px solid var(--border);border-radius:4px;overflow:hidden}
+    .cpm-faq-question{display:block;padding:1rem 1.25rem;font-size:.95rem;font-weight:600;color:var(--text);cursor:pointer;list-style:none;position:relative;padding-right:2.5rem;transition:background .2s}
+    .cpm-faq-question::-webkit-details-marker{display:none}
+    .cpm-faq-question::after{content:'+';position:absolute;right:1.25rem;top:50%;transform:translateY(-50%);font-size:1.2rem;color:var(--accent);font-weight:700}
+    .cpm-faq-item[open] .cpm-faq-question::after{content:'\2212'}
+    .cpm-faq-item[open] .cpm-faq-question{border-bottom:1px solid var(--border);background:rgba(46,204,113,.03)}
+    .cpm-faq-question:hover{background:rgba(46,204,113,.03)}
+    .cpm-faq-answer{padding:1rem 1.25rem;margin:0;font-size:.9rem;color:var(--text2);line-height:1.7}
+    .cpm-resources-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.6rem;margin:.5rem 0 1.5rem}
+    .cpm-resource-card{display:flex;align-items:center;justify-content:space-between;padding:.75rem 1rem;background:var(--bg2);border:1px solid var(--border);border-radius:4px;text-decoration:none;border-left:2px solid transparent;transition:border-left-color .2s,color .2s}
+    .cpm-resource-card:hover{border-left-color:var(--accent)}
+    .cpm-resource-name{font-size:.88rem;color:var(--text2);font-weight:500;transition:color .2s}
+    .cpm-resource-card:hover .cpm-resource-name{color:var(--text)}
+    .cpm-resource-arrow{font-size:1rem;color:var(--accent);opacity:0;transition:opacity .2s}
+    .cpm-resource-card:hover .cpm-resource-arrow{opacity:1}
+    @media(max-width:860px){
+      .cpm-layout{grid-template-columns:1fr;gap:0}
+      .cpm-sidebar{display:none}
+      .cpm-toc-mobile{display:flex;gap:.25rem;overflow-x:auto;padding:.75rem 0;margin-bottom:1rem;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+      .cpm-toc-mobile::-webkit-scrollbar{display:none}
+      .cpm-toc-mobile-link{flex-shrink:0;padding:.35rem .75rem;font-size:.78rem;font-weight:600;color:var(--text2);background:var(--bg2);border:1px solid var(--border);border-radius:4px;text-decoration:none;white-space:nowrap;transition:color .2s,border-color .2s}
+      .cpm-toc-mobile-link:hover{color:var(--accent);border-color:var(--accent)}
+      .cpm-header h1{font-size:1.7rem}
+      .cpm-section-header{margin:0 -1rem 1rem;padding:.6rem 1rem}
+      .cpm-resources-grid{grid-template-columns:repeat(2,1fr)}
+    }
+    @media(max-width:600px){
+      .cpm-wrap{padding:0 1rem 1.5rem}
+      .cpm-resources-grid{grid-template-columns:1fr}
+      .cpm-header h1{font-size:1.5rem}
+    }
+  </style>
+  <AuthorBox updated="2026-03-04" />
+</Base>

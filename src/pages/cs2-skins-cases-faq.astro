@@ -32,6 +32,15 @@ const faqs = [
     answer: 'There is no objectively "best" case since all cases have roughly similar odds for rare items. However, cases with higher-value rare drops — like the Kilowatt Case, Revolution Case, or Dreams & Nightmares Case — offer better potential returns if you hit a rare unbox. Keep in mind that opening cases is not a reliable way to profit; the expected value is negative on average. Use our <a href="/case-odds-calculator/">case odds calculator</a> to compare expected returns.',
   },
 ];
+
+const cards = [
+  { href: '/how-to-get-cases-cs2/', title: 'How to Get Cases in CS2', excerpt: 'Weekly drops, Steam Market purchases, and Prime eligibility explained.' },
+  { href: '/free-cs2-skins/', title: 'How to Get Free CS2 Skins', excerpt: 'Drops, trade-up contracts, care packages, and operation missions.' },
+  { href: '/cs2-cases-butterfly-knife/', title: 'What Cases Have Butterfly Knives?', excerpt: 'Complete list of cases containing butterfly knives and approximate odds.' },
+  { href: '/cs2-cases-karambit/', title: 'What Cases Have Karambits?', excerpt: 'Every case with karambit knives in the rare special items pool.' },
+  { href: '/cheapest-cs2-knives/', title: 'What Is the Cheapest Knife in CS2?', excerpt: 'Budget knife options starting from Navaja and Gut Knife.' },
+  { href: '/best-cs2-cases-to-open/', title: 'Best Cases to Open in CS2', excerpt: 'Comparing expected value and rare drop potential across cases.' },
+];
 ---
 
 <Base title={title} description={description}>
@@ -47,28 +56,19 @@ const faqs = [
     <p class="skf-hero-desc">CS2 skins and cases are a massive part of the Counter-Strike ecosystem, from free drops to rare knife unboxings. Whether you want to know how cases work, which ones contain butterfly knives or karambits, or what the cheapest knife option is, this FAQ has you covered. Browse our full <a href="/cs2-skins/">skin database</a> and <a href="/cs2-cases/">case listings</a> for live pricing.</p>
   </section>
 
-  <div class="skf-faq-list">
-    {faqs.map(faq => (
-      <details class="skf-faq-item">
-        <summary class="skf-faq-question">{faq.question}</summary>
-        <div class="skf-faq-answer" set:html={faq.answer}></div>
-      </details>
+  <p class="skf-intro">Click any question below for a detailed answer.</p>
+
+  <div class="skf-faq-grid">
+    {cards.map(card => (
+      <a href={card.href} class="skf-faq-card">
+        <div class="skf-faq-card-content">
+          <span class="skf-faq-card-q">{card.title}</span>
+          <p class="skf-faq-card-excerpt">{card.excerpt}</p>
+        </div>
+        <span class="skf-faq-card-arrow">&rarr;</span>
+      </a>
     ))}
   </div>
-
-  <section class="skf-related">
-    <h2>Related Articles</h2>
-    <div class="skf-related-grid">
-      <a href="/how-to-get-cases-cs2/" class="skf-related-card"><span class="skf-related-name">How to Get Cases in CS2</span><span class="skf-related-arrow">&rarr;</span></a>
-      <a href="/cs2-cases-butterfly-knife/" class="skf-related-card"><span class="skf-related-name">Cases with Butterfly Knives</span><span class="skf-related-arrow">&rarr;</span></a>
-      <a href="/cs2-cases-karambit/" class="skf-related-card"><span class="skf-related-name">Cases with Karambits</span><span class="skf-related-arrow">&rarr;</span></a>
-      <a href="/cheapest-cs2-knives/" class="skf-related-card"><span class="skf-related-name">Cheapest CS2 Knives</span><span class="skf-related-arrow">&rarr;</span></a>
-      <a href="/best-cs2-cases-to-open/" class="skf-related-card"><span class="skf-related-name">Best Cases to Open</span><span class="skf-related-arrow">&rarr;</span></a>
-      <a href="/cs2-skins/" class="skf-related-card"><span class="skf-related-name">Full Skin Database</span><span class="skf-related-arrow">&rarr;</span></a>
-      <a href="/cs2-cases/" class="skf-related-card"><span class="skf-related-name">All CS2 Cases</span><span class="skf-related-arrow">&rarr;</span></a>
-      <a href="/case-odds-calculator/" class="skf-related-card"><span class="skf-related-name">Case Odds Calculator</span><span class="skf-related-arrow">&rarr;</span></a>
-    </div>
-  </section>
 
   <section class="skf-explore">
     <h2>Explore More</h2>
@@ -94,29 +94,18 @@ const faqs = [
 .skf-hero-desc a{color:var(--accent);text-decoration:none}
 .skf-hero-desc a:hover{text-decoration:underline}
 
-/* ── FAQ List ── */
-.skf-faq-list{display:flex;flex-direction:column;gap:.5rem;margin-bottom:2.5rem}
-.skf-faq-item{background:var(--bg2);border:1px solid var(--border);border-radius:4px;overflow:hidden}
-.skf-faq-question{display:block;padding:1rem 1.25rem;font-size:.95rem;font-weight:600;color:var(--text);cursor:pointer;list-style:none;position:relative;padding-right:2.5rem;transition:background .2s}
-.skf-faq-question::-webkit-details-marker{display:none}
-.skf-faq-question::after{content:'+';position:absolute;right:1.25rem;top:50%;transform:translateY(-50%);font-size:1.2rem;color:var(--accent);font-weight:700}
-.skf-faq-item[open] .skf-faq-question::after{content:'\2212'}
-.skf-faq-item[open] .skf-faq-question{border-bottom:1px solid var(--border);background:rgba(46,204,113,.03)}
-.skf-faq-question:hover{background:rgba(46,204,113,.03)}
-.skf-faq-answer{padding:1rem 1.25rem;margin:0;font-size:.9rem;color:var(--text2);line-height:1.7}
-.skf-faq-answer a{color:var(--accent);text-decoration:none}
-.skf-faq-answer a:hover{text-decoration:underline}
+/* ── Intro ── */
+.skf-intro{font-size:.9rem;color:var(--text2);margin:0 0 1.25rem;line-height:1.6}
 
-/* ── Related Articles ── */
-.skf-related{margin-bottom:2rem}
-.skf-related h2{font-family:'Montserrat',sans-serif;font-size:1.2rem;font-weight:700;color:var(--text);margin:0 0 .75rem;padding-bottom:.5rem;border-bottom:2px solid var(--accent)}
-.skf-related-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:.6rem}
-.skf-related-card{display:flex;align-items:center;justify-content:space-between;padding:.75rem 1rem;background:var(--bg2);border:1px solid var(--border);border-radius:4px;text-decoration:none;border-left:2px solid transparent;transition:border-left-color .2s,color .2s}
-.skf-related-card:hover{border-left-color:var(--accent)}
-.skf-related-name{font-size:.88rem;color:var(--text2);font-weight:500;transition:color .2s}
-.skf-related-card:hover .skf-related-name{color:var(--text)}
-.skf-related-arrow{font-size:1rem;color:var(--accent);opacity:0;transition:opacity .2s}
-.skf-related-card:hover .skf-related-arrow{opacity:1}
+/* ── FAQ Card Grid ── */
+.skf-faq-grid{display:grid;grid-template-columns:1fr;gap:.75rem;margin-bottom:2.5rem}
+.skf-faq-card{display:flex;align-items:center;justify-content:space-between;padding:1.25rem;background:var(--bg2);border:1px solid var(--border);border-radius:4px;text-decoration:none;border-left:3px solid transparent;transition:border-left-color .2s,background .15s}
+.skf-faq-card:hover{border-left-color:var(--accent);background:rgba(46,204,113,.03)}
+.skf-faq-card-content{flex:1}
+.skf-faq-card-q{font-size:.95rem;font-weight:600;color:var(--text);margin:0 0 .25rem;display:block}
+.skf-faq-card-excerpt{font-size:.82rem;color:var(--text2);margin:0;line-height:1.5}
+.skf-faq-card-arrow{font-size:1.1rem;color:var(--accent);margin-left:1rem;opacity:0;transition:opacity .2s}
+.skf-faq-card:hover .skf-faq-card-arrow{opacity:1}
 
 /* ── Explore More ── */
 .skf-explore{margin-bottom:2rem}
@@ -128,6 +117,5 @@ const faqs = [
 /* ── Responsive ── */
 @media(max-width:768px){
   .skf-hero h1{font-size:1.5rem}
-  .skf-related-grid{grid-template-columns:1fr}
 }
 </style>

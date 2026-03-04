@@ -1,0 +1,238 @@
+---
+import Base from '../layouts/Base.astro';
+import AuthorBox from '../components/AuthorBox.astro';
+import { faqSchema, breadcrumbSchema } from '../lib/weapons';
+
+const title = 'What Is Wingman in CS2? 2v2 Ranked Mode Guide | CSGOLuck Wiki';
+const description = 'Wingman is CS2\'s 2v2 competitive mode on smaller maps. Learn how it works, ranking system, maps, and tips to win.';
+
+const breadcrumbs = [
+  { name: 'Home', url: '/' },
+  { name: 'Ranks & Competitive FAQ', url: '/cs2-ranks-competitive-faq' },
+  { name: 'CS2 Wingman Mode', url: '/cs2-wingman-mode' },
+];
+
+const faqs = [
+  {
+    question: 'Does Wingman have its own separate rank?',
+    answer: 'Yes. Wingman uses the same skill group ranking system as Competitive mode (Silver I through Global Elite), but your Wingman rank is tracked independently from your Competitive rank. Winning Wingman matches does not affect your Competitive skill group or your Premier CS Rating. See our <a href="/cs2-ranks-explained/">ranks guide</a> for a full breakdown of all ranking systems.',
+  },
+  {
+    question: 'How many rounds are in a Wingman match?',
+    answer: 'Wingman matches are played as best-of-16, meaning the first team to win 9 rounds wins the match. If the score reaches 8-8, the match goes to overtime. Each half consists of 8 rounds before teams swap sides. Check our <a href="/cs2-ranks-competitive-faq/">competitive FAQ</a> for more details on match formats.',
+  },
+  {
+    question: 'Can you play Wingman with a random teammate?',
+    answer: 'Yes. You can queue for Wingman solo and be matched with a random teammate, or you can queue as a duo with a friend. Queuing with a friend is generally recommended since communication and coordination are even more important in 2v2 than in 5v5. Visit our <a href="/cs2-ranks-competitive-faq/">ranks & competitive FAQ</a> for more tips.',
+  },
+];
+
+const breadcrumbSchema_ = breadcrumbSchema(breadcrumbs);
+const faqSchema_ = faqSchema(faqs);
+
+const articleSchema = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": title,
+  "description": description,
+  "author": { "@type": "Person", "name": "Josh Lingenfelter", "url": "https://www.linkedin.com/in/josh-lingenfelter-8157274b/", "jobTitle": "Director", "worksFor": { "@type": "Organization", "name": "CSGOLuck" } },
+  "publisher": { "@type": "Organization", "name": "CSGOLuck Wiki", "url": "https://wiki.csgoluck.com" },
+  "mainEntityOfPage": "https://wiki.csgoluck.com/cs2-wingman-mode/",
+  "inLanguage": "en-US"
+});
+
+const sections = [
+  { id: 'what-is-wingman', label: 'What Is Wingman' },
+  { id: 'how-wingman-works', label: 'How Wingman Works' },
+  { id: 'wingman-maps', label: 'Wingman Maps' },
+  { id: 'wingman-ranks', label: 'Wingman Ranks' },
+  { id: 'tips-for-winning', label: 'Tips for Winning' },
+  { id: 'faq', label: 'FAQ' },
+  { id: 'related', label: 'Related Articles' },
+];
+---
+
+<Base title={title} description={description}>
+  <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema_)}></script>
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema_)}></script>
+  <script type="application/ld+json" set:html={articleSchema}></script>
+
+  <div class="cwm-wrap">
+    <nav class="cwm-breadcrumb">
+      <a href="/">Home</a>
+      <span class="cwm-sep">/</span>
+      <a href="/cs2-ranks-competitive-faq/">Ranks & Competitive FAQ</a>
+      <span class="cwm-sep">/</span>
+      <span>CS2 Wingman Mode</span>
+    </nav>
+
+    <header class="cwm-header">
+      <h1>What Is Wingman in CS2? 2v2 Ranked Mode Guide</h1>
+      <p class="cwm-subtitle">Everything you need to know about CS2's fast-paced 2v2 competitive game mode</p>
+    </header>
+
+    <nav class="cwm-toc-mobile" aria-label="Table of contents">
+      {sections.map((s) => (
+        <a href={`#${s.id}`} class="cwm-toc-mobile-link">{s.label}</a>
+      ))}
+    </nav>
+
+    <div class="cwm-layout">
+      <aside class="cwm-sidebar">
+        <nav class="cwm-toc" aria-label="Table of contents">
+          <span class="cwm-toc-title">Contents</span>
+          {sections.map((s) => (
+            <a href={`#${s.id}`} class="cwm-toc-link">{s.label}</a>
+          ))}
+        </nav>
+      </aside>
+
+      <article class="cwm-content">
+        <p class="cwm-intro">
+          Wingman is CS2's dedicated 2v2 competitive game mode, played on compact versions of familiar maps with a single bomb site. It offers a faster, more intimate competitive experience compared to the standard 5v5 format. Wingman has its own separate ranking system, a unique map pool, and a distinct tactical dynamic that rewards individual skill and team coordination equally. Whether you want a quick ranked match with a friend or a different way to practice competitive fundamentals, Wingman provides a focused alternative to full-sized competitive play.
+        </p>
+
+        <section id="what-is-wingman">
+          <div class="cwm-section-header"><h2>What Is Wingman?</h2></div>
+          <p>Wingman is a ranked 2v2 bomb defusal mode in Counter-Strike 2. Two teams of two players compete on smaller maps featuring a single bomb site. The mode follows the same fundamental rules as standard competitive CS2 -- terrorists attempt to plant and detonate the bomb while counter-terrorists defend the site -- but the reduced player count and map size create a fundamentally different tactical experience.</p>
+          <p>Wingman was first introduced in CS:GO as part of Operation Hydra in 2017 and was later made a permanent game mode. It has carried over into CS2 with the same core format and continues to be one of the most popular casual-competitive options in the game. The mode is available to all players, including those without Prime Status.</p>
+          <p>Matches are significantly shorter than standard competitive games. While a full 5v5 competitive match can last 45 minutes to over an hour, Wingman matches typically conclude in 15 to 25 minutes, making them ideal for players with limited time or those looking for quick ranked games between longer sessions.</p>
+        </section>
+
+        <section id="how-wingman-works">
+          <div class="cwm-section-header"><h2>How Wingman Works</h2></div>
+          <p>Wingman follows a best-of-16 round format. The first team to win 9 rounds takes the match. Teams play 8 rounds on one side (terrorist or counter-terrorist), then swap sides for the second half. If the score reaches 8-8, the match enters overtime with additional rounds to determine the winner.</p>
+          <p>The economy system in Wingman mirrors standard competitive play. Players earn money based on round results, kills, and bomb plants or defusals. However, the economic dynamics feel different in 2v2 because there is less money flowing into the team overall and individual purchases have a proportionally greater impact. A single player buying an AWP in Wingman represents half the team's firepower, whereas in 5v5 it represents one-fifth.</p>
+          <ul class="cwm-list">
+            <li><strong>Team size:</strong> 2 players per team (4 total per match)</li>
+            <li><strong>Format:</strong> Best of 16 rounds (first to 9 wins)</li>
+            <li><strong>Half length:</strong> 8 rounds per half, then side swap</li>
+            <li><strong>Round time:</strong> 1 minute 30 seconds per round</li>
+            <li><strong>Bomb timer:</strong> 40 seconds after plant</li>
+            <li><strong>Buy time:</strong> 20 seconds at the start of each round</li>
+          </ul>
+          <p>Communication between teammates is critical in Wingman. With only two players per team, every callout, every trade kill, and every coordinated push has an outsized impact on the round outcome. Losing one player in Wingman immediately puts your team in a 1v2 disadvantage, making trades and refragging essential.</p>
+        </section>
+
+        <section id="wingman-maps">
+          <div class="cwm-section-header"><h2>Wingman Maps</h2></div>
+          <p>Wingman features its own dedicated map pool, consisting of modified versions of standard competitive maps. These modifications typically isolate a single bomb site and its surrounding areas, creating compact arenas designed specifically for 2v2 gameplay.</p>
+          <p>The Wingman map pool rotates periodically, but commonly includes sections from popular maps such as:</p>
+          <ul class="cwm-list">
+            <li><strong>Inferno (Bomb Site A):</strong> Features the iconic apartments-to-A-site approach with banana removed, creating a focused engagement zone around the A site and pit area</li>
+            <li><strong>Overpass (Bomb Site B):</strong> Includes the B site, monster tunnel, and connector area, providing a mix of close-quarters and medium-range engagements</li>
+            <li><strong>Nuke (Bomb Site A):</strong> Utilizes the outside-to-A-site layout including hut, squeaky door, and the main ramp area</li>
+            <li><strong>Vertigo (Bomb Site A):</strong> Features the A site area at the top of the building with its unique vertical gameplay elements</li>
+            <li><strong>Cobblestone (Bomb Site B):</strong> Focuses on the B platform and long hall area with its medieval aesthetic</li>
+          </ul>
+          <p>Learning the specific layouts of Wingman maps is essential because the cut-down versions play differently from their 5v5 counterparts. Angles, timings, and utility usage change when the map is reduced to a single site. Spending time in an offline session walking through each Wingman map helps you understand the available positions and common engagement distances.</p>
+        </section>
+
+        <section id="wingman-ranks">
+          <div class="cwm-section-header"><h2>Wingman Ranking System</h2></div>
+          <p>Wingman uses the traditional CS skill group system with 18 ranks ranging from Silver I to The Global Elite. Importantly, your Wingman rank is entirely separate from your Competitive skill group rank and your Premier CS Rating. You can be Global Elite in Wingman and Gold Nova in Competitive, or vice versa.</p>
+          <p>To receive your initial Wingman rank, you need to win 10 placement matches. After placement, your rank adjusts based on wins, losses, and individual performance. The ranking algorithm considers factors similar to those in Competitive: round wins and losses, MVP stars, kill-death ratio relative to opponents, and consistency over time.</p>
+          <p>Wingman ranks tend to skew slightly higher than Competitive ranks for many players. The 2v2 format places more emphasis on raw aim and individual clutch potential, so players with strong mechanical skills may find themselves ranked higher in Wingman even if their 5v5 game sense and teamplay are still developing. Conversely, players who excel at coordination and strategy in 5v5 may find the individual demands of Wingman more challenging.</p>
+          <p>Rank decay applies in Wingman just as it does in Competitive. If you do not play Wingman for an extended period, your rank may be hidden and require a recalibration match before it reappears. Regular play -- even a few matches per week -- is enough to keep your rank visible.</p>
+        </section>
+
+        <section id="tips-for-winning">
+          <div class="cwm-section-header"><h2>Tips for Winning Wingman Matches</h2></div>
+          <p>Success in Wingman requires a different approach than 5v5 competitive play. Here are strategies that are particularly effective in the 2v2 format:</p>
+          <ul class="cwm-list">
+            <li><strong>Always trade kills:</strong> In a 2v2, getting traded is the difference between a 1v2 and a 1v1. Stay close enough to your teammate to refrag if they get picked, but far enough apart to avoid both dying to a single grenade or spray</li>
+            <li><strong>Master utility usage:</strong> With only two sets of grenades available, every smoke, flash, and molotov matters more. Learn essential smokes for each Wingman map and practice pop-flash timings with your partner</li>
+            <li><strong>Communicate constantly:</strong> Call everything -- enemy positions, damage dealt, utility used, and intended plays. With only two players, there is no room for miscommunication or silent plays</li>
+            <li><strong>Control the economy together:</strong> Coordinate your buys with your teammate. A round where one player has a rifle and the other has a pistol is far less effective than both players either saving or buying together</li>
+            <li><strong>Play for information early:</strong> In the opening seconds of each round, use sound cues and quick peeks to gather information about enemy positioning before committing to a strategy</li>
+            <li><strong>Vary your approach:</strong> Predictability is punished heavily in 2v2. If you take the same route or use the same strategy multiple rounds in a row, competent opponents will read and counter it quickly</li>
+          </ul>
+          <p>Queuing with a consistent duo partner is the single biggest advantage you can give yourself in Wingman. Developing synergy, practiced setups, and shared callouts with a regular partner will outperform random matchmaking communication in most cases.</p>
+        </section>
+
+        <section id="faq">
+          <div class="cwm-section-header"><h2>Frequently Asked Questions</h2></div>
+          <div class="cwm-faq-list">
+            {faqs.map((faq) => (
+              <details class="cwm-faq-item">
+                <summary class="cwm-faq-question">{faq.question}</summary>
+                <p class="cwm-faq-answer" set:html={faq.answer}></p>
+              </details>
+            ))}
+          </div>
+        </section>
+
+        <section id="related">
+          <div class="cwm-section-header"><h2>Related Articles</h2></div>
+          <div class="cwm-resources-grid">
+            <a href="/cs2-ranks-explained/" class="cwm-resource-card"><span class="cwm-resource-name">CS2 Ranks Explained</span><span class="cwm-resource-arrow">&rarr;</span></a>
+            <a href="/unlock-premier-cs2/" class="cwm-resource-card"><span class="cwm-resource-name">Unlock Premier in CS2</span><span class="cwm-resource-arrow">&rarr;</span></a>
+            <a href="/cs2-ranks-competitive-faq/" class="cwm-resource-card"><span class="cwm-resource-name">Ranks & Competitive FAQ</span><span class="cwm-resource-arrow">&rarr;</span></a>
+            <a href="/cs2-map-pool/" class="cwm-resource-card"><span class="cwm-resource-name">CS2 Map Pool</span><span class="cwm-resource-arrow">&rarr;</span></a>
+          </div>
+        </section>
+      </article>
+    </div>
+  </div>
+
+  <style>
+    .cwm-wrap{max-width:1100px;margin:0 auto;padding:0 1.5rem 2rem}
+    .cwm-breadcrumb{display:flex;align-items:center;gap:.5rem;padding:1.25rem 0;font-size:.85rem;color:var(--text2)}
+    .cwm-breadcrumb a{color:var(--accent);text-decoration:none}
+    .cwm-breadcrumb a:hover{color:var(--accent2)}
+    .cwm-sep{color:var(--border)}
+    .cwm-header{padding:1.5rem 0 1.25rem;border-bottom:2px solid var(--accent);margin-bottom:1.5rem}
+    .cwm-header h1{margin:0 0 .35rem;font-size:2.2rem;font-weight:800;color:var(--text);letter-spacing:-.02em;line-height:1.2}
+    .cwm-subtitle{margin:0;font-size:1.05rem;color:var(--text2);font-weight:400}
+    .cwm-toc-mobile{display:none}
+    .cwm-layout{display:grid;grid-template-columns:220px 1fr;gap:2.5rem;align-items:start}
+    .cwm-sidebar{position:sticky;top:80px}
+    .cwm-toc{display:flex;flex-direction:column;gap:0;border-left:2px solid var(--border);padding-left:0}
+    .cwm-toc-title{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--accent);padding:0 0 .6rem 1rem}
+    .cwm-toc-link{display:block;padding:.4rem 1rem;font-size:.82rem;color:var(--text2);text-decoration:none;border-left:2px solid transparent;margin-left:-2px;transition:color .2s,border-color .2s}
+    .cwm-toc-link:hover{color:var(--text);border-left-color:var(--accent)}
+    .cwm-content{min-width:0}
+    .cwm-intro{font-size:1rem;line-height:1.8;color:var(--text2);margin-bottom:2rem}
+    .cwm-section-header{background:rgba(46,204,113,.05);margin:0 -1.25rem 1.25rem;padding:.75rem 1.25rem;border-radius:4px}
+    .cwm-section-header h2{margin:0;padding:0;font-size:1.5rem;font-weight:700;color:var(--text);border:none;letter-spacing:-.01em}
+    section{margin-bottom:2.5rem}
+    p{line-height:1.7;color:var(--text2);margin-bottom:1rem}
+    .cwm-list{list-style:none;padding:0;margin:.75rem 0 1.5rem}
+    .cwm-list li{padding:.4rem 0 .4rem 1.6rem;position:relative;color:var(--text2);line-height:1.65}
+    .cwm-list li::before{content:'';position:absolute;left:.25rem;top:.75rem;width:6px;height:6px;background:var(--accent);border-radius:1px}
+    .cwm-list li strong{color:var(--text)}
+    .cwm-faq-list{display:flex;flex-direction:column;gap:.5rem}
+    .cwm-faq-item{background:var(--bg2);border:1px solid var(--border);border-radius:4px;overflow:hidden}
+    .cwm-faq-question{display:block;padding:1rem 1.25rem;font-size:.95rem;font-weight:600;color:var(--text);cursor:pointer;list-style:none;position:relative;padding-right:2.5rem;transition:background .2s}
+    .cwm-faq-question::-webkit-details-marker{display:none}
+    .cwm-faq-question::after{content:'+';position:absolute;right:1.25rem;top:50%;transform:translateY(-50%);font-size:1.2rem;color:var(--accent);font-weight:700}
+    .cwm-faq-item[open] .cwm-faq-question::after{content:'\2212'}
+    .cwm-faq-item[open] .cwm-faq-question{border-bottom:1px solid var(--border);background:rgba(46,204,113,.03)}
+    .cwm-faq-question:hover{background:rgba(46,204,113,.03)}
+    .cwm-faq-answer{padding:1rem 1.25rem;margin:0;font-size:.9rem;color:var(--text2);line-height:1.7}
+    .cwm-resources-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.6rem;margin:.5rem 0 1.5rem}
+    .cwm-resource-card{display:flex;align-items:center;justify-content:space-between;padding:.75rem 1rem;background:var(--bg2);border:1px solid var(--border);border-radius:4px;text-decoration:none;border-left:2px solid transparent;transition:border-left-color .2s,color .2s}
+    .cwm-resource-card:hover{border-left-color:var(--accent)}
+    .cwm-resource-name{font-size:.88rem;color:var(--text2);font-weight:500;transition:color .2s}
+    .cwm-resource-card:hover .cwm-resource-name{color:var(--text)}
+    .cwm-resource-arrow{font-size:1rem;color:var(--accent);opacity:0;transition:opacity .2s}
+    .cwm-resource-card:hover .cwm-resource-arrow{opacity:1}
+    @media(max-width:860px){
+      .cwm-layout{grid-template-columns:1fr;gap:0}
+      .cwm-sidebar{display:none}
+      .cwm-toc-mobile{display:flex;gap:.25rem;overflow-x:auto;padding:.75rem 0;margin-bottom:1rem;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+      .cwm-toc-mobile::-webkit-scrollbar{display:none}
+      .cwm-toc-mobile-link{flex-shrink:0;padding:.35rem .75rem;font-size:.78rem;font-weight:600;color:var(--text2);background:var(--bg2);border:1px solid var(--border);border-radius:4px;text-decoration:none;white-space:nowrap;transition:color .2s,border-color .2s}
+      .cwm-toc-mobile-link:hover{color:var(--accent);border-color:var(--accent)}
+      .cwm-header h1{font-size:1.7rem}
+      .cwm-section-header{margin:0 -1rem 1rem;padding:.6rem 1rem}
+      .cwm-resources-grid{grid-template-columns:repeat(2,1fr)}
+    }
+    @media(max-width:600px){
+      .cwm-wrap{padding:0 1rem 1.5rem}
+      .cwm-resources-grid{grid-template-columns:1fr}
+      .cwm-header h1{font-size:1.5rem}
+    }
+  </style>
+  <AuthorBox updated="2026-03-04" />
+</Base>

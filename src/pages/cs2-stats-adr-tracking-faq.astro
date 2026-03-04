@@ -28,6 +28,13 @@ const faqs = [
     answer: 'Counter-Strike 2 consistently ranks among the most-played games on Steam, regularly exceeding one million concurrent players during peak hours. You can check real-time and historical player counts on <a href="https://steamcharts.com/" target="_blank" rel="noopener noreferrer">SteamCharts</a> or the official <a href="https://store.steampowered.com/stats/" target="_blank" rel="noopener noreferrer">Steam Stats page</a>. The player base has remained strong since the transition from CS:GO, with numbers spiking around Major tournaments and seasonal updates.',
   },
 ];
+
+const cards = [
+  { href: '/what-is-adr-cs2/', title: 'What Is ADR in CS2?', excerpt: 'Average Damage per Round explained with benchmarks and improvement tips.' },
+  { href: '/check-cs2-stats/', title: 'How to Check CS2 Stats', excerpt: 'In-game stats, match history, and third-party tracking platforms.' },
+  { href: '/what-is-stattrak-cs2/', title: 'What Is StatTrak in CS2?', excerpt: 'Kill counter weapon attribute, pricing premium, and swap tools.' },
+  { href: '/cs2-player-count/', title: 'How Many People Play CS2?', excerpt: 'Live concurrent player counts and historical trends.' },
+];
 ---
 
 <Base title={title} description={description}>
@@ -43,24 +50,19 @@ const faqs = [
     <p class="saf-hero-desc">Tracking your CS2 stats, understanding ADR, and knowing what StatTrak does are fundamental to measuring your progress as a player. Whether you want to know what a good ADR looks like, how to pull up your match stats, or how many people are playing CS2 right now, this FAQ covers the key stat-related questions.</p>
   </section>
 
-  <div class="saf-faq-list">
-    {faqs.map(faq => (
-      <details class="saf-faq-item">
-        <summary class="saf-faq-question">{faq.question}</summary>
-        <div class="saf-faq-answer" set:html={faq.answer}></div>
-      </details>
+  <p class="saf-intro">Click any question below for a detailed answer.</p>
+
+  <div class="saf-faq-grid">
+    {cards.map(card => (
+      <a href={card.href} class="saf-faq-card">
+        <div class="saf-faq-card-content">
+          <span class="saf-faq-card-q">{card.title}</span>
+          <p class="saf-faq-card-excerpt">{card.excerpt}</p>
+        </div>
+        <span class="saf-faq-card-arrow">&rarr;</span>
+      </a>
     ))}
   </div>
-
-  <section class="saf-related">
-    <h2>Related Articles</h2>
-    <div class="saf-related-grid">
-      <a href="/what-is-adr-cs2/" class="saf-related-card"><span class="saf-related-name">What Is ADR in CS2?</span><span class="saf-related-arrow">&rarr;</span></a>
-      <a href="/check-cs2-stats/" class="saf-related-card"><span class="saf-related-name">How to Check CS2 Stats</span><span class="saf-related-arrow">&rarr;</span></a>
-      <a href="/cs2-player-count/" class="saf-related-card"><span class="saf-related-name">CS2 Player Count</span><span class="saf-related-arrow">&rarr;</span></a>
-      <a href="/what-is-stattrak-cs2/" class="saf-related-card"><span class="saf-related-name">What Is StatTrak in CS2?</span><span class="saf-related-arrow">&rarr;</span></a>
-    </div>
-  </section>
 
   <section class="saf-explore">
     <h2>Explore More</h2>
@@ -90,29 +92,18 @@ const faqs = [
 .saf-hero h1{font-family:'Montserrat',sans-serif;font-size:2rem;font-weight:800;margin:0 0 .75rem;color:var(--text)}
 .saf-hero-desc{color:var(--text2);font-size:.95rem;line-height:1.7;margin:0}
 
-/* ── FAQ List ── */
-.saf-faq-list{display:flex;flex-direction:column;gap:.5rem;margin-bottom:2.5rem}
-.saf-faq-item{background:var(--bg2);border:1px solid var(--border);border-radius:4px;overflow:hidden}
-.saf-faq-question{display:block;padding:1rem 1.25rem;font-size:.95rem;font-weight:600;color:var(--text);cursor:pointer;list-style:none;position:relative;padding-right:2.5rem;transition:background .2s}
-.saf-faq-question::-webkit-details-marker{display:none}
-.saf-faq-question::after{content:'+';position:absolute;right:1.25rem;top:50%;transform:translateY(-50%);font-size:1.2rem;color:var(--accent);font-weight:700}
-.saf-faq-item[open] .saf-faq-question::after{content:'\2212'}
-.saf-faq-item[open] .saf-faq-question{border-bottom:1px solid var(--border);background:rgba(46,204,113,.03)}
-.saf-faq-question:hover{background:rgba(46,204,113,.03)}
-.saf-faq-answer{padding:1rem 1.25rem;margin:0;font-size:.9rem;color:var(--text2);line-height:1.7}
-.saf-faq-answer a{color:var(--accent);text-decoration:none}
-.saf-faq-answer a:hover{text-decoration:underline}
+/* ── Intro ── */
+.saf-intro{font-size:.9rem;color:var(--text2);margin:0 0 1.25rem;line-height:1.6}
 
-/* ── Related Articles ── */
-.saf-related{margin-bottom:2rem}
-.saf-related h2{font-family:'Montserrat',sans-serif;font-size:1.2rem;font-weight:700;color:var(--text);margin:0 0 .75rem;padding-bottom:.5rem;border-bottom:2px solid var(--accent)}
-.saf-related-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:.6rem}
-.saf-related-card{display:flex;align-items:center;justify-content:space-between;padding:.75rem 1rem;background:var(--bg2);border:1px solid var(--border);border-radius:4px;text-decoration:none;border-left:2px solid transparent;transition:border-left-color .2s,color .2s}
-.saf-related-card:hover{border-left-color:var(--accent)}
-.saf-related-name{font-size:.88rem;color:var(--text2);font-weight:500;transition:color .2s}
-.saf-related-card:hover .saf-related-name{color:var(--text)}
-.saf-related-arrow{font-size:1rem;color:var(--accent);opacity:0;transition:opacity .2s}
-.saf-related-card:hover .saf-related-arrow{opacity:1}
+/* ── FAQ Card Grid ── */
+.saf-faq-grid{display:grid;grid-template-columns:1fr;gap:.75rem;margin-bottom:2.5rem}
+.saf-faq-card{display:flex;align-items:center;justify-content:space-between;padding:1.25rem;background:var(--bg2);border:1px solid var(--border);border-radius:4px;text-decoration:none;border-left:3px solid transparent;transition:border-left-color .2s,background .15s}
+.saf-faq-card:hover{border-left-color:var(--accent);background:rgba(46,204,113,.03)}
+.saf-faq-card-content{flex:1}
+.saf-faq-card-q{font-size:.95rem;font-weight:600;color:var(--text);margin:0 0 .25rem;display:block}
+.saf-faq-card-excerpt{font-size:.82rem;color:var(--text2);margin:0;line-height:1.5}
+.saf-faq-card-arrow{font-size:1.1rem;color:var(--accent);margin-left:1rem;opacity:0;transition:opacity .2s}
+.saf-faq-card:hover .saf-faq-card-arrow{opacity:1}
 
 /* ── Explore More ── */
 .saf-explore{margin-bottom:2rem}
@@ -130,6 +121,5 @@ const faqs = [
 /* ── Responsive ── */
 @media(max-width:768px){
   .saf-hero h1{font-size:1.5rem}
-  .saf-related-grid{grid-template-columns:1fr}
 }
 </style>

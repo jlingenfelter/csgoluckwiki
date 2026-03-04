@@ -1,0 +1,239 @@
+---
+import Base from '../layouts/Base.astro';
+import AuthorBox from '../components/AuthorBox.astro';
+import { faqSchema, breadcrumbSchema } from '../lib/weapons';
+
+const title = 'Is CS2 CPU or GPU Intensive? Performance Breakdown | CSGOLuck Wiki';
+const description = 'CS2 is primarily CPU intensive for high FPS, but GPU matters at higher resolutions. Full hardware performance analysis.';
+
+const breadcrumbs = [
+  { name: 'Home', url: '/' },
+  { name: 'Download & Platform FAQ', url: '/cs2-download-platform-faq' },
+  { name: 'CS2 CPU or GPU', url: '/cs2-cpu-or-gpu' },
+];
+
+const faqs = [
+  {
+    question: 'Is CS2 more CPU or GPU bound?',
+    answer: 'CS2 is primarily CPU bound at competitive settings (low to medium) and standard resolutions (1080p). The game relies heavily on single-threaded CPU performance for physics, tick processing, and game logic. At higher resolutions like 1440p or 4K, the GPU becomes the limiting factor. See our <a href="/cs2-system-requirements/">system requirements guide</a> for recommended specs.',
+  },
+  {
+    question: 'What is the best CPU for CS2?',
+    answer: 'CPUs with strong single-core performance deliver the best CS2 frame rates. Modern processors from both AMD (Ryzen 7000 and 9000 series) and Intel (13th and 14th Gen Core i5 and above) offer excellent CS2 performance. Clock speed and IPC (instructions per clock) matter more than core count for this title. Check our <a href="/cs2-download-platform-faq/">download & platform FAQ</a> for more hardware guidance.',
+  },
+  {
+    question: 'Can I run CS2 with a low-end GPU?',
+    answer: 'Yes, at 1080p with low to medium settings, CS2 can run on relatively modest GPUs. Cards like the NVIDIA GTX 1650 or AMD RX 570 can achieve playable frame rates at reduced settings. The CPU will be the bigger bottleneck in most budget builds. Visit our <a href="/show-fps-cs2/">FPS counter guide</a> to monitor your performance in-game.',
+  },
+];
+
+const breadcrumbSchema_ = breadcrumbSchema(breadcrumbs);
+const faqSchema_ = faqSchema(faqs);
+
+const articleSchema = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": title,
+  "description": description,
+  "author": { "@type": "Person", "name": "Josh Lingenfelter", "url": "https://www.linkedin.com/in/josh-lingenfelter-8157274b/", "jobTitle": "Director", "worksFor": { "@type": "Organization", "name": "CSGOLuck" } },
+  "publisher": { "@type": "Organization", "name": "CSGOLuck Wiki", "url": "https://wiki.csgoluck.com" },
+  "mainEntityOfPage": "https://wiki.csgoluck.com/cs2-cpu-or-gpu/",
+  "inLanguage": "en-US"
+});
+
+const sections = [
+  { id: 'cpu-vs-gpu', label: 'CPU vs GPU in CS2' },
+  { id: 'why-cpu-matters', label: 'Why CPU Matters More' },
+  { id: 'when-gpu-important', label: 'When GPU Becomes Important' },
+  { id: 'recommended-hardware', label: 'Recommended Hardware Balance' },
+  { id: 'optimization-tips', label: 'Optimization Tips' },
+  { id: 'faq', label: 'FAQ' },
+  { id: 'related', label: 'Related Articles' },
+];
+---
+
+<Base title={title} description={description}>
+  <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema_)}></script>
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema_)}></script>
+  <script type="application/ld+json" set:html={articleSchema}></script>
+
+  <div class="cog-wrap">
+    <nav class="cog-breadcrumb">
+      <a href="/">Home</a>
+      <span class="cog-sep">/</span>
+      <a href="/cs2-download-platform-faq/">Download & Platform FAQ</a>
+      <span class="cog-sep">/</span>
+      <span>CS2 CPU or GPU</span>
+    </nav>
+
+    <header class="cog-header">
+      <h1>Is CS2 CPU or GPU Intensive? Performance Breakdown</h1>
+      <p class="cog-subtitle">Understanding which hardware component matters most for competitive CS2 performance</p>
+    </header>
+
+    <nav class="cog-toc-mobile" aria-label="Table of contents">
+      {sections.map((s) => (
+        <a href={`#${s.id}`} class="cog-toc-mobile-link">{s.label}</a>
+      ))}
+    </nav>
+
+    <div class="cog-layout">
+      <aside class="cog-sidebar">
+        <nav class="cog-toc" aria-label="Table of contents">
+          <span class="cog-toc-title">Contents</span>
+          {sections.map((s) => (
+            <a href={`#${s.id}`} class="cog-toc-link">{s.label}</a>
+          ))}
+        </nav>
+      </aside>
+
+      <article class="cog-content">
+        <p class="cog-intro">
+          A common question when building or upgrading a PC for Counter-Strike 2 is whether the game is CPU intensive or GPU intensive. The answer depends on your resolution, graphics settings, and target frame rate. In most competitive scenarios, CS2 is primarily CPU bound -- your processor has a larger impact on frame rates than your graphics card. However, the GPU becomes increasingly important at higher resolutions and visual quality settings. This guide breaks down exactly how each component affects CS2 performance and how to build a balanced system.
+        </p>
+
+        <section id="cpu-vs-gpu">
+          <div class="cog-section-header"><h2>CPU vs GPU in CS2</h2></div>
+          <p>Every frame in CS2 requires both CPU and GPU work, but the workloads are fundamentally different. The CPU handles game logic, physics calculations, entity processing, networking, sound mixing, and input handling. The GPU is responsible for rendering the visual scene -- drawing textures, applying lighting, processing post-effects, and outputting the final image to your display.</p>
+          <p>In a CPU-bound scenario, the processor finishes its work slower than the GPU, meaning the graphics card is waiting idle between frames. In a GPU-bound scenario, the opposite is true -- the CPU prepares frame data faster than the GPU can render it. Identifying which component is your bottleneck is essential for making effective upgrade decisions.</p>
+          <p>CS2 inherited much of CS:GO's CPU-intensive nature but added additional GPU demands through Source 2's improved rendering pipeline. The net result is a game that stresses the CPU at competitive settings but can push GPUs harder than CS:GO ever did when visual quality is increased.</p>
+        </section>
+
+        <section id="why-cpu-matters">
+          <div class="cog-section-header"><h2>Why CPU Matters More for Competitive Play</h2></div>
+          <p>Competitive CS2 players typically run the game at low to medium graphical settings to maximize frame rate and minimize visual clutter. At these settings, the GPU workload is relatively light, which shifts the performance bottleneck firmly onto the CPU.</p>
+          <p>Several specific CS2 workloads are CPU-intensive:</p>
+          <ul class="cog-list">
+            <li><strong>Tick processing:</strong> CS2's sub-tick system requires the CPU to process game state updates at high frequency, calculating player positions, bullet trajectories, and collision detection</li>
+            <li><strong>Physics simulation:</strong> Smoke grenades, molotov spread, ragdoll effects, and environmental destruction all run on the CPU</li>
+            <li><strong>Entity management:</strong> With 10 players, dozens of grenades, and hundreds of dynamic objects per round, the CPU tracks and updates every entity each frame</li>
+            <li><strong>Audio processing:</strong> CS2's spatial audio system calculates sound propagation, occlusion, and distance attenuation on the CPU</li>
+            <li><strong>Networking:</strong> Encoding and decoding network packets, interpolating remote player positions, and managing the connection to game servers is CPU work</li>
+          </ul>
+          <p>Single-threaded CPU performance is the most important metric for CS2. While the game does use multiple threads, the main game thread handles the majority of critical-path work. A CPU with high clock speeds and strong instructions-per-clock performance will deliver better frame rates than one with many slower cores.</p>
+        </section>
+
+        <section id="when-gpu-important">
+          <div class="cog-section-header"><h2>When the GPU Becomes Important</h2></div>
+          <p>The GPU takes on a larger role in CS2 performance under specific conditions. If any of the following apply to your setup, your graphics card becomes a meaningful factor in your frame rate.</p>
+          <ul class="cog-list">
+            <li><strong>Higher resolutions:</strong> At 1440p and especially 4K, the GPU must render significantly more pixels per frame. This dramatically increases the rendering workload and often makes the GPU the bottleneck</li>
+            <li><strong>High graphics settings:</strong> Enabling high or very high texture quality, shadow detail, shader quality, and anti-aliasing increases the GPU's workload substantially</li>
+            <li><strong>Global illumination:</strong> Source 2's improved lighting system in CS2 adds real-time lighting calculations that are processed by the GPU</li>
+            <li><strong>Multi-monitor setups:</strong> Ultrawide or multi-monitor configurations increase horizontal resolution, adding more rendering work for the GPU</li>
+          </ul>
+          <p>For players running CS2 at 1080p with competitive (low) settings, a mid-range GPU from the last few generations is typically sufficient. The CPU will almost always be the limiting factor in this configuration. However, if you play at 1440p with medium to high settings and want to maintain 200+ FPS, you need a capable GPU alongside a strong CPU.</p>
+        </section>
+
+        <section id="recommended-hardware">
+          <div class="cog-section-header"><h2>Recommended Hardware Balance</h2></div>
+          <p>Building a balanced system for CS2 means prioritizing CPU performance while ensuring your GPU is not a severe bottleneck. Here are general guidelines based on common target configurations:</p>
+          <ul class="cog-list">
+            <li><strong>1080p competitive (low settings, 300+ FPS):</strong> Prioritize a fast CPU (Intel Core i5-13600K or AMD Ryzen 5 7600X and above). A mid-range GPU like an NVIDIA RTX 3060 or AMD RX 6700 XT is more than sufficient</li>
+            <li><strong>1080p high quality (medium-high settings, 200+ FPS):</strong> Strong CPU still essential. Pair with an RTX 4060 Ti or RX 7700 XT for comfortable headroom</li>
+            <li><strong>1440p competitive (144-240+ FPS):</strong> Both components matter significantly. An Intel i7-14700K or Ryzen 7 7800X3D paired with an RTX 4070 or RX 7800 XT provides a solid balance</li>
+            <li><strong>4K or high-refresh 1440p (144+ FPS at high settings):</strong> GPU becomes the primary investment. RTX 4080 or above paired with a top-tier CPU</li>
+          </ul>
+          <p>RAM also plays a supporting role. CS2 benefits from fast DDR5 memory (or high-speed DDR4) due to the CPU's reliance on memory bandwidth for game logic processing. 16 GB is the minimum; 32 GB provides comfortable headroom for background applications and streaming.</p>
+        </section>
+
+        <section id="optimization-tips">
+          <div class="cog-section-header"><h2>Optimization Tips</h2></div>
+          <p>Regardless of your hardware, several software-side optimizations can improve CS2 performance:</p>
+          <ul class="cog-list">
+            <li><strong>Update GPU drivers:</strong> Both NVIDIA and AMD release game-ready drivers that include CS2-specific optimizations. Always run the latest stable driver version</li>
+            <li><strong>Set CS2 to high priority:</strong> In your operating system's task manager, setting CS2's process priority to High can improve CPU scheduling consistency</li>
+            <li><strong>Disable unnecessary background applications:</strong> Web browsers, streaming software, and communication tools consume CPU resources. Close anything nonessential during competitive play</li>
+            <li><strong>Use fullscreen mode:</strong> Fullscreen exclusive mode provides the lowest input latency and the most consistent frame delivery compared to windowed or borderless modes</li>
+            <li><strong>Disable V-Sync:</strong> V-Sync adds input latency and caps frame rate. For competitive CS2, disable V-Sync and use your monitor's refresh rate as your effective cap</li>
+            <li><strong>Monitor performance with net_graph:</strong> Use CS2's built-in performance overlay to identify whether your CPU or GPU is the bottleneck in real time</li>
+          </ul>
+          <p>For detailed instructions on enabling the FPS counter and performance monitoring tools, see our <a href="/show-fps-cs2/">guide to showing FPS in CS2</a>.</p>
+        </section>
+
+        <section id="faq">
+          <div class="cog-section-header"><h2>Frequently Asked Questions</h2></div>
+          <div class="cog-faq-list">
+            {faqs.map((faq) => (
+              <details class="cog-faq-item">
+                <summary class="cog-faq-question">{faq.question}</summary>
+                <p class="cog-faq-answer" set:html={faq.answer}></p>
+              </details>
+            ))}
+          </div>
+        </section>
+
+        <section id="related">
+          <div class="cog-section-header"><h2>Related Articles</h2></div>
+          <div class="cog-resources-grid">
+            <a href="/cs2-system-requirements/" class="cog-resource-card"><span class="cog-resource-name">CS2 System Requirements</span><span class="cog-resource-arrow">&rarr;</span></a>
+            <a href="/show-fps-cs2/" class="cog-resource-card"><span class="cog-resource-name">Show FPS in CS2</span><span class="cog-resource-arrow">&rarr;</span></a>
+            <a href="/cs2-download-platform-faq/" class="cog-resource-card"><span class="cog-resource-name">Download & Platform FAQ</span><span class="cog-resource-arrow">&rarr;</span></a>
+            <a href="/cs2-file-size/" class="cog-resource-card"><span class="cog-resource-name">CS2 File Size</span><span class="cog-resource-arrow">&rarr;</span></a>
+          </div>
+        </section>
+      </article>
+    </div>
+  </div>
+
+  <style>
+    .cog-wrap{max-width:1100px;margin:0 auto;padding:0 1.5rem 2rem}
+    .cog-breadcrumb{display:flex;align-items:center;gap:.5rem;padding:1.25rem 0;font-size:.85rem;color:var(--text2)}
+    .cog-breadcrumb a{color:var(--accent);text-decoration:none}
+    .cog-breadcrumb a:hover{color:var(--accent2)}
+    .cog-sep{color:var(--border)}
+    .cog-header{padding:1.5rem 0 1.25rem;border-bottom:2px solid var(--accent);margin-bottom:1.5rem}
+    .cog-header h1{margin:0 0 .35rem;font-size:2.2rem;font-weight:800;color:var(--text);letter-spacing:-.02em;line-height:1.2}
+    .cog-subtitle{margin:0;font-size:1.05rem;color:var(--text2);font-weight:400}
+    .cog-toc-mobile{display:none}
+    .cog-layout{display:grid;grid-template-columns:220px 1fr;gap:2.5rem;align-items:start}
+    .cog-sidebar{position:sticky;top:80px}
+    .cog-toc{display:flex;flex-direction:column;gap:0;border-left:2px solid var(--border);padding-left:0}
+    .cog-toc-title{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--accent);padding:0 0 .6rem 1rem}
+    .cog-toc-link{display:block;padding:.4rem 1rem;font-size:.82rem;color:var(--text2);text-decoration:none;border-left:2px solid transparent;margin-left:-2px;transition:color .2s,border-color .2s}
+    .cog-toc-link:hover{color:var(--text);border-left-color:var(--accent)}
+    .cog-content{min-width:0}
+    .cog-intro{font-size:1rem;line-height:1.8;color:var(--text2);margin-bottom:2rem}
+    .cog-section-header{background:rgba(46,204,113,.05);margin:0 -1.25rem 1.25rem;padding:.75rem 1.25rem;border-radius:4px}
+    .cog-section-header h2{margin:0;padding:0;font-size:1.5rem;font-weight:700;color:var(--text);border:none;letter-spacing:-.01em}
+    section{margin-bottom:2.5rem}
+    p{line-height:1.7;color:var(--text2);margin-bottom:1rem}
+    .cog-list{list-style:none;padding:0;margin:.75rem 0 1.5rem}
+    .cog-list li{padding:.4rem 0 .4rem 1.6rem;position:relative;color:var(--text2);line-height:1.65}
+    .cog-list li::before{content:'';position:absolute;left:.25rem;top:.75rem;width:6px;height:6px;background:var(--accent);border-radius:1px}
+    .cog-list li strong{color:var(--text)}
+    .cog-faq-list{display:flex;flex-direction:column;gap:.5rem}
+    .cog-faq-item{background:var(--bg2);border:1px solid var(--border);border-radius:4px;overflow:hidden}
+    .cog-faq-question{display:block;padding:1rem 1.25rem;font-size:.95rem;font-weight:600;color:var(--text);cursor:pointer;list-style:none;position:relative;padding-right:2.5rem;transition:background .2s}
+    .cog-faq-question::-webkit-details-marker{display:none}
+    .cog-faq-question::after{content:'+';position:absolute;right:1.25rem;top:50%;transform:translateY(-50%);font-size:1.2rem;color:var(--accent);font-weight:700}
+    .cog-faq-item[open] .cog-faq-question::after{content:'\2212'}
+    .cog-faq-item[open] .cog-faq-question{border-bottom:1px solid var(--border);background:rgba(46,204,113,.03)}
+    .cog-faq-question:hover{background:rgba(46,204,113,.03)}
+    .cog-faq-answer{padding:1rem 1.25rem;margin:0;font-size:.9rem;color:var(--text2);line-height:1.7}
+    .cog-resources-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.6rem;margin:.5rem 0 1.5rem}
+    .cog-resource-card{display:flex;align-items:center;justify-content:space-between;padding:.75rem 1rem;background:var(--bg2);border:1px solid var(--border);border-radius:4px;text-decoration:none;border-left:2px solid transparent;transition:border-left-color .2s,color .2s}
+    .cog-resource-card:hover{border-left-color:var(--accent)}
+    .cog-resource-name{font-size:.88rem;color:var(--text2);font-weight:500;transition:color .2s}
+    .cog-resource-card:hover .cog-resource-name{color:var(--text)}
+    .cog-resource-arrow{font-size:1rem;color:var(--accent);opacity:0;transition:opacity .2s}
+    .cog-resource-card:hover .cog-resource-arrow{opacity:1}
+    @media(max-width:860px){
+      .cog-layout{grid-template-columns:1fr;gap:0}
+      .cog-sidebar{display:none}
+      .cog-toc-mobile{display:flex;gap:.25rem;overflow-x:auto;padding:.75rem 0;margin-bottom:1rem;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+      .cog-toc-mobile::-webkit-scrollbar{display:none}
+      .cog-toc-mobile-link{flex-shrink:0;padding:.35rem .75rem;font-size:.78rem;font-weight:600;color:var(--text2);background:var(--bg2);border:1px solid var(--border);border-radius:4px;text-decoration:none;white-space:nowrap;transition:color .2s,border-color .2s}
+      .cog-toc-mobile-link:hover{color:var(--accent);border-color:var(--accent)}
+      .cog-header h1{font-size:1.7rem}
+      .cog-section-header{margin:0 -1rem 1rem;padding:.6rem 1rem}
+      .cog-resources-grid{grid-template-columns:repeat(2,1fr)}
+    }
+    @media(max-width:600px){
+      .cog-wrap{padding:0 1rem 1.5rem}
+      .cog-resources-grid{grid-template-columns:1fr}
+      .cog-header h1{font-size:1.5rem}
+    }
+  </style>
+  <AuthorBox updated="2026-03-04" />
+</Base>

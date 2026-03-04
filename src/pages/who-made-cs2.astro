@@ -1,0 +1,219 @@
+---
+import Base from '../layouts/Base.astro';
+import AuthorBox from '../components/AuthorBox.astro';
+import { faqSchema, breadcrumbSchema } from '../lib/weapons';
+
+const title = 'Who Made CS2? Developer, Publisher & Ownership | CSGOLuck Wiki';
+const description = 'Valve Corporation develops and publishes CS2. Learn about Counter-Strike\'s origins, creators Minh Le and Jess Cliffe, and Valve\'s ownership.';
+
+const breadcrumbs = [
+  { name: 'Home', url: '/' },
+  { name: 'CS2 & CS:GO History FAQ', url: '/cs2-game-history-faq' },
+  { name: 'Who Made CS2?', url: '/who-made-cs2' },
+];
+
+const faqs = [
+  {
+    question: 'Who owns Counter-Strike 2?',
+    answer: 'Valve Corporation owns the entire Counter-Strike intellectual property, including CS2. Valve acquired the rights from original mod creators Minh Le and Jess Cliffe in 2000. Learn more about CS history in our <a href="/counter-strike-history/">Counter-Strike history</a> guide.',
+  },
+  {
+    question: 'Did Valve make the original Counter-Strike?',
+    answer: 'No. The original Counter-Strike was created as a Half-Life mod by Minh Le (Gooseman) and Jess Cliffe in 1999. Valve hired both creators and acquired the project in 2000, then developed it into a standalone commercial release. See our <a href="/cs2-game-history-faq/">history FAQ</a> for more details.',
+  },
+  {
+    question: 'Is CS2 made by the same team as CS:GO?',
+    answer: 'CS2 was developed primarily by Valve\'s internal team, whereas CS:GO was originally co-developed by Hidden Path Entertainment and Valve. After CS:GO launched in 2012, Valve took over full development. CS2 was built entirely in-house on Valve\'s Source 2 engine. Visit our <a href="/what-is-cs2/">What Is CS2</a> page for a full overview.',
+  },
+];
+
+const breadcrumbSchema_ = breadcrumbSchema(breadcrumbs);
+const faqSchema_ = faqSchema(faqs);
+
+const articleSchema = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": title,
+  "description": description,
+  "author": { "@type": "Person", "name": "Josh Lingenfelter", "url": "https://www.linkedin.com/in/josh-lingenfelter-8157274b/", "jobTitle": "Director", "worksFor": { "@type": "Organization", "name": "CSGOLuck" } },
+  "publisher": { "@type": "Organization", "name": "CSGOLuck Wiki", "url": "https://wiki.csgoluck.com" },
+  "mainEntityOfPage": "https://wiki.csgoluck.com/who-made-cs2/",
+  "inLanguage": "en-US"
+});
+
+const sections = [
+  { id: 'who-made-cs2', label: 'Who Made CS2' },
+  { id: 'counter-strike-origins', label: 'Counter-Strike Origins' },
+  { id: 'valve-acquisition', label: 'Valve Acquisition' },
+  { id: 'valve-today', label: 'Valve Corporation Today' },
+  { id: 'cs2-dev-team', label: 'CS2 Development Team' },
+  { id: 'faq', label: 'FAQ' },
+  { id: 'related', label: 'Related Articles' },
+];
+---
+
+<Base title={title} description={description}>
+  <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema_)}></script>
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema_)}></script>
+  <script type="application/ld+json" set:html={articleSchema}></script>
+
+  <div class="wmc-wrap">
+    <nav class="wmc-breadcrumb">
+      <a href="/">Home</a>
+      <span class="wmc-sep">/</span>
+      <a href="/cs2-game-history-faq/">CS2 & CS:GO History FAQ</a>
+      <span class="wmc-sep">/</span>
+      <span>Who Made CS2?</span>
+    </nav>
+
+    <header class="wmc-header">
+      <h1>Who Made CS2? Developer, Publisher & Ownership</h1>
+      <p class="wmc-subtitle">The full story behind Counter-Strike 2's creators, from a Half-Life mod to a global esport</p>
+    </header>
+
+    <nav class="wmc-toc-mobile" aria-label="Table of contents">
+      {sections.map((s) => (
+        <a href={`#${s.id}`} class="wmc-toc-mobile-link">{s.label}</a>
+      ))}
+    </nav>
+
+    <div class="wmc-layout">
+      <aside class="wmc-sidebar">
+        <nav class="wmc-toc" aria-label="Table of contents">
+          <span class="wmc-toc-title">Contents</span>
+          {sections.map((s) => (
+            <a href={`#${s.id}`} class="wmc-toc-link">{s.label}</a>
+          ))}
+        </nav>
+      </aside>
+
+      <article class="wmc-content">
+        <p class="wmc-intro">
+          Counter-Strike 2 is developed and published by Valve Corporation, the Bellevue-based studio behind Half-Life, Dota 2, and the Steam platform. But the franchise did not start inside Valve. Counter-Strike began as a community mod built by two university students in the late 1990s. This article traces the full ownership story from a humble Half-Life modification to one of the most-played competitive shooters in the world, covering the original creators, Valve's acquisition, and the team behind CS2 today.
+        </p>
+
+        <section id="who-made-cs2">
+          <div class="wmc-section-header"><h2>Who Made CS2?</h2></div>
+          <p>CS2 was developed internally by Valve Corporation and released in September 2023 as a free upgrade to Counter-Strike: Global Offensive. Unlike CS:GO -- which was initially co-developed with Hidden Path Entertainment -- CS2 was built entirely by Valve's in-house development team. The game runs on Valve's proprietary Source 2 engine, replacing the original Source engine that powered CS:GO for over a decade.</p>
+          <p>Valve serves as both the developer and publisher of CS2. The company distributes the game exclusively through Steam, its own digital storefront, making it one of the most prominent first-party titles on the platform. There is no external publisher involved -- Valve maintains complete creative and commercial control over the Counter-Strike franchise.</p>
+        </section>
+
+        <section id="counter-strike-origins">
+          <div class="wmc-section-header"><h2>Counter-Strike Origins: Minh Le & Jess Cliffe</h2></div>
+          <p>The Counter-Strike franchise traces its roots back to 1999, when two modders created a multiplayer modification for Valve's Half-Life. Minh Le, known online as "Gooseman," was a computer science student at Simon Fraser University in British Columbia. He designed the gameplay mechanics, weapon models, and animations. Jess Cliffe, his collaborator, handled web design, community management, and level design for the project.</p>
+          <p>Their mod took the sci-fi setting of Half-Life and reimagined it as a realistic team-based tactical shooter. Players chose between terrorists and counter-terrorists, completing objective-based rounds involving bomb defusal or hostage rescue. The mod gained rapid popularity through online communities and gaming forums, growing from a niche project to one of the most-downloaded Half-Life mods in existence.</p>
+          <p>Counter-Strike's first public beta released on June 19, 1999. Over the following months, the mod iterated through multiple beta versions, each refining weapon balance, map design, and netcode. By the time it reached its sixth beta, Counter-Strike had already attracted hundreds of thousands of active players -- a remarkable achievement for a free community modification.</p>
+        </section>
+
+        <section id="valve-acquisition">
+          <div class="wmc-section-header"><h2>Valve's Acquisition of Counter-Strike</h2></div>
+          <p>Valve recognized the extraordinary potential of Counter-Strike early on. In April 2000, Valve acquired the intellectual property rights to Counter-Strike and hired both Minh Le and Jess Cliffe. The deal transformed what had been a community project into a commercial product backed by one of the industry's most respected studios.</p>
+          <p>Under Valve's direction, Counter-Strike 1.0 launched as a retail product on November 9, 2000. The game was bundled with Half-Life and eventually became available as a standalone purchase. Valve continued to update it with new content, anti-cheat measures, and engine improvements.</p>
+          <ul class="wmc-list">
+            <li><strong>Counter-Strike 1.6 (2003):</strong> The definitive version of the original game, still played competitively for years after release</li>
+            <li><strong>Counter-Strike: Source (2004):</strong> A remake built on Valve's new Source engine with improved graphics and physics</li>
+            <li><strong>Counter-Strike: Global Offensive (2012):</strong> A modernized sequel co-developed with Hidden Path Entertainment, which became the dominant competitive version</li>
+            <li><strong>Counter-Strike 2 (2023):</strong> A full engine rebuild on Source 2, replacing CS:GO as a free upgrade</li>
+          </ul>
+        </section>
+
+        <section id="valve-today">
+          <div class="wmc-section-header"><h2>Valve Corporation Today</h2></div>
+          <p>Valve Corporation is a privately held company founded in 1996 by Gabe Newell and Mike Harrington, both former Microsoft employees. The company is headquartered in Bellevue, Washington, and operates without publicly traded stock. Gabe Newell serves as president and managing director, and by most estimates, Valve remains one of the most profitable companies per employee in the gaming industry.</p>
+          <p>Beyond Counter-Strike, Valve develops and maintains several major products. The Steam platform is the world's largest PC gaming storefront, with hundreds of millions of registered accounts. Valve also develops Dota 2, produces the Steam Deck handheld gaming PC, and created the SteamVR platform alongside the Valve Index headset. The company has a flat organizational structure with no formal management hierarchy, which allows employees to move between projects based on interest and need.</p>
+          <p>Valve's private ownership is significant for Counter-Strike players because it means the company is not beholden to external shareholders or quarterly earnings pressures. Development decisions for CS2 are made internally based on Valve's own priorities rather than demands from investors or a parent corporation.</p>
+        </section>
+
+        <section id="cs2-dev-team">
+          <div class="wmc-section-header"><h2>CS2 Development Team</h2></div>
+          <p>Valve does not publicly disclose the exact size or membership of its CS2 development team. The company's flat structure means employees often contribute to multiple projects, and team composition can shift over time. However, based on public credits and community information, the CS2 team is estimated to include several dozen developers spanning programming, art, design, and quality assurance.</p>
+          <p>Key technical achievements by the CS2 team include the full migration to the Source 2 engine, which brought responsive tick-rate improvements through sub-tick networking, physically-based rendering for more realistic visuals, and upgraded audio using Source 2's sound system. The team also overhauled CS:GO's legacy maps to take advantage of Source 2's lighting and rendering capabilities.</p>
+          <p>Valve's CS2 team works closely with the competitive community, professional players, and tournament organizers. Major updates frequently address feedback from the professional scene, and Valve coordinates directly with tournament operators for CS Major Championships. The team also maintains the VAC anti-cheat system and the Trust Factor matchmaking system that helps ensure fair play across all skill levels.</p>
+        </section>
+
+        <section id="faq">
+          <div class="wmc-section-header"><h2>Frequently Asked Questions</h2></div>
+          <div class="wmc-faq-list">
+            {faqs.map((faq) => (
+              <details class="wmc-faq-item">
+                <summary class="wmc-faq-question">{faq.question}</summary>
+                <p class="wmc-faq-answer" set:html={faq.answer}></p>
+              </details>
+            ))}
+          </div>
+        </section>
+
+        <section id="related">
+          <div class="wmc-section-header"><h2>Related Articles</h2></div>
+          <div class="wmc-resources-grid">
+            <a href="/counter-strike-history/" class="wmc-resource-card"><span class="wmc-resource-name">Counter-Strike History</span><span class="wmc-resource-arrow">&rarr;</span></a>
+            <a href="/what-is-cs2/" class="wmc-resource-card"><span class="wmc-resource-name">What Is CS2?</span><span class="wmc-resource-arrow">&rarr;</span></a>
+            <a href="/cs2-game-history-faq/" class="wmc-resource-card"><span class="wmc-resource-name">CS2 & CS:GO History FAQ</span><span class="wmc-resource-arrow">&rarr;</span></a>
+            <a href="/what-does-csgo-stand-for/" class="wmc-resource-card"><span class="wmc-resource-name">What Does CS:GO Stand For?</span><span class="wmc-resource-arrow">&rarr;</span></a>
+          </div>
+        </section>
+      </article>
+    </div>
+  </div>
+
+  <style>
+    .wmc-wrap{max-width:1100px;margin:0 auto;padding:0 1.5rem 2rem}
+    .wmc-breadcrumb{display:flex;align-items:center;gap:.5rem;padding:1.25rem 0;font-size:.85rem;color:var(--text2)}
+    .wmc-breadcrumb a{color:var(--accent);text-decoration:none}
+    .wmc-breadcrumb a:hover{color:var(--accent2)}
+    .wmc-sep{color:var(--border)}
+    .wmc-header{padding:1.5rem 0 1.25rem;border-bottom:2px solid var(--accent);margin-bottom:1.5rem}
+    .wmc-header h1{margin:0 0 .35rem;font-size:2.2rem;font-weight:800;color:var(--text);letter-spacing:-.02em;line-height:1.2}
+    .wmc-subtitle{margin:0;font-size:1.05rem;color:var(--text2);font-weight:400}
+    .wmc-toc-mobile{display:none}
+    .wmc-layout{display:grid;grid-template-columns:220px 1fr;gap:2.5rem;align-items:start}
+    .wmc-sidebar{position:sticky;top:80px}
+    .wmc-toc{display:flex;flex-direction:column;gap:0;border-left:2px solid var(--border);padding-left:0}
+    .wmc-toc-title{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--accent);padding:0 0 .6rem 1rem}
+    .wmc-toc-link{display:block;padding:.4rem 1rem;font-size:.82rem;color:var(--text2);text-decoration:none;border-left:2px solid transparent;margin-left:-2px;transition:color .2s,border-color .2s}
+    .wmc-toc-link:hover{color:var(--text);border-left-color:var(--accent)}
+    .wmc-content{min-width:0}
+    .wmc-intro{font-size:1rem;line-height:1.8;color:var(--text2);margin-bottom:2rem}
+    .wmc-section-header{background:rgba(46,204,113,.05);margin:0 -1.25rem 1.25rem;padding:.75rem 1.25rem;border-radius:4px}
+    .wmc-section-header h2{margin:0;padding:0;font-size:1.5rem;font-weight:700;color:var(--text);border:none;letter-spacing:-.01em}
+    section{margin-bottom:2.5rem}
+    p{line-height:1.7;color:var(--text2);margin-bottom:1rem}
+    .wmc-list{list-style:none;padding:0;margin:.75rem 0 1.5rem}
+    .wmc-list li{padding:.4rem 0 .4rem 1.6rem;position:relative;color:var(--text2);line-height:1.65}
+    .wmc-list li::before{content:'';position:absolute;left:.25rem;top:.75rem;width:6px;height:6px;background:var(--accent);border-radius:1px}
+    .wmc-list li strong{color:var(--text)}
+    .wmc-faq-list{display:flex;flex-direction:column;gap:.5rem}
+    .wmc-faq-item{background:var(--bg2);border:1px solid var(--border);border-radius:4px;overflow:hidden}
+    .wmc-faq-question{display:block;padding:1rem 1.25rem;font-size:.95rem;font-weight:600;color:var(--text);cursor:pointer;list-style:none;position:relative;padding-right:2.5rem;transition:background .2s}
+    .wmc-faq-question::-webkit-details-marker{display:none}
+    .wmc-faq-question::after{content:'+';position:absolute;right:1.25rem;top:50%;transform:translateY(-50%);font-size:1.2rem;color:var(--accent);font-weight:700}
+    .wmc-faq-item[open] .wmc-faq-question::after{content:'\2212'}
+    .wmc-faq-item[open] .wmc-faq-question{border-bottom:1px solid var(--border);background:rgba(46,204,113,.03)}
+    .wmc-faq-question:hover{background:rgba(46,204,113,.03)}
+    .wmc-faq-answer{padding:1rem 1.25rem;margin:0;font-size:.9rem;color:var(--text2);line-height:1.7}
+    .wmc-resources-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.6rem;margin:.5rem 0 1.5rem}
+    .wmc-resource-card{display:flex;align-items:center;justify-content:space-between;padding:.75rem 1rem;background:var(--bg2);border:1px solid var(--border);border-radius:4px;text-decoration:none;border-left:2px solid transparent;transition:border-left-color .2s,color .2s}
+    .wmc-resource-card:hover{border-left-color:var(--accent)}
+    .wmc-resource-name{font-size:.88rem;color:var(--text2);font-weight:500;transition:color .2s}
+    .wmc-resource-card:hover .wmc-resource-name{color:var(--text)}
+    .wmc-resource-arrow{font-size:1rem;color:var(--accent);opacity:0;transition:opacity .2s}
+    .wmc-resource-card:hover .wmc-resource-arrow{opacity:1}
+    @media(max-width:860px){
+      .wmc-layout{grid-template-columns:1fr;gap:0}
+      .wmc-sidebar{display:none}
+      .wmc-toc-mobile{display:flex;gap:.25rem;overflow-x:auto;padding:.75rem 0;margin-bottom:1rem;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+      .wmc-toc-mobile::-webkit-scrollbar{display:none}
+      .wmc-toc-mobile-link{flex-shrink:0;padding:.35rem .75rem;font-size:.78rem;font-weight:600;color:var(--text2);background:var(--bg2);border:1px solid var(--border);border-radius:4px;text-decoration:none;white-space:nowrap;transition:color .2s,border-color .2s}
+      .wmc-toc-mobile-link:hover{color:var(--accent);border-color:var(--accent)}
+      .wmc-header h1{font-size:1.7rem}
+      .wmc-section-header{margin:0 -1rem 1rem;padding:.6rem 1rem}
+      .wmc-resources-grid{grid-template-columns:repeat(2,1fr)}
+    }
+    @media(max-width:600px){
+      .wmc-wrap{padding:0 1rem 1.5rem}
+      .wmc-resources-grid{grid-template-columns:1fr}
+      .wmc-header h1{font-size:1.5rem}
+    }
+  </style>
+  <AuthorBox updated="2026-03-04" />
+</Base>

@@ -1,0 +1,262 @@
+---
+import Base from '../layouts/Base.astro';
+import AuthorBox from '../components/AuthorBox.astro';
+import { faqSchema, breadcrumbSchema } from '../lib/weapons';
+
+const title = 'Where to Sell CS2 Skins for Real Money (2026 Guide) | CSGOLuck Wiki';
+const description = 'Sell CS2 skins on Steam Market, Skinport, Buff163, and more. Compare fees, cashout methods, and tips for best prices.';
+
+const breadcrumbs = [
+  { name: 'Home', url: '/' },
+  { name: 'CS2 Trading & Marketplace FAQ', url: '/cs2-trading-marketplace-faq' },
+  { name: 'Sell CS2 Skins', url: '/sell-cs2-skins' },
+];
+
+const faqs = [
+  {
+    question: 'What is the best site to sell CS2 skins for real money?',
+    answer: 'It depends on your priorities. Buff163 offers the lowest fees and highest cashout values but requires Chinese verification. Skinport and DMarket are popular Western alternatives with reasonable fees and PayPal cashout. Visit our <a href="/cs2-trading-marketplace-faq/">trading & marketplace FAQ</a> for detailed comparisons.',
+  },
+  {
+    question: 'How much does Steam take when you sell skins on the Steam Market?',
+    answer: 'Steam takes a 15% fee on all CS2 skin sales on the Community Market -- 5% goes to Valve as the Steam transaction fee and 10% goes to the CS2 developer (also Valve). This means you receive roughly 85% of the sale price, and the funds stay as Steam Wallet balance.',
+  },
+  {
+    question: 'Can you get real money from selling CS2 skins?',
+    answer: 'Not through Steam directly -- Steam Market sales only add to your Steam Wallet. To get real money (PayPal, bank transfer, crypto), you need to use third-party marketplaces like Skinport, Buff163, or DMarket. Each has different fees and cashout options. See our <a href="/how-to-trade-cs2-skins/">trading guide</a> for details.',
+  },
+];
+
+const breadcrumbSchema_ = breadcrumbSchema(breadcrumbs);
+const faqSchema_ = faqSchema(faqs);
+
+const articleSchema = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": title,
+  "description": description,
+  "author": { "@type": "Person", "name": "Josh Lingenfelter", "url": "https://www.linkedin.com/in/josh-lingenfelter-8157274b/", "jobTitle": "Director", "worksFor": { "@type": "Organization", "name": "CSGOLuck" } },
+  "publisher": { "@type": "Organization", "name": "CSGOLuck Wiki", "url": "https://wiki.csgoluck.com" },
+  "mainEntityOfPage": "https://wiki.csgoluck.com/sell-cs2-skins/",
+  "inLanguage": "en-US"
+});
+
+const sections = [
+  { id: 'steam-market', label: 'Steam Market' },
+  { id: 'third-party', label: 'Third-Party Marketplaces' },
+  { id: 'comparing-fees', label: 'Comparing Fees' },
+  { id: 'cashout-methods', label: 'Cashout Methods' },
+  { id: 'best-prices', label: 'Tips for Best Prices' },
+  { id: 'avoiding-scams', label: 'Avoiding Scams' },
+  { id: 'faq', label: 'FAQ' },
+  { id: 'related', label: 'Related Articles' },
+];
+---
+
+<Base title={title} description={description}>
+  <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema_)}></script>
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema_)}></script>
+  <script type="application/ld+json" set:html={articleSchema}></script>
+
+  <div class="scs-wrap">
+    <nav class="scs-breadcrumb">
+      <a href="/">Home</a>
+      <span class="scs-sep">/</span>
+      <a href="/cs2-trading-marketplace-faq/">CS2 Trading & Marketplace FAQ</a>
+      <span class="scs-sep">/</span>
+      <span>Sell CS2 Skins</span>
+    </nav>
+
+    <header class="scs-header">
+      <h1>Where to Sell CS2 Skins for Real Money (2026 Guide)</h1>
+      <p class="scs-subtitle">Compare platforms, fees, and cashout methods for selling your CS2 inventory</p>
+    </header>
+
+    <nav class="scs-toc-mobile" aria-label="Table of contents">
+      {sections.map((s) => (
+        <a href={`#${s.id}`} class="scs-toc-mobile-link">{s.label}</a>
+      ))}
+    </nav>
+
+    <div class="scs-layout">
+      <aside class="scs-sidebar">
+        <nav class="scs-toc" aria-label="Table of contents">
+          <span class="scs-toc-title">Contents</span>
+          {sections.map((s) => (
+            <a href={`#${s.id}`} class="scs-toc-link">{s.label}</a>
+          ))}
+        </nav>
+      </aside>
+
+      <article class="scs-content">
+        <p class="scs-intro">
+          CS2 skins hold real monetary value, and many players accumulate inventories worth hundreds or even thousands of dollars. Whether you are cashing out skins you no longer use, liquidating your entire collection, or simply turning a profitable trade into real money, knowing where and how to sell is essential. This guide covers every major selling platform, compares their fee structures, explains cashout options, and provides tips for getting the best possible price for your skins.
+        </p>
+
+        <section id="steam-market">
+          <div class="scs-section-header"><h2>Selling on the Steam Community Market</h2></div>
+          <p>The Steam Community Market is the default marketplace built directly into the Steam client. It is the simplest way to sell skins because it requires no external accounts, no trade links, and no verification beyond your existing Steam account.</p>
+          <p>To sell a skin on the Steam Market, navigate to your inventory, select the item, and click "Sell." You set your asking price, and when a buyer purchases it, the funds are deposited into your Steam Wallet. The process is straightforward and secure since Valve handles the entire transaction.</p>
+          <ul class="scs-list">
+            <li><strong>Fee structure:</strong> 15% total -- 5% Steam transaction fee plus 10% CS2 game fee</li>
+            <li><strong>Payment:</strong> Steam Wallet balance only -- you cannot withdraw to real money</li>
+            <li><strong>Price cap:</strong> Maximum listing price is around $1,800 USD (varies by currency)</li>
+            <li><strong>Speed:</strong> Popular skins sell within minutes; niche items may take days or weeks</li>
+            <li><strong>Safety:</strong> Fully protected by Valve -- no scam risk from buyers</li>
+          </ul>
+          <p>The major drawback of the Steam Market is that your earnings remain locked as Steam Wallet funds. You can spend this balance on games, DLC, or other marketplace items, but you cannot convert it to real money. For players who want actual cash, third-party platforms are necessary.</p>
+        </section>
+
+        <section id="third-party">
+          <div class="scs-section-header"><h2>Third-Party Marketplaces</h2></div>
+          <p>Third-party skin marketplaces offer what Steam cannot: the ability to cash out your skin value as real money. These platforms act as intermediaries, facilitating the sale of your skins to other players and then paying you through various withdrawal methods.</p>
+          <ul class="scs-list">
+            <li><strong>Buff163 (Buff Market):</strong> The largest CS2 skin marketplace by volume. Extremely competitive prices and the lowest fees (around 2.5%). Popular among serious traders. Originally China-focused but now has an international version</li>
+            <li><strong>Skinport:</strong> A well-established European platform with a clean interface. Fees range from 5-12% depending on sale price. Supports PayPal, bank transfer, and crypto withdrawals</li>
+            <li><strong>DMarket:</strong> Offers instant sell options alongside standard listings. Fees around 5-7%. Supports multiple cashout methods including crypto</li>
+            <li><strong>CS.Money:</strong> Focuses on instant trades and bot-based transactions. Convenient but typically offers lower prices than peer-to-peer marketplaces</li>
+            <li><strong>Tradeit.gg:</strong> A trading-focused platform where you can sell skins or trade them for other items. Fees vary by item and transaction type</li>
+          </ul>
+          <p>Each platform has its own listing process. Generally, you create an account, link your Steam profile, send your skins to the platform via a Steam trade, and then list them for sale. Once sold, funds appear in your platform balance for withdrawal.</p>
+        </section>
+
+        <section id="comparing-fees">
+          <div class="scs-section-header"><h2>Comparing Fees Across Platforms</h2></div>
+          <p>Fees are one of the biggest factors in deciding where to sell. Here is a comparison of the approximate fee structures across major platforms:</p>
+          <ul class="scs-list">
+            <li><strong>Steam Market:</strong> ~15% (highest fees, but Steam Wallet funds only)</li>
+            <li><strong>Buff163:</strong> ~2.5% (lowest fees, best net value for sellers)</li>
+            <li><strong>Skinport:</strong> ~5-12% (varies by item price tier)</li>
+            <li><strong>DMarket:</strong> ~5-7% (competitive for mid-range items)</li>
+            <li><strong>CS.Money:</strong> Variable (instant sell offers are typically 10-25% below market value)</li>
+          </ul>
+          <p>For a skin worth $100 on Steam Market, you would receive approximately $85 after Steam's 15% cut. On Buff163, that same skin might sell for $90-95 after their 2.5% fee. The difference adds up significantly when selling multiple items or high-value skins. Always factor in withdrawal fees from the platform as well, since some charge additional fees for PayPal or bank transfers.</p>
+        </section>
+
+        <section id="cashout-methods">
+          <div class="scs-section-header"><h2>Cashout Methods Explained</h2></div>
+          <p>Different platforms support different withdrawal methods. Here are the most common cashout options available:</p>
+          <ul class="scs-list">
+            <li><strong>PayPal:</strong> The most widely supported cashout method. Fast processing (usually 1-3 business days). Available on Skinport, DMarket, and others</li>
+            <li><strong>Bank transfer:</strong> Direct transfer to your bank account. Takes 3-7 business days but avoids PayPal fees. Available on most major platforms</li>
+            <li><strong>Cryptocurrency:</strong> Bitcoin, Ethereum, and other crypto options provide fast, low-fee withdrawals. Popular on DMarket and several smaller platforms</li>
+            <li><strong>Alipay / WeChat Pay:</strong> Primary cashout methods on Buff163 for Chinese users</li>
+            <li><strong>Platform balance:</strong> Keep funds on the platform to reinvest in other skins (no withdrawal fee)</li>
+          </ul>
+          <p>Consider the total cost including both the platform selling fee and the withdrawal fee. A platform with 5% selling fees and a $2 withdrawal fee may be cheaper overall than one with 3% selling fees and a $10 withdrawal fee, depending on the value of items you are selling.</p>
+        </section>
+
+        <section id="best-prices">
+          <div class="scs-section-header"><h2>Tips for Getting the Best Prices</h2></div>
+          <p>Maximizing the amount you receive when selling skins requires some market awareness and timing. These strategies can help you get the best possible return:</p>
+          <ul class="scs-list">
+            <li><strong>Check multiple platforms:</strong> Prices vary between marketplaces. Always compare current listings on at least 2-3 platforms before deciding where to sell</li>
+            <li><strong>Sell during peak demand:</strong> Skin prices tend to rise during Major tournaments and Steam sales when player activity spikes</li>
+            <li><strong>List competitively:</strong> Price your skin slightly below the lowest current listing for a faster sale, or match it if you are willing to wait</li>
+            <li><strong>Highlight special attributes:</strong> Low float values, rare patterns, and sticker combinations can command premium prices. Use platform features to highlight these details</li>
+            <li><strong>Avoid panic selling:</strong> If the market dips temporarily, waiting for recovery often yields better returns than selling at the bottom</li>
+            <li><strong>Bundle small items:</strong> For very cheap skins (under $1), consider using trade-up contracts to consolidate value rather than selling individually where fees eat most of the profit</li>
+          </ul>
+          <p>Understanding <a href="/why-cs2-skins-expensive/">why CS2 skins hold value</a> and what drives price fluctuations will help you time your sales more effectively. Market knowledge is your best tool for maximizing returns.</p>
+        </section>
+
+        <section id="avoiding-scams">
+          <div class="scs-section-header"><h2>Avoiding Scams When Selling Skins</h2></div>
+          <p>The CS2 skin market attracts scammers who target sellers. Protect yourself by following these guidelines:</p>
+          <ul class="scs-list">
+            <li><strong>Use established platforms only:</strong> Stick to well-known marketplaces with verified reputations and active user communities</li>
+            <li><strong>Never trade skins first:</strong> Legitimate platforms handle trades through automated systems. If someone asks you to send skins directly to their account with a promise to pay, it is a scam</li>
+            <li><strong>Verify trade offers:</strong> Always confirm that trade offers come from the official platform bot, not an impersonator. Check the bot's Steam level, profile, and trade URL</li>
+            <li><strong>Enable Steam Guard:</strong> Two-factor authentication protects your account and adds a trade hold period that helps prevent unauthorized trades</li>
+            <li><strong>Avoid API key scams:</strong> Never share your Steam API key. Scammers use stolen API keys to intercept and redirect your trades</li>
+            <li><strong>Be wary of overpayment offers:</strong> If someone offers significantly above market price for your skin, it is almost certainly a scam attempt</li>
+          </ul>
+          <p>For more trading safety tips, check our comprehensive <a href="/how-to-trade-cs2-skins/">CS2 trading guide</a>.</p>
+        </section>
+
+        <section id="faq">
+          <div class="scs-section-header"><h2>Frequently Asked Questions</h2></div>
+          <div class="scs-faq-list">
+            {faqs.map((faq) => (
+              <details class="scs-faq-item">
+                <summary class="scs-faq-question">{faq.question}</summary>
+                <p class="scs-faq-answer" set:html={faq.answer}></p>
+              </details>
+            ))}
+          </div>
+        </section>
+
+        <section id="related">
+          <div class="scs-section-header"><h2>Related Articles</h2></div>
+          <div class="scs-resources-grid">
+            <a href="/where-to-buy-cs2-skins/" class="scs-resource-card"><span class="scs-resource-name">Where to Buy CS2 Skins</span><span class="scs-resource-arrow">&rarr;</span></a>
+            <a href="/how-to-trade-cs2-skins/" class="scs-resource-card"><span class="scs-resource-name">How to Trade CS2 Skins</span><span class="scs-resource-arrow">&rarr;</span></a>
+            <a href="/cs2-trading-marketplace-faq/" class="scs-resource-card"><span class="scs-resource-name">Trading & Marketplace FAQ Hub</span><span class="scs-resource-arrow">&rarr;</span></a>
+            <a href="/why-cs2-skins-expensive/" class="scs-resource-card"><span class="scs-resource-name">Why Are CS2 Skins Expensive?</span><span class="scs-resource-arrow">&rarr;</span></a>
+          </div>
+        </section>
+      </article>
+    </div>
+  </div>
+
+  <style>
+    .scs-wrap{max-width:1100px;margin:0 auto;padding:0 1.5rem 2rem}
+    .scs-breadcrumb{display:flex;align-items:center;gap:.5rem;padding:1.25rem 0;font-size:.85rem;color:var(--text2)}
+    .scs-breadcrumb a{color:var(--accent);text-decoration:none}
+    .scs-breadcrumb a:hover{color:var(--accent2)}
+    .scs-sep{color:var(--border)}
+    .scs-header{padding:1.5rem 0 1.25rem;border-bottom:2px solid var(--accent);margin-bottom:1.5rem}
+    .scs-header h1{margin:0 0 .35rem;font-size:2.2rem;font-weight:800;color:var(--text);letter-spacing:-.02em;line-height:1.2}
+    .scs-subtitle{margin:0;font-size:1.05rem;color:var(--text2);font-weight:400}
+    .scs-toc-mobile{display:none}
+    .scs-layout{display:grid;grid-template-columns:220px 1fr;gap:2.5rem;align-items:start}
+    .scs-sidebar{position:sticky;top:80px}
+    .scs-toc{display:flex;flex-direction:column;gap:0;border-left:2px solid var(--border);padding-left:0}
+    .scs-toc-title{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--accent);padding:0 0 .6rem 1rem}
+    .scs-toc-link{display:block;padding:.4rem 1rem;font-size:.82rem;color:var(--text2);text-decoration:none;border-left:2px solid transparent;margin-left:-2px;transition:color .2s,border-color .2s}
+    .scs-toc-link:hover{color:var(--text);border-left-color:var(--accent)}
+    .scs-content{min-width:0}
+    .scs-intro{font-size:1rem;line-height:1.8;color:var(--text2);margin-bottom:2rem}
+    .scs-section-header{background:rgba(46,204,113,.05);margin:0 -1.25rem 1.25rem;padding:.75rem 1.25rem;border-radius:4px}
+    .scs-section-header h2{margin:0;padding:0;font-size:1.5rem;font-weight:700;color:var(--text);border:none;letter-spacing:-.01em}
+    section{margin-bottom:2.5rem}
+    p{line-height:1.7;color:var(--text2);margin-bottom:1rem}
+    .scs-list{list-style:none;padding:0;margin:.75rem 0 1.5rem}
+    .scs-list li{padding:.4rem 0 .4rem 1.6rem;position:relative;color:var(--text2);line-height:1.65}
+    .scs-list li::before{content:'';position:absolute;left:.25rem;top:.75rem;width:6px;height:6px;background:var(--accent);border-radius:1px}
+    .scs-list li strong{color:var(--text)}
+    .scs-faq-list{display:flex;flex-direction:column;gap:.5rem}
+    .scs-faq-item{background:var(--bg2);border:1px solid var(--border);border-radius:4px;overflow:hidden}
+    .scs-faq-question{display:block;padding:1rem 1.25rem;font-size:.95rem;font-weight:600;color:var(--text);cursor:pointer;list-style:none;position:relative;padding-right:2.5rem;transition:background .2s}
+    .scs-faq-question::-webkit-details-marker{display:none}
+    .scs-faq-question::after{content:'+';position:absolute;right:1.25rem;top:50%;transform:translateY(-50%);font-size:1.2rem;color:var(--accent);font-weight:700}
+    .scs-faq-item[open] .scs-faq-question::after{content:'\2212'}
+    .scs-faq-item[open] .scs-faq-question{border-bottom:1px solid var(--border);background:rgba(46,204,113,.03)}
+    .scs-faq-question:hover{background:rgba(46,204,113,.03)}
+    .scs-faq-answer{padding:1rem 1.25rem;margin:0;font-size:.9rem;color:var(--text2);line-height:1.7}
+    .scs-resources-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.6rem;margin:.5rem 0 1.5rem}
+    .scs-resource-card{display:flex;align-items:center;justify-content:space-between;padding:.75rem 1rem;background:var(--bg2);border:1px solid var(--border);border-radius:4px;text-decoration:none;border-left:2px solid transparent;transition:border-left-color .2s,color .2s}
+    .scs-resource-card:hover{border-left-color:var(--accent)}
+    .scs-resource-name{font-size:.88rem;color:var(--text2);font-weight:500;transition:color .2s}
+    .scs-resource-card:hover .scs-resource-name{color:var(--text)}
+    .scs-resource-arrow{font-size:1rem;color:var(--accent);opacity:0;transition:opacity .2s}
+    .scs-resource-card:hover .scs-resource-arrow{opacity:1}
+    @media(max-width:860px){
+      .scs-layout{grid-template-columns:1fr;gap:0}
+      .scs-sidebar{display:none}
+      .scs-toc-mobile{display:flex;gap:.25rem;overflow-x:auto;padding:.75rem 0;margin-bottom:1rem;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+      .scs-toc-mobile::-webkit-scrollbar{display:none}
+      .scs-toc-mobile-link{flex-shrink:0;padding:.35rem .75rem;font-size:.78rem;font-weight:600;color:var(--text2);background:var(--bg2);border:1px solid var(--border);border-radius:4px;text-decoration:none;white-space:nowrap;transition:color .2s,border-color .2s}
+      .scs-toc-mobile-link:hover{color:var(--accent);border-color:var(--accent)}
+      .scs-header h1{font-size:1.7rem}
+      .scs-section-header{margin:0 -1rem 1rem;padding:.6rem 1rem}
+      .scs-resources-grid{grid-template-columns:repeat(2,1fr)}
+    }
+    @media(max-width:600px){
+      .scs-wrap{padding:0 1rem 1.5rem}
+      .scs-resources-grid{grid-template-columns:1fr}
+      .scs-header h1{font-size:1.5rem}
+    }
+  </style>
+  <AuthorBox updated="2026-03-04" />
+</Base>

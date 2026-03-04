@@ -32,6 +32,15 @@ const faqs = [
     answer: 'The minimum requirements include Windows 10, a processor with four cores, 8 GB of RAM, and a DirectX 11 capable GPU with at least 1 GB VRAM. For a comfortable competitive experience, Valve recommends a modern quad-core or six-core CPU, 16 GB RAM, a DirectX 12 GPU with 4 GB+ VRAM, and an SSD. Running below minimum specs will result in frequent frame drops and stuttering.',
   },
 ];
+
+const cards = [
+  { url: '/is-cs2-free/', question: 'Is CS2 Free to Play?', excerpt: 'Yes, CS2 is free on Steam. Learn about free vs Prime differences.' },
+  { url: '/cs2-on-mac/', question: 'Can You Play CS2 on Mac?', excerpt: 'Native macOS support was dropped. Workarounds and alternatives explained.' },
+  { url: '/cs2-on-console/', question: 'Is CS2 on PS5 or Xbox?', excerpt: 'CS2 is PC-only with no announced console ports.' },
+  { url: '/cs2-file-size/', question: 'How Big Is CS2?', excerpt: 'Download size, installation footprint, and SSD recommendations.' },
+  { url: '/cs2-cpu-or-gpu/', question: 'Is CS2 CPU or GPU Intensive?', excerpt: 'Hardware performance breakdown and optimization tips.' },
+  { url: '/cs2-system-requirements/', question: 'What Are the CS2 System Requirements?', excerpt: 'Minimum and recommended specs for smooth gameplay.' },
+];
 ---
 
 <Base title={title} description={description}>
@@ -47,24 +56,19 @@ const faqs = [
     <p class="dpf-hero-desc">Before jumping into Counter-Strike 2, you need to know the CS2 download and system requirements basics — whether the game is free, what platforms support it, how much disk space it needs, and what hardware runs it well. Here are the answers to every common question about getting CS2 installed and running smoothly.</p>
   </section>
 
-  <div class="dpf-faq-list">
-    {faqs.map(faq => (
-      <details class="dpf-faq-item">
-        <summary class="dpf-faq-question">{faq.question}</summary>
-        <p class="dpf-faq-answer">{faq.answer}</p>
-      </details>
+  <p class="dpf-intro">Click any question below for a detailed answer.</p>
+
+  <div class="dpf-faq-grid">
+    {cards.map(card => (
+      <a href={card.url} class="dpf-faq-card">
+        <div class="dpf-faq-card-content">
+          <span class="dpf-faq-card-q">{card.question}</span>
+          <p class="dpf-faq-card-excerpt">{card.excerpt}</p>
+        </div>
+        <span class="dpf-faq-card-arrow">&rarr;</span>
+      </a>
     ))}
   </div>
-
-  <section class="dpf-related">
-    <h2>Related Articles</h2>
-    <div class="dpf-related-grid">
-      <a href="/is-cs2-free/" class="dpf-related-card"><span class="dpf-related-name">Is CS2 Free to Play?</span><span class="dpf-related-arrow">&rarr;</span></a>
-      <a href="/cs2-on-mac/" class="dpf-related-card"><span class="dpf-related-name">CS2 on Mac — What You Need to Know</span><span class="dpf-related-arrow">&rarr;</span></a>
-      <a href="/cs2-on-console/" class="dpf-related-card"><span class="dpf-related-name">CS2 on Console (PS5, Xbox)</span><span class="dpf-related-arrow">&rarr;</span></a>
-      <a href="/cs2-system-requirements/" class="dpf-related-card"><span class="dpf-related-name">CS2 System Requirements Guide</span><span class="dpf-related-arrow">&rarr;</span></a>
-    </div>
-  </section>
 
   <section class="dpf-explore">
     <h2>Explore More</h2>
@@ -93,27 +97,18 @@ const faqs = [
 .dpf-hero h1{font-family:'Montserrat',sans-serif;font-size:2rem;font-weight:800;margin:0 0 .75rem;color:var(--text)}
 .dpf-hero-desc{color:var(--text2);font-size:.95rem;line-height:1.7;margin:0}
 
-/* ── FAQ List ── */
-.dpf-faq-list{display:flex;flex-direction:column;gap:.5rem;margin-bottom:2.5rem}
-.dpf-faq-item{background:var(--bg2);border:1px solid var(--border);border-radius:4px;overflow:hidden}
-.dpf-faq-question{display:block;padding:1rem 1.25rem;font-size:.95rem;font-weight:600;color:var(--text);cursor:pointer;list-style:none;position:relative;padding-right:2.5rem;transition:background .2s}
-.dpf-faq-question::-webkit-details-marker{display:none}
-.dpf-faq-question::after{content:'+';position:absolute;right:1.25rem;top:50%;transform:translateY(-50%);font-size:1.2rem;color:var(--accent);font-weight:700}
-.dpf-faq-item[open] .dpf-faq-question::after{content:'\2212'}
-.dpf-faq-item[open] .dpf-faq-question{border-bottom:1px solid var(--border);background:rgba(46,204,113,.03)}
-.dpf-faq-question:hover{background:rgba(46,204,113,.03)}
-.dpf-faq-answer{padding:1rem 1.25rem;margin:0;font-size:.9rem;color:var(--text2);line-height:1.7}
+/* ── Intro ── */
+.dpf-intro{font-size:.9rem;color:var(--text2);margin:0 0 1rem;line-height:1.6}
 
-/* ── Related Articles ── */
-.dpf-related{margin-bottom:2rem}
-.dpf-related h2{font-family:'Montserrat',sans-serif;font-size:1.2rem;font-weight:700;color:var(--text);margin:0 0 .75rem;padding-bottom:.5rem;border-bottom:2px solid var(--accent)}
-.dpf-related-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:.6rem}
-.dpf-related-card{display:flex;align-items:center;justify-content:space-between;padding:.75rem 1rem;background:var(--bg2);border:1px solid var(--border);border-radius:4px;text-decoration:none;border-left:2px solid transparent;transition:border-left-color .2s,color .2s}
-.dpf-related-card:hover{border-left-color:var(--accent)}
-.dpf-related-name{font-size:.88rem;color:var(--text2);font-weight:500;transition:color .2s}
-.dpf-related-card:hover .dpf-related-name{color:var(--text)}
-.dpf-related-arrow{font-size:1rem;color:var(--accent);opacity:0;transition:opacity .2s}
-.dpf-related-card:hover .dpf-related-arrow{opacity:1}
+/* ── FAQ Card Grid ── */
+.dpf-faq-grid{display:grid;grid-template-columns:1fr;gap:.75rem;margin-bottom:2.5rem}
+.dpf-faq-card{display:flex;align-items:center;justify-content:space-between;padding:1.25rem;background:var(--bg2);border:1px solid var(--border);border-radius:4px;text-decoration:none;border-left:3px solid transparent;transition:border-left-color .2s,background .15s}
+.dpf-faq-card:hover{border-left-color:var(--accent);background:rgba(46,204,113,.03)}
+.dpf-faq-card-content{flex:1}
+.dpf-faq-card-q{font-size:.95rem;font-weight:600;color:var(--text);margin:0 0 .25rem;display:block}
+.dpf-faq-card-excerpt{font-size:.82rem;color:var(--text2);margin:0;line-height:1.5}
+.dpf-faq-card-arrow{font-size:1.1rem;color:var(--accent);margin-left:1rem;opacity:0;transition:opacity .2s}
+.dpf-faq-card:hover .dpf-faq-card-arrow{opacity:1}
 
 /* ── Explore More ── */
 .dpf-explore{margin-bottom:2rem}
@@ -131,6 +126,5 @@ const faqs = [
 /* ── Responsive ── */
 @media(max-width:768px){
   .dpf-hero h1{font-size:1.5rem}
-  .dpf-related-grid{grid-template-columns:1fr}
 }
 </style>

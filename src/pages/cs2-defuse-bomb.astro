@@ -1,0 +1,241 @@
+---
+import Base from '../layouts/Base.astro';
+import AuthorBox from '../components/AuthorBox.astro';
+import { faqSchema, breadcrumbSchema } from '../lib/weapons';
+
+const title = 'How to Defuse the Bomb in CS2: Timer, Kit & Tips | CSGOLuck Wiki';
+const description = 'Defusing in CS2 takes 10 seconds without a kit and 5 seconds with one. Learn defuse mechanics, kit cost, ninja defuses, and tips.';
+
+const breadcrumbs = [
+  { name: 'Home', url: '/' },
+  { name: 'CS2 Gameplay & Practice FAQ', url: '/cs2-gameplay-practice-faq' },
+  { name: 'Defuse the Bomb in CS2', url: '/cs2-defuse-bomb' },
+];
+
+const faqs = [
+  {
+    question: 'How long does it take to defuse the bomb in CS2?',
+    answer: 'It takes 10 seconds to defuse the bomb without a defuse kit and 5 seconds with a defuse kit equipped. The timer is fixed and cannot be altered in competitive play. For more gameplay tips, visit our <a href="/cs2-gameplay-practice-faq/">gameplay & practice FAQ</a>.',
+  },
+  {
+    question: 'Can you pick up a defuse kit from a dead teammate in CS2?',
+    answer: 'Yes. If a teammate who purchased a defuse kit dies, their kit drops on the ground and any CT player can walk over it to pick it up. This makes it important to communicate kit locations during a round.',
+  },
+  {
+    question: 'What is a ninja defuse in CS2?',
+    answer: 'A ninja defuse is when a CT player secretly defuses the bomb while Terrorists are still alive, usually by hiding in smoke or exploiting the enemy team\'s lack of awareness. It requires timing and positioning. Check our <a href="/practice-smokes-cs2/">smoke practice guide</a> for helpful techniques.',
+  },
+];
+
+const breadcrumbSchema_ = breadcrumbSchema(breadcrumbs);
+const faqSchema_ = faqSchema(faqs);
+
+const articleSchema = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": title,
+  "description": description,
+  "author": { "@type": "Person", "name": "Josh Lingenfelter", "url": "https://www.linkedin.com/in/josh-lingenfelter-8157274b/", "jobTitle": "Director", "worksFor": { "@type": "Organization", "name": "CSGOLuck" } },
+  "publisher": { "@type": "Organization", "name": "CSGOLuck Wiki", "url": "https://wiki.csgoluck.com" },
+  "mainEntityOfPage": "https://wiki.csgoluck.com/cs2-defuse-bomb/",
+  "inLanguage": "en-US"
+});
+
+const sections = [
+  { id: 'defuse-basics', label: 'Defuse Basics' },
+  { id: 'defuse-kit', label: 'Defuse Kit Explained' },
+  { id: 'timing-strategy', label: 'Timing & Strategy' },
+  { id: 'ninja-defuse', label: 'Ninja Defuse Tips' },
+  { id: 'common-mistakes', label: 'Common Mistakes' },
+  { id: 'faq', label: 'FAQ' },
+  { id: 'related', label: 'Related Articles' },
+];
+---
+
+<Base title={title} description={description}>
+  <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema_)}></script>
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema_)}></script>
+  <script type="application/ld+json" set:html={articleSchema}></script>
+
+  <div class="cdb-wrap">
+    <nav class="cdb-breadcrumb">
+      <a href="/">Home</a>
+      <span class="cdb-sep">/</span>
+      <a href="/cs2-gameplay-practice-faq/">CS2 Gameplay & Practice FAQ</a>
+      <span class="cdb-sep">/</span>
+      <span>Defuse the Bomb in CS2</span>
+    </nav>
+
+    <header class="cdb-header">
+      <h1>How to Defuse the Bomb in CS2: Timer, Kit & Tips</h1>
+      <p class="cdb-subtitle">Master bomb defusal mechanics, kit timing, and clutch strategies</p>
+    </header>
+
+    <nav class="cdb-toc-mobile" aria-label="Table of contents">
+      {sections.map((s) => (
+        <a href={`#${s.id}`} class="cdb-toc-mobile-link">{s.label}</a>
+      ))}
+    </nav>
+
+    <div class="cdb-layout">
+      <aside class="cdb-sidebar">
+        <nav class="cdb-toc" aria-label="Table of contents">
+          <span class="cdb-toc-title">Contents</span>
+          {sections.map((s) => (
+            <a href={`#${s.id}`} class="cdb-toc-link">{s.label}</a>
+          ))}
+        </nav>
+      </aside>
+
+      <article class="cdb-content">
+        <p class="cdb-intro">
+          Defusing the bomb is one of the most important mechanics in CS2 for Counter-Terrorist players. Every round on a bomb-defusal map comes down to whether the CTs can prevent the explosion after the Terrorists plant the C4. Understanding defuse timers, the value of a defuse kit, and when to commit to a defuse versus when to save is knowledge that separates experienced players from beginners. This guide covers everything you need to know about bomb defusal in Counter-Strike 2, from raw mechanics to advanced ninja defuse strategies.
+        </p>
+
+        <section id="defuse-basics">
+          <div class="cdb-section-header"><h2>Defuse Basics: How Bomb Defusal Works</h2></div>
+          <p>In CS2, the Terrorists can plant the C4 explosive at designated bomb sites (A or B) on bomb-defusal maps. Once the bomb is planted, a 40-second countdown timer begins. The CTs must reach the bomb and hold their use key (default E) to defuse it before the timer hits zero. If the bomb detonates, all players in the blast radius are killed and the Terrorists win the round.</p>
+          <p>The defuse action requires your player to remain stationary and within very close range of the planted bomb. You cannot move, shoot, or switch weapons while defusing. If you release the use key or take any other action, the defuse progress resets entirely -- there is no partial progress saved. This makes committing to a defuse a high-stakes decision, because you are completely vulnerable for the entire duration.</p>
+          <p>Only CT players can defuse the bomb. The planted bomb has a visible indicator and emits an increasingly rapid beeping sound as the countdown approaches zero, giving audio cues to both teams about how much time remains.</p>
+        </section>
+
+        <section id="defuse-kit">
+          <div class="cdb-section-header"><h2>Defuse Kit Explained ($400)</h2></div>
+          <p>The defuse kit is a purchasable equipment item available exclusively to CT players. It costs $400 and can be bought during the buy phase at the start of each round. When a player carrying a defuse kit attempts to defuse the bomb, the process takes 5 seconds instead of the standard 10 seconds.</p>
+          <p>This 5-second difference is enormous in practice. Many round outcomes hinge on whether the defusing player has a kit. Without a kit, you need at least 10 seconds on the bomb timer to successfully defuse. With a kit, you only need 5 seconds, which opens up a much larger window for late-round retakes and clutch situations.</p>
+          <ul class="cdb-list">
+            <li><strong>Cost:</strong> $400 -- one of the cheapest and most impactful purchases in the game</li>
+            <li><strong>Without kit:</strong> 10 seconds to defuse -- requires at least 10 seconds remaining on the bomb timer</li>
+            <li><strong>With kit:</strong> 5 seconds to defuse -- allows much later defuse attempts</li>
+            <li><strong>Dropped on death:</strong> Kits drop when the carrier dies and can be picked up by teammates</li>
+            <li><strong>Team coordination:</strong> At minimum, two players on the CT side should buy kits each round to ensure coverage</li>
+          </ul>
+          <p>At the professional level, teams always ensure at least two or three players carry defuse kits. In matchmaking, buying a kit should be a priority on any round where you can afford it. The $400 investment frequently determines whether you win or lose close rounds.</p>
+        </section>
+
+        <section id="timing-strategy">
+          <div class="cdb-section-header"><h2>Defuse Timing & Strategy</h2></div>
+          <p>Understanding defuse timing is critical for making the right decision in post-plant situations. The bomb timer in CS2 is 40 seconds from the moment the plant completes. Here is how the math works for defuse viability:</p>
+          <ul class="cdb-list">
+            <li><strong>With kit (5s defuse):</strong> You can start defusing with 5.0 seconds or more remaining and succeed</li>
+            <li><strong>Without kit (10s defuse):</strong> You need at least 10.0 seconds remaining to complete the defuse</li>
+            <li><strong>Half-defuse fake:</strong> Tapping the defuse briefly forces Terrorists to peek, potentially giving you an advantage</li>
+            <li><strong>Sound cue timing:</strong> The bomb beeping accelerates in the final 10 seconds -- learn to recognize the rhythm</li>
+          </ul>
+          <p>A common strategic decision is whether to "stick the defuse" or fight. If you hear enemies nearby and the timer is tight, sometimes committing to the defuse and hoping they miss is a better play than re-engaging in a gunfight with limited time. Conversely, if you have plenty of time, it often makes sense to clear threats first before defusing safely.</p>
+          <p>The half-defuse fake is a powerful mind game. By starting and immediately canceling a defuse, you create the defuse sound cue. Terrorists listening for this may peek aggressively, allowing you to catch them off guard. Experienced players will sometimes double-fake, starting and stopping the defuse twice before either committing or fighting.</p>
+        </section>
+
+        <section id="ninja-defuse">
+          <div class="cdb-section-header"><h2>Ninja Defuse Tips</h2></div>
+          <p>A ninja defuse occurs when a CT player defuses the bomb while Terrorists are still alive, typically by using smoke grenades or exploiting poor enemy positioning. Pulling off a ninja defuse is one of the most exciting plays in CS2 and can completely swing a round in your favor.</p>
+          <ul class="cdb-list">
+            <li><strong>Smoke the bomb:</strong> Throw a smoke grenade directly on the planted bomb, then walk into the smoke and begin defusing. The smoke obscures you from enemy vision</li>
+            <li><strong>Timing is everything:</strong> Wait for the Terrorists to push out looking for remaining CTs before sneaking onto the bomb</li>
+            <li><strong>Walk, do not run:</strong> Running produces footstep sounds that alert enemies. Shift-walk to the bomb for silence</li>
+            <li><strong>Use audio cover:</strong> Molotovs, flashbangs, and gunfire from teammates can mask the defuse sound</li>
+            <li><strong>Have a kit:</strong> Ninja defuses are far more viable with a 5-second kit defuse than a 10-second bare defuse</li>
+          </ul>
+          <p>The key to successful ninja defuses is patience and reading the situation. If the Terrorists are focused on hunting your teammates in another part of the map, they may not be watching the bomb closely. Smoke grenades are your best tool for this -- learn reliable bomb-site smokes from our <a href="/practice-smokes-cs2/">smoke practice guide</a> to consistently land them on planted bomb positions.</p>
+        </section>
+
+        <section id="common-mistakes">
+          <div class="cdb-section-header"><h2>Common Defuse Mistakes to Avoid</h2></div>
+          <p>Even experienced players make defuse-related errors that cost rounds. Here are the most common mistakes and how to avoid them:</p>
+          <ul class="cdb-list">
+            <li><strong>Not buying a kit:</strong> Skipping the $400 kit purchase to afford a flashbang is almost never worth it. The kit wins more rounds than any grenade</li>
+            <li><strong>Letting go of the defuse:</strong> Panicking and releasing the defuse key when you hear footsteps, only to realize you had enough time to finish. Trust your timer awareness</li>
+            <li><strong>Fighting instead of defusing:</strong> Engaging in a gunfight with 6 seconds left and no kit means you cannot defuse even if you win the fight</li>
+            <li><strong>Ignoring dropped kits:</strong> When a teammate with a kit dies near you, always pick it up. It takes a fraction of a second and can save the round</li>
+            <li><strong>Poor positioning before defuse:</strong> Running straight to the bomb without clearing common post-plant positions first, getting killed on the way</li>
+            <li><strong>Not communicating kit status:</strong> Failing to tell your team whether you have a kit. Callouts like "I have kit" or "no kit" help the team make better decisions</li>
+          </ul>
+          <p>Improving your defuse discipline is one of the fastest ways to <a href="/get-better-at-cs2/">get better at CS2</a>. Focus on always buying a kit when possible, learning bomb timer awareness, and making calculated decisions about when to stick versus when to fight.</p>
+        </section>
+
+        <section id="faq">
+          <div class="cdb-section-header"><h2>Frequently Asked Questions</h2></div>
+          <div class="cdb-faq-list">
+            {faqs.map((faq) => (
+              <details class="cdb-faq-item">
+                <summary class="cdb-faq-question">{faq.question}</summary>
+                <p class="cdb-faq-answer" set:html={faq.answer}></p>
+              </details>
+            ))}
+          </div>
+        </section>
+
+        <section id="related">
+          <div class="cdb-section-header"><h2>Related Articles</h2></div>
+          <div class="cdb-resources-grid">
+            <a href="/practice-smokes-cs2/" class="cdb-resource-card"><span class="cdb-resource-name">How to Practice Smokes in CS2</span><span class="cdb-resource-arrow">&rarr;</span></a>
+            <a href="/get-better-at-cs2/" class="cdb-resource-card"><span class="cdb-resource-name">How to Get Better at CS2</span><span class="cdb-resource-arrow">&rarr;</span></a>
+            <a href="/cs2-gameplay-practice-faq/" class="cdb-resource-card"><span class="cdb-resource-name">Gameplay & Practice FAQ Hub</span><span class="cdb-resource-arrow">&rarr;</span></a>
+            <a href="/cs2-console-commands/" class="cdb-resource-card"><span class="cdb-resource-name">CS2 Console Commands</span><span class="cdb-resource-arrow">&rarr;</span></a>
+          </div>
+        </section>
+      </article>
+    </div>
+  </div>
+
+  <style>
+    .cdb-wrap{max-width:1100px;margin:0 auto;padding:0 1.5rem 2rem}
+    .cdb-breadcrumb{display:flex;align-items:center;gap:.5rem;padding:1.25rem 0;font-size:.85rem;color:var(--text2)}
+    .cdb-breadcrumb a{color:var(--accent);text-decoration:none}
+    .cdb-breadcrumb a:hover{color:var(--accent2)}
+    .cdb-sep{color:var(--border)}
+    .cdb-header{padding:1.5rem 0 1.25rem;border-bottom:2px solid var(--accent);margin-bottom:1.5rem}
+    .cdb-header h1{margin:0 0 .35rem;font-size:2.2rem;font-weight:800;color:var(--text);letter-spacing:-.02em;line-height:1.2}
+    .cdb-subtitle{margin:0;font-size:1.05rem;color:var(--text2);font-weight:400}
+    .cdb-toc-mobile{display:none}
+    .cdb-layout{display:grid;grid-template-columns:220px 1fr;gap:2.5rem;align-items:start}
+    .cdb-sidebar{position:sticky;top:80px}
+    .cdb-toc{display:flex;flex-direction:column;gap:0;border-left:2px solid var(--border);padding-left:0}
+    .cdb-toc-title{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--accent);padding:0 0 .6rem 1rem}
+    .cdb-toc-link{display:block;padding:.4rem 1rem;font-size:.82rem;color:var(--text2);text-decoration:none;border-left:2px solid transparent;margin-left:-2px;transition:color .2s,border-color .2s}
+    .cdb-toc-link:hover{color:var(--text);border-left-color:var(--accent)}
+    .cdb-content{min-width:0}
+    .cdb-intro{font-size:1rem;line-height:1.8;color:var(--text2);margin-bottom:2rem}
+    .cdb-section-header{background:rgba(46,204,113,.05);margin:0 -1.25rem 1.25rem;padding:.75rem 1.25rem;border-radius:4px}
+    .cdb-section-header h2{margin:0;padding:0;font-size:1.5rem;font-weight:700;color:var(--text);border:none;letter-spacing:-.01em}
+    section{margin-bottom:2.5rem}
+    p{line-height:1.7;color:var(--text2);margin-bottom:1rem}
+    .cdb-list{list-style:none;padding:0;margin:.75rem 0 1.5rem}
+    .cdb-list li{padding:.4rem 0 .4rem 1.6rem;position:relative;color:var(--text2);line-height:1.65}
+    .cdb-list li::before{content:'';position:absolute;left:.25rem;top:.75rem;width:6px;height:6px;background:var(--accent);border-radius:1px}
+    .cdb-list li strong{color:var(--text)}
+    .cdb-faq-list{display:flex;flex-direction:column;gap:.5rem}
+    .cdb-faq-item{background:var(--bg2);border:1px solid var(--border);border-radius:4px;overflow:hidden}
+    .cdb-faq-question{display:block;padding:1rem 1.25rem;font-size:.95rem;font-weight:600;color:var(--text);cursor:pointer;list-style:none;position:relative;padding-right:2.5rem;transition:background .2s}
+    .cdb-faq-question::-webkit-details-marker{display:none}
+    .cdb-faq-question::after{content:'+';position:absolute;right:1.25rem;top:50%;transform:translateY(-50%);font-size:1.2rem;color:var(--accent);font-weight:700}
+    .cdb-faq-item[open] .cdb-faq-question::after{content:'\2212'}
+    .cdb-faq-item[open] .cdb-faq-question{border-bottom:1px solid var(--border);background:rgba(46,204,113,.03)}
+    .cdb-faq-question:hover{background:rgba(46,204,113,.03)}
+    .cdb-faq-answer{padding:1rem 1.25rem;margin:0;font-size:.9rem;color:var(--text2);line-height:1.7}
+    .cdb-resources-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.6rem;margin:.5rem 0 1.5rem}
+    .cdb-resource-card{display:flex;align-items:center;justify-content:space-between;padding:.75rem 1rem;background:var(--bg2);border:1px solid var(--border);border-radius:4px;text-decoration:none;border-left:2px solid transparent;transition:border-left-color .2s,color .2s}
+    .cdb-resource-card:hover{border-left-color:var(--accent)}
+    .cdb-resource-name{font-size:.88rem;color:var(--text2);font-weight:500;transition:color .2s}
+    .cdb-resource-card:hover .cdb-resource-name{color:var(--text)}
+    .cdb-resource-arrow{font-size:1rem;color:var(--accent);opacity:0;transition:opacity .2s}
+    .cdb-resource-card:hover .cdb-resource-arrow{opacity:1}
+    @media(max-width:860px){
+      .cdb-layout{grid-template-columns:1fr;gap:0}
+      .cdb-sidebar{display:none}
+      .cdb-toc-mobile{display:flex;gap:.25rem;overflow-x:auto;padding:.75rem 0;margin-bottom:1rem;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+      .cdb-toc-mobile::-webkit-scrollbar{display:none}
+      .cdb-toc-mobile-link{flex-shrink:0;padding:.35rem .75rem;font-size:.78rem;font-weight:600;color:var(--text2);background:var(--bg2);border:1px solid var(--border);border-radius:4px;text-decoration:none;white-space:nowrap;transition:color .2s,border-color .2s}
+      .cdb-toc-mobile-link:hover{color:var(--accent);border-color:var(--accent)}
+      .cdb-header h1{font-size:1.7rem}
+      .cdb-section-header{margin:0 -1rem 1rem;padding:.6rem 1rem}
+      .cdb-resources-grid{grid-template-columns:repeat(2,1fr)}
+    }
+    @media(max-width:600px){
+      .cdb-wrap{padding:0 1rem 1.5rem}
+      .cdb-resources-grid{grid-template-columns:1fr}
+      .cdb-header h1{font-size:1.5rem}
+    }
+  </style>
+  <AuthorBox updated="2026-03-04" />
+</Base>

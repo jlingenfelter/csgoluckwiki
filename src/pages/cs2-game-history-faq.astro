@@ -32,6 +32,14 @@ const faqs = [
     answer: 'CS2 competitive seasons typically run for several months, with Valve announcing exact start and end dates through the official Counter-Strike blog and in-game notifications. Season resets affect your Premier rating — at the end of each season, ratings are partially recalibrated. Check the in-game dashboard or the official Counter-Strike website for the current season schedule.',
   },
 ];
+
+const cards = [
+  { url: '/what-is-cs2/', question: 'What is CS2?', excerpt: 'CS2 is Valve\u2019s Source 2-powered successor to CS:GO, launched September 2023.' },
+  { url: '/what-does-csgo-stand-for/', question: 'What Does CS:GO Stand For?', excerpt: 'The meaning behind Counter-Strike: Global Offensive and its place in gaming history.' },
+  { url: '/counter-strike-history/', question: 'When Did CS2 & CS:GO Come Out?', excerpt: 'Full timeline from the 1999 Half-Life mod to CS2\u2019s 2023 launch.' },
+  { url: '/who-made-cs2/', question: 'Who Made & Owns CS2?', excerpt: 'Valve Corporation\u2019s role as developer, publisher, and franchise owner.' },
+  { url: '/cs2-season-dates/', question: 'When Does the CS2 Season End?', excerpt: 'Current season schedule, reset dates, and rating recalibration.' },
+];
 ---
 
 <Base title={title} description={description}>
@@ -47,24 +55,19 @@ const faqs = [
     <p class="ghf-hero-desc">The CS2 and CS:GO history stretches back over two decades, from a Half-Life mod released in 1999 to a Source 2-powered competitive shooter played by millions today. Below you will find clear answers to the most common questions about Counter-Strike release dates, game versions, franchise ownership, and competitive season timelines.</p>
   </section>
 
-  <div class="ghf-faq-list">
-    {faqs.map(faq => (
-      <details class="ghf-faq-item">
-        <summary class="ghf-faq-question">{faq.question}</summary>
-        <p class="ghf-faq-answer">{faq.answer}</p>
-      </details>
+  <p class="ghf-intro">Click any question below for a detailed answer.</p>
+
+  <div class="ghf-faq-grid">
+    {cards.map(card => (
+      <a href={card.url} class="ghf-faq-card">
+        <div class="ghf-faq-card-content">
+          <span class="ghf-faq-card-q">{card.question}</span>
+          <p class="ghf-faq-card-excerpt">{card.excerpt}</p>
+        </div>
+        <span class="ghf-faq-card-arrow">&rarr;</span>
+      </a>
     ))}
   </div>
-
-  <section class="ghf-related">
-    <h2>Related Articles</h2>
-    <div class="ghf-related-grid">
-      <a href="/counter-strike-history/" class="ghf-related-card"><span class="ghf-related-name">Complete Counter-Strike History</span><span class="ghf-related-arrow">&rarr;</span></a>
-      <a href="/what-is-cs2/" class="ghf-related-card"><span class="ghf-related-name">What Is CS2?</span><span class="ghf-related-arrow">&rarr;</span></a>
-      <a href="/what-does-csgo-stand-for/" class="ghf-related-card"><span class="ghf-related-name">What Does CS:GO Stand For?</span><span class="ghf-related-arrow">&rarr;</span></a>
-      <a href="/cs2-season-dates/" class="ghf-related-card"><span class="ghf-related-name">CS2 Season Dates &amp; Schedule</span><span class="ghf-related-arrow">&rarr;</span></a>
-    </div>
-  </section>
 
   <section class="ghf-explore">
     <h2>Explore More</h2>
@@ -94,27 +97,18 @@ const faqs = [
 .ghf-hero h1{font-family:'Montserrat',sans-serif;font-size:2rem;font-weight:800;margin:0 0 .75rem;color:var(--text)}
 .ghf-hero-desc{color:var(--text2);font-size:.95rem;line-height:1.7;margin:0}
 
-/* ── FAQ List ── */
-.ghf-faq-list{display:flex;flex-direction:column;gap:.5rem;margin-bottom:2.5rem}
-.ghf-faq-item{background:var(--bg2);border:1px solid var(--border);border-radius:4px;overflow:hidden}
-.ghf-faq-question{display:block;padding:1rem 1.25rem;font-size:.95rem;font-weight:600;color:var(--text);cursor:pointer;list-style:none;position:relative;padding-right:2.5rem;transition:background .2s}
-.ghf-faq-question::-webkit-details-marker{display:none}
-.ghf-faq-question::after{content:'+';position:absolute;right:1.25rem;top:50%;transform:translateY(-50%);font-size:1.2rem;color:var(--accent);font-weight:700}
-.ghf-faq-item[open] .ghf-faq-question::after{content:'\2212'}
-.ghf-faq-item[open] .ghf-faq-question{border-bottom:1px solid var(--border);background:rgba(46,204,113,.03)}
-.ghf-faq-question:hover{background:rgba(46,204,113,.03)}
-.ghf-faq-answer{padding:1rem 1.25rem;margin:0;font-size:.9rem;color:var(--text2);line-height:1.7}
+/* ── Intro ── */
+.ghf-intro{font-size:.9rem;color:var(--text2);margin:0 0 1rem;line-height:1.6}
 
-/* ── Related Articles ── */
-.ghf-related{margin-bottom:2rem}
-.ghf-related h2{font-family:'Montserrat',sans-serif;font-size:1.2rem;font-weight:700;color:var(--text);margin:0 0 .75rem;padding-bottom:.5rem;border-bottom:2px solid var(--accent)}
-.ghf-related-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:.6rem}
-.ghf-related-card{display:flex;align-items:center;justify-content:space-between;padding:.75rem 1rem;background:var(--bg2);border:1px solid var(--border);border-radius:4px;text-decoration:none;border-left:2px solid transparent;transition:border-left-color .2s,color .2s}
-.ghf-related-card:hover{border-left-color:var(--accent)}
-.ghf-related-name{font-size:.88rem;color:var(--text2);font-weight:500;transition:color .2s}
-.ghf-related-card:hover .ghf-related-name{color:var(--text)}
-.ghf-related-arrow{font-size:1rem;color:var(--accent);opacity:0;transition:opacity .2s}
-.ghf-related-card:hover .ghf-related-arrow{opacity:1}
+/* ── FAQ Card Grid ── */
+.ghf-faq-grid{display:grid;grid-template-columns:1fr;gap:.75rem;margin-bottom:2.5rem}
+.ghf-faq-card{display:flex;align-items:center;justify-content:space-between;padding:1.25rem;background:var(--bg2);border:1px solid var(--border);border-radius:4px;text-decoration:none;border-left:3px solid transparent;transition:border-left-color .2s,background .15s}
+.ghf-faq-card:hover{border-left-color:var(--accent);background:rgba(46,204,113,.03)}
+.ghf-faq-card-content{flex:1}
+.ghf-faq-card-q{font-size:.95rem;font-weight:600;color:var(--text);margin:0 0 .25rem;display:block}
+.ghf-faq-card-excerpt{font-size:.82rem;color:var(--text2);margin:0;line-height:1.5}
+.ghf-faq-card-arrow{font-size:1.1rem;color:var(--accent);margin-left:1rem;opacity:0;transition:opacity .2s}
+.ghf-faq-card:hover .ghf-faq-card-arrow{opacity:1}
 
 /* ── Explore More ── */
 .ghf-explore{margin-bottom:2rem}
@@ -132,6 +126,5 @@ const faqs = [
 /* ── Responsive ── */
 @media(max-width:768px){
   .ghf-hero h1{font-size:1.5rem}
-  .ghf-related-grid{grid-template-columns:1fr}
 }
 </style>

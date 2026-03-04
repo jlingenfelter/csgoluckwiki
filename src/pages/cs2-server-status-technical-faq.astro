@@ -36,6 +36,14 @@ const faqs = [
     answer: 'Yes, CS2 Prime Status is a single one-time purchase available through the Steam store. Once bought, it is permanently tied to your account with no recurring fees. Prime players receive access to exclusive item drops, Prime-only matchmaking, and reduced exposure to cheaters. Previously, Prime could be earned by reaching a certain level, but that path was removed.',
   },
 ];
+
+const cards = [
+  { url: '/is-cs2-down/', question: 'Is CS2 Down Right Now?', excerpt: 'How to check CS2 server status and what to do during outages.' },
+  { url: '/cs2-fix-net-jitter/', question: 'What Is Net Jitter & How to Fix It', excerpt: 'Understanding and resolving network inconsistency in CS2.' },
+  { url: '/cs2-fix-packet-loss/', question: 'How to Fix Packet Loss in CS2', excerpt: 'Diagnose and solve packet loss for smoother gameplay.' },
+  { url: '/cs2-trust-factor/', question: 'How to Check Trust Factor in CS2', excerpt: 'What Trust Factor is, how it works, and how to maintain it.' },
+  { url: '/cs2-prime-status/', question: 'Is CS2 Prime a One-Time Purchase?', excerpt: 'Prime Status benefits, cost, and whether it\u2019s worth buying.' },
+];
 ---
 
 <Base title={title} description={description}>
@@ -51,24 +59,19 @@ const faqs = [
     <p class="stf-hero-desc">Experiencing CS2 server status problems or technical issues like jitter, packet loss, or trust factor warnings? Connection problems are among the most frustrating parts of playing online, and knowing how to diagnose them saves you time. Below are answers to the most common CS2 technical questions players ask.</p>
   </section>
 
-  <div class="stf-faq-list">
-    {faqs.map(faq => (
-      <details class="stf-faq-item">
-        <summary class="stf-faq-question">{faq.question}</summary>
-        <p class="stf-faq-answer">{faq.answer}</p>
-      </details>
+  <p class="stf-intro">Click any question below for a detailed answer.</p>
+
+  <div class="stf-faq-grid">
+    {cards.map(card => (
+      <a href={card.url} class="stf-faq-card">
+        <div class="stf-faq-card-content">
+          <span class="stf-faq-card-q">{card.question}</span>
+          <p class="stf-faq-card-excerpt">{card.excerpt}</p>
+        </div>
+        <span class="stf-faq-card-arrow">&rarr;</span>
+      </a>
     ))}
   </div>
-
-  <section class="stf-related">
-    <h2>Related Articles</h2>
-    <div class="stf-related-grid">
-      <a href="/is-cs2-down/" class="stf-related-card"><span class="stf-related-name">Is CS2 Down? How to Check</span><span class="stf-related-arrow">&rarr;</span></a>
-      <a href="/cs2-fix-net-jitter/" class="stf-related-card"><span class="stf-related-name">How to Fix Net Jitter in CS2</span><span class="stf-related-arrow">&rarr;</span></a>
-      <a href="/cs2-fix-packet-loss/" class="stf-related-card"><span class="stf-related-name">How to Fix Packet Loss in CS2</span><span class="stf-related-arrow">&rarr;</span></a>
-      <a href="/cs2-trust-factor/" class="stf-related-card"><span class="stf-related-name">CS2 Trust Factor Explained</span><span class="stf-related-arrow">&rarr;</span></a>
-    </div>
-  </section>
 
   <section class="stf-explore">
     <h2>Explore More</h2>
@@ -98,27 +101,18 @@ const faqs = [
 .stf-hero h1{font-family:'Montserrat',sans-serif;font-size:2rem;font-weight:800;margin:0 0 .75rem;color:var(--text)}
 .stf-hero-desc{color:var(--text2);font-size:.95rem;line-height:1.7;margin:0}
 
-/* ── FAQ List ── */
-.stf-faq-list{display:flex;flex-direction:column;gap:.5rem;margin-bottom:2.5rem}
-.stf-faq-item{background:var(--bg2);border:1px solid var(--border);border-radius:4px;overflow:hidden}
-.stf-faq-question{display:block;padding:1rem 1.25rem;font-size:.95rem;font-weight:600;color:var(--text);cursor:pointer;list-style:none;position:relative;padding-right:2.5rem;transition:background .2s}
-.stf-faq-question::-webkit-details-marker{display:none}
-.stf-faq-question::after{content:'+';position:absolute;right:1.25rem;top:50%;transform:translateY(-50%);font-size:1.2rem;color:var(--accent);font-weight:700}
-.stf-faq-item[open] .stf-faq-question::after{content:'\2212'}
-.stf-faq-item[open] .stf-faq-question{border-bottom:1px solid var(--border);background:rgba(46,204,113,.03)}
-.stf-faq-question:hover{background:rgba(46,204,113,.03)}
-.stf-faq-answer{padding:1rem 1.25rem;margin:0;font-size:.9rem;color:var(--text2);line-height:1.7}
+/* ── Intro ── */
+.stf-intro{font-size:.9rem;color:var(--text2);margin:0 0 1rem;line-height:1.6}
 
-/* ── Related Articles ── */
-.stf-related{margin-bottom:2rem}
-.stf-related h2{font-family:'Montserrat',sans-serif;font-size:1.2rem;font-weight:700;color:var(--text);margin:0 0 .75rem;padding-bottom:.5rem;border-bottom:2px solid var(--accent)}
-.stf-related-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:.6rem}
-.stf-related-card{display:flex;align-items:center;justify-content:space-between;padding:.75rem 1rem;background:var(--bg2);border:1px solid var(--border);border-radius:4px;text-decoration:none;border-left:2px solid transparent;transition:border-left-color .2s,color .2s}
-.stf-related-card:hover{border-left-color:var(--accent)}
-.stf-related-name{font-size:.88rem;color:var(--text2);font-weight:500;transition:color .2s}
-.stf-related-card:hover .stf-related-name{color:var(--text)}
-.stf-related-arrow{font-size:1rem;color:var(--accent);opacity:0;transition:opacity .2s}
-.stf-related-card:hover .stf-related-arrow{opacity:1}
+/* ── FAQ Card Grid ── */
+.stf-faq-grid{display:grid;grid-template-columns:1fr;gap:.75rem;margin-bottom:2.5rem}
+.stf-faq-card{display:flex;align-items:center;justify-content:space-between;padding:1.25rem;background:var(--bg2);border:1px solid var(--border);border-radius:4px;text-decoration:none;border-left:3px solid transparent;transition:border-left-color .2s,background .15s}
+.stf-faq-card:hover{border-left-color:var(--accent);background:rgba(46,204,113,.03)}
+.stf-faq-card-content{flex:1}
+.stf-faq-card-q{font-size:.95rem;font-weight:600;color:var(--text);margin:0 0 .25rem;display:block}
+.stf-faq-card-excerpt{font-size:.82rem;color:var(--text2);margin:0;line-height:1.5}
+.stf-faq-card-arrow{font-size:1.1rem;color:var(--accent);margin-left:1rem;opacity:0;transition:opacity .2s}
+.stf-faq-card:hover .stf-faq-card-arrow{opacity:1}
 
 /* ── Explore More ── */
 .stf-explore{margin-bottom:2rem}
@@ -136,6 +130,5 @@ const faqs = [
 /* ── Responsive ── */
 @media(max-width:768px){
   .stf-hero h1{font-size:1.5rem}
-  .stf-related-grid{grid-template-columns:1fr}
 }
 </style>

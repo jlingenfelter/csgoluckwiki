@@ -1,0 +1,225 @@
+---
+import Base from '../layouts/Base.astro';
+import AuthorBox from '../components/AuthorBox.astro';
+import { faqSchema, breadcrumbSchema } from '../lib/weapons';
+
+const title = 'How Big Is CS2? File Size & Storage Requirements (2026) | CSGOLuck Wiki';
+const description = 'CS2 requires roughly 85 GB of disk space. Full breakdown of download size, installation requirements, and SSD vs HDD impact.';
+
+const breadcrumbs = [
+  { name: 'Home', url: '/' },
+  { name: 'Download & Platform FAQ', url: '/cs2-download-platform-faq' },
+  { name: 'CS2 File Size', url: '/cs2-file-size' },
+];
+
+const faqs = [
+  {
+    question: 'How many GB is CS2 to download?',
+    answer: 'The initial CS2 download from Steam is approximately 30-35 GB. However, the game unpacks and installs to roughly 85 GB on disk. The exact download size may vary depending on current game version and any pending updates. See our <a href="/cs2-download-platform-faq/">download & platform FAQ</a> for more.',
+  },
+  {
+    question: 'Does CS2 need an SSD?',
+    answer: 'An SSD is not strictly required, but it is strongly recommended. CS2 loads maps and assets significantly faster from an SSD, often cutting load times by 50% or more compared to a traditional hard drive. Valve lists an SSD in the recommended system requirements. Check our <a href="/cs2-system-requirements/">system requirements guide</a> for the full hardware specs.',
+  },
+  {
+    question: 'Why is CS2 so much bigger than CS:GO?',
+    answer: 'CS2 uses the Source 2 engine, which includes higher-resolution textures, improved lighting maps, physically-based rendering assets, and upgraded audio files. These visual and audio improvements account for the significant increase in file size compared to CS:GO. Visit our <a href="/cs2-download-platform-faq/">download FAQ</a> for additional details.',
+  },
+];
+
+const breadcrumbSchema_ = breadcrumbSchema(breadcrumbs);
+const faqSchema_ = faqSchema(faqs);
+
+const articleSchema = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": title,
+  "description": description,
+  "author": { "@type": "Person", "name": "Josh Lingenfelter", "url": "https://www.linkedin.com/in/josh-lingenfelter-8157274b/", "jobTitle": "Director", "worksFor": { "@type": "Organization", "name": "CSGOLuck" } },
+  "publisher": { "@type": "Organization", "name": "CSGOLuck Wiki", "url": "https://wiki.csgoluck.com" },
+  "mainEntityOfPage": "https://wiki.csgoluck.com/cs2-file-size/",
+  "inLanguage": "en-US"
+});
+
+const sections = [
+  { id: 'file-size-overview', label: 'CS2 File Size Overview' },
+  { id: 'download-vs-installed', label: 'Download vs Installed Size' },
+  { id: 'ssd-vs-hdd', label: 'SSD vs HDD Performance' },
+  { id: 'managing-disk-space', label: 'Managing Disk Space' },
+  { id: 'reducing-install-size', label: 'Reducing Install Size' },
+  { id: 'faq', label: 'FAQ' },
+  { id: 'related', label: 'Related Articles' },
+];
+---
+
+<Base title={title} description={description}>
+  <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema_)}></script>
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema_)}></script>
+  <script type="application/ld+json" set:html={articleSchema}></script>
+
+  <div class="cfs-wrap">
+    <nav class="cfs-breadcrumb">
+      <a href="/">Home</a>
+      <span class="cfs-sep">/</span>
+      <a href="/cs2-download-platform-faq/">Download & Platform FAQ</a>
+      <span class="cfs-sep">/</span>
+      <span>CS2 File Size</span>
+    </nav>
+
+    <header class="cfs-header">
+      <h1>How Big Is CS2? File Size & Storage Requirements (2026)</h1>
+      <p class="cfs-subtitle">Complete breakdown of CS2's download size, disk space needs, and storage optimization tips</p>
+    </header>
+
+    <nav class="cfs-toc-mobile" aria-label="Table of contents">
+      {sections.map((s) => (
+        <a href={`#${s.id}`} class="cfs-toc-mobile-link">{s.label}</a>
+      ))}
+    </nav>
+
+    <div class="cfs-layout">
+      <aside class="cfs-sidebar">
+        <nav class="cfs-toc" aria-label="Table of contents">
+          <span class="cfs-toc-title">Contents</span>
+          {sections.map((s) => (
+            <a href={`#${s.id}`} class="cfs-toc-link">{s.label}</a>
+          ))}
+        </nav>
+      </aside>
+
+      <article class="cfs-content">
+        <p class="cfs-intro">
+          Before downloading CS2, one of the first practical questions is how much disk space you actually need. Counter-Strike 2 is considerably larger than its predecessor CS:GO, thanks to the Source 2 engine upgrade and higher-fidelity assets. This guide covers the exact file size requirements, explains the difference between download and installed size, compares SSD versus HDD performance, and offers tips for managing your storage efficiently.
+        </p>
+
+        <section id="file-size-overview">
+          <div class="cfs-section-header"><h2>CS2 File Size Overview</h2></div>
+          <p>As of early 2026, Counter-Strike 2 occupies approximately 85 GB of disk space once fully installed. This is a substantial increase over CS:GO, which typically required around 30 GB. The growth is primarily driven by the Source 2 engine's higher-resolution textures, improved lighting data, and overhauled audio systems.</p>
+          <p>The file size can fluctuate slightly between major updates. Large content patches -- such as those introducing new maps or significant engine changes -- may temporarily increase the required space during installation before settling back to the baseline. It is generally wise to maintain at least 100 GB of free space on your target drive to account for update overhead and temporary extraction files.</p>
+        </section>
+
+        <section id="download-vs-installed">
+          <div class="cfs-section-header"><h2>Download vs Installed Size</h2></div>
+          <p>There is an important distinction between the download size and the final installed size. When you download CS2 from Steam, the compressed data transfer is approximately 30 to 35 GB. However, once Steam decompresses and installs all assets, the game expands to roughly 85 GB on disk.</p>
+          <p>During the installation process, Steam needs temporary space for both the compressed download and the unpacking operation. This means you may need up to 120 GB of free space temporarily, even though the final installation only occupies around 85 GB. Once installation completes, the temporary files are cleaned up automatically.</p>
+          <ul class="cfs-list">
+            <li><strong>Compressed download:</strong> Approximately 30-35 GB transferred from Steam servers</li>
+            <li><strong>Installed size:</strong> Approximately 85 GB on disk after extraction</li>
+            <li><strong>Temporary space needed:</strong> Up to 120 GB during the installation process</li>
+            <li><strong>Update sizes:</strong> Typically 500 MB to 3 GB per patch, depending on scope</li>
+          </ul>
+        </section>
+
+        <section id="ssd-vs-hdd">
+          <div class="cfs-section-header"><h2>SSD vs HDD Performance</h2></div>
+          <p>While CS2 will run on a traditional hard disk drive, installing it on an SSD provides a noticeably better experience. Valve lists an SSD in the recommended system requirements for CS2, and for good reason -- the difference in load times and asset streaming is significant.</p>
+          <p>On an SSD, map loading times typically range from 10 to 20 seconds depending on the map and system configuration. On a traditional HDD, the same load can take 40 to 60 seconds or longer. This delay is especially noticeable in competitive modes where you want to be ready as quickly as possible.</p>
+          <p>Beyond load times, an SSD helps with texture streaming and reduces occasional hitching or stuttering that can occur when the game loads new assets mid-round. For competitive players who value consistent frame delivery, an SSD is considered an essential component rather than a luxury. Even a budget SATA SSD will provide a dramatic improvement over any spinning-platter hard drive.</p>
+          <p>NVMe SSDs offer marginal improvements over SATA SSDs for CS2 specifically, since the game's asset streaming is not intensive enough to saturate SATA bandwidth. If you already have a SATA SSD, upgrading to NVMe solely for CS2 is not necessary.</p>
+        </section>
+
+        <section id="managing-disk-space">
+          <div class="cfs-section-header"><h2>Managing Disk Space</h2></div>
+          <p>If disk space is a concern, there are several strategies to ensure CS2 runs smoothly without consuming your entire drive. Steam provides built-in tools to help manage your library across multiple drives.</p>
+          <ul class="cfs-list">
+            <li><strong>Use Steam Library Folders:</strong> You can create multiple Steam library folders on different drives. Navigate to Steam Settings, then Storage, to add new library locations and move games between drives</li>
+            <li><strong>Monitor workshop content:</strong> If you subscribe to many Steam Workshop maps or items, these downloads accumulate over time. Periodically review and unsubscribe from content you no longer use</li>
+            <li><strong>Clear download cache:</strong> Steam stores temporary download data that can be cleared through Settings, then Downloads, then Clear Download Cache. This will not affect installed games</li>
+            <li><strong>Verify game files:</strong> Running a file integrity check through Steam can sometimes reduce bloat caused by corrupted or duplicated files. Right-click CS2 in your library, select Properties, then Installed Files, then Verify integrity</li>
+          </ul>
+        </section>
+
+        <section id="reducing-install-size">
+          <div class="cfs-section-header"><h2>Reducing CS2 Install Size</h2></div>
+          <p>Unlike some games, CS2 does not offer optional high-resolution texture packs or language packs that can be selectively installed or removed to save space. The base installation includes all core assets required for gameplay.</p>
+          <p>However, you can take a few steps to minimize disk usage. Clearing your custom configuration files and workshop downloads is the most effective approach. Workshop maps and custom content can accumulate several gigabytes over time, especially if you experiment with community servers or practice utility lineups on workshop maps.</p>
+          <p>Another option is to uninstall and reinstall CS2 after major updates. Occasionally, leftover files from previous versions are not fully cleaned up during patching. A fresh install guarantees you only have the current files without legacy remnants. This process takes time due to the download size, so plan it during a period when you are not actively playing.</p>
+          <p>For players with limited storage on their primary drive, consider installing CS2 on a secondary SSD. External USB 3.1 or Thunderbolt SSDs can deliver adequate performance for CS2, though an internal drive is always preferred for the lowest possible latency.</p>
+        </section>
+
+        <section id="faq">
+          <div class="cfs-section-header"><h2>Frequently Asked Questions</h2></div>
+          <div class="cfs-faq-list">
+            {faqs.map((faq) => (
+              <details class="cfs-faq-item">
+                <summary class="cfs-faq-question">{faq.question}</summary>
+                <p class="cfs-faq-answer" set:html={faq.answer}></p>
+              </details>
+            ))}
+          </div>
+        </section>
+
+        <section id="related">
+          <div class="cfs-section-header"><h2>Related Articles</h2></div>
+          <div class="cfs-resources-grid">
+            <a href="/cs2-system-requirements/" class="cfs-resource-card"><span class="cfs-resource-name">CS2 System Requirements</span><span class="cfs-resource-arrow">&rarr;</span></a>
+            <a href="/is-cs2-free/" class="cfs-resource-card"><span class="cfs-resource-name">Is CS2 Free to Play?</span><span class="cfs-resource-arrow">&rarr;</span></a>
+            <a href="/cs2-download-platform-faq/" class="cfs-resource-card"><span class="cfs-resource-name">Download & Platform FAQ</span><span class="cfs-resource-arrow">&rarr;</span></a>
+            <a href="/cs2-on-mac/" class="cfs-resource-card"><span class="cfs-resource-name">CS2 on Mac</span><span class="cfs-resource-arrow">&rarr;</span></a>
+          </div>
+        </section>
+      </article>
+    </div>
+  </div>
+
+  <style>
+    .cfs-wrap{max-width:1100px;margin:0 auto;padding:0 1.5rem 2rem}
+    .cfs-breadcrumb{display:flex;align-items:center;gap:.5rem;padding:1.25rem 0;font-size:.85rem;color:var(--text2)}
+    .cfs-breadcrumb a{color:var(--accent);text-decoration:none}
+    .cfs-breadcrumb a:hover{color:var(--accent2)}
+    .cfs-sep{color:var(--border)}
+    .cfs-header{padding:1.5rem 0 1.25rem;border-bottom:2px solid var(--accent);margin-bottom:1.5rem}
+    .cfs-header h1{margin:0 0 .35rem;font-size:2.2rem;font-weight:800;color:var(--text);letter-spacing:-.02em;line-height:1.2}
+    .cfs-subtitle{margin:0;font-size:1.05rem;color:var(--text2);font-weight:400}
+    .cfs-toc-mobile{display:none}
+    .cfs-layout{display:grid;grid-template-columns:220px 1fr;gap:2.5rem;align-items:start}
+    .cfs-sidebar{position:sticky;top:80px}
+    .cfs-toc{display:flex;flex-direction:column;gap:0;border-left:2px solid var(--border);padding-left:0}
+    .cfs-toc-title{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--accent);padding:0 0 .6rem 1rem}
+    .cfs-toc-link{display:block;padding:.4rem 1rem;font-size:.82rem;color:var(--text2);text-decoration:none;border-left:2px solid transparent;margin-left:-2px;transition:color .2s,border-color .2s}
+    .cfs-toc-link:hover{color:var(--text);border-left-color:var(--accent)}
+    .cfs-content{min-width:0}
+    .cfs-intro{font-size:1rem;line-height:1.8;color:var(--text2);margin-bottom:2rem}
+    .cfs-section-header{background:rgba(46,204,113,.05);margin:0 -1.25rem 1.25rem;padding:.75rem 1.25rem;border-radius:4px}
+    .cfs-section-header h2{margin:0;padding:0;font-size:1.5rem;font-weight:700;color:var(--text);border:none;letter-spacing:-.01em}
+    section{margin-bottom:2.5rem}
+    p{line-height:1.7;color:var(--text2);margin-bottom:1rem}
+    .cfs-list{list-style:none;padding:0;margin:.75rem 0 1.5rem}
+    .cfs-list li{padding:.4rem 0 .4rem 1.6rem;position:relative;color:var(--text2);line-height:1.65}
+    .cfs-list li::before{content:'';position:absolute;left:.25rem;top:.75rem;width:6px;height:6px;background:var(--accent);border-radius:1px}
+    .cfs-list li strong{color:var(--text)}
+    .cfs-faq-list{display:flex;flex-direction:column;gap:.5rem}
+    .cfs-faq-item{background:var(--bg2);border:1px solid var(--border);border-radius:4px;overflow:hidden}
+    .cfs-faq-question{display:block;padding:1rem 1.25rem;font-size:.95rem;font-weight:600;color:var(--text);cursor:pointer;list-style:none;position:relative;padding-right:2.5rem;transition:background .2s}
+    .cfs-faq-question::-webkit-details-marker{display:none}
+    .cfs-faq-question::after{content:'+';position:absolute;right:1.25rem;top:50%;transform:translateY(-50%);font-size:1.2rem;color:var(--accent);font-weight:700}
+    .cfs-faq-item[open] .cfs-faq-question::after{content:'\2212'}
+    .cfs-faq-item[open] .cfs-faq-question{border-bottom:1px solid var(--border);background:rgba(46,204,113,.03)}
+    .cfs-faq-question:hover{background:rgba(46,204,113,.03)}
+    .cfs-faq-answer{padding:1rem 1.25rem;margin:0;font-size:.9rem;color:var(--text2);line-height:1.7}
+    .cfs-resources-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.6rem;margin:.5rem 0 1.5rem}
+    .cfs-resource-card{display:flex;align-items:center;justify-content:space-between;padding:.75rem 1rem;background:var(--bg2);border:1px solid var(--border);border-radius:4px;text-decoration:none;border-left:2px solid transparent;transition:border-left-color .2s,color .2s}
+    .cfs-resource-card:hover{border-left-color:var(--accent)}
+    .cfs-resource-name{font-size:.88rem;color:var(--text2);font-weight:500;transition:color .2s}
+    .cfs-resource-card:hover .cfs-resource-name{color:var(--text)}
+    .cfs-resource-arrow{font-size:1rem;color:var(--accent);opacity:0;transition:opacity .2s}
+    .cfs-resource-card:hover .cfs-resource-arrow{opacity:1}
+    @media(max-width:860px){
+      .cfs-layout{grid-template-columns:1fr;gap:0}
+      .cfs-sidebar{display:none}
+      .cfs-toc-mobile{display:flex;gap:.25rem;overflow-x:auto;padding:.75rem 0;margin-bottom:1rem;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+      .cfs-toc-mobile::-webkit-scrollbar{display:none}
+      .cfs-toc-mobile-link{flex-shrink:0;padding:.35rem .75rem;font-size:.78rem;font-weight:600;color:var(--text2);background:var(--bg2);border:1px solid var(--border);border-radius:4px;text-decoration:none;white-space:nowrap;transition:color .2s,border-color .2s}
+      .cfs-toc-mobile-link:hover{color:var(--accent);border-color:var(--accent)}
+      .cfs-header h1{font-size:1.7rem}
+      .cfs-section-header{margin:0 -1rem 1rem;padding:.6rem 1rem}
+      .cfs-resources-grid{grid-template-columns:repeat(2,1fr)}
+    }
+    @media(max-width:600px){
+      .cfs-wrap{padding:0 1rem 1.5rem}
+      .cfs-resources-grid{grid-template-columns:1fr}
+      .cfs-header h1{font-size:1.5rem}
+    }
+  </style>
+  <AuthorBox updated="2026-03-04" />
+</Base>

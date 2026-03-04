@@ -9,7 +9,7 @@ const description = 'How to show FPS, change FOV, adjust crosshair settings, and
 const faqs = [
   {
     question: 'How to show FPS in CS2?',
-    answer: 'Open the developer console (press tilde ~) and type cl_showfps 1 to display a basic FPS counter in the top-left corner. For more detailed network and performance data, use net_graph 1 instead. You can also enable the Steam overlay FPS counter through Steam Settings under In-Game. For a comprehensive approach to optimizing your frame rate, check out our <a href="/cs2-guides/fps-optimization-guide/">FPS optimization guide</a>.',
+    answer: 'Open the developer console (press tilde ~) and type cl_showfps 1 to display a basic FPS counter in the top-left corner. For more detailed network and performance data, use net_graph 1 instead. You can also enable the Steam overlay FPS counter through Steam Settings under In-Game.',
   },
   {
     question: 'How to change FOV in CS2?',
@@ -17,16 +17,23 @@ const faqs = [
   },
   {
     question: 'How to change viewmodel in CS2?',
-    answer: 'Use console commands to adjust your weapon viewmodel. The key commands are viewmodel_fov (54-68), viewmodel_offset_x (-2 to 2.5), viewmodel_offset_y (-2 to 2), and viewmodel_offset_z (-2 to 2). These control how far away, how left or right, and how high or low your weapon sits on screen. Save your preferred settings in an autoexec.cfg file so they load automatically. See our <a href="/cs2-guides/config-guide/">config guide</a> for full details.',
+    answer: 'Use console commands to adjust your weapon viewmodel. The key commands are viewmodel_fov (54-68), viewmodel_offset_x (-2 to 2.5), viewmodel_offset_y (-2 to 2), and viewmodel_offset_z (-2 to 2). These control how far away, how left or right, and how high or low your weapon sits on screen. Save your preferred settings in an autoexec.cfg file so they load automatically.',
   },
   {
     question: 'How to copy and import a crosshair in CS2?',
-    answer: 'CS2 uses shareable crosshair codes. To export yours, open Settings, go to the Crosshair tab, and click Share or Copy Code. To import someone else\'s crosshair, paste their code in the same menu using the Import option. You can also apply crosshair codes through the console with the apply_crosshair_code command. Try our <a href="/crosshair-generator/">crosshair generator</a> to design and export custom crosshairs.',
+    answer: 'CS2 uses shareable crosshair codes. To export yours, open Settings, go to the Crosshair tab, and click Share or Copy Code. To import someone else\'s crosshair, paste their code in the same menu using the Import option. You can also apply crosshair codes through the console with the apply_crosshair_code command.',
   },
   {
     question: 'How to change crosshair in CS2?',
-    answer: 'Go to Settings and select the Crosshair tab for a visual editor that lets you adjust style, size, thickness, gap, color, outline, and dot visibility. For more granular control, use console commands like cl_crosshairsize, cl_crosshairgap, cl_crosshaircolor, and cl_crosshairstyle. Our <a href="/cs2-guides/crosshair-guide/">crosshair guide</a> walks through every option and shows popular pro player crosshair settings.',
+    answer: 'Go to Settings and select the Crosshair tab for a visual editor that lets you adjust style, size, thickness, gap, color, outline, and dot visibility. For more granular control, use console commands like cl_crosshairsize, cl_crosshairgap, cl_crosshaircolor, and cl_crosshairstyle.',
   },
+];
+
+const cards = [
+  { url: '/show-fps-cs2/', question: 'How to Show FPS in CS2', excerpt: 'Console commands and Steam overlay options for FPS display.' },
+  { url: '/change-fov-cs2/', question: 'How to Change FOV in CS2', excerpt: 'Viewmodel FOV adjustment and why gameplay FOV is locked.' },
+  { url: '/cs2-viewmodel-settings/', question: 'How to Change Viewmodel in CS2', excerpt: 'Console commands for weapon position, offset, and bob.' },
+  { url: '/cs2-crosshair-guide/', question: 'CS2 Crosshair Guide', excerpt: 'Import, export, and customize crosshairs with codes and console.' },
 ];
 ---
 
@@ -43,28 +50,19 @@ const faqs = [
     <p class="scf-hero-desc">Fine-tuning your CS2 settings and config is one of the fastest ways to play more comfortably and consistently. From displaying your FPS counter to importing pro crosshairs and adjusting your viewmodel, these are the most commonly asked configuration questions — with clear, actionable answers.</p>
   </section>
 
-  <div class="scf-faq-list">
-    {faqs.map(faq => (
-      <details class="scf-faq-item">
-        <summary class="scf-faq-question">{faq.question}</summary>
-        <div class="scf-faq-answer" set:html={faq.answer}></div>
-      </details>
+  <p class="scf-intro">Click any question below for a detailed answer.</p>
+
+  <div class="scf-faq-grid">
+    {cards.map(card => (
+      <a href={card.url} class="scf-faq-card">
+        <div class="scf-faq-card-content">
+          <span class="scf-faq-card-q">{card.question}</span>
+          <p class="scf-faq-card-excerpt">{card.excerpt}</p>
+        </div>
+        <span class="scf-faq-card-arrow">&rarr;</span>
+      </a>
     ))}
   </div>
-
-  <section class="scf-related">
-    <h2>Related Articles</h2>
-    <div class="scf-related-grid">
-      <a href="/show-fps-cs2/" class="scf-related-card"><span class="scf-related-name">How to Show FPS in CS2</span><span class="scf-related-arrow">&rarr;</span></a>
-      <a href="/change-fov-cs2/" class="scf-related-card"><span class="scf-related-name">How to Change FOV in CS2</span><span class="scf-related-arrow">&rarr;</span></a>
-      <a href="/cs2-crosshair-guide/" class="scf-related-card"><span class="scf-related-name">CS2 Crosshair Guide</span><span class="scf-related-arrow">&rarr;</span></a>
-      <a href="/cs2-viewmodel-settings/" class="scf-related-card"><span class="scf-related-name">CS2 Viewmodel Settings</span><span class="scf-related-arrow">&rarr;</span></a>
-      <a href="/crosshair-generator/" class="scf-related-card"><span class="scf-related-name">Crosshair Generator Tool</span><span class="scf-related-arrow">&rarr;</span></a>
-      <a href="/cs2-guides/crosshair-guide/" class="scf-related-card"><span class="scf-related-name">Complete Crosshair Guide</span><span class="scf-related-arrow">&rarr;</span></a>
-      <a href="/cs2-guides/config-guide/" class="scf-related-card"><span class="scf-related-name">Config Guide</span><span class="scf-related-arrow">&rarr;</span></a>
-      <a href="/cs2-guides/fps-optimization-guide/" class="scf-related-card"><span class="scf-related-name">FPS Optimization Guide</span><span class="scf-related-arrow">&rarr;</span></a>
-    </div>
-  </section>
 
   <section class="scf-explore">
     <h2>Explore More</h2>
@@ -93,29 +91,18 @@ const faqs = [
 .scf-hero h1{font-family:'Montserrat',sans-serif;font-size:2rem;font-weight:800;margin:0 0 .75rem;color:var(--text)}
 .scf-hero-desc{color:var(--text2);font-size:.95rem;line-height:1.7;margin:0}
 
-/* ── FAQ List ── */
-.scf-faq-list{display:flex;flex-direction:column;gap:.5rem;margin-bottom:2.5rem}
-.scf-faq-item{background:var(--bg2);border:1px solid var(--border);border-radius:4px;overflow:hidden}
-.scf-faq-question{display:block;padding:1rem 1.25rem;font-size:.95rem;font-weight:600;color:var(--text);cursor:pointer;list-style:none;position:relative;padding-right:2.5rem;transition:background .2s}
-.scf-faq-question::-webkit-details-marker{display:none}
-.scf-faq-question::after{content:'+';position:absolute;right:1.25rem;top:50%;transform:translateY(-50%);font-size:1.2rem;color:var(--accent);font-weight:700}
-.scf-faq-item[open] .scf-faq-question::after{content:'\2212'}
-.scf-faq-item[open] .scf-faq-question{border-bottom:1px solid var(--border);background:rgba(46,204,113,.03)}
-.scf-faq-question:hover{background:rgba(46,204,113,.03)}
-.scf-faq-answer{padding:1rem 1.25rem;margin:0;font-size:.9rem;color:var(--text2);line-height:1.7}
-.scf-faq-answer a{color:var(--accent);text-decoration:none}
-.scf-faq-answer a:hover{text-decoration:underline}
+/* ── Intro ── */
+.scf-intro{font-size:.9rem;color:var(--text2);margin:0 0 1rem;line-height:1.6}
 
-/* ── Related Articles ── */
-.scf-related{margin-bottom:2rem}
-.scf-related h2{font-family:'Montserrat',sans-serif;font-size:1.2rem;font-weight:700;color:var(--text);margin:0 0 .75rem;padding-bottom:.5rem;border-bottom:2px solid var(--accent)}
-.scf-related-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:.6rem}
-.scf-related-card{display:flex;align-items:center;justify-content:space-between;padding:.75rem 1rem;background:var(--bg2);border:1px solid var(--border);border-radius:4px;text-decoration:none;border-left:2px solid transparent;transition:border-left-color .2s,color .2s}
-.scf-related-card:hover{border-left-color:var(--accent)}
-.scf-related-name{font-size:.88rem;color:var(--text2);font-weight:500;transition:color .2s}
-.scf-related-card:hover .scf-related-name{color:var(--text)}
-.scf-related-arrow{font-size:1rem;color:var(--accent);opacity:0;transition:opacity .2s}
-.scf-related-card:hover .scf-related-arrow{opacity:1}
+/* ── FAQ Card Grid ── */
+.scf-faq-grid{display:grid;grid-template-columns:1fr;gap:.75rem;margin-bottom:2.5rem}
+.scf-faq-card{display:flex;align-items:center;justify-content:space-between;padding:1.25rem;background:var(--bg2);border:1px solid var(--border);border-radius:4px;text-decoration:none;border-left:3px solid transparent;transition:border-left-color .2s,background .15s}
+.scf-faq-card:hover{border-left-color:var(--accent);background:rgba(46,204,113,.03)}
+.scf-faq-card-content{flex:1}
+.scf-faq-card-q{font-size:.95rem;font-weight:600;color:var(--text);margin:0 0 .25rem;display:block}
+.scf-faq-card-excerpt{font-size:.82rem;color:var(--text2);margin:0;line-height:1.5}
+.scf-faq-card-arrow{font-size:1.1rem;color:var(--accent);margin-left:1rem;opacity:0;transition:opacity .2s}
+.scf-faq-card:hover .scf-faq-card-arrow{opacity:1}
 
 /* ── Explore More ── */
 .scf-explore{margin-bottom:2rem}
@@ -133,6 +120,5 @@ const faqs = [
 /* ── Responsive ── */
 @media(max-width:768px){
   .scf-hero h1{font-size:1.5rem}
-  .scf-related-grid{grid-template-columns:1fr}
 }
 </style>

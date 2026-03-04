@@ -28,6 +28,14 @@ const faqs = [
     answer: 'Skin prices are driven by scarcity, demand, and the game\'s massive player base. Rare items like knives, gloves, and covert-tier weapon skins have very low drop rates. Discontinued items and skins with unique patterns — such as Case Hardened blue gems — become more valuable over time as supply shrinks. The active trading economy and collectible nature of skins also contribute. See our <a href="/cs2-guides/skins-investing-guide/">skins investing guide</a> for deeper analysis.',
   },
 ];
+
+const cards = [
+  { href: '/where-to-buy-cs2-skins/', title: 'Where to Buy CS2 Skins', excerpt: 'Steam Market vs third-party platforms with fee comparison.' },
+  { href: '/sell-cs2-skins/', title: 'Where to Sell CS2 Skins', excerpt: 'Cashout options, platform fees, and tips for best prices.' },
+  { href: '/how-to-trade-cs2-skins/', title: 'How to Trade CS2 Skins', excerpt: 'Steam trade offers, authenticator requirements, and trade holds.' },
+  { href: '/cs2-inventory-value/', title: 'How Much Is My Inventory Worth?', excerpt: 'Free inventory valuation tool with live marketplace pricing.' },
+  { href: '/why-cs2-skins-expensive/', title: 'Why Are CS2 Skins So Expensive?', excerpt: 'Scarcity, demand, discontinued items, and the collector economy.' },
+];
 ---
 
 <Base title={title} description={description}>
@@ -43,28 +51,19 @@ const faqs = [
     <p class="tmf-hero-desc">The CS2 skin trading marketplace is one of the largest virtual economies in gaming, with millions of transactions happening daily across Steam and third-party platforms. Whether you are buying your first skin, selling your inventory for real money, or wondering why certain items cost thousands, these answers explain how the CS2 trading ecosystem works.</p>
   </section>
 
-  <div class="tmf-faq-list">
-    {faqs.map(faq => (
-      <details class="tmf-faq-item">
-        <summary class="tmf-faq-question">{faq.question}</summary>
-        <div class="tmf-faq-answer" set:html={faq.answer}></div>
-      </details>
+  <p class="tmf-intro">Click any question below for a detailed answer.</p>
+
+  <div class="tmf-faq-grid">
+    {cards.map(card => (
+      <a href={card.href} class="tmf-faq-card">
+        <div class="tmf-faq-card-content">
+          <span class="tmf-faq-card-q">{card.title}</span>
+          <p class="tmf-faq-card-excerpt">{card.excerpt}</p>
+        </div>
+        <span class="tmf-faq-card-arrow">&rarr;</span>
+      </a>
     ))}
   </div>
-
-  <section class="tmf-related">
-    <h2>Related Articles</h2>
-    <div class="tmf-related-grid">
-      <a href="/where-to-buy-cs2-skins/" class="tmf-related-card"><span class="tmf-related-name">Where to Buy CS2 Skins</span><span class="tmf-related-arrow">&rarr;</span></a>
-      <a href="/how-to-trade-cs2-skins/" class="tmf-related-card"><span class="tmf-related-name">How to Trade CS2 Skins</span><span class="tmf-related-arrow">&rarr;</span></a>
-      <a href="/why-cs2-skins-expensive/" class="tmf-related-card"><span class="tmf-related-name">Why CS2 Skins Are So Expensive</span><span class="tmf-related-arrow">&rarr;</span></a>
-      <a href="/market-trends/" class="tmf-related-card"><span class="tmf-related-name">Market Trends</span><span class="tmf-related-arrow">&rarr;</span></a>
-      <a href="/price-tracker/" class="tmf-related-card"><span class="tmf-related-name">Price Tracker</span><span class="tmf-related-arrow">&rarr;</span></a>
-      <a href="/inventory-lookup/" class="tmf-related-card"><span class="tmf-related-name">Inventory Lookup Tool</span><span class="tmf-related-arrow">&rarr;</span></a>
-      <a href="/cs2-guides/trading-guide/" class="tmf-related-card"><span class="tmf-related-name">Complete Trading Guide</span><span class="tmf-related-arrow">&rarr;</span></a>
-      <a href="/cs2-guides/skins-investing-guide/" class="tmf-related-card"><span class="tmf-related-name">Skins Investing Guide</span><span class="tmf-related-arrow">&rarr;</span></a>
-    </div>
-  </section>
 
   <section class="tmf-explore">
     <h2>Explore More</h2>
@@ -88,29 +87,18 @@ const faqs = [
 .tmf-hero h1{font-family:'Montserrat',sans-serif;font-size:2rem;font-weight:800;margin:0 0 .75rem;color:var(--text)}
 .tmf-hero-desc{color:var(--text2);font-size:.95rem;line-height:1.7;margin:0}
 
-/* ── FAQ List ── */
-.tmf-faq-list{display:flex;flex-direction:column;gap:.5rem;margin-bottom:2.5rem}
-.tmf-faq-item{background:var(--bg2);border:1px solid var(--border);border-radius:4px;overflow:hidden}
-.tmf-faq-question{display:block;padding:1rem 1.25rem;font-size:.95rem;font-weight:600;color:var(--text);cursor:pointer;list-style:none;position:relative;padding-right:2.5rem;transition:background .2s}
-.tmf-faq-question::-webkit-details-marker{display:none}
-.tmf-faq-question::after{content:'+';position:absolute;right:1.25rem;top:50%;transform:translateY(-50%);font-size:1.2rem;color:var(--accent);font-weight:700}
-.tmf-faq-item[open] .tmf-faq-question::after{content:'\2212'}
-.tmf-faq-item[open] .tmf-faq-question{border-bottom:1px solid var(--border);background:rgba(46,204,113,.03)}
-.tmf-faq-question:hover{background:rgba(46,204,113,.03)}
-.tmf-faq-answer{padding:1rem 1.25rem;margin:0;font-size:.9rem;color:var(--text2);line-height:1.7}
-.tmf-faq-answer a{color:var(--accent);text-decoration:none}
-.tmf-faq-answer a:hover{text-decoration:underline}
+/* ── Intro ── */
+.tmf-intro{font-size:.9rem;color:var(--text2);margin:0 0 1.25rem;line-height:1.6}
 
-/* ── Related Articles ── */
-.tmf-related{margin-bottom:2rem}
-.tmf-related h2{font-family:'Montserrat',sans-serif;font-size:1.2rem;font-weight:700;color:var(--text);margin:0 0 .75rem;padding-bottom:.5rem;border-bottom:2px solid var(--accent)}
-.tmf-related-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:.6rem}
-.tmf-related-card{display:flex;align-items:center;justify-content:space-between;padding:.75rem 1rem;background:var(--bg2);border:1px solid var(--border);border-radius:4px;text-decoration:none;border-left:2px solid transparent;transition:border-left-color .2s,color .2s}
-.tmf-related-card:hover{border-left-color:var(--accent)}
-.tmf-related-name{font-size:.88rem;color:var(--text2);font-weight:500;transition:color .2s}
-.tmf-related-card:hover .tmf-related-name{color:var(--text)}
-.tmf-related-arrow{font-size:1rem;color:var(--accent);opacity:0;transition:opacity .2s}
-.tmf-related-card:hover .tmf-related-arrow{opacity:1}
+/* ── FAQ Card Grid ── */
+.tmf-faq-grid{display:grid;grid-template-columns:1fr;gap:.75rem;margin-bottom:2.5rem}
+.tmf-faq-card{display:flex;align-items:center;justify-content:space-between;padding:1.25rem;background:var(--bg2);border:1px solid var(--border);border-radius:4px;text-decoration:none;border-left:3px solid transparent;transition:border-left-color .2s,background .15s}
+.tmf-faq-card:hover{border-left-color:var(--accent);background:rgba(46,204,113,.03)}
+.tmf-faq-card-content{flex:1}
+.tmf-faq-card-q{font-size:.95rem;font-weight:600;color:var(--text);margin:0 0 .25rem;display:block}
+.tmf-faq-card-excerpt{font-size:.82rem;color:var(--text2);margin:0;line-height:1.5}
+.tmf-faq-card-arrow{font-size:1.1rem;color:var(--accent);margin-left:1rem;opacity:0;transition:opacity .2s}
+.tmf-faq-card:hover .tmf-faq-card-arrow{opacity:1}
 
 /* ── Explore More ── */
 .tmf-explore{margin-bottom:2rem}
@@ -122,6 +110,5 @@ const faqs = [
 /* ── Responsive ── */
 @media(max-width:768px){
   .tmf-hero h1{font-size:1.5rem}
-  .tmf-related-grid{grid-template-columns:1fr}
 }
 </style>

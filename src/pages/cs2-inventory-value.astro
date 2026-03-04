@@ -1,0 +1,250 @@
+---
+import Base from '../layouts/Base.astro';
+import AuthorBox from '../components/AuthorBox.astro';
+import { faqSchema, breadcrumbSchema } from '../lib/weapons';
+
+const title = 'How Much Is My CS2 Inventory Worth? Free Checker | CSGOLuck Wiki';
+const description = 'Check your CS2 inventory value instantly with our free tool. Learn how inventory valuation works and tips to increase value.';
+
+const breadcrumbs = [
+  { name: 'Home', url: '/' },
+  { name: 'CS2 Trading & Marketplace FAQ', url: '/cs2-trading-marketplace-faq' },
+  { name: 'CS2 Inventory Value', url: '/cs2-inventory-value' },
+];
+
+const faqs = [
+  {
+    question: 'How do I check the value of my CS2 inventory?',
+    answer: 'Use our free <a href="/inventory-lookup/">inventory lookup tool</a> to instantly check your total inventory value. Simply enter your Steam profile URL or Steam ID, and the tool pulls live market prices for every item in your inventory and calculates the total.',
+  },
+  {
+    question: 'Why does my inventory value change every day?',
+    answer: 'CS2 skin prices fluctuate constantly based on supply and demand, new case releases, tournament hype, and trading volume. Your inventory value reflects live market prices, so it naturally changes as the market moves. Major events like new operations or case releases can cause significant shifts.',
+  },
+  {
+    question: 'What is the difference between market value and cashout value?',
+    answer: 'Market value is the current listing price on the Steam Community Market. Cashout value is what you would actually receive after selling on a third-party marketplace and withdrawing to real money. Cashout value is typically 60-85% of Steam Market value depending on the platform and withdrawal method. See our <a href="/sell-cs2-skins/">selling guide</a> for details.',
+  },
+];
+
+const breadcrumbSchema_ = breadcrumbSchema(breadcrumbs);
+const faqSchema_ = faqSchema(faqs);
+
+const articleSchema = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": title,
+  "description": description,
+  "author": { "@type": "Person", "name": "Josh Lingenfelter", "url": "https://www.linkedin.com/in/josh-lingenfelter-8157274b/", "jobTitle": "Director", "worksFor": { "@type": "Organization", "name": "CSGOLuck" } },
+  "publisher": { "@type": "Organization", "name": "CSGOLuck Wiki", "url": "https://wiki.csgoluck.com" },
+  "mainEntityOfPage": "https://wiki.csgoluck.com/cs2-inventory-value/",
+  "inLanguage": "en-US"
+});
+
+const sections = [
+  { id: 'check-value', label: 'Check Your Inventory Value' },
+  { id: 'how-valuation-works', label: 'How Valuation Works' },
+  { id: 'market-vs-cashout', label: 'Market vs Cashout Value' },
+  { id: 'increase-value', label: 'Tips to Increase Value' },
+  { id: 'tracking-over-time', label: 'Tracking Over Time' },
+  { id: 'faq', label: 'FAQ' },
+  { id: 'related', label: 'Related Articles' },
+];
+---
+
+<Base title={title} description={description}>
+  <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema_)}></script>
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema_)}></script>
+  <script type="application/ld+json" set:html={articleSchema}></script>
+
+  <div class="civ-wrap">
+    <nav class="civ-breadcrumb">
+      <a href="/">Home</a>
+      <span class="civ-sep">/</span>
+      <a href="/cs2-trading-marketplace-faq/">CS2 Trading & Marketplace FAQ</a>
+      <span class="civ-sep">/</span>
+      <span>CS2 Inventory Value</span>
+    </nav>
+
+    <header class="civ-header">
+      <h1>How Much Is My CS2 Inventory Worth? Free Checker</h1>
+      <p class="civ-subtitle">Instantly check your inventory value and learn how to grow it over time</p>
+    </header>
+
+    <nav class="civ-toc-mobile" aria-label="Table of contents">
+      {sections.map((s) => (
+        <a href={`#${s.id}`} class="civ-toc-mobile-link">{s.label}</a>
+      ))}
+    </nav>
+
+    <div class="civ-layout">
+      <aside class="civ-sidebar">
+        <nav class="civ-toc" aria-label="Table of contents">
+          <span class="civ-toc-title">Contents</span>
+          {sections.map((s) => (
+            <a href={`#${s.id}`} class="civ-toc-link">{s.label}</a>
+          ))}
+        </nav>
+      </aside>
+
+      <article class="civ-content">
+        <p class="civ-intro">
+          Knowing the value of your CS2 inventory is essential whether you are trading, selling, or just curious about what your collection is worth. CS2 skin prices fluctuate daily based on market conditions, and your total inventory value can change significantly over time. This guide explains how to check your inventory value using our free tool, how valuation works behind the scenes, the difference between market and cashout value, and strategies for increasing the worth of your collection.
+        </p>
+
+        <section id="check-value">
+          <div class="civ-section-header"><h2>Check Your Inventory Value Instantly</h2></div>
+          <div class="civ-cta-box">
+            <p class="civ-cta-text"><strong>Use our free Inventory Lookup tool</strong> to check your CS2 inventory value in seconds. Just enter your Steam profile URL and get a complete breakdown of every item with live market prices.</p>
+            <a href="/inventory-lookup/" class="civ-cta-button">Check Inventory Value &rarr;</a>
+          </div>
+          <p>Our <a href="/inventory-lookup/">inventory lookup tool</a> connects to the Steam API and cross-references your items with current market data from multiple pricing sources. You will see each item in your inventory listed with its current value, along with a total portfolio value at the top.</p>
+          <p>To use the tool, you need a public Steam inventory. If your inventory is set to private, temporarily change your Steam privacy settings to allow the tool to read your items. Navigate to your Steam profile, click "Edit Profile," go to "Privacy Settings," and set "Game details" to Public.</p>
+          <ul class="civ-list">
+            <li><strong>Step 1:</strong> Go to the <a href="/inventory-lookup/">Inventory Lookup</a> page</li>
+            <li><strong>Step 2:</strong> Enter your Steam profile URL, custom URL, or Steam64 ID</li>
+            <li><strong>Step 3:</strong> View your complete inventory breakdown with live prices</li>
+            <li><strong>Step 4:</strong> See total value, most valuable items, and per-item prices</li>
+          </ul>
+        </section>
+
+        <section id="how-valuation-works">
+          <div class="civ-section-header"><h2>How Inventory Valuation Works</h2></div>
+          <p>Inventory valuation tools work by matching each item in your Steam inventory against current market pricing data. The process involves several layers of data:</p>
+          <ul class="civ-list">
+            <li><strong>Item identification:</strong> Each skin in your inventory has a unique market hash name that identifies its weapon type, skin name, wear condition, and whether it is StatTrak</li>
+            <li><strong>Price sourcing:</strong> Prices are pulled from one or more data sources, commonly the Steam Market, Buff163, Skinport, or aggregated pricing APIs</li>
+            <li><strong>Wear condition impact:</strong> The same skin in Factory New condition can be worth several times more than in Battle-Scarred condition. Valuation accounts for the specific wear tier of each item</li>
+            <li><strong>Special attributes:</strong> Some tools factor in float value (the exact wear number), stickers, and rare patterns like Doppler phases or Case Hardened blue gems. Basic tools use only the market hash name price</li>
+          </ul>
+          <p>Most inventory checkers, including ours, provide the median or lowest listing price on a given marketplace. This gives you a realistic estimate of what each item would sell for if listed at competitive prices. Keep in mind that rare items with special patterns or applied stickers may be worth significantly more than the base price suggests.</p>
+        </section>
+
+        <section id="market-vs-cashout">
+          <div class="civ-section-header"><h2>Market Price vs Cashout Value</h2></div>
+          <p>One of the most important distinctions for anyone considering selling their inventory is the difference between market value and actual cashout value. These are not the same number, and the gap can be substantial.</p>
+          <ul class="civ-list">
+            <li><strong>Steam Market value:</strong> The price your items would sell for on the Steam Community Market. This is the most commonly referenced price, but selling here locks your money as Steam Wallet balance</li>
+            <li><strong>Third-party market value:</strong> Prices on platforms like Buff163 or Skinport. These are typically 5-15% lower than Steam Market prices because buyers know they can get skins cheaper outside Steam</li>
+            <li><strong>Actual cashout value:</strong> What you receive in real money after selling on a third-party platform and withdrawing. This accounts for both the platform's selling fee and the withdrawal fee</li>
+          </ul>
+          <p>As a general rule, expect your real-money cashout value to be approximately 60-85% of the total Steam Market value of your inventory. The exact percentage depends on which platform you use, your withdrawal method, and the types of skins you are selling. High-demand items like popular knife skins and gloves tend to have the best cashout ratios, while cheap mass-market skins have the worst. For a detailed breakdown of selling options, see our <a href="/sell-cs2-skins/">guide to selling CS2 skins</a>.</p>
+        </section>
+
+        <section id="increase-value">
+          <div class="civ-section-header"><h2>Tips to Increase Your Inventory Value</h2></div>
+          <p>If you want to grow the value of your CS2 inventory over time, there are several strategies that experienced traders and collectors use:</p>
+          <ul class="civ-list">
+            <li><strong>Invest in discontinued items:</strong> Skins from collections or operations that are no longer available tend to increase in value over time as supply decreases. Operation-exclusive skins and older case skins are common investment targets</li>
+            <li><strong>Buy during market dips:</strong> Prices often drop during new case releases or Steam sales as players liquidate items. Buying during these dips and holding lets you capture value when prices recover</li>
+            <li><strong>Focus on desirable skins:</strong> Popular weapon skins for commonly used weapons (AK-47, M4A4, AWP) hold value better than skins for rarely used weapons. Demand drives long-term price stability</li>
+            <li><strong>Trade up strategically:</strong> Use trade-up contracts to convert low-value skins into higher-rarity items. Research possible outcomes to ensure positive expected value</li>
+            <li><strong>Collect complete sets:</strong> Full collections or themed loadouts can be worth more as a package to the right buyer than individual items sold separately</li>
+            <li><strong>Monitor float values:</strong> Extremely low float (close to 0.000) or max float skins command premium prices from collectors. If you receive a drop with an exceptional float, it may be worth more than typical market price</li>
+          </ul>
+          <p>The skin market is not a guaranteed investment, and prices can go down as well as up. Valve updates, game changes, and shifts in player interest all affect pricing. Treat skin investing as speculative and only invest what you can afford to lose.</p>
+        </section>
+
+        <section id="tracking-over-time">
+          <div class="civ-section-header"><h2>Tracking Your Inventory Value Over Time</h2></div>
+          <p>Monitoring how your inventory value changes over weeks and months helps you make informed decisions about when to buy, sell, or hold. Several approaches can help you track your portfolio:</p>
+          <ul class="civ-list">
+            <li><strong>Regular checkups:</strong> Use our <a href="/inventory-lookup/">inventory lookup tool</a> periodically (weekly or monthly) and note your total value to see the trend</li>
+            <li><strong>Third-party trackers:</strong> Services like CSFloat and Buff163 offer portfolio tracking features that log your inventory value over time and show historical charts</li>
+            <li><strong>Spreadsheet tracking:</strong> For serious collectors, maintaining a spreadsheet with purchase prices, current values, and profit/loss per item gives you the most detailed view</li>
+            <li><strong>Price alerts:</strong> Some platforms offer price alert notifications when specific skins reach a target price, helping you time your sales</li>
+          </ul>
+          <p>Tracking is especially valuable if you are actively trading or investing. Knowing your cost basis (what you originally paid for each item) versus current market value tells you exactly how much profit or loss you are sitting on. This data helps you decide whether to hold for further appreciation or sell to lock in gains.</p>
+        </section>
+
+        <section id="faq">
+          <div class="civ-section-header"><h2>Frequently Asked Questions</h2></div>
+          <div class="civ-faq-list">
+            {faqs.map((faq) => (
+              <details class="civ-faq-item">
+                <summary class="civ-faq-question">{faq.question}</summary>
+                <p class="civ-faq-answer" set:html={faq.answer}></p>
+              </details>
+            ))}
+          </div>
+        </section>
+
+        <section id="related">
+          <div class="civ-section-header"><h2>Related Articles</h2></div>
+          <div class="civ-resources-grid">
+            <a href="/inventory-lookup/" class="civ-resource-card"><span class="civ-resource-name">Inventory Lookup Tool</span><span class="civ-resource-arrow">&rarr;</span></a>
+            <a href="/sell-cs2-skins/" class="civ-resource-card"><span class="civ-resource-name">Where to Sell CS2 Skins</span><span class="civ-resource-arrow">&rarr;</span></a>
+            <a href="/cs2-trading-marketplace-faq/" class="civ-resource-card"><span class="civ-resource-name">Trading & Marketplace FAQ Hub</span><span class="civ-resource-arrow">&rarr;</span></a>
+            <a href="/why-cs2-skins-expensive/" class="civ-resource-card"><span class="civ-resource-name">Why Are CS2 Skins Expensive?</span><span class="civ-resource-arrow">&rarr;</span></a>
+          </div>
+        </section>
+      </article>
+    </div>
+  </div>
+
+  <style>
+    .civ-wrap{max-width:1100px;margin:0 auto;padding:0 1.5rem 2rem}
+    .civ-breadcrumb{display:flex;align-items:center;gap:.5rem;padding:1.25rem 0;font-size:.85rem;color:var(--text2)}
+    .civ-breadcrumb a{color:var(--accent);text-decoration:none}
+    .civ-breadcrumb a:hover{color:var(--accent2)}
+    .civ-sep{color:var(--border)}
+    .civ-header{padding:1.5rem 0 1.25rem;border-bottom:2px solid var(--accent);margin-bottom:1.5rem}
+    .civ-header h1{margin:0 0 .35rem;font-size:2.2rem;font-weight:800;color:var(--text);letter-spacing:-.02em;line-height:1.2}
+    .civ-subtitle{margin:0;font-size:1.05rem;color:var(--text2);font-weight:400}
+    .civ-toc-mobile{display:none}
+    .civ-layout{display:grid;grid-template-columns:220px 1fr;gap:2.5rem;align-items:start}
+    .civ-sidebar{position:sticky;top:80px}
+    .civ-toc{display:flex;flex-direction:column;gap:0;border-left:2px solid var(--border);padding-left:0}
+    .civ-toc-title{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--accent);padding:0 0 .6rem 1rem}
+    .civ-toc-link{display:block;padding:.4rem 1rem;font-size:.82rem;color:var(--text2);text-decoration:none;border-left:2px solid transparent;margin-left:-2px;transition:color .2s,border-color .2s}
+    .civ-toc-link:hover{color:var(--text);border-left-color:var(--accent)}
+    .civ-content{min-width:0}
+    .civ-intro{font-size:1rem;line-height:1.8;color:var(--text2);margin-bottom:2rem}
+    .civ-section-header{background:rgba(46,204,113,.05);margin:0 -1.25rem 1.25rem;padding:.75rem 1.25rem;border-radius:4px}
+    .civ-section-header h2{margin:0;padding:0;font-size:1.5rem;font-weight:700;color:var(--text);border:none;letter-spacing:-.01em}
+    section{margin-bottom:2.5rem}
+    p{line-height:1.7;color:var(--text2);margin-bottom:1rem}
+    .civ-list{list-style:none;padding:0;margin:.75rem 0 1.5rem}
+    .civ-list li{padding:.4rem 0 .4rem 1.6rem;position:relative;color:var(--text2);line-height:1.65}
+    .civ-list li::before{content:'';position:absolute;left:.25rem;top:.75rem;width:6px;height:6px;background:var(--accent);border-radius:1px}
+    .civ-list li strong{color:var(--text)}
+    .civ-cta-box{background:var(--bg2);border:1px solid var(--accent);border-radius:4px;padding:1.25rem 1.5rem;margin-bottom:1.5rem;text-align:center}
+    .civ-cta-text{margin:0 0 1rem;color:var(--text2);font-size:.95rem;line-height:1.6}
+    .civ-cta-text strong{color:var(--text)}
+    .civ-cta-button{display:inline-block;padding:.65rem 1.5rem;background:var(--accent);color:var(--bg);font-weight:700;font-size:.95rem;border-radius:4px;text-decoration:none;transition:background .2s}
+    .civ-cta-button:hover{background:var(--accent2)}
+    .civ-faq-list{display:flex;flex-direction:column;gap:.5rem}
+    .civ-faq-item{background:var(--bg2);border:1px solid var(--border);border-radius:4px;overflow:hidden}
+    .civ-faq-question{display:block;padding:1rem 1.25rem;font-size:.95rem;font-weight:600;color:var(--text);cursor:pointer;list-style:none;position:relative;padding-right:2.5rem;transition:background .2s}
+    .civ-faq-question::-webkit-details-marker{display:none}
+    .civ-faq-question::after{content:'+';position:absolute;right:1.25rem;top:50%;transform:translateY(-50%);font-size:1.2rem;color:var(--accent);font-weight:700}
+    .civ-faq-item[open] .civ-faq-question::after{content:'\2212'}
+    .civ-faq-item[open] .civ-faq-question{border-bottom:1px solid var(--border);background:rgba(46,204,113,.03)}
+    .civ-faq-question:hover{background:rgba(46,204,113,.03)}
+    .civ-faq-answer{padding:1rem 1.25rem;margin:0;font-size:.9rem;color:var(--text2);line-height:1.7}
+    .civ-resources-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.6rem;margin:.5rem 0 1.5rem}
+    .civ-resource-card{display:flex;align-items:center;justify-content:space-between;padding:.75rem 1rem;background:var(--bg2);border:1px solid var(--border);border-radius:4px;text-decoration:none;border-left:2px solid transparent;transition:border-left-color .2s,color .2s}
+    .civ-resource-card:hover{border-left-color:var(--accent)}
+    .civ-resource-name{font-size:.88rem;color:var(--text2);font-weight:500;transition:color .2s}
+    .civ-resource-card:hover .civ-resource-name{color:var(--text)}
+    .civ-resource-arrow{font-size:1rem;color:var(--accent);opacity:0;transition:opacity .2s}
+    .civ-resource-card:hover .civ-resource-arrow{opacity:1}
+    @media(max-width:860px){
+      .civ-layout{grid-template-columns:1fr;gap:0}
+      .civ-sidebar{display:none}
+      .civ-toc-mobile{display:flex;gap:.25rem;overflow-x:auto;padding:.75rem 0;margin-bottom:1rem;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+      .civ-toc-mobile::-webkit-scrollbar{display:none}
+      .civ-toc-mobile-link{flex-shrink:0;padding:.35rem .75rem;font-size:.78rem;font-weight:600;color:var(--text2);background:var(--bg2);border:1px solid var(--border);border-radius:4px;text-decoration:none;white-space:nowrap;transition:color .2s,border-color .2s}
+      .civ-toc-mobile-link:hover{color:var(--accent);border-color:var(--accent)}
+      .civ-header h1{font-size:1.7rem}
+      .civ-section-header{margin:0 -1rem 1rem;padding:.6rem 1rem}
+      .civ-resources-grid{grid-template-columns:repeat(2,1fr)}
+    }
+    @media(max-width:600px){
+      .civ-wrap{padding:0 1rem 1.5rem}
+      .civ-resources-grid{grid-template-columns:1fr}
+      .civ-header h1{font-size:1.5rem}
+    }
+  </style>
+  <AuthorBox updated="2026-03-04" />
+</Base>

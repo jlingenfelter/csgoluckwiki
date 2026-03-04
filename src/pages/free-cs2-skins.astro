@@ -1,0 +1,239 @@
+---
+import Base from '../layouts/Base.astro';
+import AuthorBox from '../components/AuthorBox.astro';
+import { faqSchema, breadcrumbSchema } from '../lib/weapons';
+
+const title = 'How to Get Free CS2 Skins: Drops, Trade-Ups & More | CSGOLuck Wiki';
+const description = 'Get free CS2 skins through weekly drops, care packages, trade-up contracts, and operations. Complete guide to free skins.';
+
+const breadcrumbs = [
+  { name: 'Home', url: '/' },
+  { name: 'CS2 Skins & Cases FAQ', url: '/cs2-skins-cases-faq' },
+  { name: 'Free CS2 Skins', url: '/free-cs2-skins' },
+];
+
+const faqs = [
+  {
+    question: 'Can you get free skins in CS2 without paying anything?',
+    answer: 'Yes, but your options are limited without Prime Status. Free players can receive occasional graffiti drops. Prime players receive weekly weapon skin and case drops through the care package system. Visit our <a href="/cs2-skins-cases-faq/">skins & cases FAQ</a> for more details.',
+  },
+  {
+    question: 'How often do CS2 skin drops happen?',
+    answer: 'Prime players receive one care package per week that contains weapon skins, cases, or graffiti. The drop resets every Tuesday. You must level up your weekly XP to earn the care package reward each week.',
+  },
+  {
+    question: 'Are trade-up contracts worth doing in CS2?',
+    answer: 'Trade-up contracts can be profitable if you research the possible outcomes carefully. You trade 10 skins of the same rarity for 1 skin of the next highest rarity from the same collections. The key is selecting input skins where the possible outputs are all valuable. Check our <a href="/best-cs2-cases-to-open/">best cases guide</a> for related value tips.',
+  },
+];
+
+const breadcrumbSchema_ = breadcrumbSchema(breadcrumbs);
+const faqSchema_ = faqSchema(faqs);
+
+const articleSchema = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": title,
+  "description": description,
+  "author": { "@type": "Person", "name": "Josh Lingenfelter", "url": "https://www.linkedin.com/in/josh-lingenfelter-8157274b/", "jobTitle": "Director", "worksFor": { "@type": "Organization", "name": "CSGOLuck" } },
+  "publisher": { "@type": "Organization", "name": "CSGOLuck Wiki", "url": "https://wiki.csgoluck.com" },
+  "mainEntityOfPage": "https://wiki.csgoluck.com/free-cs2-skins/",
+  "inLanguage": "en-US"
+});
+
+const sections = [
+  { id: 'how-drops-work', label: 'How Drops Work' },
+  { id: 'care-packages', label: 'Weekly Care Packages' },
+  { id: 'trade-up-contracts', label: 'Trade-Up Contracts' },
+  { id: 'operation-missions', label: 'Operation Missions' },
+  { id: 'prime-vs-free', label: 'Prime vs Free Drops' },
+  { id: 'faq', label: 'FAQ' },
+  { id: 'related', label: 'Related Articles' },
+];
+---
+
+<Base title={title} description={description}>
+  <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema_)}></script>
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema_)}></script>
+  <script type="application/ld+json" set:html={articleSchema}></script>
+
+  <div class="fcs-wrap">
+    <nav class="fcs-breadcrumb">
+      <a href="/">Home</a>
+      <span class="fcs-sep">/</span>
+      <a href="/cs2-skins-cases-faq/">CS2 Skins & Cases FAQ</a>
+      <span class="fcs-sep">/</span>
+      <span>Free CS2 Skins</span>
+    </nav>
+
+    <header class="fcs-header">
+      <h1>How to Get Free CS2 Skins: Drops, Trade-Ups & More</h1>
+      <p class="fcs-subtitle">Every legitimate method for earning CS2 skins without spending money</p>
+    </header>
+
+    <nav class="fcs-toc-mobile" aria-label="Table of contents">
+      {sections.map((s) => (
+        <a href={`#${s.id}`} class="fcs-toc-mobile-link">{s.label}</a>
+      ))}
+    </nav>
+
+    <div class="fcs-layout">
+      <aside class="fcs-sidebar">
+        <nav class="fcs-toc" aria-label="Table of contents">
+          <span class="fcs-toc-title">Contents</span>
+          {sections.map((s) => (
+            <a href={`#${s.id}`} class="fcs-toc-link">{s.label}</a>
+          ))}
+        </nav>
+      </aside>
+
+      <article class="fcs-content">
+        <p class="fcs-intro">
+          Weapon skins are one of the most popular features in Counter-Strike 2, but not everyone wants to spend money on cases or marketplace purchases. The good news is that Valve provides several ways to earn free CS2 skins through regular gameplay. From weekly drop rewards to trade-up contracts and limited-time operations, there are legitimate methods to build your inventory without opening your wallet. This guide covers every current way to get free skins in CS2 and how to maximize your chances of landing something valuable.
+        </p>
+
+        <section id="how-drops-work">
+          <div class="fcs-section-header"><h2>How the CS2 Drop System Works</h2></div>
+          <p>CS2 uses an XP-based drop system that rewards players for regular gameplay. As you play matches -- competitive, casual, deathmatch, or any official game mode -- you earn experience points. These XP contribute to your weekly progression, and reaching certain thresholds triggers item drops.</p>
+          <p>The drop system resets every Tuesday. Each week, you have a fresh opportunity to earn drops by accumulating XP through gameplay. The items you receive are random and drawn from the current active drop pool, which Valve updates periodically. Drop pool items typically include skins from older collections and the latest case releases.</p>
+          <p>It is important to understand that drop rates are not equal across all item types. Cases are relatively common drops, while weapon skins tend to be rarer. The skins you receive from drops are usually Consumer or Industrial grade (white and light blue rarity), though higher-rarity drops are possible -- just extremely unlikely.</p>
+        </section>
+
+        <section id="care-packages">
+          <div class="fcs-section-header"><h2>Weekly Care Packages</h2></div>
+          <p>The care package system is the primary way Prime players earn free items each week. After accumulating enough XP during a given week, you receive a care package that contains a selection of items to choose from. This system replaced the older random end-of-match drop method.</p>
+          <ul class="fcs-list">
+            <li><strong>Frequency:</strong> One care package per week, resetting every Tuesday</li>
+            <li><strong>Requirements:</strong> Prime Status and sufficient weekly XP earned through gameplay</li>
+            <li><strong>Contents:</strong> A selection of weapon skins, cases, and graffiti from the current drop pool</li>
+            <li><strong>Selection:</strong> You choose which item to claim from the options presented</li>
+            <li><strong>Tradability:</strong> Most dropped items are tradable and marketable after a short cooldown period</li>
+          </ul>
+          <p>To maximize your weekly care package, play regularly throughout the week rather than grinding all at once. The XP required to trigger the care package is reasonable -- a few competitive matches or several casual games is usually enough. Focus on modes you enjoy rather than forcing yourself to grind, since the XP difference between modes is minimal.</p>
+        </section>
+
+        <section id="trade-up-contracts">
+          <div class="fcs-section-header"><h2>Trade-Up Contracts</h2></div>
+          <p>Trade-up contracts allow you to exchange 10 weapon skins of the same rarity for 1 skin of the next highest rarity. The output skin is randomly selected from the collections that your input skins belong to. This system creates opportunities for profit if you carefully select your input skins.</p>
+          <p>Here is how trade-ups work step by step:</p>
+          <ul class="fcs-list">
+            <li><strong>Select 10 skins:</strong> All must be the same rarity (e.g., all Mil-Spec / blue grade)</li>
+            <li><strong>Collection matters:</strong> The output comes from the same collection(s) as your inputs. Using skins from a single collection narrows the possible outcomes</li>
+            <li><strong>Float value transfers:</strong> The average float value of your 10 input skins influences the float of the output skin</li>
+            <li><strong>StatTrak rules:</strong> If all 10 inputs are StatTrak, the output will be StatTrak. Mixing StatTrak and normal skins is not allowed</li>
+            <li><strong>Profit potential:</strong> When all possible outcomes at the next rarity tier are valuable, even cheap input skins can yield significant returns</li>
+          </ul>
+          <p>Successful trade-ups require research. Check which collections your cheap skins belong to, look at what the next rarity tier offers from those collections, and calculate whether the expected value makes the trade worthwhile. Many players use third-party calculators to evaluate trade-up profitability before committing their skins.</p>
+        </section>
+
+        <section id="operation-missions">
+          <div class="fcs-section-header"><h2>Operation Missions & Events</h2></div>
+          <p>Valve periodically releases Operations -- large content updates that include missions, new maps, exclusive weapon collections, and cosmetic rewards. Operations are one of the best opportunities to earn unique skins that cannot be obtained through regular drops.</p>
+          <p>Operations typically require purchasing an operation pass (usually around $15), but the rewards can far exceed that cost. Each operation includes a mission system where completing objectives -- such as getting kills on specific maps, winning rounds in certain modes, or completing cooperative missions -- earns you stars. These stars can be redeemed for exclusive operation skin collections.</p>
+          <ul class="fcs-list">
+            <li><strong>Exclusive collections:</strong> Operations introduce unique weapon skin collections only available during the event</li>
+            <li><strong>Star rewards:</strong> Complete missions to earn stars, then redeem stars for skin packages</li>
+            <li><strong>Limited availability:</strong> Once an operation ends, the skins become permanently limited, often increasing in value over time</li>
+            <li><strong>Free tier missions:</strong> Some operations offer limited free missions, but the full reward track requires the operation pass</li>
+          </ul>
+          <p>If you are serious about building your skin collection for free (or near-free), operations represent the best value. The skins earned often appreciate in value after the operation concludes, making it possible to recoup your pass cost and then some by selling extras on the <a href="/how-to-get-cases-cs2/">Steam Market</a>.</p>
+        </section>
+
+        <section id="prime-vs-free">
+          <div class="fcs-section-header"><h2>Prime vs Free Player Drops</h2></div>
+          <p>The difference between Prime and free-to-play accounts when it comes to drops is significant. Here is a direct comparison:</p>
+          <ul class="fcs-list">
+            <li><strong>Prime players:</strong> Receive weekly care packages containing weapon skins, cases, and graffiti. Eligible for souvenir drops during Major tournaments</li>
+            <li><strong>Free players:</strong> Receive occasional graffiti drops only. No weapon skin drops, no case drops, no souvenir eligibility</li>
+            <li><strong>XP progression:</strong> Both Prime and free players earn XP, but only Prime players receive meaningful item rewards for leveling up</li>
+            <li><strong>Market access:</strong> Both tiers can buy and sell on the Steam Community Market, so free players can still trade for skins</li>
+          </ul>
+          <p>If collecting free skins through drops is important to you, Prime Status is effectively a requirement. Without it, your only free paths to skins are trade-ups using skins purchased cheaply on the market or participating in community giveaways and tournaments. The value of weekly Prime drops over time can easily exceed the one-time cost of the Prime upgrade.</p>
+        </section>
+
+        <section id="faq">
+          <div class="fcs-section-header"><h2>Frequently Asked Questions</h2></div>
+          <div class="fcs-faq-list">
+            {faqs.map((faq) => (
+              <details class="fcs-faq-item">
+                <summary class="fcs-faq-question">{faq.question}</summary>
+                <p class="fcs-faq-answer" set:html={faq.answer}></p>
+              </details>
+            ))}
+          </div>
+        </section>
+
+        <section id="related">
+          <div class="fcs-section-header"><h2>Related Articles</h2></div>
+          <div class="fcs-resources-grid">
+            <a href="/how-to-get-cases-cs2/" class="fcs-resource-card"><span class="fcs-resource-name">How to Get Cases in CS2</span><span class="fcs-resource-arrow">&rarr;</span></a>
+            <a href="/best-cs2-cases-to-open/" class="fcs-resource-card"><span class="fcs-resource-name">Best CS2 Cases to Open</span><span class="fcs-resource-arrow">&rarr;</span></a>
+            <a href="/cs2-skins-cases-faq/" class="fcs-resource-card"><span class="fcs-resource-name">Skins & Cases FAQ Hub</span><span class="fcs-resource-arrow">&rarr;</span></a>
+            <a href="/what-is-stattrak-cs2/" class="fcs-resource-card"><span class="fcs-resource-name">What Is StatTrak in CS2?</span><span class="fcs-resource-arrow">&rarr;</span></a>
+          </div>
+        </section>
+      </article>
+    </div>
+  </div>
+
+  <style>
+    .fcs-wrap{max-width:1100px;margin:0 auto;padding:0 1.5rem 2rem}
+    .fcs-breadcrumb{display:flex;align-items:center;gap:.5rem;padding:1.25rem 0;font-size:.85rem;color:var(--text2)}
+    .fcs-breadcrumb a{color:var(--accent);text-decoration:none}
+    .fcs-breadcrumb a:hover{color:var(--accent2)}
+    .fcs-sep{color:var(--border)}
+    .fcs-header{padding:1.5rem 0 1.25rem;border-bottom:2px solid var(--accent);margin-bottom:1.5rem}
+    .fcs-header h1{margin:0 0 .35rem;font-size:2.2rem;font-weight:800;color:var(--text);letter-spacing:-.02em;line-height:1.2}
+    .fcs-subtitle{margin:0;font-size:1.05rem;color:var(--text2);font-weight:400}
+    .fcs-toc-mobile{display:none}
+    .fcs-layout{display:grid;grid-template-columns:220px 1fr;gap:2.5rem;align-items:start}
+    .fcs-sidebar{position:sticky;top:80px}
+    .fcs-toc{display:flex;flex-direction:column;gap:0;border-left:2px solid var(--border);padding-left:0}
+    .fcs-toc-title{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--accent);padding:0 0 .6rem 1rem}
+    .fcs-toc-link{display:block;padding:.4rem 1rem;font-size:.82rem;color:var(--text2);text-decoration:none;border-left:2px solid transparent;margin-left:-2px;transition:color .2s,border-color .2s}
+    .fcs-toc-link:hover{color:var(--text);border-left-color:var(--accent)}
+    .fcs-content{min-width:0}
+    .fcs-intro{font-size:1rem;line-height:1.8;color:var(--text2);margin-bottom:2rem}
+    .fcs-section-header{background:rgba(46,204,113,.05);margin:0 -1.25rem 1.25rem;padding:.75rem 1.25rem;border-radius:4px}
+    .fcs-section-header h2{margin:0;padding:0;font-size:1.5rem;font-weight:700;color:var(--text);border:none;letter-spacing:-.01em}
+    section{margin-bottom:2.5rem}
+    p{line-height:1.7;color:var(--text2);margin-bottom:1rem}
+    .fcs-list{list-style:none;padding:0;margin:.75rem 0 1.5rem}
+    .fcs-list li{padding:.4rem 0 .4rem 1.6rem;position:relative;color:var(--text2);line-height:1.65}
+    .fcs-list li::before{content:'';position:absolute;left:.25rem;top:.75rem;width:6px;height:6px;background:var(--accent);border-radius:1px}
+    .fcs-list li strong{color:var(--text)}
+    .fcs-faq-list{display:flex;flex-direction:column;gap:.5rem}
+    .fcs-faq-item{background:var(--bg2);border:1px solid var(--border);border-radius:4px;overflow:hidden}
+    .fcs-faq-question{display:block;padding:1rem 1.25rem;font-size:.95rem;font-weight:600;color:var(--text);cursor:pointer;list-style:none;position:relative;padding-right:2.5rem;transition:background .2s}
+    .fcs-faq-question::-webkit-details-marker{display:none}
+    .fcs-faq-question::after{content:'+';position:absolute;right:1.25rem;top:50%;transform:translateY(-50%);font-size:1.2rem;color:var(--accent);font-weight:700}
+    .fcs-faq-item[open] .fcs-faq-question::after{content:'\2212'}
+    .fcs-faq-item[open] .fcs-faq-question{border-bottom:1px solid var(--border);background:rgba(46,204,113,.03)}
+    .fcs-faq-question:hover{background:rgba(46,204,113,.03)}
+    .fcs-faq-answer{padding:1rem 1.25rem;margin:0;font-size:.9rem;color:var(--text2);line-height:1.7}
+    .fcs-resources-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.6rem;margin:.5rem 0 1.5rem}
+    .fcs-resource-card{display:flex;align-items:center;justify-content:space-between;padding:.75rem 1rem;background:var(--bg2);border:1px solid var(--border);border-radius:4px;text-decoration:none;border-left:2px solid transparent;transition:border-left-color .2s,color .2s}
+    .fcs-resource-card:hover{border-left-color:var(--accent)}
+    .fcs-resource-name{font-size:.88rem;color:var(--text2);font-weight:500;transition:color .2s}
+    .fcs-resource-card:hover .fcs-resource-name{color:var(--text)}
+    .fcs-resource-arrow{font-size:1rem;color:var(--accent);opacity:0;transition:opacity .2s}
+    .fcs-resource-card:hover .fcs-resource-arrow{opacity:1}
+    @media(max-width:860px){
+      .fcs-layout{grid-template-columns:1fr;gap:0}
+      .fcs-sidebar{display:none}
+      .fcs-toc-mobile{display:flex;gap:.25rem;overflow-x:auto;padding:.75rem 0;margin-bottom:1rem;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+      .fcs-toc-mobile::-webkit-scrollbar{display:none}
+      .fcs-toc-mobile-link{flex-shrink:0;padding:.35rem .75rem;font-size:.78rem;font-weight:600;color:var(--text2);background:var(--bg2);border:1px solid var(--border);border-radius:4px;text-decoration:none;white-space:nowrap;transition:color .2s,border-color .2s}
+      .fcs-toc-mobile-link:hover{color:var(--accent);border-color:var(--accent)}
+      .fcs-header h1{font-size:1.7rem}
+      .fcs-section-header{margin:0 -1rem 1rem;padding:.6rem 1rem}
+      .fcs-resources-grid{grid-template-columns:repeat(2,1fr)}
+    }
+    @media(max-width:600px){
+      .fcs-wrap{padding:0 1rem 1.5rem}
+      .fcs-resources-grid{grid-template-columns:1fr}
+      .fcs-header h1{font-size:1.5rem}
+    }
+  </style>
+  <AuthorBox updated="2026-03-04" />
+</Base>

@@ -32,6 +32,14 @@ const faqs = [
     answer: 'Premier is the flagship ranked mode in CS2 where two teams ban maps in alternating turns until one remains. Your performance is tracked by a numerical CS Rating visible on your profile and leaderboard. Wins and losses adjust this number in real time, with larger swings for upsets and closer adjustments for expected outcomes. Premier is considered the primary competitive experience in CS2.',
   },
 ];
+
+const cards = [
+  { url: '/unlock-premier-cs2/', question: 'How to Unlock Premier Mode', excerpt: 'Win 10 competitive matches to access Premier ranked play.' },
+  { url: '/cs2-wingman-mode/', question: 'What Is Wingman in CS2?', excerpt: '2v2 ranked mode on smaller maps with separate ranking.' },
+  { url: '/faceit-cs2-guide/', question: 'What Is FACEIT & How to Play', excerpt: 'Third-party competitive platform with 128-tick servers.' },
+  { url: '/cs2-ranks-explained/', question: 'How Does CS2 Ranking Work?', excerpt: 'Skill groups, Premier rating, and MMR explained.' },
+  { url: '/cs2-premier-mode/', question: 'What Is Premier Mode in CS2?', excerpt: 'Map veto, CS Rating, and the flagship ranked experience.' },
+];
 ---
 
 <Base title={title} description={description}>
@@ -47,26 +55,19 @@ const faqs = [
     <p class="rcf-hero-desc">Understanding CS2 ranks and competitive modes is essential for climbing the ladder, whether you are grinding Premier rating, pushing Competitive skill groups, or considering a move to FACEIT. This page breaks down every ranking-related question so you can focus on improving instead of guessing how the system works.</p>
   </section>
 
-  <div class="rcf-faq-list">
-    {faqs.map(faq => (
-      <details class="rcf-faq-item">
-        <summary class="rcf-faq-question">{faq.question}</summary>
-        <p class="rcf-faq-answer">{faq.answer}</p>
-      </details>
+  <p class="rcf-intro">Click any question below for a detailed answer.</p>
+
+  <div class="rcf-faq-grid">
+    {cards.map(card => (
+      <a href={card.url} class="rcf-faq-card">
+        <div class="rcf-faq-card-content">
+          <span class="rcf-faq-card-q">{card.question}</span>
+          <p class="rcf-faq-card-excerpt">{card.excerpt}</p>
+        </div>
+        <span class="rcf-faq-card-arrow">&rarr;</span>
+      </a>
     ))}
   </div>
-
-  <section class="rcf-related">
-    <h2>Related Articles</h2>
-    <div class="rcf-related-grid">
-      <a href="/unlock-premier-cs2/" class="rcf-related-card"><span class="rcf-related-name">How to Unlock Premier Mode</span><span class="rcf-related-arrow">&rarr;</span></a>
-      <a href="/cs2-ranks-explained/" class="rcf-related-card"><span class="rcf-related-name">CS2 Ranks Explained</span><span class="rcf-related-arrow">&rarr;</span></a>
-      <a href="/faceit-cs2-guide/" class="rcf-related-card"><span class="rcf-related-name">FACEIT CS2 Guide</span><span class="rcf-related-arrow">&rarr;</span></a>
-      <a href="/cs2-premier-vs-faceit/" class="rcf-related-card"><span class="rcf-related-name">Premier vs FACEIT Comparison</span><span class="rcf-related-arrow">&rarr;</span></a>
-      <a href="/cs2-rank-distribution/" class="rcf-related-card"><span class="rcf-related-name">CS2 Rank Distribution</span><span class="rcf-related-arrow">&rarr;</span></a>
-      <a href="/cs2-guides/ranks-guide/" class="rcf-related-card"><span class="rcf-related-name">Complete Ranking System Guide</span><span class="rcf-related-arrow">&rarr;</span></a>
-    </div>
-  </section>
 
   <section class="rcf-explore">
     <h2>Explore More</h2>
@@ -96,27 +97,18 @@ const faqs = [
 .rcf-hero h1{font-family:'Montserrat',sans-serif;font-size:2rem;font-weight:800;margin:0 0 .75rem;color:var(--text)}
 .rcf-hero-desc{color:var(--text2);font-size:.95rem;line-height:1.7;margin:0}
 
-/* ── FAQ List ── */
-.rcf-faq-list{display:flex;flex-direction:column;gap:.5rem;margin-bottom:2.5rem}
-.rcf-faq-item{background:var(--bg2);border:1px solid var(--border);border-radius:4px;overflow:hidden}
-.rcf-faq-question{display:block;padding:1rem 1.25rem;font-size:.95rem;font-weight:600;color:var(--text);cursor:pointer;list-style:none;position:relative;padding-right:2.5rem;transition:background .2s}
-.rcf-faq-question::-webkit-details-marker{display:none}
-.rcf-faq-question::after{content:'+';position:absolute;right:1.25rem;top:50%;transform:translateY(-50%);font-size:1.2rem;color:var(--accent);font-weight:700}
-.rcf-faq-item[open] .rcf-faq-question::after{content:'\2212'}
-.rcf-faq-item[open] .rcf-faq-question{border-bottom:1px solid var(--border);background:rgba(46,204,113,.03)}
-.rcf-faq-question:hover{background:rgba(46,204,113,.03)}
-.rcf-faq-answer{padding:1rem 1.25rem;margin:0;font-size:.9rem;color:var(--text2);line-height:1.7}
+/* ── Intro ── */
+.rcf-intro{font-size:.9rem;color:var(--text2);margin:0 0 1rem;line-height:1.6}
 
-/* ── Related Articles ── */
-.rcf-related{margin-bottom:2rem}
-.rcf-related h2{font-family:'Montserrat',sans-serif;font-size:1.2rem;font-weight:700;color:var(--text);margin:0 0 .75rem;padding-bottom:.5rem;border-bottom:2px solid var(--accent)}
-.rcf-related-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:.6rem}
-.rcf-related-card{display:flex;align-items:center;justify-content:space-between;padding:.75rem 1rem;background:var(--bg2);border:1px solid var(--border);border-radius:4px;text-decoration:none;border-left:2px solid transparent;transition:border-left-color .2s,color .2s}
-.rcf-related-card:hover{border-left-color:var(--accent)}
-.rcf-related-name{font-size:.88rem;color:var(--text2);font-weight:500;transition:color .2s}
-.rcf-related-card:hover .rcf-related-name{color:var(--text)}
-.rcf-related-arrow{font-size:1rem;color:var(--accent);opacity:0;transition:opacity .2s}
-.rcf-related-card:hover .rcf-related-arrow{opacity:1}
+/* ── FAQ Card Grid ── */
+.rcf-faq-grid{display:grid;grid-template-columns:1fr;gap:.75rem;margin-bottom:2.5rem}
+.rcf-faq-card{display:flex;align-items:center;justify-content:space-between;padding:1.25rem;background:var(--bg2);border:1px solid var(--border);border-radius:4px;text-decoration:none;border-left:3px solid transparent;transition:border-left-color .2s,background .15s}
+.rcf-faq-card:hover{border-left-color:var(--accent);background:rgba(46,204,113,.03)}
+.rcf-faq-card-content{flex:1}
+.rcf-faq-card-q{font-size:.95rem;font-weight:600;color:var(--text);margin:0 0 .25rem;display:block}
+.rcf-faq-card-excerpt{font-size:.82rem;color:var(--text2);margin:0;line-height:1.5}
+.rcf-faq-card-arrow{font-size:1.1rem;color:var(--accent);margin-left:1rem;opacity:0;transition:opacity .2s}
+.rcf-faq-card:hover .rcf-faq-card-arrow{opacity:1}
 
 /* ── Explore More ── */
 .rcf-explore{margin-bottom:2rem}
@@ -134,6 +126,5 @@ const faqs = [
 /* ── Responsive ── */
 @media(max-width:768px){
   .rcf-hero h1{font-size:1.5rem}
-  .rcf-related-grid{grid-template-columns:1fr}
 }
 </style>

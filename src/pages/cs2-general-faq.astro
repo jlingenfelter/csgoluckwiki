@@ -28,6 +28,14 @@ const faqs = [
     answer: 'Freeze time is the period at the start of each round where players cannot move and use the buy menu. To adjust it on a private server, use mp_freezetime followed by the number of seconds you want. Set mp_freezetime 0 to eliminate it entirely, which is useful during practice sessions. In official matchmaking, freeze time is locked at a fixed duration and cannot be modified by players.',
   },
 ];
+
+const cards = [
+  { href: '/cs2-rounds-per-match/', title: 'How Many Rounds in a CS2 Match?', excerpt: 'MR12 format with 24 max regulation rounds explained.' },
+  { href: '/how-long-cs2-game/', title: 'How Long Does a CS2 Game Last?', excerpt: '30-50 minutes typical, with overtime games stretching past an hour.' },
+  { href: '/remove-bots-cs2/', title: 'How to Remove Bots in CS2', excerpt: 'Console commands for kicking and preventing bots in private servers.' },
+  { href: '/cs2-console-commands/', title: 'How to Use the Console in CS2', excerpt: 'Enable developer console, key bindings, and essential commands.' },
+  { href: '/cs2-freeze-time/', title: 'How to Change Freeze Time', excerpt: 'mp_freezetime command, practice settings, and round start configuration.' },
+];
 ---
 
 <Base title={title} description={description}>
@@ -43,26 +51,19 @@ const faqs = [
     <p class="gef-hero-desc">This CS2 FAQ covers the most common questions new and returning players ask about Counter-Strike 2 — from round counts and match duration to console usage, bot management, and freeze time settings. If you are looking for a quick answer to a basic CS2 question, you will likely find it here.</p>
   </section>
 
-  <div class="gef-faq-list">
-    {faqs.map(faq => (
-      <details class="gef-faq-item">
-        <summary class="gef-faq-question">{faq.question}</summary>
-        <div class="gef-faq-answer" set:html={faq.answer}></div>
-      </details>
+  <p class="gef-intro">Click any question below for a detailed answer.</p>
+
+  <div class="gef-faq-grid">
+    {cards.map(card => (
+      <a href={card.href} class="gef-faq-card">
+        <div class="gef-faq-card-content">
+          <span class="gef-faq-card-q">{card.title}</span>
+          <p class="gef-faq-card-excerpt">{card.excerpt}</p>
+        </div>
+        <span class="gef-faq-card-arrow">&rarr;</span>
+      </a>
     ))}
   </div>
-
-  <section class="gef-related">
-    <h2>Related Articles</h2>
-    <div class="gef-related-grid">
-      <a href="/cs2-console-commands/" class="gef-related-card"><span class="gef-related-name">CS2 Console Commands</span><span class="gef-related-arrow">&rarr;</span></a>
-      <a href="/how-long-cs2-game/" class="gef-related-card"><span class="gef-related-name">How Long Does a CS2 Game Last?</span><span class="gef-related-arrow">&rarr;</span></a>
-      <a href="/remove-bots-cs2/" class="gef-related-card"><span class="gef-related-name">How to Remove Bots in CS2</span><span class="gef-related-arrow">&rarr;</span></a>
-      <a href="/cs2-commands/" class="gef-related-card"><span class="gef-related-name">Full Commands Reference</span><span class="gef-related-arrow">&rarr;</span></a>
-      <a href="/launch-options/" class="gef-related-card"><span class="gef-related-name">Launch Options Guide</span><span class="gef-related-arrow">&rarr;</span></a>
-      <a href="/practice-config/" class="gef-related-card"><span class="gef-related-name">Practice Config Generator</span><span class="gef-related-arrow">&rarr;</span></a>
-    </div>
-  </section>
 
   <section class="gef-explore">
     <h2>Explore More</h2>
@@ -92,29 +93,18 @@ const faqs = [
 .gef-hero h1{font-family:'Montserrat',sans-serif;font-size:2rem;font-weight:800;margin:0 0 .75rem;color:var(--text)}
 .gef-hero-desc{color:var(--text2);font-size:.95rem;line-height:1.7;margin:0}
 
-/* ── FAQ List ── */
-.gef-faq-list{display:flex;flex-direction:column;gap:.5rem;margin-bottom:2.5rem}
-.gef-faq-item{background:var(--bg2);border:1px solid var(--border);border-radius:4px;overflow:hidden}
-.gef-faq-question{display:block;padding:1rem 1.25rem;font-size:.95rem;font-weight:600;color:var(--text);cursor:pointer;list-style:none;position:relative;padding-right:2.5rem;transition:background .2s}
-.gef-faq-question::-webkit-details-marker{display:none}
-.gef-faq-question::after{content:'+';position:absolute;right:1.25rem;top:50%;transform:translateY(-50%);font-size:1.2rem;color:var(--accent);font-weight:700}
-.gef-faq-item[open] .gef-faq-question::after{content:'\2212'}
-.gef-faq-item[open] .gef-faq-question{border-bottom:1px solid var(--border);background:rgba(46,204,113,.03)}
-.gef-faq-question:hover{background:rgba(46,204,113,.03)}
-.gef-faq-answer{padding:1rem 1.25rem;margin:0;font-size:.9rem;color:var(--text2);line-height:1.7}
-.gef-faq-answer a{color:var(--accent);text-decoration:none}
-.gef-faq-answer a:hover{text-decoration:underline}
+/* ── Intro ── */
+.gef-intro{font-size:.9rem;color:var(--text2);margin:0 0 1.25rem;line-height:1.6}
 
-/* ── Related Articles ── */
-.gef-related{margin-bottom:2rem}
-.gef-related h2{font-family:'Montserrat',sans-serif;font-size:1.2rem;font-weight:700;color:var(--text);margin:0 0 .75rem;padding-bottom:.5rem;border-bottom:2px solid var(--accent)}
-.gef-related-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:.6rem}
-.gef-related-card{display:flex;align-items:center;justify-content:space-between;padding:.75rem 1rem;background:var(--bg2);border:1px solid var(--border);border-radius:4px;text-decoration:none;border-left:2px solid transparent;transition:border-left-color .2s,color .2s}
-.gef-related-card:hover{border-left-color:var(--accent)}
-.gef-related-name{font-size:.88rem;color:var(--text2);font-weight:500;transition:color .2s}
-.gef-related-card:hover .gef-related-name{color:var(--text)}
-.gef-related-arrow{font-size:1rem;color:var(--accent);opacity:0;transition:opacity .2s}
-.gef-related-card:hover .gef-related-arrow{opacity:1}
+/* ── FAQ Card Grid ── */
+.gef-faq-grid{display:grid;grid-template-columns:1fr;gap:.75rem;margin-bottom:2.5rem}
+.gef-faq-card{display:flex;align-items:center;justify-content:space-between;padding:1.25rem;background:var(--bg2);border:1px solid var(--border);border-radius:4px;text-decoration:none;border-left:3px solid transparent;transition:border-left-color .2s,background .15s}
+.gef-faq-card:hover{border-left-color:var(--accent);background:rgba(46,204,113,.03)}
+.gef-faq-card-content{flex:1}
+.gef-faq-card-q{font-size:.95rem;font-weight:600;color:var(--text);margin:0 0 .25rem;display:block}
+.gef-faq-card-excerpt{font-size:.82rem;color:var(--text2);margin:0;line-height:1.5}
+.gef-faq-card-arrow{font-size:1.1rem;color:var(--accent);margin-left:1rem;opacity:0;transition:opacity .2s}
+.gef-faq-card:hover .gef-faq-card-arrow{opacity:1}
 
 /* ── Explore More ── */
 .gef-explore{margin-bottom:2rem}
@@ -132,6 +122,5 @@ const faqs = [
 /* ── Responsive ── */
 @media(max-width:768px){
   .gef-hero h1{font-size:1.5rem}
-  .gef-related-grid{grid-template-columns:1fr}
 }
 </style>

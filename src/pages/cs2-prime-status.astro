@@ -1,0 +1,235 @@
+---
+import Base from '../layouts/Base.astro';
+import AuthorBox from '../components/AuthorBox.astro';
+import { faqSchema, breadcrumbSchema } from '../lib/weapons';
+
+const title = 'Is CS2 Prime Worth It? Benefits & Cost Explained | CSGOLuck Wiki';
+const description = 'CS2 Prime Status is a one-time purchase that unlocks exclusive drops, Prime matchmaking, and souvenir items. Full breakdown.';
+
+const breadcrumbs = [
+  { name: 'Home', url: '/' },
+  { name: 'CS2 Server & Technical FAQ', url: '/cs2-server-status-technical-faq' },
+  { name: 'CS2 Prime Status', url: '/cs2-prime-status' },
+];
+
+const faqs = [
+  {
+    question: 'How much does CS2 Prime Status cost?',
+    answer: 'CS2 Prime Status is a one-time purchase available on the Steam Store. The price varies by region but is typically around $14.99 USD. It is a permanent upgrade tied to your Steam account and does not require a recurring subscription. Check our <a href="/cs2-server-status-technical-faq/">server & technical FAQ</a> for current information.',
+  },
+  {
+    question: 'Can you still get Prime for free in CS2?',
+    answer: 'No. In the original CS:GO, players could earn Prime Status by reaching level 21 through gameplay. Valve removed this path in June 2021, making Prime a purchase-only upgrade. There is currently no way to obtain Prime Status without buying it. See our <a href="/is-cs2-free/">Is CS2 Free</a> guide for more on the free-to-play model.',
+  },
+  {
+    question: 'Does Prime Status give a competitive advantage?',
+    answer: 'No. Prime Status does not provide any gameplay advantages such as better weapons, faster movement, or increased health. The benefits are limited to matchmaking pool separation, cosmetic item drops, and souvenir eligibility. All game modes, maps, and mechanics are identical between free and Prime accounts. Visit our <a href="/cs2-trust-factor/">Trust Factor guide</a> for more on matchmaking quality.',
+  },
+];
+
+const breadcrumbSchema_ = breadcrumbSchema(breadcrumbs);
+const faqSchema_ = faqSchema(faqs);
+
+const articleSchema = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": title,
+  "description": description,
+  "author": { "@type": "Person", "name": "Josh Lingenfelter", "url": "https://www.linkedin.com/in/josh-lingenfelter-8157274b/", "jobTitle": "Director", "worksFor": { "@type": "Organization", "name": "CSGOLuck" } },
+  "publisher": { "@type": "Organization", "name": "CSGOLuck Wiki", "url": "https://wiki.csgoluck.com" },
+  "mainEntityOfPage": "https://wiki.csgoluck.com/cs2-prime-status/",
+  "inLanguage": "en-US"
+});
+
+const sections = [
+  { id: 'what-is-prime', label: 'What Is Prime Status' },
+  { id: 'prime-benefits', label: 'Prime Benefits' },
+  { id: 'free-vs-prime', label: 'Free vs Prime Comparison' },
+  { id: 'is-prime-worth-it', label: 'Is Prime Worth It?' },
+  { id: 'how-to-buy', label: 'How to Buy Prime' },
+  { id: 'faq', label: 'FAQ' },
+  { id: 'related', label: 'Related Articles' },
+];
+---
+
+<Base title={title} description={description}>
+  <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema_)}></script>
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema_)}></script>
+  <script type="application/ld+json" set:html={articleSchema}></script>
+
+  <div class="cps-wrap">
+    <nav class="cps-breadcrumb">
+      <a href="/">Home</a>
+      <span class="cps-sep">/</span>
+      <a href="/cs2-server-status-technical-faq/">Server & Technical FAQ</a>
+      <span class="cps-sep">/</span>
+      <span>CS2 Prime Status</span>
+    </nav>
+
+    <header class="cps-header">
+      <h1>Is CS2 Prime Worth It? Benefits & Cost Explained</h1>
+      <p class="cps-subtitle">A complete guide to CS2 Prime Status -- what it includes, what it costs, and whether you should buy it</p>
+    </header>
+
+    <nav class="cps-toc-mobile" aria-label="Table of contents">
+      {sections.map((s) => (
+        <a href={`#${s.id}`} class="cps-toc-mobile-link">{s.label}</a>
+      ))}
+    </nav>
+
+    <div class="cps-layout">
+      <aside class="cps-sidebar">
+        <nav class="cps-toc" aria-label="Table of contents">
+          <span class="cps-toc-title">Contents</span>
+          {sections.map((s) => (
+            <a href={`#${s.id}`} class="cps-toc-link">{s.label}</a>
+          ))}
+        </nav>
+      </aside>
+
+      <article class="cps-content">
+        <p class="cps-intro">
+          Counter-Strike 2 is free to play, but Valve offers an optional paid upgrade called Prime Status. Originally introduced in CS:GO to create a cleaner matchmaking environment, Prime has evolved into a bundle of perks centered around item drops, exclusive matchmaking, and tournament rewards. This guide explains everything Prime includes, compares the free and Prime experiences side by side, and helps you decide whether the purchase makes sense for your situation.
+        </p>
+
+        <section id="what-is-prime">
+          <div class="cps-section-header"><h2>What Is CS2 Prime Status?</h2></div>
+          <p>Prime Status is a one-time account upgrade available for purchase on the Steam Store. When you buy Prime, your Steam account is permanently flagged as a Prime account for Counter-Strike 2. This flag affects matchmaking, item eligibility, and certain in-game features.</p>
+          <p>Prime was originally introduced in CS:GO in 2016 as a way to separate verified players from newly created accounts. At launch, players could either purchase CS:GO or reach profile rank 21 to earn Prime for free. In June 2021, Valve removed the free path entirely, making Prime a purchase-only upgrade. This decision coincided with CS:GO going fully free-to-play. When CS2 replaced CS:GO in September 2023, existing Prime accounts carried over their status automatically.</p>
+          <p>Prime is tied to your Steam account, not to any specific installation or device. If you reinstall CS2 or play on a different computer, your Prime Status remains active as long as you log in to the same Steam account.</p>
+        </section>
+
+        <section id="prime-benefits">
+          <div class="cps-section-header"><h2>Prime Benefits</h2></div>
+          <p>Prime Status unlocks several features that are not available to free players:</p>
+          <ul class="cps-list">
+            <li><strong>Prime matchmaking pool:</strong> Prime players are matched preferentially with other Prime players. This creates a separate matchmaking pool with generally higher account quality, since every player in the pool has invested money in their account</li>
+            <li><strong>Item drops after matches:</strong> Prime players can receive random weapon skin, case, and graffiti drops at the end of matches. These drops are exclusive to Prime accounts and can include items with real market value</li>
+            <li><strong>Souvenir packages:</strong> During CS Major Championship tournaments, Prime players watching matches through the CS2 client or on Steam are eligible to receive souvenir packages containing special commemorative weapon skins</li>
+            <li><strong>XP and service medals:</strong> Prime players earn experience points after matches, which contribute to profile rank progression and the ability to earn annual service medals displayed on your profile</li>
+            <li><strong>Weekly care packages:</strong> Prime players receive a weekly bonus drop reward that resets each week, providing an additional chance at valuable items</li>
+          </ul>
+        </section>
+
+        <section id="free-vs-prime">
+          <div class="cps-section-header"><h2>Free vs Prime -- Side by Side Comparison</h2></div>
+          <p>Understanding exactly what differs between the free and Prime experience helps set expectations. Here is a direct comparison of the two tiers:</p>
+          <ul class="cps-list">
+            <li><strong>Game modes:</strong> Identical. Both free and Prime players access all modes including Competitive, Premier, Wingman, Casual, Deathmatch, and Arms Race</li>
+            <li><strong>Map access:</strong> Identical. All maps in the active pool are available regardless of Prime status</li>
+            <li><strong>Ranking system:</strong> Identical. Both tiers can earn CS Rating in Premier and skill group ranks in Competitive</li>
+            <li><strong>Matchmaking quality:</strong> Prime players are matched with other Prime players, which generally results in fewer encounters with new, unverified, or suspicious accounts</li>
+            <li><strong>Item drops:</strong> Prime only. Free players do not receive random item drops after matches</li>
+            <li><strong>Souvenir eligibility:</strong> Prime only. Free players cannot receive souvenir packages during Major events</li>
+            <li><strong>Skin trading and marketplace:</strong> Both tiers can buy, sell, and trade skins on the Steam Community Market</li>
+          </ul>
+          <p>The takeaway is straightforward: the core gameplay experience is identical between free and Prime. Every competitive mechanic, weapon, and map functions the same regardless of your account status. Prime's advantages are limited to matchmaking pool separation and cosmetic rewards.</p>
+        </section>
+
+        <section id="is-prime-worth-it">
+          <div class="cps-section-header"><h2>Is Prime Worth Buying?</h2></div>
+          <p>Whether Prime is worth the investment depends on your playing habits and priorities. Here are the main scenarios to consider:</p>
+          <p><strong>Buy Prime if</strong> you play CS2 regularly, especially competitive or Premier modes. The Prime matchmaking pool provides a meaningfully better experience for dedicated players. The item drops, while not guaranteed to be valuable, occasionally yield skins and cases that can be sold on the Steam Market. Over time, regular players can recoup a portion of the Prime cost through drops alone.</p>
+          <p><strong>Skip Prime if</strong> you are a casual player who plays CS2 infrequently or primarily in casual and deathmatch modes. The matchmaking pool difference matters less outside of competitive play, and the item drops require consistent playtime to accumulate meaningful value. If you are testing CS2 for the first time, start with the free version and upgrade later if you find yourself committed to the game.</p>
+          <p>It is also worth noting that Prime does not eliminate cheaters or toxic players. Valve's anti-cheat system (VAC) and <a href="/cs2-trust-factor/">Trust Factor</a> system apply to all accounts. Prime adds an additional filter by excluding brand-new free accounts from your matches, but it is not a guarantee of a clean experience. Think of Prime as one layer in a multi-layered system designed to improve match quality.</p>
+        </section>
+
+        <section id="how-to-buy">
+          <div class="cps-section-header"><h2>How to Buy CS2 Prime Status</h2></div>
+          <p>Purchasing Prime Status is straightforward through Steam:</p>
+          <ul class="cps-list">
+            <li><strong>Step 1:</strong> Open the Steam client and navigate to the Steam Store</li>
+            <li><strong>Step 2:</strong> Search for "Counter-Strike 2 Prime Status Upgrade" or navigate to the CS2 store page</li>
+            <li><strong>Step 3:</strong> Click the purchase button and complete the checkout using your preferred payment method</li>
+            <li><strong>Step 4:</strong> Once the transaction completes, Prime Status is immediately active on your account</li>
+          </ul>
+          <p>You can also gift Prime Status to another Steam account. If you have a friend who plays CS2 regularly and has not yet upgraded, gifting Prime can be a practical option. The gifted upgrade works identically to a self-purchase.</p>
+          <p>Prime Status occasionally appears in Steam sales at a reduced price. If you are not in a rush, waiting for a seasonal sale event (such as the Steam Summer Sale or Winter Sale) can save you money. However, Valve does not guarantee discounts on Prime, so availability at a reduced price varies.</p>
+        </section>
+
+        <section id="faq">
+          <div class="cps-section-header"><h2>Frequently Asked Questions</h2></div>
+          <div class="cps-faq-list">
+            {faqs.map((faq) => (
+              <details class="cps-faq-item">
+                <summary class="cps-faq-question">{faq.question}</summary>
+                <p class="cps-faq-answer" set:html={faq.answer}></p>
+              </details>
+            ))}
+          </div>
+        </section>
+
+        <section id="related">
+          <div class="cps-section-header"><h2>Related Articles</h2></div>
+          <div class="cps-resources-grid">
+            <a href="/is-cs2-free/" class="cps-resource-card"><span class="cps-resource-name">Is CS2 Free to Play?</span><span class="cps-resource-arrow">&rarr;</span></a>
+            <a href="/cs2-trust-factor/" class="cps-resource-card"><span class="cps-resource-name">CS2 Trust Factor</span><span class="cps-resource-arrow">&rarr;</span></a>
+            <a href="/cs2-server-status-technical-faq/" class="cps-resource-card"><span class="cps-resource-name">Server & Technical FAQ</span><span class="cps-resource-arrow">&rarr;</span></a>
+            <a href="/cs2-ranks-explained/" class="cps-resource-card"><span class="cps-resource-name">CS2 Ranks Explained</span><span class="cps-resource-arrow">&rarr;</span></a>
+          </div>
+        </section>
+      </article>
+    </div>
+  </div>
+
+  <style>
+    .cps-wrap{max-width:1100px;margin:0 auto;padding:0 1.5rem 2rem}
+    .cps-breadcrumb{display:flex;align-items:center;gap:.5rem;padding:1.25rem 0;font-size:.85rem;color:var(--text2)}
+    .cps-breadcrumb a{color:var(--accent);text-decoration:none}
+    .cps-breadcrumb a:hover{color:var(--accent2)}
+    .cps-sep{color:var(--border)}
+    .cps-header{padding:1.5rem 0 1.25rem;border-bottom:2px solid var(--accent);margin-bottom:1.5rem}
+    .cps-header h1{margin:0 0 .35rem;font-size:2.2rem;font-weight:800;color:var(--text);letter-spacing:-.02em;line-height:1.2}
+    .cps-subtitle{margin:0;font-size:1.05rem;color:var(--text2);font-weight:400}
+    .cps-toc-mobile{display:none}
+    .cps-layout{display:grid;grid-template-columns:220px 1fr;gap:2.5rem;align-items:start}
+    .cps-sidebar{position:sticky;top:80px}
+    .cps-toc{display:flex;flex-direction:column;gap:0;border-left:2px solid var(--border);padding-left:0}
+    .cps-toc-title{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--accent);padding:0 0 .6rem 1rem}
+    .cps-toc-link{display:block;padding:.4rem 1rem;font-size:.82rem;color:var(--text2);text-decoration:none;border-left:2px solid transparent;margin-left:-2px;transition:color .2s,border-color .2s}
+    .cps-toc-link:hover{color:var(--text);border-left-color:var(--accent)}
+    .cps-content{min-width:0}
+    .cps-intro{font-size:1rem;line-height:1.8;color:var(--text2);margin-bottom:2rem}
+    .cps-section-header{background:rgba(46,204,113,.05);margin:0 -1.25rem 1.25rem;padding:.75rem 1.25rem;border-radius:4px}
+    .cps-section-header h2{margin:0;padding:0;font-size:1.5rem;font-weight:700;color:var(--text);border:none;letter-spacing:-.01em}
+    section{margin-bottom:2.5rem}
+    p{line-height:1.7;color:var(--text2);margin-bottom:1rem}
+    .cps-list{list-style:none;padding:0;margin:.75rem 0 1.5rem}
+    .cps-list li{padding:.4rem 0 .4rem 1.6rem;position:relative;color:var(--text2);line-height:1.65}
+    .cps-list li::before{content:'';position:absolute;left:.25rem;top:.75rem;width:6px;height:6px;background:var(--accent);border-radius:1px}
+    .cps-list li strong{color:var(--text)}
+    .cps-faq-list{display:flex;flex-direction:column;gap:.5rem}
+    .cps-faq-item{background:var(--bg2);border:1px solid var(--border);border-radius:4px;overflow:hidden}
+    .cps-faq-question{display:block;padding:1rem 1.25rem;font-size:.95rem;font-weight:600;color:var(--text);cursor:pointer;list-style:none;position:relative;padding-right:2.5rem;transition:background .2s}
+    .cps-faq-question::-webkit-details-marker{display:none}
+    .cps-faq-question::after{content:'+';position:absolute;right:1.25rem;top:50%;transform:translateY(-50%);font-size:1.2rem;color:var(--accent);font-weight:700}
+    .cps-faq-item[open] .cps-faq-question::after{content:'\2212'}
+    .cps-faq-item[open] .cps-faq-question{border-bottom:1px solid var(--border);background:rgba(46,204,113,.03)}
+    .cps-faq-question:hover{background:rgba(46,204,113,.03)}
+    .cps-faq-answer{padding:1rem 1.25rem;margin:0;font-size:.9rem;color:var(--text2);line-height:1.7}
+    .cps-resources-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.6rem;margin:.5rem 0 1.5rem}
+    .cps-resource-card{display:flex;align-items:center;justify-content:space-between;padding:.75rem 1rem;background:var(--bg2);border:1px solid var(--border);border-radius:4px;text-decoration:none;border-left:2px solid transparent;transition:border-left-color .2s,color .2s}
+    .cps-resource-card:hover{border-left-color:var(--accent)}
+    .cps-resource-name{font-size:.88rem;color:var(--text2);font-weight:500;transition:color .2s}
+    .cps-resource-card:hover .cps-resource-name{color:var(--text)}
+    .cps-resource-arrow{font-size:1rem;color:var(--accent);opacity:0;transition:opacity .2s}
+    .cps-resource-card:hover .cps-resource-arrow{opacity:1}
+    @media(max-width:860px){
+      .cps-layout{grid-template-columns:1fr;gap:0}
+      .cps-sidebar{display:none}
+      .cps-toc-mobile{display:flex;gap:.25rem;overflow-x:auto;padding:.75rem 0;margin-bottom:1rem;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+      .cps-toc-mobile::-webkit-scrollbar{display:none}
+      .cps-toc-mobile-link{flex-shrink:0;padding:.35rem .75rem;font-size:.78rem;font-weight:600;color:var(--text2);background:var(--bg2);border:1px solid var(--border);border-radius:4px;text-decoration:none;white-space:nowrap;transition:color .2s,border-color .2s}
+      .cps-toc-mobile-link:hover{color:var(--accent);border-color:var(--accent)}
+      .cps-header h1{font-size:1.7rem}
+      .cps-section-header{margin:0 -1rem 1rem;padding:.6rem 1rem}
+      .cps-resources-grid{grid-template-columns:repeat(2,1fr)}
+    }
+    @media(max-width:600px){
+      .cps-wrap{padding:0 1rem 1.5rem}
+      .cps-resources-grid{grid-template-columns:1fr}
+      .cps-header h1{font-size:1.5rem}
+    }
+  </style>
+  <AuthorBox updated="2026-03-04" />
+</Base>

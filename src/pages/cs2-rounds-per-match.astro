@@ -1,0 +1,246 @@
+---
+import Base from '../layouts/Base.astro';
+import AuthorBox from '../components/AuthorBox.astro';
+import { faqSchema, breadcrumbSchema } from '../lib/weapons';
+
+const title = 'How Many Rounds in a CS2 Match? MR12 Format Explained | CSGOLuck Wiki';
+const description = 'CS2 competitive matches use MR12 format: 24 max rounds, first to 13 wins. Full breakdown of round counts, overtime, and game modes.';
+
+const breadcrumbs = [
+  { name: 'Home', url: '/' },
+  { name: 'CS2 General FAQ', url: '/cs2-general-faq' },
+  { name: 'Rounds Per Match', url: '/cs2-rounds-per-match' },
+];
+
+const faqs = [
+  {
+    question: 'How many rounds are in a CS2 competitive match?',
+    answer: 'A standard CS2 competitive match uses the MR12 format with a maximum of 24 regulation rounds. Each half consists of 12 rounds, and the first team to win 13 rounds wins the match. If the score reaches 12-12, overtime rules apply. See our <a href="/cs2-general-faq/">general FAQ</a> for more.',
+  },
+  {
+    question: 'What happens when a CS2 match ties at 12-12?',
+    answer: 'In Premier mode, overtime consists of additional MR3 rounds (3 rounds per half, first to 4 wins the OT period). In standard competitive matchmaking, the match ends in a draw at 12-12. The specific overtime format depends on the game mode and server settings.',
+  },
+  {
+    question: 'Why did CS2 switch from MR15 to MR12?',
+    answer: 'Valve switched to MR12 to shorten match length. Under MR15, matches could last up to 30 rounds (plus overtime), often exceeding an hour. MR12 reduces maximum regulation rounds to 24, keeping most matches under 45 minutes. This also changed the economy, with adjusted starting money and round rewards.',
+  },
+];
+
+const breadcrumbSchema_ = breadcrumbSchema(breadcrumbs);
+const faqSchema_ = faqSchema(faqs);
+
+const articleSchema = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": title,
+  "description": description,
+  "author": { "@type": "Person", "name": "Josh Lingenfelter", "url": "https://www.linkedin.com/in/josh-lingenfelter-8157274b/", "jobTitle": "Director", "worksFor": { "@type": "Organization", "name": "CSGOLuck" } },
+  "publisher": { "@type": "Organization", "name": "CSGOLuck Wiki", "url": "https://wiki.csgoluck.com" },
+  "mainEntityOfPage": "https://wiki.csgoluck.com/cs2-rounds-per-match/",
+  "inLanguage": "en-US"
+});
+
+const sections = [
+  { id: 'mr12-format', label: 'MR12 Format Explained' },
+  { id: 'round-counts', label: 'Round Counts by Mode' },
+  { id: 'overtime', label: 'Overtime Rules' },
+  { id: 'halves', label: 'How Halves Work' },
+  { id: 'round-timer', label: 'Round Timer Settings' },
+  { id: 'faq', label: 'FAQ' },
+  { id: 'related', label: 'Related Articles' },
+];
+---
+
+<Base title={title} description={description}>
+  <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema_)}></script>
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema_)}></script>
+  <script type="application/ld+json" set:html={articleSchema}></script>
+
+  <div class="crm-wrap">
+    <nav class="crm-breadcrumb">
+      <a href="/">Home</a>
+      <span class="crm-sep">/</span>
+      <a href="/cs2-general-faq/">CS2 General FAQ</a>
+      <span class="crm-sep">/</span>
+      <span>Rounds Per Match</span>
+    </nav>
+
+    <header class="crm-header">
+      <h1>How Many Rounds in a CS2 Match? MR12 Format Explained</h1>
+      <p class="crm-subtitle">Complete breakdown of round counts, halves, overtime, and every game mode</p>
+    </header>
+
+    <nav class="crm-toc-mobile" aria-label="Table of contents">
+      {sections.map((s) => (
+        <a href={`#${s.id}`} class="crm-toc-mobile-link">{s.label}</a>
+      ))}
+    </nav>
+
+    <div class="crm-layout">
+      <aside class="crm-sidebar">
+        <nav class="crm-toc" aria-label="Table of contents">
+          <span class="crm-toc-title">Contents</span>
+          {sections.map((s) => (
+            <a href={`#${s.id}`} class="crm-toc-link">{s.label}</a>
+          ))}
+        </nav>
+      </aside>
+
+      <article class="crm-content">
+        <p class="crm-intro">
+          One of the most fundamental aspects of Counter-Strike 2 is its round-based format. Unlike many other shooters where matches are timed continuously, CS2 divides each match into distinct rounds with buy phases, objectives, and win conditions. The number of rounds varies by game mode, but the standard competitive format uses MR12 -- a system that replaced the legacy MR15 format from CS:GO. This guide explains exactly how many rounds you will play in every CS2 game mode, how overtime works, and what the MR12 change means for competitive play.
+        </p>
+
+        <section id="mr12-format">
+          <div class="crm-section-header"><h2>MR12 Format Explained</h2></div>
+          <p>MR12 stands for "Max Rounds 12," meaning each half of a competitive match consists of a maximum of 12 rounds. A full match can have up to 24 rounds in regulation. The first team to win 13 rounds wins the match outright.</p>
+          <p>Here is how the basic structure works:</p>
+          <ul class="crm-list">
+            <li><strong>First half:</strong> 12 rounds -- teams play as either CT (Counter-Terrorist) or T (Terrorist)</li>
+            <li><strong>Half-time:</strong> Teams swap sides after the first 12 rounds</li>
+            <li><strong>Second half:</strong> Up to 12 more rounds on the opposite side</li>
+            <li><strong>Win condition:</strong> First team to 13 round wins takes the match</li>
+            <li><strong>Maximum regulation rounds:</strong> 24 (if the score reaches 12-12)</li>
+          </ul>
+          <p>Valve introduced MR12 as the default format when CS2 launched, replacing the MR15 system that had been the standard in Counter-Strike for over a decade. The change shortened average match times considerably while preserving the strategic depth of the side-swap system. The economy was also rebalanced to account for fewer rounds, with adjusted starting money and loss bonus structures.</p>
+        </section>
+
+        <section id="round-counts">
+          <div class="crm-section-header"><h2>Round Counts by Game Mode</h2></div>
+          <p>Different CS2 game modes use different round counts and formats. Here is a breakdown of each mode:</p>
+          <ul class="crm-list">
+            <li><strong>Premier (Competitive):</strong> MR12 -- up to 24 rounds, first to 13 wins. Overtime if tied 12-12</li>
+            <li><strong>Competitive (Map Pick):</strong> MR12 -- same format as Premier but with individual map selection</li>
+            <li><strong>Wingman (2v2):</strong> MR8 -- up to 16 rounds, first to 9 wins. Shorter halves with 8 rounds per side</li>
+            <li><strong>Casual:</strong> MR8 per half played. Casual games are typically single-half with relaxed rules, and players can join or leave freely</li>
+            <li><strong>Deathmatch:</strong> Time-based (10 minutes), not round-based. Players respawn continuously</li>
+            <li><strong>Arms Race:</strong> Kill-based progression, not round-based. First player to cycle through all weapons wins</li>
+          </ul>
+          <p>For most players, the Competitive and Premier modes are the primary ranked experiences. Both use the same MR12 format, but Premier features a map veto system while standard Competitive lets you queue for specific maps. The round structure is identical in both. For more details on match duration, see our guide on <a href="/how-long-cs2-match/">how long a CS2 match takes</a>.</p>
+        </section>
+
+        <section id="overtime">
+          <div class="crm-section-header"><h2>Overtime Rules</h2></div>
+          <p>When a match reaches 12-12 in regulation, overtime rules activate. The specific overtime format depends on the game mode:</p>
+          <ul class="crm-list">
+            <li><strong>Premier overtime:</strong> MR3 format -- each overtime period consists of 6 rounds (3 per side). Teams start with $10,000. First to win 4 rounds in the OT period wins. If it ties 3-3, another OT period begins</li>
+            <li><strong>Competitive overtime:</strong> In standard matchmaking, games can end in a draw at 12-12. Some server configurations enable overtime similar to Premier</li>
+            <li><strong>Wingman overtime:</strong> Similar structure with MR3 overtime when the score ties at 8-8</li>
+            <li><strong>Third-party/tournament overtime:</strong> Professional matches and FACEIT/ESEA leagues typically use MR3 overtime with set starting money, continuing until one team leads after an OT period</li>
+          </ul>
+          <p>Overtime can theoretically continue indefinitely. In extremely close matches, multiple overtime periods may be needed. Professional matches have occasionally gone through 4 or more overtime periods, resulting in 40+ total rounds. These are rare but memorable moments in competitive Counter-Strike.</p>
+        </section>
+
+        <section id="halves">
+          <div class="crm-section-header"><h2>How Halves Work in CS2</h2></div>
+          <p>The half system is central to competitive CS2. Each map features two bomb sites, and the gameplay dynamic shifts dramatically depending on which side you are playing. The half-time swap ensures both teams play an equal number of rounds on each side.</p>
+          <ul class="crm-list">
+            <li><strong>CT side (first or second half):</strong> Your team defends bomb sites. CTs generally hold positional advantages but have more expensive equipment. A strong CT half often means winning 8+ of 12 rounds</li>
+            <li><strong>T side (first or second half):</strong> Your team attacks bomb sites and plants the C4. Ts have cheaper weapons and must coordinate executes. Winning 5-6 T rounds in a half is typically solid</li>
+            <li><strong>Side balance:</strong> Some maps favor CTs (like Nuke) while others are more T-sided (like Anubis). The half swap ensures fairness regardless of map balance</li>
+            <li><strong>Economy reset:</strong> Both teams start each half with $800 pistol-round money. The economy builds from scratch after the half-time swap</li>
+          </ul>
+          <p>Understanding which side is favored on each map helps you evaluate your half-time score. If you are 4-8 after the CT half on a CT-sided map, the situation is dire. But if you are 4-8 on the T side of a CT-sided map, coming back on CT is very realistic. Map knowledge and side-balance awareness are key parts of competitive strategy.</p>
+        </section>
+
+        <section id="round-timer">
+          <div class="crm-section-header"><h2>Round Timer Settings</h2></div>
+          <p>Each round in CS2 has a time limit that varies by game mode. If neither team completes their objective before the timer expires, the round ends and the CTs win by default (since the bomb was not planted). Here are the standard timer settings:</p>
+          <ul class="crm-list">
+            <li><strong>Competitive/Premier round time:</strong> 1 minute 55 seconds (1:55)</li>
+            <li><strong>Bomb timer after plant:</strong> 40 seconds</li>
+            <li><strong>Freeze time (buy phase):</strong> 20 seconds in competitive, 15 seconds in casual</li>
+            <li><strong>Casual round time:</strong> 2 minutes 15 seconds (2:15)</li>
+            <li><strong>Wingman round time:</strong> 1 minute 30 seconds (1:30)</li>
+          </ul>
+          <p>These timers can be modified on private servers using <a href="/cs2-console-commands/">console commands</a>. The command <code>mp_roundtime</code> adjusts the round time, while <code>mp_c4timer</code> controls how long the bomb takes to explode after being planted. Practice servers often use shorter round times and longer bomb timers to facilitate training.</p>
+          <p>In professional tournaments, round and bomb timer settings match the competitive defaults. The 1:55 round time was standardized to balance the pace of play -- long enough for Terrorists to execute strategies but short enough that CTs are not waiting passively for extended periods. For more on match timing, check our <a href="/how-long-cs2-game/">guide to CS2 game length</a>.</p>
+        </section>
+
+        <section id="faq">
+          <div class="crm-section-header"><h2>Frequently Asked Questions</h2></div>
+          <div class="crm-faq-list">
+            {faqs.map((faq) => (
+              <details class="crm-faq-item">
+                <summary class="crm-faq-question">{faq.question}</summary>
+                <p class="crm-faq-answer" set:html={faq.answer}></p>
+              </details>
+            ))}
+          </div>
+        </section>
+
+        <section id="related">
+          <div class="crm-section-header"><h2>Related Articles</h2></div>
+          <div class="crm-resources-grid">
+            <a href="/how-long-cs2-match/" class="crm-resource-card"><span class="crm-resource-name">How Long Is a CS2 Match?</span><span class="crm-resource-arrow">&rarr;</span></a>
+            <a href="/how-long-cs2-game/" class="crm-resource-card"><span class="crm-resource-name">How Long Is a CS2 Game?</span><span class="crm-resource-arrow">&rarr;</span></a>
+            <a href="/cs2-general-faq/" class="crm-resource-card"><span class="crm-resource-name">CS2 General FAQ Hub</span><span class="crm-resource-arrow">&rarr;</span></a>
+            <a href="/cs2-console-commands/" class="crm-resource-card"><span class="crm-resource-name">CS2 Console Commands</span><span class="crm-resource-arrow">&rarr;</span></a>
+          </div>
+        </section>
+      </article>
+    </div>
+  </div>
+
+  <style>
+    .crm-wrap{max-width:1100px;margin:0 auto;padding:0 1.5rem 2rem}
+    .crm-breadcrumb{display:flex;align-items:center;gap:.5rem;padding:1.25rem 0;font-size:.85rem;color:var(--text2)}
+    .crm-breadcrumb a{color:var(--accent);text-decoration:none}
+    .crm-breadcrumb a:hover{color:var(--accent2)}
+    .crm-sep{color:var(--border)}
+    .crm-header{padding:1.5rem 0 1.25rem;border-bottom:2px solid var(--accent);margin-bottom:1.5rem}
+    .crm-header h1{margin:0 0 .35rem;font-size:2.2rem;font-weight:800;color:var(--text);letter-spacing:-.02em;line-height:1.2}
+    .crm-subtitle{margin:0;font-size:1.05rem;color:var(--text2);font-weight:400}
+    .crm-toc-mobile{display:none}
+    .crm-layout{display:grid;grid-template-columns:220px 1fr;gap:2.5rem;align-items:start}
+    .crm-sidebar{position:sticky;top:80px}
+    .crm-toc{display:flex;flex-direction:column;gap:0;border-left:2px solid var(--border);padding-left:0}
+    .crm-toc-title{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--accent);padding:0 0 .6rem 1rem}
+    .crm-toc-link{display:block;padding:.4rem 1rem;font-size:.82rem;color:var(--text2);text-decoration:none;border-left:2px solid transparent;margin-left:-2px;transition:color .2s,border-color .2s}
+    .crm-toc-link:hover{color:var(--text);border-left-color:var(--accent)}
+    .crm-content{min-width:0}
+    .crm-intro{font-size:1rem;line-height:1.8;color:var(--text2);margin-bottom:2rem}
+    .crm-section-header{background:rgba(46,204,113,.05);margin:0 -1.25rem 1.25rem;padding:.75rem 1.25rem;border-radius:4px}
+    .crm-section-header h2{margin:0;padding:0;font-size:1.5rem;font-weight:700;color:var(--text);border:none;letter-spacing:-.01em}
+    section{margin-bottom:2.5rem}
+    p{line-height:1.7;color:var(--text2);margin-bottom:1rem}
+    .crm-list{list-style:none;padding:0;margin:.75rem 0 1.5rem}
+    .crm-list li{padding:.4rem 0 .4rem 1.6rem;position:relative;color:var(--text2);line-height:1.65}
+    .crm-list li::before{content:'';position:absolute;left:.25rem;top:.75rem;width:6px;height:6px;background:var(--accent);border-radius:1px}
+    .crm-list li strong{color:var(--text)}
+    .crm-faq-list{display:flex;flex-direction:column;gap:.5rem}
+    .crm-faq-item{background:var(--bg2);border:1px solid var(--border);border-radius:4px;overflow:hidden}
+    .crm-faq-question{display:block;padding:1rem 1.25rem;font-size:.95rem;font-weight:600;color:var(--text);cursor:pointer;list-style:none;position:relative;padding-right:2.5rem;transition:background .2s}
+    .crm-faq-question::-webkit-details-marker{display:none}
+    .crm-faq-question::after{content:'+';position:absolute;right:1.25rem;top:50%;transform:translateY(-50%);font-size:1.2rem;color:var(--accent);font-weight:700}
+    .crm-faq-item[open] .crm-faq-question::after{content:'\2212'}
+    .crm-faq-item[open] .crm-faq-question{border-bottom:1px solid var(--border);background:rgba(46,204,113,.03)}
+    .crm-faq-question:hover{background:rgba(46,204,113,.03)}
+    .crm-faq-answer{padding:1rem 1.25rem;margin:0;font-size:.9rem;color:var(--text2);line-height:1.7}
+    .crm-resources-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.6rem;margin:.5rem 0 1.5rem}
+    .crm-resource-card{display:flex;align-items:center;justify-content:space-between;padding:.75rem 1rem;background:var(--bg2);border:1px solid var(--border);border-radius:4px;text-decoration:none;border-left:2px solid transparent;transition:border-left-color .2s,color .2s}
+    .crm-resource-card:hover{border-left-color:var(--accent)}
+    .crm-resource-name{font-size:.88rem;color:var(--text2);font-weight:500;transition:color .2s}
+    .crm-resource-card:hover .crm-resource-name{color:var(--text)}
+    .crm-resource-arrow{font-size:1rem;color:var(--accent);opacity:0;transition:opacity .2s}
+    .crm-resource-card:hover .crm-resource-arrow{opacity:1}
+    @media(max-width:860px){
+      .crm-layout{grid-template-columns:1fr;gap:0}
+      .crm-sidebar{display:none}
+      .crm-toc-mobile{display:flex;gap:.25rem;overflow-x:auto;padding:.75rem 0;margin-bottom:1rem;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+      .crm-toc-mobile::-webkit-scrollbar{display:none}
+      .crm-toc-mobile-link{flex-shrink:0;padding:.35rem .75rem;font-size:.78rem;font-weight:600;color:var(--text2);background:var(--bg2);border:1px solid var(--border);border-radius:4px;text-decoration:none;white-space:nowrap;transition:color .2s,border-color .2s}
+      .crm-toc-mobile-link:hover{color:var(--accent);border-color:var(--accent)}
+      .crm-header h1{font-size:1.7rem}
+      .crm-section-header{margin:0 -1rem 1rem;padding:.6rem 1rem}
+      .crm-resources-grid{grid-template-columns:repeat(2,1fr)}
+    }
+    @media(max-width:600px){
+      .crm-wrap{padding:0 1rem 1.5rem}
+      .crm-resources-grid{grid-template-columns:1fr}
+      .crm-header h1{font-size:1.5rem}
+    }
+  </style>
+  <AuthorBox updated="2026-03-04" />
+</Base>

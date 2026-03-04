@@ -24,6 +24,13 @@ const faqs = [
     answer: 'Major tournaments are broadcast live on Twitch, YouTube, and occasionally Steam.tv. HLTV.org is the central hub for CS2 esports — it hosts schedules, live scoreboards, VODs, and links to official streams for every significant event. Individual tournament organizers like ESL, BLAST, and PGL also run their own Twitch and YouTube channels. In-game GOTV allows you to spectate Major matches directly from CS2.',
   },
 ];
+
+const cards = [
+  { href: '/next-cs2-major/', title: 'When Is the Next CS2 Major?', excerpt: 'Schedule, prize pool, and qualified teams for upcoming Majors.' },
+  { href: '/how-long-cs2-match/', title: 'How Long Is a CS2 Match?', excerpt: 'Match duration from 30-50 minutes, with overtime and BO3 series timing.' },
+  { href: '/cs2-rounds-per-match/', title: 'How Many Rounds in a CS2 Match?', excerpt: 'MR12 format: 24 max rounds, overtime sets, and mode differences.' },
+  { href: '/where-to-watch-cs2/', title: 'Where to Watch CS2 Esports', excerpt: 'Twitch, YouTube, HLTV, and in-game GOTV viewing options.' },
+];
 ---
 
 <Base title={title} description={description}>
@@ -39,25 +46,19 @@ const faqs = [
     <p class="epf-hero-desc">CS2 esports and Majors are the pinnacle of competitive Counter-Strike, drawing millions of viewers worldwide. Whether you are new to watching professional CS2 or a seasoned fan looking for schedule details, this FAQ covers when the next Major is, how matches are structured, and where to catch all the action live. Explore our <a href="/pro-players/">pro player database</a> and <a href="/pro-teams/">team profiles</a> for more.</p>
   </section>
 
-  <div class="epf-faq-list">
-    {faqs.map(faq => (
-      <details class="epf-faq-item">
-        <summary class="epf-faq-question">{faq.question}</summary>
-        <div class="epf-faq-answer" set:html={faq.answer}></div>
-      </details>
+  <p class="epf-intro">Click any question below for a detailed answer.</p>
+
+  <div class="epf-faq-grid">
+    {cards.map(card => (
+      <a href={card.href} class="epf-faq-card">
+        <div class="epf-faq-card-content">
+          <span class="epf-faq-card-q">{card.title}</span>
+          <p class="epf-faq-card-excerpt">{card.excerpt}</p>
+        </div>
+        <span class="epf-faq-card-arrow">&rarr;</span>
+      </a>
     ))}
   </div>
-
-  <section class="epf-related">
-    <h2>Related Articles</h2>
-    <div class="epf-related-grid">
-      <a href="/next-cs2-major/" class="epf-related-card"><span class="epf-related-name">When Is the Next CS2 Major?</span><span class="epf-related-arrow">&rarr;</span></a>
-      <a href="/how-long-cs2-match/" class="epf-related-card"><span class="epf-related-name">How Long Is a CS2 Match?</span><span class="epf-related-arrow">&rarr;</span></a>
-      <a href="/where-to-watch-cs2/" class="epf-related-card"><span class="epf-related-name">Where to Watch CS2 Esports</span><span class="epf-related-arrow">&rarr;</span></a>
-      <a href="/pro-players/" class="epf-related-card"><span class="epf-related-name">Pro Player Settings Database</span><span class="epf-related-arrow">&rarr;</span></a>
-      <a href="/pro-teams/" class="epf-related-card"><span class="epf-related-name">Pro Team Profiles</span><span class="epf-related-arrow">&rarr;</span></a>
-    </div>
-  </section>
 
   <section class="epf-explore">
     <h2>Explore More</h2>
@@ -89,29 +90,18 @@ const faqs = [
 .epf-hero-desc a{color:var(--accent);text-decoration:none}
 .epf-hero-desc a:hover{text-decoration:underline}
 
-/* ── FAQ List ── */
-.epf-faq-list{display:flex;flex-direction:column;gap:.5rem;margin-bottom:2.5rem}
-.epf-faq-item{background:var(--bg2);border:1px solid var(--border);border-radius:4px;overflow:hidden}
-.epf-faq-question{display:block;padding:1rem 1.25rem;font-size:.95rem;font-weight:600;color:var(--text);cursor:pointer;list-style:none;position:relative;padding-right:2.5rem;transition:background .2s}
-.epf-faq-question::-webkit-details-marker{display:none}
-.epf-faq-question::after{content:'+';position:absolute;right:1.25rem;top:50%;transform:translateY(-50%);font-size:1.2rem;color:var(--accent);font-weight:700}
-.epf-faq-item[open] .epf-faq-question::after{content:'\2212'}
-.epf-faq-item[open] .epf-faq-question{border-bottom:1px solid var(--border);background:rgba(46,204,113,.03)}
-.epf-faq-question:hover{background:rgba(46,204,113,.03)}
-.epf-faq-answer{padding:1rem 1.25rem;margin:0;font-size:.9rem;color:var(--text2);line-height:1.7}
-.epf-faq-answer a{color:var(--accent);text-decoration:none}
-.epf-faq-answer a:hover{text-decoration:underline}
+/* ── Intro ── */
+.epf-intro{font-size:.9rem;color:var(--text2);margin:0 0 1.25rem;line-height:1.6}
 
-/* ── Related Articles ── */
-.epf-related{margin-bottom:2rem}
-.epf-related h2{font-family:'Montserrat',sans-serif;font-size:1.2rem;font-weight:700;color:var(--text);margin:0 0 .75rem;padding-bottom:.5rem;border-bottom:2px solid var(--accent)}
-.epf-related-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:.6rem}
-.epf-related-card{display:flex;align-items:center;justify-content:space-between;padding:.75rem 1rem;background:var(--bg2);border:1px solid var(--border);border-radius:4px;text-decoration:none;border-left:2px solid transparent;transition:border-left-color .2s,color .2s}
-.epf-related-card:hover{border-left-color:var(--accent)}
-.epf-related-name{font-size:.88rem;color:var(--text2);font-weight:500;transition:color .2s}
-.epf-related-card:hover .epf-related-name{color:var(--text)}
-.epf-related-arrow{font-size:1rem;color:var(--accent);opacity:0;transition:opacity .2s}
-.epf-related-card:hover .epf-related-arrow{opacity:1}
+/* ── FAQ Card Grid ── */
+.epf-faq-grid{display:grid;grid-template-columns:1fr;gap:.75rem;margin-bottom:2.5rem}
+.epf-faq-card{display:flex;align-items:center;justify-content:space-between;padding:1.25rem;background:var(--bg2);border:1px solid var(--border);border-radius:4px;text-decoration:none;border-left:3px solid transparent;transition:border-left-color .2s,background .15s}
+.epf-faq-card:hover{border-left-color:var(--accent);background:rgba(46,204,113,.03)}
+.epf-faq-card-content{flex:1}
+.epf-faq-card-q{font-size:.95rem;font-weight:600;color:var(--text);margin:0 0 .25rem;display:block}
+.epf-faq-card-excerpt{font-size:.82rem;color:var(--text2);margin:0;line-height:1.5}
+.epf-faq-card-arrow{font-size:1.1rem;color:var(--accent);margin-left:1rem;opacity:0;transition:opacity .2s}
+.epf-faq-card:hover .epf-faq-card-arrow{opacity:1}
 
 /* ── Explore More ── */
 .epf-explore{margin-bottom:2rem}
@@ -129,6 +119,5 @@ const faqs = [
 /* ── Responsive ── */
 @media(max-width:768px){
   .epf-hero h1{font-size:1.5rem}
-  .epf-related-grid{grid-template-columns:1fr}
 }
 </style>

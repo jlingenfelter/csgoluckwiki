@@ -1,0 +1,264 @@
+---
+import Base from '../layouts/Base.astro';
+import AuthorBox from '../components/AuthorBox.astro';
+import { faqSchema, breadcrumbSchema } from '../lib/weapons';
+
+const title = 'How to Change Freeze Time in CS2: Commands & Settings | CSGOLuck Wiki';
+const description = 'Use mp_freezetime to adjust or remove freeze time in CS2 private servers. Commands, settings, and practice config tips.';
+
+const breadcrumbs = [
+  { name: 'Home', url: '/' },
+  { name: 'CS2 General FAQ', url: '/cs2-general-faq' },
+  { name: 'Freeze Time in CS2', url: '/cs2-freeze-time' },
+];
+
+const faqs = [
+  {
+    question: 'What is the default freeze time in CS2 competitive matches?',
+    answer: 'The default freeze time in CS2 competitive and Premier matches is 20 seconds. This gives players time to purchase weapons, armor, and utility during the buy phase. Casual modes use a 15-second freeze time. See our <a href="/cs2-general-faq/">general FAQ</a> for more game settings.',
+  },
+  {
+    question: 'How do I remove freeze time completely in CS2?',
+    answer: 'To remove freeze time entirely, open the console and type <code>mp_freezetime 0</code>. This eliminates the buy phase and starts each round immediately. You will still be able to buy during the first few seconds of the round if <code>mp_buytime</code> is set above 0. This only works on servers where you have admin access.',
+  },
+  {
+    question: 'Can I change freeze time on Valve official servers?',
+    answer: 'No. Freeze time on official Valve matchmaking servers is locked to the default values (20 seconds for competitive, 15 seconds for casual). You can only change freeze time on private servers, community servers, or local games where you have access to server commands.',
+  },
+];
+
+const breadcrumbSchema_ = breadcrumbSchema(breadcrumbs);
+const faqSchema_ = faqSchema(faqs);
+
+const articleSchema = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": title,
+  "description": description,
+  "author": { "@type": "Person", "name": "Josh Lingenfelter", "url": "https://www.linkedin.com/in/josh-lingenfelter-8157274b/", "jobTitle": "Director", "worksFor": { "@type": "Organization", "name": "CSGOLuck" } },
+  "publisher": { "@type": "Organization", "name": "CSGOLuck Wiki", "url": "https://wiki.csgoluck.com" },
+  "mainEntityOfPage": "https://wiki.csgoluck.com/cs2-freeze-time/",
+  "inLanguage": "en-US"
+});
+
+const sections = [
+  { id: 'what-is-freeze-time', label: 'What Is Freeze Time' },
+  { id: 'default-values', label: 'Default Values' },
+  { id: 'how-to-change', label: 'How to Change Freeze Time' },
+  { id: 'removing-freeze-time', label: 'Removing Freeze Time' },
+  { id: 'practice-config', label: 'Practice Config Integration' },
+  { id: 'faq', label: 'FAQ' },
+  { id: 'related', label: 'Related Articles' },
+];
+---
+
+<Base title={title} description={description}>
+  <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema_)}></script>
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema_)}></script>
+  <script type="application/ld+json" set:html={articleSchema}></script>
+
+  <div class="cft-wrap">
+    <nav class="cft-breadcrumb">
+      <a href="/">Home</a>
+      <span class="cft-sep">/</span>
+      <a href="/cs2-general-faq/">CS2 General FAQ</a>
+      <span class="cft-sep">/</span>
+      <span>Freeze Time in CS2</span>
+    </nav>
+
+    <header class="cft-header">
+      <h1>How to Change Freeze Time in CS2: Commands & Settings</h1>
+      <p class="cft-subtitle">Adjust or eliminate the buy phase timer on your private and practice servers</p>
+    </header>
+
+    <nav class="cft-toc-mobile" aria-label="Table of contents">
+      {sections.map((s) => (
+        <a href={`#${s.id}`} class="cft-toc-mobile-link">{s.label}</a>
+      ))}
+    </nav>
+
+    <div class="cft-layout">
+      <aside class="cft-sidebar">
+        <nav class="cft-toc" aria-label="Table of contents">
+          <span class="cft-toc-title">Contents</span>
+          {sections.map((s) => (
+            <a href={`#${s.id}`} class="cft-toc-link">{s.label}</a>
+          ))}
+        </nav>
+      </aside>
+
+      <article class="cft-content">
+        <p class="cft-intro">
+          Freeze time is the brief period at the start of each round in CS2 where players cannot move or shoot. During this phase, you purchase weapons, armor, grenades, and other equipment from the buy menu. While freeze time is a fixed setting on official Valve servers, you have full control over it on private and community servers. This guide explains what freeze time is, what the default values are across game modes, and exactly how to change or remove freeze time using console commands for your practice sessions and custom games.
+        </p>
+
+        <section id="what-is-freeze-time">
+          <div class="cft-section-header"><h2>What Is Freeze Time in CS2?</h2></div>
+          <p>Freeze time (also called the buy phase or buy time) is the period at the very beginning of each round where all players are frozen in their spawn positions. During this window, you can open the buy menu and purchase your loadout for the upcoming round, but you cannot move your character, fire weapons, or use grenades.</p>
+          <p>The freeze time serves several important purposes in CS2:</p>
+          <ul class="cft-list">
+            <li><strong>Equipment purchasing:</strong> The primary purpose -- players use freeze time to buy weapons, armor, defuse kits, and utility grenades for the round</li>
+            <li><strong>Team strategy:</strong> Freeze time gives teams a moment to communicate their plan for the round, call strats, and coordinate who buys what</li>
+            <li><strong>Fair start:</strong> By freezing all players simultaneously, freeze time ensures no team gains an unfair movement advantage at the start of a round</li>
+            <li><strong>Money management:</strong> Players discuss the team economy during freeze time, deciding whether to full buy, eco, force buy, or save</li>
+          </ul>
+          <p>Once freeze time expires, all players are released simultaneously and the round begins. The round timer (separate from freeze time) starts counting down, and gameplay proceeds normally until one team wins the round through elimination, bomb detonation/defusal, or time expiration.</p>
+        </section>
+
+        <section id="default-values">
+          <div class="cft-section-header"><h2>Default Freeze Time Values</h2></div>
+          <p>Valve has set specific freeze time durations for each official game mode. These values are locked on Valve matchmaking servers and cannot be changed by players:</p>
+          <ul class="cft-list">
+            <li><strong>Competitive / Premier:</strong> 20 seconds -- the standard buy phase for ranked play</li>
+            <li><strong>Casual:</strong> 15 seconds -- slightly shorter since casual has less emphasis on team coordination</li>
+            <li><strong>Wingman:</strong> 20 seconds -- matches the competitive setting despite having only 2 players per team</li>
+            <li><strong>Deathmatch:</strong> No freeze time -- players respawn continuously with auto-assigned loadouts</li>
+            <li><strong>Arms Race:</strong> No freeze time -- weapons cycle automatically based on kills</li>
+            <li><strong>Professional tournaments:</strong> Typically 20 seconds, matching the competitive default. Some tournament organizers may use 25 seconds to allow for tactical timeouts integration</li>
+          </ul>
+          <p>The 20-second competitive freeze time was carried over from CS:GO and has remained the standard in CS2. It provides enough time for experienced players to buy equipment quickly and discuss round strategy, while keeping the pace of the game moving.</p>
+        </section>
+
+        <section id="how-to-change">
+          <div class="cft-section-header"><h2>How to Change Freeze Time</h2></div>
+          <p>To modify freeze time, you need access to a private server, a local game, or a community server where you have admin privileges. The key command is <code>mp_freezetime</code>, which accepts a value in seconds.</p>
+          <p>First, make sure the developer console is enabled. Go to Settings, then Game, and set "Enable Developer Console" to Yes. You can then open the console by pressing the tilde key (~) or whatever key you have bound.</p>
+          <p>Here are the essential commands:</p>
+          <ul class="cft-list">
+            <li><strong><code>mp_freezetime 20</code></strong> -- Sets freeze time to 20 seconds (the default competitive value)</li>
+            <li><strong><code>mp_freezetime 10</code></strong> -- Reduces freeze time to 10 seconds for faster-paced games</li>
+            <li><strong><code>mp_freezetime 5</code></strong> -- Sets a very short 5-second freeze time, useful for rapid practice rounds</li>
+            <li><strong><code>mp_freezetime 0</code></strong> -- Removes freeze time entirely (rounds start immediately)</li>
+            <li><strong><code>mp_freezetime 60</code></strong> -- Sets a very long freeze time, useful for team practice where extended strategy discussion is needed</li>
+          </ul>
+          <p>You can also adjust the related buy time command, which controls how long after freeze time ends you can still make purchases:</p>
+          <ul class="cft-list">
+            <li><strong><code>mp_buytime 20</code></strong> -- Allows buying for 20 seconds after freeze time ends (default)</li>
+            <li><strong><code>mp_buytime 0</code></strong> -- Disables buying after freeze time ends</li>
+            <li><strong><code>mp_buy_anywhere 1</code></strong> -- Allows purchasing equipment anywhere on the map (not just in spawn)</li>
+          </ul>
+          <p>These commands only work on servers where you have the appropriate permissions. On official Valve servers, these commands are restricted. For a comprehensive list of server commands, see our <a href="/cs2-console-commands/">CS2 console commands guide</a>.</p>
+        </section>
+
+        <section id="removing-freeze-time">
+          <div class="cft-section-header"><h2>Removing Freeze Time Completely</h2></div>
+          <p>Setting freeze time to zero is popular for several scenarios: grenade practice sessions, aim training, retake practice, and any custom mode where you want to eliminate downtime between rounds.</p>
+          <p>To remove freeze time, simply enter:</p>
+          <ul class="cft-list">
+            <li><strong><code>mp_freezetime 0</code></strong> -- Eliminates the freeze phase. Rounds begin instantly after the previous round ends</li>
+          </ul>
+          <p>When freeze time is set to zero, keep these considerations in mind:</p>
+          <ul class="cft-list">
+            <li><strong>Buy time still applies:</strong> Even with zero freeze time, the <code>mp_buytime</code> value determines how long you can buy after the round starts. Set <code>mp_buytime 9999</code> if you want unlimited buying time throughout the round</li>
+            <li><strong>Auto-buy setup:</strong> With no freeze time, you may want to set up auto-buy binds so your equipment is purchased instantly. Bind buy commands to keys using the console</li>
+            <li><strong>Grenade practice:</strong> For smoke and flashbang practice, zero freeze time combined with <code>sv_infinite_ammo 1</code> and <code>mp_buytime 9999</code> creates an efficient practice environment</li>
+            <li><strong>Round restart:</strong> After changing freeze time, use <code>mp_restartgame 1</code> to restart the match and apply the new setting cleanly</li>
+          </ul>
+          <p>For aim training servers, zero freeze time paired with instant respawn (<code>mp_respawn_on_death_ct 1; mp_respawn_on_death_t 1</code>) creates a seamless deathmatch-style experience. For removing bots or further customizing your practice environment, see our guide on <a href="/remove-bots-cs2/">removing bots in CS2</a>.</p>
+        </section>
+
+        <section id="practice-config">
+          <div class="cft-section-header"><h2>Practice Config Integration</h2></div>
+          <p>The most efficient way to manage freeze time and other practice settings is through a configuration file (CFG). Instead of typing commands manually each time you load a practice server, you can save them in a file that loads automatically.</p>
+          <p>Here is a sample practice config that includes freeze time settings along with other commonly used practice commands:</p>
+          <ul class="cft-list">
+            <li><strong><code>mp_freezetime 0</code></strong> -- No buy phase delay</li>
+            <li><strong><code>mp_buytime 9999</code></strong> -- Buy at any time during the round</li>
+            <li><strong><code>mp_buy_anywhere 1</code></strong> -- Buy from any position on the map</li>
+            <li><strong><code>sv_infinite_ammo 1</code></strong> -- Unlimited ammo for practice</li>
+            <li><strong><code>mp_roundtime_defuse 60</code></strong> -- Long rounds for extended practice</li>
+            <li><strong><code>mp_warmup_end</code></strong> -- Skip warmup and start immediately</li>
+            <li><strong><code>sv_grenade_trajectory_prac_pipreview 1</code></strong> -- Show grenade trajectory previews</li>
+            <li><strong><code>bot_kick</code></strong> -- Remove all bots from the server</li>
+            <li><strong><code>mp_restartgame 1</code></strong> -- Restart with all settings applied</li>
+          </ul>
+          <p>To create a practice config, save these commands in a text file named <code>practice.cfg</code> inside your CS2 cfg folder (typically located at <code>Steam/steamapps/common/Counter-Strike Global Offensive/game/csgo/cfg/</code>). Then load it in-game by typing <code>exec practice</code> in the console.</p>
+          <p>Having a well-organized practice config saves significant time when you load up private servers for training. You can create multiple configs for different purposes -- one for smoke practice, one for aim training, one for retake practice -- each with different freeze time and gameplay settings tailored to the activity. Check our <a href="/cs2-console-commands/">full console commands reference</a> for additional commands to include in your configs.</p>
+        </section>
+
+        <section id="faq">
+          <div class="cft-section-header"><h2>Frequently Asked Questions</h2></div>
+          <div class="cft-faq-list">
+            {faqs.map((faq) => (
+              <details class="cft-faq-item">
+                <summary class="cft-faq-question">{faq.question}</summary>
+                <p class="cft-faq-answer" set:html={faq.answer}></p>
+              </details>
+            ))}
+          </div>
+        </section>
+
+        <section id="related">
+          <div class="cft-section-header"><h2>Related Articles</h2></div>
+          <div class="cft-resources-grid">
+            <a href="/cs2-console-commands/" class="cft-resource-card"><span class="cft-resource-name">CS2 Console Commands</span><span class="cft-resource-arrow">&rarr;</span></a>
+            <a href="/remove-bots-cs2/" class="cft-resource-card"><span class="cft-resource-name">How to Remove Bots in CS2</span><span class="cft-resource-arrow">&rarr;</span></a>
+            <a href="/cs2-general-faq/" class="cft-resource-card"><span class="cft-resource-name">CS2 General FAQ Hub</span><span class="cft-resource-arrow">&rarr;</span></a>
+            <a href="/how-long-cs2-game/" class="cft-resource-card"><span class="cft-resource-name">How Long Is a CS2 Game?</span><span class="cft-resource-arrow">&rarr;</span></a>
+          </div>
+        </section>
+      </article>
+    </div>
+  </div>
+
+  <style>
+    .cft-wrap{max-width:1100px;margin:0 auto;padding:0 1.5rem 2rem}
+    .cft-breadcrumb{display:flex;align-items:center;gap:.5rem;padding:1.25rem 0;font-size:.85rem;color:var(--text2)}
+    .cft-breadcrumb a{color:var(--accent);text-decoration:none}
+    .cft-breadcrumb a:hover{color:var(--accent2)}
+    .cft-sep{color:var(--border)}
+    .cft-header{padding:1.5rem 0 1.25rem;border-bottom:2px solid var(--accent);margin-bottom:1.5rem}
+    .cft-header h1{margin:0 0 .35rem;font-size:2.2rem;font-weight:800;color:var(--text);letter-spacing:-.02em;line-height:1.2}
+    .cft-subtitle{margin:0;font-size:1.05rem;color:var(--text2);font-weight:400}
+    .cft-toc-mobile{display:none}
+    .cft-layout{display:grid;grid-template-columns:220px 1fr;gap:2.5rem;align-items:start}
+    .cft-sidebar{position:sticky;top:80px}
+    .cft-toc{display:flex;flex-direction:column;gap:0;border-left:2px solid var(--border);padding-left:0}
+    .cft-toc-title{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--accent);padding:0 0 .6rem 1rem}
+    .cft-toc-link{display:block;padding:.4rem 1rem;font-size:.82rem;color:var(--text2);text-decoration:none;border-left:2px solid transparent;margin-left:-2px;transition:color .2s,border-color .2s}
+    .cft-toc-link:hover{color:var(--text);border-left-color:var(--accent)}
+    .cft-content{min-width:0}
+    .cft-intro{font-size:1rem;line-height:1.8;color:var(--text2);margin-bottom:2rem}
+    .cft-section-header{background:rgba(46,204,113,.05);margin:0 -1.25rem 1.25rem;padding:.75rem 1.25rem;border-radius:4px}
+    .cft-section-header h2{margin:0;padding:0;font-size:1.5rem;font-weight:700;color:var(--text);border:none;letter-spacing:-.01em}
+    section{margin-bottom:2.5rem}
+    p{line-height:1.7;color:var(--text2);margin-bottom:1rem}
+    .cft-list{list-style:none;padding:0;margin:.75rem 0 1.5rem}
+    .cft-list li{padding:.4rem 0 .4rem 1.6rem;position:relative;color:var(--text2);line-height:1.65}
+    .cft-list li::before{content:'';position:absolute;left:.25rem;top:.75rem;width:6px;height:6px;background:var(--accent);border-radius:1px}
+    .cft-list li strong{color:var(--text)}
+    .cft-faq-list{display:flex;flex-direction:column;gap:.5rem}
+    .cft-faq-item{background:var(--bg2);border:1px solid var(--border);border-radius:4px;overflow:hidden}
+    .cft-faq-question{display:block;padding:1rem 1.25rem;font-size:.95rem;font-weight:600;color:var(--text);cursor:pointer;list-style:none;position:relative;padding-right:2.5rem;transition:background .2s}
+    .cft-faq-question::-webkit-details-marker{display:none}
+    .cft-faq-question::after{content:'+';position:absolute;right:1.25rem;top:50%;transform:translateY(-50%);font-size:1.2rem;color:var(--accent);font-weight:700}
+    .cft-faq-item[open] .cft-faq-question::after{content:'\2212'}
+    .cft-faq-item[open] .cft-faq-question{border-bottom:1px solid var(--border);background:rgba(46,204,113,.03)}
+    .cft-faq-question:hover{background:rgba(46,204,113,.03)}
+    .cft-faq-answer{padding:1rem 1.25rem;margin:0;font-size:.9rem;color:var(--text2);line-height:1.7}
+    .cft-resources-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.6rem;margin:.5rem 0 1.5rem}
+    .cft-resource-card{display:flex;align-items:center;justify-content:space-between;padding:.75rem 1rem;background:var(--bg2);border:1px solid var(--border);border-radius:4px;text-decoration:none;border-left:2px solid transparent;transition:border-left-color .2s,color .2s}
+    .cft-resource-card:hover{border-left-color:var(--accent)}
+    .cft-resource-name{font-size:.88rem;color:var(--text2);font-weight:500;transition:color .2s}
+    .cft-resource-card:hover .cft-resource-name{color:var(--text)}
+    .cft-resource-arrow{font-size:1rem;color:var(--accent);opacity:0;transition:opacity .2s}
+    .cft-resource-card:hover .cft-resource-arrow{opacity:1}
+    @media(max-width:860px){
+      .cft-layout{grid-template-columns:1fr;gap:0}
+      .cft-sidebar{display:none}
+      .cft-toc-mobile{display:flex;gap:.25rem;overflow-x:auto;padding:.75rem 0;margin-bottom:1rem;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+      .cft-toc-mobile::-webkit-scrollbar{display:none}
+      .cft-toc-mobile-link{flex-shrink:0;padding:.35rem .75rem;font-size:.78rem;font-weight:600;color:var(--text2);background:var(--bg2);border:1px solid var(--border);border-radius:4px;text-decoration:none;white-space:nowrap;transition:color .2s,border-color .2s}
+      .cft-toc-mobile-link:hover{color:var(--accent);border-color:var(--accent)}
+      .cft-header h1{font-size:1.7rem}
+      .cft-section-header{margin:0 -1rem 1rem;padding:.6rem 1rem}
+      .cft-resources-grid{grid-template-columns:repeat(2,1fr)}
+    }
+    @media(max-width:600px){
+      .cft-wrap{padding:0 1rem 1.5rem}
+      .cft-resources-grid{grid-template-columns:1fr}
+      .cft-header h1{font-size:1.5rem}
+    }
+  </style>
+  <AuthorBox updated="2026-03-04" />
+</Base>
