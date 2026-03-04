@@ -10,6 +10,7 @@ export interface CaseData {
   year: number;
   releaseDate: string;
   keyPrice: number;
+  casePrice?: number;
   type: 'weapon' | 'souvenir' | 'collection';
   description: string;
   image: string;

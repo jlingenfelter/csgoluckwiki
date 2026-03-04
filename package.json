@@ -5,7 +5,8 @@
     "dev": "astro dev",
     "build": "astro build",
     "fetch-prices": "node scripts/fetch-prices.mjs",
-    "build:fresh": "node scripts/fetch-prices.mjs && astro build",
+    "fetch-case-prices": "node scripts/fetch-case-prices.mjs",
+    "build:fresh": "node scripts/fetch-prices.mjs && node scripts/fetch-case-prices.mjs && astro build",
     "preview": "astro preview",
     "submit-index": "node scripts/submit-indexnow.mjs"
   },

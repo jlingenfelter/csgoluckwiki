@@ -3,6 +3,7 @@ import Base from '../../layouts/Base.astro';
 import ExploreMore from '../../components/ExploreMore.astro';
 import { caseDatabase } from '../../lib/cases';
 import { breadcrumbSchema } from '../../lib/weapons';
+import casePricesData from '../../lib/case-prices.json';
 
 export function getStaticPaths() {
   return Object.keys(caseDatabase).map((slug) => ({
@@ -45,8 +46,11 @@ const skinsByRarity = caseData.skins.reduce(
   {} as Record<string, typeof caseData.skins>,
 );
 
-const caseROI = caseData.keyPrice * (100 / 79.92) * -1;
-const expectedValue = (caseData.keyPrice * 2) / 100;
+const casePrices = (casePricesData as any).cases || {};
+const caseMarketPrice = casePrices[slug]?.price || 0;
+const totalOpenCost = caseMarketPrice + caseData.keyPrice;
+const caseROI = totalOpenCost * (100 / 79.92) * -1;
+const breakEvenValue = totalOpenCost * 2;
 
 const breadcrumbs = [
   { name: 'Home', url: '/' },
@@ -88,7 +92,7 @@ const relatedCases = allCases
       offers: {
         '@type': 'Offer',
         priceCurrency: 'USD',
-        price: caseData.keyPrice.toFixed(2),
+        price: totalOpenCost.toFixed(2),
         availability: 'https://schema.org/InStock',
         url: `https://wiki.csgoluck.com/cs2-cases/${slug}/`,
       },
@@ -117,9 +121,19 @@ const relatedCases = allCases
         <p class="cp-hero-desc">{caseData.description} Try your luck risk-free in the <a href="/case-simulator/" style="color:var(--accent)">Case Simulator</a>, or calculate your odds with the <a href="/case-odds-calculator/" style="color:var(--accent)">Case Odds Calculator</a>.</p>
       )}
       <div class="cp-hero-stats">
+        {caseMarketPrice > 0 && (
+          <div class="cp-stat">
+            <span class="cp-stat-val">${caseMarketPrice.toFixed(2)}</span>
+            <span class="cp-stat-label">Case Price</span>
+          </div>
+        )}
         <div class="cp-stat">
-          <span class="cp-stat-val">${caseData.keyPrice}</span>
+          <span class="cp-stat-val">${caseData.keyPrice.toFixed(2)}</span>
           <span class="cp-stat-label">Key Price</span>
+        </div>
+        <div class="cp-stat">
+          <span class="cp-stat-val cp-stat-highlight">${totalOpenCost.toFixed(2)}</span>
+          <span class="cp-stat-label">Total to Open</span>
         </div>
         <div class="cp-stat">
           <span class="cp-stat-val">{caseData.skins.length}</span>
@@ -128,10 +142,6 @@ const relatedCases = allCases
         <div class="cp-stat">
           <span class="cp-stat-val">{caseData.releaseDate}</span>
           <span class="cp-stat-label">Released</span>
-        </div>
-        <div class="cp-stat">
-          <span class="cp-stat-val">{caseData.type === 'weapon' ? 'Weapon' : 'Special'}</span>
-          <span class="cp-stat-label">Type</span>
         </div>
       </div>
     </div>
@@ -169,7 +179,7 @@ const relatedCases = allCases
       </div>
       <div class="cp-ev-item">
         <span class="cp-ev-label">Break-Even Item Value</span>
-        <span class="cp-ev-val">${(caseData.keyPrice * 2).toFixed(2)}</span>
+        <span class="cp-ev-val">${breakEvenValue.toFixed(2)}</span>
       </div>
       <p class="cp-ev-tip">For better returns, try the <a href="/tradeup-calculator/">Trade-Up Calculator</a>.</p>
     </div>
@@ -395,6 +405,10 @@ const relatedCases = allCases
       font-size: 0.95rem;
       font-weight: 700;
       color: var(--accent);
+    }
+    .cp-stat-highlight {
+      font-size: 1.1rem;
+      color: #fff;
     }
 
     .cp-stat-label {

@@ -4,13 +4,18 @@ import ExploreMore from '../components/ExploreMore.astro';
 import { breadcrumbSchema, faqSchema } from '../lib/weapons';
 import { caseDatabase } from '../lib/cases';
 import type { CaseData } from '../lib/cases';
+import casePricesData from '../lib/case-prices.json';
+
+const casePrices = (casePricesData as any).cases || {};
 
 interface CaseItem {
   id: string;
   name: string;
   year: number;
   type: 'weapon' | 'souvenir' | 'collection';
-  keyPrice?: number;
+  keyPrice: number;
+  casePrice: number;
+  totalCost: number;
   notableSkins: string[];
   releaseDate: string;
   image?: string;
@@ -18,20 +23,25 @@ interface CaseItem {
 }
 
 // Build the cases array from caseDatabase, enriched with images, descriptions, and real skin data
-const dbCases: CaseItem[] = Object.values(caseDatabase).map((c: CaseData) => ({
-  id: c.id,
-  name: c.name,
-  year: c.year,
-  type: c.type,
-  keyPrice: c.keyPrice,
-  notableSkins: c.skins
-    .filter((s) => s.rarity === 'covert' || s.rarity === 'classified')
-    .slice(0, 3)
-    .map((s) => `${s.weapon} ${s.name}`),
-  releaseDate: c.releaseDate,
-  image: c.image,
-  description: c.description,
-}));
+const dbCases: CaseItem[] = Object.values(caseDatabase).map((c: CaseData) => {
+  const casePrice = casePrices[c.id]?.price || 0;
+  return {
+    id: c.id,
+    name: c.name,
+    year: c.year,
+    type: c.type,
+    keyPrice: c.keyPrice,
+    casePrice,
+    totalCost: casePrice + c.keyPrice,
+    notableSkins: c.skins
+      .filter((s) => s.rarity === 'covert' || s.rarity === 'classified')
+      .slice(0, 3)
+      .map((s) => `${s.weapon} ${s.name}`),
+    releaseDate: c.releaseDate,
+    image: c.image,
+    description: c.description,
+  };
+});
 
 // IDs already covered by caseDatabase
 const dbIds = new Set(Object.keys(caseDatabase));
@@ -130,7 +140,7 @@ const uniqueYears = [...new Set(cases.map(c => c.year))].sort((a, b) => b - a);
           {caseItem.notableSkins.length > 0 && (
             <span class="ch-card-rare">{caseItem.notableSkins[0]}</span>
           )}
-          {caseItem.keyPrice && <span class="ch-card-price">Key: ${caseItem.keyPrice}</span>}
+          {caseItem.totalCost > 0 && <span class="ch-card-price">${caseItem.totalCost.toFixed(2)} to open</span>}
         </div>
       </a>
     ))}
