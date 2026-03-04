@@ -1,7 +1,7 @@
 ---
 import Base from '../../layouts/Base.astro';
 import ExploreMore from '../../components/ExploreMore.astro';
-import { SKINS, RARITY_COLORS, RARITY_BG, MARKETPLACES, getSkinsByWeapon, getSkinBySlug, getLowestPrice, getHighestPrice, fmtPrice, getPhaseVariants, getParentSkin } from '../../lib/skins';
+import { SKINS, RARITY_COLORS, RARITY_BG, MARKETPLACES, getSkinsByWeapon, getSkinBySlug, getLowestPrice, getHighestPrice, fmtPrice, getPhaseVariants, getParentSkin, getSkinFamily } from '../../lib/skins';
 import { getWeaponBySlug, faqSchema, breadcrumbSchema } from '../../lib/weapons';
 import { skinDetailImage, skinRelatedImage } from '../../lib/imageOptimize';
 import { getPlayersUsingSkin } from '../../lib/pro-players';
@@ -35,6 +35,24 @@ const isPhaseVariant = !!skin.phase;
 const isDopplerParent = phaseVariants.length > 0;
 // For phase variant pages, get all siblings from parent
 const siblingVariants = parentSkin ? getPhaseVariants(parentSkin) : [];
+
+// Skin family (same finish across all weapons)
+const skinFamily = getSkinFamily(skin.name, skin.slug).slice(0, 6);
+
+// All possible wears and which ones this skin CAN have
+const ALL_WEARS = ['Factory New', 'Minimal Wear', 'Field-Tested', 'Well-Worn', 'Battle-Scarred'];
+const WEAR_FLOAT_RANGES: Record<string, [number, number]> = {
+  'Factory New': [0.00, 0.07], 'Minimal Wear': [0.07, 0.15],
+  'Field-Tested': [0.15, 0.38], 'Well-Worn': [0.38, 0.45], 'Battle-Scarred': [0.45, 1.00],
+};
+const possibleWears = ALL_WEARS.filter(w => {
+  const [lo, hi] = WEAR_FLOAT_RANGES[w];
+  return skin.minFloat < hi && skin.maxFloat > lo;
+});
+
+// Format release date
+const releaseDate = skin.releasedAt ? new Date(skin.releasedAt) : null;
+const releaseDateStr = releaseDate ? releaseDate.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) : null;
 
 // Category label
 const categoryLabels: Record<string, string> = {
@@ -439,7 +457,7 @@ const faqs = [
   {
     q: `How much is ${skin.weapon} | ${skin.name}?`,
     a: skin.prices.length > 0
-      ? `The ${skin.weapon} | ${skin.name} ranges from $${lowPrice.toFixed(2)} to $${highPrice.toFixed(2)} depending on wear condition. ${skin.prices.map(p => `${p.wear} starts at $${p.price.toFixed(2)}`).join(', ')}.`
+      ? `The ${skin.weapon} | ${skin.name} ranges from $${fmtPrice(lowPrice)} to $${fmtPrice(highPrice)} depending on wear condition. ${skin.prices.map(p => `${p.wear} starts at $${fmtPrice(p.price)}`).join(', ')}.`
       : `The ${skin.weapon} | ${skin.name} is a ${skin.rarity} ${catLabel} skin. Check current marketplace listings for up-to-date pricing.`,
   },
   {
@@ -449,7 +467,7 @@ const faqs = [
   {
     q: `Where is the cheapest place to buy ${skin.weapon} | ${skin.name}?`,
     a: cheapestPerWear.length > 0 && cheapestPerWear[0].provider
-      ? `The cheapest listing for ${skin.weapon} | ${skin.name} (${cheapestPerWear[0].wear}) is currently $${cheapestPerWear[0].price.toFixed(2)} on ${getMarketplace(cheapestPerWear[0].provider).name}. Compare prices across all ${allProviders.size} marketplaces above.`
+      ? `The cheapest listing for ${skin.weapon} | ${skin.name} (${cheapestPerWear[0].wear}) is currently $${fmtPrice(cheapestPerWear[0].price)} on ${getMarketplace(cheapestPerWear[0].provider).name}. Compare prices across all ${allProviders.size} marketplaces above.`
       : `Compare prices across ${allProviders.size}+ marketplaces above to find the best deal. Prices update regularly from Buff163, CS.Money, Skinport, and other trusted platforms.`,
   },
   {
@@ -550,6 +568,13 @@ const listingDesc = (skin.listingCount ?? 0) > 10000 ? 'widely available with hi
       <span class="wi-grade-tag" style={`background:${rarityColor}`}>{skin.rarity}</span>
     </div>
 
+    <!-- Flavor Text -->
+    {skin.flavorText && (
+      <div class="wi-flavor">
+        <em>"{skin.flavorText}"</em>
+      </div>
+    )}
+
     <!-- Specs table -->
     <div class="wi-specs">
       <table class="wi-specs-table">
@@ -561,6 +586,10 @@ const listingDesc = (skin.listingCount ?? 0) > 10000 ? 'widely available with hi
           {skin.collection && <tr class="wi-spec-row"><td class="wi-spec-key">Set</td><td class="wi-spec-val">{skin.collection}</td></tr>}
           <tr class="wi-spec-row"><td class="wi-spec-key">Grade</td><td class="wi-spec-val" style={`color:${rarityColor}`}>{skin.rarity}</td></tr>
           <tr class="wi-spec-row"><td class="wi-spec-key">Float</td><td class="wi-spec-val">{skin.minFloat.toFixed(2)} -- {skin.maxFloat.toFixed(2)}</td></tr>
+          {skin.finishStyle && <tr class="wi-spec-row"><td class="wi-spec-key">Finish Style</td><td class="wi-spec-val">{skin.finishStyle}</td></tr>}
+          {skin.paintIndex != null && <tr class="wi-spec-row"><td class="wi-spec-key">Finish Catalog</td><td class="wi-spec-val">#{skin.paintIndex}</td></tr>}
+          {releaseDateStr && <tr class="wi-spec-row"><td class="wi-spec-key">Released</td><td class="wi-spec-val">{releaseDateStr}</td></tr>}
+          {skin.legacyModel != null && <tr class="wi-spec-row"><td class="wi-spec-key">Model</td><td class="wi-spec-val">{skin.legacyModel ? 'Legacy (CS:GO)' : 'CS2'}</td></tr>}
           <tr class="wi-spec-row"><td class="wi-spec-key">StatTrak&#8482;</td><td class="wi-spec-val">{skin.statTrak ? 'Available' : 'Unavailable'}</td></tr>
           <tr class="wi-spec-row"><td class="wi-spec-key">Souvenir</td><td class="wi-spec-val">{skin.souvenir ? 'Available' : 'Unavailable'}</td></tr>
         </tbody>
@@ -696,35 +725,41 @@ const listingDesc = (skin.listingCount ?? 0) > 10000 ? 'widely available with hi
                   <span>🎁 100% to 100 Coins + 5 Free Cases</span>
                 </a>
               </div>
-              {/* Waxpeer */}
-              {waxpeerPrice && waxpeerPrice > 0 && (
-                <div class="wi-market-row">
-                  <div class="wi-market-left">
-                    <span class="wi-market-icon" style={`background:${waxpeerMp.color}`}>
-                      <img src={`https://www.google.com/s2/favicons?domain=${waxpeerMp.domain}&sz=64`} alt="Waxpeer" loading="lazy" />
-                    </span>
-                    <span class="wi-market-name">Waxpeer</span>
-                  </div>
-                  <div class="wi-market-right">
-                    <span class="wi-market-amount">${fmtPrice(waxpeerPrice)}</span>
-                    <a href={getMarketplaceUrl('waxpeer')} target="_blank" rel="nofollow noopener" class="wi-market-buy-link">Buy</a>
-                  </div>
-                </div>
-              )}
-              {/* Steam Market — reference price */}
-              {steamPrice && steamPrice > 0 && (
-                <div class="wi-market-row wi-steam-ref">
-                  <div class="wi-market-left">
-                    <span class="wi-market-icon" style={`background:${steamMp.color}`}>
-                      <img src={`https://www.google.com/s2/favicons?domain=${steamMp.domain}&sz=64`} alt="Steam" loading="lazy" />
-                    </span>
-                    <span class="wi-market-name">Steam Market</span>
-                  </div>
-                  <div class="wi-market-right">
-                    <span class="wi-market-amount wi-steam-price">${fmtPrice(steamPrice)}</span>
-                  </div>
-                </div>
-              )}
+              {/* Top marketplaces — sorted by price, show up to 8 */}
+              {(() => {
+                const topProviders = wearData.providers
+                  ? Object.entries(wearData.providers)
+                      .filter(([k, v]) => v > 0 && !BLOCKED_PROVIDERS.has(k) && k !== 'buff163_buy')
+                      .sort((a, b) => a[1] - b[1])
+                      .slice(0, 8)
+                  : [];
+                return topProviders.map(([key, price]) => {
+                  const mp = getMarketplace(key);
+                  const mpUrl = getMarketplaceUrl(key);
+                  const tp = mp.trustpilot;
+                  return (
+                    <div class="wi-market-row">
+                      <div class="wi-market-left">
+                        <span class="wi-market-icon" style={`background:${mp.color}`}>
+                          <img src={`https://www.google.com/s2/favicons?domain=${mp.domain}&sz=64`} alt={mp.name} loading="lazy" />
+                        </span>
+                        <div class="wi-mp-info">
+                          <span class="wi-market-name">{mp.name}</span>
+                          {tp && <span class="wi-mp-rating">{'★'.repeat(Math.round(tp))} {tp}</span>}
+                        </div>
+                      </div>
+                      <div class="wi-market-right">
+                        <span class="wi-market-amount">${fmtPrice(price)}</span>
+                        {mpUrl !== '#' ? (
+                          <a href={mpUrl} target="_blank" rel="nofollow noopener" class="wi-market-buy-link">View</a>
+                        ) : (
+                          <span class="wi-market-buy-link wi-mp-disabled">--</span>
+                        )}
+                      </div>
+                    </div>
+                  );
+                });
+              })()}
             </div>
           );
         })}
@@ -789,7 +824,7 @@ const listingDesc = (skin.listingCount ?? 0) > 10000 ? 'widely available with hi
   <div class="wi-info-block">
     <h3>Market Value</h3>
     <p>
-      Priced between ${lowPrice.toFixed(2)} and ${highPrice.toFixed(2)}, the {skin.weapon} | {skin.name} falls into the {lowPrice < 5 ? 'budget-friendly' : lowPrice < 50 ? 'affordable' : lowPrice < 200 ? 'mid-tier' : lowPrice < 1000 ? 'high-end' : 'elite'} bracket. Currently {listingDesc}{(skin.listingCount ?? 0) > 0 ? ` across ${(skin.listingCount!).toLocaleString()}+ active listings` : ''}.
+      Priced between ${fmtPrice(lowPrice)} and ${fmtPrice(highPrice)}, the {skin.weapon} | {skin.name} falls into the {lowPrice < 5 ? 'budget-friendly' : lowPrice < 50 ? 'affordable' : lowPrice < 200 ? 'mid-tier' : lowPrice < 1000 ? 'high-end' : 'elite'} bracket. Currently {listingDesc}{(skin.listingCount ?? 0) > 0 ? ` across ${(skin.listingCount!).toLocaleString()}+ active listings` : ''}.
     </p>
   </div>
   <div class="wi-info-block">
@@ -799,6 +834,99 @@ const listingDesc = (skin.listingCount ?? 0) > 10000 ? 'widely available with hi
       {skin.statTrak ? ' A StatTrak variant exists for each condition.' : ''}
       {skin.souvenir ? ' Souvenir editions can also be obtained from tournament drops.' : ''}
     </p>
+  </div>
+</div>
+
+<!-- Price Statistics -->
+{(skin.volume7d || skin.volume30d || skin.trades7d || skin.listingCount) && (
+  <div class="wi-stats">
+    <h2>Market Statistics</h2>
+    <div class="wi-stats-grid">
+      {skin.listingCount > 0 && (
+        <div class="wi-stat-card">
+          <span class="wi-stat-value">{skin.listingCount.toLocaleString()}</span>
+          <span class="wi-stat-label">Active Listings</span>
+        </div>
+      )}
+      {skin.volume7d > 0 && (
+        <div class="wi-stat-card">
+          <span class="wi-stat-value">{skin.volume7d.toLocaleString()}</span>
+          <span class="wi-stat-label">7-Day Volume</span>
+        </div>
+      )}
+      {skin.volume30d > 0 && (
+        <div class="wi-stat-card">
+          <span class="wi-stat-value">{skin.volume30d.toLocaleString()}</span>
+          <span class="wi-stat-label">30-Day Volume</span>
+        </div>
+      )}
+      {skin.trades7d > 0 && (
+        <div class="wi-stat-card">
+          <span class="wi-stat-value">{skin.trades7d.toLocaleString()}</span>
+          <span class="wi-stat-label">7-Day Trades</span>
+        </div>
+      )}
+      {skin.trades30d > 0 && (
+        <div class="wi-stat-card">
+          <span class="wi-stat-value">{skin.trades30d.toLocaleString()}</span>
+          <span class="wi-stat-label">30-Day Trades</span>
+        </div>
+      )}
+      {(skin.liquidity ?? 0) > 0 && (
+        <div class="wi-stat-card">
+          <span class="wi-stat-value">{Math.round(skin.liquidity!)}%</span>
+          <span class="wi-stat-label">Liquidity</span>
+        </div>
+      )}
+      {(skin.rank ?? 0) > 0 && (
+        <div class="wi-stat-card">
+          <span class="wi-stat-value">#{skin.rank!.toLocaleString()}</span>
+          <span class="wi-stat-label">Popularity Rank</span>
+        </div>
+      )}
+      {lowPrice > 0 && highPrice > 0 && (
+        <div class="wi-stat-card">
+          <span class="wi-stat-value">${fmtPrice(lowPrice)} — ${fmtPrice(highPrice)}</span>
+          <span class="wi-stat-label">Price Range</span>
+        </div>
+      )}
+    </div>
+  </div>
+)}
+
+<!-- Wear Availability Grid -->
+<div class="wi-wear-grid-section">
+  <h2>Available Conditions</h2>
+  <div class="wi-wear-grid">
+    {ALL_WEARS.map(w => {
+      const isPossible = possibleWears.includes(w);
+      const priceData = skin.prices.find(p => p.wear === w);
+      const stPriceData = (skin.statTrakPrices || []).find(p => p.wear === w);
+      const cheapest = priceData?.providers
+        ? Math.min(...Object.values(priceData.providers).filter(v => v > 0))
+        : priceData?.price || 0;
+      const stCheapest = stPriceData?.providers
+        ? Math.min(...Object.values(stPriceData.providers).filter(v => v > 0))
+        : stPriceData?.price || 0;
+      const [lo, hi] = WEAR_FLOAT_RANGES[w];
+      return (
+        <div class={`wi-wear-card ${isPossible ? '' : 'wi-wear-impossible'}`}>
+          <div class="wi-wear-name">{w}</div>
+          <div class="wi-wear-float">{lo.toFixed(2)} – {hi.toFixed(2)}</div>
+          {isPossible ? (
+            <>
+              {cheapest > 0 && <div class="wi-wear-price">${fmtPrice(cheapest)}</div>}
+              {!cheapest && <div class="wi-wear-price wi-wear-nodata">No data</div>}
+              {skin.statTrak && stCheapest > 0 && (
+                <div class="wi-wear-st">ST ${fmtPrice(stCheapest)}</div>
+              )}
+            </>
+          ) : (
+            <div class="wi-wear-impossible-label">Not Possible</div>
+          )}
+        </div>
+      );
+    })}
   </div>
 </div>
 
@@ -915,9 +1043,9 @@ const listingDesc = (skin.listingCount ?? 0) > 10000 ? 'widely available with hi
             return (
               <tr>
                 <td><strong>{row.wear}</strong></td>
-                <td class="wi-cell-price wi-st-val">{cheapestEntry ? `$${cheapestEntry[1].toFixed(2)}` : '--'}</td>
+                <td class="wi-cell-price wi-st-val">{cheapestEntry ? `$${fmtPrice(cheapestEntry[1])}` : '--'}</td>
                 <td>{cheapestEntry ? getMarketplace(cheapestEntry[0]).name : '--'}</td>
-                <td class="wi-cell-price">{avg > 0 ? `$${avg.toFixed(2)}` : '--'}</td>
+                <td class="wi-cell-price">{avg > 0 ? `$${fmtPrice(avg)}` : '--'}</td>
                 <td class="wi-premium-val">{premium !== null ? `+${premium}%` : '--'}</td>
               </tr>
             );
@@ -947,7 +1075,7 @@ const listingDesc = (skin.listingCount ?? 0) > 10000 ? 'widely available with hi
               }
             </div>
             <span class="wi-phase-name">{pv.phase}</span>
-            {pvLow > 0 && <span class="wi-phase-price">from ${pvLow.toFixed(2)}</span>}
+            {pvLow > 0 && <span class="wi-phase-price">from ${fmtPrice(pvLow)}</span>}
           </a>
         );
       })}
@@ -972,6 +1100,36 @@ const listingDesc = (skin.listingCount ?? 0) > 10000 ? 'widely available with hi
   </div>
 )}
 
+<!-- Skin Family (same finish across weapons) -->
+{skinFamily.length > 0 && (
+  <div class="wi-related wi-family">
+    <h2>The {skin.name} Family</h2>
+    <p class="wi-section-note">Other weapons featuring the {skin.name} finish:</p>
+    <div class="wi-rel-strip">
+      {skinFamily.map(rs => {
+        const rsColor = rs.rarityColor || RARITY_COLORS[rs.rarity] || '#fff';
+        const rsBg = RARITY_BG[rs.rarity] || 'rgba(255,255,255,0.05)';
+        const rsLow = getLowestPrice(rs);
+        return (
+          <a href={`/cs2-skin/${rs.slug}/`} class="wi-rel-card" style={`--rc:${rsColor};--rbg:${rsBg}`}>
+            <div class="wi-rel-thumb" style={`background:${rsBg}`}>
+              {rs.image
+                ? <img src={skinRelatedImage(rs.image)} alt={`${rs.weapon} | ${rs.name}`} loading="lazy" width="280" height="210" />
+                : <div style={`font-size:1.2rem;font-weight:900;color:${rsColor};opacity:.3`}>{rs.weapon.substring(0, 2)}</div>
+              }
+            </div>
+            <div class="wi-rel-overlay">
+              <span class="wi-rel-weapon">{rs.weapon}</span>
+              <span class="wi-rel-name">{rs.name}</span>
+              {rsLow > 0 && <span class="wi-rel-price">from ${fmtPrice(rsLow)}</span>}
+            </div>
+          </a>
+        );
+      })}
+    </div>
+  </div>
+)}
+
 <!-- About Section -->
 <div class="wi-about">
   <h2>About {skin.weapon} | {skin.name}</h2>
@@ -986,7 +1144,7 @@ const listingDesc = (skin.listingCount ?? 0) > 10000 ? 'widely available with hi
       Currently listed in {skin.prices.length} wear tier{skin.prices.length !== 1 ? 's' : ''}:
       {skin.prices.map((p, i) => {
         const desc = wearDescriptions[p.wear] || '';
-        return `${i > 0 ? (i === skin.prices.length - 1 ? ', and ' : ', ') : ' '}${p.wear} ($${p.price.toFixed(2)})${desc ? ` -- ${desc}` : ''}`;
+        return `${i > 0 ? (i === skin.prices.length - 1 ? ', and ' : ', ') : ' '}${p.wear} ($${fmtPrice(p.price)})${desc ? ` -- ${desc}` : ''}`;
       }).join('')}.
     </p>
   )}
@@ -999,6 +1157,18 @@ const listingDesc = (skin.listingCount ?? 0) > 10000 ? 'widely available with hi
   <p>
     To find the best price, use the <a href="/skin-compare/">Skin Compare</a> utility to weigh alternatives, or monitor trends via the <a href="/price-tracker/">Price Tracker</a>. The <a href="/market-trends/">Market Trends</a> dashboard provides broader investment data. If you're considering trade-ups with this skin, the <a href="/tradeup-calculator/">Trade-Up Calculator</a> can help you evaluate potential outcomes, and our <a href="/cs2-guides/trading-guide/">Trading Guide</a> covers marketplace best practices.
   </p>
+
+  {skin.finishStyle && (
+    <p>
+      The {skin.name} uses a <strong>{skin.finishStyle}</strong> finish technique{skin.paintIndex != null ? ` (paint index #${skin.paintIndex})` : ''}.
+      {skin.finishStyleDesc ? ` ${skin.finishStyleDesc}` : ''}
+      {skin.legacyModel === false ? ' This skin uses the updated CS2 model.' : skin.legacyModel === true ? ' This skin currently uses the legacy CS:GO model.' : ''}
+    </p>
+  )}
+
+  {skin.description && (
+    <p class="wi-about-desc">{skin.description}</p>
+  )}
 
   {weapon && (
     <p>
@@ -1032,7 +1202,7 @@ const listingDesc = (skin.listingCount ?? 0) > 10000 ? 'widely available with hi
             <div class="wi-rel-overlay">
               <span class="wi-rel-weapon">{rs.weapon}</span>
               <span class="wi-rel-name">{rs.name}</span>
-              {rsHigh > 0 && <span class="wi-rel-price">${rsHigh.toFixed(2)}</span>}
+              {rsHigh > 0 && <span class="wi-rel-price">${fmtPrice(rsHigh)}</span>}
             </div>
           </a>
         );
@@ -1060,7 +1230,7 @@ const listingDesc = (skin.listingCount ?? 0) > 10000 ? 'widely available with hi
             </div>
             <div class="wi-rel-overlay">
               <span class="wi-rel-name">{rs.name}</span>
-              {rsHigh > 0 && <span class="wi-rel-price">${rsHigh.toFixed(2)}</span>}
+              {rsHigh > 0 && <span class="wi-rel-price">${fmtPrice(rsHigh)}</span>}
             </div>
           </a>
         );
@@ -1089,7 +1259,7 @@ const listingDesc = (skin.listingCount ?? 0) > 10000 ? 'widely available with hi
             <div class="wi-rel-overlay">
               <span class="wi-rel-weapon">{rs.weapon}</span>
               <span class="wi-rel-name">{rs.name}</span>
-              {rsHigh > 0 && <span class="wi-rel-price">${rsHigh.toFixed(2)}</span>}
+              {rsHigh > 0 && <span class="wi-rel-price">${fmtPrice(rsHigh)}</span>}
             </div>
           </a>
         );
@@ -1582,6 +1752,43 @@ document.addEventListener('DOMContentLoaded', () => {
   .wi-rel-card{flex:0 0 120px}
   .wi-cta-body{flex-direction:column;text-align:center}
   .wi-cta-action{width:100%;text-align:center}
+  .wi-stats-grid{grid-template-columns:repeat(2,1fr)}
+  .wi-wear-grid{grid-template-columns:repeat(3,1fr)}
+  .wi-stat-card{padding:.6rem .5rem}
 }
+
+/* ── Flavor Text ───────────────────────────────────────── */
+.wi-flavor{background:var(--bg2);border:1px solid var(--border);border-left:3px solid var(--accent);border-radius:4px;padding:.6rem .9rem;margin-bottom:.75rem;font-size:.82rem;color:var(--text2);line-height:1.5}
+.wi-flavor em{font-style:italic}
+
+/* ── Marketplace enhancements ──────────────────────────── */
+.wi-mp-info{display:flex;flex-direction:column;gap:1px}
+.wi-mp-rating{font-size:.65rem;color:#f5a623;letter-spacing:.02em}
+.wi-mp-disabled{opacity:.3;pointer-events:none}
+
+/* ── Price Statistics ──────────────────────────────────── */
+.wi-stats{margin-bottom:2rem}
+.wi-stats h2{margin:0 0 .75rem;font-size:1.05rem;font-weight:700;border-bottom:2px solid var(--border);padding-bottom:.4rem}
+.wi-stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:.5rem}
+.wi-stat-card{background:var(--bg2);border:1px solid var(--border);border-radius:4px;padding:.75rem;text-align:center;display:flex;flex-direction:column;gap:.2rem}
+.wi-stat-value{font-size:1.1rem;font-weight:800;color:var(--text);font-family:'Montserrat',sans-serif}
+.wi-stat-label{font-size:.68rem;color:var(--text2);text-transform:uppercase;letter-spacing:.04em;font-weight:600}
+
+/* ── Wear Availability Grid ────────────────────────────── */
+.wi-wear-grid-section{margin-bottom:2rem}
+.wi-wear-grid-section h2{margin:0 0 .75rem;font-size:1.05rem;font-weight:700;border-bottom:2px solid var(--border);padding-bottom:.4rem}
+.wi-wear-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:.5rem}
+.wi-wear-card{background:var(--bg2);border:1px solid var(--border);border-radius:4px;padding:.75rem .5rem;text-align:center;display:flex;flex-direction:column;gap:.25rem;transition:border-color .15s}
+.wi-wear-card:not(.wi-wear-impossible):hover{border-color:var(--accent)}
+.wi-wear-name{font-size:.78rem;font-weight:700;color:var(--text)}
+.wi-wear-float{font-size:.65rem;color:var(--text2)}
+.wi-wear-price{font-size:.95rem;font-weight:800;color:#2ecc71;font-family:'Montserrat',sans-serif}
+.wi-wear-nodata{color:var(--text2);font-size:.75rem;font-weight:400}
+.wi-wear-st{font-size:.7rem;color:#f39c12;font-weight:600}
+.wi-wear-impossible{opacity:.35;border-style:dashed}
+.wi-wear-impossible-label{font-size:.72rem;color:var(--text2);font-style:italic;margin-top:.15rem}
+
+/* ── About description ─────────────────────────────────── */
+.wi-about-desc{color:var(--text2);font-style:italic;border-left:3px solid var(--border);padding-left:.75rem;margin:.5rem 0}
 </style>
 </Base>

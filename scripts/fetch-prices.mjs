@@ -645,6 +645,13 @@ function processData(itemsData, pricesData, imagesData) {
       rank: parseInt(priceItem.rank) || 0,
     } : null;
 
+    // Extract description and flavor text
+    const rawDesc = item.description || '';
+    const descParts = rawDesc.split('\\n\\n');
+    const mainDesc = (descParts[0] || '').replace(/<[^>]+>/g, '').trim();
+    const flavorRaw = descParts.length > 1 ? descParts[descParts.length - 1] : '';
+    const flavorText = flavorRaw.replace(/<\/?i>/g, '').replace(/<[^>]+>/g, '').trim() || null;
+
     if (!skinMap.has(skinKey)) {
       skinMap.set(skinKey, {
         weapon: weaponName, weaponSlug,
@@ -668,6 +675,15 @@ function processData(itemsData, pricesData, imagesData) {
         trades30d: trendData?.trades30d || 0,
         listingCount: trendData?.listingCount || 0,
         rank: trendData?.rank || 0,
+        // Extended metadata
+        description: mainDesc || null,
+        flavorText: flavorText,
+        finishStyle: item.style?.name || null,
+        finishStyleDesc: item.style?.description || null,
+        paintIndex: item.paint_index ?? null,
+        releasedAt: item.released_at || null,
+        legacyModel: item.legacy_model ?? null,
+        team: item.team || null,
       });
     } else if (trendData) {
       // Aggregate trend data across wears — take the max/sum as appropriate
@@ -980,6 +996,15 @@ function convertSkinMapToOutput(skinMap) {
       entry.listingCount = skin.listingCount || 0;
       entry.rank = skin.rank || 0;
     }
+    // Extended metadata
+    if (skin.description) entry.description = skin.description;
+    if (skin.flavorText) entry.flavorText = skin.flavorText;
+    if (skin.finishStyle) entry.finishStyle = skin.finishStyle;
+    if (skin.finishStyleDesc) entry.finishStyleDesc = skin.finishStyleDesc;
+    if (skin.paintIndex != null) entry.paintIndex = skin.paintIndex;
+    if (skin.releasedAt) entry.releasedAt = skin.releasedAt;
+    if (skin.legacyModel != null) entry.legacyModel = skin.legacyModel;
+    if (skin.team) entry.team = skin.team;
     skins.push(entry);
   }
 

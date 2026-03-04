@@ -38,6 +38,15 @@ export interface Skin {
   trades30d?: number;
   listingCount?: number;
   rank?: number;
+  // Extended metadata (from PriceEmpire items endpoint)
+  description?: string | null;
+  flavorText?: string | null;
+  finishStyle?: string | null;
+  finishStyleDesc?: string | null;
+  paintIndex?: number | null;
+  releasedAt?: string | null;
+  legacyModel?: boolean;
+  team?: string | null;
 }
 
 export interface MarketplaceInfo {
@@ -146,6 +155,12 @@ export function getWeaponsInCategory(category: string): { weapon: string; weapon
     }
   }
   return [...map.values()].sort((a, b) => b.count - a.count);
+}
+
+/** Get all skins with the same finish name (Skin Family — e.g., all "Fade" skins across weapons) */
+export function getSkinFamily(skinName: string, excludeSlug?: string): Skin[] {
+  return SKINS.filter(s => s.name === skinName && s.slug !== excludeSlug && !s.phase)
+    .sort((a, b) => getLowestPrice(b) - getLowestPrice(a));
 }
 
 export function getCategoryCount(category: string): number {
