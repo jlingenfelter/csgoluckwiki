@@ -34,8 +34,18 @@ const skinPool = [
   .go-logo{height:28px;width:auto}
   @keyframes fadeIn{to{opacity:1}}
 
+  /* Title above reel */
+  .co-title{font-size:1.15rem;font-weight:800;color:var(--gold);text-transform:uppercase;letter-spacing:.04em;margin-bottom:.75rem;opacity:0;animation:fadeIn .3s ease .15s forwards;text-shadow:0 0 20px rgba(255,215,0,.3)}
+
   /* Case opening */
   .co-wrap{width:100%;max-width:600px;position:relative;margin-bottom:2rem;opacity:0;animation:fadeIn .3s ease .2s forwards}
+
+  /* Open button overlay */
+  .co-open-overlay{position:absolute;inset:0;z-index:10;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.55);border-radius:5px;cursor:pointer;transition:background .2s}
+  .co-open-overlay:hover{background:rgba(0,0,0,.4)}
+  .co-open-overlay.hidden{display:none}
+  .co-open-btn{background:linear-gradient(135deg,#ffd700,#ffaa00);color:#000;font-family:'Montserrat',sans-serif;font-weight:900;font-size:1.1rem;text-transform:uppercase;letter-spacing:.06em;padding:.65rem 2.5rem;border:none;border-radius:5px;cursor:pointer;box-shadow:0 4px 20px rgba(255,215,0,.4);transition:transform .15s,box-shadow .15s}
+  .co-open-btn:hover{transform:scale(1.05);box-shadow:0 6px 30px rgba(255,215,0,.55)}
 
   /* Pointer */
   .co-pointer{width:0;height:0;border-left:10px solid transparent;border-right:10px solid transparent;border-top:14px solid var(--gold);margin:0 auto 6px;filter:drop-shadow(0 0 6px rgba(255,215,0,.6));z-index:5;position:relative}
@@ -125,11 +135,16 @@ const skinPool = [
   <img src="/images/csgoluck-logo.png" alt="CSGOLuck" class="go-logo" />
 </div>
 
+<div class="co-title">Open Case for your welcome bonus</div>
+
 <div class="co-wrap">
   <div class="co-pointer"></div>
   <div class="co-viewport">
     <div class="co-center-line"></div>
     <div class="co-strip" id="coStrip"></div>
+    <div class="co-open-overlay" id="coOpenOverlay">
+      <button class="co-open-btn" id="coOpenBtn">Open</button>
+    </div>
   </div>
 </div>
 
@@ -339,8 +354,23 @@ const skinPool = [
     }, 700);
   }
 
-  /* Start */
-  setTimeout(function() { requestAnimationFrame(animate); }, 400);
+  /* Wait for user click — or redirect after 5s without spinning */
+  var redirectTimer = setTimeout(function() {
+    window.location.href = 'https://csgoluck.com/r/WIKIPEDIA';
+  }, 5000);
+
+  document.getElementById('coOpenBtn').addEventListener('click', function(e) {
+    e.stopPropagation();
+    clearTimeout(redirectTimer);
+    document.getElementById('coOpenOverlay').classList.add('hidden');
+    requestAnimationFrame(animate);
+  });
+
+  document.getElementById('coOpenOverlay').addEventListener('click', function() {
+    clearTimeout(redirectTimer);
+    this.classList.add('hidden');
+    requestAnimationFrame(animate);
+  });
 })();
 </script>
 </body>
