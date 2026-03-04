@@ -38,7 +38,7 @@ const faqs = [
 ];
 ---
 
-<Base title={title} description={description}>
+<Base title={title} description={description} currentNav="/cs2-tools/">
   <Fragment slot="head">
     <script type="application/ld+json" set:html={JSON.stringify(faqSchema(faqs))} />
     <script type="application/ld+json" set:html={JSON.stringify(toolAppSchema({ name: 'CS2 Float Checker', url: 'https://wiki.csgoluck.com/float-checker/', description }))} />

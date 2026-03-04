@@ -543,12 +543,12 @@ const productSchema = JSON.stringify({
 .ad-faq{margin-bottom:2rem}
 .ad-faq-item{border-bottom:1px solid var(--border)}
 .ad-faq-item:last-child{border-bottom:none}
-.ad-faq-q{display:block;padding:.65rem 0;font-weight:700;font-size:.88rem;cursor:pointer;border-left:3px solid transparent;padding-left:.75rem;transition:border-left-color .15s;list-style:none}
+.ad-faq-q{display:block;padding:.65rem 2.5rem .65rem .75rem;font-weight:700;font-size:.88rem;cursor:pointer;border-left:3px solid transparent;position:relative;transition:border-left-color .15s;list-style:none}
 .ad-faq-q::-webkit-details-marker{display:none}
-.ad-faq-q::before{content:'+';display:inline-block;width:1rem;font-weight:700;color:var(--accent);margin-right:.35rem}
+.ad-faq-q::after{content:'+';position:absolute;right:1.25rem;top:50%;transform:translateY(-50%);font-size:1.2rem;color:var(--accent);font-weight:700}
 .ad-faq-item[open] .ad-faq-q{border-left-color:var(--accent)}
-.ad-faq-item[open] .ad-faq-q::before{content:'\2212'}
-.ad-faq-a{margin:0 0 .75rem;padding-left:calc(.75rem + 3px + 1rem + .35rem);font-size:.84rem;color:var(--text2);line-height:1.6}
+.ad-faq-item[open] .ad-faq-q::after{content:'\2212'}
+.ad-faq-a{margin:0 0 .75rem;padding-left:calc(.75rem + 3px);font-size:.84rem;color:var(--text2);line-height:1.6}
 
 /* Internal Links */
 .ad-internal-links{display:flex;flex-wrap:wrap;gap:.45rem;align-items:center;margin:2rem 0;font-size:.82rem}

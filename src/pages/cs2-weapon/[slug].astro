@@ -356,7 +356,7 @@ const premiumSkins = skinsWithPrice.filter(s => s.low > 50).sort((a, b) => b.low
 
   <!-- FAQ -->
   <section class="wp-faq">
-    <h2 class="wp-section-title">Common Questions</h2>
+    <h2 class="wp-section-title">Frequently Asked Questions</h2>
     {faqs.map(f => (
       <details class="wp-faq-item">
         <summary class="wp-faq-q">{f.question}</summary>
@@ -830,33 +830,35 @@ const premiumSkins = skinsWithPrice.filter(s => s.low > 50).sort((a, b) => b.low
   .wp-faq-item:last-child { border-bottom: none; }
   .wp-faq-q {
     display: block;
-    padding: .65rem 0;
+    padding: .65rem 2.5rem .65rem .75rem;
     font-weight: 700;
     font-size: .88rem;
     cursor: pointer;
     border-left: 3px solid transparent;
-    padding-left: .75rem;
+    position: relative;
     transition: border-left-color .15s;
     list-style: none;
   }
   .wp-faq-q::-webkit-details-marker { display: none; }
-  .wp-faq-q::before {
+  .wp-faq-q::after {
     content: '+';
-    display: inline-block;
-    width: 1rem;
-    font-weight: 700;
+    position: absolute;
+    right: 1.25rem;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 1.2rem;
     color: var(--accent);
-    margin-right: .35rem;
+    font-weight: 700;
   }
   .wp-faq-item[open] .wp-faq-q {
     border-left-color: var(--accent);
   }
-  .wp-faq-item[open] .wp-faq-q::before {
+  .wp-faq-item[open] .wp-faq-q::after {
     content: '\2212';
   }
   .wp-faq-a {
     margin: 0 0 .75rem;
-    padding-left: calc(.75rem + 3px + 1rem + .35rem);
+    padding-left: calc(.75rem + 3px);
     font-size: .84rem;
     color: var(--text2);
     line-height: 1.6;

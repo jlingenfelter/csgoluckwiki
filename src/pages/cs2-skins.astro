@@ -189,7 +189,7 @@ const topComparisons = getWeaponComparisons().slice(0, 8);
     <p class="sh-inline-links">
       {topComparisons.map((cmp, idx) => (
         <Fragment>
-          <a href={`/compare/${cmp.slug}/`}>{cmp.weapon1} vs {cmp.weapon2}</a>{idx < topComparisons.length - 1 ? ', ' : ''}
+          <a href={`/compare/${cmp.slug}/`}>{cmp.w1.name} vs {cmp.w2.name}</a>{idx < topComparisons.length - 1 ? ', ' : ''}
         </Fragment>
       ))}
     </p>
@@ -220,7 +220,7 @@ const topComparisons = getWeaponComparisons().slice(0, 8);
   <a href="/cs2-guides/case-hardened-guide/">Case Hardened Guide</a>
 </div>
 
-<h2>Common Questions</h2>
+<h2>Frequently Asked Questions</h2>
 <div class="sh-faq">
   {faqs.map(f => (
     <details class="sh-faq-item">
@@ -251,9 +251,9 @@ const topComparisons = getWeaponComparisons().slice(0, 8);
 
 /* ===== SH WEAPON DETAILS (Collapsible) ===== */
 .sh-weapon-details{margin-bottom:1.25rem;background:var(--bg2);border:1px solid var(--border);border-radius:4px}
-.sh-weapon-summary{padding:.55rem .75rem;font-size:.8rem;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.05em;cursor:pointer;list-style:none;display:flex;align-items:center;gap:.5rem}
-.sh-weapon-summary::before{content:'+';color:var(--accent);font-weight:700;font-size:.9rem}
-.sh-weapon-details[open] .sh-weapon-summary::before{content:'-'}
+.sh-weapon-summary{padding:.55rem 2.5rem .55rem .75rem;font-size:.8rem;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.05em;cursor:pointer;list-style:none;position:relative}
+.sh-weapon-summary::after{content:'+';position:absolute;right:1.25rem;top:50%;transform:translateY(-50%);font-size:1.2rem;color:var(--accent);font-weight:700}
+.sh-weapon-details[open] .sh-weapon-summary::after{content:'-'}
 .sh-weapon-summary::-webkit-details-marker{display:none}
 .sh-weapon-grid{display:grid;grid-template-columns:1fr 1fr;gap:.5rem .75rem;padding:.5rem .75rem .75rem}
 .sh-weapon-all{grid-column:1/-1;padding-bottom:.4rem;border-bottom:1px solid var(--border)}

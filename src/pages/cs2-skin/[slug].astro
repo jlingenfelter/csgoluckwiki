@@ -1269,7 +1269,7 @@ const listingDesc = (skin.listingCount ?? 0) > 10000 ? 'widely available with hi
 )}
 
 <!-- FAQ -->
-<h2>Common Questions</h2>
+<h2>Frequently Asked Questions</h2>
 <dl class="faq">{faqs.map(f => (<><dt>{f.q}</dt><dd>{f.a}</dd></>))}</dl>
 
 <!-- Internal Links -->
@@ -1477,18 +1477,9 @@ document.addEventListener('DOMContentLoaded', () => {
       loading.style.display = 'none';
       canvas.style.opacity = '1';
     } catch (err) {
-      loading.style.display = 'none';
-      error.style.display = 'flex';
-      canvas.style.opacity = '0.1';
-      const errMsg = document.getElementById('ph-error-msg');
-      if (errMsg) {
-        try {
-          const parsed = JSON.parse(err.message);
-          errMsg.textContent = parsed.error || 'Price history not available for this item.';
-        } catch(e) {
-          errMsg.textContent = 'Price history not available for this item.';
-        }
-      }
+      // Hide the entire chart section when price history is unavailable
+      const chartSection = document.querySelector('.wi-chart-section');
+      if (chartSection) chartSection.style.display = 'none';
     }
   }
 

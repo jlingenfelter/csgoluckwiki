@@ -88,7 +88,7 @@ const faqs = [
 ];
 ---
 
-<Base {title} {description}>
+<Base {title} {description} currentNav="/pro-teams/">
 <Fragment slot="head">
 <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema(breadcrumbs))} />
 <script type="application/ld+json" set:html={JSON.stringify(faqSchema(faqs))} />

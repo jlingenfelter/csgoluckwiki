@@ -2,6 +2,7 @@
 import Base from '../layouts/Base.astro';
 import ExploreMore from '../components/ExploreMore.astro';
 import { faqSchema, breadcrumbSchema } from '../lib/weapons';
+import { PRO_PLAYERS } from '../lib/pro-players';
 
 const title = 'CS2 eDPI Calculator — Find Your Effective DPI | CSGOLuck Wiki';
 const description = 'Calculate your CS2 eDPI (effective DPI) instantly. Compare your eDPI to pro players, find your ideal sensitivity, and understand how DPI and in-game sens work together.';
@@ -21,18 +22,18 @@ const faqs = [
 ];
 
 const dpiPresets = [400, 800, 1600, 3200];
-const proPlayers = [
-  { name: 's1mple', dpi: 400, sens: 3.09, edpi: 1236 },
-  { name: 'ZywOo', dpi: 400, sens: 1.6, edpi: 640 },
-  { name: 'NiKo', dpi: 400, sens: 1.98, edpi: 792 },
-  { name: 'device', dpi: 400, sens: 1.8, edpi: 720 },
-  { name: 'ropz', dpi: 400, sens: 1.77, edpi: 708 },
-  { name: 'donk', dpi: 800, sens: 0.85, edpi: 680 },
-  { name: 'Twistzz', dpi: 400, sens: 1.7, edpi: 680 },
-  { name: 'broky', dpi: 400, sens: 1.4, edpi: 560 },
-  { name: 'EliGE', dpi: 400, sens: 1.75, edpi: 700 },
-  { name: 'rain', dpi: 800, sens: 1.0, edpi: 800 },
-];
+
+// Build pro comparison table from canonical player data
+const proPlayers = PRO_PLAYERS
+  .filter(p => p.dpi > 0 && p.sens > 0)
+  .slice(0, 10)
+  .map(p => ({
+    name: p.name,
+    slug: p.slug,
+    dpi: p.dpi,
+    sens: p.sens,
+    edpi: Math.round(p.dpi * p.sens),
+  }));
 
 const edpiRanges = [
   { label: 'Very Low', range: '< 400', style: 'Precision AWPing, slow methodical play', color: '#42a5f5' },
@@ -134,7 +135,7 @@ const toolSchema = JSON.stringify({
         <tbody>
           {proPlayers.map(p => (
             <tr>
-              <td style="font-weight:600;color:var(--text)">{p.name}</td>
+              <td style="font-weight:600"><a href={`/pro-players/${p.slug}/`} style="color:var(--text);text-decoration:none">{p.name}</a></td>
               <td>{p.dpi}</td>
               <td>{p.sens}</td>
               <td style="font-weight:700;color:var(--accent)">{p.edpi}</td>

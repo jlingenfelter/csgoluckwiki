@@ -120,12 +120,12 @@ const faqs = [
 .cpi-faq{margin-bottom:2rem}
 .cpi-faq h2{font-family:'Montserrat',sans-serif;font-size:1.15rem;font-weight:700;color:var(--text);margin:0 0 .75rem}
 .cpi-faq-item{background:var(--bg2);border:1px solid var(--border);border-radius:4px;margin-bottom:.35rem;overflow:hidden}
-.cpi-faq-item summary{padding:.75rem 1rem;font-weight:700;font-size:.9rem;color:var(--text);cursor:pointer;list-style:none;display:flex;align-items:center;gap:.5rem;transition:background .15s}
-.cpi-faq-item summary::before{content:'+';font-size:1.05rem;font-weight:700;color:var(--accent);flex-shrink:0;width:18px;text-align:center}
-.cpi-faq-item[open] summary::before{content:'\2212'}
+.cpi-faq-item summary{padding:.75rem 2.5rem .75rem 1rem;font-weight:700;font-size:.9rem;color:var(--text);cursor:pointer;list-style:none;position:relative;transition:background .15s}
+.cpi-faq-item summary::after{content:'+';position:absolute;right:1.25rem;top:50%;transform:translateY(-50%);font-size:1.2rem;color:var(--accent);font-weight:700}
+.cpi-faq-item[open] summary::after{content:'\2212'}
 .cpi-faq-item summary:hover{background:var(--bg3)}
 .cpi-faq-item summary::-webkit-details-marker{display:none}
-.cpi-faq-item p{padding:0 1rem .85rem 2.25rem;margin:0;color:var(--text2);font-size:.88rem;line-height:1.6}
+.cpi-faq-item p{padding:0 1rem .85rem 1rem;margin:0;color:var(--text2);font-size:.88rem;line-height:1.6}
 
 /* ── Breadcrumb ── */
 .breadcrumb{font-size:.82rem;color:var(--text2);margin-bottom:1.25rem;display:flex;gap:.35rem;flex-wrap:wrap}

@@ -43,7 +43,7 @@ const weapons = [
     difficulty: 'Medium'
   },
   {
-    name: 'AWP Dragon Lore',
+    name: 'AWP',
     category: 'Sniper',
     recoilDesc: 'No spray pattern - one shot, one kill. High recoil between shots.',
     sprayTips: 'Pre-aim and relocate. Crosshair placement is everything.',
@@ -112,7 +112,7 @@ const schemaData = {
 };
 ---
 
-<Base title={title} description={description}>
+<Base title={title} description={description} currentNav="/cs2-tools/">
   <script type="application/ld+json" set:html={JSON.stringify(toolAppSchema({ name: 'CS2 Recoil Patterns', url: 'https://wiki.csgoluck.com/recoil-patterns/', description }))}></script>
   <script type="application/ld+json" set:html={JSON.stringify(schemaData)} />
 

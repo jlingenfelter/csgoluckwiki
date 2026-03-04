@@ -85,6 +85,11 @@ const uniqueYears = [...new Set(cases.map(c => c.year))].sort((a, b) => b - a);
     <script type="application/ld+json" set:html={JSON.stringify(faqSchema(faqData))} />
   </Fragment>
 
+  <!-- Breadcrumb -->
+  <nav class="ch-breadcrumb">
+    <a href="/">Home</a> <span class="ch-sep">/</span> <span>Cases & Collections</span>
+  </nav>
+
   <!-- Hero -->
   <section class="ch-hero">
     <div class="ch-hero-text">
@@ -145,7 +150,7 @@ const uniqueYears = [...new Set(cases.map(c => c.year))].sort((a, b) => b - a);
 
   <!-- FAQ Accordion -->
   <section class="ch-faq">
-    <h2 class="ch-faq-title">Common Questions</h2>
+    <h2 class="ch-faq-title">Frequently Asked Questions</h2>
     {faqData.map((faq) => (
       <details class="ch-faq-item">
         <summary class="ch-faq-q">{faq.q}</summary>
@@ -183,6 +188,33 @@ const uniqueYears = [...new Set(cases.map(c => c.year))].sort((a, b) => b - a);
       --bg2: #13141a;
       --bg3: #1a1c24;
       --border: #242630;
+    }
+
+    /* ---- BREADCRUMB ---- */
+    .ch-breadcrumb {
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+      margin-bottom: 1.25rem;
+      font-size: 0.82rem;
+    }
+
+    .ch-breadcrumb a {
+      color: var(--text2);
+      text-decoration: none;
+    }
+
+    .ch-breadcrumb a:hover {
+      color: var(--accent);
+    }
+
+    .ch-sep {
+      color: var(--border);
+    }
+
+    .ch-breadcrumb > span:last-child {
+      color: var(--text);
+      font-weight: 600;
     }
 
     /* ---- HERO ---- */
@@ -403,12 +435,10 @@ const uniqueYears = [...new Set(cases.map(c => c.year))].sort((a, b) => b - a);
       font-size: 0.92rem;
       font-weight: 600;
       color: var(--text);
-      padding: 0.75rem 0;
+      padding: 0.75rem 2.5rem 0.75rem 0;
       cursor: pointer;
       list-style: none;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
+      position: relative;
       transition: color 0.15s;
     }
 
@@ -416,20 +446,18 @@ const uniqueYears = [...new Set(cases.map(c => c.year))].sort((a, b) => b - a);
       display: none;
     }
 
-    .ch-faq-q::before {
+    .ch-faq-q::after {
       content: '+';
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      width: 20px;
-      height: 20px;
-      font-size: 0.85rem;
-      font-weight: 700;
+      position: absolute;
+      right: 1.25rem;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 1.2rem;
       color: var(--accent);
-      flex-shrink: 0;
+      font-weight: 700;
     }
 
-    .ch-faq-item[open] .ch-faq-q::before {
+    .ch-faq-item[open] .ch-faq-q::after {
       content: '-';
     }
 
@@ -442,7 +470,7 @@ const uniqueYears = [...new Set(cases.map(c => c.year))].sort((a, b) => b - a);
       color: var(--text2);
       line-height: 1.6;
       margin: 0;
-      padding-left: 1.75rem;
+      padding-left: 0;
     }
 
     .ch-faq-a a {

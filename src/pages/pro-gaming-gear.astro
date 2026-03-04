@@ -63,7 +63,7 @@ const topRoles = getRoles();
 const topCountries = getCountries().slice(0, 8);
 ---
 
-<Base {title} {description}>
+<Base {title} {description} currentNav="/pro-gaming-gear/">
 <Fragment slot="head">
 <script type="application/ld+json" set:html={JSON.stringify(faqSchema(faqs))} />
 <script type="application/ld+json" set:html={JSON.stringify({
@@ -329,12 +329,12 @@ const topCountries = getCountries().slice(0, 8);
 .geh-faq{margin-bottom:2.5rem}
 .geh-faq h2{font-family:'Montserrat',sans-serif;font-size:1.25rem;margin:0 0 1rem;color:var(--text)}
 .geh-faq-item{background:var(--bg2);border:1px solid var(--border);border-radius:4px;margin-bottom:.4rem;overflow:hidden}
-.geh-faq-item summary{padding:.85rem 1rem;font-weight:700;font-size:.95rem;color:var(--text);cursor:pointer;list-style:none;display:flex;align-items:center;gap:.5rem;transition:background .15s}
-.geh-faq-item summary::before{content:'+';font-size:1.1rem;font-weight:700;color:var(--accent);flex-shrink:0;width:20px;text-align:center}
-.geh-faq-item[open] summary::before{content:'\2212'}
+.geh-faq-item summary{padding:.85rem 2.5rem .85rem 1rem;font-weight:700;font-size:.95rem;color:var(--text);cursor:pointer;list-style:none;position:relative;transition:background .15s}
+.geh-faq-item summary::after{content:'+';position:absolute;right:1.25rem;top:50%;transform:translateY(-50%);font-size:1.2rem;color:var(--accent);font-weight:700}
+.geh-faq-item[open] summary::after{content:'\2212'}
 .geh-faq-item summary:hover{background:var(--bg3)}
 .geh-faq-item summary::-webkit-details-marker{display:none}
-.geh-faq-item p{padding:0 1rem 1rem 2.5rem;margin:0;color:var(--text2);font-size:.9rem;line-height:1.65}
+.geh-faq-item p{padding:0 1rem 1rem 1rem;margin:0;color:var(--text2);font-size:.9rem;line-height:1.65}
 
 /* ── Browse Sections ── */
 .geh-browse{margin:2rem 0}

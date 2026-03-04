@@ -35,7 +35,7 @@ const faqs = [
 ];
 ---
 
-<Base title={title} description={description} currentNav="/">
+<Base title={title} description={description} currentNav="/cs2-tools/">
   <Fragment slot="head">
     <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema(breadcrumbs))} />
     <script type="application/ld+json" set:html={JSON.stringify(faqSchema(faqs))} />
@@ -118,12 +118,12 @@ const faqs = [
   .pn-faq{margin:2rem 0}
   .pn-faq h2{font-family:'Montserrat',sans-serif;font-size:1.15rem;font-weight:700;color:var(--text);margin:0 0 .75rem}
   .pn-faq-item{background:var(--bg2);border:1px solid var(--border);border-radius:4px;margin-bottom:.35rem;overflow:hidden}
-  .pn-faq-item summary{padding:.75rem 1rem;font-weight:700;font-size:.9rem;color:var(--text);cursor:pointer;list-style:none;display:flex;align-items:center;gap:.5rem;transition:background .15s}
-  .pn-faq-item summary::before{content:'+';font-size:1.05rem;font-weight:700;color:var(--accent);flex-shrink:0;width:18px;text-align:center}
-  .pn-faq-item[open] summary::before{content:'\2212'}
+  .pn-faq-item summary{padding:.75rem 2.5rem .75rem 1rem;font-weight:700;font-size:.9rem;color:var(--text);cursor:pointer;list-style:none;position:relative;transition:background .15s}
+  .pn-faq-item summary::after{content:'+';position:absolute;right:1.25rem;top:50%;transform:translateY(-50%);font-size:1.2rem;color:var(--accent);font-weight:700}
+  .pn-faq-item[open] summary::after{content:'\2212'}
   .pn-faq-item summary:hover{background:var(--bg3)}
   .pn-faq-item summary::-webkit-details-marker{display:none}
-  .pn-faq-item p{padding:0 1rem .85rem 2.25rem;margin:0;color:var(--text2);font-size:.88rem;line-height:1.6}
+  .pn-faq-item p{padding:0 1rem .85rem 1rem;margin:0;color:var(--text2);font-size:.88rem;line-height:1.6}
 
   /* -- Related Links -- */
   .pn-links{background:var(--bg2);border:1px solid var(--border);border-radius:4px;padding:1.5rem;margin-top:2rem}

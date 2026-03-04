@@ -37,22 +37,26 @@ const deals: Deal[] = [];
 for (const skin of SKINS) {
   if (skin.phase) continue;
   for (const wp of skin.prices) {
-    if (!wp.providers) continue;
-    const steam = wp.providers['steam'];
-    if (!steam || steam <= 0) continue;
+    // Use main price as reference (highest/default price)
+    const refPrice = wp.price;
+    if (!refPrice || refPrice <= 0) continue;
 
+    // Find the best provider price
     let bestPrice = Infinity;
     let bestKey = '';
-    for (const [key, price] of Object.entries(wp.providers)) {
-      if (key === 'steam' || key.includes('_buy') || !price || price <= 0) continue;
-      if (price < bestPrice) {
-        bestPrice = price;
-        bestKey = key;
+    if (wp.providers) {
+      for (const [key, price] of Object.entries(wp.providers)) {
+        if (key.includes('_buy') || !price || price <= 0) continue;
+        if (price < bestPrice) {
+          bestPrice = price;
+          bestKey = key;
+        }
       }
     }
 
-    if (bestPrice < steam && bestPrice < Infinity) {
-      const discount = Math.round(((steam - bestPrice) / steam) * 100);
+    // Compare best provider price against the reference price
+    if (bestPrice < refPrice && bestPrice < Infinity) {
+      const discount = Math.round(((refPrice - bestPrice) / refPrice) * 100);
       if (discount >= 5) { // Only show deals with 5%+ discount
         deals.push({
           s: skin.slug,
@@ -63,7 +67,7 @@ for (const skin of SKINS) {
           rc: RARITY_COLORS[skin.rarity] || '#444',
           i: skin.image ? skinCardImage(skin.image) : '',
           wear: wp.wear,
-          steam: steam,
+          steam: refPrice,
           best: bestPrice,
           bestMarket: MARKETPLACES[bestKey]?.name || bestKey,
           discount: discount,
@@ -100,7 +104,7 @@ const faqs = [
 <!-- Hero -->
 <section class="sd-hero">
   <h1 class="sd-hero-title">CS2 Skin Best Deals</h1>
-  <p class="sd-hero-desc">Find skins selling below Steam Market price on third-party marketplaces. {topDeals.length} deals found across {Object.keys(MARKETPLACES).length}+ marketplaces.</p>
+  <p class="sd-hero-desc">Find skins selling below market value across multiple marketplaces. {topDeals.length} deals found across {Object.keys(MARKETPLACES).length}+ marketplaces.</p>
   <div class="sd-hero-pills">
     <span class="sd-pill">{topDeals.length} Deals</span>
     <span class="sd-pill">{Object.keys(MARKETPLACES).length}+ Marketplaces</span>

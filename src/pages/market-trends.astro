@@ -1,7 +1,7 @@
 ---
 import Base from '../layouts/Base.astro';
 import ExploreMore from '../components/ExploreMore.astro';
-import { SKINS, getLowestPrice, getHighestPrice, RARITY_COLORS, RARITY_BG, getTopByVolume, getTopByLiquidity, getMostTraded, getMostListings, getVolumeLabel, getLiquidityColor, getLiquidityLabel } from '../lib/skins';
+import { SKINS, getLowestPrice, getHighestPrice, RARITY_COLORS, RARITY_BG, getTopByVolume, getTopByLiquidity, getMostTraded, getMostListings, getVolumeLabel, getLiquidityColor, getLiquidityLabel, fmtPrice } from '../lib/skins';
 import { faqSchema, breadcrumbSchema } from '../lib/weapons';
 
 const title = 'CS2 Skin Market Trends — Price Movers & Analysis | CSGOLuck Wiki';
@@ -136,7 +136,7 @@ const crumbs = [
             <span class="mt-skin-name">{skin.name}</span>
           </span>
           <span class="mt-skin-rarity" style={`color:${rarityColor}`}>{skin.rarity}</span>
-          <span class="mt-skin-price">${high.toFixed(2)}</span>
+          <span class="mt-skin-price">${fmtPrice(high)}</span>
         </a>
       );
     })}
@@ -160,7 +160,7 @@ const crumbs = [
             <span class="mt-skin-name">{skin.name}</span>
           </span>
           <span class="mt-skin-rarity" style={`color:${rarityColor}`}>{skin.rarity}</span>
-          <span class="mt-skin-price">${low.toFixed(2)} – ${high.toFixed(2)}</span>
+          <span class="mt-skin-price">${fmtPrice(low)} – ${fmtPrice(high)}</span>
         </a>
       );
     })}
@@ -184,7 +184,7 @@ const crumbs = [
             <span class="mt-skin-name">{skin.name}</span>
           </span>
           <span class="mt-skin-rarity" style={`color:${rarityColor}`}>{skin.rarity}</span>
-          <span class="mt-skin-price">${high.toFixed(2)}</span>
+          <span class="mt-skin-price">${fmtPrice(high)}</span>
         </a>
       );
     })}
@@ -213,7 +213,7 @@ const crumbs = [
             <span class="mt-skin-name">{skin.name}</span>
             <span class="mt-mover-stats">
               <span class="mt-mover-stat mt-trades">{getVolumeLabel(skin.trades7d || 0)} trades</span>
-              {low > 0 && <span class="mt-mover-stat mt-price">from ${low.toFixed(2)}</span>}
+              {low > 0 && <span class="mt-mover-stat mt-price">from ${fmtPrice(low)}</span>}
             </span>
           </span>
         </a>
@@ -243,7 +243,7 @@ const crumbs = [
             <span class="mt-skin-name">{skin.name}</span>
             <span class="mt-mover-stats">
               <span class="mt-mover-stat mt-volume">{getVolumeLabel(skin.volume7d || 0)} volume</span>
-              {low > 0 && <span class="mt-mover-stat mt-price">from ${low.toFixed(2)}</span>}
+              {low > 0 && <span class="mt-mover-stat mt-price">from ${fmtPrice(low)}</span>}
             </span>
           </span>
         </a>
@@ -274,7 +274,7 @@ const crumbs = [
             <span class="mt-skin-name">{skin.name}</span>
             <span class="mt-mover-stats">
               <span class="mt-mover-stat" style={`color:${liqColor}`}>{liqLabel} ({skin.liquidity}%)</span>
-              {low > 0 && <span class="mt-mover-stat mt-price">from ${low.toFixed(2)}</span>}
+              {low > 0 && <span class="mt-mover-stat mt-price">from ${fmtPrice(low)}</span>}
             </span>
           </span>
         </a>
@@ -303,7 +303,7 @@ const crumbs = [
             <span class="mt-skin-name">{skin.name}</span>
             <span class="mt-mover-stats">
               <span class="mt-mover-stat mt-listings">{getVolumeLabel(skin.listingCount || 0)} listings</span>
-              {low > 0 && <span class="mt-mover-stat mt-price">from ${low.toFixed(2)}</span>}
+              {low > 0 && <span class="mt-mover-stat mt-price">from ${fmtPrice(low)}</span>}
             </span>
           </span>
         </a>
@@ -471,12 +471,12 @@ const crumbs = [
 .mt-faq{margin-bottom:2rem}
 .mt-faq h2{font-family:'Montserrat',sans-serif;font-size:1.15rem;font-weight:700;color:var(--text);margin:0 0 .75rem}
 .mt-faq-item{background:var(--bg2);border:1px solid var(--border);border-radius:4px;margin-bottom:.35rem;overflow:hidden}
-.mt-faq-item summary{padding:.75rem 1rem;font-weight:700;font-size:.9rem;color:var(--text);cursor:pointer;list-style:none;display:flex;align-items:center;gap:.5rem;transition:background .15s}
-.mt-faq-item summary::before{content:'+';font-size:1.05rem;font-weight:700;color:var(--accent);flex-shrink:0;width:18px;text-align:center}
-.mt-faq-item[open] summary::before{content:'\2212'}
+.mt-faq-item summary{padding:.75rem 2.5rem .75rem 1rem;font-weight:700;font-size:.9rem;color:var(--text);cursor:pointer;list-style:none;position:relative;transition:background .15s}
+.mt-faq-item summary::after{content:'+';position:absolute;right:1.25rem;top:50%;transform:translateY(-50%);font-size:1.2rem;color:var(--accent);font-weight:700}
+.mt-faq-item[open] summary::after{content:'\2212'}
 .mt-faq-item summary:hover{background:var(--bg3)}
 .mt-faq-item summary::-webkit-details-marker{display:none}
-.mt-faq-item p{padding:0 1rem .85rem 2.25rem;margin:0;color:var(--text2);font-size:.88rem;line-height:1.6}
+.mt-faq-item p{padding:0 1rem .85rem 1rem;margin:0;color:var(--text2);font-size:.88rem;line-height:1.6}
 
 /* ── Related ── */
 .mt-related{margin-bottom:2rem}

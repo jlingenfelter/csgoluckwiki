@@ -1,7 +1,7 @@
 ---
 import Base from '../layouts/Base.astro';
 import ExploreMore from '../components/ExploreMore.astro';
-import { SKINS, getLowestPrice, getHighestPrice, RARITY_COLORS } from '../lib/skins';
+import { SKINS, getLowestPrice, getHighestPrice, RARITY_COLORS, fmtPrice } from '../lib/skins';
 import { faqSchema, breadcrumbSchema, toolAppSchema } from '../lib/weapons';
 
 const title = 'CS2 Skin Price Tracker & Market Overview | CSGOLuck Wiki';
@@ -103,15 +103,15 @@ const faqs = [
         <div class="pt-stat-label">Skins Tracked</div>
       </div>
       <div class="pt-stat">
-        <div class="pt-stat-val">${totalValue.toFixed(0)}</div>
+        <div class="pt-stat-val">${fmtPrice(totalValue).split('.')[0]}</div>
         <div class="pt-stat-label">Total Market Value</div>
       </div>
       <div class="pt-stat">
-        <div class="pt-stat-val">${avgPrice.toFixed(2)}</div>
+        <div class="pt-stat-val">${fmtPrice(avgPrice)}</div>
         <div class="pt-stat-label">Average Skin Price</div>
       </div>
       <div class="pt-stat">
-        <div class="pt-stat-val">${getHighestPrice(mostExpensive[0]).toFixed(2)}</div>
+        <div class="pt-stat-val">${fmtPrice(getHighestPrice(mostExpensive[0]))}</div>
         <div class="pt-stat-label">Most Expensive Skin</div>
       </div>
     </div>
@@ -172,7 +172,7 @@ const faqs = [
                     {skin.rarity}
                   </span>
                 </td>
-                <td class="pt-col-price">${getHighestPrice(skin).toFixed(2)}</td>
+                <td class="pt-col-price">${fmtPrice(getHighestPrice(skin))}</td>
               </tr>
             );
           })}
@@ -211,7 +211,7 @@ const faqs = [
                     {skin.rarity}
                   </span>
                 </td>
-                <td class="pt-col-price">${getLowestPrice(skin).toFixed(2)}</td>
+                <td class="pt-col-price">${fmtPrice(getLowestPrice(skin))}</td>
               </tr>
             );
           })}
@@ -231,7 +231,7 @@ const faqs = [
           <div class="pt-cat-row">
             <span class="pt-cat-name">{categoryLabels[cat] || cat}</span>
             <span class="pt-cat-count">{data.count} skins</span>
-            <span class="pt-cat-avg">${data.avg.toFixed(2)}</span>
+            <span class="pt-cat-avg">${fmtPrice(data.avg)}</span>
           </div>
         ))}
     </div>
@@ -250,7 +250,7 @@ const faqs = [
             <div class="pt-rarity-row" style={`--rarity-color: ${rarityColor}`}>
               <span class="pt-rarity-name">{rarity}</span>
               <span class="pt-rarity-count">{data.count} skins</span>
-              <span class="pt-rarity-price">${data.avg.toFixed(2)}</span>
+              <span class="pt-rarity-price">${fmtPrice(data.avg)}</span>
             </div>
           );
         })}
@@ -401,12 +401,12 @@ const faqs = [
 .pt-faq{margin-bottom:2rem}
 .pt-faq h2{font-family:'Montserrat',sans-serif;font-size:1.15rem;font-weight:700;color:var(--text);margin:0 0 .75rem}
 .pt-faq-item{background:var(--bg2);border:1px solid var(--border);border-radius:4px;margin-bottom:.35rem;overflow:hidden}
-.pt-faq-item summary{padding:.75rem 1rem;font-weight:700;font-size:.9rem;color:var(--text);cursor:pointer;list-style:none;display:flex;align-items:center;gap:.5rem;transition:background .15s}
-.pt-faq-item summary::before{content:'+';font-size:1.05rem;font-weight:700;color:var(--accent);flex-shrink:0;width:18px;text-align:center}
-.pt-faq-item[open] summary::before{content:'\2212'}
+.pt-faq-item summary{padding:.75rem 2.5rem .75rem 1rem;font-weight:700;font-size:.9rem;color:var(--text);cursor:pointer;list-style:none;position:relative;transition:background .15s}
+.pt-faq-item summary::after{content:'+';position:absolute;right:1.25rem;top:50%;transform:translateY(-50%);font-size:1.2rem;color:var(--accent);font-weight:700}
+.pt-faq-item[open] summary::after{content:'\2212'}
 .pt-faq-item summary:hover{background:var(--bg3)}
 .pt-faq-item summary::-webkit-details-marker{display:none}
-.pt-faq-item p{padding:0 1rem .85rem 2.25rem;margin:0;color:var(--text2);font-size:.88rem;line-height:1.6}
+.pt-faq-item p{padding:0 1rem .85rem 1rem;margin:0;color:var(--text2);font-size:.88rem;line-height:1.6}
 
 /* ── Related ── */
 .pt-related{margin-bottom:2rem}

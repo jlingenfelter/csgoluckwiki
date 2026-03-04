@@ -92,11 +92,15 @@ function getTeamRegion(t: typeof teamCards[0]): string {
 const teamCardsWithRegion = teamCards.map(t => ({ ...t, region: getTeamRegion(t) }));
 const allRegions = [...new Set(teamCardsWithRegion.map(t => t.region))].sort();
 
-// Spotlight: top 6 teams by player count
-const spotlightTeams = [...teamCardsWithRegion].sort((a, b) => b.players.length - a.players.length).slice(0, 6);
+// Spotlight: top 6 teams by player count (exclude non-team entries)
+const excludedFromFeatured = ['content creator', 'free agent'];
+const spotlightTeams = [...teamCardsWithRegion]
+  .filter(t => !excludedFromFeatured.includes(t.name.toLowerCase()))
+  .sort((a, b) => b.players.length - a.players.length)
+  .slice(0, 6);
 ---
 
-<Base {title} {description}>
+<Base {title} {description} currentNav="/pro-teams/">
 <Fragment slot="head">
 <script type="application/ld+json" set:html={JSON.stringify(faqSchema(faqs))} />
 <script type="application/ld+json" set:html={JSON.stringify({

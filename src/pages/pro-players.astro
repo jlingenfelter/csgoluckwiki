@@ -44,7 +44,7 @@ const topCountries = getCountries().slice(0, 12);
 const topMice = getGearByType('mouse').slice(0, 8);
 ---
 
-<Base {title} {description}>
+<Base {title} {description} currentNav="/pro-players/">
 <Fragment slot="head">
 <script type="application/ld+json" set:html={JSON.stringify(faqSchema(faqs))} />
 </Fragment>
@@ -235,7 +235,7 @@ const topMice = getGearByType('mouse').slice(0, 8);
 
 <!-- FAQ: <details> accordion -->
 <section class="pph-faq-section">
-  <h2 class="pph-section-title">Common Questions</h2>
+  <h2 class="pph-section-title">Frequently Asked Questions</h2>
   {faqs.map(f => (
     <details class="pph-faq">
       <summary class="pph-faq-q">{f.question}</summary>
@@ -360,6 +360,7 @@ const topMice = getGearByType('mouse').slice(0, 8);
 .pph-card-placeholder{width:60px;height:60px;border-radius:50%;background:var(--bg2);border:2px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:1.4rem;font-weight:900;color:var(--text2)}
 
 .pph-card-role{position:absolute;top:.4rem;left:.4rem;font-size:.55rem;font-weight:700;padding:.12rem .35rem;border-radius:4px;text-transform:uppercase;letter-spacing:.03em;background:var(--bg3);color:var(--text2);border:1px solid var(--border)}
+.pph-card-role.pph-role-sm{position:static;font-size:.6rem}
 .pph-card-role[data-r="awper"]{background:rgba(239,83,80,.12);color:var(--red);border-color:var(--red)}
 .pph-card-role[data-r="rifler"]{background:rgba(66,165,245,.12);color:var(--blue);border-color:var(--blue)}
 .pph-card-role[data-r="igl"]{background:rgba(171,71,188,.12);color:var(--purple);border-color:var(--purple)}

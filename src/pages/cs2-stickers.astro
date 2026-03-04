@@ -17,6 +17,15 @@ import {
 const title = 'CS2 Sticker Database — Every Sticker with Live Pricing | CSGOLuck Wiki';
 const description = 'The full Counter-Strike 2 sticker catalog. Search tournament, team, and community stickers alongside current market values, rarity variant breakdowns, and long-term investment insights.';
 
+// Helper: get lowest selling price (exclude _buy entries which are buy orders)
+function getLowestSellPrice(sticker: { price: number; providers?: Record<string, number> }): number {
+  if (!sticker.providers) return sticker.price;
+  const sellPrices = Object.entries(sticker.providers)
+    .filter(([key, val]) => !key.includes('_buy') && val > 0)
+    .map(([, val]) => val);
+  return sellPrices.length > 0 ? Math.min(...sellPrices) : sticker.price;
+}
+
 // Compute stats
 const totalStickers = STICKERS_TOTAL;
 const stickersWithPrices = STICKERS.filter(s => s.price > 0).length;
@@ -36,7 +45,7 @@ const clientStickers = STICKERS
     t: s.tournament || '',
     m: s.team || '',
     y: s.type,
-    p: s.price,
+    p: getLowestSellPrice(s),
     vol: s.volume7d || 0,
   }));
 
@@ -155,7 +164,7 @@ const variantFilters = ALL_VARIANTS.map(v => ({
           <div class="sth-card-body">
             <span class="sth-card-name">{displayName}</span>
             {s.tournament && <span class="sth-card-tournament">{s.tournament}</span>}
-            <span class="sth-card-price">${s.price.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</span>
+            <span class="sth-card-price">${getLowestSellPrice(s).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</span>
           </div>
         </a>
       );
@@ -164,7 +173,7 @@ const variantFilters = ALL_VARIANTS.map(v => ({
 
   <!-- Load More -->
   <div class="sth-load-wrap" id="loadMoreWrap">
-    <button class="sth-load-btn" id="loadMoreBtn">Show More Stickers</button>
+    <button class="sth-load-btn" id="loadMoreBtn">Load More Stickers</button>
   </div>
 
   <!-- Sticker Investing Section -->

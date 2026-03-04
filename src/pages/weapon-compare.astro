@@ -98,7 +98,7 @@ const schemaData = {
 };
 ---
 
-<Base title={title} description={description}>
+<Base title={title} description={description} currentNav="/cs2-tools/">
   <script type="application/ld+json" set:html={JSON.stringify(toolAppSchema({ name: 'CS2 Weapon Compare', url: 'https://wiki.csgoluck.com/weapon-compare/', description }))}></script>
   <script type="application/ld+json" set:html={JSON.stringify(schemaData)} />
 

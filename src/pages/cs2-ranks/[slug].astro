@@ -280,11 +280,11 @@ const cumulativePercentile = cumulativeBelow + rank.percentage;
 .rp-faq-list{display:flex;flex-direction:column;gap:.5rem}
 .rp-faq-item{background:var(--bg2);border:1px solid var(--border);border-radius:4px;overflow:hidden}
 .rp-faq-item[open]{border-left:3px solid var(--accent)}
-.rp-faq-q{padding:.85rem 1rem;font-weight:700;font-size:.92rem;cursor:pointer;list-style:none;display:flex;align-items:center;gap:.5rem}
+.rp-faq-q{padding:.85rem 2.5rem .85rem 1rem;font-weight:700;font-size:.92rem;cursor:pointer;list-style:none;position:relative}
 .rp-faq-q::-webkit-details-marker{display:none}
-.rp-faq-q::before{content:'+';font-size:1.1rem;font-weight:700;color:var(--accent);flex-shrink:0;width:1.2rem;text-align:center}
-.rp-faq-item[open] .rp-faq-q::before{content:'\2212'}
-.rp-faq-a{margin:0;padding:0 1rem 1rem 2.7rem;font-size:.88rem;color:var(--text2);line-height:1.6}
+.rp-faq-q::after{content:'+';position:absolute;right:1.25rem;top:50%;transform:translateY(-50%);font-size:1.2rem;color:var(--accent);font-weight:700}
+.rp-faq-item[open] .rp-faq-q::after{content:'\2212'}
+.rp-faq-a{margin:0;padding:0 1rem 1rem 1rem;font-size:.88rem;color:var(--text2);line-height:1.6}
 
 /* ===== Responsive ===== */
 @media(max-width:768px){

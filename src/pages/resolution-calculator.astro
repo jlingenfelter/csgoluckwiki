@@ -353,18 +353,18 @@ const toolSchema = JSON.stringify({
     var arB=getAspectRatio(bw,bh);
     var fpsBoost=Math.round((1-(bw*bh)/(aw*ah))*100);
 
-    function statHtml(label,val){return '<div class="rsc-stat-item"><span class="rsc-stat-l">'+label+'</span><span class="rsc-stat-v">'+val+'</span></div>';}
+    function statHtml(label,val){return '<div class="rsc-stat-item"><span class="rsc-stat-l">'+label+': </span><span class="rsc-stat-v">'+val+'</span></div>';}
 
     document.getElementById('rc-statsA').innerHTML=
       statHtml('Aspect Ratio',arA)+
-      statHtml('Horizontal FOV',hfovA+'deg')+
-      statHtml('Total Pixels',pixA+'MP')+
+      statHtml('Horizontal FOV',hfovA+' deg')+
+      statHtml('Total Pixels',pixA+' MP')+
       statHtml('Resolution',aw+'x'+ah);
 
     document.getElementById('rc-statsB').innerHTML=
       statHtml('Aspect Ratio',arB)+
-      statHtml('Horizontal FOV',hfovB+'deg')+
-      statHtml('Total Pixels',pixB+'MP')+
+      statHtml('Horizontal FOV',hfovB+' deg')+
+      statHtml('Total Pixels',pixB+' MP')+
       statHtml('Resolution',bw+'x'+bh);
 
     var fovDiff=Math.abs(hfovA-hfovB).toFixed(1);

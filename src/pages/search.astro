@@ -197,12 +197,12 @@ const rarities = ['All', 'Covert', 'Classified', 'Restricted', 'Mil-Spec', 'Indu
 .sr-faq{margin-bottom:1.5rem}
 .sr-faq h2{font-family:'Montserrat',sans-serif;font-size:1.15rem;font-weight:700;color:var(--text);margin:0 0 .75rem}
 .sr-faq-item{background:var(--bg2);border:1px solid var(--border);border-radius:4px;margin-bottom:.35rem;overflow:hidden}
-.sr-faq-item summary{padding:.75rem 1rem;font-weight:700;font-size:.9rem;color:var(--text);cursor:pointer;list-style:none;display:flex;align-items:center;gap:.5rem;transition:background .15s}
-.sr-faq-item summary::before{content:'+';font-size:1.05rem;font-weight:700;color:var(--accent);flex-shrink:0;width:18px;text-align:center}
-.sr-faq-item[open] summary::before{content:'\2212'}
+.sr-faq-item summary{padding:.75rem 2.5rem .75rem 1rem;font-weight:700;font-size:.9rem;color:var(--text);cursor:pointer;list-style:none;position:relative;transition:background .15s}
+.sr-faq-item summary::after{content:'+';position:absolute;right:1.25rem;top:50%;transform:translateY(-50%);font-size:1.2rem;color:var(--accent);font-weight:700}
+.sr-faq-item[open] summary::after{content:'\2212'}
 .sr-faq-item summary:hover{background:var(--bg3)}
 .sr-faq-item summary::-webkit-details-marker{display:none}
-.sr-faq-item p{padding:0 1rem .85rem 2.25rem;margin:0;color:var(--text2);font-size:.88rem;line-height:1.6}
+.sr-faq-item p{padding:0 1rem .85rem 1rem;margin:0;color:var(--text2);font-size:.88rem;line-height:1.6}
 
 /* ── Related Links ── */
 .sr-links{margin-bottom:2rem}

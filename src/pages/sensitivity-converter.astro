@@ -3,7 +3,7 @@ import Base from '../layouts/Base.astro';
 import ExploreMore from '../components/ExploreMore.astro';
 import { faqSchema, breadcrumbSchema } from '../lib/weapons';
 
-const title = 'Sensitivity Converter';
+const title = 'CS2 Sensitivity Converter — Convert Between Games | CSGOLuck Wiki';
 const description = 'Convert mouse sensitivity between CS2, Valorant, Apex Legends, and other popular games.';
 
 const games = [
@@ -55,7 +55,7 @@ const toolSchema = JSON.stringify({
 });
 ---
 
-<Base title={title} description={description}>
+<Base title={title} description={description} currentNav="/cs2-tools/">
   <script type="application/ld+json" set:html={toolSchema}></script>
   <script type="application/ld+json" set:html={JSON.stringify(schemaData)} />
 
