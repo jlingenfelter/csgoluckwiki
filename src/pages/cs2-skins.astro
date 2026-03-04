@@ -1,7 +1,7 @@
 ---
 import Base from '../layouts/Base.astro';
 import ExploreMore from '../components/ExploreMore.astro';
-import { SKINS, RARITY_COLORS, RARITY_BG, getLowestPrice, getHighestPrice, getUniqueWeapons, getUniqueCategories, getWeaponsInCategory, SKINS_SOURCE, SKINS_TOTAL, getCollections, getVolumeLabel, getLiquidityColor, getLiquidityLabel } from '../lib/skins';
+import { SKINS, RARITY_COLORS, RARITY_BG, getLowestPrice, getHighestPrice, fmtPrice, getUniqueWeapons, getUniqueCategories, getWeaponsInCategory, SKINS_SOURCE, SKINS_TOTAL, getCollections, getVolumeLabel, getLiquidityColor, getLiquidityLabel } from '../lib/skins';
 import { WEAPON_CATEGORIES, faqSchema, breadcrumbSchema, getWeaponComparisons } from '../lib/weapons';
 import { skinCardImage } from '../lib/imageOptimize';
 
@@ -56,7 +56,7 @@ const topComparisons = getWeaponComparisons().slice(0, 8);
 
 <!-- Hero: Left-aligned with stat pills -->
 <section class="sh-hero">
-  <h1 class="sh-hero-title">Skin Index</h1>
+  <h1 class="sh-hero-title">CS2 Skin Index</h1>
   <p class="sh-hero-desc">Dive into {SKINS_TOTAL} CS2 skins backed by real-time pricing aggregated across 14+ trading platforms. Use type, weapon, or keyword filters to locate market values, <a href="/float-checker/">float boundaries</a>, and <a href="/cs2-guides/float-guide/">wear condition details</a> for any item.</p>
   <div class="sh-hero-pills">
     <span class="sh-pill">{SKINS_TOTAL} Total Skins</span>
@@ -118,34 +118,29 @@ const topComparisons = getWeaponComparisons().slice(0, 8);
   </div>
 </div>
 
-<!-- Compact Row Results -->
-<div class="sh-list" id="sh-list">
+<!-- Card Grid Results -->
+<div class="sh-grid" id="sh-list">
 {sortedSkins.map((skin, i) => {
   const low = getLowestPrice(skin);
   const high = getHighestPrice(skin);
   const rarityColor = RARITY_COLORS[skin.rarity] || '#fff';
   const rarityBg = RARITY_BG[skin.rarity] || 'rgba(255,255,255,0.05)';
   return (
-    <a href={`/cs2-skin/${skin.slug}/`} class={`sh-row${i >= 48 ? ' sh-hidden' : ''}`} data-weapon={skin.weapon} data-category={skin.category} data-rarity={skin.rarity} data-price={high} data-name={`${skin.weapon} ${skin.name}`}>
-      <div class="sh-row-img" style={`background:${rarityBg}`}>
+    <a href={`/cs2-skin/${skin.slug}/`} class={`sh-card${i >= 48 ? ' sh-hidden' : ''}`} data-weapon={skin.weapon} data-category={skin.category} data-rarity={skin.rarity} data-price={high} data-name={`${skin.weapon} ${skin.name}`}>
+      <div class="sh-card-img" style={`background:${rarityBg}`}>
+        <span class="sh-card-rarity" style={`background:${rarityColor}`}>{skin.rarity}</span>
         {skin.image
-          ? <img src={skinCardImage(skin.image)} alt={`${skin.weapon} | ${skin.name}`} loading="lazy" width="100" height="75" />
-          : <div class="sh-row-placeholder">{skin.weapon.substring(0, 2)}</div>
+          ? <img src={skinCardImage(skin.image)} alt={`${skin.weapon} | ${skin.name}`} loading="lazy" width="200" height="150" />
+          : <div class="sh-card-placeholder">{skin.weapon.substring(0, 2)}</div>
         }
+        {skin.statTrak && <span class="sh-card-badge sh-badge-st">ST</span>}
+        {skin.souvenir && <span class="sh-card-badge sh-badge-sv">SV</span>}
       </div>
-      <div class="sh-row-body">
-        <span class="sh-row-weapon">{skin.weapon}</span>
-        <span class="sh-row-name">{skin.name}</span>
-      </div>
-      <div class="sh-row-tags">
-        <span class="sh-rarity-dot" style={`background:${rarityColor}`}></span>
-        <span class="sh-rarity-text" style={`color:${rarityColor}`}>{skin.rarity}</span>
-        {skin.statTrak && <span class="sh-tag-st">ST</span>}
-        {skin.souvenir && <span class="sh-tag-sv">SV</span>}
-      </div>
-      <div class="sh-row-price">
-        <span class="sh-price-val">${low.toFixed(2)}{low !== high ? ` - $${high.toFixed(2)}` : ''}</span>
-        <span class="sh-price-wears">{skin.prices.length} wear{skin.prices.length !== 1 ? 's' : ''}</span>
+      <div class="sh-card-body">
+        <span class="sh-card-weapon">{skin.weapon}</span>
+        <span class="sh-card-name">{skin.name}</span>
+        <span class="sh-card-price">${fmtPrice(low)}{low !== high ? ` – $${fmtPrice(high)}` : ''}</span>
+        <span class="sh-card-wears">{skin.prices.length} wear{skin.prices.length !== 1 ? 's' : ''}</span>
       </div>
     </a>
   );
@@ -283,30 +278,28 @@ const topComparisons = getWeaponComparisons().slice(0, 8);
 .sh-sort-select{background:var(--bg3);color:var(--text);border:1px solid var(--border);padding:.3rem .6rem;border-radius:4px;font-size:.8rem;font-family:inherit;cursor:pointer}
 .sh-sort-select:focus{outline:none;border-color:var(--accent)}
 
-/* ===== SH LIST (Compact Rows) ===== */
-.sh-list{display:flex;flex-direction:column;gap:.3rem;margin:1rem 0}
-.sh-hidden{display:none}
+/* ===== SH GRID (Card Layout) ===== */
+.sh-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:.75rem;margin:1rem 0}
+.sh-hidden{display:none!important}
 
-.sh-row{display:grid;grid-template-columns:72px 1fr auto auto;align-items:center;gap:.75rem;background:var(--bg2);border:1px solid var(--border);border-left:3px solid transparent;border-radius:4px;padding:.45rem .65rem;text-decoration:none;color:inherit;transition:border-color .15s,background .15s}
-.sh-row:hover{border-left-color:var(--accent);background:var(--bg3)}
+.sh-card{display:flex;flex-direction:column;background:var(--bg2);border:1px solid var(--border);border-radius:8px;overflow:hidden;text-decoration:none;color:inherit;transition:transform .2s,border-color .2s,box-shadow .2s}
+.sh-card:hover{transform:translateY(-3px);border-color:var(--accent);box-shadow:0 8px 24px rgba(0,0,0,.3)}
 
-.sh-row-img{flex-shrink:0;width:72px;height:52px;display:flex;align-items:center;justify-content:center;border-radius:4px;overflow:hidden}
-.sh-row-img img{max-width:100%;max-height:100%;object-fit:contain}
-.sh-row-placeholder{font-size:1.1rem;font-weight:900;color:var(--text2);opacity:.2}
+.sh-card-img{position:relative;height:140px;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.sh-card-img img{max-width:85%;max-height:120px;object-fit:contain;transition:transform .25s}
+.sh-card:hover .sh-card-img img{transform:scale(1.06)}
+.sh-card-placeholder{font-size:1.5rem;font-weight:900;color:var(--text2);opacity:.15}
 
-.sh-row-body{display:flex;align-items:baseline;gap:.35rem;min-width:0;overflow:hidden}
-.sh-row-weapon{font-size:.72rem;color:var(--text2);font-weight:600;flex-shrink:0}
-.sh-row-name{font-size:.88rem;font-weight:700;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sh-card-rarity{position:absolute;top:.45rem;left:.45rem;font-size:.58rem;font-weight:700;text-transform:uppercase;letter-spacing:.04em;padding:.15rem .45rem;border-radius:3px;color:#000;z-index:1}
+.sh-card-badge{position:absolute;top:.45rem;right:.45rem;font-size:.55rem;font-weight:700;padding:.12rem .35rem;border-radius:3px;z-index:1}
+.sh-badge-st{background:#cf6d1e;color:#000}
+.sh-badge-sv{background:#ffd740;color:#000}
 
-.sh-row-tags{display:flex;align-items:center;gap:.3rem;flex-shrink:0}
-.sh-rarity-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
-.sh-rarity-text{font-size:.68rem;font-weight:600;text-transform:uppercase;letter-spacing:.02em}
-.sh-tag-st{font-size:.6rem;font-weight:700;padding:.1rem .3rem;border-radius:3px;background:#cf6d1e;color:#000}
-.sh-tag-sv{font-size:.6rem;font-weight:700;padding:.1rem .3rem;border-radius:3px;background:#ffd740;color:#000}
-
-.sh-row-price{flex-shrink:0;text-align:right;display:flex;flex-direction:column;gap:.05rem}
-.sh-price-val{font-size:.88rem;font-weight:700;color:var(--text);white-space:nowrap}
-.sh-price-wears{font-size:.66rem;color:var(--text2)}
+.sh-card-body{padding:.6rem .7rem;display:flex;flex-direction:column;gap:.15rem;flex:1}
+.sh-card-weapon{font-size:.68rem;color:var(--text2);font-weight:600;text-transform:uppercase;letter-spacing:.03em}
+.sh-card-name{font-size:.88rem;font-weight:700;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sh-card-price{font-size:.82rem;font-weight:700;color:var(--accent);margin-top:auto;padding-top:.25rem}
+.sh-card-wears{font-size:.62rem;color:var(--text2)}
 
 /* ===== SH PAGER ===== */
 .sh-pager{display:flex;flex-direction:column;align-items:center;gap:.5rem;margin:1.5rem 0}
@@ -347,10 +340,11 @@ const topComparisons = getWeaponComparisons().slice(0, 8);
 }
 @media(max-width:640px){
   .sh-weapon-grid{grid-template-columns:1fr}
-  .sh-row{grid-template-columns:56px 1fr;gap:.4rem}
-  .sh-row-img{width:56px;height:40px}
-  .sh-row-tags{grid-column:1/-1;padding-top:.2rem;border-top:1px solid var(--border)}
-  .sh-row-price{grid-column:1/-1;text-align:left;flex-direction:row;gap:.5rem}
+  .sh-grid{grid-template-columns:repeat(2,1fr);gap:.5rem}
+  .sh-card-img{height:100px}
+  .sh-card-img img{max-height:85px}
+  .sh-card-body{padding:.45rem .5rem}
+  .sh-card-name{font-size:.78rem}
   .sh-controls{flex-direction:column;align-items:stretch}
   .sh-controls-left{flex-wrap:wrap}
   .sh-search{width:100%}
@@ -362,7 +356,7 @@ const topComparisons = getWeaponComparisons().slice(0, 8);
 (function(){
   var typeChips = document.querySelectorAll('.sh-tab[data-category]');
   var wepBtns = document.querySelectorAll('.sh-wbtn[data-weapon]');
-  var allEntries = Array.from(document.querySelectorAll('.sh-row[data-weapon]'));
+  var allEntries = Array.from(document.querySelectorAll('.sh-card[data-weapon]'));
   var countEl = document.getElementById('skin-count');
   var pagerStatus = document.getElementById('sh-pager-status');
   var loadMoreBtn = document.getElementById('sh-load-more');

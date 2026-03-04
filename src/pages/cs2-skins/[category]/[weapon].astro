@@ -1,7 +1,7 @@
 ---
 import Base from '../../../layouts/Base.astro';
 import ExploreMore from '../../../components/ExploreMore.astro';
-import { SKINS, RARITY_COLORS, RARITY_BG, getLowestPrice, getHighestPrice, getSkinsByWeapon, getWeaponsInCategory, getVolumeLabel, getLiquidityColor, getLiquidityLabel } from '../../../lib/skins';
+import { SKINS, RARITY_COLORS, RARITY_BG, getLowestPrice, getHighestPrice, fmtPrice, getSkinsByWeapon, getWeaponsInCategory, getVolumeLabel, getLiquidityColor, getLiquidityLabel } from '../../../lib/skins';
 import { WEAPONS, faqSchema, breadcrumbSchema } from '../../../lib/weapons';
 import { skinCardImage } from '../../../lib/imageOptimize';
 
@@ -109,7 +109,7 @@ const faqs = [
 
 <!-- Hero: Left-aligned with weapon name and skin count -->
 <section class="sw-hero">
-  <h1 class="sw-hero-title">{weaponName} Skins</h1>
+  <h1 class="sw-hero-title">CS2 {weaponName} Skins</h1>
   <div class="sw-hero-stats">
     <span class="sw-stat-pill">{weaponSkins.length} skins</span>
     <span class="sw-stat-pill">{collections.size} collections</span>
@@ -143,55 +143,29 @@ const faqs = [
   </div>
 </div>
 
-<!-- Skin Table Rows -->
-<div class="sw-table" id="skin-grid">
-  <!-- Table header -->
-  <div class="sw-table-head">
-    <span class="sw-th-img"></span>
-    <span class="sw-th-name">Skin</span>
-    <span class="sw-th-rarity">Rarity</span>
-    <span class="sw-th-wears">Wears</span>
-    <span class="sw-th-price">Price</span>
-  </div>
+<!-- Skin Cards -->
+<div class="sw-grid" id="skin-grid">
 {weaponSkins.map((skin, i) => {
   const low = getLowestPrice(skin);
   const high = getHighestPrice(skin);
   const rarityColor = RARITY_COLORS[skin.rarity] || '#fff';
   const rarityBg = RARITY_BG[skin.rarity] || 'rgba(255,255,255,0.04)';
   const rarityIdx = ['Consumer','Industrial','Mil-Spec','Restricted','Classified','Covert','Extraordinary','Contraband'].indexOf(skin.rarity);
-  const floatMin = skin.floatMin ?? 0;
-  const floatMax = skin.floatMax ?? 1;
   return (
-    <a href={`/cs2-skin/${skin.slug}/`} class="sw-row" data-price={high} data-name={skin.name} data-rarity={rarityIdx} style={`--rarity-color:${rarityColor};--rarity-bg:${rarityBg}`}>
-      <div class="sw-row-img" style={`background:${rarityBg}`}>
+    <a href={`/cs2-skin/${skin.slug}/`} class="sw-card" data-price={high} data-name={skin.name} data-rarity={rarityIdx}>
+      <div class="sw-card-img" style={`background:${rarityBg}`}>
+        <span class="sw-card-rarity" style={`background:${rarityColor}`}>{skin.rarity}</span>
         {skin.image
-          ? <img src={skinCardImage(skin.image)} alt={`${skin.weapon} | ${skin.name}`} loading="lazy" width="80" height="60" />
-          : <span class="sw-row-placeholder">{skin.weapon.substring(0, 2)}</span>
+          ? <img src={skinCardImage(skin.image)} alt={`${skin.weapon} | ${skin.name}`} loading="lazy" width="200" height="150" />
+          : <span class="sw-card-placeholder">{skin.weapon.substring(0, 2)}</span>
         }
+        {skin.statTrak && <span class="sw-card-badge sw-badge-st">ST</span>}
+        {skin.souvenir && <span class="sw-card-badge sw-badge-sv">SV</span>}
       </div>
-      <div class="sw-row-name">
-        <span class="sw-name-primary">{skin.name}</span>
-        <span class="sw-name-tags">
-          {skin.statTrak && <span class="sw-tag-st">ST</span>}
-          {skin.souvenir && <span class="sw-tag-sv">SV</span>}
-          {skin.collection && <span class="sw-name-collection">{skin.collection}</span>}
-        </span>
-      </div>
-      <div class="sw-row-rarity">
-        <span class="sw-rarity-badge" style={`background:${rarityColor};color:#000`}>{skin.rarity}</span>
-      </div>
-      <div class="sw-row-wears">
-        {skin.prices.map((wp: any) => (
-          <span class="sw-wear-entry">
-            <span class="sw-wear-label">{wp.wear}</span>
-            <span class="sw-wear-price">${wp.price.toFixed(2)}</span>
-          </span>
-        ))}
-        <span class="sw-float-range">Float {floatMin.toFixed(2)} - {floatMax.toFixed(2)}</span>
-      </div>
-      <div class="sw-row-price">
-        <span class="sw-price-main">${low.toFixed(2)}{low !== high ? ` - $${high.toFixed(2)}` : ''}</span>
-        <span class="sw-price-sub">{skin.prices.length} wear{skin.prices.length !== 1 ? 's' : ''}</span>
+      <div class="sw-card-body">
+        <span class="sw-card-name">{skin.name}</span>
+        <span class="sw-card-price">${fmtPrice(low)}{low !== high ? ` – $${fmtPrice(high)}` : ''}</span>
+        <span class="sw-card-meta">{skin.prices.length} wear{skin.prices.length !== 1 ? 's' : ''}{skin.collection ? ` · ${skin.collection}` : ''}</span>
       </div>
     </a>
   );
@@ -261,36 +235,22 @@ const faqs = [
 .sw-sort-pill:hover{border-left:3px solid var(--accent);color:var(--text)}
 .sw-sort-active{background:var(--accent);color:#000;border-color:var(--accent)}
 
-/* ===== SW TABLE (Rows) ===== */
-.sw-table{display:flex;flex-direction:column;gap:.3rem;margin-bottom:1.5rem}
-.sw-table-head{display:grid;grid-template-columns:72px 1fr 100px 200px 130px;gap:.75rem;padding:.35rem .65rem;font-size:.68rem;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.05em}
-
-.sw-row{display:grid;grid-template-columns:72px 1fr 100px 200px 130px;align-items:center;gap:.75rem;background:var(--bg2);border:1px solid var(--border);border-left:3px solid transparent;border-radius:4px;padding:.5rem .65rem;text-decoration:none;color:inherit;transition:border-color .15s,background .15s}
-.sw-row:hover{border-left-color:var(--accent);background:var(--bg3)}
-
-.sw-row-img{width:72px;height:52px;display:flex;align-items:center;justify-content:center;border-radius:4px;overflow:hidden}
-.sw-row-img img{max-width:100%;max-height:100%;object-fit:contain}
-.sw-row-placeholder{font-size:1rem;font-weight:800;color:var(--text2);opacity:.2}
-
-.sw-row-name{display:flex;flex-direction:column;gap:.15rem;min-width:0}
-.sw-name-primary{font-size:.9rem;font-weight:700;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.sw-name-tags{display:flex;align-items:center;gap:.25rem}
-.sw-tag-st{font-size:.58rem;font-weight:700;padding:.08rem .25rem;border-radius:3px;background:#cf6d1e;color:#000}
-.sw-tag-sv{font-size:.58rem;font-weight:700;padding:.08rem .25rem;border-radius:3px;background:#ffd740;color:#000}
-.sw-name-collection{font-size:.65rem;color:var(--text2);opacity:.7;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-
-.sw-row-rarity{display:flex;align-items:center}
-.sw-rarity-badge{display:inline-block;padding:.1rem .4rem;border-radius:3px;font-size:.62rem;font-weight:700;text-transform:uppercase;letter-spacing:.03em}
-
-.sw-row-wears{display:flex;flex-direction:column;gap:.1rem}
-.sw-wear-entry{display:flex;justify-content:space-between;font-size:.7rem}
-.sw-wear-label{color:var(--text2)}
-.sw-wear-price{font-weight:600;color:var(--text)}
-.sw-float-range{font-size:.62rem;color:var(--text2);margin-top:.1rem;font-family:'Courier New',monospace}
-
-.sw-row-price{text-align:right;display:flex;flex-direction:column;gap:.05rem}
-.sw-price-main{font-size:.9rem;font-weight:700;color:var(--accent);white-space:nowrap}
-.sw-price-sub{font-size:.66rem;color:var(--text2)}
+/* ===== SW CARD GRID ===== */
+.sw-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:.75rem;margin-bottom:1.5rem}
+.sw-card{display:flex;flex-direction:column;background:var(--bg2);border:1px solid var(--border);border-radius:8px;overflow:hidden;text-decoration:none;color:inherit;transition:transform .2s,border-color .2s,box-shadow .2s}
+.sw-card:hover{transform:translateY(-3px);border-color:var(--accent);box-shadow:0 8px 24px rgba(0,0,0,.3)}
+.sw-card-img{position:relative;height:140px;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.sw-card-img img{max-width:85%;max-height:120px;object-fit:contain;transition:transform .25s}
+.sw-card:hover .sw-card-img img{transform:scale(1.06)}
+.sw-card-placeholder{font-size:1.5rem;font-weight:900;color:var(--text2);opacity:.15}
+.sw-card-rarity{position:absolute;top:.45rem;left:.45rem;font-size:.58rem;font-weight:700;text-transform:uppercase;letter-spacing:.04em;padding:.15rem .45rem;border-radius:3px;color:#000;z-index:1}
+.sw-card-badge{position:absolute;top:.45rem;right:.45rem;font-size:.55rem;font-weight:700;padding:.12rem .35rem;border-radius:3px;z-index:1}
+.sw-badge-st{background:#cf6d1e;color:#000}
+.sw-badge-sv{background:#ffd740;color:#000}
+.sw-card-body{padding:.6rem .7rem;display:flex;flex-direction:column;gap:.15rem;flex:1}
+.sw-card-name{font-size:.88rem;font-weight:700;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sw-card-price{font-size:.82rem;font-weight:700;color:var(--accent);margin-top:auto;padding-top:.25rem}
+.sw-card-meta{font-size:.6rem;color:var(--text2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 
 /* ===== SW SIBLINGS ===== */
 .sw-siblings{margin:2.5rem 0}
@@ -313,16 +273,14 @@ const faqs = [
 
 /* ===== SW RESPONSIVE ===== */
 @media(max-width:1024px){
-  .sw-table-head{display:none}
-  .sw-row{grid-template-columns:64px 1fr auto;gap:.5rem}
-  .sw-row-rarity{display:none}
-  .sw-row-wears{display:none}
   .sw-siblings-grid{grid-template-columns:repeat(3,1fr)}
 }
 @media(max-width:640px){
-  .sw-row{grid-template-columns:52px 1fr;gap:.4rem}
-  .sw-row-img{width:52px;height:38px}
-  .sw-row-price{grid-column:1/-1;text-align:left;flex-direction:row;gap:.75rem;padding-top:.2rem;border-top:1px solid var(--border)}
+  .sw-grid{grid-template-columns:repeat(2,1fr);gap:.5rem}
+  .sw-card-img{height:100px}
+  .sw-card-img img{max-height:85px}
+  .sw-card-body{padding:.45rem .5rem}
+  .sw-card-name{font-size:.78rem}
   .sw-siblings-grid{grid-template-columns:repeat(2,1fr)}
 }
 </style>
@@ -330,7 +288,7 @@ const faqs = [
 <script is:inline>
 (function(){
   var grid = document.getElementById('skin-grid');
-  var cards = Array.from(grid.querySelectorAll('.sw-row'));
+  var cards = Array.from(grid.querySelectorAll('.sw-card'));
   var sortPills = document.querySelectorAll('.sw-sort-pill[data-sort]');
 
   sortPills.forEach(function(pill) {

@@ -57,6 +57,7 @@ const COUNTRIES = {
   sy: ['Syria', '🇸🇾'], th: ['Thailand', '🇹🇭'], tj: ['Tajikistan', '🇹🇯'], tn: ['Tunisia', '🇹🇳'],
   tr: ['Turkey', '🇹🇷'], tw: ['Taiwan', '🇹🇼'], ua: ['Ukraine', '🇺🇦'], us: ['United States', '🇺🇸'],
   uy: ['Uruguay', '🇺🇾'], uz: ['Uzbekistan', '🇺🇿'], ve: ['Venezuela', '🇻🇪'], vn: ['Vietnam', '🇻🇳'],
+  lu: ['Luxembourg', '🇱🇺'], ps: ['Palestine', '🇵🇸'],
   xk: ['Kosovo', '🇽🇰'], za: ['South Africa', '🇿🇦'],
 };
 
@@ -147,12 +148,14 @@ function parseListingTable(html) {
 
     if (cells.length < 10) continue;
 
-    // Cell order: [flag_img], Team, Player, Role, Mouse, HZ, DPI, Sens, eDPI, Zoom Sens, Monitor, GPU, Resolution, Aspect Ratio, Scaling Mode, Mousepad, Keyboard, Headset, Chair
+    // Cell order: [empty], Team, Player (with flag-wrap), Role, Mouse, HZ, DPI, Sens, eDPI, Zoom Sens, Monitor, GPU, Resolution, Aspect Ratio, Scaling Mode, Mousepad, Keyboard, Headset, Chair
 
-    // Extract country from flag image (class contains country code)
-    const flagMatch = cells[0]?.match(/class="[^"]*flag-icon-([a-z]{2})[^"]*"/i)
-      || cells[0]?.match(/flag-icon-([a-z]{2})/i)
-      || cells[0]?.match(/\/flags\/([a-z]{2})\./i);
+    // Extract country from flag image — flag is in the player cell (cell[2]) inside a flag-wrap div
+    // Current URL pattern: /assets/flags/rounded-rectangle/XX.svg or /flags/XX.svg
+    const flagCell = cells[2] || cells[0] || '';
+    const flagMatch = flagCell.match(/\/flags\/(?:rounded-rectangle\/)?([a-z]{2})\./i)
+      || flagCell.match(/flag-icon-([a-z]{2})/i)
+      || cells[0]?.match(/\/flags\/(?:rounded-rectangle\/)?([a-z]{2})\./i);
     const cc = flagMatch ? flagMatch[1].toLowerCase() : '';
 
     // Extract player name and slug from link

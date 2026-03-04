@@ -88,7 +88,7 @@ const uniqueYears = [...new Set(cases.map(c => c.year))].sort((a, b) => b - a);
   <!-- Hero -->
   <section class="ch-hero">
     <div class="ch-hero-text">
-      <h1 class="ch-hero-title">Case Archive</h1>
+      <h1 class="ch-hero-title">CS2 Case Archive</h1>
       <p class="ch-hero-desc">
         The complete index of CS2 weapon cases and map collections. Check the <a href="/case-odds-calculator/">drop probabilities</a> before you open, or fire up the <a href="/case-simulator/">Case Simulator</a> risk-free.
       </p>
@@ -108,76 +108,40 @@ const uniqueYears = [...new Set(cases.map(c => c.year))].sort((a, b) => b - a);
     <button class="ch-tab" data-filter="collections">Collections</button>
   </div>
 
-  <!-- Cases Table -->
-  <section id="ch-cases-section" class="ch-table-wrap">
-    <table class="ch-table">
-      <thead>
-        <tr>
-          <th class="ch-th-img"></th>
-          <th class="ch-th-name">Case</th>
-          <th class="ch-th-date">Released</th>
-          <th class="ch-th-rare">Rare Item</th>
-          <th class="ch-th-price">Key</th>
-          <th class="ch-th-action"></th>
-        </tr>
-      </thead>
-      <tbody>
-        {cases.map((caseItem) => (
-          <tr class="ch-tr" data-type={caseItem.type === 'weapon' ? 'weapon' : 'special'}>
-            <td class="ch-td-img">
-              {caseItem.image ? (
-                <img src={caseItem.image} alt={caseItem.name} loading="lazy" width="52" height="40" />
-              ) : (
-                <span class="ch-img-empty"></span>
-              )}
-            </td>
-            <td class="ch-td-name">
-              <a href={`/cs2-cases/${caseItem.id}/`} class="ch-case-link">
-                <span class="ch-name-main">{caseItem.name}</span>
-                <span class="ch-name-year">{caseItem.year}</span>
-              </a>
-            </td>
-            <td class="ch-td-date">{caseItem.releaseDate}</td>
-            <td class="ch-td-rare">{caseItem.notableSkins.length > 0 ? caseItem.notableSkins[0] : '--'}</td>
-            <td class="ch-td-price">{caseItem.keyPrice ? `$${caseItem.keyPrice}` : '--'}</td>
-            <td class="ch-td-action">
-              <a href={`/cs2-cases/${caseItem.id}/`} class="ch-view-link">&rarr;</a>
-            </td>
-          </tr>
-        ))}
-      </tbody>
-    </table>
-  </section>
+  <!-- Cases Grid -->
+  <div id="ch-cases-section" class="ch-grid">
+    {cases.map((caseItem) => (
+      <a href={`/cs2-cases/${caseItem.id}/`} class="ch-card" data-type={caseItem.type === 'weapon' ? 'weapon' : 'special'}>
+        <div class="ch-card-img">
+          {caseItem.image ? (
+            <img src={caseItem.image} alt={caseItem.name} loading="lazy" width="200" height="150" />
+          ) : (
+            <span class="ch-card-placeholder"></span>
+          )}
+        </div>
+        <div class="ch-card-body">
+          <span class="ch-card-name">{caseItem.name}</span>
+          <span class="ch-card-year">{caseItem.year}</span>
+          {caseItem.keyPrice && <span class="ch-card-price">Key: ${caseItem.keyPrice}</span>}
+        </div>
+      </a>
+    ))}
+  </div>
 
-  <!-- Collections Table -->
-  <section id="ch-collections-section" class="ch-table-wrap" style="display:none;">
-    <table class="ch-table">
-      <thead>
-        <tr>
-          <th class="ch-th-name">Collection</th>
-          <th class="ch-th-date">Map</th>
-          <th class="ch-th-price">Year</th>
-          <th class="ch-th-action"></th>
-        </tr>
-      </thead>
-      <tbody>
-        {collections.map((coll) => (
-          <tr class="ch-tr">
-            <td class="ch-td-name">
-              <a href={`/cs2-maps/${coll.mapName.toLowerCase().replace(/ /g, '-')}/`} class="ch-case-link">
-                <span class="ch-name-main">{coll.name}</span>
-              </a>
-            </td>
-            <td class="ch-td-date">{coll.mapName}</td>
-            <td class="ch-td-price">{coll.year}</td>
-            <td class="ch-td-action">
-              <a href={`/cs2-maps/${coll.mapName.toLowerCase().replace(/ /g, '-')}/`} class="ch-view-link">&rarr;</a>
-            </td>
-          </tr>
-        ))}
-      </tbody>
-    </table>
-  </section>
+  <!-- Collections Grid -->
+  <div id="ch-collections-section" class="ch-grid" style="display:none;">
+    {collections.map((coll) => (
+      <a href={`/cs2-maps/${coll.mapName.toLowerCase().replace(/ /g, '-')}/`} class="ch-card">
+        <div class="ch-card-img ch-card-img-coll">
+          <span class="ch-card-map-label">{coll.mapName}</span>
+        </div>
+        <div class="ch-card-body">
+          <span class="ch-card-name">{coll.name}</span>
+          <span class="ch-card-year">{coll.year}</span>
+        </div>
+      </a>
+    ))}
+  </div>
 
   <!-- FAQ Accordion -->
   <section class="ch-faq">
@@ -318,123 +282,99 @@ const uniqueYears = [...new Set(cases.map(c => c.year))].sort((a, b) => b - a);
       font-weight: 600;
     }
 
-    /* ---- TABLE ---- */
-    .ch-table-wrap {
+    /* ---- CARD GRID ---- */
+    .ch-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 0.75rem;
       margin-bottom: 2rem;
     }
 
-    .ch-table {
-      width: 100%;
-      border-collapse: collapse;
-    }
-
-    .ch-table thead th {
-      text-align: left;
-      font-size: 0.7rem;
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
-      color: var(--text2);
-      padding: 0.5rem 0.75rem;
-      border-bottom: 1px solid var(--border);
-      font-weight: 500;
-    }
-
-    .ch-th-img {
-      width: 60px;
-    }
-
-    .ch-th-action {
-      width: 36px;
-    }
-
-    .ch-tr {
-      border-bottom: 1px solid var(--border);
-      border-left: 3px solid transparent;
-      transition: background 0.15s, border-left-color 0.15s;
-    }
-
-    .ch-tr:hover {
-      background: var(--bg3);
-      border-left-color: var(--accent);
-    }
-
-    .ch-tr td {
-      padding: 0.55rem 0.75rem;
-      vertical-align: middle;
-    }
-
-    .ch-td-img img {
-      display: block;
-      width: 52px;
-      height: auto;
-      object-fit: contain;
-      border-radius: 4px;
-    }
-
-    .ch-img-empty {
-      display: block;
-      width: 52px;
-      height: 40px;
-      background: var(--bg3);
-      border-radius: 4px;
-    }
-
-    .ch-case-link {
+    .ch-card {
+      display: flex;
+      flex-direction: column;
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
       text-decoration: none;
       color: inherit;
+      transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .ch-card:hover {
+      transform: translateY(-3px);
+      border-color: var(--accent);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+    }
+
+    .ch-card-img {
+      height: 140px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--bg3);
+      overflow: hidden;
+    }
+
+    .ch-card-img img {
+      max-width: 85%;
+      max-height: 120px;
+      object-fit: contain;
+      transition: transform 0.25s;
+    }
+
+    .ch-card:hover .ch-card-img img {
+      transform: scale(1.06);
+    }
+
+    .ch-card-placeholder {
+      width: 60px;
+      height: 60px;
+      background: var(--border);
+      border-radius: 8px;
+      opacity: 0.2;
+    }
+
+    .ch-card-img-coll {
+      background: linear-gradient(135deg, var(--bg3), var(--bg2));
+    }
+
+    .ch-card-map-label {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--text2);
+      opacity: 0.4;
+    }
+
+    .ch-card-body {
+      padding: 0.6rem 0.7rem;
       display: flex;
       flex-direction: column;
       gap: 0.1rem;
+      flex: 1;
     }
 
-    .ch-name-main {
-      font-size: 0.9rem;
-      font-weight: 600;
+    .ch-card-name {
+      font-size: 0.85rem;
+      font-weight: 700;
       color: var(--text);
-    }
-
-    .ch-name-year {
-      font-size: 0.72rem;
-      color: var(--text2);
-    }
-
-    .ch-td-date {
-      font-size: 0.82rem;
-      color: var(--text2);
-    }
-
-    .ch-td-rare {
-      font-size: 0.82rem;
-      color: var(--text2);
-      max-width: 200px;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
     }
 
-    .ch-td-price {
-      font-size: 0.88rem;
+    .ch-card-year {
+      font-size: 0.68rem;
+      color: var(--text2);
+    }
+
+    .ch-card-price {
+      font-size: 0.78rem;
       font-weight: 700;
       color: var(--accent);
-    }
-
-    .ch-view-link {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      width: 28px;
-      height: 28px;
-      font-size: 0.95rem;
-      color: var(--text2);
-      text-decoration: none;
-      border-radius: 4px;
-      transition: color 0.15s;
-      opacity: 0;
-    }
-
-    .ch-tr:hover .ch-view-link {
-      opacity: 1;
-      color: var(--accent);
+      margin-top: auto;
+      padding-top: 0.15rem;
     }
 
     /* ---- FAQ ACCORDION ---- */
@@ -550,23 +490,28 @@ const uniqueYears = [...new Set(cases.map(c => c.year))].sort((a, b) => b - a);
       .ch-hero-pills {
         flex-wrap: wrap;
       }
-
-      .ch-th-date,
-      .ch-td-date,
-      .ch-th-rare,
-      .ch-td-rare {
-        display: none;
-      }
-
-      .ch-view-link {
-        opacity: 0.5;
-      }
     }
 
-    @media (max-width: 480px) {
-      .ch-th-price,
-      .ch-td-price {
-        display: none;
+    @media (max-width: 640px) {
+      .ch-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.5rem;
+      }
+
+      .ch-card-img {
+        height: 100px;
+      }
+
+      .ch-card-img img {
+        max-height: 85px;
+      }
+
+      .ch-card-body {
+        padding: 0.45rem 0.5rem;
+      }
+
+      .ch-card-name {
+        font-size: 0.78rem;
       }
     }
   </style>
@@ -576,7 +521,7 @@ const uniqueYears = [...new Set(cases.map(c => c.year))].sort((a, b) => b - a);
       const tabs = document.querySelectorAll('.ch-tab');
       const casesSection = document.getElementById('ch-cases-section');
       const collsSection = document.getElementById('ch-collections-section');
-      const rows = document.querySelectorAll('.ch-tr[data-type]');
+      const cards = document.querySelectorAll('.ch-card[data-type]');
 
       tabs.forEach(tab => {
         tab.addEventListener('click', () => {
@@ -586,17 +531,17 @@ const uniqueYears = [...new Set(cases.map(c => c.year))].sort((a, b) => b - a);
 
           if (filter === 'collections') {
             casesSection.style.display = 'none';
-            collsSection.style.display = 'block';
+            collsSection.style.display = 'grid';
           } else {
-            casesSection.style.display = 'block';
+            casesSection.style.display = 'grid';
             collsSection.style.display = 'none';
-            rows.forEach(row => {
+            cards.forEach(card => {
               if (filter === 'all') {
-                row.style.display = '';
+                card.style.display = '';
               } else if (filter === 'weapon') {
-                row.style.display = row.getAttribute('data-type') === 'weapon' ? '' : 'none';
+                card.style.display = card.getAttribute('data-type') === 'weapon' ? '' : 'none';
               } else if (filter === 'special') {
-                row.style.display = row.getAttribute('data-type') === 'special' ? '' : 'none';
+                card.style.display = card.getAttribute('data-type') === 'special' ? '' : 'none';
               }
             });
           }

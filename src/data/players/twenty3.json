@@ -3,12 +3,12 @@
   "slug": "twenty3",
   "realName": "Alexandra Timonina",
   "team": "Imperial fe",
-  "country": "Unknown",
-  "flag": "\ud83c\udff3\ufe0f",
+  "country": "Russia",
+  "flag": "🇷🇺",
   "role": "Rifler",
   "image": "/images/players/twenty3.webp",
   "style": "Rifler",
-  "mouse": "VAXEE XE Wireless Pink",
+  "mouse": "Lamzu Maya X Black",
   "dpi": 400,
   "sens": 2.1,
   "edpi": 840,
@@ -30,10 +30,10 @@
   "vmX": 2.5,
   "vmY": 0,
   "vmZ": -1.5,
-  "monitor": "ZOWIE XL2546K",
-  "keyboard": "Logitech G Pro X Keyboard",
+  "monitor": "ZOWIE XL2566X+",
+  "keyboard": "Logitech G Pro Keyboard",
   "headset": "HyperX Cloud II",
-  "mousepad": "VAXEE PA PSweet",
+  "mousepad": "VAXEE PD140",
   "launchOptions": "-freq 240 -novid -tickrate 128 +mat_disable_fancy_blending 1 +fps_max 400 +cl_updaterate 128 +cl_cmdrate 128 -allow_third_party_software",
   "bio": "",
   "birthday": "May 31, 2001",
@@ -66,5 +66,6 @@
   "videoSettings": {
     "brightness": "93%",
     "displayMode": "Fullscreen"
-  }
+  },
+  "gpu": "RTX 4090"
 }

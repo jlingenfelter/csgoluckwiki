@@ -1,7 +1,7 @@
 ---
 import Base from '../../layouts/Base.astro';
 import ExploreMore from '../../components/ExploreMore.astro';
-import { getCollections, getLowestPrice, RARITY_COLORS, RARITY_BG, type CollectionInfo } from '../../lib/skins';
+import { getCollections, getLowestPrice, fmtPrice, RARITY_COLORS, RARITY_BG, type CollectionInfo } from '../../lib/skins';
 import { breadcrumbSchema, faqSchema } from '../../lib/weapons';
 import { getCollectionImage } from '../../lib/collection-images';
 
@@ -120,65 +120,48 @@ const relatedCollections = allCollections.filter(c => c.slug !== collection.slug
     </div>
   </section>
 
-  <!-- Contents Table -->
+  <!-- Skins by Rarity -->
   <section class="cl-section">
     <h2 class="cl-heading">All Skins</h2>
 
     {rarityOrder
       .filter(r => skinsByRarity[r])
-      .map(rarity => (
-        <div class="cl-rarity-block">
-          <h3 class="cl-rarity-title">
-            <span class="cl-rarity-dot" style={`background:${RARITY_COLORS[rarity]}`}></span>
-            {rarity}
-            <span class="cl-rarity-count">{skinsByRarity[rarity].length}</span>
-          </h3>
-          <table class="cl-table">
-            <thead>
-              <tr>
-                <th class="cl-th-bar"></th>
-                <th class="cl-th-thumb"></th>
-                <th class="cl-th-name">Skin</th>
-                <th class="cl-th-float">Float</th>
-                <th class="cl-th-price">Price</th>
-                <th class="cl-th-action"></th>
-              </tr>
-            </thead>
-            <tbody>
+      .map(rarity => {
+        const rarityColor = RARITY_COLORS[rarity] || '#fff';
+        const rarityBg = RARITY_BG[rarity] || 'rgba(255,255,255,0.05)';
+        return (
+          <div class="cl-rarity-block">
+            <h3 class="cl-rarity-title">
+              <span class="cl-rarity-dot" style={`background:${rarityColor}`}></span>
+              {rarity}
+              <span class="cl-rarity-count">{skinsByRarity[rarity].length}</span>
+            </h3>
+            <div class="cl-grid">
               {skinsByRarity[rarity].map(skin => {
                 const price = getLowestPrice(skin);
-                const rarityColor = RARITY_COLORS[skin.rarity] || '#fff';
                 return (
-                  <tr class="cl-skin-tr">
-                    <td class="cl-td-bar">
-                      <span class="cl-color-bar" style={`background:${rarityColor}`}></span>
-                    </td>
-                    <td class="cl-td-thumb">
+                  <a href={`/cs2-skin/${skin.slug}/`} class="cl-card">
+                    <div class="cl-card-img" style={`background:${rarityBg}`}>
+                      <span class="cl-card-rarity" style={`background:${rarityColor}`}>{rarity}</span>
                       {skin.image ? (
-                        <img src={skin.image} alt={`${skin.weapon} | ${skin.name}`} loading="lazy" width="48" height="36" />
+                        <img src={skin.image} alt={`${skin.weapon} | ${skin.name}`} loading="lazy" width="200" height="150" />
                       ) : (
-                        <span class="cl-no-thumb">--</span>
+                        <span class="cl-card-placeholder">{skin.weapon.substring(0, 2)}</span>
                       )}
-                    </td>
-                    <td class="cl-td-name">
-                      <a href={`/cs2-skin/${skin.slug}/`} class="cl-skin-link">
-                        <span class="cl-skin-weapon">{skin.weapon}</span>
-                        <span class="cl-skin-name">{skin.name}</span>
-                      </a>
-                      {skin.statTrak && <span class="cl-tag-st">ST</span>}
-                    </td>
-                    <td class="cl-td-float">{skin.minFloat.toFixed(2)} - {skin.maxFloat.toFixed(2)}</td>
-                    <td class="cl-td-price">{price > 0 ? `$${price.toFixed(2)}` : '--'}</td>
-                    <td class="cl-td-action">
-                      <a href={`/cs2-skin/${skin.slug}/`} class="cl-skin-arrow">&rarr;</a>
-                    </td>
-                  </tr>
+                      {skin.statTrak && <span class="cl-card-badge cl-badge-st">ST</span>}
+                    </div>
+                    <div class="cl-card-body">
+                      <span class="cl-card-weapon">{skin.weapon}</span>
+                      <span class="cl-card-name">{skin.name}</span>
+                      <span class="cl-card-price">{price > 0 ? `$${fmtPrice(price)}` : '--'}</span>
+                    </div>
+                  </a>
                 );
               })}
-            </tbody>
-          </table>
-        </div>
-      ))
+            </div>
+          </div>
+        );
+      })
     }
   </section>
 
@@ -366,7 +349,7 @@ const relatedCollections = allCollections.filter(c => c.slug !== collection.slug
       border-left: 3px solid var(--accent);
     }
 
-    /* ---- SKINS TABLE ---- */
+    /* ---- SKIN CARD GRID ---- */
     .cl-rarity-block {
       margin-bottom: 1.5rem;
     }
@@ -394,140 +377,118 @@ const relatedCollections = allCollections.filter(c => c.slug !== collection.slug
       color: var(--text2);
     }
 
-    .cl-table {
-      width: 100%;
-      border-collapse: collapse;
+    .cl-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 0.75rem;
     }
 
-    .cl-table thead th {
-      text-align: left;
-      font-size: 0.68rem;
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
-      color: var(--text2);
-      padding: 0.4rem 0.6rem;
-      border-bottom: 1px solid var(--border);
-      font-weight: 500;
-    }
-
-    .cl-th-bar {
-      width: 6px;
-      padding: 0 !important;
-    }
-
-    .cl-th-thumb {
-      width: 56px;
-    }
-
-    .cl-th-float {
-      width: 90px;
-    }
-
-    .cl-th-price {
-      width: 70px;
-    }
-
-    .cl-th-action {
-      width: 28px;
-    }
-
-    .cl-skin-tr {
-      border-bottom: 1px solid var(--border);
-      border-left: 3px solid transparent;
-      transition: background 0.15s, border-left-color 0.15s;
-    }
-
-    .cl-skin-tr:hover {
-      background: var(--bg3);
-      border-left-color: var(--accent);
-    }
-
-    .cl-skin-tr td {
-      padding: 0.45rem 0.6rem;
-      vertical-align: middle;
-    }
-
-    .cl-color-bar {
-      display: block;
-      width: 4px;
-      height: 22px;
-      border-radius: 2px;
-    }
-
-    .cl-td-thumb img {
-      display: block;
-      width: 48px;
-      height: auto;
-      object-fit: contain;
-      border-radius: 4px;
-    }
-
-    .cl-no-thumb {
-      font-size: 0.7rem;
-      color: var(--text2);
-      opacity: 0.4;
-    }
-
-    .cl-skin-link {
+    .cl-card {
+      display: flex;
+      flex-direction: column;
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
       text-decoration: none;
       color: inherit;
+      transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .cl-card:hover {
+      transform: translateY(-3px);
+      border-color: var(--accent);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+    }
+
+    .cl-card-img {
+      position: relative;
+      height: 140px;
       display: flex;
       align-items: center;
-      gap: 0.5rem;
+      justify-content: center;
+      overflow: hidden;
     }
 
-    .cl-skin-weapon {
-      font-size: 0.75rem;
+    .cl-card-img img {
+      max-width: 85%;
+      max-height: 120px;
+      object-fit: contain;
+      transition: transform 0.25s;
+    }
+
+    .cl-card:hover .cl-card-img img {
+      transform: scale(1.06);
+    }
+
+    .cl-card-placeholder {
+      font-size: 1.5rem;
+      font-weight: 900;
       color: var(--text2);
-      white-space: nowrap;
-      min-width: 60px;
+      opacity: 0.15;
     }
 
-    .cl-skin-name {
-      font-size: 0.88rem;
+    .cl-card-rarity {
+      position: absolute;
+      top: 0.45rem;
+      left: 0.45rem;
+      font-size: 0.58rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      padding: 0.15rem 0.45rem;
+      border-radius: 3px;
+      color: #000;
+      z-index: 1;
+    }
+
+    .cl-card-badge {
+      position: absolute;
+      top: 0.45rem;
+      right: 0.45rem;
+      font-size: 0.55rem;
+      font-weight: 700;
+      padding: 0.12rem 0.35rem;
+      border-radius: 3px;
+      z-index: 1;
+    }
+
+    .cl-badge-st {
+      background: #cf6d1e;
+      color: #000;
+    }
+
+    .cl-card-body {
+      padding: 0.6rem 0.7rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.1rem;
+      flex: 1;
+    }
+
+    .cl-card-weapon {
+      font-size: 0.68rem;
+      color: var(--text2);
       font-weight: 600;
-      color: var(--text);
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
     }
 
-    .cl-skin-link:hover .cl-skin-name {
-      color: var(--accent);
-    }
-
-    .cl-tag-st {
-      display: inline-block;
-      font-size: 0.6rem;
-      font-weight: 700;
-      padding: 0.1rem 0.25rem;
-      border-radius: 4px;
-      background: rgba(207, 106, 50, 0.2);
-      color: #cf6a32;
-      margin-left: 0.4rem;
-      vertical-align: middle;
-    }
-
-    .cl-td-float {
-      font-size: 0.75rem;
-      color: var(--text2);
-      font-variant-numeric: tabular-nums;
-    }
-
-    .cl-td-price {
-      font-size: 0.85rem;
+    .cl-card-name {
+      font-size: 0.88rem;
       font-weight: 700;
       color: var(--text);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
-    .cl-skin-arrow {
-      color: var(--text2);
-      text-decoration: none;
-      font-size: 0.9rem;
-      opacity: 0;
-      transition: opacity 0.15s;
-    }
-
-    .cl-skin-tr:hover .cl-skin-arrow {
-      opacity: 1;
+    .cl-card-price {
+      font-size: 0.82rem;
+      font-weight: 700;
       color: var(--accent);
+      margin-top: auto;
+      padding-top: 0.2rem;
     }
 
     /* ---- WEAPONS LINE ---- */
@@ -658,29 +619,28 @@ const relatedCollections = allCollections.filter(c => c.slug !== collection.slug
         width: 44px;
         height: 44px;
       }
-
-      .cl-td-float,
-      .cl-th-float {
-        display: none;
-      }
-
-      .cl-skin-weapon {
-        display: none;
-      }
-
-      .cl-skin-arrow {
-        opacity: 0.5;
-      }
-
-      .cl-td-price {
-        font-size: 0.78rem;
-      }
     }
 
-    @media (max-width: 480px) {
-      .cl-td-thumb,
-      .cl-th-thumb {
-        display: none;
+    @media (max-width: 640px) {
+      .cl-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.5rem;
+      }
+
+      .cl-card-img {
+        height: 100px;
+      }
+
+      .cl-card-img img {
+        max-height: 85px;
+      }
+
+      .cl-card-body {
+        padding: 0.45rem 0.5rem;
+      }
+
+      .cl-card-name {
+        font-size: 0.78rem;
       }
     }
   </style>

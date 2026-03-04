@@ -123,39 +123,27 @@ const faqs = [
       ))}
     </nav>
 
-    <!-- Player Table -->
+    <!-- Player Cards -->
     <section class="pr-section">
       <h2>All {role.name} Player Settings</h2>
-      <div class="pr-table-wrap">
-        <table class="pr-table">
-          <thead>
-            <tr>
-              <th>Player</th>
-              <th>Team</th>
-              <th>DPI</th>
-              <th>Sens</th>
-              <th>eDPI</th>
-              <th>Resolution</th>
-            </tr>
-          </thead>
-          <tbody>
-            {players.map((p, i) => (
-              <tr class={i % 2 === 0 ? 'pr-row-even' : 'pr-row-odd'}>
-                <td>
-                  <a href={`/pro-players/${p.slug}/`} class="pr-player-link">
-                    {p.image && <img src={p.image} alt={p.name} width="28" height="28" class="pr-row-avatar" loading="lazy" onerror="this.style.display='none'" />}
-                    <span>{p.flag} {p.name}</span>
-                  </a>
-                </td>
-                <td class="pr-cell-muted">{p.team}</td>
-                <td>{p.dpi}</td>
-                <td>{p.sens}</td>
-                <td class="pr-cell-accent"><strong>{p.edpi}</strong></td>
-                <td class="pr-cell-muted">{p.res} <span class="pr-res-tag">{p.stretch}</span></td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+      <div class="pr-grid">
+        {players.map(p => (
+          <a href={`/pro-players/${p.slug}/`} class="pr-card">
+            <div class="pr-card-img">
+              {p.image ? <img src={p.image} alt={p.name} width="80" height="80" class="pr-card-avatar" loading="lazy" onerror="this.style.display='none'" /> : <span class="pr-card-placeholder">{p.name.charAt(0)}</span>}
+              <span class="pr-card-country">{p.flag}</span>
+            </div>
+            <div class="pr-card-body">
+              <span class="pr-card-name">{p.name}</span>
+              <span class="pr-card-team">{p.team}</span>
+              <div class="pr-card-stats">
+                <span><strong>{p.edpi}</strong> eDPI</span>
+                <span><strong>{p.res}</strong></span>
+              </div>
+              <span class="pr-card-mouse">{p.mouse}</span>
+            </div>
+          </a>
+        ))}
       </div>
     </section>
 
@@ -308,20 +296,20 @@ const faqs = [
 .pr-section{margin-bottom:2.5rem}
 .pr-section h2{font-size:1.25rem;margin:0 0 1rem;font-weight:700}
 
-/* Player Table */
-.pr-table-wrap{overflow-x:auto;border:1px solid var(--border);border-radius:4px}
-.pr-table{width:100%;border-collapse:collapse;font-size:.85rem}
-.pr-table thead{background:var(--accent)}
-.pr-table th{padding:.6rem .75rem;text-align:left;font-weight:700;color:#000;text-transform:uppercase;font-size:.7rem;letter-spacing:.04em;white-space:nowrap}
-.pr-table td{padding:.55rem .75rem;border-bottom:1px solid var(--border);white-space:nowrap}
-.pr-row-even{background:var(--bg2)}
-.pr-row-odd{background:var(--bg3)}
-.pr-player-link{display:inline-flex;align-items:center;gap:.5rem;color:var(--text);text-decoration:none;font-weight:600}
-.pr-player-link:hover{color:var(--accent)}
-.pr-row-avatar{width:28px;height:28px;border-radius:4px;object-fit:cover;flex-shrink:0}
-.pr-cell-accent{color:var(--accent);font-weight:700}
-.pr-cell-muted{color:var(--text2)}
-.pr-res-tag{font-size:.65rem;color:var(--text2);opacity:.7;margin-left:.3rem}
+/* Player Cards */
+.pr-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:.75rem}
+.pr-card{display:flex;flex-direction:column;background:var(--bg2);border:1px solid var(--border);border-radius:8px;text-decoration:none;color:inherit;overflow:hidden;transition:transform .15s,border-color .15s,box-shadow .15s}
+.pr-card:hover{transform:translateY(-3px);border-color:var(--accent);box-shadow:0 8px 24px rgba(0,0,0,.3)}
+.pr-card-img{position:relative;background:var(--bg3);display:flex;align-items:center;justify-content:center;height:120px;overflow:hidden}
+.pr-card-avatar{width:80px;height:80px;border-radius:50%;object-fit:cover;border:2px solid var(--border)}
+.pr-card-placeholder{width:60px;height:60px;border-radius:50%;background:var(--bg2);border:2px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:1.4rem;font-weight:900;color:var(--text2)}
+.pr-card-country{position:absolute;top:.4rem;left:.4rem;font-size:1rem}
+.pr-card-body{padding:.6rem .7rem;display:flex;flex-direction:column;gap:.2rem}
+.pr-card-name{font-weight:700;font-size:.85rem;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pr-card-team{font-size:.72rem;color:var(--text2)}
+.pr-card-stats{display:flex;gap:.6rem;font-size:.75rem;color:var(--text2);margin-top:.15rem}
+.pr-card-stats strong{color:var(--accent);font-weight:700}
+.pr-card-mouse{font-size:.68rem;color:var(--text2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 
 /* Analysis */
 .pr-analysis{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem}
@@ -386,6 +374,9 @@ const faqs = [
   .pr-analysis{grid-template-columns:1fr}
   .pr-sidebar{flex-direction:column}
   .pr-pills{flex-direction:column}
+  .pr-grid{grid-template-columns:repeat(2,1fr)}
+  .pr-card-img{height:90px}
+  .pr-card-avatar{width:60px;height:60px}
 }
 </style>
 

@@ -2,7 +2,8 @@
 import Base from '../../layouts/Base.astro';
 import ExploreMore from '../../components/ExploreMore.astro';
 import { WEAPONS, WEAPON_CATEGORIES, getWeaponBySlug, getWeaponsByCategory, getWeaponImage, breadcrumbSchema, faqSchema } from '../../lib/weapons';
-import { getSkinsByWeapon, RARITY_COLORS, RARITY_BG, getLowestPrice, getHighestPrice } from '../../lib/skins';
+import { getSkinsByWeapon, RARITY_COLORS, RARITY_BG, getLowestPrice, getHighestPrice, fmtPrice } from '../../lib/skins';
+import { skinCardImage } from '../../lib/imageOptimize';
 import { PRO_PLAYERS } from '../../lib/pro-players';
 
 export async function getStaticPaths() {
@@ -86,7 +87,7 @@ const premiumSkins = skinsWithPrice.filter(s => s.low > 50).sort((a, b) => b.low
   </nav>
 
   <!-- Hero: two-column layout -->
-  <header class="wp-hero">
+  <div class="wp-hero">
     <div class="wp-hero-left">
       <div class="wp-hero-img-wrap">
         {weaponImage ? (
@@ -123,7 +124,7 @@ const premiumSkins = skinsWithPrice.filter(s => s.low > 50).sort((a, b) => b.low
         </div>
       )}
     </div>
-  </header>
+  </div>
 
   {!isCosmetic && (
     <Fragment>
@@ -218,41 +219,51 @@ const premiumSkins = skinsWithPrice.filter(s => s.low > 50).sort((a, b) => b.low
     </section>
   )}
 
-  <!-- Skins: compact table rows -->
+  <!-- Skins: card grid -->
   <section class="wp-skins">
-    <h2 class="wp-section-title">Skins ({skins.length})</h2>
+    <h2 class="wp-section-title">All {weapon.name} Skins ({skins.length})</h2>
     <p style="font-size:.84rem;color:var(--text2);margin:-.25rem 0 .75rem">Browse all {skins.length} {weapon.name} skins below. Use the <a href="/float-checker/" style="color:var(--accent)">Float Checker</a> to inspect individual values or the <a href="/skin-compare/" style="color:var(--accent)">Skin Compare</a> tool to compare options side by side.</p>
 
     {skins.length > 0 ? (
-      <div class="wp-skins-table">
-        <div class="wp-skins-head">
-          <span class="wp-sh wp-sh-img"></span>
-          <span class="wp-sh wp-sh-name">Name</span>
-          <span class="wp-sh wp-sh-rarity">Rarity</span>
-          <span class="wp-sh wp-sh-price">Price Range</span>
-          <span class="wp-sh wp-sh-wears">Wears</span>
+      <Fragment>
+        <div class="wp-skin-toolbar">
+          <span class="wp-skin-count">{skins.length} results</span>
+          <div class="wp-sort-pills">
+            <button class="wp-sort-pill wp-sort-active" data-sort="price-desc">Price High</button>
+            <button class="wp-sort-pill" data-sort="price-asc">Price Low</button>
+            <button class="wp-sort-pill" data-sort="name-asc">A-Z</button>
+            <button class="wp-sort-pill" data-sort="name-desc">Z-A</button>
+            <button class="wp-sort-pill" data-sort="rarity">Rarity</button>
+          </div>
         </div>
-        {skins.map((skin, i) => {
-          const rc = RARITY_COLORS[skin.rarity] || '#d4956e';
-          const rbg = RARITY_BG[skin.rarity] || 'rgba(255,255,255,0.05)';
-          const low = getLowestPrice(skin);
-          const high = getHighestPrice(skin);
-          return (
-            <a href={`/cs2-skin/${skin.slug}/`} class:list={['wp-skin-row', { 'wp-skin-alt': i % 2 === 1 }]}>
-              <span class="wp-skin-thumb" style={`background:${rbg}`}>
-                {skin.image
-                  ? <img src={skin.image} alt={`${weapon.name} | ${skin.name}`} loading="lazy" width="50" height="38" />
-                  : <span class="wp-skin-ph" style={`color:${rc}`}>{skin.name.substring(0, 2)}</span>
-                }
-              </span>
-              <span class="wp-skin-name">{skin.name}</span>
-              <span class="wp-skin-rarity" style={`background:${rc}`}>{skin.rarity}</span>
-              <span class="wp-skin-price">${low.toFixed(2)}{low !== high ? ` - $${high.toFixed(2)}` : ''}</span>
-              <span class="wp-skin-wears">{skin.prices.length}W</span>
-            </a>
-          );
-        })}
-      </div>
+        <div class="wp-skin-grid" id="wp-skin-grid">
+          {skins.map(skin => {
+            const low = getLowestPrice(skin);
+            const high = getHighestPrice(skin);
+            const rc = RARITY_COLORS[skin.rarity] || '#d4956e';
+            const rbg = RARITY_BG[skin.rarity] || 'rgba(255,255,255,0.04)';
+            const rarityIdx = ['Consumer','Industrial','Mil-Spec','Restricted','Classified','Covert','Extraordinary','Contraband'].indexOf(skin.rarity);
+            return (
+              <a href={`/cs2-skin/${skin.slug}/`} class="wp-skin-card" data-price={high} data-name={skin.name} data-rarity={rarityIdx}>
+                <div class="wp-skin-card-img" style={`background:${rbg}`}>
+                  <span class="wp-skin-card-rarity" style={`background:${rc}`}>{skin.rarity}</span>
+                  {skin.image
+                    ? <img src={skinCardImage(skin.image)} alt={`${weapon.name} | ${skin.name}`} loading="lazy" width="200" height="150" />
+                    : <span class="wp-skin-card-ph">{weapon.name.substring(0, 2)}</span>
+                  }
+                  {skin.statTrak && <span class="wp-skin-badge wp-badge-st">ST</span>}
+                  {skin.souvenir && <span class="wp-skin-badge wp-badge-sv">SV</span>}
+                </div>
+                <div class="wp-skin-card-body">
+                  <span class="wp-skin-card-name">{skin.name}</span>
+                  <span class="wp-skin-card-price">${fmtPrice(low)}{low !== high ? ` – $${fmtPrice(high)}` : ''}</span>
+                  <span class="wp-skin-card-meta">{skin.prices.length} wear{skin.prices.length !== 1 ? 's' : ''}{skin.collection ? ` · ${skin.collection}` : ''}</span>
+                </div>
+              </a>
+            );
+          })}
+        </div>
+      </Fragment>
     ) : (
       <p class="wp-empty">No skins listed for the {weapon.name} yet.</p>
     )}
@@ -482,7 +493,6 @@ const premiumSkins = skinsWithPrice.filter(s => s.low > 50).sort((a, b) => b.low
   .wp-stats-table {
     border: 1px solid var(--border);
     border-radius: 4px;
-    overflow: hidden;
   }
   .wp-stats-head {
     display: grid;
@@ -495,6 +505,10 @@ const premiumSkins = skinsWithPrice.filter(s => s.low > 50).sort((a, b) => b.low
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: .04em;
+    position: sticky;
+    top: 52px;
+    z-index: 10;
+    border-radius: 4px 4px 0 0;
   }
   .wp-stats-row {
     display: grid;
@@ -586,83 +600,122 @@ const premiumSkins = skinsWithPrice.filter(s => s.low > 50).sort((a, b) => b.low
     font-weight: 600;
   }
 
-  /* Skins: compact table */
+  /* Skins: card grid */
   .wp-skins { margin-bottom: 2rem; }
-  .wp-skins-table {
+  .wp-skin-toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: .75rem;
+    flex-wrap: wrap;
+    gap: .5rem;
+  }
+  .wp-skin-count { font-size: .84rem; color: var(--text2); font-weight: 600; }
+  .wp-sort-pills { display: flex; gap: .25rem; flex-wrap: wrap; }
+  .wp-sort-pill {
+    background: none;
     border: 1px solid var(--border);
     border-radius: 4px;
+    padding: .25rem .6rem;
+    font-size: .75rem;
+    font-weight: 600;
+    font-family: inherit;
+    color: var(--text2);
+    cursor: pointer;
+    transition: border-color .15s, color .15s;
+  }
+  .wp-sort-pill:hover { border-left: 3px solid var(--accent); color: var(--text); }
+  .wp-sort-active { background: var(--accent); color: #000; border-color: var(--accent); }
+  .wp-skin-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: .75rem;
+  }
+  .wp-skin-card {
+    display: flex;
+    flex-direction: column;
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
     overflow: hidden;
-  }
-  .wp-skins-head {
-    display: grid;
-    grid-template-columns: 50px 1fr 80px 130px 50px;
-    gap: .5rem;
-    padding: .45rem .75rem;
-    background: var(--accent);
-    color: #000;
-    font-size: .68rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: .04em;
-    align-items: center;
-  }
-  .wp-skin-row {
-    display: grid;
-    grid-template-columns: 50px 1fr 80px 130px 50px;
-    gap: .5rem;
-    padding: .4rem .75rem;
     text-decoration: none;
     color: inherit;
-    align-items: center;
-    border-bottom: 1px solid var(--border);
-    border-left: 3px solid transparent;
-    transition: border-left-color .15s, background-color .15s;
+    transition: transform .2s, border-color .2s, box-shadow .2s;
   }
-  .wp-skin-row:last-child { border-bottom: none; }
-  .wp-skin-row:hover {
-    border-left-color: var(--accent);
-    background: var(--bg3);
+  .wp-skin-card:hover {
+    transform: translateY(-3px);
+    border-color: var(--accent);
+    box-shadow: 0 8px 24px rgba(0,0,0,.3);
   }
-  .wp-skin-alt { background: var(--bg2); }
-  .wp-skin-thumb {
-    width: 50px;
-    height: 38px;
-    border-radius: 4px;
+  .wp-skin-card-img {
+    position: relative;
+    height: 140px;
     display: flex;
     align-items: center;
     justify-content: center;
     overflow: hidden;
-    flex-shrink: 0;
   }
-  .wp-skin-thumb img { max-width: 100%; max-height: 100%; object-fit: contain; }
-  .wp-skin-ph { font-size: .9rem; font-weight: 900; opacity: .2; }
-  .wp-skin-name {
-    font-size: .82rem;
-    font-weight: 600;
+  .wp-skin-card-img img {
+    max-width: 85%;
+    max-height: 120px;
+    object-fit: contain;
+    transition: transform .25s;
+  }
+  .wp-skin-card:hover .wp-skin-card-img img { transform: scale(1.06); }
+  .wp-skin-card-ph { font-size: 1.5rem; font-weight: 900; color: var(--text2); opacity: .15; }
+  .wp-skin-card-rarity {
+    position: absolute;
+    top: .45rem;
+    left: .45rem;
+    font-size: .58rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .04em;
+    padding: .15rem .45rem;
+    border-radius: 3px;
+    color: #000;
+    z-index: 1;
+  }
+  .wp-skin-badge {
+    position: absolute;
+    top: .45rem;
+    right: .45rem;
+    font-size: .55rem;
+    font-weight: 700;
+    padding: .12rem .35rem;
+    border-radius: 3px;
+    z-index: 1;
+  }
+  .wp-badge-st { background: #cf6d1e; color: #000; }
+  .wp-badge-sv { background: #ffd740; color: #000; }
+  .wp-skin-card-body {
+    padding: .6rem .7rem;
+    display: flex;
+    flex-direction: column;
+    gap: .15rem;
+    flex: 1;
+  }
+  .wp-skin-card-name {
+    font-size: .88rem;
+    font-weight: 700;
+    color: var(--text);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
   }
-  .wp-skin-rarity {
-    padding: .1rem .35rem;
-    border-radius: 4px;
-    font-size: .6rem;
-    font-weight: 700;
-    color: #000;
-    white-space: nowrap;
-    text-align: center;
-  }
-  .wp-skin-price {
-    font-size: .78rem;
+  .wp-skin-card-price {
+    font-size: .82rem;
     font-weight: 700;
     color: var(--accent);
-    white-space: nowrap;
+    margin-top: auto;
+    padding-top: .25rem;
   }
-  .wp-skin-wears {
-    font-size: .72rem;
+  .wp-skin-card-meta {
+    font-size: .6rem;
     color: var(--text2);
     white-space: nowrap;
-    text-align: center;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
   .wp-empty {
     padding: 1.5rem;
@@ -824,12 +877,9 @@ const premiumSkins = skinsWithPrice.filter(s => s.low > 50).sort((a, b) => b.low
     .wp-stats-row {
       grid-template-columns: 130px 100px 1fr;
     }
-    .wp-skins-head,
-    .wp-skin-row {
-      grid-template-columns: 45px 1fr auto auto;
+    .wp-skin-grid {
+      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
     }
-    .wp-sh-wears,
-    .wp-skin-wears { display: none; }
   }
   @media (max-width: 480px) {
     .wp-stats-head,
@@ -837,14 +887,41 @@ const premiumSkins = skinsWithPrice.filter(s => s.low > 50).sort((a, b) => b.low
       grid-template-columns: 1fr 1fr;
     }
     .wp-stats-bar { display: none; }
-    .wp-skins-head,
-    .wp-skin-row {
-      grid-template-columns: 45px 1fr auto;
+    .wp-skin-grid {
+      grid-template-columns: repeat(2, 1fr);
+      gap: .5rem;
     }
-    .wp-sh-rarity,
-    .wp-skin-rarity { display: none; }
+    .wp-skin-card-img { height: 100px; }
+    .wp-skin-card-img img { max-height: 85px; }
+    .wp-skin-card-body { padding: .45rem .5rem; }
+    .wp-skin-card-name { font-size: .78rem; }
     .wp-tiers-grid {
       grid-template-columns: 1fr;
     }
   }
 </style>
+
+<script is:inline>
+(function(){
+  var grid = document.getElementById('wp-skin-grid');
+  if (!grid) return;
+  var cards = Array.from(grid.querySelectorAll('.wp-skin-card'));
+  var sortPills = document.querySelectorAll('.wp-sort-pill[data-sort]');
+  sortPills.forEach(function(pill) {
+    pill.addEventListener('click', function() {
+      sortPills.forEach(function(p) { p.classList.remove('wp-sort-active'); });
+      pill.classList.add('wp-sort-active');
+      var val = pill.dataset.sort;
+      cards.sort(function(a, b) {
+        if (val === 'price-desc') return (parseFloat(b.dataset.price)||0) - (parseFloat(a.dataset.price)||0);
+        if (val === 'price-asc') return (parseFloat(a.dataset.price)||0) - (parseFloat(b.dataset.price)||0);
+        if (val === 'name-asc') return (a.dataset.name||'').localeCompare(b.dataset.name||'');
+        if (val === 'name-desc') return (b.dataset.name||'').localeCompare(a.dataset.name||'');
+        if (val === 'rarity') return (parseInt(b.dataset.rarity)||0) - (parseInt(a.dataset.rarity)||0);
+        return 0;
+      });
+      cards.forEach(function(c) { grid.appendChild(c); });
+    });
+  });
+})();
+</script>

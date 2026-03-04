@@ -1,7 +1,7 @@
 ---
 import Base from '../../../layouts/Base.astro';
 import ExploreMore from '../../../components/ExploreMore.astro';
-import { SKINS, RARITY_COLORS, RARITY_BG, getLowestPrice, getHighestPrice, getSkinsByCategory, getWeaponsInCategory, getCategoryCount, SKINS_TOTAL, getVolumeLabel, getLiquidityColor, getLiquidityLabel } from '../../../lib/skins';
+import { SKINS, RARITY_COLORS, RARITY_BG, getLowestPrice, getHighestPrice, fmtPrice, getSkinsByCategory, getWeaponsInCategory, getCategoryCount, SKINS_TOTAL, getVolumeLabel, getLiquidityColor, getLiquidityLabel } from '../../../lib/skins';
 import { faqSchema, breadcrumbSchema } from '../../../lib/weapons';
 import { skinCardImage } from '../../../lib/imageOptimize';
 
@@ -67,7 +67,7 @@ const wearMap: Record<string, string> = {
 
 <!-- Hero: Left-aligned with category name and skin count -->
 <section class="sc-hero">
-  <h1 class="sc-hero-title">{label} Skins</h1>
+  <h1 class="sc-hero-title">CS2 {singular} Skins</h1>
   <div class="sc-hero-meta">
     <span class="sc-hero-stat">{totalCount} skins</span>
     <span class="sc-hero-divider">/</span>
@@ -100,50 +100,29 @@ const wearMap: Record<string, string> = {
   </div>
 </div>
 
-<!-- Skin Table Rows -->
-<div class="sc-list" id="skin-grid">
+<!-- Card Grid Results -->
+<div class="sc-grid" id="skin-grid">
 {categorySkins.map((skin, i) => {
   const low = getLowestPrice(skin);
   const high = getHighestPrice(skin);
   const rarityColor = RARITY_COLORS[skin.rarity] || '#fff';
   const rarityBg = RARITY_BG[skin.rarity] || 'rgba(255,255,255,0.08)';
-  const vol = skin.volume7d || 0;
-  const liq = skin.liquidity || 0;
   return (
-    <a href={`/cs2-skin/${skin.slug}/`} class={`sc-row${i >= 48 ? ' sc-hidden' : ''}`} data-weapon={skin.weaponSlug} data-rarity={skin.rarity} data-price={high} data-name={skin.name}>
-      <div class="sc-row-img" style={`background:${rarityBg}`}>
+    <a href={`/cs2-skin/${skin.slug}/`} class={`sc-card${i >= 48 ? ' sc-hidden' : ''}`} data-weapon={skin.weaponSlug} data-rarity={skin.rarity} data-price={high} data-name={skin.name}>
+      <div class="sc-card-img" style={`background:${rarityBg}`}>
+        <span class="sc-card-rarity" style={`background:${rarityColor}`}>{skin.rarity}</span>
         {skin.image
-          ? <img src={skinCardImage(skin.image)} alt={`${skin.weapon} | ${skin.name}`} loading="lazy" width="100" height="75" />
-          : <span class="sc-row-placeholder">{skin.weapon.substring(0, 2)}</span>
+          ? <img src={skinCardImage(skin.image)} alt={`${skin.weapon} | ${skin.name}`} loading="lazy" width="200" height="150" />
+          : <span class="sc-card-placeholder">{skin.weapon.substring(0, 2)}</span>
         }
+        {skin.statTrak && <span class="sc-card-badge sc-badge-st">ST</span>}
+        {skin.souvenir && <span class="sc-card-badge sc-badge-sv">SV</span>}
       </div>
-      <div class="sc-row-info">
-        <div class="sc-row-title">
-          <span class="sc-row-weapon">{skin.weapon}</span>
-          <span class="sc-row-name">{skin.name}</span>
-        </div>
-        <div class="sc-row-badges">
-          <span class="sc-rarity-badge" style={`background:${rarityColor};color:#000`}>{skin.rarity}</span>
-          {skin.statTrak && <span class="sc-tag sc-tag-st">StatTrak</span>}
-          {skin.souvenir && <span class="sc-tag sc-tag-sv">Souvenir</span>}
-          {(vol > 0 || liq > 0) && (
-            <span class="sc-row-trend">
-              {vol > 0 && <span class="sc-vol">{getVolumeLabel(vol)}</span>}
-              {liq > 0 && <span class="sc-liq" style={`color:${getLiquidityColor(liq)}`}>{getLiquidityLabel(liq)}</span>}
-            </span>
-          )}
-        </div>
-      </div>
-      <div class="sc-row-wears">
-        {skin.prices.length > 0 && skin.prices.slice(0, 3).map(p => (
-          <span class="sc-wear-chip">{wearMap[p.wear] || p.wear} ${p.price.toFixed(2)}</span>
-        ))}
-        {skin.prices.length > 3 && <span class="sc-wear-more">+{skin.prices.length - 3}</span>}
-      </div>
-      <div class="sc-row-price">
-        <span class="sc-price-range">${low.toFixed(2)}{low !== high ? ` - $${high.toFixed(2)}` : ''}</span>
-        <span class="sc-price-meta">{skin.prices.length} wear{skin.prices.length !== 1 ? 's' : ''} &middot; {skin.minFloat.toFixed(2)}-{skin.maxFloat.toFixed(2)}</span>
-        {skin.collection && <span class="sc-collection">{skin.collection}</span>}
+      <div class="sc-card-body">
+        <span class="sc-card-weapon">{skin.weapon}</span>
+        <span class="sc-card-name">{skin.name}</span>
+        <span class="sc-card-price">${fmtPrice(low)}{low !== high ? ` – $${fmtPrice(high)}` : ''}</span>
+        {skin.collection && <span class="sc-card-collection">{skin.collection}</span>}
       </div>
     </a>
   );
@@ -221,39 +200,29 @@ const wearMap: Record<string, string> = {
 .sc-sort-select{background:var(--bg3);color:var(--text);border:1px solid var(--border);padding:.35rem .6rem;border-radius:4px;font-size:.82rem;font-family:inherit;cursor:pointer}
 .sc-sort-select:focus{outline:none;border-color:var(--accent)}
 
-/* ===== SC LIST (Table Rows) ===== */
-.sc-list{display:flex;flex-direction:column;gap:.3rem;margin-bottom:1.5rem}
-.sc-hidden{display:none}
-.sc-hidden.sc-revealed{display:grid}
+/* ===== SC GRID (Card Layout) ===== */
+.sc-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:.75rem;margin-bottom:1.5rem}
+.sc-hidden{display:none!important}
+.sc-hidden.sc-revealed{display:flex!important}
 
-.sc-row{display:grid;grid-template-columns:80px 1fr auto auto;align-items:center;gap:.75rem;background:var(--bg2);border:1px solid var(--border);border-left:3px solid transparent;border-radius:4px;padding:.5rem .65rem;text-decoration:none;color:inherit;transition:border-color .15s,background .15s}
-.sc-row:hover{border-left-color:var(--accent);background:var(--bg3)}
+.sc-card{display:flex;flex-direction:column;background:var(--bg2);border:1px solid var(--border);border-radius:8px;overflow:hidden;text-decoration:none;color:inherit;transition:transform .2s,border-color .2s,box-shadow .2s}
+.sc-card:hover{transform:translateY(-3px);border-color:var(--accent);box-shadow:0 8px 24px rgba(0,0,0,.3)}
 
-.sc-row-img{width:80px;height:56px;display:flex;align-items:center;justify-content:center;border-radius:4px;overflow:hidden}
-.sc-row-img img{max-width:100%;max-height:100%;object-fit:contain}
-.sc-row-placeholder{font-size:1.2rem;font-weight:800;color:var(--text2);opacity:.2}
+.sc-card-img{position:relative;height:140px;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.sc-card-img img{max-width:85%;max-height:120px;object-fit:contain;transition:transform .25s}
+.sc-card:hover .sc-card-img img{transform:scale(1.06)}
+.sc-card-placeholder{font-size:1.5rem;font-weight:900;color:var(--text2);opacity:.15}
 
-.sc-row-info{display:flex;flex-direction:column;gap:.2rem;min-width:0}
-.sc-row-title{display:flex;align-items:baseline;gap:.35rem;flex-wrap:wrap}
-.sc-row-weapon{font-size:.72rem;color:var(--text2);font-weight:600}
-.sc-row-name{font-size:.9rem;font-weight:700;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.sc-row-badges{display:flex;align-items:center;gap:.3rem;flex-wrap:wrap}
-.sc-rarity-badge{display:inline-block;padding:.1rem .4rem;border-radius:3px;font-size:.62rem;font-weight:700;text-transform:uppercase;letter-spacing:.03em}
-.sc-tag{font-size:.6rem;font-weight:700;padding:.1rem .3rem;border-radius:3px;text-transform:uppercase}
-.sc-tag-st{background:#cf6d1e;color:#000}
-.sc-tag-sv{background:#ffd740;color:#000}
-.sc-row-trend{display:inline-flex;gap:.35rem;margin-left:.25rem}
-.sc-vol{font-size:.65rem;color:var(--text2);font-weight:600}
-.sc-liq{font-size:.65rem;font-weight:600}
+.sc-card-rarity{position:absolute;top:.45rem;left:.45rem;font-size:.58rem;font-weight:700;text-transform:uppercase;letter-spacing:.04em;padding:.15rem .45rem;border-radius:3px;color:#000;z-index:1}
+.sc-card-badge{position:absolute;top:.45rem;right:.45rem;font-size:.55rem;font-weight:700;padding:.12rem .35rem;border-radius:3px;z-index:1}
+.sc-badge-st{background:#cf6d1e;color:#000}
+.sc-badge-sv{background:#ffd740;color:#000}
 
-.sc-row-wears{display:flex;gap:.25rem;flex-wrap:wrap;flex-shrink:0}
-.sc-wear-chip{font-size:.65rem;color:var(--text2);background:var(--bg3);border:1px solid var(--border);padding:.1rem .35rem;border-radius:3px;white-space:nowrap}
-.sc-wear-more{font-size:.62rem;color:var(--accent);font-weight:600;align-self:center}
-
-.sc-row-price{text-align:right;display:flex;flex-direction:column;gap:.05rem;flex-shrink:0}
-.sc-price-range{font-size:.9rem;font-weight:700;color:var(--accent);white-space:nowrap}
-.sc-price-meta{font-size:.66rem;color:var(--text2)}
-.sc-collection{font-size:.62rem;color:var(--text2);opacity:.7;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:140px}
+.sc-card-body{padding:.6rem .7rem;display:flex;flex-direction:column;gap:.15rem;flex:1}
+.sc-card-weapon{font-size:.68rem;color:var(--text2);font-weight:600;text-transform:uppercase;letter-spacing:.03em}
+.sc-card-name{font-size:.88rem;font-weight:700;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sc-card-price{font-size:.82rem;font-weight:700;color:var(--accent);margin-top:auto;padding-top:.25rem}
+.sc-card-collection{font-size:.6rem;color:var(--text2);opacity:.7;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 
 /* ===== SC LOADMORE ===== */
 .sc-loadmore{text-align:center;margin:1.25rem 0}
@@ -281,14 +250,14 @@ const wearMap: Record<string, string> = {
 
 /* ===== SC RESPONSIVE ===== */
 @media(max-width:900px){
-  .sc-row{grid-template-columns:64px 1fr auto}
-  .sc-row-wears{display:none}
   .sc-related-grid{grid-template-columns:repeat(2,1fr)}
 }
 @media(max-width:640px){
-  .sc-row{grid-template-columns:56px 1fr;gap:.4rem}
-  .sc-row-img{width:56px;height:40px}
-  .sc-row-price{grid-column:1/-1;text-align:left;flex-direction:row;gap:.75rem;padding-top:.25rem;border-top:1px solid var(--border)}
+  .sc-grid{grid-template-columns:repeat(2,1fr);gap:.5rem}
+  .sc-card-img{height:100px}
+  .sc-card-img img{max-height:85px}
+  .sc-card-body{padding:.45rem .5rem}
+  .sc-card-name{font-size:.78rem}
   .sc-related-grid{grid-template-columns:1fr}
 }
 </style>
@@ -296,7 +265,7 @@ const wearMap: Record<string, string> = {
 <script is:inline>
 (function(){
   var chipBtns = document.querySelectorAll('.sc-tab[data-weapon]');
-  var cards = document.querySelectorAll('.sc-row[data-weapon]');
+  var cards = document.querySelectorAll('.sc-card[data-weapon]');
   var countEl = document.getElementById('skin-count');
   var loadBtn = document.getElementById('load-more-btn');
   var sortSelect = document.getElementById('sort-select');

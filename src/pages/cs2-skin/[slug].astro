@@ -1,7 +1,7 @@
 ---
 import Base from '../../layouts/Base.astro';
 import ExploreMore from '../../components/ExploreMore.astro';
-import { SKINS, RARITY_COLORS, RARITY_BG, MARKETPLACES, getSkinsByWeapon, getSkinBySlug, getLowestPrice, getHighestPrice, getPhaseVariants, getParentSkin } from '../../lib/skins';
+import { SKINS, RARITY_COLORS, RARITY_BG, MARKETPLACES, getSkinsByWeapon, getSkinBySlug, getLowestPrice, getHighestPrice, fmtPrice, getPhaseVariants, getParentSkin } from '../../lib/skins';
 import { getWeaponBySlug, faqSchema, breadcrumbSchema } from '../../lib/weapons';
 import { skinDetailImage, skinRelatedImage } from '../../lib/imageOptimize';
 import { getPlayersUsingSkin } from '../../lib/pro-players';
@@ -634,7 +634,7 @@ const listingDesc = (skin.listingCount ?? 0) > 10000 ? 'widely available with hi
                 data-wear={p.wear}
               >
                 <span class="wi-cond-name">{p.wear}</span>
-                <span class="wi-cond-price">${cheapest > 0 ? cheapest.toFixed(2) : p.price.toFixed(2)}</span>
+                <span class="wi-cond-price">${cheapest > 0 ? fmtPrice(cheapest) : fmtPrice(p.price)}</span>
               </button>
             );
           })}
@@ -658,6 +658,8 @@ const listingDesc = (skin.listingCount ?? 0) > 10000 ? 'widely available with hi
             ? Math.round(((steamPrice - cl.price) / steamPrice) * 100)
             : null;
           const steamMp = getMarketplace('steam');
+          const waxpeerPrice = wearData.providers?.waxpeer;
+          const waxpeerMp = getMarketplace('waxpeer');
           return (
             <div class={`wi-market-group ${wearIdx === 0 ? '' : 'hidden'}`} data-mp-row={wearIdx}>
               {/* CSGOLuck — always first */}
@@ -682,7 +684,7 @@ const listingDesc = (skin.listingCount ?? 0) > 10000 ? 'widely available with hi
                         {savingsPct !== null && savingsPct > 0 && (
                           <span class="wi-savings-badge">-{savingsPct}%</span>
                         )}
-                        <span class="wi-market-amount wi-csgoluck-price">${cl.price.toFixed(2)}</span>
+                        <span class="wi-market-amount wi-csgoluck-price">${fmtPrice(cl.price)}</span>
                         <a href="/go/" rel="nofollow" class="wi-csgoluck-buy">Buy</a>
                       </>
                     ) : (
@@ -694,6 +696,21 @@ const listingDesc = (skin.listingCount ?? 0) > 10000 ? 'widely available with hi
                   <span>🎁 100% to 100 Coins + 5 Free Cases</span>
                 </a>
               </div>
+              {/* Waxpeer */}
+              {waxpeerPrice && waxpeerPrice > 0 && (
+                <div class="wi-market-row">
+                  <div class="wi-market-left">
+                    <span class="wi-market-icon" style={`background:${waxpeerMp.color}`}>
+                      <img src={`https://www.google.com/s2/favicons?domain=${waxpeerMp.domain}&sz=64`} alt="Waxpeer" loading="lazy" />
+                    </span>
+                    <span class="wi-market-name">Waxpeer</span>
+                  </div>
+                  <div class="wi-market-right">
+                    <span class="wi-market-amount">${fmtPrice(waxpeerPrice)}</span>
+                    <a href={getMarketplaceUrl('waxpeer')} target="_blank" rel="nofollow noopener" class="wi-market-buy-link">Buy</a>
+                  </div>
+                </div>
+              )}
               {/* Steam Market — reference price */}
               {steamPrice && steamPrice > 0 && (
                 <div class="wi-market-row wi-steam-ref">
@@ -704,7 +721,7 @@ const listingDesc = (skin.listingCount ?? 0) > 10000 ? 'widely available with hi
                     <span class="wi-market-name">Steam Market</span>
                   </div>
                   <div class="wi-market-right">
-                    <span class="wi-market-amount wi-steam-price">${steamPrice.toFixed(2)}</span>
+                    <span class="wi-market-amount wi-steam-price">${fmtPrice(steamPrice)}</span>
                   </div>
                 </div>
               )}
@@ -857,9 +874,9 @@ const listingDesc = (skin.listingCount ?? 0) > 10000 ? 'widely available with hi
             return (
               <tr>
                 <td><strong>{row.wear}</strong></td>
-                <td class="wi-cell-price">{cheapestEntry ? `$${cheapestEntry[1].toFixed(2)}` : '--'}</td>
+                <td class="wi-cell-price">{cheapestEntry ? `$${fmtPrice(cheapestEntry[1])}` : '--'}</td>
                 <td>{cheapestEntry ? getMarketplace(cheapestEntry[0]).name : '--'}</td>
-                <td class="wi-cell-price">{avg > 0 ? `$${avg.toFixed(2)}` : '--'}</td>
+                <td class="wi-cell-price">{avg > 0 ? `$${fmtPrice(avg)}` : '--'}</td>
                 <td>{row.prices.length}</td>
               </tr>
             );
@@ -1414,6 +1431,10 @@ document.addEventListener('DOMContentLoaded', () => {
 .wi-csgoluck-bonus-line{display:flex;align-items:center;justify-content:center;gap:.4rem;padding:.35rem 1rem;background:rgba(46,204,113,.03);border-top:1px solid rgba(46,204,113,.1);text-decoration:none;transition:background .15s}
 .wi-csgoluck-bonus-line:hover{background:rgba(46,204,113,.08)}
 .wi-csgoluck-bonus-line span{font-size:.7rem;font-weight:700;color:#2ecc71}
+
+/* ── Marketplace buy links ─────────────────────────────── */
+.wi-market-buy-link{display:inline-block;padding:.3rem .7rem;background:var(--bg3);border:1px solid var(--border);color:var(--text);border-radius:4px;font-size:.7rem;font-weight:700;text-decoration:none;white-space:nowrap;transition:all .15s}
+.wi-market-buy-link:hover{border-color:#ff9800;color:#ff9800}
 
 /* ── Savings badge ─────────────────────────────────────── */
 .wi-savings-badge{display:inline-block;padding:.15rem .45rem;background:#2ecc71;color:#fff;font-size:.7rem;font-weight:800;border-radius:3px;white-space:nowrap;letter-spacing:.02em}

@@ -4,8 +4,8 @@ import ExploreMore from '../components/ExploreMore.astro';
 import { faqSchema } from '../lib/weapons';
 import { PRO_PLAYERS, getAverageEdpi, getMostCommonRes, getMostCommonDpi, getMouseBrandBreakdown, getStretchedBreakdown, getRoleBreakdown, getTeams, getRoles, getCountries, getGearByType } from '../lib/pro-players';
 
-const title = 'CS2 Pro Player Configs — Sensitivity, Crosshairs, Gear & Settings | CSGOLuck Wiki';
-const description = `Access ${PRO_PLAYERS.length}+ confirmed professional player setups. Crosshair share codes, sensitivity values, display resolution, mouse and monitor choices, and full peripheral inventories from s1mple, ZywOo, NiKo, donk, and every other top-tier CS2 competitor.`;
+const title = 'CS2 Pro Player Settings — Sensitivity, Crosshairs & Gear | CSGOLuck Wiki';
+const description = `Browse ${PRO_PLAYERS.length}+ CS2 pro player settings including sensitivity, crosshair codes, resolution, mouse, and monitor choices from s1mple, ZywOo, NiKo, donk, and every other top-tier CS2 competitor.`;
 
 const avgEdpi = getAverageEdpi();
 const topRes = getMostCommonRes();
@@ -54,8 +54,8 @@ const topMice = getGearByType('mouse').slice(0, 8);
 <!-- Hero: Left-aligned with stat pills -->
 <section class="pph-hero">
   <div class="pph-hero-text">
-    <h1 class="pph-title">Pro Config Archive</h1>
-    <p class="pph-subtitle">Authenticated competitive setups, peripheral choices, and <a href="/crosshair-codes/" style="color:var(--accent)">crosshair share codes</a> sourced from the CS2 professional circuit. Use our <a href="/edpi-calculator/" style="color:var(--accent)">eDPI calculator</a> to compare your sensitivity against the pros.</p>
+    <h1 class="pph-title">CS2 Pro Player Settings</h1>
+    <p class="pph-subtitle">Verified competitive settings, peripheral choices, and <a href="/crosshair-codes/" style="color:var(--accent)">crosshair share codes</a> from the CS2 pro scene. Use our <a href="/edpi-calculator/" style="color:var(--accent)">eDPI calculator</a> to compare your sensitivity against the pros.</p>
   </div>
   <div class="pph-stat-pills">
     <span class="pph-pill"><span class="pph-pill-val">{PRO_PLAYERS.length}+</span><span class="pph-pill-lbl">Configs</span></span>
@@ -117,28 +117,23 @@ const topMice = getGearByType('mouse').slice(0, 8);
   </div>
 </section>
 
-<!-- Player Cards: Horizontal row layout (image left, info right) -->
-<section class="pph-list" id="cfgList">
+<!-- Player Cards Grid -->
+<section class="pph-grid" id="cfgList">
   {PRO_PLAYERS.map((p, i) => (
     <a href={`/pro-players/${p.slug}/`} class={`pph-card${i >= 48 ? ' pph-paginated' : ''}`} data-role={p.role} data-name={p.name.toLowerCase()} data-team={p.team.toLowerCase()} data-edpi={p.edpi} data-idx={i}>
-      <div class="pph-card-left">
-        {p.image && <img class="pph-card-avatar" src={p.image} alt={p.name} width="48" height="48" loading="lazy" onerror="this.style.display='none'" />}
-      </div>
-      <div class="pph-card-mid">
-        <span class="pph-card-name">{p.flag} {p.name}</span>
-        <span class="pph-card-team">{p.team}</span>
+      <div class="pph-card-img">
+        {p.image ? <img class="pph-card-avatar" src={p.image} alt={p.name} width="80" height="80" loading="lazy" onerror="this.style.display='none'" /> : <span class="pph-card-placeholder">{p.name.charAt(0)}</span>}
         <span class="pph-card-role" data-r={p.role.toLowerCase().replace(/\s/g,'-')}>{p.role}</span>
       </div>
-      <div class="pph-card-stats">
-        <div class="pph-card-stat"><span class="pph-card-stat-val">{p.dpi}</span><span class="pph-card-stat-lbl">DPI</span></div>
-        <div class="pph-card-stat"><span class="pph-card-stat-val">{p.sens}</span><span class="pph-card-stat-lbl">Sens</span></div>
-        <div class="pph-card-stat pph-card-stat-accent"><span class="pph-card-stat-val">{p.edpi}</span><span class="pph-card-stat-lbl">eDPI</span></div>
-      </div>
-      <div class="pph-card-right">
-        <span class="pph-card-res">{p.res} <span class="pph-card-aspect">{p.aspect}</span></span>
+      <div class="pph-card-body">
+        <span class="pph-card-name">{p.flag} {p.name}</span>
+        <span class="pph-card-team">{p.team}</span>
+        <div class="pph-card-stats">
+          <span class="pph-card-stat"><strong>{p.edpi}</strong> eDPI</span>
+          <span class="pph-card-stat"><strong>{p.res}</strong></span>
+        </div>
         <span class="pph-card-mouse">{p.mouse}</span>
       </div>
-      <span class="pph-card-arrow">&rarr;</span>
     </a>
   ))}
 </section>
@@ -354,39 +349,29 @@ const topMice = getGearByType('mouse').slice(0, 8);
 .pph-spotlight-stats{display:flex;gap:.75rem;font-size:.78rem;color:var(--text2);margin-top:.25rem;flex-wrap:wrap}
 .pph-spotlight-stats strong{color:var(--text);font-weight:700}
 
-/* ── Player Cards: Horizontal row (image left, info right) ───────────────── */
-.pph-list{display:flex;flex-direction:column;gap:2px;margin-bottom:2rem}
-.pph-card{display:flex;align-items:center;gap:.85rem;padding:.6rem 1rem;background:var(--bg2);border:1px solid var(--border);border-left:3px solid transparent;border-radius:4px;text-decoration:none;color:inherit;transition:border-left-color .15s}
-.pph-card:hover{border-left-color:var(--accent)}
+/* ── Player Cards: Grid ───────────────────────────────────────────────────── */
+.pph-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:.75rem;margin-bottom:2rem}
+.pph-card{display:flex;flex-direction:column;background:var(--bg2);border:1px solid var(--border);border-radius:8px;text-decoration:none;color:inherit;overflow:hidden;transition:transform .15s,border-color .15s,box-shadow .15s}
+.pph-card:hover{transform:translateY(-3px);border-color:var(--accent);box-shadow:0 8px 24px rgba(0,0,0,.3)}
 .pph-card.hidden{display:none}
 
-.pph-card-left{flex-shrink:0;width:48px;height:48px;display:flex;align-items:center;justify-content:center}
-.pph-card-avatar{width:48px;height:48px;border-radius:4px;object-fit:cover;border:1px solid var(--border);background:var(--bg3)}
+.pph-card-img{position:relative;background:var(--bg3);display:flex;align-items:center;justify-content:center;height:120px;overflow:hidden}
+.pph-card-avatar{width:80px;height:80px;border-radius:50%;object-fit:cover;border:2px solid var(--border)}
+.pph-card-placeholder{width:60px;height:60px;border-radius:50%;background:var(--bg2);border:2px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:1.4rem;font-weight:900;color:var(--text2)}
 
-.pph-card-mid{display:flex;flex-direction:column;gap:.1rem;min-width:140px;flex:1}
-.pph-card-name{font-weight:700;font-size:.9rem;color:var(--text)}
-.pph-card-team{font-size:.72rem;color:var(--text2)}
-.pph-card-role{font-size:.6rem;font-weight:700;padding:.12rem .35rem;border-radius:4px;text-transform:uppercase;letter-spacing:.03em;background:var(--bg3);color:var(--text2);border:1px solid var(--border);align-self:flex-start}
+.pph-card-role{position:absolute;top:.4rem;left:.4rem;font-size:.55rem;font-weight:700;padding:.12rem .35rem;border-radius:4px;text-transform:uppercase;letter-spacing:.03em;background:var(--bg3);color:var(--text2);border:1px solid var(--border)}
 .pph-card-role[data-r="awper"]{background:rgba(239,83,80,.12);color:var(--red);border-color:var(--red)}
 .pph-card-role[data-r="rifler"]{background:rgba(66,165,245,.12);color:var(--blue);border-color:var(--blue)}
 .pph-card-role[data-r="igl"]{background:rgba(171,71,188,.12);color:var(--purple);border-color:var(--purple)}
 .pph-card-role[data-r="entry-fragger"]{background:rgba(46,204,113,.12);color:var(--accent);border-color:var(--accent)}
 .pph-card-role[data-r="support"]{background:rgba(76,175,80,.12);color:var(--green);border-color:var(--green)}
-.pph-role-sm{font-size:.58rem;padding:.1rem .3rem}
 
-.pph-card-stats{display:flex;gap:.6rem;align-items:center}
-.pph-card-stat{display:flex;flex-direction:column;align-items:center;min-width:44px}
-.pph-card-stat-val{font-size:.88rem;font-weight:700;color:var(--text);line-height:1.2}
-.pph-card-stat-lbl{font-size:.58rem;color:var(--text2);text-transform:uppercase;letter-spacing:.03em}
-.pph-card-stat-accent .pph-card-stat-val{color:var(--accent)}
-
-.pph-card-right{display:flex;flex-direction:column;gap:.1rem;min-width:130px;text-align:right}
-.pph-card-res{font-size:.82rem;color:var(--text);font-weight:600}
-.pph-card-aspect{color:var(--text2);font-weight:400;font-size:.72rem}
-.pph-card-mouse{font-size:.75rem;color:var(--text2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-
-.pph-card-arrow{color:var(--accent);font-size:1rem;font-weight:700;flex-shrink:0;opacity:.4;transition:opacity .15s}
-.pph-card:hover .pph-card-arrow{opacity:1}
+.pph-card-body{padding:.6rem .7rem;display:flex;flex-direction:column;gap:.2rem}
+.pph-card-name{font-weight:700;font-size:.85rem;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pph-card-team{font-size:.72rem;color:var(--text2)}
+.pph-card-stats{display:flex;gap:.6rem;font-size:.75rem;color:var(--text2);margin-top:.15rem}
+.pph-card-stats strong{color:var(--accent);font-weight:700}
+.pph-card-mouse{font-size:.68rem;color:var(--text2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 
 /* ── Load More ───────────────────────────────────────────────────────────── */
 .pph-loadmore-wrap{text-align:center;padding:1.25rem 0}
@@ -394,7 +379,7 @@ const topMice = getGearByType('mouse').slice(0, 8);
 .pph-loadmore-btn:hover{opacity:.85}
 .pph-loadmore-btn span{font-weight:400;opacity:.8}
 .pph-paginated{display:none}
-.pph-card.pph-paginated.pph-revealed{display:flex}
+.pph-card.pph-paginated.pph-revealed{display:grid}
 
 /* ── Scene Overview: 3-column grid ───────────────────────────────────────── */
 .pph-overview{margin-bottom:2.5rem}
@@ -464,8 +449,6 @@ const topMice = getGearByType('mouse').slice(0, 8);
 @media(max-width:960px){
   .pph-spotlight-grid{grid-template-columns:1fr}
   .pph-overview-grid{grid-template-columns:1fr}
-  .pph-card-right{display:none}
-  .pph-card-arrow{display:none}
 }
 @media(max-width:640px){
   .pph-title{font-size:1.5rem}
@@ -474,8 +457,9 @@ const topMice = getGearByType('mouse').slice(0, 8);
   .pph-pill-val{font-size:.85rem}
   .pph-filter-row{flex-direction:column}
   .pph-search{min-width:100%}
-  .pph-card-stats{gap:.35rem}
-  .pph-card-stat{min-width:36px}
+  .pph-grid{grid-template-columns:repeat(2,1fr)}
+  .pph-card-img{height:90px}
+  .pph-card-avatar{width:60px;height:60px}
 }
 </style>
 
