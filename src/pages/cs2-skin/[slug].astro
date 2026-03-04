@@ -671,7 +671,7 @@ const listingDesc = (skin.listingCount ?? 0) > 10000 ? 'widely available with hi
                     {cl?.price !== null ? (
                       <span class="wi-csgoluck-count">{cl.count} listing{cl.count !== 1 ? 's' : ''}</span>
                     ) : (
-                      <span class="wi-csgoluck-count">No listings</span>
+                      <span class="wi-csgoluck-count">Want this skin? Try your luck!</span>
                     )}
                   </div>
                 </div>
@@ -685,7 +685,10 @@ const listingDesc = (skin.listingCount ?? 0) > 10000 ? 'widely available with hi
                       <a href="/go/" rel="nofollow" class="wi-csgoluck-buy">Buy</a>
                     </>
                   ) : (
-                    <a href="/go/" rel="nofollow" class="wi-csgoluck-buy">Browse</a>
+                    <>
+                      <span class="wi-csgoluck-bonus">100% to 100 Coins + 5 Free Cases</span>
+                      <a href="/go/" rel="nofollow" class="wi-csgoluck-buy">Claim</a>
+                    </>
                   )}
                 </div>
               </div>
@@ -702,9 +705,6 @@ const listingDesc = (skin.listingCount ?? 0) > 10000 ? 'widely available with hi
                     <span class="wi-market-amount wi-steam-price">${steamPrice.toFixed(2)}</span>
                   </div>
                 </div>
-              )}
-              {!cl?.price && (!steamPrice || steamPrice <= 0) && (
-                <p class="wi-nodata">No pricing data for this condition</p>
               )}
             </div>
           );
@@ -1408,6 +1408,7 @@ document.addEventListener('DOMContentLoaded', () => {
 .wi-csgoluck-price{font-size:1rem;font-weight:900;color:#2ecc71}
 .wi-csgoluck-buy{display:inline-block;padding:.35rem .85rem;background:#2ecc71;color:#fff;border-radius:4px;font-size:.75rem;font-weight:700;text-decoration:none;white-space:nowrap;transition:background .15s}
 .wi-csgoluck-buy:hover{background:#27ae60;color:#fff}
+.wi-csgoluck-bonus{font-size:.7rem;font-weight:700;color:#2ecc71;white-space:nowrap}
 
 /* ── Savings badge ─────────────────────────────────────── */
 .wi-savings-badge{display:inline-block;padding:.15rem .45rem;background:#2ecc71;color:#fff;font-size:.7rem;font-weight:800;border-radius:3px;white-space:nowrap;letter-spacing:.02em}
