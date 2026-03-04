@@ -64,235 +64,183 @@ const breadcrumbs = [
 ];
 ---
 
-<Base title="Case Simulator — Open CS2 Cases" description="Free CS2 case opening simulator with realistic roulette animation. Open Kilowatt, Gallery, Revolution and more cases. Track your luck and stats!" currentNav="/cs2-skins/">
+<Base title="CS2 Case Opening Simulator — Free Cases | CSGOLuck Wiki" description="Open CS2 cases for free with our realistic case opening simulator. Kilowatt, Gallery, Revolution and 20+ cases with real odds. Track stats and see if you'd profit!" currentNav="/cs2-skins/">
   <Fragment slot="head">
     <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema(breadcrumbs))} />
-    <script type="application/ld+json" set:html={JSON.stringify(toolAppSchema({ name: 'CS2 Case Opening Simulator', url: 'https://wiki.csgoluck.com/case-simulator/', description: 'Free CS2 case opening simulator with realistic roulette animation. Open Kilowatt, Gallery, Revolution and more cases. Track your luck and stats!' }))} />
+    <script type="application/ld+json" set:html={JSON.stringify(toolAppSchema({ name: 'CS2 Case Opening Simulator', url: 'https://wiki.csgoluck.com/case-simulator/', description: 'Open CS2 cases for free with our realistic case opening simulator. Track stats and see if you\'d profit!' }))} />
   </Fragment>
 
   <nav class="breadcrumb"><a href="/">Home</a> <span>/</span> <a href="/cs2-cases/">Cases</a> <span>/</span> <span>Case Simulator</span></nav>
 
-  <div class="cs-hero">
-    <h1 class="cs-title">Case Simulator</h1>
-    <p class="cs-desc">Open <a href="/cs2-cases/" style="color:var(--accent)">CS2 cases</a> with realistic roulette animations. Check the <a href="/case-odds-calculator/" style="color:var(--accent)">odds calculator</a> and track your stats to see if you'd profit!</p>
-  </div>
-
-  <div class="cs-layout">
-    <!-- Left: Case selector -->
-    <div class="cs-sidebar">
-      <h2 class="cs-sidebar-title">Select a Case</h2>
-      <div class="cs-case-list" id="caseList"></div>
-    </div>
-
-    <!-- Center: Roulette area -->
-    <div class="cs-main">
-      <!-- Welcome state -->
-      <div id="welcomeState" class="cs-welcome">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="cs-welcome-icon">
-          <rect x="2" y="4" width="20" height="16" rx="2"/>
-          <line x1="2" y1="10" x2="22" y2="10"/>
-        </svg>
-        <h3>Choose a case to begin</h3>
-        <p>Select any case from the list on the left</p>
-      </div>
-
-      <!-- Active case state -->
-      <div id="activeState" class="cs-active hidden">
-        <div class="cs-case-header">
-          <div>
-            <h3 id="caseName" class="cs-case-name"></h3>
-            <p id="caseInfo" class="cs-case-info"></p>
-          </div>
-          <button id="backBtn" class="cs-back-btn" title="Pick different case">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-          </button>
+  <!-- ═══ State 1: Case Selection Grid ═══ -->
+  <div id="selectState">
+    <div class="cs-hero">
+      <div class="cs-hero-top">
+        <div>
+          <h1 class="cs-title">Case Opening Simulator</h1>
+          <p class="cs-desc">Open CS2 cases for free with realistic animations and real drop odds. Pick a case below to start opening.</p>
         </div>
-
-        <!-- Roulette reels container -->
-        <div class="cs-reels-container" id="reelsContainer">
-          <div class="cs-roulette-wrap">
-            <div class="cs-pointer"></div>
-            <div class="cs-roulette" id="roulette">
-              <div class="cs-strip" id="strip"></div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Controls -->
-        <div class="cs-controls">
-          <div class="cs-spin-options">
-            <button class="cs-spin-count active" data-count="1">x1</button>
-            <button class="cs-spin-count" data-count="3">x3</button>
-            <button class="cs-spin-count" data-count="5">x5</button>
-            <button class="cs-spin-count" data-count="10">x10</button>
-          </div>
-          <button id="openBtn" class="cs-open-btn">
-            Open Case
-          </button>
-        </div>
-
-        <!-- Result (shown after spin) -->
-        <div id="resultArea" class="cs-result hidden"></div>
-
-        <!-- Case contents -->
-        <div class="cs-contents">
-          <h4>Case Contents</h4>
-          <div id="caseContents" class="cs-contents-grid"></div>
-        </div>
-
-        <!-- Odds -->
-        <div class="cs-odds">
-          <span><i class="dot mil-spec"></i>Mil-Spec 79.92%</span>
-          <span><i class="dot restricted"></i>Restricted 15.98%</span>
-          <span><i class="dot classified"></i>Classified 3.20%</span>
-          <span><i class="dot covert"></i>Covert 0.64%</span>
-          <span><i class="dot special"></i>Knife/Gloves 0.26%</span>
-        </div>
+        <a href="/go/" rel="nofollow" class="cs-hero-cta">
+          <span class="cs-hero-cta-label">Open Real Cases</span>
+          <span class="cs-hero-cta-bonus">🎁 100% to 100 Coins + 5 Free Cases</span>
+        </a>
       </div>
     </div>
 
-    <!-- Right: Stats -->
-    <div class="cs-stats">
-      <h2 class="cs-stats-title">Session Stats</h2>
-      <div class="cs-stat-cards">
-        <div class="cs-stat-card">
-          <div class="cs-stat-val" id="statOpened">0</div>
-          <div class="cs-stat-lbl">Opened</div>
-        </div>
-        <div class="cs-stat-card">
-          <div class="cs-stat-val">$<span id="statSpent">0.00</span></div>
-          <div class="cs-stat-lbl">Spent</div>
-        </div>
-      </div>
+    <div class="cs-grid" id="caseGrid"></div>
 
-      <div class="cs-profit-card">
-        <div class="cs-profit-val neutral" id="statProfit">$0.00</div>
-        <div class="cs-profit-lbl">Profit / Loss</div>
-      </div>
-      <div class="cs-stat-cards">
-        <div class="cs-stat-card">
-          <div class="cs-stat-val">$<span id="statValue">0.00</span></div>
-          <div class="cs-stat-lbl">Items Value</div>
-        </div>
-        <div class="cs-stat-card">
-          <div class="cs-stat-val" id="statROI">0%</div>
-          <div class="cs-stat-lbl">ROI</div>
-        </div>
-      </div>
-
-      <h3 class="cs-stats-sub">Rarity Breakdown</h3>
-      <div class="cs-rarity-list">
-        <div class="cs-rarity-row"><i class="dot mil-spec"></i><span>Mil-Spec</span><b id="rMilspec">0</b></div>
-        <div class="cs-rarity-row"><i class="dot restricted"></i><span>Restricted</span><b id="rRestricted">0</b></div>
-        <div class="cs-rarity-row"><i class="dot classified"></i><span>Classified</span><b id="rClassified">0</b></div>
-        <div class="cs-rarity-row"><i class="dot covert"></i><span>Covert</span><b id="rCovert">0</b></div>
-        <div class="cs-rarity-row"><i class="dot special"></i><span>Knife/Gloves</span><b id="rSpecial">0</b></div>
-      </div>
-
-      <h3 class="cs-stats-sub">Best Pull</h3>
-      <div class="cs-best-pull" id="bestPull">
-        <p class="cs-empty">No pulls yet</p>
-      </div>
-
-      <h3 class="cs-stats-sub">Recent Pulls</h3>
-      <div class="cs-recent" id="recentPulls">
-        <p class="cs-empty">No pulls yet</p>
-      </div>
-
-      <button id="resetBtn" class="cs-reset-btn">Reset Stats</button>
+    <div class="cs-odds-legend">
+      <span><i class="dot mil-spec"></i>Mil-Spec 79.92%</span>
+      <span><i class="dot restricted"></i>Restricted 15.98%</span>
+      <span><i class="dot classified"></i>Classified 3.20%</span>
+      <span><i class="dot covert"></i>Covert 0.64%</span>
+      <span><i class="dot special"></i>Knife/Gloves 0.26%</span>
     </div>
   </div>
 
-  <div class="cs-cta-block">
-    <div class="cs-cta-inner">
-      <div class="cs-cta-text"><strong>Open Real Cases</strong><span>Try case opening on CSGOLuck.com</span></div>
-      <a href="/go/" rel="nofollow" class="cs-cta-btn">Open Cases</a>
+  <!-- ═══ State 2: Case Opening View ═══ -->
+  <div id="openState" class="hidden">
+    <!-- Top bar -->
+    <div class="cs-topbar">
+      <button id="backBtn" class="cs-back" title="Back to cases">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+        Back
+      </button>
+      <div class="cs-topbar-info">
+        <h2 id="caseName" class="cs-topbar-name"></h2>
+        <span id="casePrice" class="cs-topbar-price"></span>
+      </div>
+      <div class="cs-spin-options">
+        <button class="cs-spin-count active" data-count="1">x1</button>
+        <button class="cs-spin-count" data-count="3">x3</button>
+        <button class="cs-spin-count" data-count="5">x5</button>
+        <button class="cs-spin-count" data-count="10">x10</button>
+      </div>
+      <button id="openBtn" class="cs-open-btn">Open Case</button>
     </div>
-  </div>
 
-  <div class="cs-links-block">
-    <h2 class="cs-links-title">Related Resources</h2>
-    <div class="cs-link-list">
-      <a href="/cs2-cases/" class="cs-link">Cases & Collections</a>
-      <a href="/case-odds-calculator/" class="cs-link">Case Odds Calculator</a>
-      <a href="/cs2-skins/" class="cs-link">Skin Database</a>
-      <a href="/skin-compare/" class="cs-link">Compare Skins</a>
-      <a href="/price-tracker/" class="cs-link">Price Tracker</a>
-      <a href="/market-trends/" class="cs-link">Market Trends</a>
-      <a href="/float-checker/" class="cs-link">Float Checker</a>
-      <a href="/tradeup-calculator/" class="cs-link">Trade-Up Calculator</a>
-      <a href="/inventory-lookup/" class="cs-link">Inventory Lookup</a>
-      <a href="/loadout-builder/" class="cs-link">Loadout Builder</a>
-      <a href="/cs2-weapons/" class="cs-link">Weapon Database</a>
-      <a href="/cs2-guides/skins-investing-guide/" class="cs-link">Investing Guide</a>
-      <a href="/cs2-guides/trading-guide/" class="cs-link">Trading Guide</a>
-      <a href="/cs2-guides/float-guide/" class="cs-link">Float Guide</a>
-      <a href="/cs2-stickers/" class="cs-link">Sticker Database</a>
-      <a href="/cs2-agents/" class="cs-link">Agents & Music Kits</a>
-      <a href="/cs2-tools/" class="cs-link">All Tools</a>
+    <!-- Roulette -->
+    <div class="cs-reels-container" id="reelsContainer">
+      <div class="cs-roulette-wrap">
+        <div class="cs-pointer"></div>
+        <div class="cs-roulette"><div class="cs-strip"></div></div>
+      </div>
+    </div>
+
+    <!-- Result -->
+    <div id="resultArea" class="cs-result hidden"></div>
+
+    <!-- Stats bar -->
+    <div class="cs-statsbar">
+      <div class="cs-sb-item"><span class="cs-sb-val" id="statOpened">0</span><span class="cs-sb-lbl">Opened</span></div>
+      <div class="cs-sb-item"><span class="cs-sb-val">$<span id="statSpent">0.00</span></span><span class="cs-sb-lbl">Spent</span></div>
+      <div class="cs-sb-item"><span class="cs-sb-val">$<span id="statValue">0.00</span></span><span class="cs-sb-lbl">Value</span></div>
+      <div class="cs-sb-item cs-sb-profit"><span class="cs-sb-val neutral" id="statProfit">$0.00</span><span class="cs-sb-lbl">Profit</span></div>
+      <div class="cs-sb-item"><span class="cs-sb-val" id="statROI">0%</span><span class="cs-sb-lbl">ROI</span></div>
+      <div class="cs-sb-rarity">
+        <span><i class="dot mil-spec"></i><b id="rMilspec">0</b></span>
+        <span><i class="dot restricted"></i><b id="rRestricted">0</b></span>
+        <span><i class="dot classified"></i><b id="rClassified">0</b></span>
+        <span><i class="dot covert"></i><b id="rCovert">0</b></span>
+        <span><i class="dot special"></i><b id="rSpecial">0</b></span>
+      </div>
+      <button id="resetBtn" class="cs-reset-btn">Reset</button>
+    </div>
+
+    <!-- Best & Recent pulls -->
+    <div class="cs-pulls-row">
+      <div class="cs-pull-box">
+        <h4>Best Pull</h4>
+        <div id="bestPull"><p class="cs-empty">No pulls yet</p></div>
+      </div>
+      <div class="cs-pull-box cs-pull-recent">
+        <h4>Recent Pulls</h4>
+        <div id="recentPulls"><p class="cs-empty">No pulls yet</p></div>
+      </div>
+    </div>
+
+    <!-- Case contents -->
+    <div class="cs-contents">
+      <h4>Case Contents</h4>
+      <div id="caseContents" class="cs-contents-grid"></div>
+    </div>
+
+    <!-- CTA -->
+    <div class="cs-cta-block">
+      <div class="cs-cta-inner">
+        <div class="cs-cta-text"><strong>Open Real Cases on CSGOLuck</strong><span>🎁 100% to 100 Coins + 5 Free Cases</span></div>
+        <a href="/go/" rel="nofollow" class="cs-cta-btn">Open Cases</a>
+      </div>
     </div>
   </div>
 
 <ExploreMore context="skins" />
 
 <style is:inline>
-  /* Hero */
-  .cs-hero{padding:1.5rem 0;margin-bottom:1.5rem}
-  .cs-title{font-size:2rem;font-weight:800;margin:0 0 .5rem;color:var(--text)}
-  .cs-desc{color:var(--text2);font-size:.95rem;margin:0;max-width:600px;line-height:1.6}
-
-  .cs-layout{display:grid;grid-template-columns:240px minmax(0,1fr) 260px;gap:1rem;min-height:calc(100vh - 280px)}
-
-  /* Sidebar */
-  .cs-sidebar{display:flex;flex-direction:column;gap:.75rem}
-  .cs-sidebar-title{font-size:1rem;margin:0;color:var(--text);font-weight:700;text-transform:uppercase;letter-spacing:.04em}
-  .cs-case-list{display:flex;flex-direction:column;gap:.4rem;max-height:calc(100vh - 240px);overflow-y:auto;padding-right:.25rem}
-  .cs-case-list::-webkit-scrollbar{width:4px}
-  .cs-case-list::-webkit-scrollbar-thumb{background:var(--border);border-radius:4px}
-
-  .cs-case-card{background:var(--bg2);border:1px solid var(--border);border-left:3px solid transparent;border-radius:4px;padding:.6rem .8rem;cursor:pointer;transition:border-left-color .15s;display:flex;justify-content:space-between;align-items:center}
-  .cs-case-card:hover{border-left-color:var(--accent)}
-  .cs-case-card.active{border-left-color:var(--accent);background:rgba(46,204,113,.06)}
-  .cs-case-card-name{font-weight:600;font-size:.85rem;color:var(--text)}
-  .cs-case-card-meta{font-size:.7rem;color:var(--text2);margin-top:.15rem}
-  .cs-case-card-price{color:var(--accent);font-weight:700;font-size:.8rem;white-space:nowrap}
-
-  /* Main area */
-  .cs-main{background:var(--bg2);border:1px solid var(--border);border-radius:4px;padding:1.25rem;display:flex;flex-direction:column;min-height:400px;min-width:0;overflow:hidden}
-
-  .cs-welcome{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
-  .cs-welcome-icon{width:56px;height:56px;stroke:var(--accent);opacity:.5;margin-bottom:1rem}
-  .cs-welcome h3{font-size:1.2rem;margin:0 0 .4rem;color:var(--text)}
-  .cs-welcome p{margin:0;color:var(--text2);font-size:.9rem}
-
   .hidden{display:none!important}
 
-  .cs-active{display:flex;flex-direction:column;gap:1rem}
-  .cs-case-header{display:flex;justify-content:space-between;align-items:flex-start}
-  .cs-case-name{margin:0;font-size:1.15rem;color:var(--text)}
-  .cs-case-info{margin:.15rem 0 0;font-size:.8rem;color:var(--text2)}
-  .cs-back-btn{background:none;border:1px solid var(--border);color:var(--text2);cursor:pointer;padding:.4rem;border-radius:4px;transition:border-color .15s}
-  .cs-back-btn:hover{color:var(--accent);border-color:var(--accent)}
+  /* ── Hero ──────────────────────────────────────────────── */
+  .cs-hero{padding:1.5rem 0 1rem}
+  .cs-hero-top{display:flex;align-items:flex-start;justify-content:space-between;gap:1.5rem;flex-wrap:wrap}
+  .cs-title{font-size:1.8rem;font-weight:800;margin:0 0 .4rem;color:var(--text)}
+  .cs-desc{color:var(--text2);font-size:.9rem;margin:0;max-width:550px;line-height:1.6}
+  .cs-hero-cta{display:flex;flex-direction:column;align-items:center;gap:.25rem;padding:.7rem 1.5rem;background:#2ecc71;border-radius:6px;text-decoration:none;transition:background .15s;flex-shrink:0}
+  .cs-hero-cta:hover{background:#27ae60}
+  .cs-hero-cta-label{font-weight:800;font-size:.95rem;color:#fff}
+  .cs-hero-cta-bonus{font-size:.7rem;color:rgba(255,255,255,.85);font-weight:600}
 
-  /* Roulette */
+  /* ── Case Grid ─────────────────────────────────────────── */
+  .cs-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:.75rem;margin-bottom:1.5rem}
+  .cs-card{background:var(--bg2);border:1px solid var(--border);border-radius:6px;padding:1rem;cursor:pointer;transition:border-color .15s,transform .15s;display:flex;flex-direction:column;align-items:center;text-align:center;gap:.5rem}
+  .cs-card:hover{border-color:#2ecc71;transform:translateY(-2px)}
+  .cs-card-img{width:100%;height:100px;display:flex;align-items:center;justify-content:center;background:var(--bg3);border-radius:4px;overflow:hidden;position:relative}
+  .cs-card-img-items{display:flex;gap:4px;padding:4px}
+  .cs-card-img-items img{width:40px;height:30px;object-fit:contain}
+  .cs-card-knife{position:absolute;bottom:4px;right:4px;font-size:.55rem;background:rgba(228,174,57,.15);color:#e4ae39;padding:.1rem .35rem;border-radius:3px;font-weight:700}
+  .cs-card-name{font-weight:700;font-size:.9rem;color:var(--text)}
+  .cs-card-meta{font-size:.7rem;color:var(--text2)}
+  .cs-card-price{font-size:.85rem;font-weight:800;color:#2ecc71}
+
+  /* ── Odds legend ───────────────────────────────────────── */
+  .cs-odds-legend{display:flex;flex-wrap:wrap;gap:.5rem 1.2rem;justify-content:center;font-size:.75rem;color:var(--text2);padding:.75rem 0;margin-bottom:1rem}
+  .cs-odds-legend span{display:flex;align-items:center;gap:.3rem}
+  .dot{width:8px;height:8px;border-radius:50%;display:inline-block;flex-shrink:0}
+  .dot.mil-spec{background:#4b69ff}.dot.restricted{background:#8847ff}.dot.classified{background:#d32ce6}.dot.covert{background:#2ecc71}.dot.special{background:#ffd700}
+
+  /* ── Top bar ───────────────────────────────────────────── */
+  .cs-topbar{display:flex;align-items:center;gap:1rem;padding:.75rem 0;flex-wrap:wrap}
+  .cs-back{display:flex;align-items:center;gap:.3rem;background:none;border:1px solid var(--border);color:var(--text2);border-radius:4px;padding:.4rem .7rem;font-size:.8rem;cursor:pointer;font-family:inherit;transition:border-color .15s}
+  .cs-back:hover{border-color:#2ecc71;color:#2ecc71}
+  .cs-topbar-info{flex:1;min-width:0}
+  .cs-topbar-name{margin:0;font-size:1.15rem;font-weight:800;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .cs-topbar-price{font-size:.8rem;color:#2ecc71;font-weight:700}
+  .cs-spin-options{display:flex;gap:.3rem}
+  .cs-spin-count{background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:.4rem .7rem;font-size:.8rem;font-weight:700;color:var(--text2);cursor:pointer;transition:all .15s;font-family:inherit}
+  .cs-spin-count:hover{border-color:#2ecc71}
+  .cs-spin-count.active{background:rgba(46,204,113,.1);border-color:#2ecc71;color:#2ecc71}
+  .cs-open-btn{background:#2ecc71;color:#fff;border:none;border-radius:20px;padding:.6rem 2.5rem;font-size:1rem;font-weight:800;cursor:pointer;transition:background .15s;font-family:inherit;white-space:nowrap}
+  .cs-open-btn:hover:not(:disabled){background:#27ae60}
+  .cs-open-btn:disabled{opacity:.4;cursor:not-allowed}
+
+  /* ── Roulette ──────────────────────────────────────────── */
   .cs-reels-container{display:flex;flex-direction:column;gap:.5rem;margin:.5rem 0}
   .cs-roulette-wrap{position:relative}
-  .cs-pointer{position:absolute;top:0;left:50%;transform:translateX(-50%);width:0;height:0;border-left:10px solid transparent;border-right:10px solid transparent;border-top:14px solid var(--accent);z-index:5}
-  .cs-roulette{background:var(--bg);border:2px solid var(--border);border-radius:4px;overflow:hidden;height:120px;display:flex;align-items:center;position:relative;width:100%}
-  .cs-reels-container.multi .cs-roulette{height:90px}
-  .cs-reels-container.multi .cs-item{width:80px;height:80px}
-  .cs-reels-container.multi .cs-item-img{width:48px;height:36px}
+  .cs-pointer{position:absolute;top:0;left:50%;transform:translateX(-50%);width:0;height:0;border-left:10px solid transparent;border-right:10px solid transparent;border-top:14px solid #2ecc71;z-index:5}
+  .cs-roulette{background:var(--bg);border:2px solid var(--border);border-radius:6px;overflow:hidden;height:130px;display:flex;align-items:center;position:relative;width:100%}
+  .cs-reels-container.multi .cs-roulette{height:95px}
+  .cs-reels-container.multi .cs-item{width:85px;height:85px}
+  .cs-reels-container.multi .cs-item-img{width:50px;height:38px}
   .cs-reels-container.multi .cs-item-weapon{font-size:.6rem}
   .cs-reels-container.multi .cs-item-skin{font-size:.5rem}
-  .cs-roulette::before,.cs-roulette::after{content:'';position:absolute;top:0;bottom:0;width:60px;z-index:3;pointer-events:none}
+  .cs-roulette::before,.cs-roulette::after{content:'';position:absolute;top:0;bottom:0;width:80px;z-index:3;pointer-events:none}
   .cs-roulette::before{left:0;background:linear-gradient(to right,var(--bg),transparent)}
   .cs-roulette::after{right:0;background:linear-gradient(to left,var(--bg),transparent)}
   .cs-strip{display:flex;gap:8px;padding:0 8px;will-change:transform}
   .cs-strip.animating{transition:transform 4s cubic-bezier(.15,.3,.2,1)}
   .cs-reel-label{position:absolute;left:8px;top:50%;transform:translateY(-50%);background:rgba(0,0,0,.6);color:var(--text2);font-size:.6rem;font-weight:700;padding:.15rem .4rem;border-radius:4px;z-index:4}
 
-  .cs-item{flex-shrink:0;width:100px;height:100px;border-radius:4px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:.3rem;border:2px solid;position:relative;overflow:hidden}
-  .cs-item-img{width:60px;height:45px;object-fit:contain;margin-bottom:.1rem}
+  .cs-item{flex-shrink:0;width:110px;height:110px;border-radius:6px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:.3rem;border:2px solid;position:relative;overflow:hidden}
+  .cs-item-img{width:65px;height:48px;object-fit:contain;margin-bottom:.15rem}
   .cs-item-placeholder{width:50px;height:38px;display:flex;align-items:center;justify-content:center;font-size:1.4rem;margin-bottom:.1rem;opacity:.7}
   .cs-item.mil-spec{background:rgba(75,105,255,.08);border-color:rgba(75,105,255,.4)}
   .cs-item.restricted{background:rgba(136,71,255,.08);border-color:rgba(136,71,255,.4)}
@@ -303,22 +251,12 @@ const breadcrumbs = [
   @keyframes goldPulse{from{box-shadow:0 0 20px rgba(228,174,57,.4)}to{box-shadow:0 0 35px rgba(255,215,0,.6)}}
   .cs-item-weapon{font-weight:700;font-size:.7rem;color:var(--text);margin-bottom:.15rem}
   .cs-item-skin{font-size:.6rem;color:var(--text2);line-height:1.2}
-  .cs-item.winner{border-color:var(--accent)!important;animation:winPulse 1s ease-in-out infinite alternate}
+  .cs-item.winner{border-color:#2ecc71!important;animation:winPulse 1s ease-in-out infinite alternate}
   @keyframes winPulse{from{box-shadow:0 0 15px rgba(46,204,113,.3)}to{box-shadow:0 0 30px rgba(46,204,113,.6)}}
 
-  /* Controls */
-  .cs-controls{display:flex;align-items:center;gap:1rem;justify-content:center;flex-wrap:wrap}
-  .cs-spin-options{display:flex;gap:.35rem}
-  .cs-spin-count{background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:.35rem .65rem;font-size:.8rem;font-weight:600;color:var(--text2);cursor:pointer;transition:border-color .15s;font-family:inherit}
-  .cs-spin-count:hover{border-color:var(--accent)}
-  .cs-spin-count.active{background:rgba(46,204,113,.08);border-color:var(--accent);color:var(--accent)}
-  .cs-open-btn{background:var(--accent);color:#fff;border:none;border-radius:4px;padding:.6rem 2rem;font-size:.95rem;font-weight:700;cursor:pointer;transition:opacity .15s;font-family:inherit}
-  .cs-open-btn:hover:not(:disabled){opacity:.85}
-  .cs-open-btn:disabled{opacity:.5;cursor:not-allowed}
-
-  /* Results */
+  /* ── Results ───────────────────────────────────────────── */
   .cs-result{display:flex;flex-wrap:wrap;gap:.75rem;justify-content:center;padding:.75rem 0}
-  .cs-result-card{border:2px solid;border-radius:4px;padding:1rem 1.25rem;text-align:center;min-width:160px;background:var(--bg3);animation:resultPop .4s cubic-bezier(.34,1.56,.64,1)}
+  .cs-result-card{border:2px solid;border-radius:6px;padding:1rem 1.25rem;text-align:center;min-width:160px;background:var(--bg3);animation:resultPop .4s cubic-bezier(.34,1.56,.64,1)}
   @keyframes resultPop{from{opacity:0;transform:scale(.85)}to{opacity:1;transform:scale(1)}}
   .cs-result-card.mil-spec{border-color:#4b69ff}
   .cs-result-card.restricted{border-color:#8847ff}
@@ -333,14 +271,42 @@ const breadcrumbs = [
   .cs-result-weapon{font-size:1rem;font-weight:800;color:var(--text);margin-bottom:.15rem}
   .cs-result-skin{font-size:.85rem;color:var(--text2)}
   .cs-result-price{font-size:.85rem;font-weight:700;margin-top:.3rem}
-  .cs-result-price.profit{color:var(--green,#4ade80)}
-  .cs-result-price.loss{color:var(--red,#ef4444)}
+  .cs-result-price.profit{color:#4ade80}
+  .cs-result-price.loss{color:#ef4444}
   .cs-result-price.neutral{color:var(--text2)}
 
-  /* Case contents */
-  .cs-contents{margin-top:.5rem}
-  .cs-contents h4{font-size:.9rem;color:var(--text);margin:0 0 .6rem;font-weight:700}
-  .cs-contents-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:.4rem;width:100%}
+  /* ── Stats bar ─────────────────────────────────────────── */
+  .cs-statsbar{display:flex;align-items:center;gap:.75rem;padding:.6rem 1rem;background:var(--bg2);border:1px solid var(--border);border-radius:6px;flex-wrap:wrap;margin:.5rem 0}
+  .cs-sb-item{display:flex;flex-direction:column;align-items:center;gap:.1rem;min-width:55px}
+  .cs-sb-val{font-size:.95rem;font-weight:800;color:#2ecc71}
+  .cs-sb-lbl{font-size:.6rem;color:var(--text2);text-transform:uppercase;letter-spacing:.04em}
+  .cs-sb-profit .cs-sb-val.profit{color:#4ade80}
+  .cs-sb-profit .cs-sb-val.loss{color:#ef4444}
+  .cs-sb-profit .cs-sb-val.neutral{color:var(--text2)}
+  .cs-sb-rarity{display:flex;gap:.5rem;margin-left:auto;align-items:center}
+  .cs-sb-rarity span{display:flex;align-items:center;gap:.2rem;font-size:.75rem;color:var(--text2)}
+  .cs-sb-rarity b{font-weight:700;color:var(--text)}
+  .cs-reset-btn{background:var(--bg3);border:1px solid var(--border);color:var(--text2);border-radius:4px;padding:.35rem .75rem;font-size:.75rem;cursor:pointer;font-family:inherit;transition:all .15s;margin-left:.5rem}
+  .cs-reset-btn:hover{border-color:#2ecc71;color:#2ecc71}
+
+  /* ── Pulls row ─────────────────────────────────────────── */
+  .cs-pulls-row{display:grid;grid-template-columns:1fr 2fr;gap:.75rem;margin:.5rem 0}
+  .cs-pull-box{background:var(--bg2);border:1px solid var(--border);border-radius:6px;padding:.75rem}
+  .cs-pull-box h4{font-size:.8rem;color:var(--text);margin:0 0 .5rem;font-weight:700}
+  .cs-empty{color:var(--text2);font-size:.8rem;margin:0;text-align:center}
+  .cs-pull-recent{max-height:140px;overflow-y:auto}
+  .cs-pull-recent::-webkit-scrollbar{width:3px}
+  .cs-pull-recent::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+  .cs-recent-item{font-size:.75rem;padding:.25rem 0;border-bottom:1px solid var(--border);display:flex;justify-content:space-between}
+  .cs-recent-item:last-child{border:none}
+  .bp-rarity{font-size:.6rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;margin-bottom:.15rem}
+  .bp-weapon{font-size:.85rem;font-weight:700;color:var(--text)}
+  .bp-skin{font-size:.7rem;color:var(--text2)}
+
+  /* ── Case contents ─────────────────────────────────────── */
+  .cs-contents{margin:.5rem 0}
+  .cs-contents h4{font-size:.85rem;color:var(--text);margin:0 0 .5rem;font-weight:700}
+  .cs-contents-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:.4rem}
   .cs-content-item{background:var(--bg3);border-radius:4px;padding:.4rem .55rem;font-size:.7rem;display:flex;align-items:center;gap:.4rem;border-left:3px solid}
   .cs-content-item.mil-spec{border-left-color:#4b69ff}
   .cs-content-item.restricted{border-left-color:#8847ff}
@@ -349,73 +315,33 @@ const breadcrumbs = [
   .cs-content-item .ci-img{width:32px;height:24px;object-fit:contain;flex-shrink:0}
   .cs-content-item .ci-weapon{font-weight:600;color:var(--text);white-space:nowrap}
   .cs-content-item .ci-skin{color:var(--text2)}
-  .cs-content-item .ci-price{color:var(--accent);font-weight:600;font-size:.65rem;margin-left:auto;white-space:nowrap}
+  .cs-content-item .ci-price{color:#2ecc71;font-weight:600;font-size:.65rem;margin-left:auto;white-space:nowrap}
 
-  /* Odds */
-  .cs-odds{display:flex;flex-wrap:wrap;gap:.6rem 1.2rem;justify-content:center;font-size:.75rem;color:var(--text2);padding:.5rem 0}
-  .cs-odds span{display:flex;align-items:center;gap:.3rem}
-  .dot{width:8px;height:8px;border-radius:50%;display:inline-block;flex-shrink:0}
-  .dot.mil-spec{background:#4b69ff}.dot.restricted{background:#8847ff}.dot.classified{background:#d32ce6}.dot.covert{background:#2ecc71}.dot.special{background:#ffd700}
-
-  /* Stats panel */
-  .cs-stats{background:var(--bg2);border:1px solid var(--border);border-radius:4px;padding:1rem;position:sticky;top:90px;height:fit-content;max-height:calc(100vh - 110px);overflow-y:auto;display:flex;flex-direction:column;gap:.6rem;min-width:0}
-  .cs-stats::-webkit-scrollbar{width:4px}
-  .cs-stats::-webkit-scrollbar-thumb{background:var(--border);border-radius:4px}
-  .cs-stats-title{font-size:1rem;margin:0;color:var(--text);font-weight:700;text-transform:uppercase;letter-spacing:.04em}
-  .cs-stats-sub{font-size:.85rem;margin:0;color:var(--text);font-weight:700}
-  .cs-stat-cards{display:grid;grid-template-columns:1fr 1fr;gap:.5rem}
-  .cs-stat-card{background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:.7rem;text-align:center}
-  .cs-stat-val{font-size:1.3rem;font-weight:800;color:var(--accent)}
-  .cs-stat-lbl{font-size:.65rem;color:var(--text2);text-transform:uppercase;letter-spacing:.04em;margin-top:.2rem}
-  .cs-rarity-list{display:flex;flex-direction:column;gap:.4rem}
-  .cs-rarity-row{display:flex;align-items:center;gap:.5rem;font-size:.8rem;color:var(--text2)}
-  .cs-rarity-row b{margin-left:auto;color:var(--accent);font-size:.85rem}
-  .cs-best-pull,.cs-recent{background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:.75rem;min-height:50px}
-  .cs-empty{color:var(--text2);font-size:.8rem;margin:0;text-align:center}
-  .cs-recent{max-height:150px;overflow-y:auto}
-  .cs-recent-item{font-size:.75rem;padding:.25rem 0;border-bottom:1px solid var(--border);display:flex;justify-content:space-between}
-  .cs-recent-item:last-child{border:none}
-  .cs-profit-card{background:var(--bg3);border:1px solid var(--border);border-left:3px solid var(--accent);border-radius:4px;padding:.75rem;text-align:center}
-  .cs-profit-val{font-size:1.3rem;font-weight:800}
-  .cs-profit-val.profit{color:var(--green,#4ade80)}
-  .cs-profit-val.loss{color:var(--red,#ef4444)}
-  .cs-profit-val.neutral{color:var(--text2)}
-  .cs-profit-lbl{font-size:.65rem;color:var(--text2);text-transform:uppercase;letter-spacing:.04em;margin-top:.2rem}
-  .cs-reset-btn{background:var(--bg3);border:1px solid var(--border);border-left:3px solid transparent;color:var(--text2);border-radius:4px;padding:.5rem;font-size:.8rem;cursor:pointer;transition:border-left-color .15s;font-family:inherit;width:100%}
-  .cs-reset-btn:hover{border-left-color:var(--accent);color:var(--text)}
-
-  .bp-rarity{font-size:.6rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;margin-bottom:.15rem}
-  .bp-weapon{font-size:.9rem;font-weight:700;color:var(--text)}
-  .bp-skin{font-size:.75rem;color:var(--text2)}
-
-  /* CTA Block */
-  .cs-cta-block{background:var(--bg2);border:1px solid var(--border);border-left:3px solid var(--accent);border-radius:4px;margin:2rem 0;overflow:hidden}
-  .cs-cta-inner{display:flex;align-items:center;gap:1rem;padding:1.25rem 1.5rem;flex-wrap:wrap}
+  /* ── CTA Block ─────────────────────────────────────────── */
+  .cs-cta-block{background:var(--bg2);border:1px solid var(--border);border-left:3px solid #2ecc71;border-radius:6px;margin:1.5rem 0;overflow:hidden}
+  .cs-cta-inner{display:flex;align-items:center;gap:1rem;padding:1rem 1.5rem;flex-wrap:wrap}
   .cs-cta-text{flex:1;min-width:200px}
   .cs-cta-text strong{display:block;color:var(--text);font-size:.95rem}
-  .cs-cta-text span{color:var(--text2);font-size:.82rem}
-  .cs-cta-btn{display:inline-flex;align-items:center;padding:.55rem 1.25rem;background:var(--accent);color:#fff;border-radius:4px;font-weight:700;font-size:.85rem;text-decoration:none;white-space:nowrap;transition:opacity .15s}
-  .cs-cta-btn:hover{opacity:.85}
+  .cs-cta-text span{color:#2ecc71;font-size:.82rem;font-weight:600}
+  .cs-cta-btn{display:inline-flex;align-items:center;padding:.55rem 1.25rem;background:#2ecc71;color:#fff;border-radius:20px;font-weight:800;font-size:.85rem;text-decoration:none;white-space:nowrap;transition:background .15s}
+  .cs-cta-btn:hover{background:#27ae60}
 
-  /* Related Links */
-  .cs-links-block{background:var(--bg2);border:1px solid var(--border);border-radius:4px;padding:1.5rem;margin-bottom:2rem}
-  .cs-links-title{font-size:1.1rem;font-weight:700;color:var(--text);margin:0 0 1rem}
-  .cs-link-list{display:flex;flex-direction:column;gap:.4rem}
-  .cs-link{display:block;padding:.5rem .75rem;background:var(--bg3);border:1px solid var(--border);border-left:3px solid transparent;border-radius:4px;color:var(--accent);text-decoration:none;font-size:.85rem;transition:border-left-color .15s}
-  .cs-link:hover{border-left-color:var(--accent)}
-
-  /* Responsive */
-  @media(max-width:1200px){
-    .cs-layout{grid-template-columns:1fr;gap:1rem}
-    .cs-sidebar{order:1}
-    .cs-case-list{max-height:none;display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:.5rem}
-    .cs-main{order:2}
-    .cs-stats{order:3;position:static;max-height:none}
+  /* ── Responsive ────────────────────────────────────────── */
+  @media(max-width:768px){
+    .cs-grid{grid-template-columns:repeat(auto-fill,minmax(150px,1fr))}
+    .cs-topbar{gap:.5rem}
+    .cs-open-btn{padding:.5rem 1.5rem;font-size:.9rem}
+    .cs-pulls-row{grid-template-columns:1fr}
+    .cs-hero-top{flex-direction:column}
   }
-  @media(max-width:600px){
-    .cs-case-list{grid-template-columns:1fr 1fr}
-    .cs-item{width:85px;height:85px;font-size:.55rem}
-    .cs-roulette{height:105px}
+  @media(max-width:480px){
+    .cs-grid{grid-template-columns:1fr 1fr;gap:.5rem}
+    .cs-card{padding:.75rem}
+    .cs-item{width:90px;height:90px}
+    .cs-roulette{height:110px}
+    .cs-statsbar{gap:.4rem;padding:.5rem .6rem}
+    .cs-sb-item{min-width:45px}
+    .cs-sb-val{font-size:.8rem}
     .cs-contents-grid{grid-template-columns:1fr 1fr}
   }
 </style>
@@ -428,48 +354,40 @@ const breadcrumbs = [
   let spinCount = 1;
   let isSpinning = false;
   let stats = { opened: 0, spent: 0, value: 0, milspec: 0, restricted: 0, classified: 0, covert: 0, special: 0, bestPull: null, recent: [] };
-
-  // Skin prices cache (fetched from API)
   let skinPrices = {};
 
   // DOM refs
-  const caseListEl = document.getElementById('caseList');
-  const welcomeEl = document.getElementById('welcomeState');
-  const activeEl = document.getElementById('activeState');
+  const selectState = document.getElementById('selectState');
+  const openState = document.getElementById('openState');
+  const caseGrid = document.getElementById('caseGrid');
   const caseNameEl = document.getElementById('caseName');
-  const caseInfoEl = document.getElementById('caseInfo');
+  const casePriceEl = document.getElementById('casePrice');
   const reelsContainer = document.getElementById('reelsContainer');
   const openBtn = document.getElementById('openBtn');
   const resultArea = document.getElementById('resultArea');
   const caseContentsEl = document.getElementById('caseContents');
 
-  const ITEM_W = 100;
-  const ITEM_W_MULTI = 80;
+  const ITEM_W = 110;
+  const ITEM_W_MULTI = 85;
   const GAP = 8;
   const STRIP_COUNT = 70;
   const WINNER_INDEX = 55;
 
   const rarityOrder = { 'mil-spec': 0, 'restricted': 1, 'classified': 2, 'covert': 3, 'special': 4 };
   const rarityColors = { 'mil-spec': '#4b69ff', 'restricted': '#8847ff', 'classified': '#d32ce6', 'covert': '#2ecc71', 'special': '#e4ae39' };
-  const rarityEmoji = { 'mil-spec': '', 'restricted': '', 'classified': '', 'covert': '', 'special': '🔪' };
 
-  // Normalize key for image/price matching
   function normalizeKey(weapon, name) {
     return `${weapon}|${name}`.toLowerCase().replace(/[^a-z0-9|]/g, '');
   }
 
-  // Get item image HTML — either real image or styled placeholder
   function getItemImgHtml(skin, imgClass) {
     if (skin.image) {
-      return `<img class="${imgClass}" src="${skin.image}" alt="${skin.weapon} ${skin.name}" loading="lazy" onerror="this.parentElement.querySelector('.${imgClass}')?.remove();this.remove()">`;
+      return `<img class="${imgClass}" src="${skin.image}" alt="${skin.weapon} ${skin.name}" loading="lazy" onerror="this.remove()">`;
     }
-    if (skin.rarity === 'special') {
-      return `<div class="cs-item-placeholder">🔪</div>`;
-    }
+    if (skin.rarity === 'special') return `<div class="cs-item-placeholder">🔪</div>`;
     return '';
   }
 
-  // Get price for a skin
   function getSkinPrice(skin) {
     const key1 = `${skin.weapon}|${skin.name}`.toLowerCase();
     if (skinPrices[key1]) return skinPrices[key1];
@@ -483,24 +401,35 @@ const breadcrumbs = [
     return '$' + (cents / 100).toFixed(2);
   }
 
-  // Build case list
+  // ── Build case grid ──────────────────────────────────────
   Object.values(cases).forEach(c => {
-    const el = document.createElement('button');
-    el.className = 'cs-case-card';
-    el.dataset.id = c.id;
-    el.innerHTML = `<div><div class="cs-case-card-name">${c.name}</div><div class="cs-case-card-meta">${c.year} · ${c.knife}</div></div><span class="cs-case-card-price">$${c.keyPrice.toFixed(2)}</span>`;
+    const el = document.createElement('div');
+    el.className = 'cs-card';
+    // Show up to 3 skin preview images
+    const previewSkins = c.skins.filter(s => s.image).slice(0, 3);
+    const previewHtml = previewSkins.length > 0
+      ? previewSkins.map(s => `<img src="${s.image}" alt="" loading="lazy">`).join('')
+      : `<span style="font-size:2rem;opacity:.3">📦</span>`;
+    const knifeShort = c.knife.split('/')[0].trim();
+    el.innerHTML = `
+      <div class="cs-card-img">
+        <div class="cs-card-img-items">${previewHtml}</div>
+        <span class="cs-card-knife">🔪 ${knifeShort}</span>
+      </div>
+      <div class="cs-card-name">${c.name}</div>
+      <div class="cs-card-meta">${c.year}</div>
+      <div class="cs-card-price">$${c.keyPrice.toFixed(2)}</div>`;
     el.addEventListener('click', () => selectCase(c));
-    caseListEl.appendChild(el);
+    caseGrid.appendChild(el);
   });
 
-  // Select case
+  // ── Select case ──────────────────────────────────────────
   function selectCase(c) {
     currentCase = c;
-    document.querySelectorAll('.cs-case-card').forEach(el => el.classList.toggle('active', el.dataset.id === c.id));
-    welcomeEl.classList.add('hidden');
-    activeEl.classList.remove('hidden');
+    selectState.classList.add('hidden');
+    openState.classList.remove('hidden');
     caseNameEl.textContent = c.name;
-    caseInfoEl.textContent = `${c.year} · $${c.keyPrice.toFixed(2)} per open · ${c.knife}`;
+    casePriceEl.textContent = `$${c.keyPrice.toFixed(2)} per open · ${c.knife}`;
     resultArea.classList.add('hidden');
     resultArea.innerHTML = '';
     resetReels();
@@ -508,7 +437,7 @@ const breadcrumbs = [
     openBtn.disabled = false;
   }
 
-  // Build case contents display
+  // ── Build case contents ──────────────────────────────────
   function buildContents() {
     caseContentsEl.innerHTML = '';
     const sorted = [...currentCase.skins].sort((a, b) => rarityOrder[b.rarity] - rarityOrder[a.rarity]);
@@ -525,7 +454,7 @@ const breadcrumbs = [
     });
   }
 
-  // Pick winner by official odds
+  // ── Pick winner ──────────────────────────────────────────
   function pickWinner() {
     const rand = Math.random() * 100;
     let rarity;
@@ -542,7 +471,7 @@ const breadcrumbs = [
     return pool[Math.floor(Math.random() * pool.length)];
   }
 
-  // Reset reels container to single default reel
+  // ── Reel helpers ─────────────────────────────────────────
   function resetReels() {
     reelsContainer.classList.remove('multi');
     reelsContainer.innerHTML = `<div class="cs-roulette-wrap">
@@ -552,50 +481,36 @@ const breadcrumbs = [
     buildStripIn(reelsContainer.querySelector('.cs-strip'), null, false);
   }
 
-  // Build strip items into a given strip element
   function buildStripIn(stripEl, winner, isMulti) {
     stripEl.innerHTML = '';
     stripEl.classList.remove('animating');
     stripEl.style.transform = 'translateX(0)';
-
     const weights = { 'mil-spec': 80, 'restricted': 16, 'classified': 3, 'covert': 1, 'special': 1 };
     const pool = [];
-    currentCase.skins.forEach(s => {
-      const w = weights[s.rarity] || 1;
-      for (let i = 0; i < w; i++) pool.push(s);
-    });
-
+    currentCase.skins.forEach(s => { const w = weights[s.rarity] || 1; for (let i = 0; i < w; i++) pool.push(s); });
     for (let i = 0; i < STRIP_COUNT; i++) {
       let skin = (winner && i === WINNER_INDEX) ? winner : pool[Math.floor(Math.random() * pool.length)];
       const el = document.createElement('div');
       el.className = `cs-item ${skin.rarity}`;
-      const imgClass = isMulti ? 'cs-item-img' : 'cs-item-img';
       el.innerHTML = `${getItemImgHtml(skin, 'cs-item-img')}<div class="cs-item-weapon">${skin.weapon}</div><div class="cs-item-skin">${skin.name}</div>`;
       stripEl.appendChild(el);
     }
   }
 
-  // Animate a single reel strip
   function animateStrip(stripEl, rouletteEl, isMulti) {
     return new Promise(resolve => {
       const itemW = isMulti ? ITEM_W_MULTI : ITEM_W;
       const itemTotal = itemW + GAP;
       const containerW = rouletteEl.offsetWidth;
       const stopX = (WINNER_INDEX * itemTotal) - (containerW / 2) + (itemW / 2) + (Math.random() * 40 - 20);
-
       void stripEl.offsetHeight;
       stripEl.classList.add('animating');
       stripEl.style.transform = `translateX(-${stopX}px)`;
-
-      setTimeout(() => {
-        const items = stripEl.children;
-        if (items[WINNER_INDEX]) items[WINNER_INDEX].classList.add('winner');
-        resolve();
-      }, 4100);
+      setTimeout(() => { if (stripEl.children[WINNER_INDEX]) stripEl.children[WINNER_INDEX].classList.add('winner'); resolve(); }, 4100);
     });
   }
 
-  // Open case(s)
+  // ── Open case ────────────────────────────────────────────
   openBtn.addEventListener('click', async () => {
     if (isSpinning || !currentCase) return;
     isSpinning = true;
@@ -604,26 +519,18 @@ const breadcrumbs = [
     resultArea.innerHTML = '';
 
     const winners = [];
-    for (let i = 0; i < spinCount; i++) {
-      winners.push(pickWinner());
-    }
+    for (let i = 0; i < spinCount; i++) winners.push(pickWinner());
 
     const isMulti = spinCount > 1;
     reelsContainer.classList.toggle('multi', isMulti);
-
-    // Build all reel wraps
     reelsContainer.innerHTML = '';
-    const stripEls = [];
-    const rouletteEls = [];
+    const stripEls = [], rouletteEls = [];
 
     for (let i = 0; i < spinCount; i++) {
       const wrap = document.createElement('div');
       wrap.className = 'cs-roulette-wrap';
-      wrap.innerHTML = `<div class="cs-pointer"></div>
-        <div class="cs-roulette"><div class="cs-strip"></div></div>
-        ${isMulti ? `<div class="cs-reel-label">#${i + 1}</div>` : ''}`;
+      wrap.innerHTML = `<div class="cs-pointer"></div><div class="cs-roulette"><div class="cs-strip"></div></div>${isMulti ? `<div class="cs-reel-label">#${i+1}</div>` : ''}`;
       reelsContainer.appendChild(wrap);
-
       const stripEl = wrap.querySelector('.cs-strip');
       const rouletteEl = wrap.querySelector('.cs-roulette');
       buildStripIn(stripEl, winners[i], isMulti);
@@ -631,18 +538,9 @@ const breadcrumbs = [
       rouletteEls.push(rouletteEl);
     }
 
-    // Animate all reels with staggered start (150ms apart)
-    const animPromises = stripEls.map((stripEl, i) => {
-      return new Promise(resolve => {
-        setTimeout(() => {
-          animateStrip(stripEl, rouletteEls[i], isMulti).then(resolve);
-        }, i * 150);
-      });
-    });
-
+    const animPromises = stripEls.map((s, i) => new Promise(r => setTimeout(() => animateStrip(s, rouletteEls[i], isMulti).then(r), i * 150)));
     await Promise.all(animPromises);
 
-    // Record stats
     winners.forEach(w => {
       stats.opened++;
       stats.spent += currentCase.keyPrice;
@@ -650,21 +548,18 @@ const breadcrumbs = [
       if (price) stats.value += price / 100;
       const key = w.rarity === 'mil-spec' ? 'milspec' : w.rarity;
       stats[key] = (stats[key] || 0) + 1;
-      if (!stats.bestPull || rarityOrder[w.rarity] > rarityOrder[stats.bestPull.rarity]) {
-        stats.bestPull = w;
-      }
+      if (!stats.bestPull || rarityOrder[w.rarity] > rarityOrder[stats.bestPull.rarity]) stats.bestPull = w;
       stats.recent.unshift({ ...w, price });
       if (stats.recent.length > 20) stats.recent.pop();
     });
 
     updateStats();
     showResults(winners);
-
     isSpinning = false;
     openBtn.disabled = false;
   });
 
-  // Show results
+  // ── Show results ─────────────────────────────────────────
   function showResults(winners) {
     resultArea.classList.remove('hidden');
     resultArea.innerHTML = winners.map(w => {
@@ -672,24 +567,13 @@ const breadcrumbs = [
       const priceDollars = price ? price / 100 : 0;
       const profit = priceDollars - currentCase.keyPrice;
       const priceClass = !price ? 'neutral' : profit >= 0 ? 'profit' : 'loss';
-      const priceHtml = price
-        ? `<div class="cs-result-price ${priceClass}">${formatPrice(price)} (${profit >= 0 ? '+' : ''}$${profit.toFixed(2)})</div>`
-        : '';
-      const rarityLabel = w.rarity === 'special'
-        ? '🔪 Special'
-        : w.rarity === 'mil-spec' ? 'Mil-Spec'
-        : w.rarity.charAt(0).toUpperCase() + w.rarity.slice(1);
-      return `<div class="cs-result-card ${w.rarity}">
-        <div class="cs-result-rarity ${w.rarity}">${rarityLabel}</div>
-        ${getItemImgHtml(w, 'cs-result-img')}
-        <div class="cs-result-weapon">${w.weapon}</div>
-        <div class="cs-result-skin">${w.name}</div>
-        ${priceHtml}
-      </div>`;
+      const priceHtml = price ? `<div class="cs-result-price ${priceClass}">${formatPrice(price)} (${profit >= 0 ? '+' : ''}$${profit.toFixed(2)})</div>` : '';
+      const rarityLabel = w.rarity === 'special' ? '🔪 Special' : w.rarity === 'mil-spec' ? 'Mil-Spec' : w.rarity.charAt(0).toUpperCase() + w.rarity.slice(1);
+      return `<div class="cs-result-card ${w.rarity}"><div class="cs-result-rarity ${w.rarity}">${rarityLabel}</div>${getItemImgHtml(w, 'cs-result-img')}<div class="cs-result-weapon">${w.weapon}</div><div class="cs-result-skin">${w.name}</div>${priceHtml}</div>`;
     }).join('');
   }
 
-  // Update stats
+  // ── Update stats ─────────────────────────────────────────
   function updateStats() {
     document.getElementById('statOpened').textContent = stats.opened;
     document.getElementById('statSpent').textContent = stats.spent.toFixed(2);
@@ -699,38 +583,32 @@ const breadcrumbs = [
     document.getElementById('rCovert').textContent = stats.covert;
     document.getElementById('rSpecial').textContent = stats.special;
 
-    // Profit/loss
     const profit = stats.value - stats.spent;
     const profitEl = document.getElementById('statProfit');
     profitEl.textContent = `${profit >= 0 ? '+' : ''}$${profit.toFixed(2)}`;
-    profitEl.className = `cs-profit-val ${profit >= 0 ? 'profit' : 'loss'}`;
+    profitEl.className = `cs-sb-val ${profit >= 0 ? 'profit' : 'loss'}`;
 
     document.getElementById('statValue').textContent = stats.value.toFixed(2);
     const roi = stats.spent > 0 ? ((stats.value / stats.spent - 1) * 100).toFixed(1) : '0';
     document.getElementById('statROI').textContent = `${roi}%`;
 
-    // Best pull
     const bp = document.getElementById('bestPull');
     if (stats.bestPull) {
-      const bpEmoji = stats.bestPull.rarity === 'special' ? '🔪 ' : '';
-      bp.innerHTML = `<div class="bp-rarity" style="color:${rarityColors[stats.bestPull.rarity]}">${bpEmoji}${stats.bestPull.rarity}</div><div class="bp-weapon">${stats.bestPull.weapon}</div><div class="bp-skin">${stats.bestPull.name}</div>`;
+      const e = stats.bestPull.rarity === 'special' ? '🔪 ' : '';
+      bp.innerHTML = `<div class="bp-rarity" style="color:${rarityColors[stats.bestPull.rarity]}">${e}${stats.bestPull.rarity}</div><div class="bp-weapon">${stats.bestPull.weapon}</div><div class="bp-skin">${stats.bestPull.name}</div>`;
     }
 
-    // Recent
     const rp = document.getElementById('recentPulls');
     if (stats.recent.length) {
       rp.innerHTML = stats.recent.slice(0, 10).map(w => {
-        const priceStr = w.price ? ` · ${formatPrice(w.price)}` : '';
-        const emoji = w.rarity === 'special' ? '🔪 ' : '';
-        return `<div class="cs-recent-item">
-          <span style="color:${rarityColors[w.rarity]}">${emoji}${w.weapon}</span>
-          <span>${w.name}${priceStr}</span>
-        </div>`;
+        const ps = w.price ? ` · ${formatPrice(w.price)}` : '';
+        const e = w.rarity === 'special' ? '🔪 ' : '';
+        return `<div class="cs-recent-item"><span style="color:${rarityColors[w.rarity]}">${e}${w.weapon}</span><span>${w.name}${ps}</span></div>`;
       }).join('');
     }
   }
 
-  // Spin count buttons
+  // ── Spin count buttons ───────────────────────────────────
   document.querySelectorAll('.cs-spin-count').forEach(btn => {
     btn.addEventListener('click', () => {
       document.querySelectorAll('.cs-spin-count').forEach(b => b.classList.remove('active'));
@@ -739,37 +617,30 @@ const breadcrumbs = [
     });
   });
 
-  // Back button
+  // ── Back button ──────────────────────────────────────────
   document.getElementById('backBtn').addEventListener('click', () => {
     currentCase = null;
-    document.querySelectorAll('.cs-case-card').forEach(el => el.classList.remove('active'));
-    welcomeEl.classList.remove('hidden');
-    activeEl.classList.add('hidden');
+    openState.classList.add('hidden');
+    selectState.classList.remove('hidden');
   });
 
-  // Reset
+  // ── Reset ────────────────────────────────────────────────
   document.getElementById('resetBtn').addEventListener('click', () => {
     stats = { opened: 0, spent: 0, value: 0, milspec: 0, restricted: 0, classified: 0, covert: 0, special: 0, bestPull: null, recent: [] };
     updateStats();
     document.getElementById('statProfit').textContent = '$0.00';
-    document.getElementById('statProfit').className = 'cs-profit-val neutral';
+    document.getElementById('statProfit').className = 'cs-sb-val neutral';
     document.getElementById('statValue').textContent = '0.00';
     document.getElementById('statROI').textContent = '0%';
     document.getElementById('bestPull').innerHTML = '<p class="cs-empty">No pulls yet</p>';
     document.getElementById('recentPulls').innerHTML = '<p class="cs-empty">No pulls yet</p>';
   });
 
-  // Strip wear condition and prefixes from API keys to get base skin key
+  // ── Skin image + price fetching ──────────────────────────
   function stripWear(key) {
-    return key
-      .toLowerCase()
-      .replace(/^stattrak™?\s*/i, '')
-      .replace(/^souvenir\s*/i, '')
-      .replace(/\s*\([^)]+\)\s*$/, '')  // strip (Factory New), (Field-Tested), etc.
-      .replace(/\s*\|\s*/g, '|');        // normalize pipe spacing
+    return key.toLowerCase().replace(/^stattrak™?\s*/i, '').replace(/^souvenir\s*/i, '').replace(/\s*\([^)]+\)\s*$/, '').replace(/\s*\|\s*/g, '|');
   }
 
-  // Fetch runtime images from PriceEmpire API
   (async function fetchSkinImages() {
     try {
       const res = await fetch('/api/skin-images');
@@ -777,91 +648,62 @@ const breadcrumbs = [
       const data = await res.json();
       if (!data?.images) return;
       let enriched = 0;
-
-      // Build a base-skin lookup: strip wear/prefixes so "ak-47|inheritance (FT)" → "ak-47|inheritance"
       const baseSkinImages = {};
       for (const [k, v] of Object.entries(data.images)) {
-        const baseKey = stripWear(k);
-        if (!baseSkinImages[baseKey]) baseSkinImages[baseKey] = v;
-        const normKey = baseKey.replace(/[^a-z0-9|]/g, '');
-        if (!baseSkinImages[normKey]) baseSkinImages[normKey] = v;
+        const bk = stripWear(k);
+        if (!baseSkinImages[bk]) baseSkinImages[bk] = v;
+        const nk = bk.replace(/[^a-z0-9|]/g, '');
+        if (!baseSkinImages[nk]) baseSkinImages[nk] = v;
       }
-
       for (const c of Object.values(cases)) {
         for (const skin of c.skins) {
           if (!skin.image) {
-            const key1 = `${skin.weapon}|${skin.name}`.toLowerCase();
-            const key2 = normalizeKey(skin.weapon, skin.name);
-            const img = baseSkinImages[key1] || baseSkinImages[key2];
+            const k1 = `${skin.weapon}|${skin.name}`.toLowerCase();
+            const k2 = normalizeKey(skin.weapon, skin.name);
+            const img = baseSkinImages[k1] || baseSkinImages[k2];
             if (img) { skin.image = img; enriched++; }
           }
         }
       }
       if (enriched > 0 && currentCase) { buildContents(); resetReels(); }
-    } catch (e) { /* images are optional */ }
+    } catch (e) { /* optional */ }
   })();
 
-  // Estimated prices by rarity (in cents) — used as fallback when API prices unavailable
-  const RARITY_PRICES = {
-    'mil-spec': 15,       // ~$0.15
-    'restricted': 75,     // ~$0.75
-    'classified': 450,    // ~$4.50
-    'covert': 2500,       // ~$25.00
-    'special': 15000,     // ~$150.00
-  };
+  const RARITY_PRICES = { 'mil-spec': 15, 'restricted': 75, 'classified': 450, 'covert': 2500, 'special': 15000 };
 
-  // Apply fallback rarity prices for any skins without API prices
   function applyFallbackPrices() {
     for (const c of Object.values(cases)) {
       for (const skin of c.skins) {
-        const key1 = `${skin.weapon}|${skin.name}`.toLowerCase();
-        const key2 = normalizeKey(skin.weapon, skin.name);
-        if (!skinPrices[key1] && !skinPrices[key2]) {
+        const k1 = `${skin.weapon}|${skin.name}`.toLowerCase();
+        const k2 = normalizeKey(skin.weapon, skin.name);
+        if (!skinPrices[k1] && !skinPrices[k2]) {
           const est = RARITY_PRICES[skin.rarity] || 10;
-          skinPrices[key1] = est;
-          skinPrices[key2] = est;
+          skinPrices[k1] = est;
+          skinPrices[k2] = est;
         }
       }
     }
   }
 
-  // Fetch skin prices from PriceEmpire
   (async function fetchSkinPrices() {
     try {
       const res = await fetch('/api/skin-prices');
       if (!res.ok) { applyFallbackPrices(); if (currentCase) buildContents(); return; }
       const data = await res.json();
-      if (!data?.prices || Object.keys(data.prices).length === 0) {
-        applyFallbackPrices();
-        if (currentCase) buildContents();
-        return;
-      }
-      // Store prices keyed by base skin name (strip wear conditions)
+      if (!data?.prices || Object.keys(data.prices).length === 0) { applyFallbackPrices(); if (currentCase) buildContents(); return; }
       for (const [name, priceData] of Object.entries(data.prices)) {
         const baseKey = stripWear(name);
         const parts = baseKey.split('|');
         if (parts.length >= 2) {
-          const key1 = parts.map(p => p.trim()).join('|');
-          const key2 = key1.replace(/[^a-z0-9|]/g, '');
-          const price = typeof priceData === 'number' ? priceData :
-            (priceData.buff163 || priceData.steam || priceData.skinport || Object.values(priceData)[0] || 0);
-          // Keep the highest price across wears for a given base skin
-          if (price > 0) {
-            if (!skinPrices[key1] || price < skinPrices[key1]) {
-              skinPrices[key1] = price;
-              skinPrices[key2] = price;
-            }
-          }
+          const k1 = parts.map(p => p.trim()).join('|');
+          const k2 = k1.replace(/[^a-z0-9|]/g, '');
+          const price = typeof priceData === 'number' ? priceData : (priceData.buff163 || priceData.steam || priceData.skinport || Object.values(priceData)[0] || 0);
+          if (price > 0 && (!skinPrices[k1] || price < skinPrices[k1])) { skinPrices[k1] = price; skinPrices[k2] = price; }
         }
       }
-      // Fill in any remaining skins with fallback prices
-      applyFallbackPrices();
-      // Refresh contents if a case is selected
-      if (currentCase) buildContents();
-    } catch (e) {
       applyFallbackPrices();
       if (currentCase) buildContents();
-    }
+    } catch (e) { applyFallbackPrices(); if (currentCase) buildContents(); }
   })();
 </script>
 </Base>
