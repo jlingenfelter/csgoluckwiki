@@ -3,6 +3,8 @@ import Base from '../../layouts/Base.astro';
 import ExploreMore from '../../components/ExploreMore.astro';
 import { ALL_AGENTS, getTierColor } from '../../lib/agents';
 import { breadcrumbSchema, faqSchema } from '../../lib/weapons';
+import { fmtPrice } from '../../lib/skins';
+import skindeckRaw from '../../lib/skindeck-data.json';
 
 export async function getStaticPaths() {
   return ALL_AGENTS.map(agent => ({
@@ -27,9 +29,49 @@ const relatedAgents = ALL_AGENTS
   .filter(a => a.faction === agent.faction && a.slug !== agent.slug)
   .slice(0, 8);
 
-// SEO
-const pageTitle = `${agent.name} (${agent.faction}) — CS2 Agent Details | CSGOLuck Wiki`;
-const pageDesc = `${agent.name} is a ${agent.tier}-tier ${sideLabel} agent from the ${agent.faction} faction, introduced in Operation ${agent.operation}. View details, related agents, and more.`;
+// Same-tier agents from different factions
+const sameTierAgents = ALL_AGENTS
+  .filter(a => a.tier === agent.tier && a.slug !== agent.slug && a.faction !== agent.faction)
+  .slice(0, 4);
+
+// ── SkinDeck pricing ─────────────────────────────────────────────────────
+const skindeckItems: Record<string, { price: number; marketPrice: number | null; count: number }> = (skindeckRaw as any).items || {};
+
+// Try exact match, then trimmed name match
+const sdKey = marketHashName.trim();
+const sdItem = skindeckItems[sdKey] || skindeckItems[marketHashName] || null;
+const agentPrice = sdItem?.price ?? null;
+const agentMarketPrice = sdItem?.marketPrice ?? null;
+const agentListings = sdItem?.count ?? 0;
+
+// ── Marketplace search links ────────────────────────────────────────────
+const searchTerm = marketHashName.replace(/\s+/g, '+');
+const marketplaces = [
+  { name: 'CSGOLuck', color: '#2ecc71', icon: '/images/csgoluck-logo.png', url: '/go/', featured: true },
+  { name: 'Steam Market', color: '#66c0f4', domain: 'store.steampowered.com', url: `https://steamcommunity.com/market/search?appid=730&q=${searchTerm}` },
+  { name: 'Skinport', color: '#00a3ff', domain: 'skinport.com', url: `https://skinport.com/market?search=${searchTerm}`, trustpilot: 4.9 },
+  { name: 'Buff163', color: '#d4956e', domain: 'buff.163.com', url: `https://buff.163.com/market/csgo#tab=selling&page_num=1&search=${searchTerm}` },
+  { name: 'CS.Money', color: '#ffca28', domain: 'cs.money', url: `https://cs.money/market/buy/?search=${searchTerm}`, trustpilot: 4.6 },
+  { name: 'DMarket', color: '#6c5ce7', domain: 'dmarket.com', url: `https://dmarket.com/ingame-items/item-list/csgo-skins?title=${searchTerm}`, trustpilot: 4.0 },
+  { name: 'CSFloat', color: '#1a73e8', domain: 'csfloat.com', url: 'https://csfloat.com/', trustpilot: 4.8 },
+  { name: 'Waxpeer', color: '#ff9800', domain: 'waxpeer.com', url: `https://waxpeer.com/`, trustpilot: 4.0 },
+  { name: 'Tradeit.gg', color: '#4caf50', domain: 'tradeit.gg', url: `https://tradeit.gg/csgo/store?search=${searchTerm}`, trustpilot: 4.8 },
+  { name: 'SkinBaron', color: '#e53935', domain: 'skinbaron.de', url: `https://skinbaron.de/en/csgo?str=${searchTerm}`, trustpilot: 4.4 },
+];
+
+// Tier descriptions for SEO
+const tierDescriptions: Record<string, string> = {
+  'Elite': 'the rarest and most sought-after tier in CS2, commanding the highest market prices',
+  'Superior': 'a high-ranking tier with premium character designs, sitting just below Elite in rarity',
+  'Exceptional': 'a mid-range tier featuring distinctive visual designs and moderate market value',
+  'Distinguished': 'the entry-level tier, typically the most affordable agents from each operation',
+};
+
+// ── SEO ──────────────────────────────────────────────────────────────────
+const pageTitle = `${agent.name} | ${agent.faction} — Price, Details & Market | CSGOLuck Wiki`;
+const pageDesc = agentPrice
+  ? `${agent.name} (${agent.faction}) agent prices from ${marketplaces.length}+ marketplaces. Currently $${fmtPrice(agentPrice)}. ${agent.tier}-tier ${sideLabel} operative from Operation ${agent.operation}.`
+  : `${agent.name} (${agent.faction}) — ${agent.tier}-tier ${sideLabel} agent from Operation ${agent.operation}. View market prices, details, and related agents.`;
 
 const breadcrumbs = [
   { name: 'Home', url: '/' },
@@ -39,8 +81,14 @@ const breadcrumbs = [
 
 const faqs = [
   {
+    question: `How much is the ${agent.name} agent worth in CS2?`,
+    answer: agentPrice
+      ? `The ${agent.name} | ${agent.faction} agent is currently listed at approximately $${fmtPrice(agentPrice)} on the market${agentListings > 0 ? `, with ${agentListings} active listing${agentListings !== 1 ? 's' : ''}` : ''}. As an ${agent.tier}-tier agent, ${agent.tier === 'Elite' ? 'it commands premium prices due to its rarity' : agent.tier === 'Superior' ? 'it sits in the mid-to-high price range' : agent.tier === 'Exceptional' ? 'it falls in the moderate price bracket' : 'it is generally one of the more affordable agents'}. Prices fluctuate based on supply, demand, and market conditions.`
+      : `The ${agent.name} | ${agent.faction} agent is an ${agent.tier}-tier operative. Check current marketplace listings on Steam Community Market, Skinport, Buff163, or CSFloat for the latest pricing.`,
+  },
+  {
     question: `What tier is the ${agent.name} agent in CS2?`,
-    answer: `${agent.name} is classified as an ${agent.tier}-tier agent. ${agent.tier === 'Elite' ? 'Elite agents are the rarest and most sought-after operatives in CS2, featuring unique character designs and commanding higher market prices.' : agent.tier === 'Superior' ? 'Superior agents are high-ranking operatives with premium visual designs, sitting just below Elite tier in rarity.' : agent.tier === 'Exceptional' ? 'Exceptional agents are battle-tested specialists with distinctive visual flair, representing a mid-range rarity tier.' : 'Distinguished agents are entry-level operatives that can be obtained through regular operations.'}`,
+    answer: `${agent.name} is classified as ${agent.tier} tier — ${tierDescriptions[agent.tier] || 'a collectible agent tier'}. Agent tiers from lowest to highest are: Distinguished, Exceptional, Superior, and Elite.`,
   },
   {
     question: `Which side does ${agent.name} belong to in CS2?`,
@@ -48,103 +96,268 @@ const faqs = [
   },
   {
     question: `How do you get the ${agent.name} agent?`,
-    answer: `The ${agent.name} agent was originally available through Operation ${agent.operation}. Since the operation has ended, this agent can now be acquired through the Steam Community Market or third-party marketplaces like Buff163 and Skinport. Prices vary based on supply and demand.`,
+    answer: `The ${agent.name} agent was originally available through Operation ${agent.operation}. Since the operation has ended, this agent can now be acquired through the Steam Community Market or third-party marketplaces like Skinport, Buff163, and CSFloat. Prices vary based on supply and demand.`,
   },
   {
     question: `What faction is ${agent.name} from?`,
     answer: `${agent.name} belongs to the ${agent.faction} faction. ${agent.side === 'CT' ? 'This is a Counter-Terrorist faction featuring specialized military and law enforcement operatives.' : 'This is a Terrorist faction consisting of various insurgent and criminal operatives.'} Other agents from the same faction may be available at different tier levels.`,
   },
 ];
+
+// Product schema for SEO
+const productSchema = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "Product",
+  "name": marketHashName,
+  "description": `${agent.name} is a ${agent.tier}-tier ${sideLabel.toLowerCase()} agent from the ${agent.faction} faction in Counter-Strike 2, introduced during Operation ${agent.operation}.`,
+  "image": agent.image || undefined,
+  "brand": { "@type": "Brand", "name": "Counter-Strike 2" },
+  "category": "CS2 Agents",
+  "sku": agent.slug,
+  ...(agentPrice && agentPrice > 0 ? {
+    "offers": {
+      "@type": "AggregateOffer",
+      "priceCurrency": "USD",
+      "lowPrice": (agentMarketPrice && agentMarketPrice > 0 ? Math.min(agentPrice, agentMarketPrice) : agentPrice).toFixed(2),
+      "highPrice": (agentMarketPrice && agentMarketPrice > 0 ? Math.max(agentPrice, agentMarketPrice) : agentPrice).toFixed(2),
+      "offerCount": agentListings || 1,
+      "availability": "https://schema.org/InStock",
+    },
+  } : {}),
+});
 ---
 
-<Base title={pageTitle} description={pageDesc} currentNav="/cs2-skins/">
+<Base title={pageTitle} description={pageDesc} currentNav="/cs2-skins/" ogImage={agent.image || undefined}>
   <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema(breadcrumbs))}></script>
-  <script type="application/ld+json" set:html={JSON.stringify(faqSchema(faqs))}></script>
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema(faqs.map(f => ({ question: f.question, answer: f.answer }))))}></script>
+  <script type="application/ld+json" set:html={productSchema}></script>
 
+  <!-- Breadcrumbs -->
   <nav class="ad-crumbs">
     <a href="/">Home</a><span class="ad-sep">/</span><a href="/cs2-agents/">Agents</a><span class="ad-sep">/</span><span>{agent.name}</span>
   </nav>
 
-  <!-- Hero: two-column layout -->
-  <div class="ad-hero">
-    <div class="ad-hero-left">
-      <div class="ad-hero-img-wrap" style={`background:linear-gradient(135deg, ${tierColor}22, ${tierColor}08)`}>
+  <!-- Title Strip -->
+  <div class="ad-head">
+    <h1 class="ad-title">{agent.name} <span class="ad-title-faction">| {agent.faction}</span></h1>
+    <div class="ad-title-accent" style={`background:${tierColor}`}></div>
+  </div>
+
+  <!-- TWO-COLUMN GRID -->
+  <div class="ad-two-col">
+
+    <!-- LEFT COLUMN -->
+    <div class="ad-col-left">
+
+      <!-- Image Preview -->
+      <div class="ad-preview" style={`border-bottom: 3px solid ${tierColor}`}>
         {agent.image ? (
-          <img src={agent.image} alt={agent.name} class="ad-hero-agent-img" loading="eager" />
+          <img src={agent.image} alt={agent.name} class="ad-preview-img" loading="eager" />
         ) : (
-          <span class="ad-hero-placeholder">{agent.side}</span>
+          <div class="ad-preview-ph" style={`color:${tierColor}`}>{agent.side}</div>
+        )}
+        <span class="ad-grade-tag" style={`background:${tierColor}`}>{agent.tier}</span>
+      </div>
+
+      <!-- Specs Table -->
+      <div class="ad-specs">
+        <table class="ad-specs-table">
+          <tbody>
+            <tr class="ad-spec-row"><td class="ad-spec-key">Type</td><td class="ad-spec-val">Agent</td></tr>
+            <tr class="ad-spec-row"><td class="ad-spec-key">Side</td><td class="ad-spec-val">{sideLabel}</td></tr>
+            <tr class="ad-spec-row"><td class="ad-spec-key">Faction</td><td class="ad-spec-val">{agent.faction}</td></tr>
+            <tr class="ad-spec-row"><td class="ad-spec-key">Operation</td><td class="ad-spec-val">{agent.operation}</td></tr>
+            <tr class="ad-spec-row"><td class="ad-spec-key">Tier</td><td class="ad-spec-val" style={`color:${tierColor}`}>{agent.tier}</td></tr>
+            <tr class="ad-spec-row"><td class="ad-spec-key">Market Name</td><td class="ad-spec-val">{marketHashName}</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Tier Indicator Bar -->
+      <div class="ad-grade-strip">
+        <div class="ad-grade-info">
+          <span class="ad-grade-label" style={`color:${tierColor}`}>{agent.tier}</span>
+          <span class="ad-grade-type">{sideLabel}</span>
+        </div>
+        <div class="ad-grade-bar">
+          <div class="ad-grade-bar-fill" style={`background:${tierColor};width:${agent.tier === 'Distinguished' ? '25%' : agent.tier === 'Exceptional' ? '50%' : agent.tier === 'Superior' ? '75%' : '100%'}`}></div>
+        </div>
+      </div>
+
+      <!-- Operation Badge -->
+      <div class="ad-source">
+        <h2>Operation</h2>
+        <div class="ad-source-list">
+          <div class="ad-source-item">
+            <div class="ad-source-thumb">
+              <span class="ad-source-icon" style={`color:${tierColor}`}>{agent.operation.substring(0, 2)}</span>
+            </div>
+            <span class="ad-source-name">Operation {agent.operation}</span>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /ad-col-left -->
+
+    <!-- RIGHT COLUMN -->
+    <div class="ad-col-right">
+
+      <!-- Price Summary -->
+      <div class="ad-price-summary">
+        <div class="ad-price-label">Market Price</div>
+        {agentPrice !== null ? (
+          <div class="ad-price-main">
+            <span class="ad-price-value">${fmtPrice(agentPrice)}</span>
+            {agentListings > 0 && <span class="ad-price-listings">{agentListings} listing{agentListings !== 1 ? 's' : ''}</span>}
+          </div>
+        ) : (
+          <div class="ad-price-main">
+            <span class="ad-price-na">Check marketplaces</span>
+          </div>
+        )}
+        {agentMarketPrice !== null && agentMarketPrice > 0 && (
+          <div class="ad-price-ref">
+            <span class="ad-price-ref-label">Reference:</span>
+            <span class="ad-price-ref-val">${fmtPrice(agentMarketPrice)}</span>
+          </div>
         )}
       </div>
+
+      <!-- Marketplace Prices -->
+      <div class="ad-market">
+        <div class="ad-market-head">
+          <span class="ad-market-title">Where to Buy</span>
+        </div>
+        <div class="ad-market-scroll">
+          {marketplaces.map(mp => (
+            <div class={`ad-market-row ${mp.featured ? 'ad-csgoluck-row' : ''}`}>
+              <div class="ad-market-left">
+                <span class="ad-market-icon" style={mp.featured ? '' : `background:${mp.color}`}>
+                  {mp.featured ? (
+                    <img src={mp.icon} alt={mp.name} loading="lazy" />
+                  ) : (
+                    <img src={`https://www.google.com/s2/favicons?domain=${mp.domain}&sz=64`} alt={mp.name} loading="lazy" />
+                  )}
+                </span>
+                <div class="ad-market-info">
+                  <span class="ad-market-name">{mp.name}</span>
+                  {mp.trustpilot && <span class="ad-market-tp">Trustpilot {mp.trustpilot}</span>}
+                </div>
+              </div>
+              <div class="ad-market-right">
+                <a href={mp.url} target={mp.featured ? undefined : '_blank'} rel={mp.featured ? undefined : 'nofollow noopener'} class={`ad-market-buy ${mp.featured ? 'ad-buy-featured' : ''}`}>
+                  {mp.featured ? 'Claim' : 'Search'}
+                </a>
+              </div>
+            </div>
+          ))}
+        </div>
+        {marketplaces[0].featured && (
+          <a href="/go/" rel="nofollow" class="ad-csgoluck-bonus">
+            <span>100% to 100 Coins + 5 Free Cases</span>
+          </a>
+        )}
+      </div>
+
+      <!-- Same-side agents -->
+      {sameTierAgents.length > 0 && (
+        <div class="ad-panel ad-same-tier">
+          <div class="ad-same-tier-head">
+            <h2>Other {agent.tier} Agents</h2>
+            <span class="ad-same-tier-count">{sameTierAgents.length}</span>
+          </div>
+          <div class="ad-same-tier-list">
+            {sameTierAgents.map(sa => (
+              <a href={`/cs2-agent/${sa.slug}/`} class="ad-same-tier-item">
+                <div class="ad-same-tier-avatar">
+                  {sa.image ? (
+                    <img src={sa.image} alt={sa.name} width="48" height="48" loading="lazy" />
+                  ) : (
+                    <span class="ad-same-tier-ph">{sa.side}</span>
+                  )}
+                </div>
+                <span class="ad-same-tier-name">{sa.name}</span>
+                <span class="ad-same-tier-faction">{sa.faction}</span>
+              </a>
+            ))}
+          </div>
+        </div>
+      )}
+
+    </div><!-- /ad-col-right -->
+
+  </div><!-- /ad-two-col -->
+
+  <!-- FULL-WIDTH SECTIONS BELOW GRID -->
+
+  <!-- Info Blocks -->
+  <div class="ad-info-grid">
+    <div class="ad-info-block">
+      <h3>Market Value</h3>
+      <p>
+        {agentPrice !== null ? `Currently listed at approximately $${fmtPrice(agentPrice)}${agentListings > 0 ? ` across ${agentListings} active listing${agentListings !== 1 ? 's' : ''}` : ''}, the ` : 'The '}{agent.name} agent is classified as {agent.tier} tier — {tierDescriptions[agent.tier] || 'a collectible agent tier'}.
+        {agent.tier === 'Elite' ? ' Elite agents typically command the highest prices due to their scarcity and distinctive character designs.' : agent.tier === 'Superior' ? ' Superior agents sit in the mid-to-high price range, offering premium designs at a more accessible price point.' : agent.tier === 'Exceptional' ? ' Exceptional agents offer a balance of visual appeal and affordability.' : ' Distinguished agents are the most budget-friendly option for players looking to customize their operative.'}
+      </p>
     </div>
-    <div class="ad-hero-right">
-      <h1 class="ad-hero-title">{agent.name}</h1>
-      <div class="ad-hero-meta">
-        <span class="ad-badge ad-badge-faction">{agent.faction}</span>
-        <span class="ad-badge ad-badge-op">{agent.operation}</span>
-        <span class="ad-badge" style={`background:${tierColor};color:#000`}>{agent.tier}</span>
-        <span class="ad-badge" style={`background:${sideBadgeColor};color:#fff`}>{agent.side === 'CT' ? 'Counter-Terrorist' : 'Terrorist'}</span>
-      </div>
-      <p class="ad-hero-desc">{agent.name} is a {agent.tier.toLowerCase()}-tier {sideLabel.toLowerCase()} operative from the {agent.faction} faction, introduced during Operation {agent.operation}. Browse matching <a href="/cs2-skins/" style="color:var(--accent)">weapon skins</a> or explore the full <a href="/cs2-agents/" style="color:var(--accent)">agents roster</a> to find your ideal loadout.</p>
-      <div class="ad-hero-quick">
-        <span class="ad-qstat"><strong>{agent.side}</strong> side</span>
-        <span class="ad-qstat"><strong>{agent.tier}</strong> tier</span>
-        <span class="ad-qstat"><strong>{agent.operation}</strong> op</span>
-      </div>
+    <div class="ad-info-block">
+      <h3>Operation Origin</h3>
+      <p>
+        Introduced during Operation {agent.operation}, the {agent.name} agent was obtainable through the operation's reward system. Now that the operation has concluded, this agent is exclusively available through the secondary market — the Steam Community Market, Skinport, Buff163, and other third-party platforms.
+      </p>
+    </div>
+    <div class="ad-info-block">
+      <h3>Faction Details</h3>
+      <p>
+        {agent.name} serves under the {agent.faction} faction, a {agent.side === 'CT' ? 'Counter-Terrorist unit specializing in tactical response and hostage rescue operations' : 'Terrorist organization involved in various insurgent activities'}. The {agent.faction} roster includes {relatedAgents.length + 1} total agent{relatedAgents.length + 1 !== 1 ? 's' : ''} across multiple tiers.
+      </p>
+    </div>
+    <div class="ad-info-block">
+      <h3>Gameplay Impact</h3>
+      <p>
+        Agents in CS2 are purely cosmetic — equipping {agent.name} does not affect weapon stats, movement speed, or hitboxes. However, certain agents may have visual profiles that blend differently with specific map environments, which some competitive players factor into their loadout choices.
+      </p>
     </div>
   </div>
 
-  <!-- Agent Details -->
-  <section class="ad-details">
-    <h2 class="ad-section-title">Agent Details</h2>
-    <div class="ad-details-table">
-      <div class="ad-details-head">
-        <span>Property</span>
-        <span>Value</span>
-      </div>
-      <div class="ad-details-row">
-        <span class="ad-details-key">Side</span>
-        <span class="ad-details-val">{sideLabel}</span>
-      </div>
-      <div class="ad-details-row ad-details-alt">
-        <span class="ad-details-key">Faction</span>
-        <span class="ad-details-val">{agent.faction}</span>
-      </div>
-      <div class="ad-details-row">
-        <span class="ad-details-key">Operation</span>
-        <span class="ad-details-val">{agent.operation}</span>
-      </div>
-      <div class="ad-details-row ad-details-alt">
-        <span class="ad-details-key">Tier</span>
-        <span class="ad-details-val" style={`color:${tierColor}`}>{agent.tier}</span>
-      </div>
-      <div class="ad-details-row">
-        <span class="ad-details-key">Market Hash Name</span>
-        <span class="ad-details-val">{marketHashName}</span>
-      </div>
-    </div>
-  </section>
+  <!-- About Section -->
+  <div class="ad-about">
+    <h2>About {agent.name} | {agent.faction}</h2>
+    <p>
+      The {agent.name} is a <strong>{agent.tier}</strong>-tier {sideLabel.toLowerCase()} agent from the {agent.faction} faction in Counter-Strike 2. Originally released as part of <strong>Operation {agent.operation}</strong>, this operative features a unique character model that distinguishes it from the default player models.
+    </p>
+    <p>
+      {agent.side === 'CT'
+        ? `As a Counter-Terrorist operative, ${agent.name} can be equipped on CT-side rounds across all competitive and casual game modes. The ${agent.faction} faction represents a specialized ${agent.faction.includes('SEAL') || agent.faction.includes('SAS') || agent.faction.includes('KSK') ? 'special forces' : agent.faction.includes('FBI') || agent.faction.includes('SWAT') ? 'law enforcement' : 'military'} unit.`
+        : `As a Terrorist operative, ${agent.name} can be equipped on T-side rounds across all competitive and casual game modes. The ${agent.faction} faction represents ${agent.faction.includes('Professional') ? 'a criminal organization' : agent.faction.includes('Elite Crew') ? 'an elite insurgent group' : agent.faction.includes('Phoenix') ? 'the Phoenix Connexion' : agent.faction.includes('Guerrilla') ? 'a guerrilla warfare unit' : agent.faction.includes('Sabre') ? 'the Sabre mercenary group' : 'an operative faction'}.`
+      }
+    </p>
+    <p>
+      To find the best price on the {agent.name} agent, compare listings across multiple marketplaces using the links above. Monitor pricing trends via the <a href="/price-tracker/">Price Tracker</a>, or check the <a href="/market-trends/">Market Trends</a> dashboard for broader market data. Our <a href="/cs2-guides/trading-guide/">Trading Guide</a> covers marketplace best practices for buying and selling CS2 items.
+    </p>
+  </div>
 
   <!-- Related Agents from same faction -->
   {relatedAgents.length > 0 && (
-    <section class="ad-related-agents">
-      <h2 class="ad-section-title">More {agent.faction} Agents</h2>
-      <div class="ad-agent-grid">
+    <section class="ad-related">
+      <h2>More {agent.faction} Agents</h2>
+      <div class="ad-rel-strip">
         {relatedAgents.map(ra => {
           const raTierColor = getTierColor(ra.tier);
+          const raKey = `${ra.name} | ${ra.faction}`.trim();
+          const raPrice = skindeckItems[raKey]?.price ?? null;
           return (
-            <a href={`/cs2-agent/${ra.slug}/`} class="ad-agent-card">
-              <div class="ad-agent-card-img" style={`background:linear-gradient(135deg, ${raTierColor}22, ${raTierColor}08)`}>
-                <span class="ad-agent-card-tier" style={`background:${raTierColor}`}>{ra.tier}</span>
+            <a href={`/cs2-agent/${ra.slug}/`} class="ad-rel-card" style={`--rc:${raTierColor}`}>
+              <div class="ad-rel-thumb" style={`background:linear-gradient(135deg, ${raTierColor}22, ${raTierColor}08)`}>
                 {ra.image ? (
-                  <img src={ra.image} alt={ra.name} class="ad-agent-card-avatar" loading="lazy" />
+                  <img src={ra.image} alt={ra.name} loading="lazy" width="200" height="250" />
                 ) : (
-                  <span class="ad-agent-card-icon">{ra.side}</span>
+                  <div style={`font-size:1.2rem;font-weight:900;color:${raTierColor};opacity:.3`}>{ra.side}</div>
                 )}
               </div>
-              <div class="ad-agent-card-body">
-                <span class="ad-agent-card-name">{ra.name}</span>
-                <span class="ad-agent-card-faction">{ra.faction}</span>
-                <span class="ad-agent-card-op">{ra.operation}</span>
+              <div class="ad-rel-overlay">
+                <span class="ad-rel-faction">{ra.faction}</span>
+                <span class="ad-rel-name">{ra.name}</span>
+                {raPrice !== null && <span class="ad-rel-price">${fmtPrice(raPrice)}</span>}
               </div>
             </a>
           );
@@ -155,7 +368,7 @@ const faqs = [
 
   <!-- FAQ -->
   <section class="ad-faq">
-    <h2 class="ad-section-title">Common Questions</h2>
+    <h2 class="ad-section-title">Frequently Asked Questions</h2>
     {faqs.map(f => (
       <details class="ad-faq-item">
         <summary class="ad-faq-q">{f.question}</summary>
@@ -164,353 +377,198 @@ const faqs = [
     ))}
   </section>
 
-  <!-- Related Links -->
-  <nav class="ad-nav">
-    <h2 class="ad-section-title">Related</h2>
-    <div class="ad-nav-links">
-      <a href="/cs2-agents/">All Agents</a>
-      <a href="/cs2-skins/">Skin Database</a>
-      <a href="/cs2-cases/">Cases & Collections</a>
-      <a href="/price-tracker/">Price Tracker</a>
-      <a href="/cs2-guides/trading-guide/">Trading Guide</a>
-      <a href="/inventory-lookup/">Inventory Lookup</a>
-      <a href="/loadout-builder/">Loadout Builder</a>
-      <a href="/float-checker/">Float Checker</a>
-      <a href="/cs2-stickers/">Sticker Database</a>
-      <a href="/market-trends/">Market Trends</a>
-    </div>
-  </nav>
+  <!-- Internal Links -->
+  <div class="ad-internal-links">
+    <strong>Explore More:</strong>
+    <a href="/cs2-agents/">All Agents</a>
+    <a href="/cs2-skins/">Skin Database</a>
+    <a href="/cs2-cases/">Cases & Collections</a>
+    <a href="/price-tracker/">Price Tracker</a>
+    <a href="/cs2-guides/trading-guide/">Trading Guide</a>
+    <a href="/inventory-lookup/">Inventory Lookup</a>
+    <a href="/loadout-builder/">Loadout Builder</a>
+    <a href="/cs2-stickers/">Sticker Database</a>
+    <a href="/market-trends/">Market Trends</a>
+    <a href="/pro-players/">Pro Players</a>
+  </div>
 
   <ExploreMore context="skins" />
 </Base>
 
 <style>
-  /* === Agent Detail Page (ad-) === */
+/* === Agent Detail Page (ad-) — Skin-style layout === */
 
-  /* Breadcrumbs */
-  .ad-crumbs { font-size: .8rem; color: var(--text2); margin-bottom: 1.25rem; }
-  .ad-crumbs a { color: var(--text2); text-decoration: none; }
-  .ad-crumbs a:hover { color: var(--accent); }
-  .ad-sep { margin: 0 .35rem; opacity: .4; }
+/* Breadcrumbs */
+.ad-crumbs{font-size:.8rem;color:var(--text2);margin-bottom:1.25rem}
+.ad-crumbs a{color:var(--text2);text-decoration:none}
+.ad-crumbs a:hover{color:var(--accent)}
+.ad-sep{margin:0 .35rem;opacity:.4}
 
-  /* Section titles */
-  .ad-section-title {
-    margin: 0 0 .75rem;
-    font-size: 1.05rem;
-    font-weight: 700;
-    padding-bottom: .4rem;
-    border-bottom: 2px solid var(--border);
-  }
+/* Title Strip */
+.ad-head{margin-bottom:1.25rem}
+.ad-title{margin:0;font-size:1.6rem;font-weight:800;line-height:1.2;font-family:'Montserrat',sans-serif}
+.ad-title-faction{color:var(--text2);font-weight:600}
+.ad-title-accent{width:80px;height:3px;margin-top:.35rem;border-radius:2px}
 
-  /* Hero: two-column */
-  .ad-hero {
-    display: grid;
-    grid-template-columns: 280px 1fr;
-    gap: 2rem;
-    margin-bottom: 2rem;
-    padding: 1.5rem;
-    background: var(--bg2);
-    border: 1px solid var(--border);
-    border-radius: 4px;
-  }
-  .ad-hero-left {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  .ad-hero-img-wrap {
-    width: 100%;
-    aspect-ratio: 3/4;
-    border: 1px solid var(--border);
-    border-radius: 4px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
-  }
-  .ad-hero-agent-img {
-    width: 90%;
-    height: 90%;
-    object-fit: contain;
-    filter: drop-shadow(0 4px 12px rgba(0,0,0,.4));
-  }
-  .ad-hero-placeholder {
-    font-size: 2.5rem;
-    font-weight: 900;
-    color: var(--text2);
-    opacity: .15;
-    text-transform: uppercase;
-  }
-  .ad-hero-right {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    gap: .5rem;
-  }
-  .ad-hero-title {
-    margin: 0;
-    font-size: 1.8rem;
-    font-weight: 800;
-    line-height: 1.1;
-  }
-  .ad-hero-meta {
-    display: flex;
-    gap: .4rem;
-    flex-wrap: wrap;
-  }
-  .ad-badge {
-    display: inline-block;
-    padding: .15rem .5rem;
-    border-radius: 4px;
-    font-size: .72rem;
-    font-weight: 600;
-  }
-  .ad-badge-faction { background: var(--bg3); border: 1px solid var(--border); color: var(--accent); }
-  .ad-badge-op { background: var(--bg3); border: 1px solid var(--border); color: var(--text2); }
-  .ad-hero-desc {
-    margin: 0;
-    color: var(--text2);
-    font-size: .86rem;
-    line-height: 1.6;
-  }
-  .ad-hero-quick {
-    display: flex;
-    gap: .6rem;
-    flex-wrap: wrap;
-    margin-top: .25rem;
-  }
-  .ad-qstat {
-    font-size: .78rem;
-    color: var(--text2);
-    background: var(--bg3);
-    padding: .2rem .55rem;
-    border-radius: 4px;
-    border: 1px solid var(--border);
-  }
-  .ad-qstat strong {
-    color: var(--accent);
-    font-weight: 700;
-    margin-right: .15rem;
-  }
+/* Section Titles */
+.ad-section-title{margin:0 0 .75rem;font-size:1.05rem;font-weight:700;padding-bottom:.4rem;border-bottom:2px solid var(--border)}
 
-  /* Details table */
-  .ad-details { margin-bottom: 2rem; }
-  .ad-details-table {
-    border: 1px solid var(--border);
-    border-radius: 4px;
-  }
-  .ad-details-head {
-    display: grid;
-    grid-template-columns: 180px 1fr;
-    gap: .5rem;
-    padding: .5rem 1rem;
-    background: var(--accent);
-    color: #000;
-    font-size: .72rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: .04em;
-    border-radius: 4px 4px 0 0;
-  }
-  .ad-details-row {
-    display: grid;
-    grid-template-columns: 180px 1fr;
-    gap: .5rem;
-    padding: .5rem 1rem;
-    align-items: center;
-    border-bottom: 1px solid var(--border);
-  }
-  .ad-details-row:last-child { border-bottom: none; }
-  .ad-details-alt { background: var(--bg2); }
-  .ad-details-key {
-    font-size: .82rem;
-    color: var(--text2);
-    font-weight: 500;
-  }
-  .ad-details-val {
-    font-size: .86rem;
-    font-weight: 700;
-    color: var(--text);
-  }
+/* ═══ TWO-COLUMN LAYOUT ═══ */
+.ad-two-col{display:grid;grid-template-columns:380px 1fr;gap:1.5rem;margin-bottom:2rem}
 
-  /* Related agents card grid */
-  .ad-related-agents { margin-bottom: 2rem; }
-  .ad-agent-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-    gap: .75rem;
-  }
-  .ad-agent-card {
-    display: flex;
-    flex-direction: column;
-    background: var(--bg2);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    overflow: hidden;
-    text-decoration: none;
-    color: inherit;
-    transition: transform .2s, border-color .2s, box-shadow .2s;
-  }
-  .ad-agent-card:hover {
-    transform: translateY(-3px);
-    border-color: var(--accent);
-    box-shadow: 0 8px 24px rgba(0,0,0,.3);
-  }
-  .ad-agent-card-img {
-    position: relative;
-    height: 120px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
-  }
-  .ad-agent-card-icon {
-    font-size: 2rem;
-    font-weight: 900;
-    color: var(--text2);
-    opacity: .12;
-  }
-  .ad-agent-card-avatar {
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-    padding: .25rem;
-  }
-  .ad-agent-card-tier {
-    position: absolute;
-    top: .4rem;
-    left: .4rem;
-    font-size: .55rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: .04em;
-    padding: .12rem .4rem;
-    border-radius: 3px;
-    color: #000;
-    z-index: 1;
-  }
-  .ad-agent-card-body {
-    padding: .55rem .65rem;
-    display: flex;
-    flex-direction: column;
-    gap: .08rem;
-    flex: 1;
-  }
-  .ad-agent-card-name {
-    font-size: .82rem;
-    font-weight: 700;
-    color: var(--text);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-  .ad-agent-card-faction {
-    font-size: .65rem;
-    color: var(--accent);
-    font-weight: 600;
-  }
-  .ad-agent-card-op {
-    font-size: .6rem;
-    color: var(--text2);
-  }
+/* LEFT COLUMN */
+.ad-col-left{display:flex;flex-direction:column;gap:1rem}
 
-  /* FAQ: collapsible details */
-  .ad-faq { margin-bottom: 2rem; }
-  .ad-faq-item {
-    border-bottom: 1px solid var(--border);
-  }
-  .ad-faq-item:last-child { border-bottom: none; }
-  .ad-faq-q {
-    display: block;
-    padding: .65rem 0;
-    font-weight: 700;
-    font-size: .88rem;
-    cursor: pointer;
-    border-left: 3px solid transparent;
-    padding-left: .75rem;
-    transition: border-left-color .15s;
-    list-style: none;
-  }
-  .ad-faq-q::-webkit-details-marker { display: none; }
-  .ad-faq-q::before {
-    content: '+';
-    display: inline-block;
-    width: 1rem;
-    font-weight: 700;
-    color: var(--accent);
-    margin-right: .35rem;
-  }
-  .ad-faq-item[open] .ad-faq-q {
-    border-left-color: var(--accent);
-  }
-  .ad-faq-item[open] .ad-faq-q::before {
-    content: '\2212';
-  }
-  .ad-faq-a {
-    margin: 0 0 .75rem;
-    padding-left: calc(.75rem + 3px + 1rem + .35rem);
-    font-size: .84rem;
-    color: var(--text2);
-    line-height: 1.6;
-  }
+/* Image Preview */
+.ad-preview{position:relative;background:var(--bg2);border:1px solid var(--border);border-radius:4px;overflow:hidden;display:flex;align-items:center;justify-content:center;aspect-ratio:3/4}
+.ad-preview-img{width:85%;height:85%;object-fit:contain;filter:drop-shadow(0 4px 12px rgba(0,0,0,.4))}
+.ad-preview-ph{font-size:3rem;font-weight:900;opacity:.12;text-transform:uppercase}
+.ad-grade-tag{position:absolute;top:.5rem;left:.5rem;font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.04em;padding:.15rem .55rem;border-radius:3px;color:#000}
 
-  /* Related nav links */
-  .ad-nav { margin-bottom: 2rem; }
-  .ad-nav-links {
-    display: flex;
-    flex-wrap: wrap;
-    gap: .3rem;
-  }
-  .ad-nav-links a {
-    padding: .25rem .55rem;
-    font-size: .78rem;
-    color: var(--text2);
-    text-decoration: none;
-    background: var(--bg2);
-    border: 1px solid var(--border);
-    border-radius: 4px;
-    transition: color .15s, border-color .15s;
-  }
-  .ad-nav-links a:hover {
-    color: var(--accent);
-    border-color: var(--accent);
-  }
+/* Specs Table */
+.ad-specs{border:1px solid var(--border);border-radius:4px;overflow:hidden}
+.ad-specs-table{width:100%;border-collapse:collapse}
+.ad-spec-row td{padding:.45rem .75rem;font-size:.84rem;border-bottom:1px solid var(--border)}
+.ad-spec-row:last-child td{border-bottom:none}
+.ad-spec-row:nth-child(even){background:var(--bg2)}
+.ad-spec-key{color:var(--text2);font-weight:500;width:120px}
+.ad-spec-val{color:var(--text);font-weight:700}
+.ad-spec-val a{color:var(--accent);text-decoration:none}
+.ad-spec-val a:hover{text-decoration:underline}
 
-  /* Responsive */
-  @media (max-width: 768px) {
-    .ad-hero {
-      grid-template-columns: 1fr;
-      gap: 1rem;
-    }
-    .ad-hero-img-wrap {
-      max-width: 200px;
-      margin: 0 auto;
-    }
-    .ad-hero-title { font-size: 1.4rem; }
-    .ad-details-head,
-    .ad-details-row {
-      grid-template-columns: 130px 1fr;
-    }
-  }
-  @media (max-width: 640px) {
-    .ad-agent-grid {
-      grid-template-columns: repeat(2, 1fr);
-      gap: .5rem;
-    }
-    .ad-agent-card-img {
-      height: 90px;
-    }
-    .ad-agent-card-body {
-      padding: .4rem .5rem;
-    }
-    .ad-agent-card-name {
-      font-size: .75rem;
-    }
-  }
-  @media (max-width: 480px) {
-    .ad-details-head,
-    .ad-details-row {
-      grid-template-columns: 1fr 1fr;
-    }
-  }
+/* Grade Strip */
+.ad-grade-strip{padding:.65rem .75rem;background:var(--bg2);border:1px solid var(--border);border-radius:4px}
+.ad-grade-info{display:flex;justify-content:space-between;align-items:center;margin-bottom:.35rem}
+.ad-grade-label{font-size:.82rem;font-weight:700}
+.ad-grade-type{font-size:.72rem;color:var(--text2)}
+.ad-grade-bar{height:6px;background:var(--bg3);border-radius:3px;overflow:hidden}
+.ad-grade-bar-fill{height:100%;border-radius:3px;transition:width .3s}
+
+/* Source / Operation */
+.ad-source{padding:.65rem .75rem;background:var(--bg2);border:1px solid var(--border);border-radius:4px}
+.ad-source h2{margin:0 0 .5rem;font-size:.88rem;font-weight:700}
+.ad-source-list{display:flex;gap:.5rem;flex-wrap:wrap}
+.ad-source-item{display:flex;align-items:center;gap:.5rem;padding:.35rem .5rem;background:var(--bg3);border:1px solid var(--border);border-radius:4px}
+.ad-source-thumb{width:36px;height:36px;display:flex;align-items:center;justify-content:center;border-radius:4px;overflow:hidden}
+.ad-source-icon{font-size:1rem;font-weight:800}
+.ad-source-name{font-size:.78rem;font-weight:600;color:var(--text)}
+
+/* RIGHT COLUMN */
+.ad-col-right{display:flex;flex-direction:column;gap:1rem}
+
+/* Price Summary */
+.ad-price-summary{padding:1rem;background:var(--bg2);border:1px solid var(--border);border-left:3px solid var(--accent);border-radius:4px}
+.ad-price-label{font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--text2);margin-bottom:.25rem}
+.ad-price-main{display:flex;align-items:baseline;gap:.5rem}
+.ad-price-value{font-size:1.8rem;font-weight:800;color:var(--accent);font-family:'Montserrat',sans-serif}
+.ad-price-listings{font-size:.78rem;color:var(--text2)}
+.ad-price-na{font-size:1.1rem;color:var(--text2);font-weight:600}
+.ad-price-ref{display:flex;gap:.35rem;align-items:center;margin-top:.25rem}
+.ad-price-ref-label{font-size:.72rem;color:var(--text2)}
+.ad-price-ref-val{font-size:.82rem;color:var(--text);font-weight:600}
+
+/* Marketplace Section */
+.ad-market{border:1px solid var(--border);border-radius:4px;overflow:hidden}
+.ad-market-head{padding:.55rem .75rem;background:var(--bg3);border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center}
+.ad-market-title{font-size:.82rem;font-weight:700;color:var(--text)}
+.ad-market-scroll{max-height:480px;overflow-y:auto}
+.ad-market-scroll::-webkit-scrollbar{width:4px}
+.ad-market-scroll::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
+.ad-market-row{display:flex;justify-content:space-between;align-items:center;padding:.55rem .75rem;border-bottom:1px solid var(--border);transition:background .1s}
+.ad-market-row:last-child{border-bottom:none}
+.ad-market-row:hover{background:var(--bg3)}
+.ad-market-left{display:flex;align-items:center;gap:.5rem}
+.ad-market-icon{width:28px;height:28px;border-radius:4px;display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0}
+.ad-market-icon img{width:20px;height:20px;object-fit:contain}
+.ad-market-info{display:flex;flex-direction:column}
+.ad-market-name{font-size:.82rem;font-weight:600;color:var(--text)}
+.ad-market-tp{font-size:.6rem;color:var(--text2)}
+.ad-market-right{display:flex;align-items:center;gap:.5rem}
+.ad-market-buy{padding:.25rem .65rem;font-size:.75rem;font-weight:600;border-radius:4px;text-decoration:none;color:var(--text);background:var(--bg3);border:1px solid var(--border);transition:border-color .15s,color .15s}
+.ad-market-buy:hover{border-color:var(--accent);color:var(--accent)}
+
+/* CSGOLuck featured row */
+.ad-csgoluck-row{border-left:3px solid var(--accent);background:rgba(46,204,113,.04)}
+.ad-csgoluck-row .ad-market-icon{background:transparent}
+.ad-csgoluck-row .ad-market-icon img{width:24px;height:24px}
+.ad-buy-featured{background:var(--accent);color:#000;border-color:var(--accent);font-weight:700}
+.ad-buy-featured:hover{background:#27ae60;color:#000;border-color:#27ae60}
+.ad-csgoluck-bonus{display:block;padding:.4rem .75rem;background:rgba(46,204,113,.08);border-top:1px solid var(--border);text-decoration:none;text-align:center;font-size:.72rem;font-weight:600;color:var(--accent);transition:background .15s}
+.ad-csgoluck-bonus:hover{background:rgba(46,204,113,.14)}
+
+/* Same-tier agents panel */
+.ad-panel{padding:.75rem;background:var(--bg2);border:1px solid var(--border);border-radius:4px}
+.ad-same-tier-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:.5rem}
+.ad-same-tier-head h2{margin:0;font-size:.88rem;font-weight:700}
+.ad-same-tier-count{font-size:.72rem;color:var(--text2);background:var(--bg3);padding:.1rem .4rem;border-radius:3px}
+.ad-same-tier-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(90px,1fr));gap:.5rem}
+.ad-same-tier-item{display:flex;flex-direction:column;align-items:center;gap:.2rem;text-decoration:none;color:inherit;padding:.35rem;border-radius:4px;transition:background .15s}
+.ad-same-tier-item:hover{background:var(--bg3)}
+.ad-same-tier-avatar{width:48px;height:48px;border-radius:50%;overflow:hidden;background:var(--bg3);display:flex;align-items:center;justify-content:center}
+.ad-same-tier-avatar img{width:100%;height:100%;object-fit:cover}
+.ad-same-tier-ph{font-size:.7rem;font-weight:700;color:var(--text2);opacity:.4}
+.ad-same-tier-name{font-size:.68rem;font-weight:600;color:var(--text);text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:90px}
+.ad-same-tier-faction{font-size:.58rem;color:var(--text2);text-align:center}
+
+/* ═══ FULL-WIDTH SECTIONS ═══ */
+
+/* Info Grid */
+.ad-info-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:2rem}
+.ad-info-block{padding:.85rem 1rem;background:var(--bg2);border:1px solid var(--border);border-left:3px solid var(--accent);border-radius:4px}
+.ad-info-block h3{margin:0 0 .35rem;font-size:.88rem;font-weight:700;color:var(--text)}
+.ad-info-block p{margin:0;font-size:.82rem;color:var(--text2);line-height:1.6}
+
+/* About Section */
+.ad-about{margin-bottom:2rem}
+.ad-about h2{font-size:1.1rem;font-weight:700;margin:0 0 .75rem;padding-bottom:.4rem;border-bottom:2px solid var(--border)}
+.ad-about p{font-size:.88rem;color:var(--text2);line-height:1.65;margin:0 0 .75rem}
+.ad-about p:last-child{margin-bottom:0}
+.ad-about a{color:var(--accent);text-decoration:none}
+.ad-about a:hover{text-decoration:underline}
+
+/* Related Agents Strip */
+.ad-related{margin-bottom:2rem}
+.ad-related h2{font-size:1.1rem;font-weight:700;margin:0 0 .75rem;padding-bottom:.4rem;border-bottom:2px solid var(--border)}
+.ad-rel-strip{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:.75rem}
+.ad-rel-card{position:relative;border-radius:8px;overflow:hidden;text-decoration:none;color:inherit;border:1px solid var(--border);transition:transform .2s,border-color .2s,box-shadow .2s}
+.ad-rel-card:hover{transform:translateY(-3px);border-color:var(--rc);box-shadow:0 8px 24px rgba(0,0,0,.3)}
+.ad-rel-thumb{aspect-ratio:3/4;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.ad-rel-thumb img{width:100%;height:100%;object-fit:contain;padding:.25rem}
+.ad-rel-overlay{padding:.5rem .6rem;background:var(--bg2);display:flex;flex-direction:column;gap:.08rem}
+.ad-rel-faction{font-size:.6rem;color:var(--accent);font-weight:600;text-transform:uppercase;letter-spacing:.03em}
+.ad-rel-name{font-size:.78rem;font-weight:700;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ad-rel-price{font-size:.72rem;color:var(--accent);font-weight:600}
+
+/* FAQ */
+.ad-faq{margin-bottom:2rem}
+.ad-faq-item{border-bottom:1px solid var(--border)}
+.ad-faq-item:last-child{border-bottom:none}
+.ad-faq-q{display:block;padding:.65rem 0;font-weight:700;font-size:.88rem;cursor:pointer;border-left:3px solid transparent;padding-left:.75rem;transition:border-left-color .15s;list-style:none}
+.ad-faq-q::-webkit-details-marker{display:none}
+.ad-faq-q::before{content:'+';display:inline-block;width:1rem;font-weight:700;color:var(--accent);margin-right:.35rem}
+.ad-faq-item[open] .ad-faq-q{border-left-color:var(--accent)}
+.ad-faq-item[open] .ad-faq-q::before{content:'\2212'}
+.ad-faq-a{margin:0 0 .75rem;padding-left:calc(.75rem + 3px + 1rem + .35rem);font-size:.84rem;color:var(--text2);line-height:1.6}
+
+/* Internal Links */
+.ad-internal-links{display:flex;flex-wrap:wrap;gap:.45rem;align-items:center;margin:2rem 0;font-size:.82rem}
+.ad-internal-links strong{color:var(--text);margin-right:.2rem}
+.ad-internal-links a{color:var(--accent);text-decoration:none;padding:.2rem .5rem;background:var(--bg2);border:1px solid var(--border);border-radius:4px;transition:border-color .15s}
+.ad-internal-links a:hover{border-color:var(--accent)}
+
+/* ═══ RESPONSIVE ═══ */
+@media(max-width:860px){
+  .ad-two-col{grid-template-columns:1fr;gap:1.25rem}
+  .ad-preview{max-width:320px;margin:0 auto}
+  .ad-info-grid{grid-template-columns:1fr}
+}
+@media(max-width:640px){
+  .ad-title{font-size:1.3rem}
+  .ad-price-value{font-size:1.4rem}
+  .ad-rel-strip{grid-template-columns:repeat(2,1fr);gap:.5rem}
+}
+@media(max-width:480px){
+  .ad-spec-key{width:90px}
+  .ad-market-name{font-size:.75rem}
+}
 </style>

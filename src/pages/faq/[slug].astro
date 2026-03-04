@@ -1,0 +1,232 @@
+---
+import Base from '../../layouts/Base.astro';
+import AuthorBox from '../../components/AuthorBox.astro';
+import ExploreMore from '../../components/ExploreMore.astro';
+import { faqSchema, breadcrumbSchema } from '../../lib/weapons';
+import { ALL_FAQS, FAQ_CATEGORIES, getRelatedFAQs } from '../../lib/faqs';
+
+export async function getStaticPaths() {
+  return ALL_FAQS.map(faq => ({
+    params: { slug: faq.slug },
+  }));
+}
+
+const { slug } = Astro.params;
+const faq = ALL_FAQS.find(f => f.slug === slug);
+
+if (!faq) {
+  return Astro.redirect('/faq/');
+}
+
+const related = getRelatedFAQs(slug, 6);
+const category = FAQ_CATEGORIES.find(c => c.slug === faq.category);
+
+// Generate a short "quick answer" from the first sentence or two
+const sentences = faq.a.split(/(?<=[.!?])\s+/);
+const quickAnswer = sentences.slice(0, 2).join(' ');
+
+const pageTitle = `${faq.q} — CS2 FAQ | CSGOLuck Wiki`;
+const pageDesc = quickAnswer.length > 160 ? quickAnswer.substring(0, 157) + '...' : quickAnswer;
+
+const breadcrumbs = [
+  { name: 'Home', url: '/' },
+  { name: 'FAQ', url: '/faq/' },
+  { name: faq.q.length > 50 ? faq.q.substring(0, 47) + '...' : faq.q, url: `/faq/${faq.slug}/` },
+];
+
+const faqSchemaData = faqSchema([{ question: faq.q, answer: faq.a }]);
+
+const articleSchema = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": faq.q,
+  "description": pageDesc,
+  "author": { "@type": "Person", "name": "Josh Lingenfelter", "url": "https://www.linkedin.com/in/josh-lingenfelter-8157274b/", "jobTitle": "Director", "worksFor": { "@type": "Organization", "name": "CSGOLuck" } },
+  "publisher": { "@type": "Organization", "name": "CSGOLuck Wiki", "url": "https://wiki.csgoluck.com" },
+  "mainEntityOfPage": `https://wiki.csgoluck.com/faq/${faq.slug}/`,
+  "inLanguage": "en-US",
+  "articleSection": faq.categoryName,
+});
+
+// Category-specific related links
+const categoryLinks: Record<string, { label: string; href: string }[]> = {
+  ranking: [
+    { label: 'Rank Distribution', href: '/rank-distribution/' },
+    { label: 'Premier Rating Guide', href: '/cs2-guides/' },
+  ],
+  performance: [
+    { label: 'Launch Options', href: '/launch-options/' },
+    { label: 'Autoexec Generator', href: '/autoexec-generator/' },
+    { label: 'Practice Config', href: '/practice-config/' },
+  ],
+  weapons: [
+    { label: 'All Weapons', href: '/cs2-weapons/' },
+    { label: 'Damage Calculator', href: '/damage-calculator/' },
+  ],
+  economy: [
+    { label: 'Economy Calculator', href: '/economy-calculator/' },
+  ],
+  skins: [
+    { label: 'Skin Database', href: '/cs2-skins/' },
+    { label: 'Price Tracker', href: '/price-tracker/' },
+    { label: 'Float Checker', href: '/float-checker/' },
+    { label: 'Trade-Up Calculator', href: '/tradeup-calculator/' },
+  ],
+  technical: [
+    { label: 'Launch Options', href: '/launch-options/' },
+    { label: 'Autoexec Generator', href: '/autoexec-generator/' },
+    { label: 'Console Commands', href: '/console-commands/' },
+  ],
+  competitive: [
+    { label: 'Pro Player Settings', href: '/pro-players/' },
+    { label: 'Crosshair Generator', href: '/crosshair-generator/' },
+    { label: 'Sensitivity Converter', href: '/sensitivity-converter/' },
+    { label: 'All Maps', href: '/cs2-maps/' },
+  ],
+  about: [
+    { label: 'CSGOLuck.com', href: '/go/' },
+  ],
+};
+
+const relatedTools = categoryLinks[faq.category] || [];
+---
+
+<Base title={pageTitle} description={pageDesc} currentNav="/cs2-guides/">
+  <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema(breadcrumbs))}></script>
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchemaData)}></script>
+  <script type="application/ld+json" set:html={articleSchema}></script>
+
+  <!-- Breadcrumbs -->
+  <nav class="fqd-crumbs">
+    <a href="/">Home</a><span class="fqd-sep">/</span><a href="/faq/">FAQ</a><span class="fqd-sep">/</span><span>{category?.icon} {category?.name}</span>
+  </nav>
+
+  <!-- Quick Answer Box -->
+  <div class="fqd-quick">
+    <div class="fqd-quick-label">Quick Answer</div>
+    <p class="fqd-quick-text">{quickAnswer}</p>
+  </div>
+
+  <!-- Full Question & Answer -->
+  <article class="fqd-article">
+    <h1 class="fqd-question">{faq.q}</h1>
+    <div class="fqd-category-badge">
+      <a href={`/faq/#${faq.category}`} class="fqd-cat-link">{category?.icon} {category?.name}</a>
+    </div>
+    <div class="fqd-answer">
+      <p>{faq.a}</p>
+    </div>
+  </article>
+
+  <!-- Related Tools -->
+  {relatedTools.length > 0 && (
+    <div class="fqd-tools">
+      <h2 class="fqd-section-title">Related Tools</h2>
+      <div class="fqd-tools-grid">
+        {relatedTools.map(tool => (
+          <a href={tool.href} class="fqd-tool-card">
+            <span class="fqd-tool-name">{tool.label}</span>
+            <span class="fqd-tool-arrow">&rarr;</span>
+          </a>
+        ))}
+      </div>
+    </div>
+  )}
+
+  <!-- Related Questions -->
+  <div class="fqd-related">
+    <h2 class="fqd-section-title">Related Questions</h2>
+    <div class="fqd-related-list">
+      {related.map(r => (
+        <a href={`/faq/${r.slug}/`} class="fqd-related-item">
+          <span class="fqd-related-cat">{r.categoryIcon} {r.categoryName}</span>
+          <span class="fqd-related-q">{r.q}</span>
+        </a>
+      ))}
+    </div>
+  </div>
+
+  <!-- Back to FAQ -->
+  <div class="fqd-back">
+    <a href="/faq/" class="fqd-back-link">&larr; Back to all FAQ</a>
+  </div>
+
+  <div class="fqd-internal-links">
+    <strong>Explore More:</strong>
+    <a href="/cs2-weapons/">All Weapons</a>
+    <a href="/cs2-maps/">All Maps</a>
+    <a href="/cs2-skins/">Skin Database</a>
+    <a href="/cs2-guides/">Guides</a>
+    <a href="/damage-calculator/">Damage Calculator</a>
+    <a href="/sensitivity-converter/">Sensitivity Converter</a>
+    <a href="/crosshair-generator/">Crosshair Generator</a>
+    <a href="/autoexec-generator/">Autoexec Generator</a>
+    <a href="/launch-options/">Launch Options</a>
+    <a href="/pro-players/">Pro Players</a>
+  </div>
+
+  <ExploreMore context="general" />
+  <AuthorBox updated="2026-03-04" />
+</Base>
+
+<style>
+/* === FAQ Detail Page (fqd-) === */
+
+/* Breadcrumbs */
+.fqd-crumbs{font-size:.8rem;color:var(--text2);margin-bottom:1.25rem}
+.fqd-crumbs a{color:var(--text2);text-decoration:none}
+.fqd-crumbs a:hover{color:var(--accent)}
+.fqd-sep{margin:0 .35rem;opacity:.4}
+
+/* Quick Answer Box */
+.fqd-quick{background:var(--bg2);border:1px solid var(--border);border-left:4px solid var(--accent);border-radius:4px;padding:1.25rem 1.5rem;margin-bottom:1.5rem}
+.fqd-quick-label{font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--accent);margin-bottom:.4rem}
+.fqd-quick-text{margin:0;font-size:1rem;color:var(--text);line-height:1.6;font-weight:500}
+
+/* Article */
+.fqd-article{margin-bottom:2rem}
+.fqd-question{font-family:'Montserrat',sans-serif;font-size:1.6rem;font-weight:800;margin:0 0 .5rem;color:var(--text);line-height:1.3}
+.fqd-category-badge{margin-bottom:1rem}
+.fqd-cat-link{display:inline-flex;align-items:center;gap:.3rem;padding:.25rem .65rem;background:var(--bg2);border:1px solid var(--border);border-radius:4px;font-size:.75rem;font-weight:600;color:var(--text2);text-decoration:none;transition:border-color .15s,color .15s}
+.fqd-cat-link:hover{border-color:var(--accent);color:var(--accent)}
+.fqd-answer{background:var(--bg2);border:1px solid var(--border);border-radius:4px;padding:1.5rem}
+.fqd-answer p{margin:0;font-size:.95rem;color:var(--text2);line-height:1.75}
+
+/* Section titles */
+.fqd-section-title{margin:0 0 .75rem;font-size:1.05rem;font-weight:700;padding-bottom:.4rem;border-bottom:2px solid var(--border)}
+
+/* Related Tools */
+.fqd-tools{margin-bottom:2rem}
+.fqd-tools-grid{display:flex;gap:.5rem;flex-wrap:wrap}
+.fqd-tool-card{display:flex;align-items:center;justify-content:space-between;gap:.5rem;padding:.55rem .85rem;background:var(--bg2);border:1px solid var(--border);border-left:3px solid var(--accent);border-radius:4px;text-decoration:none;transition:background .15s,transform .15s}
+.fqd-tool-card:hover{background:var(--bg3);transform:translateX(3px)}
+.fqd-tool-name{font-size:.84rem;font-weight:600;color:var(--text)}
+.fqd-tool-arrow{font-size:.9rem;color:var(--accent);opacity:.6}
+.fqd-tool-card:hover .fqd-tool-arrow{opacity:1}
+
+/* Related Questions */
+.fqd-related{margin-bottom:2rem}
+.fqd-related-list{display:flex;flex-direction:column;gap:3px}
+.fqd-related-item{display:flex;flex-direction:column;gap:.15rem;padding:.75rem 1rem;background:var(--bg2);border:1px solid var(--border);border-left:3px solid transparent;border-radius:4px;text-decoration:none;transition:border-color .15s,background .15s,transform .15s}
+.fqd-related-item:hover{border-left-color:var(--accent);background:var(--bg3);transform:translateX(4px)}
+.fqd-related-cat{font-size:.65rem;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.03em}
+.fqd-related-q{font-size:.88rem;font-weight:700;color:var(--text)}
+
+/* Back link */
+.fqd-back{margin-bottom:2rem}
+.fqd-back-link{display:inline-flex;align-items:center;gap:.3rem;font-size:.84rem;font-weight:600;color:var(--accent);text-decoration:none;padding:.4rem .75rem;background:var(--bg2);border:1px solid var(--border);border-radius:4px;transition:border-color .15s,background .15s}
+.fqd-back-link:hover{border-color:var(--accent);background:var(--bg3)}
+
+/* Internal links */
+.fqd-internal-links{display:flex;flex-wrap:wrap;gap:.45rem;align-items:center;margin:2rem 0;font-size:.82rem}
+.fqd-internal-links strong{color:var(--text);margin-right:.2rem}
+.fqd-internal-links a{color:var(--accent);text-decoration:none;padding:.2rem .5rem;background:var(--bg2);border:1px solid var(--border);border-radius:4px;transition:border-color .15s}
+.fqd-internal-links a:hover{border-color:var(--accent)}
+
+/* Responsive */
+@media(max-width:768px){
+  .fqd-question{font-size:1.3rem}
+  .fqd-quick{padding:1rem 1.25rem}
+  .fqd-answer{padding:1rem 1.25rem}
+}
+</style>

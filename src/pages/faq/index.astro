@@ -1,0 +1,122 @@
+---
+import Base from '../../layouts/Base.astro';
+import AuthorBox from '../../components/AuthorBox.astro';
+import ExploreMore from '../../components/ExploreMore.astro';
+import { faqSchema, breadcrumbSchema } from '../../lib/weapons';
+import { FAQ_CATEGORIES, ALL_FAQS } from '../../lib/faqs';
+
+const title = 'CS2 FAQ — Your Questions Answered by CSGOLuck Wiki';
+const description = 'Got a CS2 question? We probably answered it. 100+ detailed answers covering ranks, FPS, weapons, economy, skins, trading, and competitive play — curated by the CSGOLuck Wiki team.';
+
+const allFaqs = ALL_FAQS.map(f => ({ question: f.q, answer: f.a }));
+const faqSchemaData = faqSchema(allFaqs.slice(0, 20));
+
+const articleSchema = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": title,
+  "description": description,
+  "author": { "@type": "Person", "name": "Josh Lingenfelter", "url": "https://www.linkedin.com/in/josh-lingenfelter-8157274b/", "jobTitle": "Director", "worksFor": { "@type": "Organization", "name": "CSGOLuck" } },
+  "publisher": { "@type": "Organization", "name": "CSGOLuck Wiki", "url": "https://wiki.csgoluck.com" },
+  "mainEntityOfPage": "https://wiki.csgoluck.com/faq/",
+  "inLanguage": "en-US"
+});
+---
+
+<Base title={title} description={description} currentNav="/cs2-guides/">
+  <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema([{name:'Home',url:'/'},{name:'FAQ',url:'/faq'}]))}></script>
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchemaData)}></script>
+  <script type="application/ld+json" set:html={articleSchema}></script>
+
+  <nav class="breadcrumb">
+    <a href="/">Home</a> / <span>FAQ & Knowledge Base</span>
+  </nav>
+
+  <section class="fq-hero">
+    <h1>CS2 Frequently Asked Questions</h1>
+    <p class="fq-hero-desc">The CSGOLuck Wiki knowledge base &mdash; {ALL_FAQS.length}+ questions answered across every major CS2 topic. Whether you are stuck on rank-up strategies, chasing better FPS, or figuring out skin trading, we have got you covered.</p>
+  </section>
+
+  <nav class="fq-cat-nav" id="catNav">
+    {FAQ_CATEGORIES.map(c => (
+      <a href={`#${c.slug}`} class="fq-cat-link">{c.icon} {c.name}</a>
+    ))}
+  </nav>
+
+  {FAQ_CATEGORIES.map(cat => (
+    <section id={cat.slug} class="fq-category">
+      <h2 class="fq-cat-heading">{cat.icon} {cat.name}</h2>
+      <div class="fq-questions">
+        {cat.questions.map(q => (
+          <a href={`/faq/${q.slug}/`} class="fq-item-link">
+            <span class="fq-item-q">{q.q}</span>
+            <span class="fq-item-arrow">&rarr;</span>
+          </a>
+        ))}
+      </div>
+    </section>
+  ))}
+
+  <div class="internal-links">
+    <strong>Explore More:</strong>
+    <a href="/cs2-weapons/">All Weapons</a>
+    <a href="/cs2-maps/">All Maps</a>
+    <a href="/cs2-skins/">Skin Database</a>
+    <a href="/cs2-guides/">Guides</a>
+    <a href="/damage-calculator/">Damage Calculator</a>
+    <a href="/economy-calculator/">Economy Calculator</a>
+    <a href="/sensitivity-converter/">Sensitivity Converter</a>
+    <a href="/edpi-calculator/">eDPI Calculator</a>
+    <a href="/case-odds-calculator/">Case Odds Calculator</a>
+    <a href="/tradeup-calculator/">Trade-Up Calculator</a>
+    <a href="/crosshair-generator/">Crosshair Generator</a>
+    <a href="/autoexec-generator/">Autoexec Generator</a>
+    <a href="/launch-options/">Launch Options</a>
+    <a href="/practice-config/">Practice Config</a>
+  </div>
+
+  <ExploreMore context="general" />
+  <AuthorBox updated="2026-03-02" />
+</Base>
+
+<style>
+/* ── Hero ── */
+.fq-hero{background:var(--bg2);border:1px solid var(--border);border-radius:4px;padding:2rem;margin-bottom:1.5rem}
+.fq-hero h1{font-family:'Montserrat',sans-serif;font-size:2rem;font-weight:800;margin:0 0 .5rem;color:var(--text)}
+.fq-hero-desc{color:var(--text2);font-size:.95rem;line-height:1.6;margin:0}
+
+/* ── Category Nav ── */
+.fq-cat-nav{display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:2rem}
+.fq-cat-link{display:inline-flex;align-items:center;gap:.3rem;padding:.4rem .75rem;background:var(--bg2);border:1px solid var(--border);border-left:3px solid transparent;border-radius:4px;font-size:.82rem;font-weight:600;color:var(--text2);text-decoration:none;transition:border-color .15s,color .15s,background .15s}
+.fq-cat-link:hover{border-left-color:var(--accent);color:var(--text);background:var(--bg3)}
+
+/* ── Category Sections ── */
+.fq-category{margin-bottom:2.5rem}
+.fq-cat-heading{font-family:'Montserrat',sans-serif;font-size:1.2rem;font-weight:700;color:var(--text);margin:0 0 .75rem;padding-bottom:.5rem;border-bottom:2px solid var(--accent)}
+
+/* ── FAQ Link Items ── */
+.fq-questions{display:flex;flex-direction:column;gap:3px}
+.fq-item-link{display:flex;align-items:center;justify-content:space-between;gap:.75rem;padding:.85rem 1rem;background:var(--bg2);border:1px solid var(--border);border-left:3px solid transparent;border-radius:4px;text-decoration:none;transition:border-color .15s,background .15s,transform .15s}
+.fq-item-link:hover{border-left-color:var(--accent);background:var(--bg3);transform:translateX(4px)}
+.fq-item-q{font-weight:700;font-size:.92rem;color:var(--text);flex:1}
+.fq-item-arrow{font-size:1.1rem;color:var(--accent);flex-shrink:0;opacity:.5;transition:opacity .15s}
+.fq-item-link:hover .fq-item-arrow{opacity:1}
+
+/* ── Breadcrumb ── */
+.breadcrumb{font-size:.82rem;color:var(--text2);margin-bottom:1.25rem;display:flex;gap:.35rem;flex-wrap:wrap}
+.breadcrumb a{color:var(--accent);text-decoration:none}
+.breadcrumb a:hover{text-decoration:underline}
+
+/* ── Internal Links ── */
+.internal-links{display:flex;flex-wrap:wrap;gap:.45rem;align-items:center;margin:2rem 0;font-size:.82rem}
+.internal-links strong{color:var(--text);margin-right:.2rem}
+.internal-links a{color:var(--accent);text-decoration:none;padding:.2rem .5rem;background:var(--bg2);border:1px solid var(--border);border-radius:4px;transition:border-color .15s}
+.internal-links a:hover{border-color:var(--accent)}
+
+/* ── Responsive ── */
+@media(max-width:768px){
+  .fq-hero h1{font-size:1.5rem}
+  .fq-cat-nav{gap:.3rem}
+  .fq-cat-link{font-size:.78rem;padding:.35rem .6rem}
+}
+</style>
