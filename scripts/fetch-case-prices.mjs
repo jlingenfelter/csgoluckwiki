@@ -73,6 +73,103 @@ const CASE_NAMES = {
   'esports-2014-summer': 'eSports 2014 Summer Case',
 };
 
+// ── Souvenir package market names ─────────────────────────────────────────────
+// Generated from the same tournament × map data as containers.ts
+const SOUVENIR_TOURNAMENTS = [
+  { t: 'Budapest 2025',               maps: ['Train','Nuke','Ancient','Dust II','Overpass','Mirage','Inferno'] },
+  { t: 'Austin 2025',                 maps: ['Train','Nuke','Ancient','Dust II','Anubis','Mirage','Inferno'] },
+  { t: 'Shanghai 2024',               maps: ['Vertigo','Nuke','Ancient','Dust II','Anubis','Mirage','Inferno'] },
+  { t: 'Copenhagen 2024',             maps: ['Vertigo','Nuke','Ancient','Overpass','Anubis','Mirage','Inferno'] },
+  { t: 'Paris 2023',                  maps: ['Vertigo','Nuke','Ancient','Overpass','Anubis','Mirage','Inferno'] },
+  { t: 'Rio 2022',                    maps: ['Vertigo','Nuke','Ancient','Overpass','Dust II','Mirage','Inferno'] },
+  { t: 'Antwerp 2022',                maps: ['Vertigo','Nuke','Ancient','Overpass','Dust II','Mirage','Inferno'] },
+  { t: 'Stockholm 2021',              maps: ['Vertigo','Nuke','Ancient','Overpass','Dust II','Mirage','Inferno'] },
+  { t: 'Berlin 2019',                 maps: ['Vertigo','Nuke','Train','Overpass','Dust II','Mirage','Inferno'] },
+  { t: 'Katowice 2019',               maps: ['Nuke','Train','Cache','Overpass','Dust II','Mirage','Inferno'] },
+  { t: 'London 2018',                 maps: ['Nuke','Train','Cache','Overpass','Dust II','Mirage','Inferno'] },
+  { t: 'Boston 2018',                 maps: ['Nuke','Train','Cache','Overpass','Cobblestone','Mirage','Inferno'] },
+  { t: 'Krakow 2017',                 maps: ['Nuke','Train','Cache','Overpass','Cobblestone','Mirage','Inferno'] },
+  { t: 'Atlanta 2017',                maps: ['Nuke','Train','Cache','Overpass','Cobblestone','Mirage','Dust II'] },
+  { t: 'Cologne 2016',                maps: ['Nuke','Train','Cache','Overpass','Cobblestone','Mirage','Dust II'] },
+  { t: 'MLG Columbus 2016',           maps: ['Nuke','Train','Cache','Overpass','Cobblestone','Inferno','Mirage','Dust II'] },
+  { t: 'DreamHack Cluj-Napoca 2015',  maps: ['Train','Cache','Overpass','Cobblestone','Inferno','Mirage','Dust II'] },
+  { t: 'ESL One Cologne 2015',        maps: ['Train','Cache','Overpass','Cobblestone','Inferno','Mirage','Dust II'] },
+  { t: 'ESL One Katowice 2015',       maps: ['Overpass','Cobblestone','Cache','Nuke','Mirage','Inferno','Dust II'] },
+  { t: 'DreamHack 2014',              maps: ['Overpass','Cobblestone','Cache','Nuke','Mirage','Inferno','Dust II'] },
+  { t: 'ESL One Cologne 2014',        maps: ['Overpass','Cobblestone','Cache','Nuke','Mirage','Inferno','Dust II'] },
+];
+
+function toSlug(name) {
+  return name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+}
+
+// Add souvenir packages to CASE_NAMES
+for (const { t, maps } of SOUVENIR_TOURNAMENTS) {
+  for (const map of maps) {
+    const name = `${t} ${map} Souvenir Package`;
+    CASE_NAMES[toSlug(name)] = name;
+  }
+}
+
+// ── Sticker capsule market names ──────────────────────────────────────────────
+const STICKER_CAPSULE_NAMES = [
+  'Warhammer 40,000 Sticker Capsule', 'Warhammer 40,000 Sticker Capsule 2',
+  'Craft Sticker Capsule', 'Elemental Craft Sticker Capsule',
+  'Feral Predators Capsule', 'Boardroom Sticker Capsule',
+  'High Noon Capsule', 'Sans Titre Capsule', 'Ambush Sticker Capsule',
+  '10 Year Birthday Sticker Capsule', 'Slid3 Capsule', 'Pinups Capsule',
+  'Poorly Drawn Capsule', 'Skill Groups Capsule', 'Metal Capsule',
+  'Halo Capsule', 'Half-Life: Alyx Sticker Capsule',
+  'Shattered Web Sticker Capsule', 'X-Ray P250 Package',
+  'Broken Fang Sticker Collection', 'Operation Riptide Sticker Collection',
+  'Watercolor Capsule', 'CS20 Sticker Capsule', 'Bestiary Capsule',
+  'Chicken Capsule', 'Perfect World Sticker Capsule 1',
+  'Perfect World Sticker Capsule 2', 'Enfu Sticker Capsule',
+  'Sugarface Capsule', 'Team Roles Capsule', 'Community Sticker Capsule 1',
+  'Sticker Capsule 2', 'CS:GO Sticker Capsule',
+];
+
+// Tournament sticker capsules
+const STICKER_TOURNAMENT_TIERS = [
+  { t: 'Budapest 2025',   tiers: ['Contenders','Challengers','Legends'] },
+  { t: 'Austin 2025',     tiers: ['Contenders','Challengers','Legends'] },
+  { t: 'Shanghai 2024',   tiers: ['Contenders','Challengers','Legends'] },
+  { t: 'Copenhagen 2024', tiers: ['Contenders','Challengers','Legends'] },
+  { t: 'Paris 2023',      tiers: ['Contenders','Challengers','Legends'] },
+  { t: 'Rio 2022',        tiers: ['Contenders','Challengers','Legends'] },
+  { t: 'Antwerp 2022',    tiers: ['Contenders','Challengers','Legends'] },
+  { t: 'Stockholm 2021',  tiers: ['Finalists','Champions'] },
+  { t: 'Berlin 2019',     tiers: ['Returning Challengers','Minor Challengers','Legends'] },
+  { t: 'Katowice 2019',   tiers: ['Returning Challengers','Minor Challengers','Legends'] },
+  { t: 'London 2018',     tiers: ['Returning Challengers','Minor Challengers','Legends'] },
+];
+
+for (const name of STICKER_CAPSULE_NAMES) {
+  CASE_NAMES[toSlug(name)] = name;
+}
+
+for (const { t, tiers } of STICKER_TOURNAMENT_TIERS) {
+  for (const tier of tiers) {
+    const name = `${t} ${tier} Sticker Capsule`;
+    CASE_NAMES[toSlug(name)] = name;
+  }
+}
+
+// ── Music Kit Box market names ────────────────────────────────────────────────
+const MUSIC_KIT_NAMES = [
+  'StatTrak Masterminds 2 Music Kit Box', 'Masterminds 2 Music Kit Box',
+  'StatTrak Masterminds Music Kit Box', 'Masterminds Music Kit Box',
+  'StatTrak Initiators Music Kit Box', 'Initiators Music Kit Box',
+  'StatTrak NIGHTMODE Music Kit Box', 'NIGHTMODE Music Kit Box',
+  'StatTrak Tacticians Music Kit Box', 'Tacticians Music Kit Box',
+  'StatTrak Radicals Music Kit Box',
+  'StatTrak Deluge Music Kit Box', 'Deluge Music Kit Box',
+];
+
+for (const name of MUSIC_KIT_NAMES) {
+  CASE_NAMES[toSlug(name)] = name;
+}
+
 // Reverse lookup: market name → case ID
 const NAME_TO_ID = {};
 for (const [id, name] of Object.entries(CASE_NAMES)) {

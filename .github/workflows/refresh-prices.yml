@@ -43,6 +43,6 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add src/lib/skins-data.json src/lib/prices.json src/lib/skindeck-data.json src/lib/case-prices.json
+          git add src/lib/skins-data.json src/lib/prices.json src/lib/prices-previous.json src/lib/skindeck-data.json src/lib/case-prices.json
           git commit -m "Update marketplace prices [automated]"
           git push

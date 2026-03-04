@@ -5,6 +5,7 @@ import { breadcrumbSchema, faqSchema } from '../lib/weapons';
 import { caseDatabase } from '../lib/cases';
 import type { CaseData } from '../lib/cases';
 import casePricesData from '../lib/case-prices.json';
+import { getSouvenirPackages, getSouvenirTournaments, STICKER_CAPSULES, AUTOGRAPH_CAPSULES, MUSIC_KIT_BOXES } from '../lib/containers';
 
 const casePrices = (casePricesData as any).cases || {};
 
@@ -83,6 +84,16 @@ const faqData = [
 const weaponCases = cases.filter(c => c.type === 'weapon');
 const specialCases = cases.filter(c => c.type !== 'weapon');
 const uniqueYears = [...new Set(cases.map(c => c.year))].sort((a, b) => b - a);
+
+// Souvenir packages grouped by tournament
+const souvenirPackages = getSouvenirPackages();
+const souvenirTournaments = getSouvenirTournaments();
+
+// Sticker + autograph + music kit containers
+const stickerCapsules = [...STICKER_CAPSULES];
+const autographCapsules = [...AUTOGRAPH_CAPSULES];
+const musicKitBoxes = [...MUSIC_KIT_BOXES];
+const totalContainers = cases.length + souvenirPackages.length + stickerCapsules.length + autographCapsules.length + musicKitBoxes.length;
 ---
 
 <Base
@@ -109,17 +120,19 @@ const uniqueYears = [...new Set(cases.map(c => c.year))].sort((a, b) => b - a);
       </p>
     </div>
     <div class="ch-hero-pills">
-      <span class="ch-pill"><strong>{cases.length}</strong> Cases</span>
-      <span class="ch-pill"><strong>{collections.length}</strong> Collections</span>
-      <span class="ch-pill"><strong>{uniqueYears.length}</strong> Years</span>
+      <span class="ch-pill"><strong>{totalContainers}</strong> Containers</span>
+      <span class="ch-pill"><strong>{souvenirPackages.length}</strong> Souvenirs</span>
+      <span class="ch-pill"><strong>{stickerCapsules.length + autographCapsules.length}</strong> Capsules</span>
     </div>
   </section>
 
   <!-- Filter Tabs -->
   <div class="ch-tabs" id="ch-tabs">
-    <button class="ch-tab ch-tab-active" data-filter="all">All Cases</button>
-    <button class="ch-tab" data-filter="weapon">Weapon Cases</button>
-    <button class="ch-tab" data-filter="special">Special</button>
+    <button class="ch-tab ch-tab-active" data-filter="weapon">Weapon Cases ({cases.length})</button>
+    <button class="ch-tab" data-filter="souvenirs">Souvenirs ({souvenirPackages.length})</button>
+    <button class="ch-tab" data-filter="stickers">Sticker Capsules ({stickerCapsules.length})</button>
+    <button class="ch-tab" data-filter="autographs">Autographs ({autographCapsules.length})</button>
+    <button class="ch-tab" data-filter="music">Music Kits ({musicKitBoxes.length})</button>
     <button class="ch-tab" data-filter="collections">Collections</button>
   </div>
 
@@ -143,6 +156,76 @@ const uniqueYears = [...new Set(cases.map(c => c.year))].sort((a, b) => b - a);
           {caseItem.totalCost > 0 && <span class="ch-card-price">${caseItem.totalCost.toFixed(2)} to open</span>}
         </div>
       </a>
+    ))}
+  </div>
+
+  <!-- Souvenir Packages Grid -->
+  <div id="ch-souvenirs-section" class="ch-section-wrap" style="display:none;">
+    {souvenirTournaments.map((tournament) => {
+      const pkgs = souvenirPackages.filter(p => p.tournament === tournament);
+      return (
+        <div class="ch-tournament-group">
+          <h3 class="ch-tournament-title">{tournament}</h3>
+          <div class="ch-grid">
+            {pkgs.map((pkg) => (
+              <div class="ch-card ch-card-souvenir">
+                <div class="ch-card-img ch-card-img-souvenir">
+                  <span class="ch-card-map-label">{pkg.map}</span>
+                </div>
+                <div class="ch-card-body">
+                  <span class="ch-card-name">{pkg.name}</span>
+                  <span class="ch-card-year">{pkg.year} &middot; {pkg.collection}</span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      );
+    })}
+  </div>
+
+  <!-- Sticker Capsules Grid -->
+  <div id="ch-stickers-section" class="ch-grid" style="display:none;">
+    {stickerCapsules.map((cap) => (
+      <div class="ch-card ch-card-sticker">
+        <div class="ch-card-img ch-card-img-capsule">
+          <span class="ch-card-cap-icon">S</span>
+        </div>
+        <div class="ch-card-body">
+          <span class="ch-card-name">{cap.name}</span>
+          {cap.tournament && <span class="ch-card-year">{cap.tournament}</span>}
+          {!cap.tournament && cap.year && <span class="ch-card-year">{cap.year}</span>}
+        </div>
+      </div>
+    ))}
+  </div>
+
+  <!-- Autograph Capsules Grid -->
+  <div id="ch-autographs-section" class="ch-grid" style="display:none;">
+    {autographCapsules.map((cap) => (
+      <div class="ch-card ch-card-autograph">
+        <div class="ch-card-img ch-card-img-capsule">
+          <span class="ch-card-cap-icon">A</span>
+        </div>
+        <div class="ch-card-body">
+          <span class="ch-card-name">{cap.name}</span>
+          {cap.tournament && <span class="ch-card-year">{cap.tournament}</span>}
+        </div>
+      </div>
+    ))}
+  </div>
+
+  <!-- Music Kit Boxes Grid -->
+  <div id="ch-music-section" class="ch-grid" style="display:none;">
+    {musicKitBoxes.map((kit) => (
+      <div class="ch-card ch-card-music">
+        <div class="ch-card-img ch-card-img-capsule">
+          <span class="ch-card-cap-icon">M</span>
+        </div>
+        <div class="ch-card-body">
+          <span class="ch-card-name">{kit.name}</span>
+        </div>
+      </div>
     ))}
   </div>
 
@@ -385,6 +468,46 @@ const uniqueYears = [...new Set(cases.map(c => c.year))].sort((a, b) => b - a);
       background: linear-gradient(135deg, var(--bg3), var(--bg2));
     }
 
+    .ch-card-img-souvenir {
+      background: linear-gradient(135deg, rgba(46,204,113,.08), var(--bg3));
+      border-bottom: 2px solid rgba(46,204,113,.2);
+    }
+
+    .ch-card-img-capsule {
+      background: linear-gradient(135deg, rgba(136,71,255,.08), var(--bg3));
+      border-bottom: 2px solid rgba(136,71,255,.15);
+    }
+
+    .ch-card-cap-icon {
+      width: 48px; height: 48px;
+      display: flex; align-items: center; justify-content: center;
+      background: rgba(136,71,255,.12);
+      border: 1px solid rgba(136,71,255,.2);
+      border-radius: 50%;
+      font-size: 1.2rem; font-weight: 700;
+      color: #8847ff;
+    }
+
+    .ch-card-music .ch-card-cap-icon {
+      background: rgba(245,166,35,.12);
+      border-color: rgba(245,166,35,.2);
+      color: #f5a623;
+    }
+
+    .ch-card-music .ch-card-img-capsule {
+      background: linear-gradient(135deg, rgba(245,166,35,.08), var(--bg3));
+      border-bottom-color: rgba(245,166,35,.15);
+    }
+
+    .ch-tournament-group { margin-bottom: 1.5rem; }
+    .ch-tournament-title {
+      font-size: .95rem; font-weight: 700; color: var(--text);
+      margin: 0 0 .5rem; padding-left: .6rem;
+      border-left: 3px solid var(--accent);
+    }
+
+    .ch-section-wrap { margin-bottom: 2rem; }
+
     .ch-card-map-label {
       font-size: 1.1rem;
       font-weight: 700;
@@ -570,32 +693,27 @@ const uniqueYears = [...new Set(cases.map(c => c.year))].sort((a, b) => b - a);
   <script is:inline>
     document.addEventListener('DOMContentLoaded', () => {
       const tabs = document.querySelectorAll('.ch-tab');
-      const casesSection = document.getElementById('ch-cases-section');
-      const collsSection = document.getElementById('ch-collections-section');
-      const cards = document.querySelectorAll('.ch-card[data-type]');
+      const sections = {
+        weapon: document.getElementById('ch-cases-section'),
+        souvenirs: document.getElementById('ch-souvenirs-section'),
+        stickers: document.getElementById('ch-stickers-section'),
+        autographs: document.getElementById('ch-autographs-section'),
+        music: document.getElementById('ch-music-section'),
+        collections: document.getElementById('ch-collections-section'),
+      };
+
+      function showSection(key) {
+        for (const [k, el] of Object.entries(sections)) {
+          if (!el) continue;
+          el.style.display = k === key ? (k === 'souvenirs' ? 'block' : 'grid') : 'none';
+        }
+      }
 
       tabs.forEach(tab => {
         tab.addEventListener('click', () => {
           tabs.forEach(t => t.classList.remove('ch-tab-active'));
           tab.classList.add('ch-tab-active');
-          const filter = tab.getAttribute('data-filter');
-
-          if (filter === 'collections') {
-            casesSection.style.display = 'none';
-            collsSection.style.display = 'grid';
-          } else {
-            casesSection.style.display = 'grid';
-            collsSection.style.display = 'none';
-            cards.forEach(card => {
-              if (filter === 'all') {
-                card.style.display = '';
-              } else if (filter === 'weapon') {
-                card.style.display = card.getAttribute('data-type') === 'weapon' ? '' : 'none';
-              } else if (filter === 'special') {
-                card.style.display = card.getAttribute('data-type') === 'special' ? '' : 'none';
-              }
-            });
-          }
+          showSection(tab.getAttribute('data-filter'));
         });
       });
     });

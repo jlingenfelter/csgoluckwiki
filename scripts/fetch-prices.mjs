@@ -10,7 +10,7 @@
  * Env:  PRICEMPIRE_API_KEY
  */
 
-import { writeFileSync, mkdirSync } from 'fs';
+import { writeFileSync, readFileSync, existsSync, mkdirSync, statSync } from 'fs';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
 
@@ -18,6 +18,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const API_KEY = process.env.PRICEMPIRE_API_KEY;
 const PRICES_PATH = join(__dirname, '..', 'src', 'lib', 'prices.json');
 const SKINS_PATH = join(__dirname, '..', 'src', 'lib', 'skins-data.json');
+const PRICES_PREV_PATH = join(__dirname, '..', 'src', 'lib', 'prices-previous.json');
 
 const API_BASE = 'https://api.pricempire.com/v4/paid';
 const AUTH_HEADER = { 'Authorization': `Bearer ${API_KEY}` };
@@ -436,6 +437,7 @@ async function fetchAllPrices() {
   const sourceOptions = [
     PRICE_SOURCES.join(','),
     CORE_SOURCES.join(','),
+    'buff163,buff163_buy,steam,skinport,csfloat,csmoney',
     'buff163',
   ];
 
@@ -1101,9 +1103,55 @@ function writeFinalData(skins, pricesByWeapon) {
   console.log(`   📊 Categories: ${Object.entries(byCat).map(([k, v]) => `${k}=${v}`).join(', ')}`);
 }
 
+// ── Price snapshot (for "Best Deal of the Day" comparison) ──────────────────
+function snapshotPreviousPrices() {
+  if (!existsSync(SKINS_PATH)) {
+    console.log('📸 No existing skins-data.json — skipping price snapshot');
+    return;
+  }
+
+  // Only create a new snapshot if none exists or the existing one is >20 hours old
+  if (existsSync(PRICES_PREV_PATH)) {
+    try {
+      const stat = statSync(PRICES_PREV_PATH);
+      const ageHours = (Date.now() - stat.mtimeMs) / (1000 * 60 * 60);
+      if (ageHours < 20) {
+        console.log(`📸 Price snapshot exists (${ageHours.toFixed(1)}h old) — keeping it`);
+        return;
+      }
+    } catch { /* proceed to create new snapshot */ }
+  }
+
+  try {
+    const current = JSON.parse(readFileSync(SKINS_PATH, 'utf8'));
+    const snapshot = {};
+    for (const skin of (current.skins || [])) {
+      if (!skin.prices || skin.prices.length === 0) continue;
+      const lowestPrice = Math.min(...skin.prices.map(p => p.price));
+      if (lowestPrice > 0) {
+        snapshot[skin.slug] = {
+          price: lowestPrice,
+          providers: skin.prices[0]?.providers || {},
+        };
+      }
+    }
+    writeFileSync(PRICES_PREV_PATH, JSON.stringify({
+      snapshotAt: new Date().toISOString(),
+      fetchedAt: current.fetchedAt || '',
+      prices: snapshot,
+    }, null, 2));
+    console.log(`📸 Saved price snapshot (${Object.keys(snapshot).length} skins) → prices-previous.json`);
+  } catch (err) {
+    console.log(`📸 Failed to snapshot prices: ${err.message}`);
+  }
+}
+
 // ── Main ─────────────────────────────────────────────────────────────────────
 async function main() {
   mkdirSync(dirname(PRICES_PATH), { recursive: true });
+
+  // Snapshot current prices before fetching new ones
+  snapshotPreviousPrices();
 
   if (!API_KEY) {
     console.log('⚠️  No PRICEMPIRE_API_KEY set — generating placeholder data.\n');
