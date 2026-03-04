@@ -15,7 +15,7 @@ const { command } = Astro.props;
 const related = getRelatedCommands(command, 8);
 const category = COMMAND_CATEGORIES.find(c => c.id === command.category);
 
-const title = `${command.cmd} — CS2 Console Command | CSDB.gg`;
+const title = `${command.cmd} — CS2 Console Command | CSGOLuck Wiki`;
 const description = `What does ${command.cmd} do in CS2? ${command.desc}. ${command.def ? 'Default: ' + command.def + '. ' : ''}Category: ${command.categoryName}. Complete guide with usage and examples.`;
 
 const faqs = [
@@ -37,38 +37,38 @@ const categoryLinks: Record<string, { href: string; label: string }[]> = {
   crosshair: [
     { href: '/crosshair-generator/', label: 'Crosshair Generator' },
     { href: '/crosshair-codes/', label: 'Crosshair Codes' },
-    { href: '/guides/crosshair-guide/', label: 'Crosshair Guide' },
+    { href: '/cs2-guides/crosshair-guide/', label: 'Crosshair Guide' },
   ],
   practice: [
     { href: '/practice-config/', label: 'Practice Config' },
     { href: '/workshop-maps/', label: 'Workshop Maps' },
-    { href: '/guides/grenade-guide/', label: 'Grenade Guide' },
+    { href: '/cs2-guides/grenade-guide/', label: 'Grenade Guide' },
   ],
   mouse: [
     { href: '/sensitivity-converter/', label: 'Sensitivity Converter' },
     { href: '/edpi-calculator/', label: 'eDPI Calculator' },
   ],
   audio: [
-    { href: '/guides/audio-guide/', label: 'Audio Guide' },
+    { href: '/cs2-guides/audio-guide/', label: 'Audio Guide' },
   ],
   network: [
-    { href: '/guides/fps-optimization/', label: 'FPS Optimization Guide' },
+    { href: '/cs2-guides/fps-optimization/', label: 'FPS Optimization Guide' },
   ],
   viewmodel: [
-    { href: '/guides/config-guide/', label: 'Config Guide' },
+    { href: '/cs2-guides/config-guide/', label: 'Config Guide' },
   ],
   graphics: [
-    { href: '/guides/fps-optimization/', label: 'FPS Optimization Guide' },
+    { href: '/cs2-guides/fps-optimization/', label: 'FPS Optimization Guide' },
   ],
   movement: [
-    { href: '/guides/movement-guide/', label: 'Movement Guide' },
+    { href: '/cs2-guides/movement-guide/', label: 'Movement Guide' },
   ],
   weapon: [
     { href: '/damage-calculator/', label: 'Damage Calculator' },
     { href: '/weapon-compare/', label: 'Weapon Compare' },
   ],
   demo: [
-    { href: '/guides/demo-guide/', label: 'Demo Guide' },
+    { href: '/cs2-guides/demo-guide/', label: 'Demo Guide' },
   ],
   bot: [
     { href: '/practice-config/', label: 'Practice Config' },
@@ -77,140 +77,183 @@ const categoryLinks: Record<string, { href: string; label: string }[]> = {
     { href: '/practice-config/', label: 'Practice Config' },
   ],
   essential: [
-    { href: '/guides/config-guide/', label: 'Config Guide' },
+    { href: '/cs2-guides/config-guide/', label: 'Config Guide' },
     { href: '/bind-generator/', label: 'Bind Generator' },
   ],
   radar: [
-    { href: '/guides/config-guide/', label: 'Config Guide' },
+    { href: '/cs2-guides/config-guide/', label: 'Config Guide' },
   ],
   communication: [],
   utility: [
     { href: '/bind-generator/', label: 'Bind Generator' },
-    { href: '/guides/config-guide/', label: 'Config Guide' },
+    { href: '/cs2-guides/config-guide/', label: 'Config Guide' },
   ],
 };
 
 const smartLinks = categoryLinks[command.category] || [];
 ---
 
-<Base title={title} description={description} currentNav="/tools/">
+<Base title={title} description={description} currentNav="/cs2-tools/">
   <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema(breadcrumbs))}></script>
   <script type="application/ld+json" set:html={JSON.stringify(faqSchema(faqs))}></script>
 
-  <nav class="breadcrumb">
-    <a href="/">Home</a> / <a href="/cs2-commands/">CS2 Commands</a> / <a href={`/commands/${command.category}/`}>{command.categoryName}</a> / <span>{command.cmd}</span>
+  <nav class="cm-breadcrumb">
+    <a href="/">Home</a> <span class="cm-sep">/</span> <a href="/cs2-commands/">CS2 Commands</a> <span class="cm-sep">/</span> <a href={`/commands/${command.category}/`}>{command.categoryName}</a> <span class="cm-sep">/</span> <span>{command.cmd}</span>
   </nav>
 
-  <!-- Hero -->
-  <div class="cmd-hero">
-    <code class="cmd-name">{command.cmd}</code>
-    <div class="cmd-badges">
-      <span class="cmd-badge cmd-badge-cat">{command.categoryIcon} {command.categoryName}</span>
-      {command.cheat ? (
-        <span class="cmd-badge cmd-badge-cheat">sv_cheats Required</span>
-      ) : (
-        <span class="cmd-badge cmd-badge-safe">Multiplayer Safe</span>
-      )}
-    </div>
-  </div>
-
-  <!-- Command Details -->
-  <div class="calc-section">
-    <h2>Command Details</h2>
-    <div class="cmd-detail-card">
-      <div class="cmd-detail-row">
-        <span class="cmd-detail-label">Description</span>
-        <span class="cmd-detail-value">{command.desc}</span>
+  <!-- Two-column layout: command details left, sidebar right -->
+  <div class="cm-layout">
+    <!-- Main column -->
+    <div class="cm-main">
+      <!-- Command header -->
+      <div class="cm-header">
+        <code class="cm-cmd-name">{command.cmd}</code>
+        <div class="cm-badges">
+          <span class="cm-badge cm-badge-cat">{command.categoryIcon} {command.categoryName}</span>
+          {command.cheat ? (
+            <span class="cm-badge cm-badge-cheat">sv_cheats Required</span>
+          ) : (
+            <span class="cm-badge cm-badge-safe">Multiplayer Safe</span>
+          )}
+        </div>
       </div>
-      {command.def && (
-        <div class="cmd-detail-row">
-          <span class="cmd-detail-label">Default Value</span>
-          <span class="cmd-detail-value"><code>{command.def}</code></span>
+
+      <!-- Command Details -->
+      <section class="cm-section">
+        <h2 class="cm-section-heading">Command Details</h2>
+        <div class="cm-detail-table">
+          <div class="cm-detail-row">
+            <span class="cm-detail-label">Description</span>
+            <span class="cm-detail-value">{command.desc}</span>
+          </div>
+          {command.def && (
+            <div class="cm-detail-row">
+              <span class="cm-detail-label">Default Value</span>
+              <span class="cm-detail-value"><code class="cm-inline-code">{command.def}</code></span>
+            </div>
+          )}
+          <div class="cm-detail-row">
+            <span class="cm-detail-label">Category</span>
+            <span class="cm-detail-value"><a href={`/commands/${command.category}/`} class="cm-link">{command.categoryIcon} {command.categoryName}</a></span>
+          </div>
+          <div class="cm-detail-row">
+            <span class="cm-detail-label">sv_cheats</span>
+            <span class="cm-detail-value">{command.cheat ? 'Required' : 'Not required'}</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Syntax code block -->
+      <section class="cm-section">
+        <h3 class="cm-section-subheading">Syntax</h3>
+        <div class="cm-code-block">
+          <code class="cm-code">{command.cmd} {command.def || '<value>'}</code>
+          <button class="cm-copy-btn" data-cmd={`${command.cmd} ${command.def || '<value>'}`}>Copy</button>
+        </div>
+      </section>
+
+      <!-- How to Use -->
+      <section class="cm-section">
+        <h3 class="cm-section-subheading">How to Use</h3>
+        <div class="cm-steps">
+          <div class="cm-step">
+            <span class="cm-step-num">1</span>
+            <p>Open the developer console by pressing the tilde key <code class="cm-inline-code">~</code>. If it does not open, enable it in Settings &rarr; Game &rarr; Enable Developer Console. See our <a href="/cs2-guides/config-guide/" class="cm-link">Config Guide</a> for full setup instructions.</p>
+          </div>
+          <div class="cm-step">
+            <span class="cm-step-num">2</span>
+            <p>Type <code class="cm-inline-code">{command.cmd}{command.def ? ' ' + command.def : ''}</code> into the console and press Enter.</p>
+          </div>
+          <div class="cm-step">
+            <span class="cm-step-num">3</span>
+            <p>{command.desc}. {command.cheat ? 'This command requires sv_cheats 1 to be enabled first.' : 'This command works in all game modes including competitive.'}{command.def ? ` The default value is ${command.def}.` : ''}</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- FAQ as details -->
+      <section class="cm-section">
+        <h2 class="cm-section-heading">Frequently Asked Questions</h2>
+        {faqs.map(f => (
+          <details class="cm-faq-item">
+            <summary>{f.question}</summary>
+            <p>{f.answer}</p>
+          </details>
+        ))}
+      </section>
+    </div>
+
+    <!-- Sidebar -->
+    <aside class="cm-sidebar">
+      <!-- Quick Info -->
+      <div class="cm-sidebar-card">
+        <h3 class="cm-sidebar-heading">Quick Info</h3>
+        <div class="cm-sidebar-row">
+          <span class="cm-sidebar-key">Command</span>
+          <code class="cm-sidebar-val cm-accent">{command.cmd}</code>
+        </div>
+        {command.def && (
+          <div class="cm-sidebar-row">
+            <span class="cm-sidebar-key">Default</span>
+            <code class="cm-sidebar-val">{command.def}</code>
+          </div>
+        )}
+        <div class="cm-sidebar-row">
+          <span class="cm-sidebar-key">Category</span>
+          <span class="cm-sidebar-val">{command.categoryName}</span>
+        </div>
+        <div class="cm-sidebar-row">
+          <span class="cm-sidebar-key">Cheats</span>
+          <span class={`cm-sidebar-val ${command.cheat ? 'cm-red' : 'cm-green'}`}>{command.cheat ? 'Required' : 'No'}</span>
+        </div>
+      </div>
+
+      <!-- Related Commands -->
+      {related.length > 0 && (
+        <div class="cm-sidebar-card">
+          <h3 class="cm-sidebar-heading">Related Commands</h3>
+          <div class="cm-sidebar-list">
+            {related.map((rel) => (
+              <a href={`/command/${rel.slug}/`} class="cm-sidebar-link">
+                <code class="cm-sidebar-cmd">{rel.cmd}</code>
+                <span class="cm-sidebar-desc">{rel.desc}</span>
+                <div class="cm-sidebar-meta">
+                  {rel.def && <span class="cm-sidebar-def">Default: {rel.def}</span>}
+                  {rel.cheat && <span class="cm-sidebar-cheat">sv_cheats</span>}
+                </div>
+              </a>
+            ))}
+          </div>
+          <a href={`/commands/${command.category}/`} class="cm-sidebar-browse">Browse all {command.categoryName} commands</a>
         </div>
       )}
-      <div class="cmd-detail-row">
-        <span class="cmd-detail-label">Category</span>
-        <span class="cmd-detail-value"><a href={`/commands/${command.category}/`}>{command.categoryIcon} {command.categoryName}</a></span>
-      </div>
-      <div class="cmd-detail-row">
-        <span class="cmd-detail-label">sv_cheats</span>
-        <span class="cmd-detail-value">{command.cheat ? 'Required' : 'Not required'}</span>
-      </div>
-    </div>
 
-    <h3>Syntax</h3>
-    <div class="cmd-syntax-wrap">
-      <code class="cmd-syntax">{command.cmd} {command.def || '<value>'}</code>
-      <button class="copy-btn" data-cmd={`${command.cmd} ${command.def || '<value>'}`}>Copy</button>
-    </div>
-
-    <h3>How to Use</h3>
-    <div class="cmd-steps">
-      <div class="cmd-step">
-        <span class="cmd-step-num">1</span>
-        <p>Open the developer console by pressing the tilde key <code>~</code>. If it does not open, enable it in Settings &rarr; Game &rarr; Enable Developer Console.</p>
+      <!-- Related Resources -->
+      <div class="cm-sidebar-card">
+        <h3 class="cm-sidebar-heading">Resources</h3>
+        <div class="cm-sidebar-resources">
+          <a href="/cs2-commands/">All Console Commands</a>
+          <a href={`/commands/${command.category}/`}>{command.categoryName}</a>
+          {smartLinks.map((link) => (
+            <a href={link.href}>{link.label}</a>
+          ))}
+          <a href="/practice-config/">Practice Config</a>
+          <a href="/autoexec-generator/">Autoexec Generator</a>
+          <a href="/bind-generator/">Bind Generator</a>
+          <a href="/cs2-guides/config-guide/">Config Guide</a>
+          <a href="/cs2-guides/launch-options-guide/">Launch Options</a>
+          <a href="/pro-players/">Pro Player Settings</a>
+          <a href="/cs2-tools/">All Tools</a>
+        </div>
       </div>
-      <div class="cmd-step">
-        <span class="cmd-step-num">2</span>
-        <p>Type <code>{command.cmd}{command.def ? ' ' + command.def : ''}</code> into the console and press Enter.</p>
-      </div>
-      <div class="cmd-step">
-        <span class="cmd-step-num">3</span>
-        <p>{command.desc}. {command.cheat ? 'This command requires sv_cheats 1 to be enabled first.' : 'This command works in all game modes including competitive.'}{command.def ? ` The default value is ${command.def}.` : ''}</p>
-      </div>
-    </div>
+    </aside>
   </div>
-
-  <!-- Related Commands -->
-  {related.length > 0 && (
-    <div class="calc-section">
-      <h2>Related {command.categoryName} Commands</h2>
-      <div class="related-grid">
-        {related.map((rel) => (
-          <a href={`/command/${rel.slug}/`} class="related-card">
-            <code class="related-cmd">{rel.cmd}</code>
-            <p class="related-desc">{rel.desc}</p>
-            <div class="related-meta">
-              {rel.def && <span class="related-def">Default: {rel.def}</span>}
-              {rel.cheat && <span class="related-cheat">sv_cheats</span>}
-            </div>
-          </a>
-        ))}
-      </div>
-      <div style="text-align:center;margin-top:1.25rem">
-        <a href={`/commands/${command.category}/`} class="cmd-browse-link">Browse all {command.categoryName} commands &rarr;</a>
-      </div>
-    </div>
-  )}
-
-  <!-- Smart Internal Links -->
-  <div class="internal-links">
-    <strong>Related Resources:</strong>
-    <a href="/cs2-commands/">All Console Commands</a>
-    <a href={`/commands/${command.category}/`}>{command.categoryName}</a>
-    {smartLinks.map((link) => (
-      <a href={link.href}>{link.label}</a>
-    ))}
-    <a href="/practice-config/">Practice Config</a>
-    <a href="/tools/">All Tools</a>
-  </div>
-
-  <!-- FAQ -->
-  <h2>Frequently Asked Questions</h2>
-  <dl class="faq">
-    {faqs.map(f => (
-      <Fragment>
-        <dt>{f.question}</dt>
-        <dd>{f.answer}</dd>
-      </Fragment>
-    ))}
-  </dl>
 
   <ExploreMore context="tools" />
 </Base>
 
 <script is:inline>
-document.querySelectorAll('.copy-btn').forEach(btn => {
+document.querySelectorAll('.cm-copy-btn').forEach(btn => {
   btn.addEventListener('click', () => {
     navigator.clipboard.writeText(btn.dataset.cmd);
     btn.textContent = 'Copied!';
@@ -219,53 +262,429 @@ document.querySelectorAll('.copy-btn').forEach(btn => {
 });
 </script>
 
-<style is:inline>
-.cmd-hero{text-align:center;background:linear-gradient(135deg,var(--bg2),var(--bg3));border:1px solid var(--border);border-radius:12px;padding:2.5rem 2rem;margin-bottom:2rem}
-.cmd-name{font-size:2.4rem;font-weight:800;color:var(--accent);font-family:'Courier New',Courier,monospace;display:block;margin-bottom:1rem;word-break:break-all}
-.cmd-badges{display:flex;gap:.5rem;justify-content:center;flex-wrap:wrap}
-.cmd-badge{display:inline-flex;align-items:center;gap:.35rem;padding:.35rem .8rem;border-radius:20px;font-size:.8rem;font-weight:600}
-.cmd-badge-cat{background:var(--bg3);border:1px solid var(--border);color:var(--text)}
-.cmd-badge-cheat{background:rgba(239,68,68,.15);border:1px solid rgba(239,68,68,.3);color:#f87171}
-.cmd-badge-safe{background:rgba(34,197,94,.12);border:1px solid rgba(34,197,94,.25);color:#4ade80}
+<style>
+  /* ── Breadcrumb ── */
+  .cm-breadcrumb {
+    font-size: 0.85rem;
+    color: var(--text2);
+    margin-bottom: 1.5rem;
+  }
+  .cm-breadcrumb a {
+    color: var(--accent);
+    text-decoration: none;
+  }
+  .cm-breadcrumb a:hover {
+    text-decoration: underline;
+  }
+  .cm-sep {
+    margin: 0 0.3rem;
+    color: var(--text2);
+  }
 
-.cmd-detail-card{background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:1.25rem;margin-bottom:1.5rem}
-.cmd-detail-row{display:flex;gap:1rem;padding:.65rem 0;border-bottom:1px solid var(--border)}
-.cmd-detail-row:last-child{border-bottom:none}
-.cmd-detail-label{width:130px;flex-shrink:0;color:var(--text2);font-size:.85rem;font-weight:600}
-.cmd-detail-value{color:var(--text);font-size:.92rem;flex:1}
-.cmd-detail-value code{background:var(--bg2);padding:.15rem .4rem;border-radius:4px;font-size:.85rem;color:var(--accent)}
-.cmd-detail-value a{color:var(--accent);text-decoration:none}
-.cmd-detail-value a:hover{text-decoration:underline}
+  /* ── Layout ── */
+  .cm-layout {
+    display: grid;
+    grid-template-columns: 1fr 320px;
+    gap: 2rem;
+    align-items: start;
+    margin-bottom: 2rem;
+  }
 
-.cmd-syntax-wrap{display:flex;align-items:center;gap:.75rem;background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:.75rem 1rem;margin-bottom:1.5rem}
-.cmd-syntax{flex:1;font-family:'Courier New',Courier,monospace;font-size:.95rem;color:var(--accent);word-break:break-all}
-.copy-btn{background:var(--accent);color:#1a1a2e;border:none;border-radius:6px;padding:.4rem .85rem;font-size:.78rem;font-weight:700;cursor:pointer;flex-shrink:0;transition:opacity .15s}
-.copy-btn:hover{opacity:.85}
+  /* ── Main column ── */
+  .cm-main {
+    min-width: 0;
+  }
 
-.cmd-steps{display:flex;flex-direction:column;gap:.75rem}
-.cmd-step{display:flex;gap:.75rem;align-items:flex-start}
-.cmd-step-num{width:28px;height:28px;background:var(--accent);color:#1a1a2e;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.8rem;font-weight:700;flex-shrink:0}
-.cmd-step p{margin:0;font-size:.92rem;color:var(--text2);line-height:1.55;padding-top:.15rem}
-.cmd-step code{background:var(--bg3);padding:.1rem .35rem;border-radius:3px;font-size:.82rem;color:var(--accent)}
+  /* ── Header ── */
+  .cm-header {
+    margin-bottom: 2rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .cm-cmd-name {
+    display: block;
+    font-size: 2rem;
+    font-weight: 800;
+    color: var(--accent);
+    font-family: 'Courier New', Courier, monospace;
+    margin-bottom: 0.75rem;
+    word-break: break-all;
+  }
+  .cm-badges {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+  .cm-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    padding: 0.3rem 0.7rem;
+    border-radius: 4px;
+    font-size: 0.78rem;
+    font-weight: 600;
+  }
+  .cm-badge-cat {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    color: var(--text);
+  }
+  .cm-badge-cheat {
+    background: rgba(239, 68, 68, 0.12);
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    color: #f87171;
+  }
+  .cm-badge-safe {
+    background: rgba(34, 197, 94, 0.1);
+    border: 1px solid rgba(34, 197, 94, 0.25);
+    color: #4ade80;
+  }
 
-.related-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:.75rem}
-.related-card{display:block;background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:1rem;text-decoration:none;transition:all .15s}
-.related-card:hover{border-color:var(--accent);transform:translateY(-2px)}
-.related-cmd{font-family:'Courier New',Courier,monospace;font-size:.9rem;color:var(--accent);font-weight:700;display:block;margin-bottom:.35rem}
-.related-desc{margin:0;font-size:.82rem;color:var(--text2);line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
-.related-meta{display:flex;gap:.5rem;margin-top:.5rem;flex-wrap:wrap}
-.related-def{font-size:.72rem;color:var(--text2);background:var(--bg2);padding:.15rem .4rem;border-radius:4px}
-.related-cheat{font-size:.72rem;color:#f87171;background:rgba(239,68,68,.1);padding:.15rem .4rem;border-radius:4px}
+  /* ── Section headings ── */
+  .cm-section {
+    margin-bottom: 2rem;
+  }
+  .cm-section-heading {
+    font-size: 1.15rem;
+    font-weight: 700;
+    margin: 0 0 1rem;
+    color: var(--text);
+  }
+  .cm-section-subheading {
+    font-size: 1rem;
+    font-weight: 700;
+    margin: 0 0 0.75rem;
+    color: var(--text);
+  }
 
-.cmd-browse-link{color:var(--accent);text-decoration:none;font-weight:600;font-size:.9rem}
-.cmd-browse-link:hover{text-decoration:underline}
+  /* ── Detail table ── */
+  .cm-detail-table {
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  .cm-detail-row {
+    display: flex;
+    gap: 1rem;
+    padding: 0.65rem 1rem;
+    background: var(--bg2);
+    border-bottom: 1px solid var(--border);
+    transition: border-left 0.15s;
+    border-left: 3px solid transparent;
+  }
+  .cm-detail-row:last-child {
+    border-bottom: none;
+  }
+  .cm-detail-row:hover {
+    border-left: 3px solid var(--accent);
+  }
+  .cm-detail-label {
+    width: 120px;
+    flex-shrink: 0;
+    color: var(--text2);
+    font-size: 0.83rem;
+    font-weight: 600;
+  }
+  .cm-detail-value {
+    color: var(--text);
+    font-size: 0.9rem;
+    flex: 1;
+  }
+  .cm-inline-code {
+    background: var(--bg3);
+    padding: 0.12rem 0.35rem;
+    border-radius: 4px;
+    font-size: 0.83rem;
+    color: var(--accent);
+    font-family: 'Courier New', Courier, monospace;
+  }
+  .cm-link {
+    color: var(--accent);
+    text-decoration: none;
+  }
+  .cm-link:hover {
+    text-decoration: underline;
+  }
 
-@media(max-width:768px){
-  .cmd-hero{padding:1.5rem 1rem}
-  .cmd-name{font-size:1.6rem}
-  .cmd-detail-row{flex-direction:column;gap:.25rem}
-  .cmd-detail-label{width:auto}
-  .related-grid{grid-template-columns:1fr}
-  .cmd-syntax-wrap{flex-direction:column;align-items:stretch}
-}
+  /* ── Code block ── */
+  .cm-code-block {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 0.75rem 1rem;
+    border-left: 3px solid var(--accent);
+  }
+  .cm-code {
+    flex: 1;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 0.92rem;
+    color: var(--accent);
+    word-break: break-all;
+  }
+  .cm-copy-btn {
+    background: var(--accent);
+    color: #000;
+    border: none;
+    border-radius: 4px;
+    padding: 0.35rem 0.75rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+    cursor: pointer;
+    flex-shrink: 0;
+    font-family: inherit;
+    transition: opacity 0.15s;
+  }
+  .cm-copy-btn:hover {
+    opacity: 0.85;
+  }
+
+  /* ── Steps ── */
+  .cm-steps {
+    display: flex;
+    flex-direction: column;
+    gap: 0.65rem;
+  }
+  .cm-step {
+    display: flex;
+    gap: 0.75rem;
+    align-items: flex-start;
+    padding: 0.65rem 0.85rem;
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    border-left: 3px solid transparent;
+    transition: border-left 0.15s;
+  }
+  .cm-step:hover {
+    border-left: 3px solid var(--accent);
+  }
+  .cm-step-num {
+    width: 26px;
+    height: 26px;
+    background: var(--accent);
+    color: #000;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.78rem;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+  .cm-step p {
+    margin: 0;
+    font-size: 0.88rem;
+    color: var(--text2);
+    line-height: 1.5;
+  }
+
+  /* ── FAQ (details) ── */
+  .cm-faq-item {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    margin-bottom: 0.5rem;
+    transition: border-color 0.2s;
+  }
+  .cm-faq-item[open] {
+    border-left: 3px solid var(--accent);
+  }
+  .cm-faq-item summary {
+    padding: 0.85rem 1rem;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 0.92rem;
+    color: var(--text);
+    list-style: none;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .cm-faq-item summary::before {
+    content: '+';
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--accent);
+    flex-shrink: 0;
+    width: 1.2rem;
+    text-align: center;
+  }
+  .cm-faq-item[open] summary::before {
+    content: '-';
+  }
+  .cm-faq-item summary::-webkit-details-marker {
+    display: none;
+  }
+  .cm-faq-item p {
+    padding: 0 1rem 1rem 2.7rem;
+    margin: 0;
+    font-size: 0.88rem;
+    color: var(--text2);
+    line-height: 1.6;
+  }
+
+  /* ── Sidebar ── */
+  .cm-sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  .cm-sidebar-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 1.15rem;
+  }
+  .cm-sidebar-heading {
+    margin: 0 0 0.85rem;
+    font-size: 0.92rem;
+    font-weight: 700;
+    color: var(--text);
+  }
+  .cm-sidebar-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.45rem 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .cm-sidebar-row:last-child {
+    border-bottom: none;
+  }
+  .cm-sidebar-key {
+    font-size: 0.8rem;
+    color: var(--text2);
+  }
+  .cm-sidebar-val {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--text);
+  }
+  .cm-accent {
+    color: var(--accent);
+  }
+  .cm-red {
+    color: #f87171;
+  }
+  .cm-green {
+    color: #4ade80;
+  }
+
+  /* ── Sidebar list ── */
+  .cm-sidebar-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    margin-bottom: 0.75rem;
+  }
+  .cm-sidebar-link {
+    display: block;
+    padding: 0.55rem 0.65rem;
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    text-decoration: none;
+    transition: border-color 0.15s;
+    border-left: 3px solid transparent;
+  }
+  .cm-sidebar-link:hover {
+    border-left: 3px solid var(--accent);
+  }
+  .cm-sidebar-cmd {
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 0.82rem;
+    color: var(--accent);
+    font-weight: 700;
+    display: block;
+    margin-bottom: 0.2rem;
+  }
+  .cm-sidebar-desc {
+    font-size: 0.75rem;
+    color: var(--text2);
+    line-height: 1.3;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .cm-sidebar-meta {
+    display: flex;
+    gap: 0.4rem;
+    margin-top: 0.3rem;
+    flex-wrap: wrap;
+  }
+  .cm-sidebar-def {
+    font-size: 0.68rem;
+    color: var(--text2);
+    background: var(--bg2);
+    padding: 0.1rem 0.35rem;
+    border-radius: 4px;
+  }
+  .cm-sidebar-cheat {
+    font-size: 0.68rem;
+    color: #f87171;
+    background: rgba(239, 68, 68, 0.1);
+    padding: 0.1rem 0.35rem;
+    border-radius: 4px;
+  }
+  .cm-sidebar-browse {
+    display: block;
+    text-align: center;
+    font-size: 0.82rem;
+    color: var(--accent);
+    text-decoration: none;
+    font-weight: 600;
+    padding-top: 0.25rem;
+  }
+  .cm-sidebar-browse:hover {
+    text-decoration: underline;
+  }
+
+  /* ── Sidebar resources ── */
+  .cm-sidebar-resources {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+  }
+  .cm-sidebar-resources a {
+    display: block;
+    padding: 0.4rem 0.6rem;
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    font-size: 0.8rem;
+    color: var(--text2);
+    text-decoration: none;
+    transition: border-color 0.15s, color 0.15s;
+    border-left: 3px solid transparent;
+  }
+  .cm-sidebar-resources a:hover {
+    border-left: 3px solid var(--accent);
+    color: var(--accent);
+  }
+
+  /* ── Mobile ── */
+  @media (max-width: 768px) {
+    .cm-layout {
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+    }
+    .cm-cmd-name {
+      font-size: 1.4rem;
+    }
+    .cm-detail-row {
+      flex-direction: column;
+      gap: 0.2rem;
+    }
+    .cm-detail-label {
+      width: auto;
+    }
+    .cm-code-block {
+      flex-direction: column;
+      align-items: stretch;
+    }
+  }
 </style>

@@ -17,7 +17,7 @@ const cheatCount = commands.filter(c => c.cheat).length;
 const safeCount = commands.length - cheatCount;
 const otherCategories = COMMAND_CATEGORIES.filter(c => c.id !== category.id);
 
-const title = `CS2 ${category.name} Commands — All ${commands.length} Console Commands | CSDB.gg`;
+const title = `CS2 ${category.name} Commands — All ${commands.length} Console Commands | CSGOLuck Wiki`;
 const description = `Complete list of CS2 ${category.name.toLowerCase()} console commands. ${category.desc} ${commands.length} commands with explanations, default values, and usage examples.`;
 
 const faqs = [
@@ -38,38 +38,38 @@ const categoryLinks: Record<string, { href: string; label: string }[]> = {
   crosshair: [
     { href: '/crosshair-generator/', label: 'Crosshair Generator' },
     { href: '/crosshair-codes/', label: 'Crosshair Codes' },
-    { href: '/guides/crosshair-guide/', label: 'Crosshair Guide' },
+    { href: '/cs2-guides/crosshair-guide/', label: 'Crosshair Guide' },
   ],
   practice: [
     { href: '/practice-config/', label: 'Practice Config' },
     { href: '/workshop-maps/', label: 'Workshop Maps' },
-    { href: '/guides/grenade-guide/', label: 'Grenade Guide' },
+    { href: '/cs2-guides/grenade-guide/', label: 'Grenade Guide' },
   ],
   mouse: [
     { href: '/sensitivity-converter/', label: 'Sensitivity Converter' },
     { href: '/edpi-calculator/', label: 'eDPI Calculator' },
   ],
   audio: [
-    { href: '/guides/audio-guide/', label: 'Audio Guide' },
+    { href: '/cs2-guides/audio-guide/', label: 'Audio Guide' },
   ],
   network: [
-    { href: '/guides/fps-optimization/', label: 'FPS Optimization Guide' },
+    { href: '/cs2-guides/fps-optimization/', label: 'FPS Optimization Guide' },
   ],
   viewmodel: [
-    { href: '/guides/config-guide/', label: 'Config Guide' },
+    { href: '/cs2-guides/config-guide/', label: 'Config Guide' },
   ],
   graphics: [
-    { href: '/guides/fps-optimization/', label: 'FPS Optimization Guide' },
+    { href: '/cs2-guides/fps-optimization/', label: 'FPS Optimization Guide' },
   ],
   movement: [
-    { href: '/guides/movement-guide/', label: 'Movement Guide' },
+    { href: '/cs2-guides/movement-guide/', label: 'Movement Guide' },
   ],
   weapon: [
     { href: '/damage-calculator/', label: 'Damage Calculator' },
     { href: '/weapon-compare/', label: 'Weapon Compare' },
   ],
   demo: [
-    { href: '/guides/demo-guide/', label: 'Demo Guide' },
+    { href: '/cs2-guides/demo-guide/', label: 'Demo Guide' },
   ],
   bot: [
     { href: '/practice-config/', label: 'Practice Config' },
@@ -78,109 +78,115 @@ const categoryLinks: Record<string, { href: string; label: string }[]> = {
     { href: '/practice-config/', label: 'Practice Config' },
   ],
   essential: [
-    { href: '/guides/config-guide/', label: 'Config Guide' },
+    { href: '/cs2-guides/config-guide/', label: 'Config Guide' },
     { href: '/bind-generator/', label: 'Bind Generator' },
   ],
   radar: [
-    { href: '/guides/config-guide/', label: 'Config Guide' },
+    { href: '/cs2-guides/config-guide/', label: 'Config Guide' },
   ],
   communication: [],
   utility: [
     { href: '/bind-generator/', label: 'Bind Generator' },
-    { href: '/guides/config-guide/', label: 'Config Guide' },
+    { href: '/cs2-guides/config-guide/', label: 'Config Guide' },
   ],
 };
 
 const smartLinks = categoryLinks[category.id] || [];
 ---
 
-<Base title={title} description={description} currentNav="/tools/">
+<Base title={title} description={description} currentNav="/cs2-tools/">
   <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema(breadcrumbs))}></script>
   <script type="application/ld+json" set:html={JSON.stringify(faqSchema(faqs))}></script>
 
-  <nav class="breadcrumb">
-    <a href="/">Home</a> / <a href="/cs2-commands/">CS2 Commands</a> / <span>{category.name}</span>
+  <nav class="cc-breadcrumb">
+    <a href="/">Home</a> <span class="cc-sep">/</span> <a href="/cs2-commands/">CS2 Commands</a> <span class="cc-sep">/</span> <span>{category.name}</span>
   </nav>
 
-  <!-- Hero -->
-  <div class="cat-hero">
-    <span class="cat-hero-icon">{category.icon}</span>
-    <div>
-      <h1>{category.name} Commands</h1>
-      <p class="cat-hero-desc">{category.desc}</p>
-      <div class="cat-hero-stats">
-        <span class="cat-stat">{commands.length} commands</span>
-        <span class="cat-stat">{safeCount} multiplayer safe</span>
-        {cheatCount > 0 && <span class="cat-stat cat-stat-cheat">{cheatCount} require sv_cheats</span>}
+  <!-- Left-aligned hero -->
+  <div class="cc-hero">
+    <div class="cc-hero-icon">{category.icon}</div>
+    <div class="cc-hero-text">
+      <h1 class="cc-title">{category.name} Commands</h1>
+      <p class="cc-desc">{category.desc}</p>
+      <div class="cc-stat-pills">
+        <span class="cc-pill"><strong>{commands.length}</strong> commands</span>
+        <span class="cc-pill"><strong>{safeCount}</strong> multiplayer safe</span>
+        {cheatCount > 0 && <span class="cc-pill cc-pill-cheat"><strong>{cheatCount}</strong> require sv_cheats</span>}
       </div>
     </div>
   </div>
 
-  <!-- Commands Grid -->
-  <div class="calc-section">
-    <h2>All {category.name} Commands ({commands.length})</h2>
-    <div class="cat-cmd-grid">
+  <!-- Commands as table rows: command | description | default value -->
+  <section class="cc-commands">
+    <h2 class="cc-section-heading">All {category.name} Commands ({commands.length})</h2>
+    <div class="cc-table">
+      <div class="cc-table-head">
+        <span>Command</span>
+        <span>Description</span>
+        <span>Default</span>
+        <span></span>
+      </div>
       {commands.map((cmd) => (
-        <a href={`/command/${cmd.slug}/`} class="cat-cmd-card">
-          <div class="cat-cmd-top">
-            <code class="cat-cmd-name">{cmd.cmd}</code>
-            <button class="copy-btn" data-cmd={cmd.cmd} onclick="event.preventDefault();event.stopPropagation();">Copy</button>
+        <a href={`/command/${cmd.slug}/`} class="cc-row">
+          <div class="cc-row-cmd">
+            <code class="cc-cmd-name">{cmd.cmd}</code>
+            {cmd.cheat && <span class="cc-cheat-tag">sv_cheats</span>}
           </div>
-          <p class="cat-cmd-desc">{cmd.desc}</p>
-          <div class="cat-cmd-meta">
-            {cmd.def && <span class="cat-cmd-def">Default: {cmd.def}</span>}
-            {cmd.cheat && <span class="cat-cmd-cheat">sv_cheats</span>}
-          </div>
+          <span class="cc-row-desc">{cmd.desc}</span>
+          <span class="cc-row-def">{cmd.def || '-'}</span>
+          <button class="cc-copy-btn" data-cmd={cmd.cmd} onclick="event.preventDefault();event.stopPropagation();">Copy</button>
         </a>
       ))}
     </div>
-  </div>
+  </section>
 
-  <!-- Other Categories -->
-  <div class="calc-section">
-    <h2>Other Command Categories</h2>
-    <div class="cat-other-grid">
+  <!-- Category pills -->
+  <section class="cc-categories">
+    <h2 class="cc-section-heading">Other Command Categories</h2>
+    <div class="cc-cat-pills">
       {otherCategories.map((cat) => {
         const catCmds = getCommandsByCategory(cat.id);
         return (
-          <a href={`/commands/${cat.id}/`} class="cat-other-card">
-            <span class="cat-other-icon">{cat.icon}</span>
-            <span class="cat-other-name">{cat.name}</span>
-            <span class="cat-other-count">{catCmds.length}</span>
+          <a href={`/commands/${cat.id}/`} class="cc-cat-pill">
+            <span class="cc-cat-icon">{cat.icon}</span>
+            <span class="cc-cat-name">{cat.name}</span>
+            <span class="cc-cat-count">{catCmds.length}</span>
           </a>
         );
       })}
     </div>
-  </div>
+  </section>
 
   <!-- Internal Links -->
-  <div class="internal-links">
-    <strong>Related Resources:</strong>
-    <a href="/cs2-commands/">All Console Commands</a>
-    {smartLinks.map((link) => (
-      <a href={link.href}>{link.label}</a>
-    ))}
-    <a href="/practice-config/">Practice Config</a>
-    <a href="/bind-generator/">Bind Generator</a>
-    <a href="/tools/">All Tools</a>
-  </div>
+  <section class="cc-resources">
+    <h2 class="cc-section-heading">Related Resources</h2>
+    <div class="cc-link-row">
+      <a href="/cs2-commands/">All Console Commands</a>
+      {smartLinks.map((link) => (
+        <a href={link.href}>{link.label}</a>
+      ))}
+      <a href="/practice-config/">Practice Config</a>
+      <a href="/bind-generator/">Bind Generator</a>
+      <a href="/cs2-tools/">All Tools</a>
+    </div>
+  </section>
 
-  <!-- FAQ -->
-  <h2>Frequently Asked Questions</h2>
-  <dl class="faq">
+  <!-- FAQ as details -->
+  <section class="cc-faq">
+    <h2 class="cc-section-heading">Frequently Asked Questions</h2>
     {faqs.map(f => (
-      <Fragment>
-        <dt>{f.question}</dt>
-        <dd>{f.answer}</dd>
-      </Fragment>
+      <details class="cc-faq-item">
+        <summary>{f.question}</summary>
+        <p>{f.answer}</p>
+      </details>
     ))}
-  </dl>
+  </section>
 
   <ExploreMore context="tools" />
 </Base>
 
 <script is:inline>
-document.querySelectorAll('.copy-btn').forEach(btn => {
+document.querySelectorAll('.cc-copy-btn').forEach(btn => {
   btn.addEventListener('click', () => {
     navigator.clipboard.writeText(btn.dataset.cmd);
     btn.textContent = 'Copied!';
@@ -189,39 +195,328 @@ document.querySelectorAll('.copy-btn').forEach(btn => {
 });
 </script>
 
-<style is:inline>
-.cat-hero{display:flex;align-items:center;gap:1.5rem;background:linear-gradient(135deg,var(--bg2),var(--bg3));border:1px solid var(--border);border-radius:12px;padding:2rem;margin-bottom:2rem}
-.cat-hero-icon{font-size:3rem;flex-shrink:0}
-.cat-hero h1{margin:0 0 .35rem;font-size:1.8rem}
-.cat-hero-desc{margin:0 0 .75rem;color:var(--text2);font-size:.92rem;line-height:1.45}
-.cat-hero-stats{display:flex;gap:.75rem;flex-wrap:wrap}
-.cat-stat{font-size:.78rem;font-weight:600;padding:.25rem .6rem;background:var(--bg);border:1px solid var(--border);border-radius:6px;color:var(--text2)}
-.cat-stat-cheat{color:#f87171;border-color:rgba(239,68,68,.3);background:rgba(239,68,68,.08)}
+<style>
+  /* ── Breadcrumb ── */
+  .cc-breadcrumb {
+    font-size: 0.85rem;
+    color: var(--text2);
+    margin-bottom: 1.5rem;
+  }
+  .cc-breadcrumb a {
+    color: var(--accent);
+    text-decoration: none;
+  }
+  .cc-breadcrumb a:hover {
+    text-decoration: underline;
+  }
+  .cc-sep {
+    margin: 0 0.3rem;
+    color: var(--text2);
+  }
 
-.cat-cmd-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:.75rem}
-.cat-cmd-card{display:block;background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:1rem;text-decoration:none;transition:all .15s}
-.cat-cmd-card:hover{border-color:var(--accent);transform:translateY(-2px)}
-.cat-cmd-top{display:flex;align-items:center;justify-content:space-between;gap:.5rem;margin-bottom:.4rem}
-.cat-cmd-name{font-family:'Courier New',Courier,monospace;font-size:.9rem;color:var(--accent);font-weight:700;word-break:break-all}
-.cat-cmd-desc{margin:0;font-size:.82rem;color:var(--text2);line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
-.cat-cmd-meta{display:flex;gap:.5rem;margin-top:.5rem;flex-wrap:wrap}
-.cat-cmd-def{font-size:.72rem;color:var(--text2);background:var(--bg2);padding:.15rem .4rem;border-radius:4px}
-.cat-cmd-cheat{font-size:.72rem;color:#f87171;background:rgba(239,68,68,.1);padding:.15rem .4rem;border-radius:4px}
+  /* ── Hero ── */
+  .cc-hero {
+    display: flex;
+    align-items: flex-start;
+    gap: 1.25rem;
+    margin-bottom: 2rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .cc-hero-icon {
+    font-size: 2.5rem;
+    flex-shrink: 0;
+    line-height: 1;
+  }
+  .cc-hero-text {
+    flex: 1;
+  }
+  .cc-title {
+    font-size: 2rem;
+    font-weight: 800;
+    color: var(--accent);
+    margin: 0 0 0.5rem;
+  }
+  .cc-desc {
+    font-size: 0.95rem;
+    color: var(--text2);
+    margin: 0 0 1rem;
+    line-height: 1.5;
+    max-width: 650px;
+  }
+  .cc-stat-pills {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+  .cc-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    padding: 0.3rem 0.7rem;
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    font-size: 0.78rem;
+    color: var(--text2);
+  }
+  .cc-pill strong {
+    color: var(--accent);
+    font-weight: 700;
+  }
+  .cc-pill-cheat {
+    border-color: rgba(239, 68, 68, 0.3);
+    background: rgba(239, 68, 68, 0.06);
+  }
+  .cc-pill-cheat strong {
+    color: #f87171;
+  }
 
-.copy-btn{background:var(--accent);color:#1a1a2e;border:none;border-radius:5px;padding:.25rem .6rem;font-size:.7rem;font-weight:700;cursor:pointer;flex-shrink:0;transition:opacity .15s}
-.copy-btn:hover{opacity:.85}
+  /* ── Section heading ── */
+  .cc-section-heading {
+    font-size: 1.15rem;
+    font-weight: 700;
+    margin: 0 0 1rem;
+    color: var(--text);
+  }
 
-.cat-other-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:.5rem}
-.cat-other-card{display:flex;align-items:center;gap:.6rem;padding:.6rem .85rem;background:var(--bg3);border:1px solid var(--border);border-radius:6px;text-decoration:none;color:var(--text);font-size:.85rem;transition:all .15s}
-.cat-other-card:hover{border-color:var(--accent);transform:translateX(3px)}
-.cat-other-icon{font-size:1.1rem;flex-shrink:0}
-.cat-other-name{flex:1;font-weight:600}
-.cat-other-count{color:var(--text2);font-size:.75rem;background:var(--bg2);padding:.15rem .4rem;border-radius:4px}
+  /* ── Commands table ── */
+  .cc-commands {
+    margin-bottom: 2.5rem;
+  }
+  .cc-table {
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  .cc-table-head {
+    display: grid;
+    grid-template-columns: 220px 1fr 100px 60px;
+    padding: 0.55rem 1rem;
+    background: var(--bg3);
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: var(--text2);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    border-bottom: 1px solid var(--border);
+  }
+  .cc-row {
+    display: grid;
+    grid-template-columns: 220px 1fr 100px 60px;
+    padding: 0.6rem 1rem;
+    background: var(--bg2);
+    border-bottom: 1px solid var(--border);
+    align-items: center;
+    text-decoration: none;
+    color: inherit;
+    transition: border-left 0.15s, background 0.15s;
+    border-left: 3px solid transparent;
+    gap: 0.5rem;
+  }
+  .cc-row:last-child {
+    border-bottom: none;
+  }
+  .cc-row:hover {
+    border-left: 3px solid var(--accent);
+    background: var(--bg3);
+  }
+  .cc-row-cmd {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    min-width: 0;
+  }
+  .cc-cmd-name {
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 0.85rem;
+    color: var(--accent);
+    font-weight: 700;
+    word-break: break-all;
+  }
+  .cc-cheat-tag {
+    font-size: 0.62rem;
+    color: #f87171;
+    background: rgba(239, 68, 68, 0.1);
+    padding: 0.1rem 0.3rem;
+    border-radius: 4px;
+    flex-shrink: 0;
+    font-weight: 600;
+  }
+  .cc-row-desc {
+    font-size: 0.82rem;
+    color: var(--text2);
+    line-height: 1.35;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .cc-row-def {
+    font-size: 0.8rem;
+    color: var(--text2);
+    font-family: 'Courier New', Courier, monospace;
+  }
+  .cc-copy-btn {
+    background: var(--accent);
+    color: #000;
+    border: none;
+    border-radius: 4px;
+    padding: 0.25rem 0.5rem;
+    font-size: 0.68rem;
+    font-weight: 700;
+    cursor: pointer;
+    flex-shrink: 0;
+    font-family: inherit;
+    transition: opacity 0.15s;
+  }
+  .cc-copy-btn:hover {
+    opacity: 0.85;
+  }
 
-@media(max-width:768px){
-  .cat-hero{flex-direction:column;text-align:center;padding:1.5rem 1rem}
-  .cat-hero-stats{justify-content:center}
-  .cat-cmd-grid{grid-template-columns:1fr}
-  .cat-other-grid{grid-template-columns:1fr 1fr}
-}
+  /* ── Category pills ── */
+  .cc-categories {
+    margin-bottom: 2.5rem;
+  }
+  .cc-cat-pills {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+  .cc-cat-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    padding: 0.5rem 0.85rem;
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    text-decoration: none;
+    color: var(--text);
+    font-size: 0.83rem;
+    font-weight: 600;
+    transition: border-color 0.15s;
+    border-left: 3px solid transparent;
+  }
+  .cc-cat-pill:hover {
+    border-left: 3px solid var(--accent);
+  }
+  .cc-cat-icon {
+    font-size: 1rem;
+    flex-shrink: 0;
+  }
+  .cc-cat-name {
+    flex: 1;
+  }
+  .cc-cat-count {
+    font-size: 0.72rem;
+    color: var(--text2);
+    background: var(--bg3);
+    padding: 0.12rem 0.35rem;
+    border-radius: 4px;
+  }
+
+  /* ── Resources ── */
+  .cc-resources {
+    margin-bottom: 2.5rem;
+  }
+  .cc-link-row {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+  .cc-link-row a {
+    padding: 0.4rem 0.85rem;
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    font-size: 0.82rem;
+    color: var(--text2);
+    text-decoration: none;
+    transition: border-color 0.15s, color 0.15s;
+    border-left: 3px solid transparent;
+  }
+  .cc-link-row a:hover {
+    border-left: 3px solid var(--accent);
+    color: var(--accent);
+  }
+
+  /* ── FAQ (details) ── */
+  .cc-faq {
+    margin: 2.5rem 0;
+  }
+  .cc-faq-item {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    margin-bottom: 0.5rem;
+    transition: border-color 0.2s;
+  }
+  .cc-faq-item[open] {
+    border-left: 3px solid var(--accent);
+  }
+  .cc-faq-item summary {
+    padding: 0.85rem 1rem;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 0.92rem;
+    color: var(--text);
+    list-style: none;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .cc-faq-item summary::before {
+    content: '+';
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--accent);
+    flex-shrink: 0;
+    width: 1.2rem;
+    text-align: center;
+  }
+  .cc-faq-item[open] summary::before {
+    content: '-';
+  }
+  .cc-faq-item summary::-webkit-details-marker {
+    display: none;
+  }
+  .cc-faq-item p {
+    padding: 0 1rem 1rem 2.7rem;
+    margin: 0;
+    font-size: 0.88rem;
+    color: var(--text2);
+    line-height: 1.6;
+  }
+
+  /* ── Mobile ── */
+  @media (max-width: 768px) {
+    .cc-hero {
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+    .cc-title {
+      font-size: 1.5rem;
+    }
+    .cc-table-head {
+      display: none;
+    }
+    .cc-row {
+      grid-template-columns: 1fr auto;
+      grid-template-rows: auto auto;
+      gap: 0.25rem;
+    }
+    .cc-row-desc {
+      grid-column: 1 / -1;
+    }
+    .cc-row-def {
+      display: none;
+    }
+    .cc-cat-pills {
+      flex-direction: column;
+    }
+    .cc-cat-pill {
+      width: 100%;
+    }
+  }
 </style>

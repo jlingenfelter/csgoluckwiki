@@ -3,7 +3,7 @@ import Base from '../layouts/Base.astro';
 import ExploreMore from '../components/ExploreMore.astro';
 import { faqSchema, breadcrumbSchema } from '../lib/weapons';
 
-const title = 'CS2 Autoexec Generator — Custom Config Builder | CSDB.gg';
+const title = 'CS2 Autoexec Generator — Custom Config Builder | CSGOLuck Wiki';
 const description = 'Generate a complete CS2 autoexec.cfg with optimised settings for FPS, network, competitive play, and practice. One-click download with full console command explanations.';
 
 const faqs = [
@@ -31,111 +31,162 @@ const toolSchema = JSON.stringify({
   "applicationCategory": "UtilityApplication",
   "operatingSystem": "Web",
   "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
-  "author": { "@type": "Organization", "name": "CSDB.gg", "url": "https://csdb.gg" }
+  "author": { "@type": "Organization", "name": "CSGOLuck Wiki", "url": "https://wiki.csgoluck.com" }
 });
 ---
 
-<Base title={title} description={description} currentNav="/tools/">
+<Base title={title} description={description} currentNav="/cs2-tools/">
   <script type="application/ld+json" set:html={toolSchema}></script>
   <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema([{name:'Home',url:'/'},{name:'Tools',url:'/autoexec-generator'},{name:'Autoexec Generator',url:'/autoexec-generator'}]))}></script>
   <script type="application/ld+json" set:html={JSON.stringify(faqSchema(faqs))}></script>
 
-  <nav class="breadcrumb">
-    <a href="/">Home</a> / <a href="/autoexec-generator/">Tools</a> / <span>Autoexec Generator</span>
-  </nav>
+  <nav class="breadcrumb"><a href="/">Home</a> <span>/</span> <a href="/cs2-tools/">Tools</a> <span>/</span> <span>Autoexec Generator</span></nav>
 
-  <h1>CS2 Autoexec Generator</h1>
-  <p>Build a custom autoexec.cfg tailored to your priorities. Choose a preset or tweak individual settings, then download the ready-to-use config file.</p>
+  <div class="axg-hero">
+    <h1 class="axg-title">CS2 Autoexec Generator</h1>
+    <p class="axg-desc">Build a custom autoexec.cfg tailored to your priorities. Choose a preset or tweak individual settings, then download the ready-to-use config file.</p>
+  </div>
 
-  <div class="calc-section">
-    <h2>Choose Your Preset</h2>
-    <div class="card-grid" id="presetGrid">
+  <section class="axg-section">
+    <h2 class="axg-section-title">Choose Your Preset</h2>
+    <div class="axg-preset-grid" id="presetGrid">
       {presets.map(p => (
-        <div class="card" data-preset={p.id} style="cursor:pointer">
-          <div style="font-size:2rem;margin-bottom:.5rem">{p.icon}</div>
-          <h3 style="margin:0">{p.name}</h3>
-          <p style="font-size:.85rem">{p.desc}</p>
+        <div class="axg-preset-card" data-preset={p.id}>
+          <h3 class="axg-preset-name">{p.name}</h3>
+          <p class="axg-preset-desc">{p.desc}</p>
         </div>
       ))}
     </div>
-  </div>
+  </section>
 
-  <div class="calc-section">
-    <h2>Customise Settings</h2>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem">
+  <section class="axg-section">
+    <h2 class="axg-section-title">Customise Settings</h2>
+    <div class="axg-settings-grid">
       <div>
-        <h3>Network</h3>
-        <div class="calc-row"><label>Rate</label><select id="cfgRate"><option value="786432" selected>786432 (Max)</option><option value="524288">524288</option><option value="196608">196608</option></select></div>
-        <div class="calc-row"><label>Interp Ratio</label><select id="cfgInterp"><option value="1" selected>1 (Competitive)</option><option value="2">2 (Default)</option></select></div>
-        <div class="calc-row"><label>Max FPS</label><input type="number" id="cfgFps" value="0" min="0" max="999" step="1"><small style="color:var(--text2);margin-left:.5rem">0 = unlimited</small></div>
+        <h3 class="axg-group-title">Network</h3>
+        <div class="axg-field"><label class="axg-label">Rate</label><select id="cfgRate" class="axg-select"><option value="786432" selected>786432 (Max)</option><option value="524288">524288</option><option value="196608">196608</option></select></div>
+        <div class="axg-field"><label class="axg-label">Interp Ratio</label><select id="cfgInterp" class="axg-select"><option value="1" selected>1 (Competitive)</option><option value="2">2 (Default)</option></select></div>
+        <div class="axg-field"><label class="axg-label">Max FPS</label><input type="number" id="cfgFps" value="0" min="0" max="999" step="1" class="axg-input"><span class="axg-hint">0 = unlimited</span></div>
 
-        <h3>Audio</h3>
-        <div class="calc-row"><label>Master Volume</label><input type="range" id="cfgVol" min="0" max="1" step="0.05" value="0.5"><span id="cfgVolVal">0.5</span></div>
-        <div class="calc-row"><label>HRTF (3D Audio)</label><select id="cfgHRTF"><option value="1" selected>On</option><option value="0">Off</option></select></div>
+        <h3 class="axg-group-title">Audio</h3>
+        <div class="axg-field"><label class="axg-label">Master Volume</label><input type="range" id="cfgVol" min="0" max="1" step="0.05" value="0.5" class="axg-range"><span id="cfgVolVal" class="axg-range-val">0.5</span></div>
+        <div class="axg-field"><label class="axg-label">HRTF (3D Audio)</label><select id="cfgHRTF" class="axg-select"><option value="1" selected>On</option><option value="0">Off</option></select></div>
       </div>
       <div>
-        <h3>Visuals</h3>
-        <div class="calc-row"><label>Show FPS Counter</label><select id="cfgShowFps"><option value="1" selected>On</option><option value="0">Off</option></select></div>
-        <div class="calc-row"><label>First-Person Tracers</label><select id="cfgTracers"><option value="1" selected>On</option><option value="0">Off</option></select></div>
-        <div class="calc-row"><label>Viewmodel</label><select id="cfgViewmodel"><option value="classic">Classic</option><option value="desktop" selected>Desktop</option><option value="couch">Couch</option></select></div>
+        <h3 class="axg-group-title">Visuals</h3>
+        <div class="axg-field"><label class="axg-label">Show FPS Counter</label><select id="cfgShowFps" class="axg-select"><option value="1" selected>On</option><option value="0">Off</option></select></div>
+        <div class="axg-field"><label class="axg-label">First-Person Tracers</label><select id="cfgTracers" class="axg-select"><option value="1" selected>On</option><option value="0">Off</option></select></div>
+        <div class="axg-field"><label class="axg-label">Viewmodel</label><select id="cfgViewmodel" class="axg-select"><option value="classic">Classic</option><option value="desktop" selected>Desktop</option><option value="couch">Couch</option></select></div>
 
-        <h3>HUD</h3>
-        <div class="calc-row"><label>HUD Scale</label><input type="range" id="cfgHudScale" min="0.5" max="1" step="0.05" value="0.85"><span id="cfgHudScaleVal">0.85</span></div>
-        <div class="calc-row"><label>Net Graph</label><select id="cfgNetGraph"><option value="1" selected>On</option><option value="0">Off</option></select></div>
+        <h3 class="axg-group-title">HUD</h3>
+        <div class="axg-field"><label class="axg-label">HUD Scale</label><input type="range" id="cfgHudScale" min="0.5" max="1" step="0.05" value="0.85" class="axg-range"><span id="cfgHudScaleVal" class="axg-range-val">0.85</span></div>
+        <div class="axg-field"><label class="axg-label">Net Graph</label><select id="cfgNetGraph" class="axg-select"><option value="1" selected>On</option><option value="0">Off</option></select></div>
       </div>
     </div>
-  </div>
+  </section>
 
-  <div class="result-box" style="margin:2rem 0">
-    <h2 style="margin-top:0">Generated Autoexec.cfg</h2>
-    <pre id="cfgOutput" style="background:var(--bg);padding:1rem;border-radius:6px;font-size:.82rem;color:var(--accent);overflow-x:auto;white-space:pre-wrap;max-height:400px;line-height:1.6"></pre>
-    <div style="display:flex;gap:1rem;margin-top:1rem">
-      <button id="copyBtn" style="padding:.5rem 1.5rem;background:var(--accent);color:#000;border:none;border-radius:6px;cursor:pointer;font-weight:700">Copy to Clipboard</button>
-      <button id="downloadBtn" style="padding:.5rem 1.5rem;background:var(--bg3);color:var(--text);border:1px solid var(--border);border-radius:6px;cursor:pointer;font-weight:700">Download .cfg</button>
+  <section class="axg-output">
+    <h2 class="axg-section-title">Generated Autoexec.cfg</h2>
+    <pre id="cfgOutput" class="axg-code"></pre>
+    <div class="axg-actions">
+      <button id="copyBtn" class="axg-btn-primary">Copy to Clipboard</button>
+      <button id="downloadBtn" class="axg-btn-secondary">Download .cfg</button>
     </div>
-  </div>
+  </section>
 
-  <h2>What Each Setting Does</h2>
-  <p>
-    <strong>Rate</strong> controls the maximum bytes per second your client requests from the server. Setting this to 786432 (the maximum) ensures you receive the most game data possible — essential on modern internet connections. Lower values were historically needed for slow connections but are rarely beneficial today.
-  </p>
-  <p>
-    <strong>Interp ratio</strong> (cl_interp_ratio) determines how many server ticks of interpolation buffer your client uses. A value of 1 reduces input lag by minimizing the buffer, but requires a stable connection. Use 2 if you experience packet loss or play on high-ping servers.
-  </p>
-  <p>
-    <strong>fps_max</strong> caps your frame rate. Setting it to 0 (unlimited) is generally recommended if your PC can maintain high framerates. Some players cap it slightly above their monitor refresh rate (e.g., fps_max 300 on a 240Hz monitor) to reduce power consumption and heat.
-  </p>
+  <section class="axg-guide">
+    <h2 class="axg-section-title">What Each Setting Does</h2>
+    <p class="axg-guide-text"><strong>Rate</strong> controls the maximum bytes per second your client requests from the server. Setting this to 786432 (the maximum) ensures you receive the most game data possible -- essential on modern internet connections.</p>
+    <p class="axg-guide-text"><strong>Interp ratio</strong> (cl_interp_ratio) determines how many server ticks of interpolation buffer your client uses. A value of 1 reduces input lag by minimizing the buffer, but requires a stable connection. Use 2 if you experience packet loss.</p>
+    <p class="axg-guide-text"><strong>fps_max</strong> caps your frame rate. Setting it to 0 (unlimited) is generally recommended if your PC can maintain high framerates. Some players cap it slightly above their monitor refresh rate to reduce power consumption and heat.</p>
+  </section>
 
-  <div class="internal-links">
-    <strong>Related Tools & Guides:</strong>
+  <div class="axg-links">
+    <span class="axg-links-label">Related Tools & Guides:</span>
     <a href="/launch-options/">Launch Options</a>
     <a href="/crosshair-generator/">Crosshair Generator</a>
     <a href="/bind-generator/">Bind Generator</a>
-    <a href="/practice-config/">Practice Config</a>
     <a href="/sensitivity-converter/">Sensitivity Converter</a>
     <a href="/resolution-calculator/">Resolution Calculator</a>
     <a href="/pro-players/">Pro Player Settings</a>
-    <a href="/tools/">All Tools</a>
-    <a href="/guides/fps-optimization-guide/">FPS Guide</a>
-    <a href="/guides/beginners-guide/">Beginner's Guide</a>
+    <a href="/cs2-tools/">All Tools</a>
   </div>
 
-  <h2>Frequently Asked Questions</h2>
-  <dl class="faq">
+  <section class="axg-section">
+    <h2 class="axg-section-title">Frequently Asked Questions</h2>
     {faqs.map(f => (
-      <Fragment>
-        <dt>{f.question}</dt>
-        <dd>{f.answer}</dd>
-      </Fragment>
+      <details class="axg-faq-item">
+        <summary class="axg-faq-q">{f.question}</summary>
+        <div class="axg-faq-a">{f.answer}</div>
+      </details>
     ))}
-  </dl>
+  </section>
 
   <ExploreMore context="tools" />
 </Base>
 
 <style>
+  /* Hero */
+  .axg-hero{margin-bottom:1.5rem}
+  .axg-title{font-size:1.8rem;font-weight:800;margin:0 0 .5rem}
+  .axg-desc{color:var(--text2);font-size:.95rem;margin:0;line-height:1.6;max-width:700px}
+
+  /* Sections */
+  .axg-section{background:var(--bg2);border:1px solid var(--border);border-radius:4px;padding:1.5rem;margin-bottom:1.5rem}
+  .axg-section-title{font-size:1.15rem;font-weight:700;margin:0 0 1rem}
+
+  /* Preset grid */
+  .axg-preset-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:.75rem}
+  .axg-preset-card{background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:1rem;cursor:pointer;transition:border-left .2s}
+  .axg-preset-card:hover{border-left:3px solid var(--accent)}
+  .axg-preset-name{margin:0 0 .3rem;font-size:.95rem;font-weight:700}
+  .axg-preset-desc{margin:0;font-size:.82rem;color:var(--text2);line-height:1.5}
+
+  /* Settings */
+  .axg-settings-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem}
+  .axg-group-title{font-size:.95rem;font-weight:700;margin:1rem 0 .6rem;color:var(--text)}
+  .axg-group-title:first-child{margin-top:0}
+  .axg-field{display:flex;align-items:center;gap:.6rem;margin-bottom:.5rem;flex-wrap:wrap}
+  .axg-label{font-size:.85rem;color:var(--text2);min-width:120px;font-weight:600}
+  .axg-select,.axg-input{background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:.4rem .6rem;color:var(--text);font-size:.88rem;flex:1;min-width:80px}
+  .axg-select:focus,.axg-input:focus{outline:none;border-color:var(--accent)}
+  .axg-range{flex:1;min-width:80px}
+  .axg-range-val{font-size:.85rem;color:var(--accent);font-weight:700;min-width:30px}
+  .axg-hint{font-size:.78rem;color:var(--text2)}
+
+  /* Output */
+  .axg-output{background:var(--bg2);border:1px solid var(--border);border-radius:4px;padding:1.5rem;margin-bottom:1.5rem}
+  .axg-code{background:var(--bg);padding:1rem;border-radius:4px;font-size:.82rem;color:var(--accent);overflow-x:auto;white-space:pre-wrap;max-height:400px;line-height:1.6;border:1px solid var(--border)}
+  .axg-actions{display:flex;gap:.75rem;margin-top:1rem}
+  .axg-btn-primary{padding:.5rem 1.5rem;background:var(--accent);color:#000;border:none;border-radius:4px;cursor:pointer;font-weight:700;font-size:.88rem;transition:opacity .2s}
+  .axg-btn-primary:hover{opacity:.85}
+  .axg-btn-secondary{padding:.5rem 1.5rem;background:var(--bg3);color:var(--text);border:1px solid var(--border);border-radius:4px;cursor:pointer;font-weight:700;font-size:.88rem;transition:border-color .2s}
+  .axg-btn-secondary:hover{border-color:var(--accent)}
+
+  /* Guide */
+  .axg-guide{background:var(--bg2);border:1px solid var(--border);border-left:3px solid var(--accent);border-radius:4px;padding:1.5rem;margin-bottom:1.5rem}
+  .axg-guide-text{color:var(--text2);font-size:.88rem;line-height:1.7;margin:0 0 .75rem}
+  .axg-guide-text:last-child{margin-bottom:0}
+
+  /* Links */
+  .axg-links{display:flex;flex-wrap:wrap;gap:.5rem;align-items:center;margin-bottom:1.5rem;padding:1rem;background:var(--bg2);border:1px solid var(--border);border-radius:4px}
+  .axg-links-label{font-weight:700;font-size:.85rem;color:var(--text2);margin-right:.25rem}
+  .axg-links a{color:var(--accent);font-size:.85rem;text-decoration:none;padding:.25rem .5rem;border-radius:4px;border:1px solid var(--border);transition:border-color .2s}
+  .axg-links a:hover{border-color:var(--accent)}
+
+  /* FAQ */
+  .axg-faq-item{background:var(--bg3);border:1px solid var(--border);border-radius:4px;margin-bottom:.5rem;overflow:hidden}
+  .axg-faq-q{padding:.8rem 1rem;cursor:pointer;font-weight:600;font-size:.9rem;color:var(--text);list-style:none;display:flex;align-items:center;justify-content:space-between}
+  .axg-faq-q::-webkit-details-marker{display:none}
+  .axg-faq-q::after{content:'+';font-size:1.1rem;color:var(--accent);font-weight:700}
+  .axg-faq-item[open] .axg-faq-q::after{content:'-'}
+  .axg-faq-item[open]{border-left:3px solid var(--accent)}
+  .axg-faq-a{padding:0 1rem .8rem;font-size:.88rem;color:var(--text2);line-height:1.6}
+
   @media(max-width:768px){
-    .calc-section [style*="grid-template-columns:1fr 1fr"]{grid-template-columns:1fr!important;}
+    .axg-settings-grid{grid-template-columns:1fr}
+    .axg-title{font-size:1.4rem}
+    .axg-preset-grid{grid-template-columns:1fr 1fr}
   }
 </style>
 
@@ -171,7 +222,7 @@ const toolSchema = JSON.stringify({
 
     var cfg=[
       '// ═══════════════════════════════════════════════════',
-      '// CS2 Autoexec — Generated by CSDB.gg',
+      '// CS2 Autoexec — Generated by CSGOLuck Wiki',
       '// ═══════════════════════════════════════════════════','',
       '// ── Network ──────────────────────────────────────',
       'rate '+document.getElementById('cfgRate').value,
@@ -194,7 +245,7 @@ const toolSchema = JSON.stringify({
       'cl_hud_color 0','',
       '// ── Save settings ───────────────────────────────',
       'host_writeconfig','',
-      '// Generated at csdb.gg/autoexec-generator'
+      '// Generated at wiki.csgoluck.com/autoexec-generator'
     ].join('\n');
     document.getElementById('cfgOutput').textContent=cfg;
     return cfg;

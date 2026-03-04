@@ -1,0 +1,220 @@
+---
+import Base from '../../../layouts/Base.astro';
+import ExploreMore from '../../../components/ExploreMore.astro';
+import { WEAPONS, breadcrumbSchema, faqSchema } from '../../../lib/weapons';
+import { getSkinsByWeapon, RARITY_COLORS, getLowestPrice, getHighestPrice } from '../../../lib/skins';
+import { skinCardImage } from '../../../lib/imageOptimize';
+
+export function getStaticPaths() {
+  return WEAPONS.filter(w => getSkinsByWeapon(w.slug).length > 0).map(w => ({
+    params: { weapon: w.slug },
+    props: { weapon: w },
+  }));
+}
+
+const { weapon } = Astro.props;
+const allSkins = getSkinsByWeapon(weapon.slug).filter(s => !s.phase);
+const skinsWithPrice = allSkins.map(s => ({ ...s, low: getLowestPrice(s), high: getHighestPrice(s) }));
+
+const budget = skinsWithPrice.filter(s => s.low > 0 && s.low <= 10).sort((a, b) => b.low - a.low);
+const mid = skinsWithPrice.filter(s => s.low > 10 && s.low <= 50).sort((a, b) => b.low - a.low);
+const premium = skinsWithPrice.filter(s => s.low > 50 && s.low <= 200).sort((a, b) => b.low - a.low);
+const luxury = skinsWithPrice.filter(s => s.low > 200).sort((a, b) => b.low - a.low);
+
+const title = `Best ${weapon.name} Skins in CS2 — Top Picks by Price | CSGOLuck Wiki`;
+const description = `Discover the best ${weapon.name} skins in Counter-Strike 2. Browse ${allSkins.length} skins sorted by price tier — from budget picks under $10 to premium collector items. Compare prices across marketplaces.`;
+
+const breadcrumbs = [
+  { name: 'Home', url: '/' },
+  { name: 'Skins', url: '/cs2-skins/' },
+  { name: `${weapon.name} Skins`, url: `/cs2-weapon/${weapon.slug}/` },
+  { name: `Best ${weapon.name} Skins`, url: `/cs2-skins/best/${weapon.slug}/` },
+];
+
+const faqs = [
+  { question: `What is the best ${weapon.name} skin in CS2?`, answer: `The best ${weapon.name} skin depends on your budget. ${luxury.length > 0 ? `For collectors, ${luxury[0].weapon} | ${luxury[0].name} (from $${luxury[0].low.toFixed(2)}) is a top pick.` : ''} ${mid.length > 0 ? `For mid-range budgets, ${mid[0].weapon} | ${mid[0].name} (from $${mid[0].low.toFixed(2)}) offers great value.` : ''} ${budget.length > 0 ? `On a budget, ${budget[0].weapon} | ${budget[0].name} (from $${budget[0].low.toFixed(2)}) is popular.` : ''}` },
+  { question: `How many ${weapon.name} skins are there in CS2?`, answer: `There are currently ${allSkins.length} ${weapon.name} skins in Counter-Strike 2, available across multiple rarity tiers and wear conditions.` },
+  { question: `What is the cheapest ${weapon.name} skin?`, answer: budget.length > 0 ? `The most affordable ${weapon.name} skins start under $10. ${budget[budget.length - 1].weapon} | ${budget[budget.length - 1].name} starts from $${budget[budget.length - 1].low.toFixed(2)}.` : `Check current market prices on the individual skin pages for the latest pricing.` },
+  { question: `What is the most expensive ${weapon.name} skin?`, answer: luxury.length > 0 ? `The most expensive ${weapon.name} skins include ${luxury.slice(0, 3).map(s => `${s.weapon} | ${s.name} (from $${s.low.toFixed(2)})`).join(', ')}.` : premium.length > 0 ? `Premium ${weapon.name} skins include ${premium.slice(0, 3).map(s => `${s.weapon} | ${s.name} (from $${s.low.toFixed(2)})`).join(', ')}.` : `Check the listings above for current pricing across all marketplaces.` },
+];
+---
+
+<Base title={title} description={description} currentNav="/cs2-skins/">
+<script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema(breadcrumbs))} />
+<script type="application/ld+json" set:html={JSON.stringify(faqSchema(faqs))} />
+
+<nav class="breadcrumb">
+  <a href="/">Home</a> / <a href="/cs2-skins/">Skins</a> / <a href={`/cs2-weapon/${weapon.slug}/`}>{weapon.name}</a> / <span>Best Skins</span>
+</nav>
+
+<!-- Hero: Left-aligned -->
+<section class="sb-hero">
+  <h1 class="sb-hero-title">Best {weapon.name} Skins in CS2</h1>
+  <p class="sb-hero-desc">{description}</p>
+  <div class="sb-hero-stats">
+    <span class="sb-stat">{allSkins.length} total skins</span>
+    <span class="sb-stat">{budget.length} under $10</span>
+    <span class="sb-stat">{mid.length} $10-$50</span>
+    <span class="sb-stat">{premium.length + luxury.length} $50+</span>
+  </div>
+</section>
+
+<!-- Tier sections: Collapsible details -->
+{luxury.length > 0 && (
+  <details class="sb-tier" open>
+    <summary class="sb-tier-summary">
+      <span class="sb-tier-name">Investment Grade ($200+)</span>
+      <span class="sb-tier-ct">{luxury.length} skins</span>
+    </summary>
+    <p class="sb-tier-desc">Premium collector items and investment-grade skins.</p>
+    <div class="sb-tier-list">
+      {luxury.map(s => (
+        <a href={`/cs2-skin/${s.slug}/`} class="sb-skin-row">
+          <div class="sb-skin-img">
+            {s.image && <img src={skinCardImage(s.image)} alt={`${s.weapon} | ${s.name}`} width="80" height="60" loading="lazy" />}
+          </div>
+          <div class="sb-skin-info">
+            <span class="sb-skin-name">{s.name}</span>
+            <span class="sb-skin-rarity" style={`color:${RARITY_COLORS[s.rarity] || '#fff'}`}>{s.rarity}</span>
+          </div>
+          <span class="sb-skin-price">From ${s.low.toFixed(2)}</span>
+        </a>
+      ))}
+    </div>
+  </details>
+)}
+
+{premium.length > 0 && (
+  <details class="sb-tier" open>
+    <summary class="sb-tier-summary">
+      <span class="sb-tier-name">Premium ($50-$200)</span>
+      <span class="sb-tier-ct">{premium.length} skins</span>
+    </summary>
+    <p class="sb-tier-desc">High-quality skins that stand out in-game without breaking the bank.</p>
+    <div class="sb-tier-list">
+      {premium.map(s => (
+        <a href={`/cs2-skin/${s.slug}/`} class="sb-skin-row">
+          <div class="sb-skin-img">
+            {s.image && <img src={skinCardImage(s.image)} alt={`${s.weapon} | ${s.name}`} width="80" height="60" loading="lazy" />}
+          </div>
+          <div class="sb-skin-info">
+            <span class="sb-skin-name">{s.name}</span>
+            <span class="sb-skin-rarity" style={`color:${RARITY_COLORS[s.rarity] || '#fff'}`}>{s.rarity}</span>
+          </div>
+          <span class="sb-skin-price">From ${s.low.toFixed(2)}</span>
+        </a>
+      ))}
+    </div>
+  </details>
+)}
+
+{mid.length > 0 && (
+  <details class="sb-tier" open>
+    <summary class="sb-tier-summary">
+      <span class="sb-tier-name">Mid-Range ($10-$50)</span>
+      <span class="sb-tier-ct">{mid.length} skins</span>
+    </summary>
+    <p class="sb-tier-desc">Great designs at accessible price points for competitive players.</p>
+    <div class="sb-tier-list">
+      {mid.map(s => (
+        <a href={`/cs2-skin/${s.slug}/`} class="sb-skin-row">
+          <div class="sb-skin-img">
+            {s.image && <img src={skinCardImage(s.image)} alt={`${s.weapon} | ${s.name}`} width="80" height="60" loading="lazy" />}
+          </div>
+          <div class="sb-skin-info">
+            <span class="sb-skin-name">{s.name}</span>
+            <span class="sb-skin-rarity" style={`color:${RARITY_COLORS[s.rarity] || '#fff'}`}>{s.rarity}</span>
+          </div>
+          <span class="sb-skin-price">From ${s.low.toFixed(2)}</span>
+        </a>
+      ))}
+    </div>
+  </details>
+)}
+
+{budget.length > 0 && (
+  <details class="sb-tier" open>
+    <summary class="sb-tier-summary">
+      <span class="sb-tier-name">Budget (Under $10)</span>
+      <span class="sb-tier-ct">{budget.length} skins</span>
+    </summary>
+    <p class="sb-tier-desc">Affordable skins that look great without the investment.</p>
+    <div class="sb-tier-list">
+      {budget.map(s => (
+        <a href={`/cs2-skin/${s.slug}/`} class="sb-skin-row">
+          <div class="sb-skin-img">
+            {s.image && <img src={skinCardImage(s.image)} alt={`${s.weapon} | ${s.name}`} width="80" height="60" loading="lazy" />}
+          </div>
+          <div class="sb-skin-info">
+            <span class="sb-skin-name">{s.name}</span>
+            <span class="sb-skin-rarity" style={`color:${RARITY_COLORS[s.rarity] || '#fff'}`}>{s.rarity}</span>
+          </div>
+          <span class="sb-skin-price">From ${s.low.toFixed(2)}</span>
+        </a>
+      ))}
+    </div>
+  </details>
+)}
+
+<!-- FAQ Accordion -->
+<h2>Frequently Asked Questions</h2>
+<div class="sb-faq">
+  {faqs.map(f => (
+    <details class="sb-faq-item">
+      <summary class="sb-faq-q">{f.question}</summary>
+      <p class="sb-faq-a">{f.answer}</p>
+    </details>
+  ))}
+</div>
+
+<ExploreMore context="skins" />
+</Base>
+
+<style>
+  /* ===== SB HERO ===== */
+  .sb-hero{margin-bottom:2rem;padding-bottom:1.5rem;border-bottom:1px solid var(--border)}
+  .sb-hero-title{margin:0 0 .5rem;font-size:1.9rem;font-weight:800}
+  .sb-hero-desc{color:var(--text2);line-height:1.6;margin:0 0 1rem;font-size:.88rem;max-width:640px}
+  .sb-hero-stats{display:flex;gap:.5rem;flex-wrap:wrap}
+  .sb-stat{background:var(--bg2);border:1px solid var(--border);border-radius:4px;padding:.35rem .7rem;font-size:.78rem;color:var(--accent);font-weight:600}
+
+  /* ===== SB TIER (Collapsible Details) ===== */
+  .sb-tier{margin-bottom:1rem;background:var(--bg2);border:1px solid var(--border);border-radius:4px;overflow:hidden}
+  .sb-tier[open]{border-left:3px solid var(--accent)}
+  .sb-tier-summary{display:flex;justify-content:space-between;align-items:center;padding:.7rem .85rem;cursor:pointer;list-style:none;font-weight:700;color:var(--text)}
+  .sb-tier-summary::-webkit-details-marker{display:none}
+  .sb-tier-summary::after{content:'+';color:var(--accent);font-weight:700;font-size:1rem;margin-left:.5rem}
+  .sb-tier[open] .sb-tier-summary::after{content:'-'}
+  .sb-tier-name{font-size:.95rem}
+  .sb-tier-ct{font-size:.75rem;color:var(--accent);font-weight:600}
+  .sb-tier-desc{margin:0;padding:0 .85rem .5rem;font-size:.82rem;color:var(--text2);line-height:1.5}
+
+  /* ===== SB SKIN ROWS (Horizontal) ===== */
+  .sb-tier-list{display:flex;flex-direction:column;gap:.25rem;padding:0 .65rem .65rem}
+  .sb-skin-row{display:grid;grid-template-columns:72px 1fr auto;align-items:center;gap:.75rem;padding:.4rem .5rem;background:var(--bg3);border:1px solid var(--border);border-left:3px solid transparent;border-radius:4px;text-decoration:none;color:inherit;transition:border-color .15s}
+  .sb-skin-row:hover{border-left-color:var(--accent)}
+  .sb-skin-img{width:72px;height:52px;display:flex;align-items:center;justify-content:center;overflow:hidden;border-radius:4px}
+  .sb-skin-img img{max-width:100%;max-height:100%;object-fit:contain}
+  .sb-skin-info{display:flex;flex-direction:column;gap:.1rem;min-width:0}
+  .sb-skin-name{font-size:.88rem;font-weight:700;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .sb-skin-rarity{font-size:.72rem;font-weight:600}
+  .sb-skin-price{font-size:.88rem;color:var(--accent);font-weight:700;white-space:nowrap;flex-shrink:0}
+
+  /* ===== SB FAQ ===== */
+  .sb-faq{display:flex;flex-direction:column;gap:.35rem;margin-bottom:2rem}
+  .sb-faq-item{background:var(--bg2);border:1px solid var(--border);border-radius:4px;overflow:hidden}
+  .sb-faq-item[open]{border-left:3px solid var(--accent)}
+  .sb-faq-q{padding:.65rem .85rem;font-size:.88rem;font-weight:600;color:var(--text);cursor:pointer;list-style:none;display:flex;align-items:center;justify-content:space-between}
+  .sb-faq-q::after{content:'+';color:var(--accent);font-weight:700;font-size:1rem;flex-shrink:0;margin-left:.5rem}
+  .sb-faq-item[open] .sb-faq-q::after{content:'-'}
+  .sb-faq-q::-webkit-details-marker{display:none}
+  .sb-faq-a{margin:0;padding:0 .85rem .75rem;font-size:.84rem;color:var(--text2);line-height:1.6}
+
+  /* ===== SB RESPONSIVE ===== */
+  @media(max-width:640px){
+    .sb-hero-stats{flex-direction:column;gap:.3rem}
+    .sb-skin-row{grid-template-columns:56px 1fr;gap:.4rem}
+    .sb-skin-img{width:56px;height:40px}
+    .sb-skin-price{grid-column:1/-1;text-align:left;padding-top:.15rem;border-top:1px solid var(--border)}
+  }
+</style>

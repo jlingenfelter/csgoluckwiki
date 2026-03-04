@@ -22,7 +22,7 @@ export const COMMAND_CATEGORIES: CommandCategory[] = [
     id: 'essential',
     name: 'Essential Commands',
     icon: '\u2B50',
-    desc: 'Must-know commands every CS2 player should have in their toolkit.',
+    desc: 'Core commands that belong in every CS2 player\'s vocabulary.',
     commands: [
       { cmd: 'quit', desc: 'Immediately closes CS2', def: '', cheat: false },
       { cmd: 'disconnect', desc: 'Disconnects from the current server', def: '', cheat: false },
@@ -45,7 +45,7 @@ export const COMMAND_CATEGORIES: CommandCategory[] = [
     id: 'crosshair',
     name: 'Crosshair',
     icon: '\u271B',
-    desc: 'Customize every aspect of your crosshair appearance.',
+    desc: 'Tailor every visual element of your crosshair to your liking.',
     commands: [
       { cmd: 'cl_crosshairstyle', desc: 'Crosshair style (0 = default, 1 = static classic, 2 = dynamic classic, 3 = dynamic, 4 = static, 5 = legacy)', def: '0', cheat: false },
       { cmd: 'cl_crosshairsize', desc: 'Length of the crosshair lines', def: '2.5', cheat: false },
@@ -71,7 +71,7 @@ export const COMMAND_CATEGORIES: CommandCategory[] = [
     id: 'viewmodel',
     name: 'Viewmodel & HUD',
     icon: '\uD83D\uDC41\uFE0F',
-    desc: 'Adjust your weapon viewmodel position and HUD display settings.',
+    desc: 'Control weapon model placement and on-screen HUD elements.',
     commands: [
       { cmd: 'viewmodel_fov', desc: 'Viewmodel field of view (54-68)', def: '60', cheat: false },
       { cmd: 'viewmodel_offset_x', desc: 'Viewmodel horizontal offset (-2.5 to 2.5)', def: '2.5', cheat: false },
@@ -103,7 +103,7 @@ export const COMMAND_CATEGORIES: CommandCategory[] = [
     id: 'mouse',
     name: 'Mouse & Sensitivity',
     icon: '\uD83D\uDDB1\uFE0F',
-    desc: 'Fine-tune mouse input, sensitivity, and acceleration.',
+    desc: 'Dial in raw input, sensitivity curves, and acceleration behaviour.',
     commands: [
       { cmd: 'sensitivity', desc: 'Mouse sensitivity value (typically 0.5-4.0)', def: '2.5', cheat: false },
       { cmd: 'zoom_sensitivity_ratio', desc: 'Scoped sensitivity multiplier (relative to hip-fire)', def: '1.0', cheat: false },
@@ -118,7 +118,7 @@ export const COMMAND_CATEGORIES: CommandCategory[] = [
     id: 'movement',
     name: 'Movement',
     icon: '\uD83C\uDFC3',
-    desc: 'Commands related to player movement, jumping, and crouching.',
+    desc: 'Variables governing player locomotion, jump mechanics, and crouch behaviour.',
     commands: [
       { cmd: '+forward', desc: 'Move forward (default: W)', def: '', cheat: false },
       { cmd: '+back', desc: 'Move backward (default: S)', def: '', cheat: false },
@@ -142,7 +142,7 @@ export const COMMAND_CATEGORIES: CommandCategory[] = [
     id: 'radar',
     name: 'Radar & Minimap',
     icon: '\uD83D\uDCE1',
-    desc: 'Customize the radar display, zoom, rotation, and icons.',
+    desc: 'Adjust minimap scaling, orientation, rotation, and icon sizing.',
     commands: [
       { cmd: 'cl_radar_scale', desc: 'Radar zoom level (0.25-1.0, lower = more zoomed out)', def: '0.7', cheat: false },
       { cmd: 'cl_radar_always_centered', desc: 'Keep player centered on radar (0=off gives wider view)', def: '1', cheat: false },
@@ -156,7 +156,7 @@ export const COMMAND_CATEGORIES: CommandCategory[] = [
     id: 'network',
     name: 'Network & Connection',
     icon: '\uD83C\uDF10',
-    desc: 'Optimize your network settings for lower latency and smoother gameplay.',
+    desc: 'Tune rate, interpolation, and tickrate values for minimal lag and fluid play.',
     commands: [
       { cmd: 'rate', desc: 'Max bytes per second from server (786432 = max for 128-tick)', def: '786432', cheat: false },
       { cmd: 'cl_interp_ratio', desc: 'Interpolation ratio (1 = LAN/good connection, 2 = default)', def: '2', cheat: false },
@@ -175,7 +175,7 @@ export const COMMAND_CATEGORIES: CommandCategory[] = [
     id: 'audio',
     name: 'Audio & Sound',
     icon: '\uD83D\uDD0A',
-    desc: 'Adjust volume levels, 3D audio, and audio output settings.',
+    desc: 'Set volume curves, spatial audio parameters, and output device preferences.',
     commands: [
       { cmd: 'volume', desc: 'Master volume (0.0-1.0)', def: '1.0', cheat: false },
       { cmd: 'snd_roundstart_volume', desc: 'Round start music volume (0.0-1.0)', def: '0.04', cheat: false },
@@ -201,7 +201,7 @@ export const COMMAND_CATEGORIES: CommandCategory[] = [
     id: 'graphics',
     name: 'Graphics & Performance',
     icon: '\uD83D\uDDA5\uFE0F',
-    desc: 'Optimize visual settings and FPS performance.',
+    desc: 'Manage rendering quality and squeeze out higher frame rates.',
     commands: [
       { cmd: 'fps_max', desc: 'Maximum framerate cap (0 = unlimited)', def: '400', cheat: false },
       { cmd: 'fps_max_ui', desc: 'Maximum framerate in menus/UI', def: '120', cheat: false },
@@ -220,7 +220,7 @@ export const COMMAND_CATEGORIES: CommandCategory[] = [
     id: 'weapon',
     name: 'Weapon & Shooting',
     icon: '\uD83D\uDD2B',
-    desc: 'Weapon behavior, buy commands, and shooting-related settings.',
+    desc: 'Firearm behaviour, purchase binds, and shooting-related variables.',
     commands: [
       { cmd: 'cl_autowepswitch', desc: 'Auto-switch to picked up weapons (0=off, 1=on)', def: '1', cheat: false },
       { cmd: 'cl_use_opens_buy_menu', desc: 'Use key opens buy menu in buy zone (0=off)', def: '1', cheat: false },
@@ -245,7 +245,7 @@ export const COMMAND_CATEGORIES: CommandCategory[] = [
     id: 'practice',
     name: 'Practice & Training',
     icon: '\uD83C\uDFAF',
-    desc: 'Commands for private practice servers \u2014 most require sv_cheats 1.',
+    desc: 'Offline practice server variables \u2014 the majority need sv_cheats 1 enabled.',
     commands: [
       { cmd: 'sv_cheats', desc: 'Enable cheat-protected commands (0=off, 1=on)', def: '0', cheat: false },
       { cmd: 'noclip', desc: 'Toggle fly mode \u2014 pass through walls and terrain', def: '', cheat: true },
@@ -284,7 +284,7 @@ export const COMMAND_CATEGORIES: CommandCategory[] = [
     id: 'bot',
     name: 'Bot Commands',
     icon: '\uD83E\uDD16',
-    desc: 'Add, remove, and control bots in private/practice matches.',
+    desc: 'Spawn, kick, and manage AI bots during offline or private sessions.',
     commands: [
       { cmd: 'bot_add', desc: 'Add a bot to the game (auto team balance)', def: '', cheat: false },
       { cmd: 'bot_add_t', desc: 'Add a bot to the Terrorist team', def: '', cheat: false },
@@ -306,7 +306,7 @@ export const COMMAND_CATEGORIES: CommandCategory[] = [
     id: 'server',
     name: 'Server & Match',
     icon: '\uD83D\uDDA7',
-    desc: 'Server administration and match settings for private servers.',
+    desc: 'Administrative controls and match configuration for private server hosts.',
     commands: [
       { cmd: 'changelevel', desc: 'Change to a different map (e.g. changelevel de_mirage)', def: '', cheat: false },
       { cmd: 'map', desc: 'Load a map and restart the server (e.g. map de_dust2)', def: '', cheat: false },

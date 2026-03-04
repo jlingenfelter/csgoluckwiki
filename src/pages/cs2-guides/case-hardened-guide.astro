@@ -1,0 +1,642 @@
+---
+import Base from '../../layouts/Base.astro';
+import AuthorBox from '../../components/AuthorBox.astro';
+import { faqSchema, breadcrumbSchema } from '../../lib/weapons';
+
+const title = 'Case Hardened & Blue Gem Pattern Guide — Tier Lists & Pricing | CSGOLuck Wiki';
+const description = 'Your definitive reference for CS2 Case Hardened skins. Covers blue gem classifications, gold gem variants, paint seed lookups, value tiers, and pricing for the AK-47, knives, and other weapons.';
+
+const breadcrumbs = [
+  { name: 'Home', url: '/' },
+  { name: 'Guides', url: '/cs2-guides' },
+  { name: 'Case Hardened & Blue Gem Guide', url: '/cs2-guides/case-hardened-guide' },
+];
+
+const faqs = [
+  {
+    question: 'What is a Blue Gem in CS2?',
+    answer: 'A Blue Gem is a Case Hardened skin with an exceptionally high percentage of bright blue coloring on the playside. These are created by specific paint seed (pattern index) values and are among the rarest and most valuable skins in CS2.',
+  },
+  {
+    question: 'How do I check the pattern index of a Case Hardened skin?',
+    answer: 'Use a float checking tool like CSFloat or the Steam inventory inspector. The pattern index (paint seed) is a number between 0 and 999 that determines the exact blue/gold/purple distribution on every Case Hardened skin.',
+  },
+  {
+    question: 'What is the most expensive AK-47 Case Hardened pattern?',
+    answer: 'Pattern 661, known as the "Scar" pattern, is the most valuable AK-47 Case Hardened. It features a near-complete bright blue top, and in StatTrak Factory New condition, it has sold for hundreds of thousands of dollars.',
+  },
+  {
+    question: 'Does float value affect the blue pattern on Case Hardened skins?',
+    answer: 'No. Float value affects wear and scratches but does not change the blue/gold/purple distribution. The pattern is determined entirely by the paint seed (pattern index). A Battle-Scarred and a Factory New skin with the same seed have the same pattern layout.',
+  },
+  {
+    question: 'What is the difference between a real Fire & Ice Marble Fade and a fake one?',
+    answer: 'A true Fire & Ice Marble Fade has only red and blue coloring with no yellow visible on the playside. A Fake Fire & Ice has a small amount of yellow visible near the spine or tip. Specific paint seed ranges determine whether a pattern is real or fake.',
+  },
+];
+
+const breadcrumbSchema_ = breadcrumbSchema(breadcrumbs);
+const faqSchema_ = faqSchema(faqs);
+
+const articleSchema = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": title,
+  "description": description,
+  "author": { "@type": "Person", "name": "Josh Lingenfelter", "url": "https://www.linkedin.com/in/josh-lingenfelter-8157274b/", "jobTitle": "Director", "worksFor": { "@type": "Organization", "name": "CSGOLuck" } },
+  "publisher": { "@type": "Organization", "name": "CSGOLuck Wiki", "url": "https://wiki.csgoluck.com" },
+  "mainEntityOfPage": "https://wiki.csgoluck.com/cs2-guides/case-hardened-guide/",
+  "inLanguage": "en-US"
+});
+
+const sections = [
+  { id: 'what-are', label: 'What Are Case Hardened' },
+  { id: 'paint-seed', label: 'Paint Seed' },
+  { id: 'blue-gems', label: 'Blue Gem Patterns' },
+  { id: 'gold-gems', label: 'Gold Gem Patterns' },
+  { id: 'ak47', label: 'AK-47 Patterns' },
+  { id: 'karambit', label: 'Karambit Blue Gems' },
+  { id: 'fiveseven', label: 'Five-SeveN Patterns' },
+  { id: 'other-knives', label: 'Other Knife Blue Gems' },
+  { id: 'check-pattern', label: 'Check Pattern Index' },
+  { id: 'price-impact', label: 'Price Impact' },
+  { id: 'trading-tips', label: 'Trading Tips' },
+  { id: 'fake-vs-real', label: 'Fake vs Real' },
+  { id: 'marble-fade', label: 'Marble Fade' },
+  { id: 'other-rare', label: 'Other Rare Patterns' },
+  { id: 'building', label: 'Building a Collection' },
+  { id: 'faq', label: 'FAQ' },
+  { id: 'resources', label: 'Resources' },
+];
+---
+
+<Base title={title} description={description}>
+  <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema_)}></script>
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema_)}></script>
+  <script type="application/ld+json" set:html={articleSchema}></script>
+
+  <div class="chd-wrap">
+    <nav class="chd-breadcrumb">
+      <a href="/">Home</a>
+      <span class="chd-sep">/</span>
+      <a href="/cs2-guides">Guides</a>
+      <span class="chd-sep">/</span>
+      <span>Case Hardened & Blue Gem Guide</span>
+    </nav>
+
+    <header class="chd-header">
+      <h1>Case Hardened & Blue Gem Pattern Guide</h1>
+      <p class="chd-subtitle">Paint seeds, blue gem rankings, gold gem tiers, and market pricing for every Case Hardened item in CS2</p>
+    </header>
+
+    <nav class="chd-toc-mobile" aria-label="Table of contents">
+      {sections.map((s) => (
+        <a href={`#${s.id}`} class="chd-toc-mobile-link">{s.label}</a>
+      ))}
+    </nav>
+
+    <div class="chd-layout">
+      <aside class="chd-sidebar">
+        <nav class="chd-toc" aria-label="Table of contents">
+          <span class="chd-toc-title">Contents</span>
+          {sections.map((s) => (
+            <a href={`#${s.id}`} class="chd-toc-link">{s.label}</a>
+          ))}
+        </nav>
+      </aside>
+
+      <article class="chd-content">
+        <p class="chd-intro">
+          No other CS2 finish is as pattern-dependent as Case Hardened. While most skins live or die by their <a href="/cs2-guides/float-guide/">float value</a>, Case Hardened pricing revolves around the <strong>pattern index</strong> -- a seed between 0 and 999 that dictates the exact mix of blue, gold, and silver on the weapon. The right seed can push an item from pocket-change territory into five-figure collector pricing. Below we cover blue gem rankings, gold gem tiers, pattern identification, and valuation across every Case Hardened weapon and knife.
+        </p>
+
+        <section id="what-are">
+          <div class="chd-section-header"><h2>What Are Case Hardened Skins?</h2></div>
+          <p>
+            Case Hardened is a weapon finish inspired by the real-world metallurgical process of case hardening, which creates a colorful oxide layer on steel. In CS2, Case Hardened skins display a mix of blue, gold (yellow), and purple/silver coloring across the weapon surface. The exact distribution of these colors is determined entirely by the paint seed.
+          </p>
+          <p>
+            Case Hardened skins are available on several weapons through various <a href="/cs2-cases/">cases</a>:
+          </p>
+          <ul class="chd-list">
+            <li><strong><a href="/cs2-skins/" style="color:inherit;text-decoration:underline">AK-47 Case Hardened</a></strong> -- CS:GO Weapon Case (2013), the most iconic and traded Case Hardened skin</li>
+            <li><strong>Five-SeveN Case Hardened</strong> -- CS:GO Weapon Case, popular for pistol round collectors</li>
+            <li><strong>All knife types</strong> -- Karambits, Butterflies, Classics, Huntsman, and more can drop with Case Hardened finish</li>
+            <li><strong>Other weapons</strong> -- Various weapons across different case collections</li>
+          </ul>
+          <p>
+            What makes Case Hardened special is that two skins with the same float value can differ in price by a factor of 100x or more based solely on pattern. This creates one of the most active collector markets in CS2 <a href="/cs2-guides/trading-guide/">trading</a>.
+          </p>
+        </section>
+
+        <section id="paint-seed">
+          <div class="chd-section-header"><h2>How Paint Seed (Pattern Index) Works</h2></div>
+          <p>
+            Every skin in CS2 has a <strong>paint seed</strong> value between 0 and 999 (1,000 possible patterns). This number is randomly assigned when the skin is unboxed or dropped. For most skins, the paint seed causes minor cosmetic differences. For Case Hardened, it completely determines the color layout.
+          </p>
+
+          <h3>How the Pattern Is Generated</h3>
+          <p>
+            CS2 uses a large texture map containing the blue, gold, and purple coloring. The paint seed determines the offset coordinates used when applying this texture to the weapon model. Different seeds sample different regions of the texture, producing wildly different color distributions. Because the texture and mapping are fixed, each pattern index always produces the identical pattern on the same weapon.
+          </p>
+
+          <h3>Key Facts About Paint Seeds</h3>
+          <ul class="chd-list">
+            <li><strong>Range:</strong> 0 to 999 (1,000 unique patterns per weapon)</li>
+            <li><strong>Permanent:</strong> The paint seed never changes -- it is fixed when the item is created</li>
+            <li><strong>Weapon-specific:</strong> Pattern 661 on an AK-47 looks completely different from pattern 661 on a Karambit</li>
+            <li><strong>Independent of float:</strong> Float value controls wear/scratches but has zero effect on color placement</li>
+            <li><strong>Viewable:</strong> You can check any skin's paint seed using <a href="/float-checker/">float checking tools</a> or the Steam inspect link</li>
+          </ul>
+        </section>
+
+        <section id="blue-gems">
+          <div class="chd-section-header"><h2>Blue Gem Patterns Explained</h2></div>
+          <p>
+            "Blue Gem" is the community term for Case Hardened skins with a high percentage of bright blue coloring on the visible (playside) surface. The blue color is the most desirable because of its vivid appearance and rarity -- most patterns are majority gold/purple with limited blue.
+          </p>
+
+          <h3>Tier 1 Blue Gems</h3>
+          <p>
+            Tier 1 patterns have the highest blue coverage, typically 85-98% bright blue on the playside. These are the most valuable and sought-after patterns in the game.
+          </p>
+          <ul class="chd-list">
+            <li>Near-complete or full blue coverage on the playside</li>
+            <li>Minimal gold, purple, or silver intrusions</li>
+            <li>Extremely rare -- only a handful of patterns per weapon qualify</li>
+            <li>Command massive premiums, often 50-500x market price depending on weapon and condition</li>
+            <li>Highly liquid in trading due to strong collector demand</li>
+          </ul>
+
+          <h3>Tier 2 Blue Gems</h3>
+          <p>
+            Tier 2 patterns feature strong blue coverage in the 60-85% range. While not as visually striking as Tier 1, these are still highly collectible.
+          </p>
+          <ul class="chd-list">
+            <li>Majority blue playside with some gold or purple sections</li>
+            <li>More patterns qualify compared to Tier 1, making them more accessible</li>
+            <li>Premiums range from 10-50x market price</li>
+            <li>Often the sweet spot for collectors who want a blue gem without Tier 1 pricing</li>
+          </ul>
+
+          <h3>Tier 3 Blue Gems</h3>
+          <p>
+            Tier 3 covers patterns with notable blue sections in the 40-60% range. These have clear blue presence but are not majority blue.
+          </p>
+          <ul class="chd-list">
+            <li>Significant blue sections mixed with gold and purple</li>
+            <li>Many more patterns fall into this tier</li>
+            <li>Premiums of 2-10x market price</li>
+            <li>Good entry point for blue gem collectors</li>
+          </ul>
+
+          <h3>Tier 4 and Below</h3>
+          <p>
+            Patterns with less than 40% blue are generally considered standard or low-tier. Some may still command small premiums if the blue is concentrated in visually appealing areas (for example, a solid blue magazine on an AK-47), but most trade near market value.
+          </p>
+        </section>
+
+        <section id="gold-gems">
+          <div class="chd-section-header"><h2>Gold Gem Patterns</h2></div>
+          <p>
+            While blue gets the most attention, <strong>Gold Gems</strong> are a separate collector category. Gold Gem patterns feature a near-complete gold/yellow surface with minimal blue or purple.
+          </p>
+          <ul class="chd-list">
+            <li><strong>Definition:</strong> 90%+ solid gold/yellow on the playside with very little blue or purple</li>
+            <li><strong>Value:</strong> Significantly less than equivalent blue gems, but still command premiums of 2-10x market price</li>
+            <li><strong>Demand:</strong> Niche collector market -- gold gems have a dedicated but smaller following</li>
+            <li><strong>Visual appeal:</strong> Clean, uniform gold appearance that looks distinctive in-game</li>
+            <li><strong>Notable patterns:</strong> Specific gold gem seeds exist for each weapon -- community databases track them separately from blue gems</li>
+          </ul>
+          <p>
+            Gold gems are sometimes used as a more affordable alternative for players who want a unique Case Hardened look without blue gem pricing.
+          </p>
+        </section>
+
+        <section id="ak47">
+          <div class="chd-section-header"><h2>AK-47 Case Hardened Patterns</h2></div>
+          <p>
+            The AK-47 Case Hardened is the most iconic and actively traded Case Hardened skin. The community has meticulously cataloged all 1,000 patterns. The "top" of the AK-47 (the area visible during normal gameplay) is the primary valuation surface.
+          </p>
+
+          <h3>Pattern 661 -- "The Scar Pattern"</h3>
+          <p>
+            Pattern 661 is the undisputed king of AK-47 Case Hardened. It features nearly complete blue coverage across the entire top of the receiver. It earned the nickname "Scar" from an early prominent owner. In StatTrak Factory New condition, this pattern has sold for record-breaking amounts, making it one of the most expensive non-souvenir skins in CS2 history.
+          </p>
+          <ul class="chd-list">
+            <li><strong>Blue coverage:</strong> ~98% on the top/body</li>
+            <li><strong>Distinguishing feature:</strong> Full blue top with only a tiny sliver of gold near the wood</li>
+            <li><strong>Price range:</strong> Varies enormously by condition and StatTrak status -- even Battle-Scarred examples command huge premiums</li>
+          </ul>
+
+          <h3>Other Top Tier 1 AK-47 Patterns</h3>
+          <ul class="chd-list">
+            <li><strong>Pattern 387:</strong> One of the cleanest full blue tops, rivaling 661 in visual appeal. Consistently ranks as a top-3 pattern and commands similar premiums to other Tier 1 seeds.</li>
+            <li><strong>Pattern 321:</strong> Excellent blue top coverage with vibrant coloring. A staple Tier 1 pattern that is highly sought by collectors.</li>
+            <li><strong>Pattern 670:</strong> Strong blue coverage across the top with minimal gold interruption. Another Tier 1 favorite.</li>
+            <li><strong>Pattern 955:</strong> Known for its solid blue top section. One of the more recognizable Tier 1 patterns in the market.</li>
+            <li><strong>Pattern 168:</strong> Clean blue top with sharp color transitions. Commonly listed among the top 10 AK-47 Case Hardened patterns.</li>
+          </ul>
+
+          <h3>AK-47 Valuation Areas</h3>
+          <p>
+            When evaluating an AK-47 Case Hardened, these areas matter most for pricing:
+          </p>
+          <ul class="chd-list">
+            <li><strong>Top/Receiver:</strong> The most important area -- this is what you see during gameplay. Blue here drives the majority of value.</li>
+            <li><strong>Magazine:</strong> A fully blue magazine adds a small premium but is secondary to the top. "Blue mag" patterns are a sub-category.</li>
+            <li><strong>Barrel:</strong> Blue on the barrel is appreciated but has the least impact on price since it is less visible during play.</li>
+            <li><strong>Butt/Stock:</strong> Visible in inspect animations. Blue here adds minor value.</li>
+          </ul>
+        </section>
+
+        <section id="karambit">
+          <div class="chd-section-header"><h2>Karambit Case Hardened Blue Gems</h2></div>
+          <p>
+            The Karambit Case Hardened is one of the most valuable knife skins in CS2 when it has a strong blue pattern. The curved blade provides a large, highly visible surface for blue coloring.
+          </p>
+
+          <h3>Top Karambit Patterns</h3>
+          <ul class="chd-list">
+            <li><strong>Pattern 387:</strong> The most famous Karambit blue gem. Near-complete blue on the playside with a clean, vibrant surface. This is the "Scar" equivalent for Karambits and commands the highest prices.</li>
+            <li><strong>Pattern 442:</strong> Strong blue coverage across the blade, often considered the second-best Karambit pattern.</li>
+            <li><strong>Pattern 670:</strong> Another top-tier blue gem with excellent playside coverage.</li>
+            <li><strong>Pattern 463:</strong> Solid blue playside with minimal gold/purple interruptions.</li>
+            <li><strong>Pattern 269:</strong> Well-known Tier 1 pattern with consistent collector demand.</li>
+          </ul>
+
+          <h3>Karambit Valuation Notes</h3>
+          <ul class="chd-list">
+            <li><strong>Playside vs. Backside:</strong> Playside blue is what matters for pricing. A "backside blue gem" (blue on the non-visible side) is worth far less than playside blue.</li>
+            <li><strong>Ring:</strong> Blue on the Karambit ring (the curved handle area) adds noticeable value, especially when combined with a blue blade.</li>
+            <li><strong>Corner:</strong> On lower float Karambits, a clean corner further increases value. A Tier 1 blue gem with a flawless corner is the ultimate collector item.</li>
+          </ul>
+        </section>
+
+        <section id="fiveseven">
+          <div class="chd-section-header"><h2>Five-SeveN Case Hardened Patterns</h2></div>
+          <p>
+            The Five-SeveN Case Hardened is the most popular pistol in the Case Hardened collector market. Because the Five-SeveN is a CT-side starting pistol, blue gems are frequently visible in-game during pistol rounds and eco rounds.
+          </p>
+
+          <h3>Top Five-SeveN Patterns</h3>
+          <ul class="chd-list">
+            <li><strong>Pattern 278:</strong> Considered the best Five-SeveN blue gem with near-complete blue coverage on the top and sides.</li>
+            <li><strong>Pattern 690:</strong> Excellent blue coverage, often ranked in the top 3 for Five-SeveN patterns.</li>
+            <li><strong>Pattern 872:</strong> Strong blue top with clean transitions. A consistent Tier 1 favorite.</li>
+            <li><strong>Pattern 648:</strong> Solid blue coverage that ranks among the best available patterns.</li>
+            <li><strong>Pattern 363:</strong> Another well-known Tier 1 pattern with high collector demand.</li>
+          </ul>
+          <p>
+            Five-SeveN blue gems are significantly more affordable than AK-47 or knife blue gems, making them a popular entry point for collectors looking to <a href="/cs2-guides/skins-investing-guide/">invest in CS2 skins</a>. Even Tier 1 Five-SeveN patterns in Factory New are accessible compared to their AK-47 counterparts.
+          </p>
+        </section>
+
+        <section id="other-knives">
+          <div class="chd-section-header"><h2>Other Knife Case Hardened Blue Gems</h2></div>
+          <p>
+            Case Hardened finish is available on many knife types in CS2. Each knife model has its own set of desirable patterns because the texture mapping is unique to every model.
+          </p>
+
+          <h3>Butterfly Knife Case Hardened</h3>
+          <ul class="chd-list">
+            <li>Large blade surface shows patterns prominently</li>
+            <li>The flip animation showcases both sides of the blade</li>
+            <li>Blue gems command very high premiums due to the Butterfly Knife's popularity</li>
+            <li>Top patterns include seeds with full blue coverage on the playside blade</li>
+          </ul>
+
+          <h3>Classic Knife Case Hardened</h3>
+          <ul class="chd-list">
+            <li>Double-sided blade means both playside and backside are visible during inspect</li>
+            <li>Blue gem patterns with blue on both sides are especially valuable</li>
+            <li>The Classic Knife's simple shape gives clean, uninterrupted blue surfaces</li>
+          </ul>
+
+          <h3>Huntsman Knife Case Hardened</h3>
+          <ul class="chd-list">
+            <li>The large, flat blade surface can display dramatic blue coverage</li>
+            <li>Huntsman blue gems are more affordable than Karambit or Butterfly equivalents</li>
+            <li>Top patterns feature full blue across the wide blade face</li>
+          </ul>
+
+          <h3>Other Notable Knives</h3>
+          <ul class="chd-list">
+            <li><strong>Bayonet:</strong> Long blade with blue gems visible during the spin animation</li>
+            <li><strong>Flip Knife:</strong> Compact blade where blue coverage is very noticeable on the exposed surface</li>
+            <li><strong>Gut Knife:</strong> Budget option for blue gem knife collectors, with lower base prices</li>
+            <li><strong>Falchion Knife:</strong> The unique blade shape creates interesting blue distributions</li>
+            <li><strong>Navaja Knife:</strong> Smallest blade surface, making solid blue patterns stand out</li>
+            <li><strong>Shadow Daggers:</strong> Dual blades mean patterns appear on both daggers</li>
+          </ul>
+        </section>
+
+        <section id="check-pattern">
+          <div class="chd-section-header"><h2>How to Check Pattern Index</h2></div>
+          <p>
+            Checking a skin's pattern index is essential before buying any Case Hardened skin. There are several methods available:
+          </p>
+
+          <h3>Float Checking Tools</h3>
+          <ul class="chd-list">
+            <li><strong>CSFloat Market / Float Checker:</strong> The most popular tool. Paste a Steam inspect link to see float value, paint seed, and paint index. CSFloat also has a marketplace where pattern index is displayed on every listing.</li>
+            <li><strong>Steam Inventory Inspector:</strong> Browser extensions can display paint seed directly on Steam inventory pages and marketplace listings.</li>
+            <li><strong>Third-party marketplaces:</strong> Sites like Buff163 and Skinport display pattern information on listings.</li>
+          </ul>
+
+          <h3>Using Inspect Links</h3>
+          <p>
+            Every CS2 skin has an inspect link (starting with <code>steam://rungame/</code>) that contains the item's data. Float checking tools decode this link to extract:
+          </p>
+          <ul class="chd-list">
+            <li><strong>Float value:</strong> The wear amount (0.00 to 1.00)</li>
+            <li><strong>Paint seed:</strong> The pattern index (0 to 999)</li>
+            <li><strong>Paint index:</strong> The skin type identifier</li>
+            <li><strong>Origin:</strong> How the item was obtained (unboxed, traded, dropped)</li>
+          </ul>
+
+          <h3>Pattern Databases and Maps</h3>
+          <p>
+            The community maintains comprehensive databases showing screenshots of every Case Hardened pattern for popular weapons. These resources let you look up any pattern by seed number and see exactly what it looks like. Blue gem tier lists and rankings are compiled from these databases.
+          </p>
+        </section>
+
+        <section id="price-impact">
+          <div class="chd-section-header"><h2>Price Impact of Patterns</h2></div>
+          <p>
+            The pattern index is the single largest price factor for Case Hardened skins. Understanding how blue percentage translates to value is critical for trading and collecting.
+          </p>
+
+          <h3>General Pricing Guidelines</h3>
+          <ul class="chd-list">
+            <li><strong>0-30% blue (Standard):</strong> Trades at or near market price. No significant premium.</li>
+            <li><strong>30-50% blue (Low Tier):</strong> Small premium of 1.5-3x market price for attractive distributions.</li>
+            <li><strong>50-70% blue (Mid Tier):</strong> Moderate premium of 3-10x market price. These are recognizably "blue" to casual observers.</li>
+            <li><strong>70-85% blue (High Tier):</strong> Significant premium of 10-50x market price. Clear blue gem territory.</li>
+            <li><strong>85%+ blue (Elite Tier):</strong> Massive premium of 50-500x+ market price. The rarest and most expensive patterns.</li>
+          </ul>
+
+          <h3>Factors Beyond Blue Percentage</h3>
+          <ul class="chd-list">
+            <li><strong>Blue placement:</strong> Blue on the most visible areas (top of AK-47, playside of knives) is worth more than blue on less visible surfaces.</li>
+            <li><strong>Blue continuity:</strong> A solid, unbroken block of blue is worth more than scattered blue patches of the same total percentage.</li>
+            <li><strong>Condition:</strong> Factory New commands the highest premiums. Minimal Wear is typically 60-80% of FN pricing. Battle-Scarred blue gems still hold strong value because the pattern is unchanged.</li>
+            <li><strong>StatTrak:</strong> StatTrak versions of top patterns are extremely rare and carry enormous premiums over non-StatTrak.</li>
+            <li><strong>Color vibrancy:</strong> Bright, vivid blue is more desirable than darker or muted blue sections.</li>
+          </ul>
+
+          <h3>Why Battle-Scarred Blue Gems Hold Value</h3>
+          <p>
+            Unlike most skins where Battle-Scarred condition destroys value, Case Hardened blue gems retain significant worth even in BS condition. The blue pattern does not change with float -- only surface scratches increase. Many collectors accept higher wear for top-tier patterns because the blue gem appearance remains intact, and the price is far lower than Factory New of the same pattern.
+          </p>
+        </section>
+
+        <section id="trading-tips">
+          <div class="chd-section-header"><h2>Rare Pattern Trading Tips</h2></div>
+          <p>
+            Trading Case Hardened blue gems requires specialized knowledge beyond what is covered in our general <a href="/cs2-guides/trading-guide/">CS2 trading guide</a>. The market operates differently from standard skin trading.
+          </p>
+
+          <h3>Before Buying</h3>
+          <ul class="chd-list">
+            <li><strong>Always verify the pattern index</strong> -- Never trust screenshots alone. Use a float checker to confirm the paint seed matches what is advertised.</li>
+            <li><strong>Check recent sales data</strong> -- Blue gem prices fluctuate. Look at recent comparable sales on CSFloat, Buff163, or community price checks for the exact pattern.</li>
+            <li><strong>Understand the tier</strong> -- Know whether the pattern is Tier 1, 2, 3, or 4 before negotiating. Reference community tier lists for the specific weapon.</li>
+            <li><strong>Inspect in-game</strong> -- Screenshots can be misleading due to lighting and angles. Use the in-game inspect feature to see the actual appearance.</li>
+          </ul>
+
+          <h3>When Selling</h3>
+          <ul class="chd-list">
+            <li><strong>Patience is critical</strong> -- Blue gems are niche items. Finding the right buyer at the right price can take weeks or months for higher-tier patterns.</li>
+            <li><strong>Provide documentation</strong> -- Include the pattern index, float value, screenshots from multiple angles, and any relevant price history.</li>
+            <li><strong>Use specialized platforms</strong> -- List on communities and marketplaces where blue gem collectors are active. General trading platforms may not have the right audience.</li>
+            <li><strong>Price realistically</strong> -- Overpricing a blue gem leads to indefinite holds. Check what similar patterns have actually sold for, not what they are listed at.</li>
+          </ul>
+
+          <h3>Red Flags in Blue Gem Trading</h3>
+          <ul class="chd-list">
+            <li>Sellers who refuse to share the inspect link or pattern index</li>
+            <li>Screenshots taken at unusual angles to exaggerate blue coverage</li>
+            <li>Claims of a pattern being "Tier 1" without community verification</li>
+            <li>Prices far below market value for the claimed tier (potential scam)</li>
+            <li>Edited or enhanced screenshots that do not match in-game appearance</li>
+          </ul>
+        </section>
+
+        <section id="fake-vs-real">
+          <div class="chd-section-header"><h2>Identifying Fake Blue Gems vs. Real Ones</h2></div>
+          <p>
+            Scams involving Case Hardened skins are common in CS2 trading. Knowing how to verify authenticity protects your investment.
+          </p>
+
+          <h3>Common Scam Methods</h3>
+          <ul class="chd-list">
+            <li><strong>Screenshot manipulation:</strong> Photoshopped or color-enhanced screenshots showing more blue than actually exists. Always verify with the inspect link.</li>
+            <li><strong>Pattern misrepresentation:</strong> Claiming a Tier 3 pattern is Tier 1. Cross-reference the pattern index against community tier lists.</li>
+            <li><strong>Bait and switch:</strong> Advertising one pattern index but trading a different skin. Always check the inspect link immediately before accepting a trade.</li>
+            <li><strong>Backside blue gems sold as playside:</strong> Showing the backside (non-default view) blue and implying it is the playside. Inspect the skin yourself in-game to see the default view.</li>
+            <li><strong>Name tag tricks:</strong> Applying a name tag like "Blue Gem" to a low-tier pattern. Name tags mean nothing -- only the pattern index matters.</li>
+          </ul>
+
+          <h3>Verification Checklist</h3>
+          <ul class="chd-list">
+            <li>Extract the inspect link and run it through a float checker</li>
+            <li>Confirm the paint seed matches the claimed pattern</li>
+            <li>Look up the pattern on a community database with full screenshots</li>
+            <li>Inspect the skin in-game through the Steam marketplace or trade window</li>
+            <li>Compare the in-game appearance against trusted reference images for that seed</li>
+          </ul>
+        </section>
+
+        <section id="marble-fade">
+          <div class="chd-section-header"><h2>Marble Fade Patterns: Fire & Ice Overview</h2></div>
+          <p>
+            While not Case Hardened, Marble Fade is another CS2 finish where the pattern index dramatically affects value. The most sought-after Marble Fade pattern is <strong>Fire & Ice</strong>, which appears on knives with the Marble Fade finish.
+          </p>
+
+          <h3>Fire & Ice Patterns</h3>
+          <p>
+            A true Fire & Ice Marble Fade has only red and blue coloring on the playside with zero yellow visible. The pattern is determined by the paint seed, similar to Case Hardened.
+          </p>
+          <ul class="chd-list">
+            <li><strong>True Fire & Ice (1st Max):</strong> The absolute best ratio of red and blue with no yellow anywhere on the playside. Extremely rare and the most expensive Marble Fade pattern.</li>
+            <li><strong>2nd-10th Max Fire & Ice:</strong> Progressively more yellow creeping in near the spine. Still valuable, with premiums decreasing as the "Max" number increases.</li>
+            <li><strong>Fake Fire & Ice:</strong> A small but visible amount of yellow on the playside. These are significantly cheaper than true Fire & Ice but still command premiums over standard Marble Fades.</li>
+            <li><strong>Tricolor:</strong> Balanced mix of red, blue, and yellow. This is the standard Marble Fade pattern with no Fire & Ice premium.</li>
+          </ul>
+
+          <h3>Fire & Ice by Knife Type</h3>
+          <ul class="chd-list">
+            <li><strong>Karambit Marble Fade:</strong> The most popular Fire & Ice knife. The curved blade makes the red/blue contrast highly visible.</li>
+            <li><strong>Bayonet Marble Fade:</strong> The long blade shows the color gradient clearly. Fire & Ice Bayonets are popular and well-documented.</li>
+            <li><strong>Butterfly Knife Marble Fade:</strong> The large blade surface creates a dramatic Fire & Ice appearance during the flip animation.</li>
+            <li><strong>Flip Knife Marble Fade:</strong> More affordable Fire & Ice option with compact, visible coloring.</li>
+            <li><strong>Talon Knife Marble Fade:</strong> The curved blade shape creates unique Fire & Ice distributions.</li>
+          </ul>
+
+          <h3>Identifying Fire & Ice</h3>
+          <p>
+            Community-maintained guides list the exact paint seed ranges for each Max level. The general process is:
+          </p>
+          <ul class="chd-list">
+            <li>Check the paint seed using a float checker tool</li>
+            <li>Reference the seed against the Fire & Ice index for that specific knife type</li>
+            <li>Determine the Max level (1st Max through 10th Max, or Fake)</li>
+            <li>Inspect in-game to visually confirm no yellow is visible on the playside for true Fire & Ice</li>
+          </ul>
+        </section>
+
+        <section id="other-rare">
+          <div class="chd-section-header"><h2>Other Rare Pattern Skins</h2></div>
+          <p>
+            Case Hardened and Marble Fade are not the only skins where pattern index matters. Several other finishes have pattern-dependent value.
+          </p>
+
+          <h3>AWP | Paw</h3>
+          <ul class="chd-list">
+            <li>Specific paint seeds position the paw print pattern in visually appealing locations on the scope</li>
+            <li>Centered or prominently placed paw prints command premiums</li>
+            <li>The most desirable seeds place the main paw print on the visible body of the AWP</li>
+            <li>Pattern awareness for Paw is newer and less documented than Case Hardened, but collector interest is growing</li>
+          </ul>
+
+          <h3>Glock-18 | Grinder</h3>
+          <ul class="chd-list">
+            <li>The Grinder finish uses a procedural pattern that can result in a nearly all-black appearance on certain seeds</li>
+            <li>"Full black" Grinder patterns with minimal visible pattern lines are the most desirable</li>
+            <li>These are among the most affordable pattern-dependent skins since the Glock-18 Grinder is a common skin</li>
+            <li>A clean, dark appearance is prized for its stealthy in-game look</li>
+          </ul>
+
+          <h3>Other Pattern-Dependent Skins</h3>
+          <ul class="chd-list">
+            <li><strong>Ursus Knife / Stiletto Knife / Paracord Knife Case Hardened:</strong> All follow the same pattern index rules as other knives, with their own unique tier lists</li>
+            <li><strong>Navaja Knife Case Hardened:</strong> Smallest blade surface makes high blue percentage patterns especially striking</li>
+            <li><strong>Nomad Knife Case Hardened:</strong> The wide blade allows for large blue surfaces</li>
+            <li><strong>Doppler Phase patterns:</strong> While technically a different system (phases rather than paint seeds), Doppler knives have their own pattern hierarchy -- Phase 2 (pink) and Phase 4 (blue) are most valuable, with Ruby, Sapphire, and Black Pearl as ultra-rare variants</li>
+          </ul>
+        </section>
+
+        <section id="building">
+          <div class="chd-section-header"><h2>Building a Case Hardened Collection</h2></div>
+          <p>
+            For players interested in collecting Case Hardened skins, here is a recommended approach based on budget level:
+          </p>
+
+          <h3>Budget Collection (Under $200)</h3>
+          <ul class="chd-list">
+            <li>Start with a Five-SeveN Case Hardened Tier 2-3 pattern</li>
+            <li>Look for a Glock-18 Grinder with a clean pattern</li>
+            <li>Consider Well-Worn or Battle-Scarred conditions for better patterns at lower prices</li>
+            <li>Focus on learning pattern identification before investing heavily</li>
+          </ul>
+
+          <h3>Mid-Range Collection ($200-$2,000)</h3>
+          <ul class="chd-list">
+            <li>AK-47 Case Hardened Tier 2 pattern in Minimal Wear or Field-Tested</li>
+            <li>Five-SeveN Case Hardened Tier 1 pattern</li>
+            <li>Budget knife (Gut Knife or Falchion) Case Hardened with notable blue</li>
+            <li>Begin tracking market prices and building trade relationships</li>
+          </ul>
+
+          <h3>High-End Collection ($2,000+)</h3>
+          <ul class="chd-list">
+            <li>AK-47 Case Hardened Tier 1 pattern</li>
+            <li>Karambit, Butterfly, or other premium knife blue gems</li>
+            <li>StatTrak versions of desirable patterns</li>
+            <li>Marble Fade Fire & Ice knives</li>
+            <li>Complete sets (matching patterns across multiple weapons)</li>
+          </ul>
+        </section>
+
+        <section id="faq">
+          <div class="chd-section-header"><h2>Frequently Asked Questions</h2></div>
+          <div class="chd-faq-list">
+            {faqs.map((faq) => (
+              <details class="chd-faq-item">
+                <summary class="chd-faq-question">{faq.question}</summary>
+                <p class="chd-faq-answer">{faq.answer}</p>
+              </details>
+            ))}
+          </div>
+        </section>
+
+        <section id="resources">
+          <div class="chd-section-header"><h2>Related Resources</h2></div>
+          <div class="chd-resources-grid">
+            <a href="/cs2-guides/" class="chd-resource-card"><span class="chd-resource-name">All Guides</span><span class="chd-resource-arrow">&rarr;</span></a>
+            <a href="/cs2-guides/float-guide/" class="chd-resource-card"><span class="chd-resource-name">Float Value Guide</span><span class="chd-resource-arrow">&rarr;</span></a>
+            <a href="/float-checker/" class="chd-resource-card"><span class="chd-resource-name">Float Checker Tool</span><span class="chd-resource-arrow">&rarr;</span></a>
+            <a href="/cs2-skins/" class="chd-resource-card"><span class="chd-resource-name">Skins Database</span><span class="chd-resource-arrow">&rarr;</span></a>
+            <a href="/cs2-guides/trading-guide/" class="chd-resource-card"><span class="chd-resource-name">Trading Guide</span><span class="chd-resource-arrow">&rarr;</span></a>
+            <a href="/cs2-guides/skins-investing-guide/" class="chd-resource-card"><span class="chd-resource-name">Skins Investing Guide</span><span class="chd-resource-arrow">&rarr;</span></a>
+            <a href="/skin-compare/" class="chd-resource-card"><span class="chd-resource-name">Skin Compare</span><span class="chd-resource-arrow">&rarr;</span></a>
+          </div>
+        </section>
+      </article>
+    </div>
+  </div>
+
+  <style>
+    .chd-wrap{max-width:1100px;margin:0 auto;padding:0 1.5rem 2rem}
+    .chd-breadcrumb{display:flex;align-items:center;gap:.5rem;padding:1.25rem 0;font-size:.85rem;color:var(--text2)}
+    .chd-breadcrumb a{color:var(--accent);text-decoration:none}
+    .chd-breadcrumb a:hover{color:var(--accent2)}
+    .chd-sep{color:var(--border)}
+    .chd-header{padding:1.5rem 0 1.25rem;border-bottom:2px solid var(--accent);margin-bottom:1.5rem}
+    .chd-header h1{margin:0 0 .35rem;font-size:2.2rem;font-weight:800;color:var(--text);letter-spacing:-.02em;line-height:1.2}
+    .chd-subtitle{margin:0;font-size:1.05rem;color:var(--text2);font-weight:400}
+    .chd-toc-mobile{display:none}
+    .chd-layout{display:grid;grid-template-columns:220px 1fr;gap:2.5rem;align-items:start}
+    .chd-sidebar{position:sticky;top:80px}
+    .chd-toc{display:flex;flex-direction:column;gap:0;border-left:2px solid var(--border);padding-left:0}
+    .chd-toc-title{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--accent);padding:0 0 .6rem 1rem}
+    .chd-toc-link{display:block;padding:.4rem 1rem;font-size:.82rem;color:var(--text2);text-decoration:none;border-left:2px solid transparent;margin-left:-2px;transition:color .2s,border-color .2s}
+    .chd-toc-link:hover{color:var(--text);border-left-color:var(--accent)}
+    .chd-content{min-width:0}
+    .chd-intro{font-size:1rem;line-height:1.8;color:var(--text2);margin-bottom:2rem}
+    .chd-section-header{background:rgba(46,204,113,.05);margin:0 -1.25rem 1.25rem;padding:.75rem 1.25rem;border-radius:4px}
+    .chd-section-header h2{margin:0;padding:0;font-size:1.5rem;font-weight:700;color:var(--text);border:none;letter-spacing:-.01em}
+    section{margin-bottom:2.5rem}
+    h3{font-size:1.15rem;font-weight:600;margin:1.5rem 0 .6rem;color:var(--text)}
+    p{line-height:1.7;color:var(--text2);margin-bottom:1rem}
+    .chd-list{list-style:none;padding:0;margin:.75rem 0 1.5rem}
+    .chd-list li{padding:.4rem 0 .4rem 1.6rem;position:relative;color:var(--text2);line-height:1.65}
+    .chd-list li::before{content:'';position:absolute;left:.25rem;top:.75rem;width:6px;height:6px;background:var(--accent);border-radius:1px}
+    .chd-list li strong{color:var(--text)}
+    code{background:var(--bg3);padding:.15rem .4rem;border-radius:3px;font-size:.85em;color:var(--accent);font-family:'Courier New',Courier,monospace}
+    .chd-faq-list{display:flex;flex-direction:column;gap:.5rem}
+    .chd-faq-item{background:var(--bg2);border:1px solid var(--border);border-radius:4px;overflow:hidden}
+    .chd-faq-question{display:block;padding:1rem 1.25rem;font-size:.95rem;font-weight:600;color:var(--text);cursor:pointer;list-style:none;position:relative;padding-right:2.5rem;transition:background .2s}
+    .chd-faq-question::-webkit-details-marker{display:none}
+    .chd-faq-question::after{content:'+';position:absolute;right:1.25rem;top:50%;transform:translateY(-50%);font-size:1.2rem;color:var(--accent);font-weight:700}
+    .chd-faq-item[open] .chd-faq-question::after{content:'\2212'}
+    .chd-faq-item[open] .chd-faq-question{border-bottom:1px solid var(--border);background:rgba(46,204,113,.03)}
+    .chd-faq-question:hover{background:rgba(46,204,113,.03)}
+    .chd-faq-answer{padding:1rem 1.25rem;margin:0;font-size:.9rem;color:var(--text2);line-height:1.7}
+    .chd-resources-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.6rem;margin:.5rem 0 1.5rem}
+    .chd-resource-card{display:flex;align-items:center;justify-content:space-between;padding:.75rem 1rem;background:var(--bg2);border:1px solid var(--border);border-radius:4px;text-decoration:none;border-left:2px solid transparent;transition:border-left-color .2s,color .2s}
+    .chd-resource-card:hover{border-left-color:var(--accent)}
+    .chd-resource-name{font-size:.88rem;color:var(--text2);font-weight:500;transition:color .2s}
+    .chd-resource-card:hover .chd-resource-name{color:var(--text)}
+    .chd-resource-arrow{font-size:1rem;color:var(--accent);opacity:0;transition:opacity .2s}
+    .chd-resource-card:hover .chd-resource-arrow{opacity:1}
+    @media(max-width:860px){
+      .chd-layout{grid-template-columns:1fr;gap:0}
+      .chd-sidebar{display:none}
+      .chd-toc-mobile{display:flex;gap:.25rem;overflow-x:auto;padding:.75rem 0;margin-bottom:1rem;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+      .chd-toc-mobile::-webkit-scrollbar{display:none}
+      .chd-toc-mobile-link{flex-shrink:0;padding:.35rem .75rem;font-size:.78rem;font-weight:600;color:var(--text2);background:var(--bg2);border:1px solid var(--border);border-radius:4px;text-decoration:none;white-space:nowrap;transition:color .2s,border-color .2s}
+      .chd-toc-mobile-link:hover{color:var(--accent);border-color:var(--accent)}
+      .chd-header h1{font-size:1.7rem}
+      .chd-section-header{margin:0 -1rem 1rem;padding:.6rem 1rem}
+      .chd-resources-grid{grid-template-columns:repeat(2,1fr)}
+    }
+    @media(max-width:600px){
+      .chd-wrap{padding:0 1rem 1.5rem}
+      .chd-resources-grid{grid-template-columns:1fr}
+      .chd-header h1{font-size:1.5rem}
+    }
+  </style>
+  <AuthorBox updated="2026-03-02" />
+</Base>

@@ -1,7 +1,7 @@
 // All CS2 competitive ranks data
 export const allRanks = [
   {
-    slug: 'silver-1', rank: 'Silver 1', abbr: 'S1', color: '#C0C0C0', percentage: 5, tier: 'Silver',
+    slug: 'silver-1', rank: 'Silver 1', abbr: 'S1', color: '#C0C0C0', percentage: 5, tier: 'Silver', image: '/images/ranks/silver-1.png',
     premierRange: '0 – 2,999', percentile: 'Bottom 5%',
     description: 'Silver 1 is the entry-level rank in CS2, representing players who are brand new to the game or still learning the very basics. At this rank, players are discovering mechanics like movement, aiming, buying weapons, and basic map layouts.',
     tips: [
@@ -15,7 +15,7 @@ export const allRanks = [
     avgKD: '0.60 – 0.75', avgADR: '40 – 55', avgHS: '20 – 30%',
   },
   {
-    slug: 'silver-2', rank: 'Silver 2', abbr: 'S2', color: '#C0C0C0', percentage: 5, tier: 'Silver',
+    slug: 'silver-2', rank: 'Silver 2', abbr: 'S2', color: '#C0C0C0', percentage: 5, tier: 'Silver', image: '/images/ranks/silver-2.png',
     premierRange: '1,000 – 3,499', percentile: '5 – 10%',
     description: 'Silver 2 players have a basic understanding of CS2 but are still developing core skills. You\'ll see improvement in aim consistency and beginning awareness of game mechanics like economy.',
     tips: [
@@ -29,7 +29,7 @@ export const allRanks = [
     avgKD: '0.65 – 0.80', avgADR: '45 – 60', avgHS: '22 – 32%',
   },
   {
-    slug: 'silver-3', rank: 'Silver 3', abbr: 'S3', color: '#C0C0C0', percentage: 6, tier: 'Silver',
+    slug: 'silver-3', rank: 'Silver 3', abbr: 'S3', color: '#C0C0C0', percentage: 6, tier: 'Silver', image: '/images/ranks/silver-3.png',
     premierRange: '2,000 – 4,499', percentile: '10 – 16%',
     description: 'Silver 3 players are starting to develop consistent aiming habits and understand basic strategies. Map knowledge is improving but utility usage remains limited.',
     tips: [
@@ -43,7 +43,7 @@ export const allRanks = [
     avgKD: '0.70 – 0.85', avgADR: '48 – 63', avgHS: '24 – 34%',
   },
   {
-    slug: 'silver-4', rank: 'Silver 4', abbr: 'S4', color: '#C0C0C0', percentage: 6, tier: 'Silver',
+    slug: 'silver-4', rank: 'Silver 4', abbr: 'S4', color: '#C0C0C0', percentage: 6, tier: 'Silver', image: '/images/ranks/silver-4.png',
     premierRange: '3,000 – 5,499', percentile: '16 – 22%',
     description: 'Silver 4 represents the upper end of Silver. Players here have decent basic skills and are ready to take the next step into Gold Nova territory with focused practice.',
     tips: [
@@ -57,7 +57,7 @@ export const allRanks = [
     avgKD: '0.75 – 0.90', avgADR: '52 – 67', avgHS: '26 – 36%',
   },
   {
-    slug: 'silver-elite', rank: 'Silver Elite', abbr: 'SE', color: '#D3D3D3', percentage: 7, tier: 'Silver',
+    slug: 'silver-elite', rank: 'Silver Elite', abbr: 'SE', color: '#D3D3D3', percentage: 7, tier: 'Silver', image: '/images/ranks/silver-elite.png',
     premierRange: '4,000 – 6,499', percentile: '22 – 29%',
     description: 'Silver Elite players have solid foundational skills and are starting to develop game sense. Aim is becoming more consistent and basic utility usage is part of the toolkit.',
     tips: [
@@ -71,7 +71,7 @@ export const allRanks = [
     avgKD: '0.80 – 0.95', avgADR: '55 – 70', avgHS: '28 – 38%',
   },
   {
-    slug: 'silver-elite-master', rank: 'Silver Elite Master', abbr: 'SEM', color: '#D3D3D3', percentage: 8, tier: 'Silver',
+    slug: 'silver-elite-master', rank: 'Silver Elite Master', abbr: 'SEM', color: '#D3D3D3', percentage: 8, tier: 'Silver', image: '/images/ranks/silver-elite-master.png',
     premierRange: '5,000 – 7,499', percentile: '29 – 37%',
     description: 'SEM is the highest Silver rank and the gateway to Gold Nova. Players here have competent aim and basic game understanding but need to refine decision-making and utility usage to rank up.',
     tips: [
@@ -85,7 +85,7 @@ export const allRanks = [
     avgKD: '0.85 – 1.00', avgADR: '58 – 73', avgHS: '30 – 40%',
   },
   {
-    slug: 'gold-nova-1', rank: 'Gold Nova 1', abbr: 'GN1', color: '#FFD700', percentage: 10, tier: 'Gold Nova',
+    slug: 'gold-nova-1', rank: 'Gold Nova 1', abbr: 'GN1', color: '#FFD700', percentage: 10, tier: 'Gold Nova', image: '/images/ranks/gold-nova-1.png',
     premierRange: '6,500 – 9,499', percentile: '37 – 47%',
     description: 'Gold Nova 1 marks the transition from Silver to the Gold ranks. Players here have competent aim, use utility regularly, and understand basic team strategies. This is often considered the "average" starting point.',
     tips: [
@@ -99,7 +99,7 @@ export const allRanks = [
     avgKD: '0.90 – 1.05', avgADR: '62 – 77', avgHS: '32 – 42%',
   },
   {
-    slug: 'gold-nova-2', rank: 'Gold Nova 2', abbr: 'GN2', color: '#FFD700', percentage: 11, tier: 'Gold Nova',
+    slug: 'gold-nova-2', rank: 'Gold Nova 2', abbr: 'GN2', color: '#FFD700', percentage: 11, tier: 'Gold Nova', image: '/images/ranks/gold-nova-2.png',
     premierRange: '7,500 – 10,999', percentile: '47 – 58%',
     description: 'Gold Nova 2 is the most populated rank in CS2. Players here represent the true average skill level with competent mechanics and developing game sense.',
     tips: [
@@ -113,7 +113,7 @@ export const allRanks = [
     avgKD: '0.95 – 1.08', avgADR: '65 – 80', avgHS: '34 – 44%',
   },
   {
-    slug: 'gold-nova-3', rank: 'Gold Nova 3', abbr: 'GN3', color: '#FFD700', percentage: 10, tier: 'Gold Nova',
+    slug: 'gold-nova-3', rank: 'Gold Nova 3', abbr: 'GN3', color: '#FFD700', percentage: 10, tier: 'Gold Nova', image: '/images/ranks/gold-nova-3.png',
     premierRange: '9,000 – 12,499', percentile: '58 – 68%',
     description: 'Gold Nova 3 players are above average with solid aim fundamentals and good map knowledge. Breaking through to Master Guardian requires refining game sense and decision-making.',
     tips: [
@@ -127,7 +127,7 @@ export const allRanks = [
     avgKD: '0.98 – 1.12', avgADR: '68 – 83', avgHS: '36 – 46%',
   },
   {
-    slug: 'gold-nova-master', rank: 'Gold Nova Master', abbr: 'GNM', color: '#FFA500', percentage: 9, tier: 'Gold Nova',
+    slug: 'gold-nova-master', rank: 'Gold Nova Master', abbr: 'GNM', color: '#FFA500', percentage: 9, tier: 'Gold Nova', image: '/images/ranks/gold-nova-master.png',
     premierRange: '10,500 – 13,999', percentile: '68 – 77%',
     description: 'Gold Nova Master is the final Gold rank and a stepping stone to MG. Players here have good aim, decent utility usage, and are developing advanced game sense.',
     tips: [
@@ -141,7 +141,7 @@ export const allRanks = [
     avgKD: '1.00 – 1.15', avgADR: '70 – 85', avgHS: '38 – 48%',
   },
   {
-    slug: 'master-guardian-1', rank: 'Master Guardian 1', abbr: 'MG1', color: '#4169E1', percentage: 8, tier: 'Master Guardian',
+    slug: 'master-guardian-1', rank: 'Master Guardian 1', abbr: 'MG1', color: '#4169E1', percentage: 8, tier: 'Master Guardian', image: '/images/ranks/master-guardian-1.png',
     premierRange: '12,000 – 15,999', percentile: '77 – 85%',
     description: 'MG1 is where CS2 starts getting serious. Players have strong aim, good utility usage, and developing tactical awareness. Games are noticeably more structured than Gold Nova.',
     tips: [
@@ -155,7 +155,7 @@ export const allRanks = [
     avgKD: '1.02 – 1.18', avgADR: '73 – 88', avgHS: '40 – 50%',
   },
   {
-    slug: 'master-guardian-2', rank: 'Master Guardian 2', abbr: 'MG2', color: '#4169E1', percentage: 6, tier: 'Master Guardian',
+    slug: 'master-guardian-2', rank: 'Master Guardian 2', abbr: 'MG2', color: '#4169E1', percentage: 6, tier: 'Master Guardian', image: '/images/ranks/master-guardian-2.png',
     premierRange: '13,500 – 17,499', percentile: '85 – 91%',
     description: 'MG2 players have refined skills across all core mechanics. Games are competitive, and players who reach this rank have put significant time into improving.',
     tips: [
@@ -169,7 +169,7 @@ export const allRanks = [
     avgKD: '1.05 – 1.20', avgADR: '75 – 90', avgHS: '42 – 52%',
   },
   {
-    slug: 'master-guardian-elite', rank: 'Master Guardian Elite', abbr: 'MGE', color: '#1E90FF', percentage: 4, tier: 'Master Guardian',
+    slug: 'master-guardian-elite', rank: 'Master Guardian Elite', abbr: 'MGE', color: '#1E90FF', percentage: 4, tier: 'Master Guardian', image: '/images/ranks/master-guardian-elite.png',
     premierRange: '15,000 – 19,499', percentile: '91 – 95%',
     description: 'MGE is the top of Master Guardian and gateway to the elite ranks. Players here have excellent fundamentals and are starting to develop the game sense that separates good players from great ones.',
     tips: [
@@ -183,7 +183,7 @@ export const allRanks = [
     avgKD: '1.08 – 1.22', avgADR: '78 – 92', avgHS: '44 – 54%',
   },
   {
-    slug: 'distinguished-master-guardian', rank: 'Distinguished Master Guardian', abbr: 'DMG', color: '#20B2AA', percentage: 3, tier: 'Distinguished',
+    slug: 'distinguished-master-guardian', rank: 'Distinguished Master Guardian', abbr: 'DMG', color: '#20B2AA', percentage: 3, tier: 'Distinguished', image: '/images/ranks/distinguished-master-guardian.png',
     premierRange: '17,500 – 21,999', percentile: '95 – 98%',
     description: 'DMG is a prestigious rank that puts you in the top 5% of players. At this level, players have excellent aim, strong game sense, and consistent tactical play.',
     tips: [
@@ -197,7 +197,7 @@ export const allRanks = [
     avgKD: '1.10 – 1.25', avgADR: '80 – 95', avgHS: '46 – 56%',
   },
   {
-    slug: 'legendary-eagle', rank: 'Legendary Eagle', abbr: 'LE', color: '#008B8B', percentage: 2, tier: 'Legendary',
+    slug: 'legendary-eagle', rank: 'Legendary Eagle', abbr: 'LE', color: '#008B8B', percentage: 2, tier: 'Legendary', image: '/images/ranks/legendary-eagle.png',
     premierRange: '20,000 – 24,999', percentile: '98 – 99%',
     description: 'Legendary Eagle players are in the top 2% of all CS2 players. Mechanical skill is extremely refined, and game sense approaches a near-professional level.',
     tips: [
@@ -211,7 +211,7 @@ export const allRanks = [
     avgKD: '1.15 – 1.30', avgADR: '82 – 97', avgHS: '48 – 58%',
   },
   {
-    slug: 'legendary-eagle-master', rank: 'Legendary Eagle Master', abbr: 'LEM', color: '#00CED1', percentage: 1.5, tier: 'Legendary',
+    slug: 'legendary-eagle-master', rank: 'Legendary Eagle Master', abbr: 'LEM', color: '#00CED1', percentage: 1.5, tier: 'Legendary', image: '/images/ranks/legendary-eagle-master.png',
     premierRange: '22,500 – 27,499', percentile: '99 – 99.5%',
     description: 'LEM puts you in the top 1.5% of players globally. At this level, every game is highly competitive with skilled opponents. Small differences in decision-making separate wins from losses.',
     tips: [
@@ -225,7 +225,7 @@ export const allRanks = [
     avgKD: '1.18 – 1.35', avgADR: '85 – 100', avgHS: '50 – 60%',
   },
   {
-    slug: 'supreme-master-first-class', rank: 'Supreme Master First Class', abbr: 'SMFC', color: '#FF4500', percentage: 0.7, tier: 'Supreme',
+    slug: 'supreme-master-first-class', rank: 'Supreme Master First Class', abbr: 'SMFC', color: '#FF4500', percentage: 0.7, tier: 'Supreme', image: '/images/ranks/supreme-master-first-class.png',
     premierRange: '25,000 – 29,999', percentile: '99.5 – 99.7%',
     description: 'SMFC is the second-highest competitive rank. Players here operate at a near-professional level with exceptional aim, game sense, and tactical understanding.',
     tips: [
@@ -239,7 +239,7 @@ export const allRanks = [
     avgKD: '1.20 – 1.40', avgADR: '88 – 105', avgHS: '52 – 62%',
   },
   {
-    slug: 'global-elite', rank: 'Global Elite', abbr: 'GE', color: '#FFD700', percentage: 0.3, tier: 'Global Elite',
+    slug: 'global-elite', rank: 'Global Elite', abbr: 'GE', color: '#FFD700', percentage: 0.3, tier: 'Global Elite', image: '/images/ranks/global-elite.png',
     premierRange: '30,000+', percentile: 'Top 0.3%',
     description: 'Global Elite is the highest rank in CS2 competitive matchmaking. Only 0.3% of the player base reaches this level. These are players with professional-level mechanics, game sense, and tactical understanding.',
     tips: [

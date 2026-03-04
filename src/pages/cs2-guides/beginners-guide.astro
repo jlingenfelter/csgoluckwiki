@@ -1,0 +1,344 @@
+---
+import Base from '../../layouts/Base.astro';
+import AuthorBox from '../../components/AuthorBox.astro';
+import { faqSchema, breadcrumbSchema } from '../../lib/weapons';
+
+const title = "CS2 Beginner's Guide — Your First Steps in Counter-Strike 2 | CSGOLuck Wiki";
+const description = 'A ground-up introduction to Counter-Strike 2 covering player movement, firing mechanics, round economy essentials, and must-know map callouts for newcomers.';
+
+const breadcrumbs = [
+  { name: 'Home', url: '/' },
+  { name: 'Guides', url: '/cs2-guides' },
+  { name: "Beginner's Guide", url: '/cs2-guides/beginners-guide' },
+];
+
+const faqs = [
+  {
+    question: 'What are the basic movement controls?',
+    answer: 'Use WASD keys to move, Space to jump, Ctrl to crouch, and Shift to walk/move slowly. Practice movement accuracy in deathmatch modes.',
+  },
+  {
+    question: 'How do I improve my spray control?',
+    answer: 'Master one weapon at a time. The AK-47 and M4 have unique spray patterns. Practice in aim trainers and community maps to develop muscle memory.',
+  },
+  {
+    question: 'What does economy mean in CS2?',
+    answer: 'Economy refers to your team\'s money management. Players earn money from kills, objective completion, and round wins. You must manage purchases across multiple rounds.',
+  },
+  {
+    question: 'What\'s the difference between buy and eco rounds?',
+    answer: 'A buy round is when your team purchases weapons and utility. An eco (economy) round is when you save money, buying minimal items to conserve funds for future rounds.',
+  },
+  {
+    question: 'How many players are on each team?',
+    answer: 'Counter-Strike 2 competitive matches feature 5v5 teams. Each player has a specific role: entry fragger, support, lurker, in-game leader, and AWPer.',
+  },
+];
+
+const breadcrumbSchema_ = breadcrumbSchema(breadcrumbs);
+const faqSchema_ = faqSchema(faqs);
+
+const articleSchema = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": title,
+  "description": description,
+  "author": { "@type": "Person", "name": "Josh Lingenfelter", "url": "https://www.linkedin.com/in/josh-lingenfelter-8157274b/", "jobTitle": "Director", "worksFor": { "@type": "Organization", "name": "CSGOLuck" } },
+  "publisher": { "@type": "Organization", "name": "CSGOLuck Wiki", "url": "https://wiki.csgoluck.com" },
+  "mainEntityOfPage": `https://wiki.csgoluck.com/cs2-guides/beginners-guide/`,
+  "inLanguage": "en-US"
+});
+
+const sections = [
+  { id: 'movement', label: 'Movement' },
+  { id: 'shooting', label: 'Shooting & Aiming' },
+  { id: 'economy', label: 'Economy' },
+  { id: 'maps', label: 'Map Callouts' },
+  { id: 'gamesense', label: 'Game Sense' },
+  { id: 'tips', label: 'Pro Tips' },
+  { id: 'faq', label: 'FAQ' },
+  { id: 'resources', label: 'Resources' },
+];
+---
+
+<Base title={title} description={description}>
+  <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema_)}></script>
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema_)}></script>
+  <script type="application/ld+json" set:html={articleSchema}></script>
+
+  <div class="bg-wrap">
+    <nav class="bg-breadcrumb">
+      <a href="/">Home</a>
+      <span class="bg-sep">/</span>
+      <a href="/cs2-guides">Guides</a>
+      <span class="bg-sep">/</span>
+      <span>Beginner's Guide</span>
+    </nav>
+
+    <header class="bg-header">
+      <h1>Counter-Strike 2 Beginner's Guide</h1>
+      <p class="bg-subtitle">Everything you need to hit the ground running in competitive CS2</p>
+    </header>
+
+    <nav class="bg-toc-mobile" aria-label="Table of contents">
+      {sections.map((s) => (
+        <a href={`#${s.id}`} class="bg-toc-mobile-link">{s.label}</a>
+      ))}
+    </nav>
+
+    <div class="bg-layout">
+      <aside class="bg-sidebar">
+        <nav class="bg-toc" aria-label="Table of contents">
+          <span class="bg-toc-title">Contents</span>
+          {sections.map((s) => (
+            <a href={`#${s.id}`} class="bg-toc-link">{s.label}</a>
+          ))}
+        </nav>
+      </aside>
+
+      <article class="bg-content">
+        <p class="bg-intro">
+          CS2 pits two five-player squads against each other in round-based tactical combat. Climbing the ranks means sharpening your aim, nailing your movement, reading the economy, and memorizing map callouts. Below you will find the core knowledge every newcomer should absorb before queueing up.
+        </p>
+
+        <section id="movement">
+          <div class="bg-section-header"><h2>Movement & Navigation</h2></div>
+          <p>Clean movement is the backbone of every CS2 engagement. Learning how each key input affects your speed, noise, and accuracy will sharpen both your positioning and your ability to outmanoeuvre opponents. For a deeper dive into strafing, bunny hopping, and air control, see our dedicated <a href="/cs2-guides/movement-guide/">movement guide</a>.</p>
+
+          <h3>Basic Controls</h3>
+          <ul class="bg-list">
+            <li><strong>W/A/S/D:</strong> Move forward, left, backward, right</li>
+            <li><strong>Space:</strong> Jump for mobility and reaching elevated areas</li>
+            <li><strong>Ctrl:</strong> Crouch for stability and noise reduction</li>
+            <li><strong>Shift:</strong> Walk slowly for silent movement</li>
+          </ul>
+
+          <h3>Movement Techniques</h3>
+          <p>Once you are comfortable with the basics, layer in counter-strafing (tapping the opposite direction key for an instant stop) and bunny hopping (chaining jumps to carry momentum across the map). These techniques are explored in detail in the <a href="/cs2-guides/advanced-mechanics-guide/">advanced mechanics guide</a>.</p>
+
+          <h3>Positioning</h3>
+          <p>Stay aware of where your teammates and opponents are at all times. Hug cover, exploit favourable sightlines, and resist the urge to sprint headlong at an enemy -- deliberate angle play wins more duels than raw aggression.</p>
+        </section>
+
+        <section id="shooting">
+          <div class="bg-section-header"><h2>Shooting & Aiming</h2></div>
+          <p>Gunplay in CS2 revolves around recoil control and timing. Pick a single primary rifle and drill it until its spray pattern is second nature before adding other weapons to your repertoire. Browse every rifle, SMG, and pistol in the <a href="/cs2-weapons/">weapon database</a> and study their <a href="/recoil-patterns/">recoil patterns</a> to know exactly what you are up against.</p>
+
+          <h3>Weapon Fundamentals</h3>
+          <ul class="bg-list">
+            <li><strong>Accuracy:</strong> Standing still and crouching improves accuracy</li>
+            <li><strong>Recoil:</strong> Each weapon has a unique recoil pattern you must learn</li>
+            <li><strong>Tap-firing:</strong> Single shots for long-distance accuracy</li>
+            <li><strong>Spraying:</strong> Sustained fire for close-range engagements</li>
+          </ul>
+
+          <h3>Primary Weapons</h3>
+          <p><strong>AK-47 (Terrorist):</strong> High damage, steep recoil. Practice the vertical spray pattern before widening your shots.</p>
+          <p><strong>M4A4 / M4A1-S (Counter-Terrorist):</strong> Lower damage than AK but easier recoil control. The M4A1-S has reduced fire rate for easier spraying.</p>
+
+          <h3>Crosshair Placement</h3>
+          <p>Keep your reticle locked at head height and pre-positioned on the angles where enemies are most likely to appear. Doing so slashes the distance you need to flick and dramatically boosts your first-shot kill rate. Use the <a href="/crosshair-generator/">crosshair generator</a> to design a reticle that makes head-level tracking second nature, or check out our <a href="/cs2-guides/crosshair-guide/">crosshair customisation guide</a> for in-depth settings.</p>
+        </section>
+
+        <section id="economy">
+          <div class="bg-section-header"><h2>Economy & Buying</h2></div>
+          <p>How your squad spends money is just as important as how it shoots. Coordinated purchasing ensures full weapon loadouts on key rounds and prevents your team from ever being caught completely broke. Our full <a href="/cs2-guides/economy-guide/">economy management guide</a> covers buy cycles, eco discipline, and force-buy timing in depth.</p>
+
+          <h3>How Money Works</h3>
+          <ul class="bg-list">
+            <li><strong>Round Win:</strong> $2,900 (plus base money)</li>
+            <li><strong>Round Loss:</strong> $1,400 base loss bonus (increases each loss)</li>
+            <li><strong>Plant Bomb:</strong> +$300 for Terrorists</li>
+            <li><strong>Kill:</strong> $300 per kill</li>
+          </ul>
+
+          <h3>Buy Rounds</h3>
+          <p>Following a round win, commit to a complete loadout the next round -- that means a primary rifle, full armor, and a set of grenades. Budget roughly $4,000-$5,000 per player for a proper full buy.</p>
+
+          <h3>Eco Rounds</h3>
+          <p>When funds run low, an eco round keeps spending to a bare minimum -- just pistols and maybe a single flash -- so your bank account recovers. Losing the eco stings less when you know the next round will feature a full team buy.</p>
+
+          <h3>Force Buys</h3>
+          <p>A force buy is a deliberate gamble where the team spends nearly everything on rifles and light utility even though the bank is thin. It pays off when you desperately need a momentum swing before the economy can fully reset.</p>
+        </section>
+
+        <section id="maps">
+          <div class="bg-section-header"><h2>Map Knowledge & Callouts</h2></div>
+          <p>Effective callouts win rounds. Memorise the community-agreed names for each position on the <a href="/cs2-maps/">maps</a> you play so that a single word instantly tells your teammates exactly where a threat is.</p>
+
+          <h3>Common Callout Areas</h3>
+          <ul class="bg-list">
+            <li><strong>Bomb Sites A/B:</strong> Primary objectives for Terrorists to plant the bomb</li>
+            <li><strong>Mid:</strong> Central map area controlling rotations and information</li>
+            <li><strong>Rotations:</strong> Pathways between bomb sites used by defenders</li>
+            <li><strong>Utility Spots:</strong> Positions where grenades are thrown from</li>
+            <li><strong>Armor/Plant:</strong> Positions for specific tactics</li>
+          </ul>
+
+          <h3>Callout Tips</h3>
+          <p>The fastest way to absorb callouts is repetition -- queue the same map until names stick. Many community maps paint the callouts on the ground. Keep comms short: "Two A site" beats a paragraph every time.</p>
+
+          <h3>Using Callouts in Game</h3>
+          <p>The instant you spot an opponent, relay their position. A call like "One main, one library" gives your squad precise intel to decide whether to hold, rotate, or push. Timely information is the difference between clutching and losing.</p>
+        </section>
+
+        <section id="gamesense">
+          <div class="bg-section-header"><h2>Game Sense & Decision Making</h2></div>
+          <p>Game sense is built over hundreds of rounds, but knowing the right concepts early on fast-tracks the process considerably.</p>
+
+          <h3>Information Trading</h3>
+          <p>A "trade" happens when a teammate immediately avenges your death by eliminating the player who killed you. Whenever you push for info, someone should be positioned close behind to ensure the kill is traded and your squad does not fall behind on numbers.</p>
+
+          <h3>Round Strategy</h3>
+          <p>Before the round starts, agree on a plan with your teammates. Will you rush a site, methodically clear it with utility, or play for opening kills from range? Adapt on the fly based on your economy and what the opponents have been doing.</p>
+
+          <h3>Utility Usage</h3>
+          <ul class="bg-list">
+            <li><strong>Smoke grenades:</strong> Block sightlines and provide cover</li>
+            <li><strong>Flashbangs:</strong> Blind enemies for site entry</li>
+            <li><strong>Molotovs/Incendiary grenades:</strong> Control areas and damage stacking enemies</li>
+            <li><strong>Frag grenades:</strong> Damage and flush out entrenched positions</li>
+          </ul>
+        </section>
+
+        <section id="tips">
+          <div class="bg-section-header"><h2>Pro Tips for Rapid Improvement</h2></div>
+          <div class="bg-steps">
+            <div class="bg-step-card">
+              <span class="bg-step-num">01</span>
+              <h3 class="bg-step-title">Play Deathmatch</h3>
+              <p class="bg-step-desc">30 minutes daily improves your aim significantly</p>
+            </div>
+            <div class="bg-step-card">
+              <span class="bg-step-num">02</span>
+              <h3 class="bg-step-title">Focus on fundamentals</h3>
+              <p class="bg-step-desc">Master movement and one weapon before expanding</p>
+            </div>
+            <div class="bg-step-card">
+              <span class="bg-step-num">03</span>
+              <h3 class="bg-step-title">Watch pro gameplay</h3>
+              <p class="bg-step-desc">Study how professionals position, aim, and make decisions</p>
+            </div>
+            <div class="bg-step-card">
+              <span class="bg-step-num">04</span>
+              <h3 class="bg-step-title">Communicate constantly</h3>
+              <p class="bg-step-desc">Clear callouts prevent mistakes and improve coordination</p>
+            </div>
+            <div class="bg-step-card">
+              <span class="bg-step-num">05</span>
+              <h3 class="bg-step-title">Analyze your demos</h3>
+              <p class="bg-step-desc">Review your matches to identify mistakes and learning opportunities -- see the <a href="/cs2-guides/demo-guide/">demo review guide</a></p>
+            </div>
+            <div class="bg-step-card">
+              <span class="bg-step-num">06</span>
+              <h3 class="bg-step-title">Practice in aim trainers</h3>
+              <p class="bg-step-desc">Dedicated aim training maps improve muscle memory</p>
+            </div>
+            <div class="bg-step-card">
+              <span class="bg-step-num">07</span>
+              <h3 class="bg-step-title">Use proper settings</h3>
+              <p class="bg-step-desc">Configure sensitivity, crosshair, and display settings for consistency -- use the <a href="/sensitivity-converter/">sensitivity converter</a> and <a href="/cs2-guides/config-guide/">config guide</a></p>
+            </div>
+          </div>
+        </section>
+
+        <section id="faq">
+          <div class="bg-section-header"><h2>Frequently Asked Questions</h2></div>
+          <div class="bg-faq-list">
+            {faqs.map((faq) => (
+              <details class="bg-faq-item">
+                <summary class="bg-faq-question">{faq.question}</summary>
+                <p class="bg-faq-answer">{faq.answer}</p>
+              </details>
+            ))}
+          </div>
+        </section>
+
+        <section id="resources">
+          <div class="bg-section-header"><h2>Related Resources</h2></div>
+          <div class="bg-resources-grid">
+            <a href="/cs2-guides/" class="bg-resource-card"><span class="bg-resource-name">All Guides</span><span class="bg-resource-arrow">&rarr;</span></a>
+            <a href="/sensitivity-converter/" class="bg-resource-card"><span class="bg-resource-name">Sensitivity Converter</span><span class="bg-resource-arrow">&rarr;</span></a>
+            <a href="/crosshair-generator/" class="bg-resource-card"><span class="bg-resource-name">Crosshair Generator</span><span class="bg-resource-arrow">&rarr;</span></a>
+            <a href="/economy-calculator/" class="bg-resource-card"><span class="bg-resource-name">Economy Calculator</span><span class="bg-resource-arrow">&rarr;</span></a>
+            <a href="/cs2-weapons/" class="bg-resource-card"><span class="bg-resource-name">Weapon Database</span><span class="bg-resource-arrow">&rarr;</span></a>
+            <a href="/pro-players/" class="bg-resource-card"><span class="bg-resource-name">Pro Player Settings</span><span class="bg-resource-arrow">&rarr;</span></a>
+            <a href="/cs2-tools/" class="bg-resource-card"><span class="bg-resource-name">All Tools</span><span class="bg-resource-arrow">&rarr;</span></a>
+            <a href="/cs2-guides/economy-guide/" class="bg-resource-card"><span class="bg-resource-name">Economy Guide</span><span class="bg-resource-arrow">&rarr;</span></a>
+            <a href="/cs2-guides/crosshair-guide/" class="bg-resource-card"><span class="bg-resource-name">Crosshair Guide</span><span class="bg-resource-arrow">&rarr;</span></a>
+            <a href="/cs2-guides/ranks-guide/" class="bg-resource-card"><span class="bg-resource-name">Ranking System Guide</span><span class="bg-resource-arrow">&rarr;</span></a>
+            <a href="/cs2-maps/" class="bg-resource-card"><span class="bg-resource-name">Map Callouts</span><span class="bg-resource-arrow">&rarr;</span></a>
+          </div>
+        </section>
+      </article>
+    </div>
+  </div>
+
+  <style>
+    .bg-wrap{max-width:1100px;margin:0 auto;padding:0 1.5rem 2rem}
+    .bg-breadcrumb{display:flex;align-items:center;gap:.5rem;padding:1.25rem 0;font-size:.85rem;color:var(--text2)}
+    .bg-breadcrumb a{color:var(--accent);text-decoration:none}
+    .bg-breadcrumb a:hover{color:var(--accent2)}
+    .bg-sep{color:var(--border)}
+    .bg-header{padding:1.5rem 0 1.25rem;border-bottom:2px solid var(--accent);margin-bottom:1.5rem}
+    .bg-header h1{margin:0 0 .35rem;font-size:2.2rem;font-weight:800;color:var(--text);letter-spacing:-.02em;line-height:1.2}
+    .bg-subtitle{margin:0;font-size:1.05rem;color:var(--text2);font-weight:400}
+    .bg-toc-mobile{display:none}
+    .bg-layout{display:grid;grid-template-columns:220px 1fr;gap:2.5rem;align-items:start}
+    .bg-sidebar{position:sticky;top:80px}
+    .bg-toc{display:flex;flex-direction:column;gap:0;border-left:2px solid var(--border);padding-left:0}
+    .bg-toc-title{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--accent);padding:0 0 .6rem 1rem}
+    .bg-toc-link{display:block;padding:.4rem 1rem;font-size:.82rem;color:var(--text2);text-decoration:none;border-left:2px solid transparent;margin-left:-2px;transition:color .2s,border-color .2s}
+    .bg-toc-link:hover{color:var(--text);border-left-color:var(--accent)}
+    .bg-content{min-width:0}
+    .bg-intro{font-size:1rem;line-height:1.8;color:var(--text2);margin-bottom:2rem}
+    .bg-section-header{background:rgba(46,204,113,.05);margin:0 -1.25rem 1.25rem;padding:.75rem 1.25rem;border-radius:4px}
+    .bg-section-header h2{margin:0;padding:0;font-size:1.5rem;font-weight:700;color:var(--text);border:none;letter-spacing:-.01em}
+    section{margin-bottom:2.5rem}
+    h3{font-size:1.15rem;font-weight:600;margin:1.5rem 0 .6rem;color:var(--text)}
+    p{line-height:1.7;color:var(--text2);margin-bottom:1rem}
+    .bg-list{list-style:none;padding:0;margin:.75rem 0 1.5rem}
+    .bg-list li{padding:.4rem 0 .4rem 1.6rem;position:relative;color:var(--text2);line-height:1.65}
+    .bg-list li::before{content:'';position:absolute;left:.25rem;top:.75rem;width:6px;height:6px;background:var(--accent);border-radius:1px}
+    .bg-list li strong{color:var(--text)}
+    .bg-steps{display:grid;grid-template-columns:repeat(2,1fr);gap:.75rem;margin:.5rem 0 1.5rem}
+    .bg-step-card{background:var(--bg2);border:1px solid var(--border);border-radius:4px;padding:1.25rem;position:relative}
+    .bg-step-num{display:block;font-size:1.8rem;font-weight:800;color:var(--accent);line-height:1;margin-bottom:.5rem;opacity:.8}
+    .bg-step-title{margin:0 0 .4rem;font-size:1rem;font-weight:700;color:var(--text)}
+    .bg-step-desc{margin:0;font-size:.88rem;color:var(--text2);line-height:1.6}
+    .bg-faq-list{display:flex;flex-direction:column;gap:.5rem}
+    .bg-faq-item{background:var(--bg2);border:1px solid var(--border);border-radius:4px;overflow:hidden}
+    .bg-faq-question{display:block;padding:1rem 1.25rem;font-size:.95rem;font-weight:600;color:var(--text);cursor:pointer;list-style:none;position:relative;padding-right:2.5rem;transition:background .2s}
+    .bg-faq-question::-webkit-details-marker{display:none}
+    .bg-faq-question::after{content:'+';position:absolute;right:1.25rem;top:50%;transform:translateY(-50%);font-size:1.2rem;color:var(--accent);font-weight:700}
+    .bg-faq-item[open] .bg-faq-question::after{content:'\2212'}
+    .bg-faq-item[open] .bg-faq-question{border-bottom:1px solid var(--border);background:rgba(46,204,113,.03)}
+    .bg-faq-question:hover{background:rgba(46,204,113,.03)}
+    .bg-faq-answer{padding:1rem 1.25rem;margin:0;font-size:.9rem;color:var(--text2);line-height:1.7}
+    .bg-resources-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.6rem;margin:.5rem 0 1.5rem}
+    .bg-resource-card{display:flex;align-items:center;justify-content:space-between;padding:.75rem 1rem;background:var(--bg2);border:1px solid var(--border);border-radius:4px;text-decoration:none;border-left:2px solid transparent;transition:border-left-color .2s,color .2s}
+    .bg-resource-card:hover{border-left-color:var(--accent)}
+    .bg-resource-name{font-size:.88rem;color:var(--text2);font-weight:500;transition:color .2s}
+    .bg-resource-card:hover .bg-resource-name{color:var(--text)}
+    .bg-resource-arrow{font-size:1rem;color:var(--accent);opacity:0;transition:opacity .2s}
+    .bg-resource-card:hover .bg-resource-arrow{opacity:1}
+    @media(max-width:860px){
+      .bg-layout{grid-template-columns:1fr;gap:0}
+      .bg-sidebar{display:none}
+      .bg-toc-mobile{display:flex;gap:.25rem;overflow-x:auto;padding:.75rem 0;margin-bottom:1rem;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+      .bg-toc-mobile::-webkit-scrollbar{display:none}
+      .bg-toc-mobile-link{flex-shrink:0;padding:.35rem .75rem;font-size:.78rem;font-weight:600;color:var(--text2);background:var(--bg2);border:1px solid var(--border);border-radius:4px;text-decoration:none;white-space:nowrap;transition:color .2s,border-color .2s}
+      .bg-toc-mobile-link:hover{color:var(--accent);border-color:var(--accent)}
+      .bg-header h1{font-size:1.7rem}
+      .bg-section-header{margin:0 -1rem 1rem;padding:.6rem 1rem}
+      .bg-resources-grid{grid-template-columns:repeat(2,1fr)}
+    }
+    @media(max-width:600px){
+      .bg-wrap{padding:0 1rem 1.5rem}
+      .bg-steps{grid-template-columns:1fr}
+      .bg-resources-grid{grid-template-columns:1fr}
+      .bg-header h1{font-size:1.5rem}
+    }
+  </style>
+  <AuthorBox updated="2026-03-02" />
+</Base>

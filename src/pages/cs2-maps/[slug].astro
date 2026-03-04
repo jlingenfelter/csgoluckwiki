@@ -1,0 +1,323 @@
+---
+import Base from '../../layouts/Base.astro';
+import ExploreMore from '../../components/ExploreMore.astro';
+import { breadcrumbSchema, faqSchema } from '../../lib/weapons';
+import { MAP_CALLOUTS } from '../../lib/map-callouts';
+import { MAP_LAYOUTS } from '../../lib/map-layouts';
+
+export function getStaticPaths() {
+  return MAP_CALLOUTS.map((map) => ({
+    params: { slug: map.slug },
+    props: { map },
+  }));
+}
+
+const { map } = Astro.props;
+const layout = MAP_LAYOUTS.find(l => l.slug === map.slug);
+
+const calloutsByArea = {
+  ct: map.callouts.filter((c) => c.area === 'ct'),
+  t: map.callouts.filter((c) => c.area === 't'),
+  mid: map.callouts.filter((c) => c.area === 'mid'),
+};
+
+const breadcrumbs = [
+  { name: 'Home', url: '/' },
+  { name: 'Maps', url: '/cs2-maps/' },
+  { name: map.name, url: '/cs2-maps/' + map.slug + '/' },
+];
+
+const faqItems = [
+  { question: 'What are the key callouts on ' + map.name + '?', answer: map.name + ' has ' + map.callouts.length + ' major callout positions organized across CT side, T side, and mid areas. Learning these callouts is essential for team communication during competitive matches.' },
+  { question: 'How should CTs defend ' + map.name + '?', answer: 'CT defense on ' + map.name + ' should focus on playing tight angles, gathering early information with utility, and rotating based on T-side executes. Crossfire setups and controlled aggression help maintain site control.' },
+  { question: 'What is the best T-side strategy for ' + map.name + '?', answer: 'The best T-side approach depends on your utility and team coordination. Default setups that gather information before committing to a site are generally safest. Fast executes work best when you have full utility.' },
+  { question: 'How important is mid control on ' + map.name + '?', answer: 'Mid control is crucial on ' + map.name + ' as it provides rotation options and map control for both sides. Teams that control mid gain significant strategic advantage in round planning.' },
+  { question: 'What utility should I prioritize on ' + map.name + '?', answer: 'Prioritize smokes for key choke points, flashbangs for entry support, and molotovs for clearing common positions. Full utility on ' + map.name + ' typically costs around $1000-1500 per player.' },
+];
+
+const pageTitle = map.name + ' Callouts, Strategies & Guide — CS2 Map Guide | CSGOLuck Wiki';
+const pageDesc = 'Complete ' + map.name + ' guide for CS2 with ' + map.callouts.length + ' callouts, tactical tips, and strategies for both T and CT sides. Master every position on ' + map.name + '.';
+
+const radarImageUrl = layout ? layout.radarImageUrl : '';
+---
+
+<Base title={pageTitle} description={pageDesc} currentNav="/cs2-maps/">
+  <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema(breadcrumbs))}></script>
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema(faqItems))}></script>
+
+  <nav class="breadcrumb"><a href="/">Home</a> / <a href="/cs2-maps/">Maps</a> / <span>{map.name}</span></nav>
+
+  <!-- Two-column layout: main content + sidebar -->
+  <div class="md-layout">
+    <!-- Main content column -->
+    <div class="md-main">
+
+      <!-- Left-aligned header instead of centered hero -->
+      <header class="md-header">
+        <h1 class="md-map-title">{map.name}</h1>
+        <p class="md-map-desc">{map.description} Practice your utility throws with our <a href={'/lineups/' + map.slug + '/'} style="color:var(--accent)">{map.name} lineups guide</a>, or load up a <a href="/practice-config/" style="color:var(--accent)">practice config</a> to drill positions offline.</p>
+        <div class="md-tag-row">
+          {map.tags.map((tag) => (
+            <span class="md-tag">{tag}</span>
+          ))}
+        </div>
+      </header>
+
+      <!-- Callouts as compact table rows, not card grid -->
+      <section class="md-section">
+        <h2 class="md-section-title">All Callouts <span class="md-count">{map.callouts.length} positions</span></h2>
+
+        {calloutsByArea.ct.length > 0 && (
+          <div class="md-area">
+            <h3 class="md-area-title md-area-ct">CT Side <span class="md-area-count">{calloutsByArea.ct.length}</span></h3>
+            <div class="md-callout-table">
+              {calloutsByArea.ct.map((callout) => (
+                <div class="md-callout-row md-callout-row-ct" data-callout={callout.name}>
+                  <span class="md-callout-name">{callout.name}</span>
+                  <span class="md-callout-desc">{callout.description}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {calloutsByArea.t.length > 0 && (
+          <div class="md-area">
+            <h3 class="md-area-title md-area-t">T Side <span class="md-area-count">{calloutsByArea.t.length}</span></h3>
+            <div class="md-callout-table">
+              {calloutsByArea.t.map((callout) => (
+                <div class="md-callout-row md-callout-row-t" data-callout={callout.name}>
+                  <span class="md-callout-name">{callout.name}</span>
+                  <span class="md-callout-desc">{callout.description}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {calloutsByArea.mid.length > 0 && (
+          <div class="md-area">
+            <h3 class="md-area-title md-area-mid">Mid Control <span class="md-area-count">{calloutsByArea.mid.length}</span></h3>
+            <div class="md-callout-table">
+              {calloutsByArea.mid.map((callout) => (
+                <div class="md-callout-row md-callout-row-mid" data-callout={callout.name}>
+                  <span class="md-callout-name">{callout.name}</span>
+                  <span class="md-callout-desc">{callout.description}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+      </section>
+
+      <!-- Strategies — side-by-side columns instead of stacked grids -->
+      <section class="md-section">
+        <h2 class="md-section-title">Strategies</h2>
+        <div class="md-strat-columns">
+          <div class="md-strat-col">
+            <h3 class="md-strat-heading"><span class="md-t-badge">T</span> Attack</h3>
+            {map.strategies.filter((s) => s.side === 't').map((s) => (
+              <div class="md-strat-item md-strat-t">
+                <h4 class="md-strat-name">{s.title}</h4>
+                <p class="md-strat-desc">{s.description}</p>
+              </div>
+            ))}
+          </div>
+          <div class="md-strat-col">
+            <h3 class="md-strat-heading"><span class="md-ct-badge">CT</span> Defence</h3>
+            {map.strategies.filter((s) => s.side === 'ct').map((s) => (
+              <div class="md-strat-item md-strat-ct">
+                <h4 class="md-strat-name">{s.title}</h4>
+                <p class="md-strat-desc">{s.description}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <!-- Tips — numbered list with left border accent -->
+      <section class="md-section">
+        <h2 class="md-section-title">Tactical Tips</h2>
+        <ol class="md-tips-list">
+          {map.tips.map((tip) => (
+            <li class="md-tip">{tip}</li>
+          ))}
+        </ol>
+      </section>
+
+    </div>
+
+    <!-- Sidebar -->
+    <aside class="md-sidebar">
+      <!-- Radar image in sidebar -->
+      {radarImageUrl && (
+        <div class="md-sidebar-block">
+          <h3 class="md-sidebar-title">Radar Overview</h3>
+          <div class="md-radar-wrap">
+            <img src={radarImageUrl} alt={map.name + ' radar overview'} class="md-radar-img" loading="lazy" width="1024" height="1024" />
+          </div>
+        </div>
+      )}
+
+      <!-- Quick stats -->
+      <div class="md-sidebar-block">
+        <h3 class="md-sidebar-title">Map Info</h3>
+        <div class="md-info-table">
+          <div class="md-info-row">
+            <span class="md-info-label">Callouts</span>
+            <span class="md-info-value">{map.callouts.length}</span>
+          </div>
+          <div class="md-info-row">
+            <span class="md-info-label">CT Positions</span>
+            <span class="md-info-value">{calloutsByArea.ct.length}</span>
+          </div>
+          <div class="md-info-row">
+            <span class="md-info-label">T Positions</span>
+            <span class="md-info-value">{calloutsByArea.t.length}</span>
+          </div>
+          <div class="md-info-row">
+            <span class="md-info-label">Mid Positions</span>
+            <span class="md-info-value">{calloutsByArea.mid.length}</span>
+          </div>
+          <div class="md-info-row">
+            <span class="md-info-label">Strategies</span>
+            <span class="md-info-value">{map.strategies.length}</span>
+          </div>
+          <div class="md-info-row">
+            <span class="md-info-label">Tips</span>
+            <span class="md-info-value">{map.tips.length}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick links -->
+      <div class="md-sidebar-block">
+        <h3 class="md-sidebar-title">Quick Links</h3>
+        <div class="md-quick-links">
+          <a href={'/lineups/' + map.slug + '/'} class="md-quick-link">{map.name} Lineups</a>
+          <a href="/cs2-maps/" class="md-quick-link">All Maps</a>
+          <a href="/practice-config/" class="md-quick-link">Practice Config</a>
+          <a href="/workshop-maps/" class="md-quick-link">Workshop Maps</a>
+          <a href="/cs2-weapons/" class="md-quick-link">Weapons</a>
+          <a href="/pro-players/" class="md-quick-link">Pro Player Settings</a>
+          <a href="/crosshair-generator/" class="md-quick-link">Crosshair Generator</a>
+          <a href="/damage-calculator/" class="md-quick-link">Damage Calculator</a>
+          <a href="/cs2-commands/" class="md-quick-link">Console Commands</a>
+          <a href="/cs2-guides/grenade-guide/" class="md-quick-link">Grenade Guide</a>
+          <a href="/cs2-guides/positioning-guide/" class="md-quick-link">Positioning Guide</a>
+          <a href="/sensitivity-converter/" class="md-quick-link">Sensitivity Converter</a>
+          <a href="/cs2-ranks/" class="md-quick-link">CS2 Ranks</a>
+        </div>
+      </div>
+    </aside>
+  </div>
+
+  <!-- FAQ — full width below layout -->
+  <section class="md-faq-section">
+    <h2 class="md-section-title">Frequently Asked Questions</h2>
+    <dl class="faq">{faqItems.map(f => (<Fragment><dt>{f.question}</dt><dd>{f.answer}</dd></Fragment>))}</dl>
+  </section>
+
+  <ExploreMore context="maps" />
+</Base>
+
+<style>
+  /* Two-column layout */
+  .md-layout{display:grid;grid-template-columns:1fr 280px;gap:1.5rem;margin-bottom:2rem;align-items:start}
+
+  /* Main column */
+  .md-main{min-width:0}
+
+  /* Left-aligned header — no gradient, no centering */
+  .md-header{padding:0 0 1.25rem;margin-bottom:1.5rem;border-bottom:1px solid var(--border)}
+  .md-map-title{font-size:1.8rem;color:var(--text);margin:0 0 .5rem}
+  .md-map-desc{font-size:.9rem;color:var(--text2);line-height:1.65;margin:0 0 .75rem;max-width:640px}
+  .md-tag-row{display:flex;flex-wrap:wrap;gap:.35rem}
+  .md-tag{background:var(--bg3);border:1px solid var(--border);color:var(--text2);padding:.15rem .5rem;border-radius:4px;font-size:.75rem;font-weight:600;transition:border-color .15s}
+  .md-tag:hover{border-left:2px solid var(--accent);color:var(--accent)}
+
+  /* Sections */
+  .md-section{margin-bottom:2rem}
+  .md-section-title{font-size:1.15rem;margin:0 0 1rem;padding-bottom:.5rem;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:.5rem}
+  .md-count{font-size:.78rem;color:var(--text2);font-weight:400}
+
+  /* Callout areas */
+  .md-area{margin-bottom:1.25rem}
+  .md-area-title{font-size:.88rem;font-weight:700;margin:0 0 .5rem;display:flex;align-items:center;gap:.4rem}
+  .md-area-ct{color:#4a8db7}
+  .md-area-t{color:#c44}
+  .md-area-mid{color:var(--accent)}
+  .md-area-count{font-size:.7rem;font-weight:400;color:var(--text2)}
+
+  /* Callout table rows instead of card grid */
+  .md-callout-table{display:flex;flex-direction:column;gap:0}
+  .md-callout-row{display:flex;align-items:baseline;gap:.75rem;padding:.45rem .65rem;border-bottom:1px solid var(--border);border-left:3px solid transparent;transition:border-color .15s,background .15s}
+  .md-callout-row:last-child{border-bottom:none}
+  .md-callout-row:hover{background:rgba(46,204,113,.03)}
+  .md-callout-row-ct{border-left-color:#4a8db7}
+  .md-callout-row-ct:hover{border-left-color:#6ab3d9}
+  .md-callout-row-t{border-left-color:#c44}
+  .md-callout-row-t:hover{border-left-color:#e66}
+  .md-callout-row-mid{border-left-color:var(--text2)}
+  .md-callout-row-mid:hover{border-left-color:var(--accent)}
+  .md-callout-name{font-size:.84rem;font-weight:700;color:var(--text);min-width:120px;flex-shrink:0}
+  .md-callout-desc{font-size:.82rem;color:var(--text2);line-height:1.5}
+
+  /* Strategies — two columns side-by-side */
+  .md-strat-columns{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+  .md-strat-col{}
+  .md-strat-heading{font-size:.85rem;font-weight:700;margin:0 0 .6rem;display:flex;align-items:center;gap:.3rem}
+  .md-ct-badge{background:#4a8db7;color:#fff;font-size:.58rem;font-weight:800;padding:.08rem .25rem;border-radius:3px}
+  .md-t-badge{background:#c44;color:#fff;font-size:.58rem;font-weight:800;padding:.08rem .25rem;border-radius:3px}
+  .md-strat-item{padding:.6rem .75rem;margin-bottom:.5rem;background:var(--bg2);border:1px solid var(--border);border-radius:4px;transition:border-color .15s}
+  .md-strat-item:hover{border-left:3px solid var(--accent)}
+  .md-strat-t{border-left:3px solid rgba(204,68,68,.3)}
+  .md-strat-ct{border-left:3px solid rgba(74,141,183,.3)}
+  .md-strat-name{margin:0 0 .25rem;font-size:.88rem;color:var(--text);font-weight:600}
+  .md-strat-desc{margin:0;font-size:.82rem;color:var(--text2);line-height:1.5}
+
+  /* Tips — ordered list with left accent border */
+  .md-tips-list{list-style:none;padding:0;margin:0;counter-reset:tips}
+  .md-tip{counter-increment:tips;padding:.55rem .75rem .55rem 2.25rem;position:relative;font-size:.84rem;color:var(--text2);line-height:1.55;border-bottom:1px solid var(--border);border-left:3px solid transparent;transition:border-color .15s}
+  .md-tip:last-child{border-bottom:none}
+  .md-tip:hover{border-left-color:var(--accent)}
+  .md-tip::before{content:counter(tips);position:absolute;left:.6rem;top:.55rem;font-size:.72rem;font-weight:800;color:var(--accent);width:20px;text-align:center}
+
+  /* Sidebar */
+  .md-sidebar{position:sticky;top:80px;display:flex;flex-direction:column;gap:.75rem}
+  .md-sidebar-block{background:var(--bg2);border:1px solid var(--border);border-radius:4px;padding:.75rem}
+  .md-sidebar-title{font-size:.82rem;font-weight:700;margin:0 0 .5rem;color:var(--text);padding-bottom:.35rem;border-bottom:1px solid var(--border)}
+
+  /* Radar in sidebar */
+  .md-radar-wrap{background:var(--bg3);border-radius:4px;overflow:hidden}
+  .md-radar-img{width:100%;height:auto;display:block}
+
+  /* Info table */
+  .md-info-table{display:flex;flex-direction:column;gap:0}
+  .md-info-row{display:flex;justify-content:space-between;align-items:center;padding:.3rem 0;border-bottom:1px solid var(--border)}
+  .md-info-row:last-child{border-bottom:none}
+  .md-info-label{font-size:.78rem;color:var(--text2)}
+  .md-info-value{font-size:.82rem;font-weight:700;color:var(--accent)}
+
+  /* Quick links */
+  .md-quick-links{display:flex;flex-direction:column;gap:.3rem}
+  .md-quick-link{font-size:.78rem;color:var(--text2);text-decoration:none;padding:.25rem .4rem;border-radius:4px;border-left:2px solid transparent;transition:border-color .15s,color .15s}
+  .md-quick-link:hover{border-left-color:var(--accent);color:var(--accent)}
+
+  /* FAQ */
+  .md-faq-section{margin-bottom:2rem}
+
+  /* Responsive: collapse to single column on tablet/mobile */
+  @media(max-width:860px){
+    .md-layout{grid-template-columns:1fr}
+    .md-sidebar{position:static;order:-1;display:grid;grid-template-columns:1fr 1fr;gap:.75rem}
+    .md-sidebar-block:first-child{grid-column:1/-1}
+  }
+  @media(max-width:600px){
+    .md-sidebar{grid-template-columns:1fr}
+    .md-strat-columns{grid-template-columns:1fr}
+    .md-map-title{font-size:1.4rem}
+    .md-callout-row{flex-direction:column;gap:.15rem}
+    .md-callout-name{min-width:auto}
+  }
+</style>

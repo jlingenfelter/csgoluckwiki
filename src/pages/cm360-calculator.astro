@@ -3,7 +3,7 @@ import Base from '../layouts/Base.astro';
 import ExploreMore from '../components/ExploreMore.astro';
 import { faqSchema, breadcrumbSchema } from '../lib/weapons';
 
-const title = 'CS2 cm/360 Calculator — Mouse Distance Per Full Turn | CSDB.gg';
+const title = 'CS2 cm/360 Calculator — Mouse Distance Per Full Turn | CSGOLuck Wiki';
 const description = 'Calculate exactly how many centimetres your mouse needs to travel for a full 360° turn in CS2. Compare cm/360 values across sensitivity settings and pro players.';
 
 const breadcrumbs = [
@@ -50,107 +50,122 @@ const toolSchema = JSON.stringify({
   "applicationCategory": "UtilityApplication",
   "operatingSystem": "Web",
   "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
-  "author": { "@type": "Organization", "name": "CSDB.gg", "url": "https://csdb.gg" }
+  "author": { "@type": "Organization", "name": "CSGOLuck Wiki", "url": "https://wiki.csgoluck.com" }
 });
 ---
 
-<Base title={title} description={description} currentNav="/tools/">
+<Base title={title} description={description} currentNav="/cs2-tools/">
   <script type="application/ld+json" set:html={toolSchema}></script>
   <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema_)}></script>
   <script type="application/ld+json" set:html={JSON.stringify(faqSchema_)}></script>
 
   <nav class="breadcrumb">
-    <a href="/">Home</a> / <a href="/cm360-calculator/">Tools</a> / <span>cm/360 Calculator</span>
+    <a href="/">Home</a> <span>/</span> <a href="/cs2-tools/">Tools</a> <span>/</span> <span>cm/360 Calculator</span>
   </nav>
 
-  <h1>CS2 cm/360 Calculator</h1>
-  <p>Find out exactly how far your mouse travels for a complete 360° rotation in Counter-Strike 2. This physical measurement is the most reliable way to compare and replicate sensitivity settings.</p>
+  <div class="c360-hero">
+    <h1 class="c360-title">CS2 cm/360 Calculator</h1>
+    <p class="c360-desc">Find out exactly how far your mouse travels for a complete 360-degree rotation in Counter-Strike 2. This physical measurement is the most reliable way to compare and replicate sensitivity settings.</p>
+  </div>
 
-  <div class="calc-section">
-    <h2>Calculate Your cm/360</h2>
-    <div class="calc-row">
-      <label for="dpi">Mouse DPI</label>
-      <select id="dpi">
-        <option value="400">400</option>
-        <option value="800" selected>800</option>
-        <option value="1200">1200</option>
-        <option value="1600">1600</option>
-        <option value="3200">3200</option>
-      </select>
-    </div>
-    <div class="calc-row">
-      <label for="sens">In-Game Sensitivity</label>
-      <input type="number" id="sens" min="0.01" max="20" step="0.01" value="1.0" />
-    </div>
-    <div class="result-box">
-      <div class="big" id="cm360Result">45.00 cm</div>
-      <p style="margin:0;color:var(--text2)">Distance per full 360° turn</p>
-      <p id="cm360Category" style="margin:.5rem 0 0;font-weight:600;color:var(--green)">Balanced — Good for most playstyles</p>
-    </div>
-    <div class="stats-grid" style="margin-top:1rem">
-      <div class="stat-card">
-        <div class="val" id="in360">17.72"</div>
-        <div class="label">Inches per 360°</div>
+  <div class="c360-panel">
+    <h2 class="c360-panel-title">Calculate Your cm/360</h2>
+    <div class="c360-fields">
+      <div class="c360-field">
+        <label class="c360-label" for="dpi">Mouse DPI</label>
+        <select id="dpi" class="c360-select">
+          <option value="400">400</option>
+          <option value="800" selected>800</option>
+          <option value="1200">1200</option>
+          <option value="1600">1600</option>
+          <option value="3200">3200</option>
+        </select>
       </div>
-      <div class="stat-card">
-        <div class="val" id="cm180">22.50 cm</div>
-        <div class="label">cm per 180°</div>
+      <div class="c360-field">
+        <label class="c360-label" for="sens">In-Game Sensitivity</label>
+        <input type="number" id="sens" min="0.01" max="20" step="0.01" value="1.0" class="c360-input" />
       </div>
-      <div class="stat-card">
-        <div class="val" id="edpiVal">800</div>
-        <div class="label">eDPI</div>
+    </div>
+    <div class="c360-output">
+      <div class="c360-output-main">
+        <span class="c360-output-big" id="cm360Result">45.00 cm</span>
+        <span class="c360-output-label">Distance per full 360-degree turn</span>
+        <span class="c360-output-cat" id="cm360Category">Balanced --- Good for most playstyles</span>
       </div>
-      <div class="stat-card">
-        <div class="val" id="minPad">23 cm</div>
-        <div class="label">Min. Pad Width</div>
+      <div class="c360-output-row">
+        <div class="c360-output-item">
+          <span class="c360-output-sub-label">Inches per 360</span>
+          <span class="c360-output-sub-val" id="in360">17.72"</span>
+        </div>
+        <div class="c360-output-item">
+          <span class="c360-output-sub-label">cm per 180</span>
+          <span class="c360-output-sub-val" id="cm180">22.50 cm</span>
+        </div>
+        <div class="c360-output-item">
+          <span class="c360-output-sub-label">eDPI</span>
+          <span class="c360-output-sub-val" id="edpiVal">800</span>
+        </div>
+        <div class="c360-output-item">
+          <span class="c360-output-sub-label">Min. Pad Width</span>
+          <span class="c360-output-sub-val" id="minPad">23 cm</span>
+        </div>
       </div>
     </div>
   </div>
 
-  <h2>Speed Classification Chart</h2>
-  <p>Understand where your cm/360 falls in the competitive spectrum:</p>
-  <table>
-    <thead><tr><th>Category</th><th>cm/360 Range</th><th>Description</th></tr></thead>
-    <tbody>
-      {speedCategories.map(c => (
-        <tr>
-          <td><span style={`color:${c.color};font-weight:700`}>{c.label}</span></td>
-          <td>{c.range}</td>
-          <td>{c.desc}</td>
-        </tr>
-      ))}
-    </tbody>
-  </table>
+  <div class="c360-two-col">
+    <div class="c360-block">
+      <h2 class="c360-section-title">Speed Classification Chart</h2>
+      <p class="c360-block-desc">Where does your cm/360 fall on the spectrum?</p>
+      <table class="c360-table">
+        <thead><tr><th>Category</th><th>cm/360 Range</th><th>Description</th></tr></thead>
+        <tbody>
+          {speedCategories.map(c => (
+            <tr>
+              <td><span style={`color:${c.color};font-weight:700`}>{c.label}</span></td>
+              <td>{c.range}</td>
+              <td>{c.desc}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
 
-  <h2>Pro Player cm/360 Comparison</h2>
-  <table>
-    <thead><tr><th>Player</th><th>DPI</th><th>Sensitivity</th><th>cm/360</th></tr></thead>
-    <tbody>
-      {proComparisons.map(p => (
-        <tr>
-          <td style="font-weight:600;color:var(--text)">{p.name}</td>
-          <td>{p.dpi}</td>
-          <td>{p.sens}</td>
-          <td style="font-weight:700;color:var(--accent)">{p.cm360} cm</td>
-        </tr>
-      ))}
-    </tbody>
-  </table>
+    <div class="c360-block">
+      <h2 class="c360-section-title">Pro Player cm/360 Comparison</h2>
+      <p class="c360-block-desc">See how your settings stack up against the best.</p>
+      <table class="c360-table">
+        <thead><tr><th>Player</th><th>DPI</th><th>Sensitivity</th><th>cm/360</th></tr></thead>
+        <tbody>
+          {proComparisons.map(p => (
+            <tr>
+              <td style="font-weight:600;color:var(--text)">{p.name}</td>
+              <td>{p.dpi}</td>
+              <td>{p.sens}</td>
+              <td style="font-weight:700;color:var(--accent)">{p.cm360} cm</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  </div>
 
-  <h2>Why cm/360 Matters More Than Raw Sensitivity</h2>
-  <p>
-    Raw sensitivity numbers are meaningless without context. A player at 400 DPI with 2.0 sens and a player at 1600 DPI with 0.5 sens have identical crosshair speeds — both travel 45.45 cm per 360° turn. The cm/360 measurement strips away the hardware variable and tells you the physical reality of how your arm needs to move.
-  </p>
-  <p>
-    This becomes critical when switching mice or DPI settings. If you know your cm/360 is 40 cm, you can calculate the exact sensitivity for any DPI: <code>Sensitivity = (2.54 × 360) / (DPI × 0.022 × cm360)</code>. Moving from 400 to 800 DPI? Just halve your sensitivity. Your muscle memory stays perfectly intact.
-  </p>
+  <div class="c360-guide">
+    <h2 class="c360-section-title">Why cm/360 Matters More Than Raw Sensitivity</h2>
+    <p>
+      Raw sensitivity numbers are meaningless without context. A player at 400 DPI with 2.0 sens and a player at 1600 DPI with 0.5 sens have identical crosshair speeds --- both travel 45.45 cm per 360-degree turn. The cm/360 measurement strips away the hardware variable and tells you the physical reality of how your arm needs to move.
+    </p>
+    <p>
+      This becomes critical when switching mice or DPI settings. If you know your cm/360 is 40 cm, you can calculate the exact sensitivity for any DPI: <code>Sensitivity = (2.54 x 360) / (DPI x 0.022 x cm360)</code>. Moving from 400 to 800 DPI? Just halve your sensitivity. Your muscle memory stays perfectly intact.
+    </p>
 
-  <h3>Mouse Pad Size Requirements</h3>
-  <p>
-    Your cm/360 directly determines the minimum mouse pad size you need. For comfortable play, your pad should be at least half your cm/360 (to allow 180° turns). Playing at 50 cm/360 means you need a pad at least 25 cm wide, though 35+ cm gives you room for corrections. Most competitive players use extended pads (80–90 cm wide) for unrestricted arm movement.
-  </p>
+    <h3>Mouse Pad Size Requirements</h3>
+    <p>
+      Your cm/360 directly determines the minimum mouse pad size you need. For comfortable play, your pad should be at least half your cm/360 (to allow 180-degree turns). Playing at 50 cm/360 means you need a pad at least 25 cm wide, though 35+ cm gives you room for corrections. Most competitive players use extended pads (80-90 cm wide) for unrestricted arm movement.
+    </p>
+  </div>
 
-  <div class="internal-links">
+  <div class="c360-links">
     <strong>Related Tools:</strong>
     <a href="/edpi-calculator/">eDPI Calculator</a>
     <a href="/sensitivity-converter/">Sensitivity Converter</a>
@@ -158,21 +173,80 @@ const toolSchema = JSON.stringify({
     <a href="/crosshair-generator/">Crosshair Generator</a>
     <a href="/crosshair-codes/">Crosshair Codes</a>
     <a href="/pro-players/">Pro Player Settings</a>
-    <a href="/tools/">All Tools</a>
+    <a href="/cs2-tools/">All Tools</a>
   </div>
 
-  <h2>Frequently Asked Questions</h2>
-  <dl class="faq">
+  <section class="c360-faq">
+    <h2 class="c360-section-title">Frequently Asked Questions</h2>
     {faqs.map(f => (
-      <Fragment>
-        <dt>{f.question}</dt>
-        <dd>{f.answer}</dd>
-      </Fragment>
+      <details class="c360-faq-item">
+        <summary class="c360-faq-q">{f.question}</summary>
+        <p class="c360-faq-a">{f.answer}</p>
+      </details>
     ))}
-  </dl>
+  </section>
 
   <ExploreMore context="tools" />
 </Base>
+
+<style>
+  .c360-hero{padding:1.5rem 0;margin-bottom:1.5rem}
+  .c360-title{font-size:2rem;font-weight:800;margin:0 0 .5rem;color:var(--text)}
+  .c360-desc{color:var(--text2);font-size:.95rem;margin:0;max-width:600px;line-height:1.6}
+
+  .c360-panel{background:var(--bg2);border:1px solid var(--border);border-radius:4px;padding:1.5rem;margin-bottom:2rem}
+  .c360-panel-title{margin:0 0 1rem;font-size:1.1rem;color:var(--text)}
+  .c360-fields{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.5rem}
+  .c360-field{display:flex;flex-direction:column;gap:.4rem}
+  .c360-label{font-weight:600;color:var(--text2);font-size:.85rem;text-transform:uppercase;letter-spacing:.04em}
+  .c360-select,.c360-input{padding:.6rem;background:var(--bg3);border:1px solid var(--border);border-radius:4px;color:var(--text);font-size:.95rem;font-family:inherit}
+  .c360-select:focus,.c360-input:focus{outline:none;border-color:var(--accent)}
+
+  .c360-output{background:var(--bg);border:1px solid var(--border);border-radius:4px;padding:1.5rem}
+  .c360-output-main{display:flex;flex-direction:column;align-items:center;margin-bottom:1rem;padding-bottom:1rem;border-bottom:1px solid var(--border)}
+  .c360-output-big{font-size:3rem;font-weight:800;color:var(--accent)}
+  .c360-output-label{font-size:.82rem;color:var(--text2);margin-top:.25rem}
+  .c360-output-cat{font-size:.88rem;font-weight:600;color:#4caf50;margin-top:.5rem}
+  .c360-output-row{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem}
+  .c360-output-item{text-align:center}
+  .c360-output-sub-label{display:block;font-size:.78rem;color:var(--text2);margin-bottom:.25rem}
+  .c360-output-sub-val{display:block;font-size:1.15rem;font-weight:700;color:var(--accent)}
+
+  .c360-two-col{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-bottom:2rem}
+  .c360-block{background:var(--bg2);border:1px solid var(--border);border-radius:4px;padding:1.5rem;overflow-x:auto}
+  .c360-section-title{font-size:1.1rem;font-weight:700;color:var(--text);margin:0 0 .5rem}
+  .c360-block-desc{font-size:.85rem;color:var(--text2);margin:0 0 1rem}
+
+  .c360-table{width:100%;border-collapse:collapse;font-size:.85rem}
+  .c360-table th{text-align:left;padding:.6rem .5rem;background:var(--bg3);color:var(--text2);font-size:.78rem;text-transform:uppercase;letter-spacing:.04em;border-bottom:1px solid var(--border)}
+  .c360-table td{padding:.55rem .5rem;border-bottom:1px solid var(--border);color:var(--text2)}
+  .c360-table tr:last-child td{border-bottom:none}
+
+  .c360-guide{background:var(--bg2);border:1px solid var(--border);border-left:3px solid var(--accent);border-radius:4px;padding:1.5rem;margin-bottom:2rem}
+  .c360-guide p{color:var(--text2);font-size:.9rem;line-height:1.65;margin:.75rem 0}
+  .c360-guide h3{color:var(--text);font-size:1rem;margin:1.5rem 0 .5rem}
+  .c360-guide code{background:var(--bg3);padding:.15rem .4rem;border-radius:4px;font-size:.85rem;color:var(--accent)}
+
+  .c360-links{display:flex;flex-wrap:wrap;gap:.5rem;align-items:center;padding:1rem;background:var(--bg2);border:1px solid var(--border);border-radius:4px;margin-bottom:2rem}
+  .c360-links strong{width:100%;font-size:.85rem;color:var(--text);margin-bottom:.25rem}
+  .c360-links a{font-size:.82rem;color:var(--accent);text-decoration:none;padding:.3rem .6rem;background:var(--bg3);border:1px solid var(--border);border-radius:4px;transition:border-color .15s}
+  .c360-links a:hover{border-color:var(--accent)}
+
+  .c360-faq{margin-bottom:2rem}
+  .c360-faq-item{background:var(--bg2);border:1px solid var(--border);border-radius:4px;margin-bottom:.5rem;overflow:hidden}
+  .c360-faq-q{padding:.8rem 1rem;cursor:pointer;font-weight:600;font-size:.9rem;color:var(--text);list-style:none;display:flex;align-items:center;justify-content:space-between}
+  .c360-faq-q::-webkit-details-marker{display:none}
+  .c360-faq-q::after{content:'+';font-size:1.1rem;color:var(--accent);font-weight:700}
+  .c360-faq-item[open] .c360-faq-q::after{content:'-'}
+  .c360-faq-item[open]{border-left:3px solid var(--accent)}
+  .c360-faq-a{padding:0 1rem .8rem;margin:0;font-size:.88rem;color:var(--text2);line-height:1.6}
+
+  @media(max-width:768px){
+    .c360-two-col{grid-template-columns:1fr}
+    .c360-fields{grid-template-columns:1fr}
+    .c360-output-row{grid-template-columns:1fr 1fr}
+  }
+</style>
 
 <script is:inline>
 (function(){

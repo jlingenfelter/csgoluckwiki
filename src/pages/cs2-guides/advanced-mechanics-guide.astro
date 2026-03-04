@@ -1,0 +1,203 @@
+---
+import Base from '../../layouts/Base.astro';
+import AuthorBox from '../../components/AuthorBox.astro';
+import { faqSchema, breadcrumbSchema } from '../../lib/weapons';
+
+const title = 'CS2 Advanced Mechanics Guide — Peeking, Spraying & Positioning | CSGOLuck Wiki';
+const description = 'Take your gameplay further with expert-level CS2 techniques: strafe-stopping, shoulder and jiggle peeks, multi-target spray control, head-height aim discipline, and smart angle selection.';
+
+const breadcrumbs = [
+  { name: 'Home', url: '/' },
+  { name: 'Guides', url: '/cs2-guides' },
+  { name: 'Advanced Mechanics Guide', url: '/cs2-guides/advanced-mechanics-guide' },
+];
+
+const articleSchema = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": title,
+  "description": description,
+  "author": { "@type": "Person", "name": "Josh Lingenfelter", "url": "https://www.linkedin.com/in/josh-lingenfelter-8157274b/", "jobTitle": "Director", "worksFor": { "@type": "Organization", "name": "CSGOLuck" } },
+  "publisher": { "@type": "Organization", "name": "CSGOLuck Wiki", "url": "https://wiki.csgoluck.com" },
+  "mainEntityOfPage": `https://wiki.csgoluck.com/cs2-guides/advanced-mechanics-guide/`,
+  "inLanguage": "en-US"
+});
+
+const faqs = [
+  { question: 'What is counter-strafing in CS2?', answer: 'Counter-strafing is tapping the opposite movement key to instantly stop your character momentum. When moving right (D), quickly tap left (A) to reach zero velocity faster than just releasing D. This allows you to shoot accurately sooner after moving.' },
+  { question: 'How do I jiggle peek in CS2?', answer: 'Jiggle peeking is quickly strafing in and out of an angle to bait shots or gather information. Press A or D briefly to expose yourself for a fraction of a second, then immediately counter-strafe back to cover. The goal is to peek and return before the enemy can react.' },
+  { question: 'What is crosshair placement?', answer: 'Crosshair placement means keeping your crosshair at head level and pre-aimed at common enemy positions. Instead of looking at the ground or center mass, always position your crosshair where an enemy head would appear. This reduces the distance you need to flick when engaging targets.' },
+  { question: 'How do spray transfers work?', answer: 'A spray transfer is continuing your spray pattern while moving your aim from one enemy to another. Instead of stopping and re-spraying, you keep tracking the recoil pattern while shifting horizontally to the next target. This requires mastering the full spray pattern of your weapon.' },
+  { question: 'What is the difference between wide peeking and shoulder peeking?', answer: 'Wide peeking fully commits to swinging past an angle with your full body exposed — good for surprising enemies or taking duels on favorable terms. Shoulder peeking exposes only your shoulder model to bait out shots, then you fall back without committing to the fight.' },
+];
+
+const sections = [
+  { id: 'movement', label: 'Movement Mechanics' },
+  { id: 'peeking', label: 'Peeking Techniques' },
+  { id: 'crosshair', label: 'Crosshair Placement' },
+  { id: 'positioning', label: 'Positioning' },
+  { id: 'faq', label: 'FAQ' },
+  { id: 'resources', label: 'Resources' },
+];
+---
+
+<Base title={title} description={description} currentNav="/cs2-guides/">
+  <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema(breadcrumbs))}></script>
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema(faqs))}></script>
+  <script type="application/ld+json" set:html={articleSchema}></script>
+
+  <div class="amg-wrap">
+    <nav class="amg-breadcrumb">
+      <a href="/">Home</a><span class="amg-sep">/</span><a href="/cs2-guides/">Guides</a><span class="amg-sep">/</span><span>Advanced Mechanics Guide</span>
+    </nav>
+
+    <header class="amg-header">
+      <h1>CS2 Advanced Mechanics Guide</h1>
+      <p class="amg-subtitle">Refine the strafe-stops, peek styles, and angle discipline that win rounds at every rank</p>
+    </header>
+
+    <nav class="amg-toc-mobile" aria-label="Table of contents">
+      {sections.map((s) => (
+        <a href={`#${s.id}`} class="amg-toc-mobile-link">{s.label}</a>
+      ))}
+    </nav>
+
+    <div class="amg-layout">
+      <aside class="amg-sidebar">
+        <nav class="amg-toc" aria-label="Table of contents">
+          <span class="amg-toc-title">Contents</span>
+          {sections.map((s) => (
+            <a href={`#${s.id}`} class="amg-toc-link">{s.label}</a>
+          ))}
+        </nav>
+      </aside>
+
+      <article class="amg-content">
+        <p class="amg-intro">Pure aim carries you only so far. The players who consistently rank up are the ones who pair their aim with disciplined movement, calculated peeks, and intelligent positioning. If you are still getting comfortable with the basics, start with the <a href="/cs2-guides/beginners-guide/">beginner's guide</a> first. Here we break down the mechanical layer that turns a decent aimer into a genuinely dangerous competitor.</p>
+
+        <section id="movement">
+          <div class="amg-section-header"><h2>Movement Mechanics</h2></div>
+          <h3>Counter-Strafing</h3>
+          <p>CS2 rifles are only accurate when standing still. Counter-strafing -- tapping the opposite movement key to instantly brake -- is the fundamental technique that allows you to shoot accurately while maintaining mobility. Our <a href="/cs2-guides/movement-guide/">movement guide</a> covers counter-strafing drills, bunny hopping, and KZ maps in greater detail. Without counter-strafing, you have to wait for natural deceleration (about 100ms), which is an eternity in a gunfight.</p>
+          <p>Practice this by running sideways and tapping the opposite key at the exact moment you want to shoot. Your velocity drops to zero within one game tick, making your first bullet accurate. The timing needs to become muscle memory -- you should counter-strafe without thinking about it. Dialing in the right <a href="/sensitivity-converter/">mouse sensitivity</a> makes building that muscle memory significantly easier.</p>
+          <h3>Air Strafing & Bunny Hopping</h3>
+          <p>Air strafing lets you change direction mid-air by moving your mouse in the direction you want to turn while holding the corresponding strafe key (A for left, D for right). Do not hold W during air strafes. Combined with well-timed jumps, this enables bunny hopping -- chaining consecutive jumps to maintain or build speed above the normal running velocity.</p>
+          <p>While bunny hopping is inconsistent in matchmaking (the 64-tick server makes timing harder), the movement principles transfer to practical situations: jumping around corners, air-strafing through smokes, and navigating the map faster.</p>
+        </section>
+
+        <section id="peeking">
+          <div class="amg-section-header"><h2>Peeking Techniques</h2></div>
+          <h3>Jiggle Peeking</h3>
+          <p>Jiggle peeking is your primary information-gathering tool. Strafe briefly past an angle to check if an enemy is holding it, then immediately strafe back. You expose yourself for roughly 100-200ms -- fast enough that most players cannot react. Use this to scout positions before committing to a peek.</p>
+          <h3>Shoulder Peeking</h3>
+          <p>Shoulder peeking exposes just the edge of your character model to bait out AWP shots. After the AWP fires, you have roughly 1.5 seconds before they can fire again -- enough time to wide-peek and take the fight with your rifle. This is the single most effective counter to AWP players.</p>
+          <h3>Wide Peeking</h3>
+          <p>Wide peeking means fully committing to swinging past an angle at maximum speed. This is effective when you have information about the enemy position and want to take an aggressive duel. The speed of your swing makes you harder to hit, but you are fully exposed and committed to the fight.</p>
+          <h3>Ferrari Peek</h3>
+          <p>A Ferrari peek (or dry peek) is wide peeking at maximum velocity without pre-aiming the angle. The goal is to cross the angle so fast that the enemy misses their first shot, giving you time to spot them on your screen and react. Used when you expect an AWP or when you need to cross a dangerous sightline.</p>
+        </section>
+
+        <section id="crosshair">
+          <div class="amg-section-header"><h2>Crosshair Placement</h2></div>
+          <p>The single highest-impact skill improvement for most players is crosshair placement. Keep your crosshair at head level at all times -- not at the ground, not at chest level. Pre-aim common positions as you move through the map. When rounding a corner, your crosshair should already be positioned where the most likely enemy head would be. Fine-tune your reticle with the <a href="/crosshair-generator/">crosshair generator</a> or browse <a href="/crosshair-codes/">pro crosshair codes</a> for inspiration.</p>
+          <p>Good crosshair placement reduces the distance you need to flick by 50-90%. Against a head-level crosshair holder, an enemy appearing at a common angle requires only a minor adjustment. Against poor crosshair placement, you need to flick both horizontally and vertically -- a much harder shot.</p>
+        </section>
+
+        <section id="positioning">
+          <div class="amg-section-header"><h2>Positioning Fundamentals</h2></div>
+          <p><strong>Off-angles:</strong> Instead of holding the obvious default position, shift slightly to an unexpected position. This forces the enemy to adjust their crosshair placement, buying you precious milliseconds.</p>
+          <p><strong>Distance advantage:</strong> When defending, fight from the furthest distance possible. Your head appears smaller to the enemy, and their recoil is harder to control at range. Use rifles at long range and SMGs/shotguns at close range to exploit weapon strengths. Check the <a href="/damage-calculator/">damage calculator</a> to see exactly how damage drops off at distance for every <a href="/cs2-weapons/">weapon</a>.</p>
+          <p><strong>Isolation:</strong> Never take fights against multiple enemies simultaneously. Use <a href="/cs2-maps/">map</a> geometry and utility to isolate 1v1 engagements. If you see two enemies, reposition to where you can only be seen by one at a time. Study how <a href="/pro-players/">professional players</a> isolate fights in their demos for real-world examples.</p>
+        </section>
+
+        <section id="faq">
+          <div class="amg-section-header"><h2>Frequently Asked Questions</h2></div>
+          <div class="amg-faq-list">
+            {faqs.map(f => (
+              <details class="amg-faq-item">
+                <summary class="amg-faq-question">{f.question}</summary>
+                <p class="amg-faq-answer">{f.answer}</p>
+              </details>
+            ))}
+          </div>
+        </section>
+
+        <section id="resources">
+          <div class="amg-section-header"><h2>Related Resources</h2></div>
+          <div class="amg-resources-grid">
+            <a href="/damage-calculator/" class="amg-resource-card"><span class="amg-resource-name">Damage Calculator</span><span class="amg-resource-arrow">&rarr;</span></a>
+            <a href="/recoil-patterns/" class="amg-resource-card"><span class="amg-resource-name">Recoil Patterns</span><span class="amg-resource-arrow">&rarr;</span></a>
+            <a href="/weapon-compare/" class="amg-resource-card"><span class="amg-resource-name">Weapon Compare</span><span class="amg-resource-arrow">&rarr;</span></a>
+            <a href="/crosshair-generator/" class="amg-resource-card"><span class="amg-resource-name">Crosshair Generator</span><span class="amg-resource-arrow">&rarr;</span></a>
+            <a href="/sensitivity-converter/" class="amg-resource-card"><span class="amg-resource-name">Sensitivity Converter</span><span class="amg-resource-arrow">&rarr;</span></a>
+            <a href="/economy-calculator/" class="amg-resource-card"><span class="amg-resource-name">Economy Calculator</span><span class="amg-resource-arrow">&rarr;</span></a>
+            <a href="/cs2-weapons/" class="amg-resource-card"><span class="amg-resource-name">Weapon Database</span><span class="amg-resource-arrow">&rarr;</span></a>
+            <a href="/pro-players/" class="amg-resource-card"><span class="amg-resource-name">Pro Player Settings</span><span class="amg-resource-arrow">&rarr;</span></a>
+            <a href="/cs2-tools/" class="amg-resource-card"><span class="amg-resource-name">All Tools</span><span class="amg-resource-arrow">&rarr;</span></a>
+            <a href="/cs2-guides/beginners-guide/" class="amg-resource-card"><span class="amg-resource-name">Beginner's Guide</span><span class="amg-resource-arrow">&rarr;</span></a>
+            <a href="/cs2-guides/economy-guide/" class="amg-resource-card"><span class="amg-resource-name">Economy Guide</span><span class="amg-resource-arrow">&rarr;</span></a>
+            <a href="/cs2-maps/" class="amg-resource-card"><span class="amg-resource-name">Map Callouts</span><span class="amg-resource-arrow">&rarr;</span></a>
+          </div>
+        </section>
+      </article>
+    </div>
+  </div>
+
+  <style>
+    .amg-wrap{max-width:1100px;margin:0 auto;padding:0 1.5rem 2rem}
+    .amg-breadcrumb{display:flex;align-items:center;gap:.5rem;padding:1.25rem 0;font-size:.85rem;color:var(--text2)}
+    .amg-breadcrumb a{color:var(--accent);text-decoration:none}
+    .amg-breadcrumb a:hover{color:var(--accent2)}
+    .amg-sep{color:var(--border)}
+    .amg-header{padding:1.5rem 0 1.25rem;border-bottom:2px solid var(--accent);margin-bottom:1.5rem}
+    .amg-header h1{margin:0 0 .35rem;font-size:2.2rem;font-weight:800;color:var(--text);letter-spacing:-.02em;line-height:1.2}
+    .amg-subtitle{margin:0;font-size:1.05rem;color:var(--text2);font-weight:400}
+    .amg-toc-mobile{display:none}
+    .amg-layout{display:grid;grid-template-columns:220px 1fr;gap:2.5rem;align-items:start}
+    .amg-sidebar{position:sticky;top:80px}
+    .amg-toc{display:flex;flex-direction:column;gap:0;border-left:2px solid var(--border);padding-left:0}
+    .amg-toc-title{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--accent);padding:0 0 .6rem 1rem}
+    .amg-toc-link{display:block;padding:.4rem 1rem;font-size:.82rem;color:var(--text2);text-decoration:none;border-left:2px solid transparent;margin-left:-2px;transition:color .2s,border-color .2s}
+    .amg-toc-link:hover{color:var(--text);border-left-color:var(--accent)}
+    .amg-content{min-width:0}
+    .amg-intro{font-size:1rem;line-height:1.8;color:var(--text2);margin-bottom:2rem}
+    .amg-section-header{background:rgba(46,204,113,.05);margin:0 -1.25rem 1.25rem;padding:.75rem 1.25rem;border-radius:4px}
+    .amg-section-header h2{margin:0;padding:0;font-size:1.5rem;font-weight:700;color:var(--text);border:none;letter-spacing:-.01em}
+    section{margin-bottom:2.5rem}
+    h3{font-size:1.15rem;font-weight:600;margin:1.5rem 0 .6rem;color:var(--text)}
+    p{line-height:1.7;color:var(--text2);margin-bottom:1rem}
+    .amg-faq-list{display:flex;flex-direction:column;gap:.5rem}
+    .amg-faq-item{background:var(--bg2);border:1px solid var(--border);border-radius:4px;overflow:hidden}
+    .amg-faq-question{display:block;padding:1rem 1.25rem;font-size:.95rem;font-weight:600;color:var(--text);cursor:pointer;list-style:none;position:relative;padding-right:2.5rem;transition:background .2s}
+    .amg-faq-question::-webkit-details-marker{display:none}
+    .amg-faq-question::after{content:'+';position:absolute;right:1.25rem;top:50%;transform:translateY(-50%);font-size:1.2rem;color:var(--accent);font-weight:700}
+    .amg-faq-item[open] .amg-faq-question::after{content:'\2212'}
+    .amg-faq-item[open] .amg-faq-question{border-bottom:1px solid var(--border);background:rgba(46,204,113,.03)}
+    .amg-faq-question:hover{background:rgba(46,204,113,.03)}
+    .amg-faq-answer{padding:1rem 1.25rem;margin:0;font-size:.9rem;color:var(--text2);line-height:1.7}
+    .amg-resources-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.6rem;margin:.5rem 0 1.5rem}
+    .amg-resource-card{display:flex;align-items:center;justify-content:space-between;padding:.75rem 1rem;background:var(--bg2);border:1px solid var(--border);border-radius:4px;text-decoration:none;border-left:2px solid transparent;transition:border-left-color .2s,color .2s}
+    .amg-resource-card:hover{border-left-color:var(--accent)}
+    .amg-resource-name{font-size:.88rem;color:var(--text2);font-weight:500;transition:color .2s}
+    .amg-resource-card:hover .amg-resource-name{color:var(--text)}
+    .amg-resource-arrow{font-size:1rem;color:var(--accent);opacity:0;transition:opacity .2s}
+    .amg-resource-card:hover .amg-resource-arrow{opacity:1}
+    @media(max-width:860px){
+      .amg-layout{grid-template-columns:1fr;gap:0}
+      .amg-sidebar{display:none}
+      .amg-toc-mobile{display:flex;gap:.25rem;overflow-x:auto;padding:.75rem 0;margin-bottom:1rem;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+      .amg-toc-mobile::-webkit-scrollbar{display:none}
+      .amg-toc-mobile-link{flex-shrink:0;padding:.35rem .75rem;font-size:.78rem;font-weight:600;color:var(--text2);background:var(--bg2);border:1px solid var(--border);border-radius:4px;text-decoration:none;white-space:nowrap;transition:color .2s,border-color .2s}
+      .amg-toc-mobile-link:hover{color:var(--accent);border-color:var(--accent)}
+      .amg-header h1{font-size:1.7rem}
+      .amg-section-header{margin:0 -1rem 1rem;padding:.6rem 1rem}
+      .amg-resources-grid{grid-template-columns:repeat(2,1fr)}
+    }
+    @media(max-width:600px){
+      .amg-wrap{padding:0 1rem 1.5rem}
+      .amg-resources-grid{grid-template-columns:1fr}
+      .amg-header h1{font-size:1.5rem}
+    }
+  </style>
+  <AuthorBox updated="2026-03-02" />
+</Base>

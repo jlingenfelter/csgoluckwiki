@@ -99,498 +99,236 @@ const schemaData = {
 ---
 
 <Base title={title} description={description}>
-  <script type="application/ld+json" set:html={JSON.stringify(toolAppSchema({ name: 'CS2 Weapon Compare', url: 'https://csdb.gg/weapon-compare/', description }))}></script>
-  <div class="calc-container">
-    <h1>CS2 Weapon Compare</h1>
-    <p class="subtitle">Compare weapons side-by-side to find the best choice</p>
+  <script type="application/ld+json" set:html={JSON.stringify(toolAppSchema({ name: 'CS2 Weapon Compare', url: 'https://wiki.csgoluck.com/weapon-compare/', description }))}></script>
+  <script type="application/ld+json" set:html={JSON.stringify(schemaData)} />
 
-    <div class="calc-section">
-      <div class="compare-controls">
-        <div class="input-group">
-          <label for="weapon1">Weapon 1</label>
-          <select id="weapon1" class="weapon-select">
-            {weaponStats.map(w => <option value={w.name} selected={w.name === 'AK-47'}>{w.name}</option>)}
-          </select>
-        </div>
+  <nav class="breadcrumb"><a href="/">Home</a> <span>/</span> <a href="/cs2-tools/">Tools</a> <span>/</span> <span>Weapon Compare</span></nav>
 
-        <div class="input-group">
-          <label for="weapon2">Weapon 2</label>
-          <select id="weapon2" class="weapon-select">
-            {weaponStats.map(w => <option value={w.name} selected={w.name === 'M4A4'}>{w.name}</option>)}
-          </select>
-        </div>
-      </div>
-
-      <div class="comparison-table">
-        <table id="comparisonTable">
-          <thead>
-            <tr>
-              <th>Stat</th>
-              <th id="weapon1Header">AK-47</th>
-              <th id="weapon2Header">M4A4</th>
-              <th class="comparison">Difference</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td class="stat-name">Cost</td>
-              <td id="cost1">$2,700</td>
-              <td id="cost2">$3,100</td>
-              <td id="costDiff" class="comparison">-$400</td>
-            </tr>
-            <tr>
-              <td class="stat-name">Damage</td>
-              <td id="damage1">41</td>
-              <td id="damage2">33</td>
-              <td id="damageDiff" class="comparison">+8</td>
-            </tr>
-            <tr>
-              <td class="stat-name">Accuracy</td>
-              <td id="accuracy1">65%</td>
-              <td id="accuracy2">75%</td>
-              <td id="accuracyDiff" class="comparison">-10%</td>
-            </tr>
-            <tr>
-              <td class="stat-name">Fire Rate</td>
-              <td id="fireRate1">600 RPM</td>
-              <td id="fireRate2">666 RPM</td>
-              <td id="fireRateDiff" class="comparison">-66 RPM</td>
-            </tr>
-            <tr>
-              <td class="stat-name">Recoil</td>
-              <td id="recoil1">85</td>
-              <td id="recoil2">50</td>
-              <td id="recoilDiff" class="comparison">+35</td>
-            </tr>
-            <tr>
-              <td class="stat-name">Armor Penetration</td>
-              <td id="armor1">75%</td>
-              <td id="armor2">74%</td>
-              <td id="armorDiff" class="comparison">+1%</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-
-      <div class="stat-charts">
-        <div class="chart">
-          <h4>Damage Comparison</h4>
-          <div class="bar-chart">
-            <div class="bar-row">
-              <span class="label" id="chartLabel1">AK-47</span>
-              <div class="bar">
-                <div class="fill" id="damageBar1" style="width: 36%"></div>
-              </div>
-              <span class="value" id="damageValue1">41</span>
-            </div>
-            <div class="bar-row">
-              <span class="label" id="chartLabel2">M4A4</span>
-              <div class="bar">
-                <div class="fill" id="damageBar2" style="width: 29%"></div>
-              </div>
-              <span class="value" id="damageValue2">33</span>
-            </div>
-          </div>
-        </div>
-
-        <div class="chart">
-          <h4>Accuracy Comparison</h4>
-          <div class="bar-chart">
-            <div class="bar-row">
-              <span class="label" id="accuracyLabel1">AK-47</span>
-              <div class="bar">
-                <div class="fill" id="accuracyBar1" style="width: 65%"></div>
-              </div>
-              <span class="value" id="accuracyValue1">65%</span>
-            </div>
-            <div class="bar-row">
-              <span class="label" id="accuracyLabel2">M4A4</span>
-              <div class="bar">
-                <div class="fill" id="accuracyBar2" style="width: 75%"></div>
-              </div>
-              <span class="value" id="accuracyValue2">75%</span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="weapon-categories">
-      <h2>Weapon Categories</h2>
-      
-      <div class="category">
-        <h3>Rifles</h3>
-        <div class="weapon-list">
-          <div class="weapon-item">
-            <span>AK-47</span>
-            <small>$2,700</small>
-          </div>
-          <div class="weapon-item">
-            <span>M4A4 / M4A1-S</span>
-            <small>$2,900-$3,100</small>
-          </div>
-          <div class="weapon-item">
-            <span>Galil AR</span>
-            <small>$1,800</small>
-          </div>
-        </div>
-      </div>
-
-      <div class="category">
-        <h3>Sniper Rifles</h3>
-        <div class="weapon-list">
-          <div class="weapon-item">
-            <span>AWP Dragon Lore</span>
-            <small>$4,750</small>
-          </div>
-        </div>
-      </div>
-
-      <div class="category">
-        <h3>Pistols</h3>
-        <div class="weapon-list">
-          <div class="weapon-item">
-            <span>Deagle</span>
-            <small>$700</small>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="faq-section">
-      <h2>Frequently Asked Questions</h2>
-      {faq.map(item => (
-        <div class="faq-item">
-          <h3>{item.question}</h3>
-          <p>{item.answer}</p>
-        </div>
-      ))}
-    </div>
-
-    <div class="links-section">
-      <h2>Related Tools</h2>
-      <ul>
-        <li><a href="/damage-calculator/">Damage Calculator</a></li>
-        <li><a href="/recoil-patterns/">Recoil Patterns</a></li>
-        <li><a href="/economy-calculator/">Economy Calculator</a></li>
-        <li><a href="/skin-compare/">Compare Skins</a></li>
-        <li><a href="/sensitivity-converter/">Sensitivity Converter</a></li>
-        <li><a href="/crosshair-generator/">Crosshair Generator</a></li>
-        <li><a href="/weapons/">Weapon Database</a></li>
-        <li><a href="/skins/">Skin Database</a></li>
-        <li><a href="/pro-players/">Pro Player Settings</a></li>
-        <li><a href="/tools/">All Tools</a></li>
-      </ul>
-    </div>
+  <div class="wpc-hero">
+    <h1 class="wpc-title">CS2 Weapon Compare</h1>
+    <p class="wpc-desc">Compare weapons side-by-side to find the best choice for your play style and economy.</p>
   </div>
 
-  <script type="application/ld+json" set:html={JSON.stringify(schemaData)} />
+  <section class="wpc-panel">
+    <h2 class="wpc-section-title">Select Weapons</h2>
+    <div class="wpc-controls">
+      <div class="wpc-field">
+        <label class="wpc-label" for="weapon1">Weapon 1</label>
+        <select id="weapon1" class="wpc-select">
+          {weaponStats.map(w => <option value={w.name} selected={w.name === 'AK-47'}>{w.name}</option>)}
+        </select>
+      </div>
+      <div class="wpc-vs">VS</div>
+      <div class="wpc-field">
+        <label class="wpc-label" for="weapon2">Weapon 2</label>
+        <select id="weapon2" class="wpc-select">
+          {weaponStats.map(w => <option value={w.name} selected={w.name === 'M4A4'}>{w.name}</option>)}
+        </select>
+      </div>
+    </div>
+
+    <div class="wpc-table-wrap">
+      <table class="wpc-table" id="comparisonTable">
+        <thead>
+          <tr>
+            <th>Stat</th>
+            <th id="weapon1Header">AK-47</th>
+            <th id="weapon2Header">M4A4</th>
+            <th>Difference</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="wpc-stat-name">Cost</td>
+            <td id="cost1">$2,700</td>
+            <td id="cost2">$3,100</td>
+            <td class="wpc-diff" id="costDiff">-$400</td>
+          </tr>
+          <tr>
+            <td class="wpc-stat-name">Damage</td>
+            <td id="damage1">41</td>
+            <td id="damage2">33</td>
+            <td class="wpc-diff" id="damageDiff">+8</td>
+          </tr>
+          <tr>
+            <td class="wpc-stat-name">Accuracy</td>
+            <td id="accuracy1">65%</td>
+            <td id="accuracy2">75%</td>
+            <td class="wpc-diff" id="accuracyDiff">-10%</td>
+          </tr>
+          <tr>
+            <td class="wpc-stat-name">Fire Rate</td>
+            <td id="fireRate1">600 RPM</td>
+            <td id="fireRate2">666 RPM</td>
+            <td class="wpc-diff" id="fireRateDiff">-66 RPM</td>
+          </tr>
+          <tr>
+            <td class="wpc-stat-name">Recoil</td>
+            <td id="recoil1">85</td>
+            <td id="recoil2">50</td>
+            <td class="wpc-diff" id="recoilDiff">+35</td>
+          </tr>
+          <tr>
+            <td class="wpc-stat-name">Armor Penetration</td>
+            <td id="armor1">75%</td>
+            <td id="armor2">74%</td>
+            <td class="wpc-diff" id="armorDiff">+1%</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="wpc-charts">
+      <div class="wpc-chart">
+        <h4 class="wpc-chart-title">Damage Comparison</h4>
+        <div class="wpc-bar-row">
+          <span class="wpc-bar-label" id="chartLabel1">AK-47</span>
+          <div class="wpc-bar-track"><div class="wpc-bar-fill" id="damageBar1" style="width:36%"></div></div>
+          <span class="wpc-bar-val" id="damageValue1">41</span>
+        </div>
+        <div class="wpc-bar-row">
+          <span class="wpc-bar-label" id="chartLabel2">M4A4</span>
+          <div class="wpc-bar-track"><div class="wpc-bar-fill" id="damageBar2" style="width:29%"></div></div>
+          <span class="wpc-bar-val" id="damageValue2">33</span>
+        </div>
+      </div>
+      <div class="wpc-chart">
+        <h4 class="wpc-chart-title">Accuracy Comparison</h4>
+        <div class="wpc-bar-row">
+          <span class="wpc-bar-label" id="accuracyLabel1">AK-47</span>
+          <div class="wpc-bar-track"><div class="wpc-bar-fill" id="accuracyBar1" style="width:65%"></div></div>
+          <span class="wpc-bar-val" id="accuracyValue1">65%</span>
+        </div>
+        <div class="wpc-bar-row">
+          <span class="wpc-bar-label" id="accuracyLabel2">M4A4</span>
+          <div class="wpc-bar-track"><div class="wpc-bar-fill" id="accuracyBar2" style="width:75%"></div></div>
+          <span class="wpc-bar-val" id="accuracyValue2">75%</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="wpc-section">
+    <h2 class="wpc-section-title">Weapon Categories</h2>
+    <div class="wpc-cat">
+      <h3 class="wpc-cat-title">Rifles</h3>
+      <div class="wpc-cat-grid">
+        <div class="wpc-cat-item"><span>AK-47</span><small>$2,700</small></div>
+        <div class="wpc-cat-item"><span>M4A4 / M4A1-S</span><small>$2,900-$3,100</small></div>
+        <div class="wpc-cat-item"><span>Galil AR</span><small>$1,800</small></div>
+      </div>
+    </div>
+    <div class="wpc-cat">
+      <h3 class="wpc-cat-title">Sniper Rifles</h3>
+      <div class="wpc-cat-grid">
+        <div class="wpc-cat-item"><span>AWP Dragon Lore</span><small>$4,750</small></div>
+      </div>
+    </div>
+    <div class="wpc-cat">
+      <h3 class="wpc-cat-title">Pistols</h3>
+      <div class="wpc-cat-grid">
+        <div class="wpc-cat-item"><span>Deagle</span><small>$700</small></div>
+      </div>
+    </div>
+  </section>
+
+  <div class="wpc-links">
+    <span class="wpc-links-label">Related Tools:</span>
+    <a href="/damage-calculator/">Damage Calculator</a>
+    <a href="/recoil-patterns/">Recoil Patterns</a>
+    <a href="/economy-calculator/">Economy Calculator</a>
+    <a href="/skin-compare/">Compare Skins</a>
+    <a href="/sensitivity-converter/">Sensitivity Converter</a>
+    <a href="/crosshair-generator/">Crosshair Generator</a>
+    <a href="/cs2-weapons/">Weapon Database</a>
+    <a href="/cs2-skins/">Skin Database</a>
+    <a href="/pro-players/">Pro Player Settings</a>
+    <a href="/cs2-tools/">All Tools</a>
+  </div>
+
+  <section class="wpc-section">
+    <h2 class="wpc-section-title">Frequently Asked Questions</h2>
+    {faq.map(item => (
+      <details class="wpc-faq-item">
+        <summary class="wpc-faq-q">{item.question}</summary>
+        <div class="wpc-faq-a">{item.answer}</div>
+      </details>
+    ))}
+  </section>
 
   <ExploreMore context="weapons" />
 </Base>
 
-<style is:inline>
-  .calc-container {
-    max-width: 1100px;
-    margin: 0 auto;
-    padding: 2rem;
-    color: var(--text);
-  }
+<style>
+  /* Hero */
+  .wpc-hero{margin-bottom:1.5rem}
+  .wpc-title{font-size:1.8rem;font-weight:800;margin:0 0 .5rem}
+  .wpc-desc{color:var(--text2);font-size:.95rem;margin:0;line-height:1.6;max-width:700px}
 
-  h1 {
-    font-size: 2.5rem;
-    margin-bottom: 0.5rem;
-    color: var(--accent);
-  }
+  /* Sections */
+  .wpc-panel,.wpc-section{background:var(--bg2);border:1px solid var(--border);border-radius:4px;padding:1.5rem;margin-bottom:1.5rem}
+  .wpc-section-title{font-size:1.15rem;font-weight:700;margin:0 0 1rem}
 
-  .subtitle {
-    color: var(--text2);
-    font-size: 1.1rem;
-    margin-bottom: 2rem;
-  }
+  /* Controls */
+  .wpc-controls{display:grid;grid-template-columns:1fr auto 1fr;gap:1rem;align-items:end;margin-bottom:1.5rem}
+  .wpc-vs{display:flex;align-items:center;justify-content:center;font-size:1.3rem;font-weight:900;color:var(--accent);padding-bottom:.35rem}
+  .wpc-field{display:flex;flex-direction:column;gap:.4rem}
+  .wpc-label{font-size:.82rem;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.03em}
+  .wpc-select{padding:.55rem .7rem;background:var(--bg3);border:1px solid var(--border);border-radius:4px;color:var(--text);font-size:.95rem}
+  .wpc-select:focus{outline:none;border-color:var(--accent)}
 
-  .calc-section {
-    background: var(--bg2);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 2rem;
-    margin-bottom: 2rem;
-  }
+  /* Table */
+  .wpc-table-wrap{overflow-x:auto;margin-bottom:1.5rem}
+  .wpc-table{width:100%;border-collapse:collapse;font-size:.88rem}
+  .wpc-table th{text-align:left;padding:.6rem .75rem;border-bottom:2px solid var(--border);color:var(--text2);font-weight:700;font-size:.8rem;text-transform:uppercase;letter-spacing:.03em}
+  .wpc-table td{padding:.55rem .75rem;border-bottom:1px solid var(--border)}
+  .wpc-table tbody tr:hover{background:var(--bg3)}
+  .wpc-stat-name{font-weight:600;color:var(--text)}
+  .wpc-diff{color:var(--accent);font-weight:700;text-align:center}
+  .wpc-table th:last-child{text-align:center}
 
-  .compare-controls {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1.5rem;
-    margin-bottom: 2rem;
-  }
+  /* Charts */
+  .wpc-charts{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-top:1rem}
+  .wpc-chart{background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:1.25rem}
+  .wpc-chart-title{font-size:.9rem;font-weight:700;margin:0 0 1rem;color:var(--text)}
+  .wpc-bar-row{display:flex;align-items:center;gap:.75rem;margin-bottom:.75rem}
+  .wpc-bar-row:last-child{margin-bottom:0}
+  .wpc-bar-label{width:80px;color:var(--text2);font-size:.85rem;font-weight:600;flex-shrink:0}
+  .wpc-bar-track{flex:1;height:12px;background:var(--bg2);border-radius:4px;overflow:hidden}
+  .wpc-bar-fill{height:100%;background:var(--accent);border-radius:4px;transition:width .3s}
+  .wpc-bar-val{width:50px;text-align:right;color:var(--accent);font-weight:700;font-size:.85rem;flex-shrink:0}
 
-  .input-group {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-  }
+  /* Categories */
+  .wpc-cat{margin-bottom:1.25rem}
+  .wpc-cat:last-child{margin-bottom:0}
+  .wpc-cat-title{font-size:.95rem;font-weight:700;margin:0 0 .6rem;color:var(--text)}
+  .wpc-cat-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:.6rem}
+  .wpc-cat-item{background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:.75rem 1rem;display:flex;flex-direction:column;gap:.25rem;transition:border-left .2s}
+  .wpc-cat-item:hover{border-left:3px solid var(--accent)}
+  .wpc-cat-item span{color:var(--text);font-weight:600;font-size:.9rem}
+  .wpc-cat-item small{color:var(--text2);font-size:.82rem}
 
-  label {
-    font-weight: 600;
-    color: var(--text2);
-    font-size: 0.9rem;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-  }
+  /* Links */
+  .wpc-links{display:flex;flex-wrap:wrap;gap:.5rem;align-items:center;margin-bottom:1.5rem;padding:1rem;background:var(--bg2);border:1px solid var(--border);border-radius:4px}
+  .wpc-links-label{font-weight:700;font-size:.85rem;color:var(--text2);margin-right:.25rem}
+  .wpc-links a{color:var(--accent);font-size:.85rem;text-decoration:none;padding:.25rem .5rem;border-radius:4px;border:1px solid var(--border);transition:border-color .2s}
+  .wpc-links a:hover{border-color:var(--accent)}
 
-  .weapon-select {
-    padding: 0.75rem;
-    background: var(--bg3);
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    color: var(--text);
-    font-size: 1rem;
-  }
+  /* FAQ */
+  .wpc-faq-item{background:var(--bg3);border:1px solid var(--border);border-radius:4px;margin-bottom:.5rem;overflow:hidden}
+  .wpc-faq-q{padding:.8rem 1rem;cursor:pointer;font-weight:600;font-size:.9rem;color:var(--text);list-style:none;display:flex;align-items:center;justify-content:space-between}
+  .wpc-faq-q::-webkit-details-marker{display:none}
+  .wpc-faq-q::after{content:'+';font-size:1.1rem;color:var(--accent);font-weight:700}
+  .wpc-faq-item[open] .wpc-faq-q::after{content:'-'}
+  .wpc-faq-item[open]{border-left:3px solid var(--accent)}
+  .wpc-faq-a{padding:0 1rem .8rem;font-size:.88rem;color:var(--text2);line-height:1.6}
 
-  .weapon-select:hover {
-    border-color: var(--accent);
-  }
-
-  .weapon-select:focus {
-    outline: none;
-    border-color: var(--accent);
-    box-shadow: 0 0 0 3px rgba(212, 149, 110, 0.1);
-  }
-
-  .comparison-table {
-    margin-bottom: 2rem;
-    overflow-x: auto;
-  }
-
-  table {
-    width: 100%;
-    border-collapse: collapse;
-    background: var(--bg);
-    border-radius: 8px;
-    overflow: hidden;
-  }
-
-  th, td {
-    padding: 1rem;
-    text-align: left;
-    border-bottom: 1px solid var(--border);
-  }
-
-  th {
-    background: var(--bg3);
-    color: var(--text2);
-    font-weight: 600;
-    text-transform: uppercase;
-    font-size: 0.85rem;
-    letter-spacing: 0.05em;
-  }
-
-  th.comparison {
-    text-align: center;
-  }
-
-  td {
-    color: var(--text2);
-  }
-
-  .stat-name {
-    font-weight: 600;
-    color: var(--text);
-  }
-
-  td.comparison {
-    text-align: center;
-    color: var(--accent);
-    font-weight: 600;
-  }
-
-  tr:last-child td {
-    border-bottom: none;
-  }
-
-  .stat-charts {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 2rem;
-    margin-top: 2rem;
-  }
-
-  .chart {
-    background: var(--bg);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 1.5rem;
-  }
-
-  .chart h4 {
-    color: var(--accent);
-    margin-bottom: 1.5rem;
-  }
-
-  .bar-chart {
-    display: flex;
-    flex-direction: column;
-    gap: 1.5rem;
-  }
-
-  .bar-row {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-  }
-
-  .label {
-    width: 80px;
-    color: var(--text2);
-    font-size: 0.9rem;
-    font-weight: 500;
-  }
-
-  .bar {
-    flex: 1;
-    height: 30px;
-    background: var(--bg2);
-    border-radius: 4px;
-    overflow: hidden;
-    border: 1px solid var(--border);
-  }
-
-  .bar .fill {
-    height: 100%;
-    background: linear-gradient(90deg, var(--accent), rgba(212, 149, 110, 0.6));
-    transition: width 0.3s ease;
-  }
-
-  .value {
-    width: 50px;
-    text-align: right;
-    color: var(--accent);
-    font-weight: 600;
-  }
-
-  .weapon-categories {
-    background: var(--bg2);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 2rem;
-    margin-bottom: 2rem;
-  }
-
-  .weapon-categories h2 {
-    color: var(--accent);
-    font-size: 1.5rem;
-    margin-bottom: 1.5rem;
-  }
-
-  .category {
-    margin-bottom: 2rem;
-  }
-
-  .category:last-child {
-    margin-bottom: 0;
-  }
-
-  .category h3 {
-    color: var(--accent);
-    font-size: 1.1rem;
-    margin-bottom: 1rem;
-  }
-
-  .weapon-list {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 1rem;
-  }
-
-  .weapon-item {
-    background: var(--bg);
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    padding: 1rem;
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-  }
-
-  .weapon-item span {
-    color: var(--text);
-    font-weight: 600;
-  }
-
-  .weapon-item small {
-    color: var(--text2);
-    font-size: 0.9rem;
-  }
-
-  .faq-section {
-    background: var(--bg2);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 2rem;
-    margin-bottom: 2rem;
-  }
-
-  .faq-section h2 {
-    color: var(--accent);
-    font-size: 1.5rem;
-    margin-bottom: 1.5rem;
-  }
-
-  .faq-item {
-    margin-bottom: 1.5rem;
-    padding-bottom: 1.5rem;
-    border-bottom: 1px solid var(--border);
-  }
-
-  .faq-item:last-child {
-    border-bottom: none;
-  }
-
-  .faq-item h3 {
-    color: var(--accent);
-    margin-bottom: 0.5rem;
-  }
-
-  .faq-item p {
-    color: var(--text2);
-    line-height: 1.6;
-  }
-
-  .links-section {
-    background: var(--bg2);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 2rem;
-  }
-
-  .links-section h2 {
-    color: var(--accent);
-    font-size: 1.5rem;
-    margin-bottom: 1.5rem;
-  }
-
-  .links-section ul {
-    list-style: none;
-    padding: 0;
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 1rem;
-  }
-
-  .links-section a {
-    display: block;
-    padding: 0.75rem 1rem;
-    background: var(--bg3);
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    color: var(--accent);
-    text-decoration: none;
-    transition: all 0.2s;
-  }
-
-  .links-section a:hover {
-    background: var(--accent);
-    color: white;
+  @media(max-width:768px){
+    .wpc-controls{grid-template-columns:1fr;gap:.5rem}
+    .wpc-vs{padding:0}
+    .wpc-charts{grid-template-columns:1fr}
+    .wpc-title{font-size:1.4rem}
+    .wpc-cat-grid{grid-template-columns:1fr}
   }
 </style>
 

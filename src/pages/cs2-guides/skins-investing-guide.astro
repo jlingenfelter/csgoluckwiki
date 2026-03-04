@@ -1,0 +1,204 @@
+---
+import Base from '../../layouts/Base.astro';
+import AuthorBox from '../../components/AuthorBox.astro';
+import { faqSchema, breadcrumbSchema } from '../../lib/weapons';
+
+const title = 'CS2 Skins Investing Guide — Grow Value with Smart Purchases | CSGOLuck Wiki';
+const description = 'A strategic playbook for CS2 skin investors. Identify items with upside potential, time your entries, diversify your holdings, and manage downside risk effectively.';
+
+const breadcrumbs = [
+  { name: 'Home', url: '/' },
+  { name: 'Guides', url: '/cs2-guides' },
+  { name: 'Skins Investing Guide', url: '/cs2-guides/skins-investing-guide' },
+];
+
+const articleSchema = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": title,
+  "description": description,
+  "author": { "@type": "Person", "name": "Josh Lingenfelter", "url": "https://www.linkedin.com/in/josh-lingenfelter-8157274b/", "jobTitle": "Director", "worksFor": { "@type": "Organization", "name": "CSGOLuck" } },
+  "publisher": { "@type": "Organization", "name": "CSGOLuck Wiki", "url": "https://wiki.csgoluck.com" },
+  "mainEntityOfPage": `https://wiki.csgoluck.com/cs2-guides/skins-investing-guide/`,
+  "inLanguage": "en-US"
+});
+
+const faqs = [
+  { question: 'Are CS2 skins a good investment?', answer: 'CS2 skins have historically outperformed many traditional assets, with some items appreciating 100-1000%+ over several years. However, the market is volatile and unregulated. Treat skin investing as speculative — never invest money you cannot afford to lose entirely.' },
+  { question: 'Which CS2 skins appreciate the most?', answer: 'Items that become discontinued (operation drops, removed cases), high-tier knives and gloves, Katowice 2014 stickered skins, and low-supply Covert skins from popular collections. Skins tied to iconic pro players or memorable tournament moments also tend to rise.' },
+  { question: 'When is the best time to buy CS2 skins?', answer: 'Prices typically dip during major sales (Steam Summer/Winter Sale), new operation releases (when supply floods the market), and during CS2 major tournaments (new sticker supply depresses existing sticker prices). Buy during these dips and hold.' },
+  { question: 'How long should I hold skins as investments?', answer: 'Short-term flipping (buy low sell high within days/weeks) requires constant market monitoring. Long-term holding (6-24 months) of fundamentally scarce items is more reliable. Most successful skin investors hold for 1-3 years.' },
+  { question: 'What is the safest skin investment?', answer: 'Blue-chip knife skins (Karambit, Butterfly Knife in popular finishes), discontinued operation skins, and sealed case investments are considered the safest. These have large markets, consistent demand, and declining supply over time.' },
+];
+
+const sections = [
+  { id: 'economy', label: 'Skin Economy' },
+  { id: 'categories', label: 'Investment Categories' },
+  { id: 'timing', label: 'Timing Investments' },
+  { id: 'risk', label: 'Risk Management' },
+  { id: 'faq', label: 'FAQ' },
+  { id: 'resources', label: 'Resources' },
+];
+---
+
+<Base title={title} description={description} currentNav="/cs2-guides/">
+  <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema(breadcrumbs))}></script>
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema(faqs))}></script>
+  <script type="application/ld+json" set:html={articleSchema}></script>
+
+  <div class="sig-wrap">
+    <nav class="sig-breadcrumb">
+      <a href="/">Home</a>
+      <span class="sig-sep">/</span>
+      <a href="/cs2-guides">Guides</a>
+      <span class="sig-sep">/</span>
+      <span>Skins Investing Guide</span>
+    </nav>
+
+    <header class="sig-header">
+      <h1>CS2 Skins Investing Guide</h1>
+      <p class="sig-subtitle">Spot undervalued skins, understand supply dynamics, and grow your portfolio over time</p>
+    </header>
+
+    <nav class="sig-toc-mobile" aria-label="Table of contents">
+      {sections.map((s) => (
+        <a href={`#${s.id}`} class="sig-toc-mobile-link">{s.label}</a>
+      ))}
+    </nav>
+
+    <div class="sig-layout">
+      <aside class="sig-sidebar">
+        <nav class="sig-toc" aria-label="Table of contents">
+          <span class="sig-toc-title">Contents</span>
+          {sections.map((s) => (
+            <a href={`#${s.id}`} class="sig-toc-link">{s.label}</a>
+          ))}
+        </nav>
+      </aside>
+
+      <article class="sig-content">
+        <p class="sig-intro">
+          CS2 skins form a multi-billion dollar secondary market where virtual items behave much like collectible commodities. No investment is guaranteed, but a solid grasp of supply mechanics, seasonal patterns, and marketplace fees puts you in a far stronger position when allocating capital to skins.
+        </p>
+
+        <section id="economy">
+          <div class="sig-section-header"><h2>Understanding the Skin Economy</h2></div>
+          <p>Skin prices follow standard supply-and-demand rules with one important nuance: supply only shrinks. Items are permanently lost to trade bans, dormant accounts, and the <a href="/tradeup-calculator/">trade-up contract</a> system (which destroys 10 skins to create 1). Because of this built-in deflation, skins tied to discontinued collections have historically trended upward.</p>
+          <p>The total addressable market exceeds $3 billion in annual trading volume across all platforms. Steam alone sees hundreds of millions in monthly CS2 skin transactions, with Buff163 handling even larger volumes. This liquidity means you can generally sell popular skins within hours to days.</p>
+        </section>
+
+        <section id="categories">
+          <div class="sig-section-header"><h2>Investment Categories</h2></div>
+          <h3>Blue-Chip Skins (Low Risk, Moderate Return)</h3>
+          <p>High-demand knife and glove skins from popular finishes: Karambit Doppler, Butterfly Fade, Sport Gloves Vice. These have massive markets, consistent demand, and predictable price floors. Expected appreciation: 10-30% annually. Browse current prices in the <a href="/cs2-skins/">skin database</a> and verify condition with the <a href="/float-checker/">float checker</a>.</p>
+          <h3>Discontinued Items (Medium Risk, High Return)</h3>
+          <p>Skins from removed collections or expired operations. Once a drop source disappears, supply only declines. Operation Bravo skins, for example, have appreciated 500%+ since the operation ended. The key risk is whether demand persists for these specific skins.</p>
+          <h3>Sealed Cases (Low-Medium Risk, Variable Return)</h3>
+          <p>Buying <a href="/cs2-cases/">cases</a> that are no longer actively dropping. As supply dwindles, the case itself and the skins inside it become rarer. Historical performers include Operation Breakout cases and Chroma cases, which multiplied in value years after release.</p>
+          <h3>Sticker Investments (High Risk, Very High Return)</h3>
+          <p>Tournament <a href="/cs2-stickers/">stickers</a> -- particularly from Katowice 2014 and 2015 -- have shown the most dramatic appreciation in CS2 history. However, modern sticker investments are riskier because Valve has increased supply. Foil and holo variants from memorable tournaments still perform well.</p>
+        </section>
+
+        <section id="timing">
+          <div class="sig-section-header"><h2>Timing Your Investments</h2></div>
+          <p>The CS2 market follows seasonal patterns. Prices typically dip during Steam Summer Sale (June) and Winter Sale (December) as players liquidate skins for game purchases. New operation releases flood the market with supply, temporarily depressing prices across the board. Major CS2 tournaments create sticker oversupply.</p>
+          <p>The optimal strategy is to accumulate during these predictable dips and hold through the recovery. Most price depression from sales events recovers within 4-8 weeks. Operation-induced dips can take 3-6 months to fully recover as excess supply is absorbed.</p>
+        </section>
+
+        <section id="risk">
+          <div class="sig-section-header"><h2>Risk Management</h2></div>
+          <p>Skin investing carries unique risks that traditional markets don't have: Valve can change game mechanics, introduce competing skins, or modify the trading system with no warning. The 7-day trade hold introduced in 2018 caused a temporary 30-40% market crash. Always diversify across multiple skin types and never concentrate more than 20% of your portfolio in a single item. Understanding <a href="/cs2-guides/float-guide/">float values</a> and <a href="/cs2-guides/trading-guide/">marketplace fees</a> is critical before committing capital.</p>
+        </section>
+
+        <section id="faq">
+          <div class="sig-section-header"><h2>Frequently Asked Questions</h2></div>
+          <div class="sig-faq-list">
+            {faqs.map(f => (
+              <details class="sig-faq-item">
+                <summary class="sig-faq-question">{f.question}</summary>
+                <p class="sig-faq-answer">{f.answer}</p>
+              </details>
+            ))}
+          </div>
+        </section>
+
+        <section id="resources">
+          <div class="sig-section-header"><h2>Related Resources</h2></div>
+          <div class="sig-resources-grid">
+            <a href="/cs2-skins/" class="sig-resource-card"><span class="sig-resource-name">Skin Database</span><span class="sig-resource-arrow">&rarr;</span></a>
+            <a href="/skin-compare/" class="sig-resource-card"><span class="sig-resource-name">Compare Skins</span><span class="sig-resource-arrow">&rarr;</span></a>
+            <a href="/price-tracker/" class="sig-resource-card"><span class="sig-resource-name">Price Tracker</span><span class="sig-resource-arrow">&rarr;</span></a>
+            <a href="/market-trends/" class="sig-resource-card"><span class="sig-resource-name">Market Trends</span><span class="sig-resource-arrow">&rarr;</span></a>
+            <a href="/float-checker/" class="sig-resource-card"><span class="sig-resource-name">Float Checker</span><span class="sig-resource-arrow">&rarr;</span></a>
+            <a href="/tradeup-calculator/" class="sig-resource-card"><span class="sig-resource-name">Trade-Up Calculator</span><span class="sig-resource-arrow">&rarr;</span></a>
+            <a href="/case-odds-calculator/" class="sig-resource-card"><span class="sig-resource-name">Case Odds Calculator</span><span class="sig-resource-arrow">&rarr;</span></a>
+            <a href="/case-simulator/" class="sig-resource-card"><span class="sig-resource-name">Case Simulator</span><span class="sig-resource-arrow">&rarr;</span></a>
+            <a href="/cs2-cases/" class="sig-resource-card"><span class="sig-resource-name">Cases & Collections</span><span class="sig-resource-arrow">&rarr;</span></a>
+            <a href="/inventory-lookup/" class="sig-resource-card"><span class="sig-resource-name">Inventory Lookup</span><span class="sig-resource-arrow">&rarr;</span></a>
+            <a href="/loadout-builder/" class="sig-resource-card"><span class="sig-resource-name">Loadout Builder</span><span class="sig-resource-arrow">&rarr;</span></a>
+            <a href="/cs2-guides/trading-guide/" class="sig-resource-card"><span class="sig-resource-name">Trading Guide</span><span class="sig-resource-arrow">&rarr;</span></a>
+            <a href="/cs2-guides/float-guide/" class="sig-resource-card"><span class="sig-resource-name">Float Value Guide</span><span class="sig-resource-arrow">&rarr;</span></a>
+          </div>
+        </section>
+      </article>
+    </div>
+  </div>
+
+  <style>
+    .sig-wrap{max-width:1100px;margin:0 auto;padding:0 1.5rem 2rem}
+    .sig-breadcrumb{display:flex;align-items:center;gap:.5rem;padding:1.25rem 0;font-size:.85rem;color:var(--text2)}
+    .sig-breadcrumb a{color:var(--accent);text-decoration:none}
+    .sig-breadcrumb a:hover{color:var(--accent2)}
+    .sig-sep{color:var(--border)}
+    .sig-header{padding:1.5rem 0 1.25rem;border-bottom:2px solid var(--accent);margin-bottom:1.5rem}
+    .sig-header h1{margin:0 0 .35rem;font-size:2.2rem;font-weight:800;color:var(--text);letter-spacing:-.02em;line-height:1.2}
+    .sig-subtitle{margin:0;font-size:1.05rem;color:var(--text2);font-weight:400}
+    .sig-toc-mobile{display:none}
+    .sig-layout{display:grid;grid-template-columns:220px 1fr;gap:2.5rem;align-items:start}
+    .sig-sidebar{position:sticky;top:80px}
+    .sig-toc{display:flex;flex-direction:column;gap:0;border-left:2px solid var(--border);padding-left:0}
+    .sig-toc-title{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--accent);padding:0 0 .6rem 1rem}
+    .sig-toc-link{display:block;padding:.4rem 1rem;font-size:.82rem;color:var(--text2);text-decoration:none;border-left:2px solid transparent;margin-left:-2px;transition:color .2s,border-color .2s}
+    .sig-toc-link:hover{color:var(--text);border-left-color:var(--accent)}
+    .sig-content{min-width:0}
+    .sig-intro{font-size:1rem;line-height:1.8;color:var(--text2);margin-bottom:2rem}
+    .sig-section-header{background:rgba(46,204,113,.05);margin:0 -1.25rem 1.25rem;padding:.75rem 1.25rem;border-radius:4px}
+    .sig-section-header h2{margin:0;padding:0;font-size:1.5rem;font-weight:700;color:var(--text);border:none;letter-spacing:-.01em}
+    section{margin-bottom:2.5rem}
+    h3{font-size:1.15rem;font-weight:600;margin:1.5rem 0 .6rem;color:var(--text)}
+    p{line-height:1.7;color:var(--text2);margin-bottom:1rem}
+    .sig-faq-list{display:flex;flex-direction:column;gap:.5rem}
+    .sig-faq-item{background:var(--bg2);border:1px solid var(--border);border-radius:4px;overflow:hidden}
+    .sig-faq-question{display:block;padding:1rem 1.25rem;font-size:.95rem;font-weight:600;color:var(--text);cursor:pointer;list-style:none;position:relative;padding-right:2.5rem;transition:background .2s}
+    .sig-faq-question::-webkit-details-marker{display:none}
+    .sig-faq-question::after{content:'+';position:absolute;right:1.25rem;top:50%;transform:translateY(-50%);font-size:1.2rem;color:var(--accent);font-weight:700}
+    .sig-faq-item[open] .sig-faq-question::after{content:'\2212'}
+    .sig-faq-item[open] .sig-faq-question{border-bottom:1px solid var(--border);background:rgba(46,204,113,.03)}
+    .sig-faq-question:hover{background:rgba(46,204,113,.03)}
+    .sig-faq-answer{padding:1rem 1.25rem;margin:0;font-size:.9rem;color:var(--text2);line-height:1.7}
+    .sig-resources-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.6rem;margin:.5rem 0 1.5rem}
+    .sig-resource-card{display:flex;align-items:center;justify-content:space-between;padding:.75rem 1rem;background:var(--bg2);border:1px solid var(--border);border-radius:4px;text-decoration:none;border-left:2px solid transparent;transition:border-left-color .2s,color .2s}
+    .sig-resource-card:hover{border-left-color:var(--accent)}
+    .sig-resource-name{font-size:.88rem;color:var(--text2);font-weight:500;transition:color .2s}
+    .sig-resource-card:hover .sig-resource-name{color:var(--text)}
+    .sig-resource-arrow{font-size:1rem;color:var(--accent);opacity:0;transition:opacity .2s}
+    .sig-resource-card:hover .sig-resource-arrow{opacity:1}
+    @media(max-width:860px){
+      .sig-layout{grid-template-columns:1fr;gap:0}
+      .sig-sidebar{display:none}
+      .sig-toc-mobile{display:flex;gap:.25rem;overflow-x:auto;padding:.75rem 0;margin-bottom:1rem;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+      .sig-toc-mobile::-webkit-scrollbar{display:none}
+      .sig-toc-mobile-link{flex-shrink:0;padding:.35rem .75rem;font-size:.78rem;font-weight:600;color:var(--text2);background:var(--bg2);border:1px solid var(--border);border-radius:4px;text-decoration:none;white-space:nowrap;transition:color .2s,border-color .2s}
+      .sig-toc-mobile-link:hover{color:var(--accent);border-color:var(--accent)}
+      .sig-header h1{font-size:1.7rem}
+      .sig-section-header{margin:0 -1rem 1rem;padding:.6rem 1rem}
+      .sig-resources-grid{grid-template-columns:repeat(2,1fr)}
+    }
+    @media(max-width:600px){
+      .sig-wrap{padding:0 1rem 1.5rem}
+      .sig-resources-grid{grid-template-columns:1fr}
+      .sig-header h1{font-size:1.5rem}
+    }
+  </style>
+  <AuthorBox updated="2026-03-02" />
+</Base>

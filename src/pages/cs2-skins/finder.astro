@@ -1,0 +1,321 @@
+---
+import Base from '../../layouts/Base.astro';
+import ExploreMore from '../../components/ExploreMore.astro';
+import { SKINS, RARITY_COLORS, getLowestPrice, getHighestPrice, getUniqueCategories, getWeaponsInCategory, SKINS_TOTAL } from '../../lib/skins';
+import { breadcrumbSchema, faqSchema } from '../../lib/weapons';
+import { skinCardImage } from '../../lib/imageOptimize';
+
+const title = 'CS2 Skin Finder — Search & Filter All Skins | CSGOLuck Wiki';
+const description = `Find the perfect CS2 skin. Filter ${SKINS_TOTAL} skins by weapon, rarity, price range, wear condition, StatTrak availability, and more.`;
+
+const weaponGroups = [
+  { cat: 'rifle', label: 'Rifles', weapons: getWeaponsInCategory('rifle') },
+  { cat: 'pistol', label: 'Pistols', weapons: getWeaponsInCategory('pistol') },
+  { cat: 'smg', label: 'SMGs', weapons: getWeaponsInCategory('smg') },
+  { cat: 'heavy', label: 'Heavy', weapons: getWeaponsInCategory('heavy') },
+  { cat: 'knife', label: 'Knives', weapons: getWeaponsInCategory('knife') },
+  { cat: 'glove', label: 'Gloves', weapons: getWeaponsInCategory('glove') },
+].filter(g => g.weapons.length > 0);
+
+const rarities = Object.keys(RARITY_COLORS);
+
+// Prepare lightweight skin data for client-side filtering
+const skinData = SKINS.filter(s => !s.phase).map(s => ({
+  s: s.slug,
+  n: `${s.weapon} | ${s.name}`,
+  w: s.weaponSlug,
+  c: s.category,
+  r: s.rarity,
+  st: s.statTrak,
+  sv: s.souvenir,
+  p: getLowestPrice(s),
+  ph: getHighestPrice(s),
+  i: s.image ? skinCardImage(s.image) : '',
+  rc: RARITY_COLORS[s.rarity] || '#444',
+}));
+
+const breadcrumbs = [
+  { name: 'Home', url: '/' },
+  { name: 'Skins', url: '/cs2-skins/' },
+  { name: 'Skin Finder', url: '/cs2-skins/finder/' },
+];
+
+const faqs = [
+  { question: 'How do I find the perfect CS2 skin?', answer: 'Use our Skin Finder to filter skins by weapon type, rarity tier, price range, and wear condition. You can narrow results to find skins that match your budget and style preferences.' },
+  { question: 'What is the cheapest CS2 skin?', answer: 'Many Consumer and Industrial grade skins are available for under $0.10. Use the price filter to find skins within any budget range.' },
+  { question: 'Can I filter CS2 skins by StatTrak?', answer: 'Yes! Toggle the StatTrak filter to show only skins that have StatTrak variants available, which track your kills in-game.' },
+];
+---
+
+<Base title={title} description={description} currentNav="/cs2-skins/">
+<script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema(breadcrumbs))} />
+<script type="application/ld+json" set:html={JSON.stringify(faqSchema(faqs))} />
+
+<nav class="breadcrumb">
+  <a href="/">Home</a> / <a href="/cs2-skins/">Skins</a> / <span>Skin Finder</span>
+</nav>
+
+<!-- Hero -->
+<section class="sf-hero">
+  <h1 class="sf-hero-title">CS2 Skin Finder</h1>
+  <p class="sf-hero-desc">Search and filter {SKINS_TOTAL} CS2 skins to find the perfect one for your loadout.</p>
+</section>
+
+<!-- Filter Strip (Horizontal top bar) -->
+<div class="sf-filter-strip">
+  <div class="sf-filter-row">
+    <input type="text" id="sf-search" class="sf-search-input" placeholder="Search by name..." />
+    <select id="sf-category" class="sf-select">
+      <option value="">All Categories</option>
+      {weaponGroups.map(g => (
+        <option value={g.cat}>{g.label}</option>
+      ))}
+    </select>
+    <select id="sf-weapon" class="sf-select">
+      <option value="">All Weapons</option>
+      {weaponGroups.map(g => (
+        <optgroup label={g.label}>
+          {g.weapons.map(w => (
+            <option value={w.weaponSlug}>{w.weapon} ({w.count})</option>
+          ))}
+        </optgroup>
+      ))}
+    </select>
+    <select id="sf-sort" class="sf-select">
+      <option value="price-asc">Price: Low to High</option>
+      <option value="price-desc">Price: High to Low</option>
+      <option value="name-asc">Name: A-Z</option>
+      <option value="name-desc">Name: Z-A</option>
+    </select>
+  </div>
+  <div class="sf-filter-row sf-filter-row-secondary">
+    <div class="sf-rarity-pills">
+      {rarities.map(r => (
+        <label class="sf-rarity-pill">
+          <input type="checkbox" value={r} class="sf-rarity-cb" />
+          <span class="sf-rarity-label" style={`--pill-color:${RARITY_COLORS[r]}`}>{r}</span>
+        </label>
+      ))}
+    </div>
+    <div class="sf-price-inputs">
+      <input type="number" id="sf-price-min" class="sf-price-field" placeholder="Min $" min="0" step="0.01" />
+      <span class="sf-price-sep">-</span>
+      <input type="number" id="sf-price-max" class="sf-price-field" placeholder="Max $" min="0" step="0.01" />
+    </div>
+    <label class="sf-toggle">
+      <input type="checkbox" id="sf-stattrak" />
+      <span>StatTrak</span>
+    </label>
+    <label class="sf-toggle">
+      <input type="checkbox" id="sf-souvenir" />
+      <span>Souvenir</span>
+    </label>
+    <button id="sf-reset" class="sf-reset-btn">Reset</button>
+  </div>
+</div>
+
+<!-- Results -->
+<div class="sf-results-bar">
+  <span id="sf-count">0</span> skins found
+</div>
+<div id="sf-grid" class="sf-results-list"></div>
+<button id="sf-load-more" class="sf-load-more-btn" style="display:none">Load More</button>
+
+<!-- FAQ Accordion -->
+<h2>Frequently Asked Questions</h2>
+<div class="sf-faq">
+  {faqs.map(f => (
+    <details class="sf-faq-item">
+      <summary class="sf-faq-q">{f.question}</summary>
+      <p class="sf-faq-a">{f.answer}</p>
+    </details>
+  ))}
+</div>
+
+<ExploreMore context="skins" />
+</Base>
+
+<script define:vars={{ skinData }}>
+const SKINS = skinData;
+const PAGE_SIZE = 48;
+let filtered = [];
+let showing = 0;
+
+const grid = document.getElementById('sf-grid');
+const countEl = document.getElementById('sf-count');
+const loadMore = document.getElementById('sf-load-more');
+const searchInput = document.getElementById('sf-search');
+const catSelect = document.getElementById('sf-category');
+const weaponSelect = document.getElementById('sf-weapon');
+const rarityCbs = document.querySelectorAll('.sf-rarity-cb');
+const priceMin = document.getElementById('sf-price-min');
+const priceMax = document.getElementById('sf-price-max');
+const stCheck = document.getElementById('sf-stattrak');
+const svCheck = document.getElementById('sf-souvenir');
+const sortSelect = document.getElementById('sf-sort');
+const resetBtn = document.getElementById('sf-reset');
+
+function applyFilters() {
+  const q = searchInput.value.toLowerCase().trim();
+  const cat = catSelect.value;
+  const wpn = weaponSelect.value;
+  const checkedRarities = [...rarityCbs].filter(c => c.checked).map(c => c.value);
+  const pMin = parseFloat(priceMin.value) || 0;
+  const pMax = parseFloat(priceMax.value) || Infinity;
+  const stOnly = stCheck.checked;
+  const svOnly = svCheck.checked;
+
+  filtered = SKINS.filter(s => {
+    if (q && !s.n.toLowerCase().includes(q)) return false;
+    if (cat && s.c !== cat) return false;
+    if (wpn && s.w !== wpn) return false;
+    if (checkedRarities.length > 0 && !checkedRarities.includes(s.r)) return false;
+    if (s.p < pMin || s.p > pMax) return false;
+    if (stOnly && !s.st) return false;
+    if (svOnly && !s.sv) return false;
+    return true;
+  });
+
+  const sort = sortSelect.value;
+  if (sort === 'price-asc') filtered.sort((a, b) => a.p - b.p);
+  else if (sort === 'price-desc') filtered.sort((a, b) => b.p - a.p);
+  else if (sort === 'name-asc') filtered.sort((a, b) => a.n.localeCompare(b.n));
+  else if (sort === 'name-desc') filtered.sort((a, b) => b.n.localeCompare(a.n));
+
+  showing = 0;
+  grid.innerHTML = '';
+  countEl.textContent = filtered.length;
+  renderMore();
+}
+
+function renderMore() {
+  const batch = filtered.slice(showing, showing + PAGE_SIZE);
+  for (const s of batch) {
+    const row = document.createElement('a');
+    row.href = `/cs2-skin/${s.s}/`;
+    row.className = 'sf-result-row';
+    row.innerHTML = `
+      <div class="sf-result-img">${s.i ? `<img src="${s.i}" alt="${s.n}" width="72" height="52" loading="lazy" />` : '<span class="sf-result-placeholder"></span>'}</div>
+      <div class="sf-result-name"><strong>${s.n}</strong></div>
+      <span class="sf-result-rarity" style="color:${s.rc}">${s.r}</span>
+      ${s.p > 0 ? `<span class="sf-result-price">From $${s.p.toFixed(2)}</span>` : '<span class="sf-result-price sf-no-price">No price</span>'}
+    `;
+    grid.appendChild(row);
+  }
+  showing += batch.length;
+  loadMore.style.display = showing < filtered.length ? '' : 'none';
+}
+
+// Sync category -> weapon filter
+catSelect.addEventListener('change', () => {
+  const cat = catSelect.value;
+  const opts = weaponSelect.querySelectorAll('optgroup, option[value]');
+  if (!cat) {
+    opts.forEach(o => o.style.display = '');
+  } else {
+    weaponSelect.querySelectorAll('optgroup').forEach(g => {
+      g.style.display = g.label.toLowerCase().includes(cat) ? '' : 'none';
+    });
+  }
+  weaponSelect.value = '';
+  applyFilters();
+});
+
+[searchInput, weaponSelect, sortSelect].forEach(el => el.addEventListener('input', applyFilters));
+[stCheck, svCheck].forEach(el => el.addEventListener('change', applyFilters));
+rarityCbs.forEach(cb => cb.addEventListener('change', applyFilters));
+[priceMin, priceMax].forEach(el => el.addEventListener('change', applyFilters));
+loadMore.addEventListener('click', renderMore);
+
+resetBtn.addEventListener('click', () => {
+  searchInput.value = '';
+  catSelect.value = '';
+  weaponSelect.value = '';
+  rarityCbs.forEach(cb => cb.checked = false);
+  priceMin.value = '';
+  priceMax.value = '';
+  stCheck.checked = false;
+  svCheck.checked = false;
+  sortSelect.value = 'price-asc';
+  applyFilters();
+});
+
+applyFilters();
+</script>
+
+<style>
+  /* ===== SF HERO ===== */
+  .sf-hero{margin-bottom:1.5rem}
+  .sf-hero-title{margin:0 0 .4rem;font-size:1.9rem;font-weight:800}
+  .sf-hero-desc{color:var(--text2);margin:0;font-size:.88rem}
+
+  /* ===== SF FILTER STRIP (Horizontal) ===== */
+  .sf-filter-strip{margin-bottom:1.25rem;padding:.75rem;background:var(--bg2);border:1px solid var(--border);border-radius:4px;display:flex;flex-direction:column;gap:.6rem}
+  .sf-filter-row{display:flex;gap:.5rem;flex-wrap:wrap;align-items:center}
+  .sf-filter-row-secondary{padding-top:.5rem;border-top:1px solid var(--border)}
+  .sf-search-input{background:var(--bg3);color:var(--text);border:1px solid var(--border);padding:.4rem .65rem;border-radius:4px;font-size:.82rem;font-family:inherit;flex:1;min-width:180px;transition:border-color .2s}
+  .sf-search-input:focus{outline:none;border-color:var(--accent)}
+  .sf-search-input::placeholder{color:var(--text2);opacity:.5}
+  .sf-select{background:var(--bg3);color:var(--text);border:1px solid var(--border);padding:.4rem .6rem;border-radius:4px;font-size:.82rem;font-family:inherit;cursor:pointer}
+  .sf-select:focus{outline:none;border-color:var(--accent)}
+
+  /* Rarity Pills */
+  .sf-rarity-pills{display:flex;flex-wrap:wrap;gap:.3rem}
+  .sf-rarity-pill{cursor:pointer;display:flex;align-items:center}
+  .sf-rarity-pill input{display:none}
+  .sf-rarity-label{border:1px solid var(--pill-color);color:var(--pill-color);padding:.15rem .4rem;border-radius:4px;font-size:.7rem;font-weight:600;transition:background .15s}
+  .sf-rarity-pill input:checked + .sf-rarity-label{background:rgba(255,255,255,.08)}
+
+  /* Price Inputs */
+  .sf-price-inputs{display:flex;align-items:center;gap:.3rem}
+  .sf-price-field{background:var(--bg3);color:var(--text);border:1px solid var(--border);padding:.35rem .5rem;border-radius:4px;font-size:.8rem;width:80px}
+  .sf-price-field:focus{outline:none;border-color:var(--accent)}
+  .sf-price-sep{color:var(--text2);font-size:.8rem}
+
+  /* Toggles */
+  .sf-toggle{display:flex;align-items:center;gap:.35rem;font-size:.82rem;cursor:pointer;color:var(--text2)}
+
+  .sf-reset-btn{background:none;border:1px solid var(--border);border-radius:4px;padding:.35rem .75rem;font-size:.78rem;color:var(--text2);cursor:pointer;font-family:inherit;transition:border-color .15s,color .15s}
+  .sf-reset-btn:hover{border-color:var(--accent);color:var(--accent)}
+
+  /* ===== SF RESULTS ===== */
+  .sf-results-bar{font-size:.88rem;color:var(--text2);margin-bottom:.75rem}
+  .sf-results-bar span{font-weight:700;color:var(--accent)}
+
+  .sf-results-list{display:flex;flex-direction:column;gap:.3rem;margin-bottom:1.5rem}
+
+  /* Row-based results (injected via JS) */
+  :global(.sf-result-row){display:grid;grid-template-columns:72px 1fr auto auto;align-items:center;gap:.75rem;background:var(--bg2);border:1px solid var(--border);border-left:3px solid transparent;border-radius:4px;padding:.45rem .6rem;text-decoration:none;color:inherit;transition:border-color .15s,background .15s}
+  :global(.sf-result-row:hover){border-left-color:var(--accent);background:var(--bg3)}
+  :global(.sf-result-img){width:72px;height:52px;display:flex;align-items:center;justify-content:center;overflow:hidden;border-radius:4px}
+  :global(.sf-result-img img){max-width:100%;max-height:100%;object-fit:contain}
+  :global(.sf-result-placeholder){width:100%;height:100%;background:var(--bg3);border-radius:4px}
+  :global(.sf-result-name){min-width:0;overflow:hidden}
+  :global(.sf-result-name strong){font-size:.84rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block}
+  :global(.sf-result-rarity){font-size:.72rem;font-weight:600;flex-shrink:0}
+  :global(.sf-result-price){font-size:.88rem;color:var(--accent);font-weight:700;white-space:nowrap;flex-shrink:0}
+  :global(.sf-no-price){color:var(--text2)}
+
+  .sf-load-more-btn{display:block;width:100%;padding:.6rem;background:transparent;border:1px solid var(--accent);border-radius:4px;color:var(--accent);font-weight:700;font-size:.85rem;cursor:pointer;font-family:inherit;transition:background .15s,color .15s;margin-bottom:2rem}
+  .sf-load-more-btn:hover{background:var(--accent);color:#000}
+
+  /* ===== SF FAQ ===== */
+  .sf-faq{display:flex;flex-direction:column;gap:.35rem;margin-bottom:2rem}
+  .sf-faq-item{background:var(--bg2);border:1px solid var(--border);border-radius:4px;overflow:hidden}
+  .sf-faq-item[open]{border-left:3px solid var(--accent)}
+  .sf-faq-q{padding:.65rem .85rem;font-size:.88rem;font-weight:600;color:var(--text);cursor:pointer;list-style:none;display:flex;align-items:center;justify-content:space-between}
+  .sf-faq-q::after{content:'+';color:var(--accent);font-weight:700;font-size:1rem;flex-shrink:0;margin-left:.5rem}
+  .sf-faq-item[open] .sf-faq-q::after{content:'-'}
+  .sf-faq-q::-webkit-details-marker{display:none}
+  .sf-faq-a{margin:0;padding:0 .85rem .75rem;font-size:.84rem;color:var(--text2);line-height:1.6}
+
+  /* ===== SF RESPONSIVE ===== */
+  @media(max-width:768px){
+    .sf-filter-row{flex-direction:column}
+    .sf-search-input{width:100%;min-width:0}
+    .sf-select{width:100%}
+    :global(.sf-result-row){grid-template-columns:56px 1fr;gap:.35rem}
+    :global(.sf-result-rarity){grid-column:1/-1}
+    :global(.sf-result-price){grid-column:1/-1;text-align:left}
+  }
+</style>

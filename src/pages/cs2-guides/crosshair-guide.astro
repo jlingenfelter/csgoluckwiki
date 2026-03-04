@@ -1,0 +1,358 @@
+---
+import Base from '../../layouts/Base.astro';
+import AuthorBox from '../../components/AuthorBox.astro';
+import { faqSchema, breadcrumbSchema } from '../../lib/weapons';
+
+const title = 'CS2 Crosshair Customization Guide — Build Your Perfect Reticle | CSGOLuck Wiki';
+const description = 'Fine-tune your CS2 crosshair for better precision. Discover top pro configurations, useful console variables, and hands-on customization techniques.';
+
+const breadcrumbs = [
+  { name: 'Home', url: '/' },
+  { name: 'Guides', url: '/cs2-guides' },
+  { name: 'Crosshair Customization Guide', url: '/cs2-guides/crosshair-guide' },
+];
+
+const faqs = [
+  {
+    question: 'What crosshair settings do pro players use?',
+    answer: 'Most pros use small, static crosshairs with minimal spread. Popular configs include players using 1-2px gap with 2-3px thickness. The best crosshair is one that feels comfortable for your playstyle.',
+  },
+  {
+    question: 'Should I use a dynamic or static crosshair?',
+    answer: 'Competitive players typically use static crosshairs because they don\'t expand during movement. This provides consistent aiming feedback regardless of weapon accuracy.',
+  },
+  {
+    question: 'How do I copy a pro player\'s crosshair?',
+    answer: 'Use a crosshair generator tool with pro player configs, or manually enter console commands from their config files. Many community resources compile popular pro crosshairs.',
+  },
+  {
+    question: 'What\'s the best crosshair size?',
+    answer: 'There\'s no universal "best" size. Start with small (outline 0-1, size 1-2) and adjust based on your monitor size and distance. You should be able to see enemies clearly through it.',
+  },
+  {
+    question: 'Can I import crosshairs from CS:GO?',
+    answer: 'CS2 uses the same crosshair command structure as CS:GO, so most crosshair settings are directly transferable. You\'ll likely want to fine-tune slightly for your preference.',
+  },
+];
+
+const breadcrumbSchema_ = breadcrumbSchema(breadcrumbs);
+const faqSchema_ = faqSchema(faqs);
+
+const articleSchema = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": title,
+  "description": description,
+  "author": { "@type": "Person", "name": "Josh Lingenfelter", "url": "https://www.linkedin.com/in/josh-lingenfelter-8157274b/", "jobTitle": "Director", "worksFor": { "@type": "Organization", "name": "CSGOLuck" } },
+  "publisher": { "@type": "Organization", "name": "CSGOLuck Wiki", "url": "https://wiki.csgoluck.com" },
+  "mainEntityOfPage": `https://wiki.csgoluck.com/cs2-guides/crosshair-guide/`,
+  "inLanguage": "en-US"
+});
+
+const sections = [
+  { id: 'settings', label: 'Customization Settings' },
+  { id: 'pro', label: 'Pro Player Crosshairs' },
+  { id: 'commands', label: 'Console Commands' },
+  { id: 'colors', label: 'Color Selection' },
+  { id: 'finding', label: 'Finding Your Crosshair' },
+  { id: 'advanced', label: 'Advanced Tips' },
+  { id: 'faq', label: 'FAQ' },
+  { id: 'resources', label: 'Resources' },
+];
+---
+
+<Base title={title} description={description}>
+  <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema_)}></script>
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema_)}></script>
+  <script type="application/ld+json" set:html={articleSchema}></script>
+
+  <div class="chg-wrap">
+    <nav class="chg-breadcrumb">
+      <a href="/">Home</a>
+      <span class="chg-sep">/</span>
+      <a href="/cs2-guides">Guides</a>
+      <span class="chg-sep">/</span>
+      <span>Crosshair Guide</span>
+    </nav>
+
+    <header class="chg-header">
+      <h1>Crosshair Customization Guide</h1>
+      <p class="chg-subtitle">Dial in the reticle that matches your playstyle and monitor setup</p>
+    </header>
+
+    <nav class="chg-toc-mobile" aria-label="Table of contents">
+      {sections.map((s) => (
+        <a href={`#${s.id}`} class="chg-toc-mobile-link">{s.label}</a>
+      ))}
+    </nav>
+
+    <div class="chg-layout">
+      <aside class="chg-sidebar">
+        <nav class="chg-toc" aria-label="Table of contents">
+          <span class="chg-toc-title">Contents</span>
+          {sections.map((s) => (
+            <a href={`#${s.id}`} class="chg-toc-link">{s.label}</a>
+          ))}
+        </nav>
+      </aside>
+
+      <article class="chg-content">
+        <p class="chg-intro">
+          A well-tuned crosshair gives you instant visual feedback on weapon accuracy and spread, directly influencing how confidently you take fights. Below you will find every customization variable, battle-tested pro configurations, and a step-by-step process for locking in a reticle that suits your aim style.
+        </p>
+
+        <section id="settings">
+          <div class="chg-section-header"><h2>Crosshair Customization Settings</h2></div>
+          <p>CS2 exposes a rich set of <a href="/cs2-commands/">console variables</a> for crosshair tweaking. Every visual element -- size, gap, colour, outline -- can be adjusted independently until the reticle is exactly how you want it. You can also build your crosshair visually with the <a href="/crosshair-generator/">crosshair generator</a>.</p>
+
+          <h3>Essential Console Variables</h3>
+          <ul class="chg-list">
+            <li><strong>cl_crosshairsize:</strong> Controls the length of crosshair lines (recommended: 1-5)</li>
+            <li><strong>cl_crosshairgap:</strong> Sets the gap between crosshair lines (recommended: -2 to 2)</li>
+            <li><strong>cl_crosshairthickness:</strong> Line thickness in pixels (recommended: 0.5-2)</li>
+            <li><strong>cl_crosshairalpha:</strong> Crosshair opacity from 0-255 (recommended: 255)</li>
+            <li><strong>cl_crosshaircolor:</strong> Color preset: 0=red, 1=green, 2=yellow, 3=cyan, 4=custom RGB</li>
+            <li><strong>cl_crosshaircolor_r/g/b:</strong> Custom RGB values (0-255 each)</li>
+            <li><strong>cl_crosshairstyle:</strong> 0=default, 1=static, 2=dynamic, 3=classic, 4=classic static</li>
+            <li><strong>cl_crosshair_drawoutline:</strong> Adds outline to crosshair (0=off, 1=on)</li>
+            <li><strong>cl_crosshair_outlinewidth:</strong> Outline thickness (recommended: 1-3)</li>
+            <li><strong>cl_crosshairdot:</strong> Center dot (0=off, 1=on)</li>
+          </ul>
+
+          <h3>Static vs Dynamic Crosshairs</h3>
+          <p><strong>Static Crosshair (cl_crosshairstyle 1):</strong> Remains fixed size regardless of accuracy. Professional players prefer this for consistent aiming cues.</p>
+          <p><strong>Dynamic Crosshair (cl_crosshairstyle 2):</strong> Expands when moving or firing. Useful for learning weapon accuracy patterns but less consistent for muscle memory.</p>
+        </section>
+
+        <section id="pro">
+          <div class="chg-section-header"><h2>Popular Pro Player Crosshairs</h2></div>
+          <p>Tier-1 professionals routinely publish their crosshair setups. Browse full <a href="/pro-players/">pro player settings</a> or grab ready-made codes from the <a href="/crosshair-codes/">crosshair codes library</a>. Borrowing from these proven configs is a solid starting point before you fine-tune for your own display and preferences.</p>
+
+          <h3>Small Aggressive Crosshair</h3>
+          <p>This minimalist approach provides maximum visibility. Use:</p>
+          <ul class="chg-list">
+            <li>Size: 1</li>
+            <li>Gap: -2</li>
+            <li>Thickness: 0.5</li>
+            <li>Outline: 1 (width 1)</li>
+            <li>Color: Cyan (for contrast)</li>
+          </ul>
+          <p>Favored by many riflers for precision aiming. The small size minimizes target obstruction.</p>
+
+          <h3>Classic Pro Crosshair</h3>
+          <p>A balanced choice used by many professional AWPers:</p>
+          <ul class="chg-list">
+            <li>Size: 2</li>
+            <li>Gap: 0</li>
+            <li>Thickness: 1</li>
+            <li>Outline: 1 (width 2)</li>
+            <li>Color: Green</li>
+            <li>Dot: On</li>
+          </ul>
+          <p>The larger size provides easier visibility without significant obstruction.</p>
+
+          <h3>Minimal Dot Crosshair</h3>
+          <p>Some players prefer an extremely minimal setup:</p>
+          <ul class="chg-list">
+            <li>Size: 1</li>
+            <li>Gap: -3</li>
+            <li>Thickness: 0.5</li>
+            <li>Dot: On</li>
+            <li>Outline: 0</li>
+            <li>Color: Custom white</li>
+          </ul>
+          <p>Excellent for maximum visibility. The dot serves as your primary aiming reference.</p>
+        </section>
+
+        <section id="commands">
+          <div class="chg-section-header"><h2>Console Commands for Configuration</h2></div>
+          <p>Open the developer console with the tilde key (~) and paste any of the commands below. For settings that survive a game restart, drop them into your autoexec.cfg file.</p>
+
+          <h3>Quick Configuration Examples</h3>
+          <p>Open your console and paste the following command sets to try different configurations:</p>
+          <ul class="chg-list">
+            <li><strong>Small Static:</strong> cl_crosshairstyle 1; cl_crosshairsize 1; cl_crosshairgap -2; cl_crosshairthickness 0.5</li>
+            <li><strong>Classic:</strong> cl_crosshairstyle 1; cl_crosshairsize 2; cl_crosshairgap 0; cl_crosshairthickness 1; cl_crosshairdot 1</li>
+            <li><strong>Large Visible:</strong> cl_crosshairstyle 1; cl_crosshairsize 4; cl_crosshairgap -1; cl_crosshairthickness 1.5</li>
+          </ul>
+
+          <h3>Config File Setup</h3>
+          <p>Create or edit your autoexec.cfg file in the CS2 config folder. Add your crosshair commands here to load them automatically when launching the game. Our <a href="/cs2-guides/config-guide/">config guide</a> walks through autoexec setup, file locations, and backup procedures.</p>
+        </section>
+
+        <section id="colors">
+          <div class="chg-section-header"><h2>Color Selection Tips</h2></div>
+          <p>Pick a hue that pops against the dominant colours of competitive maps without becoming invisible under different lighting scenarios.</p>
+
+          <h3>Popular Crosshair Colors</h3>
+          <ul class="chg-list">
+            <li><strong>Cyan (Blue-Green):</strong> High contrast on most maps. Very popular among pros</li>
+            <li><strong>Green:</strong> Good visibility, less harsh than cyan</li>
+            <li><strong>Yellow:</strong> Excellent contrast on darker areas</li>
+            <li><strong>Red:</strong> Classic choice, good visibility</li>
+            <li><strong>Custom Colors:</strong> Experiment with RGB values for personalization</li>
+          </ul>
+
+          <h3>Custom RGB Values</h3>
+          <p>For custom colors, use cl_crosshaircolor 4, then set:</p>
+          <ul class="chg-list">
+            <li>cl_crosshaircolor_r [0-255]</li>
+            <li>cl_crosshaircolor_g [0-255]</li>
+            <li>cl_crosshaircolor_b [0-255]</li>
+          </ul>
+          <p>For example, pure cyan: r=0, g=255, b=255</p>
+        </section>
+
+        <section id="finding">
+          <div class="chg-section-header"><h2>Finding Your Perfect Crosshair</h2></div>
+          <p>No single crosshair is objectively superior -- the ideal setup is the one that clicks with your hand-eye coordination. Use the structured process below to narrow it down efficiently:</p>
+
+          <h3>Step-by-Step Process</h3>
+          <div class="chg-steps">
+            <div class="chg-step-card">
+              <span class="chg-step-num">01</span>
+              <h3 class="chg-step-title">Baseline</h3>
+              <p class="chg-step-desc">Start with a small, static crosshair as your baseline</p>
+            </div>
+            <div class="chg-step-card">
+              <span class="chg-step-num">02</span>
+              <h3 class="chg-step-title">Test</h3>
+              <p class="chg-step-desc">Play 5-10 deathmatch rounds and evaluate visibility</p>
+            </div>
+            <div class="chg-step-card">
+              <span class="chg-step-num">03</span>
+              <h3 class="chg-step-title">Adjust</h3>
+              <p class="chg-step-desc">Adjust gap and thickness based on your comfort</p>
+            </div>
+            <div class="chg-step-card">
+              <span class="chg-step-num">04</span>
+              <h3 class="chg-step-title">Spray test</h3>
+              <p class="chg-step-desc">Test size in spray patterns -- you should see the target through it</p>
+            </div>
+            <div class="chg-step-card">
+              <span class="chg-step-num">05</span>
+              <h3 class="chg-step-title">Color</h3>
+              <p class="chg-step-desc">Choose a color with good contrast on your monitor</p>
+            </div>
+            <div class="chg-step-card">
+              <span class="chg-step-num">06</span>
+              <h3 class="chg-step-title">Commit</h3>
+              <p class="chg-step-desc">Lock in settings and use them consistently for 2+ weeks</p>
+            </div>
+          </div>
+
+          <h3>Testing Crosshairs</h3>
+          <p>Run your candidate crosshairs through several deathmatch rounds and aim-training maps across different maps and angle types so you know the setup holds up everywhere, not just in one scenario.</p>
+        </section>
+
+        <section id="advanced">
+          <div class="chg-section-header"><h2>Advanced Customization Tips</h2></div>
+          <ul class="chg-list">
+            <li><strong>Add outline:</strong> cl_crosshair_drawoutline 1 increases visibility in bright areas</li>
+            <li><strong>Use dot for center reference:</strong> cl_crosshairdot 1 helps with close-range spraying</li>
+            <li><strong>Match your monitor:</strong> Adjust size based on monitor size and <a href="/resolution-calculator/">resolution</a></li>
+            <li><strong>Consider <a href="/recoil-patterns/">weapon spray patterns</a>:</strong> Smaller crosshairs work better with precise tapping</li>
+            <li><strong>Test at different resolutions:</strong> Your crosshair may need adjustment if you change resolution</li>
+            <li><strong>Record and review:</strong> Watch your <a href="/cs2-guides/demo-guide/">demos</a> to see how your crosshair positions during engagements</li>
+          </ul>
+        </section>
+
+        <section id="faq">
+          <div class="chg-section-header"><h2>Frequently Asked Questions</h2></div>
+          <div class="chg-faq-list">
+            {faqs.map((faq) => (
+              <details class="chg-faq-item">
+                <summary class="chg-faq-question">{faq.question}</summary>
+                <p class="chg-faq-answer">{faq.answer}</p>
+              </details>
+            ))}
+          </div>
+        </section>
+
+        <section id="resources">
+          <div class="chg-section-header"><h2>Related Resources</h2></div>
+          <div class="chg-resources-grid">
+            <a href="/cs2-guides/" class="chg-resource-card"><span class="chg-resource-name">All Guides</span><span class="chg-resource-arrow">&rarr;</span></a>
+            <a href="/crosshair-generator/" class="chg-resource-card"><span class="chg-resource-name">Crosshair Generator</span><span class="chg-resource-arrow">&rarr;</span></a>
+            <a href="/crosshair-codes/" class="chg-resource-card"><span class="chg-resource-name">Pro Crosshair Codes</span><span class="chg-resource-arrow">&rarr;</span></a>
+            <a href="/sensitivity-converter/" class="chg-resource-card"><span class="chg-resource-name">Sensitivity Converter</span><span class="chg-resource-arrow">&rarr;</span></a>
+            <a href="/resolution-calculator/" class="chg-resource-card"><span class="chg-resource-name">Resolution Calculator</span><span class="chg-resource-arrow">&rarr;</span></a>
+            <a href="/pro-players/" class="chg-resource-card"><span class="chg-resource-name">Pro Player Settings</span><span class="chg-resource-arrow">&rarr;</span></a>
+            <a href="/cs2-tools/" class="chg-resource-card"><span class="chg-resource-name">All Tools</span><span class="chg-resource-arrow">&rarr;</span></a>
+            <a href="/cs2-guides/beginners-guide/" class="chg-resource-card"><span class="chg-resource-name">Beginner's Guide</span><span class="chg-resource-arrow">&rarr;</span></a>
+            <a href="/cs2-guides/ranks-guide/" class="chg-resource-card"><span class="chg-resource-name">Ranking System Guide</span><span class="chg-resource-arrow">&rarr;</span></a>
+            <a href="/cs2-guides/fps-optimization-guide/" class="chg-resource-card"><span class="chg-resource-name">FPS Optimization Guide</span><span class="chg-resource-arrow">&rarr;</span></a>
+          </div>
+        </section>
+      </article>
+    </div>
+  </div>
+
+  <style>
+    .chg-wrap{max-width:1100px;margin:0 auto;padding:0 1.5rem 2rem}
+    .chg-breadcrumb{display:flex;align-items:center;gap:.5rem;padding:1.25rem 0;font-size:.85rem;color:var(--text2)}
+    .chg-breadcrumb a{color:var(--accent);text-decoration:none}
+    .chg-breadcrumb a:hover{color:var(--accent2)}
+    .chg-sep{color:var(--border)}
+    .chg-header{padding:1.5rem 0 1.25rem;border-bottom:2px solid var(--accent);margin-bottom:1.5rem}
+    .chg-header h1{margin:0 0 .35rem;font-size:2.2rem;font-weight:800;color:var(--text);letter-spacing:-.02em;line-height:1.2}
+    .chg-subtitle{margin:0;font-size:1.05rem;color:var(--text2);font-weight:400}
+    .chg-toc-mobile{display:none}
+    .chg-layout{display:grid;grid-template-columns:220px 1fr;gap:2.5rem;align-items:start}
+    .chg-sidebar{position:sticky;top:80px}
+    .chg-toc{display:flex;flex-direction:column;gap:0;border-left:2px solid var(--border);padding-left:0}
+    .chg-toc-title{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--accent);padding:0 0 .6rem 1rem}
+    .chg-toc-link{display:block;padding:.4rem 1rem;font-size:.82rem;color:var(--text2);text-decoration:none;border-left:2px solid transparent;margin-left:-2px;transition:color .2s,border-color .2s}
+    .chg-toc-link:hover{color:var(--text);border-left-color:var(--accent)}
+    .chg-content{min-width:0}
+    .chg-intro{font-size:1rem;line-height:1.8;color:var(--text2);margin-bottom:2rem}
+    .chg-section-header{background:rgba(46,204,113,.05);margin:0 -1.25rem 1.25rem;padding:.75rem 1.25rem;border-radius:4px}
+    .chg-section-header h2{margin:0;padding:0;font-size:1.5rem;font-weight:700;color:var(--text);border:none;letter-spacing:-.01em}
+    section{margin-bottom:2.5rem}
+    h3{font-size:1.15rem;font-weight:600;margin:1.5rem 0 .6rem;color:var(--text)}
+    p{line-height:1.7;color:var(--text2);margin-bottom:1rem}
+    .chg-list{list-style:none;padding:0;margin:.75rem 0 1.5rem}
+    .chg-list li{padding:.4rem 0 .4rem 1.6rem;position:relative;color:var(--text2);line-height:1.65}
+    .chg-list li::before{content:'';position:absolute;left:.25rem;top:.75rem;width:6px;height:6px;background:var(--accent);border-radius:1px}
+    .chg-list li strong{color:var(--text)}
+    .chg-steps{display:grid;grid-template-columns:repeat(2,1fr);gap:.75rem;margin:.5rem 0 1.5rem}
+    .chg-step-card{background:var(--bg2);border:1px solid var(--border);border-radius:4px;padding:1.25rem;position:relative}
+    .chg-step-num{display:block;font-size:1.8rem;font-weight:800;color:var(--accent);line-height:1;margin-bottom:.5rem;opacity:.8}
+    .chg-step-title{margin:0 0 .4rem;font-size:1rem;font-weight:700;color:var(--text)}
+    .chg-step-desc{margin:0;font-size:.88rem;color:var(--text2);line-height:1.6}
+    .chg-faq-list{display:flex;flex-direction:column;gap:.5rem}
+    .chg-faq-item{background:var(--bg2);border:1px solid var(--border);border-radius:4px;overflow:hidden}
+    .chg-faq-question{display:block;padding:1rem 1.25rem;font-size:.95rem;font-weight:600;color:var(--text);cursor:pointer;list-style:none;position:relative;padding-right:2.5rem;transition:background .2s}
+    .chg-faq-question::-webkit-details-marker{display:none}
+    .chg-faq-question::after{content:'+';position:absolute;right:1.25rem;top:50%;transform:translateY(-50%);font-size:1.2rem;color:var(--accent);font-weight:700}
+    .chg-faq-item[open] .chg-faq-question::after{content:'\2212'}
+    .chg-faq-item[open] .chg-faq-question{border-bottom:1px solid var(--border);background:rgba(46,204,113,.03)}
+    .chg-faq-question:hover{background:rgba(46,204,113,.03)}
+    .chg-faq-answer{padding:1rem 1.25rem;margin:0;font-size:.9rem;color:var(--text2);line-height:1.7}
+    .chg-resources-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.6rem;margin:.5rem 0 1.5rem}
+    .chg-resource-card{display:flex;align-items:center;justify-content:space-between;padding:.75rem 1rem;background:var(--bg2);border:1px solid var(--border);border-radius:4px;text-decoration:none;border-left:2px solid transparent;transition:border-left-color .2s,color .2s}
+    .chg-resource-card:hover{border-left-color:var(--accent)}
+    .chg-resource-name{font-size:.88rem;color:var(--text2);font-weight:500;transition:color .2s}
+    .chg-resource-card:hover .chg-resource-name{color:var(--text)}
+    .chg-resource-arrow{font-size:1rem;color:var(--accent);opacity:0;transition:opacity .2s}
+    .chg-resource-card:hover .chg-resource-arrow{opacity:1}
+    @media(max-width:860px){
+      .chg-layout{grid-template-columns:1fr;gap:0}
+      .chg-sidebar{display:none}
+      .chg-toc-mobile{display:flex;gap:.25rem;overflow-x:auto;padding:.75rem 0;margin-bottom:1rem;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+      .chg-toc-mobile::-webkit-scrollbar{display:none}
+      .chg-toc-mobile-link{flex-shrink:0;padding:.35rem .75rem;font-size:.78rem;font-weight:600;color:var(--text2);background:var(--bg2);border:1px solid var(--border);border-radius:4px;text-decoration:none;white-space:nowrap;transition:color .2s,border-color .2s}
+      .chg-toc-mobile-link:hover{color:var(--accent);border-color:var(--accent)}
+      .chg-header h1{font-size:1.7rem}
+      .chg-section-header{margin:0 -1rem 1rem;padding:.6rem 1rem}
+      .chg-resources-grid{grid-template-columns:repeat(2,1fr)}
+    }
+    @media(max-width:600px){
+      .chg-wrap{padding:0 1rem 1.5rem}
+      .chg-steps{grid-template-columns:1fr}
+      .chg-resources-grid{grid-template-columns:1fr}
+      .chg-header h1{font-size:1.5rem}
+    }
+  </style>
+  <AuthorBox updated="2026-03-02" />
+</Base>

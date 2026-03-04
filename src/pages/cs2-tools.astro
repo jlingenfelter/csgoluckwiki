@@ -1,0 +1,304 @@
+---
+import Base from '../layouts/Base.astro';
+import ExploreMore from '../components/ExploreMore.astro';
+import { breadcrumbSchema, faqSchema } from '../lib/weapons';
+
+const title = 'CS2 Tools & Calculators — Free Browser-Based CS2 Utilities | CSGOLuck Wiki';
+const description = 'All the CS2 utilities you need in one place, courtesy of CSGOLuck Wiki. Sensitivity converters, eDPI math, damage lookups, economy planners, crosshair builders, float analyzers, case probability tools, trade-up estimators, and beyond — zero registration required.';
+
+const breadcrumbs = [
+  { name: 'Home', url: '/' },
+  { name: 'Tools', url: '/cs2-tools/' },
+];
+
+// Tool categories with descriptions
+const categories = [
+  {
+    name: 'Sensitivity & Aim',
+    description: 'Calibrate your mouse settings to professional standards.',
+    tools: [
+      { slug: 'sensitivity-converter', name: 'Sensitivity Converter', desc: 'Translate your sens across CS2, Valorant, Apex Legends, and dozens of other shooters.' },
+      { slug: 'edpi-calculator', name: 'eDPI Calculator', desc: 'Work out your effective DPI and benchmark it against professional players.' },
+      { slug: 'cm360-calculator', name: 'cm/360 Calculator', desc: 'Determine the exact mousepad distance needed for a complete 360-degree rotation.' },
+      { slug: 'resolution-calculator', name: 'Resolution Calculator', desc: 'Evaluate aspect ratios, weigh stretched versus native views, and pick the ideal resolution.' },
+    ],
+  },
+  {
+    name: 'Crosshair',
+    description: 'Design, explore, and grab ready-made crosshair setups.',
+    tools: [
+      { slug: 'crosshair-generator', name: 'Crosshair Generator', desc: 'Design a custom reticle with a real-time visual preview and export the share code.' },
+      { slug: 'crosshair-codes', name: 'Pro Crosshair Codes', desc: 'Grab crosshair share codes straight from competitive CS2 professionals.' },
+    ],
+  },
+  {
+    name: 'Game Mechanics',
+    description: 'Crunch the stats that drive every in-game decision.',
+    tools: [
+      { slug: 'damage-calculator', name: 'Damage Calculator', desc: 'See precise damage figures accounting for weapon type, armor status, and range.' },
+      { slug: 'economy-calculator', name: 'Economy Calculator', desc: 'Map out your round-by-round purchases and keep team finances on track.' },
+      { slug: 'recoil-patterns', name: 'Recoil Patterns', desc: 'Study and rehearse the spray pattern of every firearm in the game.' },
+      { slug: 'weapon-compare', name: 'Weapon Compare', desc: 'Place any two CS2 weapons next to each other and compare their raw statistics.' },
+    ],
+  },
+  {
+    name: 'Skins & Market',
+    description: 'Monitor pricing, inspect floats, and level up your collection.',
+    tools: [
+      { slug: 'case-simulator', name: 'Case Simulator', desc: 'Unbox CS2 cases without spending a dime — complete with spin animation and P&L tracking.' },
+      { slug: 'skin-compare', name: 'Skin Compare', desc: 'Stack two skins against each other to review prices, float values, variants, and overall worth.' },
+      { slug: 'float-checker', name: 'Float Checker', desc: 'Inspect wear ratings and verify the float range boundaries for any CS2 skin.' },
+      { slug: 'price-tracker', name: 'Price Tracker', desc: 'Real-time market snapshot featuring price spreads and category-level breakdowns.' },
+      { slug: 'market-trends', name: 'Market Trends', desc: 'Follow skin price movements, spot momentum shifts, and uncover investment openings.' },
+      { slug: 'tradeup-calculator', name: 'Trade-Up Calculator', desc: 'Estimate the expected return and probability distribution of any trade-up contract.' },
+      { slug: 'case-odds-calculator', name: 'Case Odds Calculator', desc: 'View actual drop probabilities and projected costs broken down by rarity tier.' },
+      { slug: 'inventory-lookup', name: 'Inventory Lookup', desc: 'Search any public Steam inventory and tally the combined market value of its skins.' },
+      { slug: 'loadout-builder', name: 'Loadout Builder', desc: 'Assemble and budget your ideal CS2 weapon loadout with live pricing.' },
+    ],
+  },
+  {
+    name: 'Config & Setup',
+    description: 'Create configs, set up binds, and fine-tune performance.',
+    tools: [
+      { slug: 'bind-generator', name: 'Bind Generator', desc: 'Set up custom keybinds for purchase shortcuts, grenade throws, and utility actions.' },
+      { slug: 'autoexec-generator', name: 'Autoexec Generator', desc: 'Assemble a ready-to-use autoexec.cfg loaded with optimized default values.' },
+      { slug: 'launch-options', name: 'Launch Options', desc: 'Pick the best CS2 startup flags to squeeze out peak frame-rate performance.' },
+      { slug: 'practice-config', name: 'Practice Config', desc: 'Output practice server configs tailored for lineup drills and aim warm-ups.' },
+      { slug: 'cs2-commands', name: 'Console Commands', desc: 'Full CS2 command index — over 300 entries with instant search and one-tap copy.' },
+    ],
+  },
+  {
+    name: 'Rankings & Maps',
+    description: 'Browse rank data, maps, and community-made content.',
+    tools: [
+      { slug: 'rank-distribution', name: 'Rank Distribution', desc: 'Up-to-date CS2 rank percentages and Premier rating distributions.' },
+      { slug: 'workshop-maps', name: 'Workshop Maps', desc: 'Curated community workshop maps for aim practice, movement training, and casual fun.' },
+    ],
+  },
+];
+
+const totalTools = categories.reduce((sum, c) => sum + c.tools.length, 0);
+
+const allTools = categories.flatMap(c => c.tools);
+
+const itemListSchema = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "ItemList",
+  "name": "CS2 Tools & Calculators",
+  "description": "A full suite of no-cost Counter-Strike 2 utilities and calculators covering sensitivity, crosshair design, round economy, skin analytics, configuration generation, and more.",
+  "numberOfItems": allTools.length,
+  "itemListElement": allTools.map((tool, i) => ({
+    "@type": "ListItem",
+    "position": i + 1,
+    "name": tool.name,
+    "description": tool.desc,
+    "url": `https://wiki.csgoluck.com/${tool.slug}/`
+  }))
+});
+
+const softwareAppSchema = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "CSGOLuck Wiki CS2 Toolkit",
+  "description": description,
+  "applicationCategory": "UtilityApplication",
+  "operatingSystem": "Web",
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+  "author": { "@type": "Organization", "name": "CSGOLuck Wiki", "url": "https://wiki.csgoluck.com" }
+});
+
+const faqs = [
+  { question: 'Do I need to pay for anything on the CSGOLuck Wiki toolkit?', answer: 'Not a cent. There is no registration wall, no subscription tier, and no features locked behind payments. Every calculator and tool on this site runs entirely in your browser the moment you open it.' },
+  { question: 'Where does the data in these calculators come from?', answer: 'All gameplay-related tools — damage numbers, weapon statistics, economy figures — are sourced directly from CS2 game files. For skin and market pricing, we aggregate real-time data from more than 14 trading platforms through the PriceEmpire API, with regular refresh cycles to keep values current.' },
+  { question: 'Can I paste tool outputs straight into Counter-Strike 2?', answer: 'In most cases, yes. The majority of our generators produce copy-ready console commands and share codes. Whether it is a crosshair code, an autoexec snippet, or a set of key binds, you can copy the output and paste it directly into your CS2 console or config file.' },
+  { question: 'How accurate are the sensitivity conversion results?', answer: 'Extremely. The converter applies the precise mathematical relationships that each supported game engine uses internally. Whether you are translating sensitivity values between CS2 and Valorant, Apex Legends, or any other supported title, the output matches down to the sub-pixel level.' },
+];
+---
+
+<Base {title} {description} currentNav="/cs2-tools/">
+<Fragment slot="head">
+<script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema(breadcrumbs))} />
+<script type="application/ld+json" set:html={JSON.stringify(faqSchema(faqs))} />
+<script type="application/ld+json" set:html={itemListSchema} />
+<script type="application/ld+json" set:html={softwareAppSchema} />
+</Fragment>
+
+<nav class="breadcrumb"><a href="/">Home</a> <span>/</span> <span>Tools</span></nav>
+
+<div class="tl-hero">
+  <h1 class="tl-title">CS2 Toolkit</h1>
+  <p class="tl-desc">{totalTools} no-cost utilities purpose-built for Counter-Strike 2. Sens translators, reticle designers, hit-damage math, market watchers, config creators — brought to you by <a href="https://csgoluck.com" target="_blank" rel="noopener">CSGOLuck.com</a>. Pair these tools with our <a href="/cs2-guides/">in-depth guides</a> and <a href="/pro-players/">pro player configs</a> for maximum impact.</p>
+</div>
+
+<!-- Search -->
+<div class="tl-search-bar">
+  <input type="text" id="toolSearch" placeholder="Search tools..." class="tl-search" />
+</div>
+
+<!-- Category Tabs -->
+<div class="tl-tabs" id="categoryTabs">
+  <button class="tl-tab tl-tab-active" data-cat="all">All</button>
+  {categories.map(cat => (
+    <button class="tl-tab" data-cat={cat.name.toLowerCase()}>{cat.name}</button>
+  ))}
+</div>
+
+<!-- Tools as horizontal row cards -->
+<div class="tl-list" id="toolList">
+  {categories.map(cat => (
+    <div class="tl-cat-group" data-category={cat.name.toLowerCase()}>
+      <div class="tl-cat-label">
+        <span class="tl-cat-name">{cat.name}</span>
+        <span class="tl-cat-desc">{cat.description}</span>
+        <span class="tl-cat-count">{cat.tools.length}</span>
+      </div>
+      {cat.tools.map(tool => (
+        <a href={`/${tool.slug}/`} class="tl-card" data-name={tool.name.toLowerCase()} data-desc={tool.desc.toLowerCase()}>
+          <div class="tl-card-body">
+            <strong class="tl-card-title">{tool.name}</strong>
+            <span class="tl-card-text">{tool.desc}</span>
+          </div>
+          <span class="tl-card-arrow">Open</span>
+        </a>
+      ))}
+    </div>
+  ))}
+</div>
+
+<!-- No results -->
+<div id="noResults" class="tl-empty" style="display:none">
+  <p>No tools matching your search.</p>
+</div>
+
+<!-- FAQ -->
+<section class="tl-faq">
+  <h2 class="tl-faq-heading">Common Questions</h2>
+  {faqs.map(f => (
+    <details class="tl-faq-item">
+      <summary class="tl-faq-q">{f.question}</summary>
+      <p class="tl-faq-a">{f.answer}</p>
+    </details>
+  ))}
+</section>
+
+<!-- Internal Links -->
+<div class="tl-links">
+  <strong>More Resources:</strong>
+  <a href="/pro-players/">Pro Player Settings</a>
+  <a href="/cs2-guides/">All Guides</a>
+  <a href="/cs2-weapons/">Weapon Database</a>
+  <a href="/cs2-skins/">Skin Database</a>
+  <a href="/cs2-maps/">Map Callouts</a>
+  <a href="/cs2-cases/">Cases & Collections</a>
+  <a href="/cs2-stickers/">Sticker Database</a>
+  <a href="/cs2-commands/">Console Commands</a>
+  <a href="/cs2-agents/">Agents & Music Kits</a>
+  <a href="/cs2-rank-distribution/">Rank Distribution</a>
+</div>
+
+<ExploreMore context="general" />
+</Base>
+
+<style>
+.tl-hero{margin-bottom:2rem;padding:1.5rem 0}
+.tl-title{margin:0 0 .6rem;font-size:2rem;font-weight:800;color:var(--text)}
+.tl-desc{color:var(--text2);font-size:.92rem;margin:0;max-width:640px;line-height:1.7}
+.tl-desc a{color:var(--accent);text-decoration:underline}
+
+.tl-search-bar{margin-bottom:1.5rem}
+.tl-search{width:100%;background:var(--bg2);color:var(--text);border:1px solid var(--border);padding:.65rem 1rem;border-radius:4px;font-size:.95rem;font-family:inherit}
+.tl-search:focus{border-color:var(--accent);outline:none}
+
+.tl-tabs{display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:1.5rem;padding-bottom:.75rem;border-bottom:1px solid var(--border)}
+.tl-tab{background:none;border:1px solid var(--border);border-radius:4px;padding:.4rem .85rem;font-size:.8rem;font-weight:600;color:var(--text2);cursor:pointer;font-family:inherit;transition:all .15s}
+.tl-tab:hover{color:var(--text);border-color:var(--text2)}
+.tl-tab-active{background:var(--accent);border-color:var(--accent);color:#000}
+
+.tl-list{display:flex;flex-direction:column;gap:1.5rem}
+.tl-cat-group{display:flex;flex-direction:column}
+.tl-cat-group.tl-hidden{display:none}
+.tl-cat-label{display:flex;align-items:center;gap:.75rem;padding:.5rem 0;margin-bottom:.25rem}
+.tl-cat-name{font-size:.95rem;font-weight:700;color:var(--text);white-space:nowrap}
+.tl-cat-desc{font-size:.8rem;color:var(--text2);flex:1}
+.tl-cat-count{font-size:.72rem;font-weight:700;color:var(--accent);background:rgba(46,204,113,.1);padding:.15rem .5rem;border-radius:4px}
+
+.tl-card{display:flex;align-items:center;gap:1rem;padding:.8rem 1rem;background:var(--bg2);border:1px solid var(--border);border-left:3px solid transparent;text-decoration:none;color:inherit;transition:border-left-color .15s,background .15s;border-radius:0}
+.tl-card:first-of-type{border-radius:4px 4px 0 0}
+.tl-card:last-of-type{border-radius:0 0 4px 4px}
+.tl-card+.tl-card{border-top:none}
+.tl-card:hover{border-left-color:var(--accent);background:var(--bg3)}
+.tl-card.tl-hidden{display:none}
+.tl-card-body{flex:1;min-width:0}
+.tl-card-title{display:block;font-size:.9rem;color:var(--text);margin-bottom:.15rem}
+.tl-card-text{display:block;font-size:.8rem;color:var(--text2);line-height:1.4;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tl-card-arrow{font-size:.78rem;font-weight:700;color:var(--accent);white-space:nowrap;opacity:0;transition:opacity .15s}
+.tl-card:hover .tl-card-arrow{opacity:1}
+
+.tl-empty{text-align:center;padding:2rem;color:var(--text2)}
+
+.tl-faq{margin:2.5rem 0}
+.tl-faq-heading{font-size:1.15rem;margin:0 0 1rem;color:var(--text)}
+.tl-faq-item{background:var(--bg2);border:1px solid var(--border);border-radius:4px;margin-bottom:.5rem;overflow:hidden}
+.tl-faq-q{padding:.85rem 1rem;cursor:pointer;font-weight:600;font-size:.9rem;color:var(--text);list-style:none;display:flex;align-items:center;justify-content:space-between}
+.tl-faq-q::-webkit-details-marker{display:none}
+.tl-faq-q::after{content:'+';font-size:1.1rem;color:var(--accent);font-weight:700;flex-shrink:0;margin-left:.75rem}
+.tl-faq-item[open] .tl-faq-q::after{content:'-'}
+.tl-faq-item[open]{border-left:3px solid var(--accent)}
+.tl-faq-a{padding:0 1rem .85rem;margin:0;font-size:.88rem;color:var(--text2);line-height:1.6}
+
+.tl-links{display:flex;flex-wrap:wrap;gap:.5rem;align-items:center;padding:1rem;background:var(--bg2);border:1px solid var(--border);border-radius:4px;margin-bottom:1.5rem}
+.tl-links strong{width:100%;font-size:.85rem;color:var(--text);margin-bottom:.25rem}
+.tl-links a{font-size:.82rem;color:var(--accent);text-decoration:none;padding:.3rem .6rem;background:var(--bg3);border:1px solid var(--border);border-radius:4px;transition:border-color .15s}
+.tl-links a:hover{border-color:var(--accent)}
+
+@media(max-width:768px){
+  .tl-card-text{white-space:normal}
+  .tl-card-arrow{opacity:1}
+  .tl-tabs{gap:.3rem}
+  .tl-tab{font-size:.75rem;padding:.35rem .65rem}
+}
+</style>
+
+<script is:inline>
+(function(){
+  var search = document.getElementById('toolSearch');
+  var cards = document.querySelectorAll('.tl-card');
+  var cats = document.querySelectorAll('.tl-cat-group');
+  var noRes = document.getElementById('noResults');
+  var tabs = document.querySelectorAll('.tl-tab');
+  var activeTab = 'all';
+
+  function filterAll(){
+    var q = search.value.toLowerCase().trim();
+    var visible = 0;
+
+    cards.forEach(function(card){
+      var matchSearch = !q || card.dataset.name.indexOf(q) > -1 || card.dataset.desc.indexOf(q) > -1;
+      var cat = card.closest('.tl-cat-group');
+      var matchTab = activeTab === 'all' || (cat && cat.dataset.category === activeTab);
+      var show = matchSearch && matchTab;
+      card.classList.toggle('tl-hidden', !show);
+      if (show) visible++;
+    });
+
+    cats.forEach(function(cat){
+      var matchTab = activeTab === 'all' || cat.dataset.category === activeTab;
+      var visCards = cat.querySelectorAll('.tl-card:not(.tl-hidden)');
+      cat.classList.toggle('tl-hidden', !matchTab || visCards.length === 0);
+    });
+
+    noRes.style.display = visible === 0 ? 'block' : 'none';
+  }
+
+  search.addEventListener('input', filterAll);
+
+  tabs.forEach(function(tab){
+    tab.addEventListener('click', function(){
+      tabs.forEach(function(t){ t.classList.remove('tl-tab-active'); });
+      tab.classList.add('tl-tab-active');
+      activeTab = tab.dataset.cat;
+      filterAll();
+    });
+  });
+})();
+</script>

@@ -366,10 +366,6 @@ export function getPlayersWithLoadout(limit = 20): ProPlayer[] {
     .slice(0, limit);
 }
 
-// ── Amazon search link helper ───────────────────────────────────────────────
-export function amazonSearchUrl(productName: string): string {
-  return `https://www.amazon.com/s?k=${encodeURIComponent(productName)}&tag=csdb03-20`;
-}
 
 // ── Gear image lookup ───────────────────────────────────────────────────────
 import gearImagesData from './gear-images.json';

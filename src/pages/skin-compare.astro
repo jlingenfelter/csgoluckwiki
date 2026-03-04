@@ -4,7 +4,7 @@ import ExploreMore from '../components/ExploreMore.astro';
 import { SKINS, getLowestPrice, getHighestPrice, RARITY_COLORS, RARITY_BG } from '../lib/skins';
 import { faqSchema, breadcrumbSchema, toolAppSchema } from '../lib/weapons';
 
-const title = 'CS2 Skin Comparison Tool — Compare Prices Side by Side | CSDB.gg';
+const title = 'CS2 Skin Comparison Tool — Compare Prices Side by Side | CSGOLuck Wiki';
 const description = 'Compare CS2 skins side-by-side. View prices per wear condition, marketplace prices, float ranges, and StatTrak availability. Find the best deal.';
 
 // Pass full skin data including prices, floats, variants for client-side comparison
@@ -52,644 +52,229 @@ const faqs = [
 
 const crumbs = [
   { name: 'Home', url: '/' },
-  { name: 'Skins', url: '/skins/' },
+  { name: 'Skins', url: '/cs2-skins/' },
   { name: 'Skin Comparison', url: '/skin-compare/' }
 ];
 ---
 
-<Base title={title} description={description} currentNav="/skins/">
+<Base title={title} description={description} currentNav="/cs2-skins/">
 <script type="application/ld+json" set:html={JSON.stringify(faqSchema(faqs))}></script>
 <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema(crumbs))}></script>
-<script type="application/ld+json" set:html={JSON.stringify(toolAppSchema({ name: 'CS2 Skin Comparison Tool', url: 'https://csdb.gg/skin-compare/', description }))}></script>
+<script type="application/ld+json" set:html={JSON.stringify(toolAppSchema({ name: 'CS2 Skin Comparison Tool', url: 'https://wiki.csgoluck.com/skin-compare/', description }))}></script>
 
-<nav class="breadcrumb"><a href="/">Home</a> / <a href="/skins/">Skins</a> / <span>Skin Comparison</span></nav>
+<nav class="breadcrumb"><a href="/">Home</a> <span>/</span> <a href="/cs2-skins/">Skins</a> <span>/</span> <span>Skin Comparison</span></nav>
 
-<div class="hero">
-  <h1>CS2 Skin Comparison Tool</h1>
-  <p>Compare CS2 skins side-by-side. View prices across wear conditions and marketplaces to find the best deals.</p>
+<div class="skc-hero">
+  <h1 class="skc-title">CS2 Skin Comparison Tool</h1>
+  <p class="skc-desc">Compare CS2 skins side-by-side. View prices across wear conditions and marketplaces to find the best deals.</p>
 </div>
 
 <!-- Comparison Section -->
-<section class="compare-section">
-  <div class="compare-container">
-    <!-- Skin A -->
-    <div class="skin-selector">
-      <h3>Skin A</h3>
-      <div class="search-wrapper">
-        <input
-          type="text"
-          id="skinASearch"
-          class="skin-search"
-          placeholder="Search skins..."
-          autocomplete="off"
-        />
-        <div class="search-dropdown" id="skinADropdown" style="display: none;"></div>
+<section class="skc-panel">
+  <div class="skc-selector-grid">
+    <div class="skc-selector">
+      <h3 class="skc-selector-title">Skin A</h3>
+      <div class="skc-search-wrap">
+        <input type="text" id="skinASearch" class="skc-search" placeholder="Search skins..." autocomplete="off" />
+        <div class="skc-dropdown" id="skinADropdown" style="display:none;"></div>
       </div>
-      <div class="selected-skin" id="skinAInfo"></div>
+      <div class="skc-selected" id="skinAInfo"></div>
     </div>
-
-    <!-- VS Badge -->
-    <div class="vs-badge">VS</div>
-
-    <!-- Skin B -->
-    <div class="skin-selector">
-      <h3>Skin B</h3>
-      <div class="search-wrapper">
-        <input
-          type="text"
-          id="skinBSearch"
-          class="skin-search"
-          placeholder="Search skins..."
-          autocomplete="off"
-        />
-        <div class="search-dropdown" id="skinBDropdown" style="display: none;"></div>
+    <div class="skc-vs">VS</div>
+    <div class="skc-selector">
+      <h3 class="skc-selector-title">Skin B</h3>
+      <div class="skc-search-wrap">
+        <input type="text" id="skinBSearch" class="skc-search" placeholder="Search skins..." autocomplete="off" />
+        <div class="skc-dropdown" id="skinBDropdown" style="display:none;"></div>
       </div>
-      <div class="selected-skin" id="skinBInfo"></div>
+      <div class="skc-selected" id="skinBInfo"></div>
     </div>
   </div>
 
   <!-- Comparison Results -->
-  <div class="comparison-results" id="comparisonResults" style="display: none;">
-    <h2>Comparison Results</h2>
+  <div class="skc-results" id="comparisonResults" style="display:none;">
+    <h2 class="skc-section-title">Comparison Results</h2>
 
-    <!-- Basic Info -->
-    <div class="compare-grid">
-      <div class="compare-box">
-        <h4>Skin A</h4>
-        <div class="skin-info" id="skinABasic"></div>
+    <div class="skc-info-grid">
+      <div class="skc-info-box">
+        <h4 class="skc-box-label">Skin A</h4>
+        <div class="skc-info-rows" id="skinABasic"></div>
       </div>
-      <div class="compare-spacer"></div>
-      <div class="compare-box">
-        <h4>Skin B</h4>
-        <div class="skin-info" id="skinBBasic"></div>
+      <div class="skc-info-box">
+        <h4 class="skc-box-label">Skin B</h4>
+        <div class="skc-info-rows" id="skinBBasic"></div>
       </div>
     </div>
 
-    <!-- Price Comparison by Wear -->
-    <h3>Price by Wear Condition</h3>
-    <div class="compare-table-wrapper">
-      <table class="compare-table">
+    <h3 class="skc-sub-title">Price by Wear Condition</h3>
+    <div class="skc-table-wrap">
+      <table class="skc-table">
         <thead>
-          <tr>
-            <th>Wear Condition</th>
-            <th>Skin A</th>
-            <th>Difference</th>
-            <th>Skin B</th>
-          </tr>
+          <tr><th>Wear Condition</th><th>Skin A</th><th>Difference</th><th>Skin B</th></tr>
         </thead>
         <tbody id="wearComparison"></tbody>
       </table>
     </div>
 
-    <!-- Float Range -->
-    <h3>Float Range & Availability</h3>
-    <div class="compare-grid">
-      <div class="compare-box">
-        <h4>Skin A Float</h4>
-        <div class="float-info" id="skinAFloat"></div>
+    <h3 class="skc-sub-title">Float Range & Availability</h3>
+    <div class="skc-info-grid">
+      <div class="skc-info-box">
+        <h4 class="skc-box-label">Skin A Float</h4>
+        <div class="skc-info-rows" id="skinAFloat"></div>
       </div>
-      <div class="compare-spacer"></div>
-      <div class="compare-box">
-        <h4>Skin B Float</h4>
-        <div class="float-info" id="skinBFloat"></div>
+      <div class="skc-info-box">
+        <h4 class="skc-box-label">Skin B Float</h4>
+        <div class="skc-info-rows" id="skinBFloat"></div>
       </div>
     </div>
 
-    <!-- StatTrak & Souvenir -->
-    <h3>Special Variants</h3>
-    <div class="compare-grid">
-      <div class="compare-box">
-        <h4>Skin A Variants</h4>
-        <div class="variants-info" id="skinAVariants"></div>
+    <h3 class="skc-sub-title">Special Variants</h3>
+    <div class="skc-info-grid">
+      <div class="skc-info-box">
+        <h4 class="skc-box-label">Skin A Variants</h4>
+        <div class="skc-info-rows" id="skinAVariants"></div>
       </div>
-      <div class="compare-spacer"></div>
-      <div class="compare-box">
-        <h4>Skin B Variants</h4>
-        <div class="variants-info" id="skinBVariants"></div>
+      <div class="skc-info-box">
+        <h4 class="skc-box-label">Skin B Variants</h4>
+        <div class="skc-info-rows" id="skinBVariants"></div>
       </div>
     </div>
 
-    <!-- Recommendation -->
-    <div class="recommendation-box" id="recommendation"></div>
+    <div class="skc-rec" id="recommendation"></div>
   </div>
 
-  <!-- Empty State -->
-  <div class="empty-state" id="emptyState">
+  <div class="skc-empty" id="emptyState">
     <p>Select two skins to compare their prices and specifications.</p>
-    <p style="font-size: 0.9rem; color: var(--text2);">Start typing in either search box above to find skins.</p>
+    <p class="skc-empty-hint">Start typing in either search box above to find skins.</p>
   </div>
 </section>
 
-<!-- Quick Links -->
-<div class="quick-nav">
-  <h3>Explore More</h3>
-  <div class="quick-links">
-    <a href="/skins/">Browse All Skins</a>
-    <a href="/market-trends/">Market Trends</a>
-    <a href="/price-tracker/">Price Tracker</a>
-    <a href="/guides/float-guide/">Float Guide</a>
-  </div>
-</div>
-
-<!-- FAQ -->
-<h2>Frequently Asked Questions</h2>
-<dl class="faq">
-  {faqs.map(f => (
-    <>
-      <dt>{f.question}</dt>
-      <dd>{f.answer}</dd>
-    </>
-  ))}
-</dl>
-
-<div class="internal-links">
-  <strong>Related Resources:</strong>
-  <a href="/skins/">Skin Database</a>
+<div class="skc-links">
+  <span class="skc-links-label">Related Resources:</span>
+  <a href="/cs2-skins/">Skin Database</a>
   <a href="/market-trends/">Market Trends</a>
   <a href="/price-tracker/">Price Tracker</a>
   <a href="/float-checker/">Float Checker</a>
   <a href="/tradeup-calculator/">Trade-Up Calculator</a>
-  <a href="/case-odds-calculator/">Case Odds Calculator</a>
   <a href="/case-simulator/">Case Simulator</a>
-  <a href="/cases/">Cases & Collections</a>
+  <a href="/cs2-cases/">Cases & Collections</a>
   <a href="/inventory-lookup/">Inventory Lookup</a>
   <a href="/loadout-builder/">Loadout Builder</a>
-  <a href="/weapons/">Weapon Database</a>
-  <a href="/guides/float-guide/">Float Guide</a>
-  <a href="/guides/trading-guide/">Trading Guide</a>
-  <a href="/guides/skins-investing-guide/">Investing Guide</a>
+  <a href="/cs2-weapons/">Weapon Database</a>
+  <a href="/cs2-guides/float-guide/">Float Guide</a>
+  <a href="/cs2-guides/trading-guide/">Trading Guide</a>
+  <a href="/cs2-guides/skins-investing-guide/">Investing Guide</a>
+  <a href="/cs2-tools/">All Tools</a>
 </div>
 
-<style is:inline>
-.hero {
-  text-align: center;
-  padding: 2rem 0;
-  margin-bottom: 2rem;
-  border-bottom: 1px solid var(--border);
-}
+<section class="skc-section">
+  <h2 class="skc-section-title">Frequently Asked Questions</h2>
+  {faqs.map(f => (
+    <details class="skc-faq-item">
+      <summary class="skc-faq-q">{f.question}</summary>
+      <div class="skc-faq-a">{f.answer}</div>
+    </details>
+  ))}
+</section>
 
-.hero h1 {
-  background: linear-gradient(135deg, var(--accent), var(--accent2));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  margin-bottom: 0.5rem;
-  font-size: 2.5rem;
-}
+<style>
+  /* Hero */
+  .skc-hero{margin-bottom:1.5rem}
+  .skc-title{font-size:1.8rem;font-weight:800;margin:0 0 .5rem}
+  .skc-desc{color:var(--text2);font-size:.95rem;margin:0;line-height:1.6;max-width:700px}
 
-.hero p {
-  max-width: 600px;
-  margin: 0 auto;
-  color: var(--text2);
-  font-size: 1.05rem;
-}
+  /* Panel & Sections */
+  .skc-panel,.skc-section{background:var(--bg2);border:1px solid var(--border);border-radius:4px;padding:1.5rem;margin-bottom:1.5rem}
+  .skc-section-title{font-size:1.15rem;font-weight:700;margin:0 0 1rem}
+  .skc-sub-title{font-size:1rem;font-weight:700;margin:1.5rem 0 .75rem}
 
-/* Comparison Section */
-.compare-section {
-  margin: 2rem 0;
-}
+  /* Selector grid */
+  .skc-selector-grid{display:grid;grid-template-columns:1fr auto 1fr;gap:1.25rem;align-items:start;margin-bottom:1.5rem}
+  .skc-selector{display:flex;flex-direction:column;gap:.75rem}
+  .skc-selector-title{margin:0;font-size:1rem;font-weight:700}
+  .skc-vs{display:flex;align-items:center;justify-content:center;font-weight:900;color:var(--accent);font-size:1.3rem;padding-top:1.5rem}
 
-.compare-container {
-  display: grid;
-  grid-template-columns: 1fr auto 1fr;
-  gap: 1.5rem;
-  align-items: start;
-  margin-bottom: 2rem;
-  background: var(--bg2);
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  padding: 2rem;
-}
+  /* Search */
+  .skc-search-wrap{position:relative}
+  .skc-search{width:100%;background:var(--bg3);color:var(--text);border:1px solid var(--border);padding:.6rem .8rem;border-radius:4px;font-size:.9rem;font-family:inherit;box-sizing:border-box}
+  .skc-search:focus{outline:none;border-color:var(--accent)}
+  .skc-search::placeholder{color:var(--text2)}
 
-.skin-selector {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
+  /* Dropdown */
+  .skc-dropdown{position:absolute;top:100%;left:0;right:0;background:var(--bg2);border:1px solid var(--border);border-top:none;border-radius:0 0 4px 4px;max-height:320px;overflow-y:auto;z-index:100}
+  .skc-dd-item{padding:.6rem .8rem;cursor:pointer;border-bottom:1px solid var(--border);transition:border-left .2s}
+  .skc-dd-item:hover{background:var(--bg3);border-left:3px solid var(--accent)}
+  .skc-dd-item:last-child{border-bottom:none}
+  .skc-dd-weapon{font-size:.72rem;color:var(--text2);text-transform:uppercase;letter-spacing:.03em}
+  .skc-dd-name{font-weight:700;margin:.2rem 0;font-size:.9rem}
+  .skc-dd-rarity{font-size:.72rem;font-weight:600}
 
-.skin-selector h3 {
-  margin: 0;
-  font-size: 1.05rem;
-}
+  /* Selected skin */
+  .skc-selected{background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:1rem;min-height:70px;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center}
+  .skc-selected.skc-empty{color:var(--text2);font-size:.88rem}
+  .skc-selected.skc-filled{border-color:var(--accent);border-left:3px solid var(--accent)}
+  .skc-sel-weapon{font-size:.72rem;color:var(--text2);text-transform:uppercase;letter-spacing:.03em;margin-bottom:.2rem}
+  .skc-sel-name{font-weight:800;font-size:1rem;color:var(--text);margin-bottom:.2rem}
+  .skc-sel-rarity{font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.03em}
 
-.search-wrapper {
-  position: relative;
-}
+  /* Results */
+  .skc-results{animation:skcFadeIn .3s ease}
+  @keyframes skcFadeIn{from{opacity:0}to{opacity:1}}
 
-.skin-search {
-  width: 100%;
-  background: var(--bg3);
-  color: var(--text);
-  border: 1px solid var(--border);
-  padding: 0.75rem 1rem;
-  border-radius: 8px;
-  font-size: 0.95rem;
-  transition: border-color 0.2s, box-shadow 0.2s;
-  font-family: inherit;
-}
+  /* Info grid */
+  .skc-info-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem}
+  .skc-info-box{background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:1.25rem}
+  .skc-box-label{margin:0 0 .75rem;font-size:.85rem;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:.03em}
+  .skc-info-rows{display:flex;flex-direction:column;gap:0}
+  .skc-row{display:flex;justify-content:space-between;align-items:center;padding:.4rem 0;border-bottom:1px solid var(--border)}
+  .skc-row:last-child{border-bottom:none}
+  .skc-row-label{color:var(--text2);font-size:.85rem;font-weight:500}
+  .skc-row-value{color:var(--text);font-weight:700;font-size:.9rem}
 
-.skin-search:focus {
-  outline: none;
-  border-color: var(--accent);
-  box-shadow: 0 0 0 3px rgba(245, 166, 35, 0.1);
-}
+  /* Table */
+  .skc-table-wrap{overflow-x:auto;margin-bottom:1rem}
+  .skc-table{width:100%;border-collapse:collapse;font-size:.88rem}
+  .skc-table th{text-align:left;padding:.6rem .75rem;border-bottom:2px solid var(--border);color:var(--text2);font-weight:700;font-size:.8rem;text-transform:uppercase;letter-spacing:.03em}
+  .skc-table td{padding:.55rem .75rem;border-bottom:1px solid var(--border)}
+  .skc-table tbody tr:hover{background:var(--bg3)}
+  .skc-price{font-weight:700;color:var(--text)}
+  .skc-cheaper{color:var(--green)}
+  .skc-higher{color:var(--red)}
+  .skc-price-diff{text-align:center;font-weight:600;color:var(--accent)}
 
-.skin-search::placeholder {
-  color: var(--text2);
-}
+  /* Recommendation */
+  .skc-rec{background:var(--bg3);border:1px solid var(--border);border-left:3px solid var(--accent);border-radius:4px;padding:1.25rem;margin-top:1.5rem}
+  .skc-rec h3{margin:0 0 .5rem;font-size:1rem}
+  .skc-rec p{margin:.4rem 0;color:var(--text2);font-size:.88rem;line-height:1.6}
+  .skc-rec-item{display:flex;align-items:center;gap:.6rem;margin:.4rem 0;font-size:.88rem}
+  .skc-rec-icon{font-size:1rem;color:var(--accent)}
 
-.search-dropdown {
-  position: absolute;
-  top: 100%;
-  left: 0;
-  right: 0;
-  background: var(--bg2);
-  border: 1px solid var(--border);
-  border-top: none;
-  border-radius: 0 0 8px 8px;
-  max-height: 320px;
-  overflow-y: auto;
-  z-index: 100;
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
-}
+  /* Empty */
+  .skc-empty{text-align:center;padding:2.5rem 1rem;color:var(--text2)}
+  .skc-empty p{margin:.75rem 0;font-size:.95rem}
+  .skc-empty-hint{font-size:.88rem;color:var(--text2)}
 
-.dropdown-item {
-  padding: 0.75rem 1rem;
-  cursor: pointer;
-  border-bottom: 1px solid var(--border);
-  transition: background-color 0.2s;
-}
+  /* Links */
+  .skc-links{display:flex;flex-wrap:wrap;gap:.5rem;align-items:center;margin-bottom:1.5rem;padding:1rem;background:var(--bg2);border:1px solid var(--border);border-radius:4px}
+  .skc-links-label{font-weight:700;font-size:.85rem;color:var(--text2);margin-right:.25rem}
+  .skc-links a{color:var(--accent);font-size:.85rem;text-decoration:none;padding:.25rem .5rem;border-radius:4px;border:1px solid var(--border);transition:border-color .2s}
+  .skc-links a:hover{border-color:var(--accent)}
 
-.dropdown-item:hover {
-  background: var(--bg3);
-  color: var(--accent);
-}
+  /* FAQ */
+  .skc-faq-item{background:var(--bg3);border:1px solid var(--border);border-radius:4px;margin-bottom:.5rem;overflow:hidden}
+  .skc-faq-q{padding:.8rem 1rem;cursor:pointer;font-weight:600;font-size:.9rem;color:var(--text);list-style:none;display:flex;align-items:center;justify-content:space-between}
+  .skc-faq-q::-webkit-details-marker{display:none}
+  .skc-faq-q::after{content:'+';font-size:1.1rem;color:var(--accent);font-weight:700}
+  .skc-faq-item[open] .skc-faq-q::after{content:'-'}
+  .skc-faq-item[open]{border-left:3px solid var(--accent)}
+  .skc-faq-a{padding:0 1rem .8rem;font-size:.88rem;color:var(--text2);line-height:1.6}
 
-.dropdown-item:last-child {
-  border-bottom: none;
-}
-
-.dropdown-weapon {
-  font-size: 0.75rem;
-  color: var(--text2);
-  text-transform: uppercase;
-  letter-spacing: 0.03em;
-}
-
-.dropdown-name {
-  font-weight: 700;
-  margin: 0.25rem 0;
-}
-
-.dropdown-rarity {
-  font-size: 0.75rem;
-  font-weight: 600;
-}
-
-.selected-skin {
-  background: var(--bg3);
-  border: 2px solid var(--border);
-  border-radius: 8px;
-  padding: 1rem;
-  min-height: 80px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-}
-
-.selected-skin.empty {
-  color: var(--text2);
-  font-size: 0.9rem;
-}
-
-.selected-skin.filled {
-  border-color: var(--accent);
-  background: rgba(245, 166, 35, 0.05);
-}
-
-.selected-skin h4 {
-  margin: 0 0 0.35rem;
-  font-size: 0.95rem;
-}
-
-.selected-skin .skin-weapon {
-  font-size: 0.75rem;
-  color: var(--text2);
-  text-transform: uppercase;
-  letter-spacing: 0.03em;
-  margin-bottom: 0.25rem;
-}
-
-.selected-skin .skin-name {
-  font-weight: 800;
-  font-size: 1.05rem;
-  color: var(--text);
-  margin-bottom: 0.25rem;
-}
-
-.selected-skin .skin-rarity {
-  font-size: 0.75rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.03em;
-}
-
-.vs-badge {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: 800;
-  color: var(--accent);
-  font-size: 1.2rem;
-  height: 50px;
-}
-
-/* Comparison Results */
-.comparison-results {
-  animation: fadeIn 0.3s ease;
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(-10px);
+  @media(max-width:768px){
+    .skc-selector-grid{grid-template-columns:1fr;gap:.5rem}
+    .skc-vs{padding:0}
+    .skc-info-grid{grid-template-columns:1fr}
+    .skc-title{font-size:1.4rem}
   }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.comparison-results h3 {
-  margin-top: 2rem;
-  margin-bottom: 1rem;
-}
-
-.compare-grid {
-  display: grid;
-  grid-template-columns: 1fr auto 1fr;
-  gap: 1.5rem;
-  margin-bottom: 2rem;
-}
-
-.compare-box {
-  background: var(--bg2);
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  padding: 1.5rem;
-}
-
-.compare-box h4 {
-  margin: 0 0 1rem;
-  color: var(--accent);
-  font-size: 0.95rem;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-}
-
-.skin-info,
-.float-info,
-.variants-info {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
-
-.info-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0.5rem 0;
-  border-bottom: 1px solid var(--border);
-}
-
-.info-row:last-child {
-  border-bottom: none;
-}
-
-.info-label {
-  color: var(--text2);
-  font-size: 0.88rem;
-  font-weight: 500;
-}
-
-.info-value {
-  color: var(--text);
-  font-weight: 700;
-  font-size: 0.95rem;
-}
-
-.compare-spacer {
-  width: 2px;
-  background: var(--border);
-  border-radius: 1px;
-}
-
-/* Comparison Table */
-.compare-table-wrapper {
-  background: var(--bg2);
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  overflow: hidden;
-  margin-bottom: 2rem;
-}
-
-.compare-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 0.9rem;
-}
-
-.compare-table thead {
-  background: var(--bg3);
-  border-bottom: 2px solid var(--border);
-}
-
-.compare-table th {
-  padding: 1rem;
-  text-align: left;
-  font-weight: 700;
-  color: var(--text);
-  text-transform: uppercase;
-  font-size: 0.8rem;
-  letter-spacing: 0.03em;
-}
-
-.compare-table td {
-  padding: 0.85rem 1rem;
-  border-bottom: 1px solid var(--border);
-  color: var(--text2);
-}
-
-.compare-table tbody tr:hover td {
-  background: var(--bg3);
-}
-
-.price-cell {
-  font-weight: 700;
-  color: var(--text);
-}
-
-.price-cheaper {
-  color: var(--green);
-}
-
-.price-higher {
-  color: var(--red);
-}
-
-.price-difference {
-  text-align: center;
-  font-weight: 600;
-  color: var(--accent);
-}
-
-/* Recommendation Box */
-.recommendation-box {
-  background: linear-gradient(135deg, rgba(245, 166, 35, 0.1), rgba(255, 200, 87, 0.05));
-  border: 2px solid var(--accent);
-  border-radius: 10px;
-  padding: 1.5rem;
-  margin-top: 2rem;
-}
-
-.recommendation-box h3 {
-  margin: 0 0 0.75rem;
-  color: var(--accent);
-}
-
-.recommendation-box p {
-  margin: 0.5rem 0;
-  color: var(--text2);
-}
-
-.recommendation-box .rec-item {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  margin: 0.5rem 0;
-}
-
-.rec-icon {
-  font-size: 1.2rem;
-}
-
-/* Empty State */
-.empty-state {
-  text-align: center;
-  padding: 3rem 1.5rem;
-  color: var(--text2);
-}
-
-.empty-state p {
-  margin: 1rem 0;
-  font-size: 1rem;
-}
-
-/* Quick Nav */
-.quick-nav {
-  background: var(--bg2);
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  padding: 1.5rem;
-  margin: 2rem 0;
-}
-
-.quick-nav h3 {
-  margin: 0 0 1rem;
-}
-
-.quick-links {
-  display: flex;
-  gap: 0.75rem;
-  flex-wrap: wrap;
-}
-
-.quick-links a {
-  background: var(--bg3);
-  border: 1px solid var(--border);
-  padding: 0.5rem 1rem;
-  border-radius: 6px;
-  font-size: 0.9rem;
-  transition: border-color 0.2s, color 0.2s;
-}
-
-.quick-links a:hover {
-  border-color: var(--accent);
-  color: var(--accent);
-}
-
-@media (max-width: 1000px) {
-  .compare-container {
-    grid-template-columns: 1fr;
-    gap: 1rem;
-    padding: 1.5rem;
-  }
-
-  .vs-badge {
-    height: auto;
-    padding: 0.5rem 0;
-    transform: rotate(90deg);
-  }
-
-  .compare-grid {
-    grid-template-columns: 1fr;
-    gap: 1rem;
-  }
-
-  .compare-spacer {
-    display: none;
-  }
-}
-
-@media (max-width: 700px) {
-  .hero h1 {
-    font-size: 1.8rem;
-  }
-
-  .compare-table {
-    font-size: 0.8rem;
-  }
-
-  .compare-table th,
-  .compare-table td {
-    padding: 0.6rem 0.5rem;
-  }
-
-  .recommendation-box {
-    padding: 1rem;
-  }
-
-  .quick-links {
-    flex-direction: column;
-  }
-
-  .quick-links a {
-    display: block;
-    text-align: center;
-  }
-}
-
-@media (max-width: 480px) {
-  .hero h1 {
-    font-size: 1.5rem;
-  }
-
-  .compare-container {
-    padding: 1rem;
-  }
-
-  .compare-table {
-    font-size: 0.75rem;
-  }
-
-  .compare-table th,
-  .compare-table td {
-    padding: 0.4rem 0.3rem;
-  }
-}
 </style>
 
 <script is:inline define:vars={{ skinDataForClient }}>
@@ -698,12 +283,10 @@ const crumbs = [
   let selectedSkinA = null;
   let selectedSkinB = null;
 
-  // Utility: Get full skin data from SKINS array
   function getSkinBySlug(slug) {
     return allSkins.find(s => s.slug === slug);
   }
 
-  // Filter skins by search query
   function filterSkins(query) {
     const q = query.toLowerCase();
     return allSkins.filter(s =>
@@ -713,7 +296,6 @@ const crumbs = [
     );
   }
 
-  // Populate dropdown with search results
   function populateDropdown(inputId, dropdownId, query) {
     const dropdown = document.getElementById(dropdownId);
     if (!query.trim()) {
@@ -731,10 +313,10 @@ const crumbs = [
     dropdown.innerHTML = results
       .map(
         skin => `
-      <div class="dropdown-item" onclick="selectSkin('${inputId}', '${skin.slug}')">
-        <div class="dropdown-weapon">${skin.weapon}</div>
-        <div class="dropdown-name">${skin.name}</div>
-        <div class="dropdown-rarity" style="color:var(--text2)">${skin.rarity}${skin.collection ? ' • ' + skin.collection : ''}</div>
+      <div class="skc-dd-item" onclick="selectSkin('${inputId}', '${skin.slug}')">
+        <div class="skc-dd-weapon">${skin.weapon}</div>
+        <div class="skc-dd-name">${skin.name}</div>
+        <div class="skc-dd-rarity" style="color:var(--text2)">${skin.rarity}${skin.collection ? ' - ' + skin.collection : ''}</div>
       </div>
     `
       )
@@ -742,24 +324,22 @@ const crumbs = [
     dropdown.style.display = 'block';
   }
 
-  // Select a skin
   window.selectSkin = function(inputId, slug) {
     const skin = getSkinBySlug(slug);
     if (!skin) return;
 
     if (inputId === 'skinASearch') {
       selectedSkinA = skin;
-      document.getElementById('skinASearch').value = `${skin.weapon} | ${skin.name}`;
+      document.getElementById('skinASearch').value = skin.weapon + ' | ' + skin.name;
     } else {
       selectedSkinB = skin;
-      document.getElementById('skinBSearch').value = `${skin.weapon} | ${skin.name}`;
+      document.getElementById('skinBSearch').value = skin.weapon + ' | ' + skin.name;
     }
 
-    document.getElementById(`${inputId.replace('Search', 'Dropdown')}`).style.display = 'none';
+    document.getElementById(inputId.replace('Search', 'Dropdown')).style.display = 'none';
     updateComparison();
   };
 
-  // Update comparison display
   function updateComparison() {
     const resultsDiv = document.getElementById('comparisonResults');
     const emptyStateDiv = document.getElementById('emptyState');
@@ -787,61 +367,39 @@ const crumbs = [
     updateRecommendation();
   }
 
-  // Update selected skin display
   function updateSelectedSkinDisplay(letter, skin) {
-    const div = document.getElementById(`skin${letter}Info`);
+    const div = document.getElementById('skin' + letter + 'Info');
     if (!skin) {
-      div.className = 'selected-skin empty';
-      div.innerHTML = `<span>Select ${letter === 'A' ? 'first' : 'second'} skin</span>`;
+      div.className = 'skc-selected skc-empty';
+      div.innerHTML = '<span>Select ' + (letter === 'A' ? 'first' : 'second') + ' skin</span>';
     } else {
-      div.className = 'selected-skin filled';
-      div.innerHTML = `
-        <div class="skin-weapon">${skin.weapon}</div>
-        <div class="skin-name">${skin.name}</div>
-        <div class="skin-rarity">${skin.rarity}</div>
-      `;
+      div.className = 'skc-selected skc-filled';
+      div.innerHTML = '<div class="skc-sel-weapon">' + skin.weapon + '</div><div class="skc-sel-name">' + skin.name + '</div><div class="skc-sel-rarity">' + skin.rarity + '</div>';
     }
   }
 
-  // Update basic info
   function updateBasicInfo(letter, skin) {
-    const div = document.getElementById(`skin${letter}Basic`);
+    const div = document.getElementById('skin' + letter + 'Basic');
     if (!skin) return;
     const lowestPrice = skin.prices && skin.prices.length ? Math.min(...skin.prices.map(p => p.price)) : null;
     const highestPrice = skin.prices && skin.prices.length ? Math.max(...skin.prices.map(p => p.price)) : null;
-    div.innerHTML = `
-      <div class="info-row">
-        <span class="info-label">Weapon</span>
-        <span class="info-value">${skin.weapon}</span>
-      </div>
-      <div class="info-row">
-        <span class="info-label">Name</span>
-        <span class="info-value">${skin.name}</span>
-      </div>
-      <div class="info-row">
-        <span class="info-label">Rarity</span>
-        <span class="info-value" style="color:${skin.rarityColor || 'var(--accent)'}">${skin.rarity}</span>
-      </div>
-      ${lowestPrice != null ? `
-      <div class="info-row">
-        <span class="info-label">Price Range</span>
-        <span class="info-value">$${lowestPrice.toFixed(2)}${highestPrice && highestPrice !== lowestPrice ? ` – $${highestPrice.toFixed(2)}` : ''}</span>
-      </div>` : ''}
-      ${skin.collection ? `
-      <div class="info-row">
-        <span class="info-label">Collection</span>
-        <span class="info-value">${skin.collection}</span>
-      </div>` : ''}
-    `;
+    var html = '<div class="skc-row"><span class="skc-row-label">Weapon</span><span class="skc-row-value">' + skin.weapon + '</span></div>';
+    html += '<div class="skc-row"><span class="skc-row-label">Name</span><span class="skc-row-value">' + skin.name + '</span></div>';
+    html += '<div class="skc-row"><span class="skc-row-label">Rarity</span><span class="skc-row-value" style="color:' + (skin.rarityColor || 'var(--accent)') + '">' + skin.rarity + '</span></div>';
+    if (lowestPrice != null) {
+      html += '<div class="skc-row"><span class="skc-row-label">Price Range</span><span class="skc-row-value">$' + lowestPrice.toFixed(2) + (highestPrice && highestPrice !== lowestPrice ? ' - $' + highestPrice.toFixed(2) : '') + '</span></div>';
+    }
+    if (skin.collection) {
+      html += '<div class="skc-row"><span class="skc-row-label">Collection</span><span class="skc-row-value">' + skin.collection + '</span></div>';
+    }
+    div.innerHTML = html;
   }
 
-  // Update float info
   function updateFloatInfo(letter, skin) {
-    const div = document.getElementById(`skin${letter}Float`);
+    const div = document.getElementById('skin' + letter + 'Float');
     if (!skin) return;
     const minF = skin.minFloat != null ? skin.minFloat.toFixed(4) : '0.0000';
     const maxF = skin.maxFloat != null ? skin.maxFloat.toFixed(4) : '1.0000';
-    // Determine wear range from float
     const wears = [];
     if (skin.minFloat <= 0.07) wears.push('FN');
     if (skin.minFloat <= 0.15 && skin.maxFloat >= 0.07) wears.push('MW');
@@ -849,46 +407,24 @@ const crumbs = [
     if (skin.minFloat <= 0.45 && skin.maxFloat >= 0.38) wears.push('WW');
     if (skin.maxFloat >= 0.45) wears.push('BS');
     const wearRange = wears.length ? wears.join(', ') : 'FN to BS';
-    div.innerHTML = `
-      <div class="info-row">
-        <span class="info-label">Min Float</span>
-        <span class="info-value">${minF}</span>
-      </div>
-      <div class="info-row">
-        <span class="info-label">Max Float</span>
-        <span class="info-value">${maxF}</span>
-      </div>
-      <div class="info-row">
-        <span class="info-label">Wear Range</span>
-        <span class="info-value">${wearRange}</span>
-      </div>
-    `;
+    div.innerHTML = '<div class="skc-row"><span class="skc-row-label">Min Float</span><span class="skc-row-value">' + minF + '</span></div>' +
+      '<div class="skc-row"><span class="skc-row-label">Max Float</span><span class="skc-row-value">' + maxF + '</span></div>' +
+      '<div class="skc-row"><span class="skc-row-label">Wear Range</span><span class="skc-row-value">' + wearRange + '</span></div>';
   }
 
-  // Update variants info
   function updateVariantsInfo(letter, skin) {
-    const div = document.getElementById(`skin${letter}Variants`);
+    const div = document.getElementById('skin' + letter + 'Variants');
     if (!skin) return;
-    div.innerHTML = `
-      <div class="info-row">
-        <span class="info-label">StatTrak</span>
-        <span class="info-value">${skin.statTrak ? '✓ Available' : '✗ Not Available'}</span>
-      </div>
-      <div class="info-row">
-        <span class="info-label">Souvenir</span>
-        <span class="info-value">${skin.souvenir ? '✓ Available' : '✗ Not Available'}</span>
-      </div>
-    `;
+    div.innerHTML = '<div class="skc-row"><span class="skc-row-label">StatTrak</span><span class="skc-row-value">' + (skin.statTrak ? 'Available' : 'Not Available') + '</span></div>' +
+      '<div class="skc-row"><span class="skc-row-label">Souvenir</span><span class="skc-row-value">' + (skin.souvenir ? 'Available' : 'Not Available') + '</span></div>';
   }
 
-  // Helper: get price for a specific wear from skin data
   function getPriceForWear(skin, wear) {
     if (!skin || !skin.prices || !skin.prices.length) return null;
     const match = skin.prices.find(p => p.wear === wear);
     return match ? match.price : null;
   }
 
-  // Update wear comparison table
   function updateWearComparison() {
     const tbody = document.getElementById('wearComparison');
     const wears = ['Factory New', 'Minimal Wear', 'Field-Tested', 'Well-Worn', 'Battle-Scarred'];
@@ -903,26 +439,24 @@ const crumbs = [
         const bIsCheaper = hasBoth && priceB < priceA;
 
         const cellA = priceA != null
-          ? `<td class="price-cell ${aIsCheaper ? 'price-cheaper' : bIsCheaper ? 'price-higher' : ''}">$${priceA.toFixed(2)}</td>`
-          : `<td class="price-cell" style="color:var(--text2)">—</td>`;
+          ? '<td class="skc-price ' + (aIsCheaper ? 'skc-cheaper' : bIsCheaper ? 'skc-higher' : '') + '">$' + priceA.toFixed(2) + '</td>'
+          : '<td class="skc-price" style="color:var(--text2)">--</td>';
         const cellB = priceB != null
-          ? `<td class="price-cell ${bIsCheaper ? 'price-cheaper' : aIsCheaper ? 'price-higher' : ''}">$${priceB.toFixed(2)}</td>`
-          : `<td class="price-cell" style="color:var(--text2)">—</td>`;
+          ? '<td class="skc-price ' + (bIsCheaper ? 'skc-cheaper' : aIsCheaper ? 'skc-higher' : '') + '">$' + priceB.toFixed(2) + '</td>'
+          : '<td class="skc-price" style="color:var(--text2)">--</td>';
         const diffCell = hasBoth
-          ? `<td class="price-difference">${aIsCheaper ? '−' : bIsCheaper ? '+' : '='} $${diff.toFixed(2)}</td>`
-          : `<td class="price-difference" style="color:var(--text2)">—</td>`;
+          ? '<td class="skc-price-diff">' + (aIsCheaper ? '-' : bIsCheaper ? '+' : '=') + ' $' + diff.toFixed(2) + '</td>'
+          : '<td class="skc-price-diff" style="color:var(--text2)">--</td>';
 
-        return `<tr><td>${wear}</td>${cellA}${diffCell}${cellB}</tr>`;
+        return '<tr><td>' + wear + '</td>' + cellA + diffCell + cellB + '</tr>';
       })
       .join('');
   }
 
-  // Update recommendation
   function updateRecommendation() {
     const div = document.getElementById('recommendation');
     if (!selectedSkinA || !selectedSkinB) return;
 
-    // Calculate average price for each skin across available wears
     const wears = ['Factory New', 'Minimal Wear', 'Field-Tested', 'Well-Worn', 'Battle-Scarred'];
     let totalA = 0, countA = 0, totalB = 0, countB = 0;
     let aCheaperCount = 0, bCheaperCount = 0;
@@ -943,10 +477,7 @@ const crumbs = [
     const noPrices = countA === 0 && countB === 0;
 
     if (noPrices) {
-      div.innerHTML = `
-        <h3>Recommendation</h3>
-        <p>No price data available for these skins. Price data updates when the full skin database is built on Cloudflare.</p>
-      `;
+      div.innerHTML = '<h3>Recommendation</h3><p>No price data available for these skins. Price data updates when the full skin database is built on Cloudflare.</p>';
       return;
     }
 
@@ -954,23 +485,15 @@ const crumbs = [
     const letter = avgA <= avgB ? 'A' : 'B';
     const cheaperWins = avgA <= avgB ? aCheaperCount : bCheaperCount;
     const avgPrice = avgA <= avgB ? avgA : avgB;
+    const pctDiff = Math.abs(((avgA - avgB) / Math.max(avgA, avgB)) * 100).toFixed(0);
 
-    div.innerHTML = `
-      <h3>Recommendation</h3>
-      <p><strong>Better Value: Skin ${letter} — ${cheaper.weapon} | ${cheaper.name}</strong></p>
-      <p>Average price: $${avgPrice.toFixed(2)}. Cheaper in ${cheaperWins} out of ${Math.min(countA, countB)} comparable wear conditions.</p>
-      <div class="rec-item">
-        <span class="rec-icon">✓</span>
-        <span><strong>Price advantage:</strong> ${cheaper.weapon} | ${cheaper.name} is ${Math.abs(((avgA - avgB) / Math.max(avgA, avgB)) * 100).toFixed(0)}% ${avgA <= avgB ? 'cheaper' : 'more expensive'} on average</span>
-      </div>
-      <div class="rec-item">
-        <span class="rec-icon">ℹ</span>
-        <span><strong>Compare across markets:</strong> Prices may vary between Steam, Skinport, Buff163, and other platforms</span>
-      </div>
-    `;
+    div.innerHTML = '<h3>Recommendation</h3>' +
+      '<p><strong>Better Value: Skin ' + letter + ' -- ' + cheaper.weapon + ' | ' + cheaper.name + '</strong></p>' +
+      '<p>Average price: $' + avgPrice.toFixed(2) + '. Cheaper in ' + cheaperWins + ' out of ' + Math.min(countA, countB) + ' comparable wear conditions.</p>' +
+      '<div class="skc-rec-item"><span class="skc-rec-icon">+</span><span><strong>Price advantage:</strong> ' + cheaper.weapon + ' | ' + cheaper.name + ' is ' + pctDiff + '% ' + (avgA <= avgB ? 'cheaper' : 'more expensive') + ' on average</span></div>' +
+      '<div class="skc-rec-item"><span class="skc-rec-icon">i</span><span><strong>Compare across markets:</strong> Prices may vary between Steam, Skinport, Buff163, and other platforms</span></div>';
   }
 
-  // Event listeners
   document.getElementById('skinASearch').addEventListener('input', e => {
     populateDropdown('skinASearch', 'skinADropdown', e.target.value);
   });
@@ -979,15 +502,13 @@ const crumbs = [
     populateDropdown('skinBSearch', 'skinBDropdown', e.target.value);
   });
 
-  // Close dropdowns on blur
   document.addEventListener('click', e => {
-    if (!e.target.classList.contains('skin-search')) {
+    if (!e.target.classList.contains('skc-search')) {
       document.getElementById('skinADropdown').style.display = 'none';
       document.getElementById('skinBDropdown').style.display = 'none';
     }
   });
 
-  // Initialize
   updateComparison();
 </script>
 

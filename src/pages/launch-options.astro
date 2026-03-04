@@ -3,7 +3,7 @@ import Base from '../layouts/Base.astro';
 import ExploreMore from '../components/ExploreMore.astro';
 import { faqSchema, breadcrumbSchema, toolAppSchema } from '../lib/weapons';
 
-const title = 'CS2 Launch Options Optimizer — Best Settings for Performance | CSDB.gg';
+const title = 'CS2 Launch Options Optimizer — Best Settings for Performance | CSGOLuck Wiki';
 const description = 'Optimize your CS2 launch options for maximum FPS, reduced input lag, and stable performance. Choose from presets or build a custom launch string for your hardware.';
 
 const faqs = [
@@ -38,102 +38,114 @@ const presetOptions = [
 ];
 ---
 
-<Base title={title} description={description} currentNav="/tools/">
+<Base title={title} description={description} currentNav="/cs2-tools/">
   <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema([{name:'Home',url:'/'},{name:'Tools',url:'/launch-options'},{name:'Launch Options',url:'/launch-options'}]))}></script>
   <script type="application/ld+json" set:html={JSON.stringify(faqSchema(faqs))}></script>
-  <script type="application/ld+json" set:html={JSON.stringify(toolAppSchema({ name: 'CS2 Launch Options Optimizer', url: 'https://csdb.gg/launch-options/', description }))}></script>
+  <script type="application/ld+json" set:html={JSON.stringify(toolAppSchema({ name: 'CS2 Launch Options Optimizer', url: 'https://wiki.csgoluck.com/launch-options/', description }))}></script>
 
-  <nav class="breadcrumb">
+  <nav class="lo-breadcrumb">
     <a href="/">Home</a> / <a href="/launch-options/">Tools</a> / <span>Launch Options Optimizer</span>
   </nav>
 
-  <h1>CS2 Launch Options Optimizer</h1>
-  <p>Configure your Steam launch options for optimal CS2 performance. Select individual flags or start from a hardware-matched preset.</p>
+  <section class="lo-hero">
+    <h1>CS2 Launch Options Optimizer</h1>
+    <p class="lo-hero-desc">Configure your Steam launch options for optimal CS2 performance. Select individual flags or start from a hardware-matched preset.</p>
+  </section>
 
-  <div class="calc-section">
+  <section class="lo-section">
     <h2>Quick Presets</h2>
-    <div class="card-grid">
+    <div class="lo-presets">
       {presetOptions.map(p => (
-        <div class="card" data-flags={p.flags} style="cursor:pointer">
-          <h3 style="margin:0">{p.name}</h3>
-          <p style="font-size:.85rem">{p.desc}</p>
-          <code style="display:block;margin-top:.5rem;font-size:.78rem;color:var(--accent);word-break:break-all">{p.flags}</code>
+        <div class="lo-preset-row" data-flags={p.flags}>
+          <div class="lo-preset-info">
+            <h3 class="lo-preset-name">{p.name}</h3>
+            <span class="lo-preset-desc">{p.desc}</span>
+          </div>
+          <code class="lo-preset-flags">{p.flags}</code>
         </div>
       ))}
     </div>
-  </div>
+  </section>
 
-  <div class="calc-section">
+  <section class="lo-section">
     <h2>Build Custom Launch Options</h2>
-    <div id="optionsList">
+    <div class="lo-options-list">
       {options.map(o => (
-        <label style="display:flex;gap:.75rem;align-items:flex-start;padding:.6rem 0;border-bottom:1px solid var(--border);cursor:pointer">
-          <input type="checkbox" class="lo-check" data-flag={o.flag} checked={o.recommended} style="margin-top:.3rem;accent-color:var(--accent)" />
-          <div>
-            <code style="color:var(--accent);font-weight:700">{o.flag}</code>
-            <span style="color:var(--text2);font-size:.88rem;margin-left:.5rem">{o.desc}</span>
-            <span class="tag" style="margin-left:.5rem">{o.impact}</span>
+        <label class="lo-option-row">
+          <input type="checkbox" class="lo-check" data-flag={o.flag} checked={o.recommended} />
+          <div class="lo-option-info">
+            <code class="lo-option-flag">{o.flag}</code>
+            <span class="lo-option-desc">{o.desc}</span>
+            <span class="lo-option-impact">{o.impact}</span>
           </div>
         </label>
       ))}
     </div>
+  </section>
+
+  <section class="lo-result">
+    <h2>Your Launch Options</h2>
+    <code id="launchString" class="lo-result-string"></code>
+    <button id="copyBtn" class="lo-copy-btn">Copy to Clipboard</button>
+  </section>
+
+  <section class="lo-section">
+    <h2>Launch Options Reference</h2>
+    <div class="lo-ref-table-wrap">
+      <table class="lo-ref-table">
+        <thead><tr><th>Flag</th><th>Category</th><th>Description</th><th>Impact</th></tr></thead>
+        <tbody>
+          {options.map(o => (
+            <tr>
+              <td><code class="lo-option-flag">{o.flag}</code></td>
+              <td><span class="lo-cat-tag">{o.category}</span></td>
+              <td>{o.desc}</td>
+              <td>{o.impact}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="lo-section">
+    <h2>How Launch Options Affect Performance</h2>
+    <p class="lo-text">
+      Launch options are command-line arguments passed to the CS2 executable before the engine initializes. This means they configure low-level behaviour that cannot be changed from the in-game settings menu. The most universally beneficial options are <code>-novid</code> (saves 3-5 seconds per launch) and <code>-tickrate 128</code> (ensures your local server runs at competition-grade tick rate).
+    </p>
+    <p class="lo-text">
+      The <code>-high</code> flag tells Windows to give CS2 priority access to CPU resources. On systems running Discord, Chrome, streaming software, or other background processes, this can meaningfully improve frame consistency. On dedicated gaming machines with nothing else running, the benefit is negligible.
+    </p>
+    <p class="lo-text">
+      Avoid cargo-culting long lists of options from outdated guides. Many flags from CS:GO (like <code>-lv</code>, <code>-processheap</code>, or <code>-nod3d9ex</code>) no longer exist in CS2 and will either be ignored or cause unexpected behaviour. Keep your launch options minimal and purposeful.
+    </p>
+  </section>
+
+  <div class="lo-related">
+    <h2>Related Tools & Guides</h2>
+    <div class="lo-related-list">
+      <a href="/autoexec-generator/" class="lo-related-row">Autoexec Generator</a>
+      <a href="/crosshair-generator/" class="lo-related-row">Crosshair Generator</a>
+      <a href="/bind-generator/" class="lo-related-row">Bind Generator</a>
+      <a href="/practice-config/" class="lo-related-row">Practice Config</a>
+      <a href="/sensitivity-converter/" class="lo-related-row">Sensitivity Converter</a>
+      <a href="/resolution-calculator/" class="lo-related-row">Resolution Calculator</a>
+      <a href="/pro-players/" class="lo-related-row">Pro Player Settings</a>
+      <a href="/cs2-tools/" class="lo-related-row">All Tools</a>
+      <a href="/cs2-guides/fps-optimization-guide/" class="lo-related-row">FPS Optimization Guide</a>
+      <a href="/cs2-guides/beginners-guide/" class="lo-related-row">Beginner's Guide</a>
+    </div>
   </div>
 
-  <div class="result-box" style="margin:2rem 0">
-    <h2 style="margin-top:0">Your Launch Options</h2>
-    <code id="launchString" style="display:block;font-size:1rem;color:var(--accent);word-break:break-all;padding:.5rem 0"></code>
-    <button id="copyBtn" style="margin-top:1rem;padding:.5rem 1.5rem;background:var(--accent);color:#000;border:none;border-radius:6px;cursor:pointer;font-weight:700">Copy to Clipboard</button>
-  </div>
-
-  <h2>Launch Options Reference</h2>
-  <table>
-    <thead><tr><th>Flag</th><th>Category</th><th>Description</th><th>Impact</th></tr></thead>
-    <tbody>
-      {options.map(o => (
-        <tr>
-          <td><code style="color:var(--accent)">{o.flag}</code></td>
-          <td class="tag">{o.category}</td>
-          <td>{o.desc}</td>
-          <td>{o.impact}</td>
-        </tr>
-      ))}
-    </tbody>
-  </table>
-
-  <h2>How Launch Options Affect Performance</h2>
-  <p>
-    Launch options are command-line arguments passed to the CS2 executable before the engine initializes. This means they configure low-level behaviour that cannot be changed from the in-game settings menu. The most universally beneficial options are <code>-novid</code> (saves 3-5 seconds per launch) and <code>-tickrate 128</code> (ensures your local server runs at competition-grade tick rate).
-  </p>
-  <p>
-    The <code>-high</code> flag tells Windows to give CS2 priority access to CPU resources. On systems running Discord, Chrome, streaming software, or other background processes, this can meaningfully improve frame consistency. On dedicated gaming machines with nothing else running, the benefit is negligible.
-  </p>
-  <p>
-    Avoid cargo-culting long lists of options from outdated guides. Many flags from CS:GO (like <code>-lv</code>, <code>-processheap</code>, or <code>-nod3d9ex</code>) no longer exist in CS2 and will either be ignored or cause unexpected behaviour. Keep your launch options minimal and purposeful.
-  </p>
-
-  <div class="internal-links">
-    <strong>Related Tools & Guides:</strong>
-    <a href="/autoexec-generator/">Autoexec Generator</a>
-    <a href="/crosshair-generator/">Crosshair Generator</a>
-    <a href="/bind-generator/">Bind Generator</a>
-    <a href="/practice-config/">Practice Config</a>
-    <a href="/sensitivity-converter/">Sensitivity Converter</a>
-    <a href="/resolution-calculator/">Resolution Calculator</a>
-    <a href="/pro-players/">Pro Player Settings</a>
-    <a href="/tools/">All Tools</a>
-    <a href="/guides/fps-optimization-guide/">FPS Optimization Guide</a>
-    <a href="/guides/beginners-guide/">Beginner's Guide</a>
-  </div>
-
-  <h2>Frequently Asked Questions</h2>
-  <dl class="faq">
+  <section class="lo-faq">
+    <h2>Frequently Asked Questions</h2>
     {faqs.map(f => (
-      <Fragment>
-        <dt>{f.question}</dt>
-        <dd>{f.answer}</dd>
-      </Fragment>
+      <details class="lo-faq-item">
+        <summary>{f.question}</summary>
+        <p>{f.answer}</p>
+      </details>
     ))}
-  </dl>
+  </section>
 
   <ExploreMore context="tools" />
 </Base>
@@ -170,3 +182,82 @@ const presetOptions = [
   buildString();
 })();
 </script>
+
+<style>
+/* -- Breadcrumb -- */
+.lo-breadcrumb{font-size:.82rem;color:var(--text2);margin-bottom:1.25rem;display:flex;gap:.35rem;flex-wrap:wrap}
+.lo-breadcrumb a{color:var(--accent);text-decoration:none}
+.lo-breadcrumb a:hover{text-decoration:underline}
+
+/* -- Hero -- */
+.lo-hero{background:var(--bg2);border:1px solid var(--border);border-radius:4px;padding:2rem;margin-bottom:1.5rem}
+.lo-hero h1{font-family:'Montserrat',sans-serif;font-size:2rem;font-weight:800;margin:0 0 .5rem;color:var(--text)}
+.lo-hero-desc{color:var(--text2);font-size:.95rem;line-height:1.6;margin:0}
+
+/* -- Sections -- */
+.lo-section{margin-bottom:2rem}
+.lo-section h2{font-family:'Montserrat',sans-serif;font-size:1.15rem;font-weight:700;color:var(--text);margin:0 0 .75rem}
+.lo-text{color:var(--text2);font-size:.9rem;line-height:1.7;margin:0 0 .75rem}
+.lo-text code{color:var(--accent);font-weight:600;font-size:.85rem}
+
+/* -- Presets (row layout) -- */
+.lo-presets{display:flex;flex-direction:column;gap:2px}
+.lo-preset-row{display:flex;align-items:center;gap:1rem;background:var(--bg2);border:1px solid var(--border);border-left:3px solid transparent;border-radius:4px;padding:.75rem 1rem;cursor:pointer;transition:border-color .15s,background .15s}
+.lo-preset-row:hover{border-left-color:var(--accent);background:var(--bg3)}
+.lo-preset-info{flex:1;min-width:0}
+.lo-preset-name{font-family:'Montserrat',sans-serif;font-size:.95rem;font-weight:700;color:var(--text);margin:0}
+.lo-preset-desc{font-size:.82rem;color:var(--text2)}
+.lo-preset-flags{font-size:.78rem;color:var(--accent);word-break:break-all;flex-shrink:0;max-width:300px}
+
+/* -- Options List -- */
+.lo-options-list{display:flex;flex-direction:column;gap:1px}
+.lo-option-row{display:flex;gap:.75rem;align-items:flex-start;padding:.6rem 1rem;border-bottom:1px solid var(--border);cursor:pointer;background:var(--bg2);border-radius:4px;margin-bottom:1px;transition:background .15s}
+.lo-option-row:hover{background:var(--bg3)}
+.lo-option-row input[type="checkbox"]{margin-top:.3rem;accent-color:var(--accent);flex-shrink:0}
+.lo-option-info{display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;flex:1}
+.lo-option-flag{color:var(--accent);font-weight:700;font-size:.88rem}
+.lo-option-desc{color:var(--text2);font-size:.88rem}
+.lo-option-impact{display:inline-block;background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:.1rem .4rem;font-size:.72rem;color:var(--text2);font-weight:600}
+
+/* -- Result Box -- */
+.lo-result{background:var(--bg2);border:1px solid var(--border);border-radius:4px;padding:1.5rem;margin-bottom:2rem}
+.lo-result h2{font-family:'Montserrat',sans-serif;font-size:1.15rem;font-weight:700;color:var(--text);margin:0 0 .75rem}
+.lo-result-string{display:block;font-size:1rem;color:var(--accent);word-break:break-all;padding:.5rem 0;min-height:1.5rem}
+.lo-copy-btn{margin-top:.75rem;padding:.5rem 1.5rem;background:var(--accent);color:#000;border:none;border-radius:4px;cursor:pointer;font-weight:700;font-family:'Montserrat',sans-serif;font-size:.88rem;transition:opacity .15s}
+.lo-copy-btn:hover{opacity:.85}
+
+/* -- Reference Table -- */
+.lo-ref-table-wrap{overflow-x:auto;border:1px solid var(--border);border-radius:4px}
+.lo-ref-table{width:100%;border-collapse:collapse;background:var(--bg2);font-size:.88rem}
+.lo-ref-table thead{background:var(--bg3)}
+.lo-ref-table th{padding:.65rem .75rem;text-align:left;font-weight:700;color:var(--text);border-bottom:2px solid var(--border);font-family:'Montserrat',sans-serif;font-size:.82rem}
+.lo-ref-table td{padding:.6rem .75rem;border-bottom:1px solid var(--border);color:var(--text2)}
+.lo-ref-table tbody tr:hover{background:var(--bg3)}
+.lo-cat-tag{display:inline-block;background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:.1rem .4rem;font-size:.72rem;color:var(--text2);font-weight:600}
+
+/* -- Related Links -- */
+.lo-related{margin-bottom:2rem}
+.lo-related h2{font-family:'Montserrat',sans-serif;font-size:1.15rem;font-weight:700;color:var(--text);margin:0 0 .75rem}
+.lo-related-list{display:flex;flex-direction:column;gap:2px}
+.lo-related-row{display:block;padding:.55rem .85rem;background:var(--bg2);border:1px solid var(--border);border-left:3px solid transparent;border-radius:4px;font-size:.88rem;color:var(--text2);text-decoration:none;font-weight:600;transition:border-color .15s,background .15s,color .15s}
+.lo-related-row:hover{border-left-color:var(--accent);background:var(--bg3);color:var(--text)}
+
+/* -- FAQ -- */
+.lo-faq{margin-bottom:2rem}
+.lo-faq h2{font-family:'Montserrat',sans-serif;font-size:1.15rem;font-weight:700;color:var(--text);margin:0 0 .75rem}
+.lo-faq-item{background:var(--bg2);border:1px solid var(--border);border-radius:4px;margin-bottom:.35rem;overflow:hidden}
+.lo-faq-item summary{padding:.75rem 1rem;font-weight:700;font-size:.9rem;color:var(--text);cursor:pointer;list-style:none;display:flex;align-items:center;gap:.5rem;transition:background .15s}
+.lo-faq-item summary::before{content:'+';font-size:1.05rem;font-weight:700;color:var(--accent);flex-shrink:0;width:18px;text-align:center}
+.lo-faq-item[open] summary::before{content:'\2212'}
+.lo-faq-item summary:hover{background:var(--bg3)}
+.lo-faq-item summary::-webkit-details-marker{display:none}
+.lo-faq-item p{padding:0 1rem .85rem 2.25rem;margin:0;color:var(--text2);font-size:.88rem;line-height:1.6}
+
+/* -- Responsive -- */
+@media(max-width:768px){
+  .lo-hero h1{font-size:1.5rem}
+  .lo-preset-row{flex-direction:column;gap:.4rem}
+  .lo-preset-flags{max-width:100%}
+  .lo-option-info{flex-direction:column;align-items:flex-start;gap:.25rem}
+}
+</style>

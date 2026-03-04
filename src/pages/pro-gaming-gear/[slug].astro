@@ -1,0 +1,619 @@
+---
+import Base from '../../layouts/Base.astro';
+import ExploreMore from '../../components/ExploreMore.astro';
+import { getAllGear, getAverageEdpi, getGearImageUrl, type GearItem, type GearType } from '../../lib/pro-players';
+import { getGearDescription } from '../../data/gear-descriptions';
+import { breadcrumbSchema, faqSchema } from '../../lib/weapons';
+
+const allGear = getAllGear();
+
+export function getStaticPaths() {
+  return getAllGear().map(g => ({
+    params: { slug: g.slug },
+    props: { gear: g },
+  }));
+}
+
+const { gear } = Astro.props as { gear: GearItem };
+const avgEdpi = getAverageEdpi();
+
+// Type icon map
+const typeIcons: Record<GearType, string> = {
+  mouse: '\u{1F5B1}\uFE0F',
+  keyboard: '\u2328\uFE0F',
+  headset: '\u{1F3A7}',
+  monitor: '\u{1F5A5}\uFE0F',
+  mousepad: '\u{1F3AF}',
+};
+const typeLabels: Record<GearType, string> = {
+  mouse: 'Mouse',
+  keyboard: 'Keyboard',
+  headset: 'Headset',
+  monitor: 'Monitor',
+  mousepad: 'Mousepad',
+};
+
+const icon = typeIcons[gear.type];
+const label = typeLabels[gear.type];
+const players = gear.players;
+const gearImage = getGearImageUrl(gear.name);
+const gearDesc = getGearDescription(gear.name, gear.type);
+
+// ── Computed averages ────────────────────────────────────────────────────────
+const avgDpi = players.length > 0 ? Math.round(players.reduce((s, p) => s + p.dpi, 0) / players.length) : 0;
+const avgSens = players.length > 0 ? +(players.reduce((s, p) => s + p.sens, 0) / players.length).toFixed(2) : 0;
+const avgPlayerEdpi = players.length > 0 ? Math.round(players.reduce((s, p) => s + p.edpi, 0) / players.length) : 0;
+const avgRefreshRate = players.length > 0 ? Math.round(players.reduce((s, p) => s + p.refreshRate, 0) / players.length) : 0;
+
+// ── Teams using this gear ────────────────────────────────────────────────────
+const NON_TEAMS = ['free agent', 'retired', 'inactive', 'no team', 'none', 'benched', 'n/a', ''];
+const teamData: Record<string, { count: number; slug: string }> = {};
+players.forEach(p => {
+  if (NON_TEAMS.includes(p.team.toLowerCase().trim())) return;
+  if (!teamData[p.team]) {
+    teamData[p.team] = {
+      count: 0,
+      slug: p.team.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, ''),
+    };
+  }
+  teamData[p.team].count++;
+});
+const topTeams = Object.entries(teamData).sort((a, b) => b[1].count - a[1].count);
+const maxTeamCount = topTeams[0]?.[1].count ?? 1;
+
+// ── Related gear — same type, sorted by popularity, exclude current ─────────
+const relatedGear = allGear
+  .filter(g => g.type === gear.type && g.slug !== gear.slug)
+  .slice(0, 8);
+
+// ── Role breakdown ───────────────────────────────────────────────────────────
+const roleCounts: Record<string, number> = {};
+players.forEach(p => { roleCounts[p.role] = (roleCounts[p.role] || 0) + 1; });
+const roleBreakdown = Object.entries(roleCounts).sort((a, b) => b[1] - a[1]);
+
+// ── SEO ──────────────────────────────────────────────────────────────────────
+const title = `${gear.name} CS2 Settings \u2014 ${gear.players.length} Pro Players | CSGOLuck Wiki`;
+const description = `${gear.players.length} CS2 pro players use the ${gear.name}. See their sensitivity, crosshair, resolution, and full settings. Compare configs and find optimal settings for this ${gear.type}.`;
+
+const breadcrumbs = [
+  { name: 'Home', url: '/' },
+  { name: 'Pro Players', url: '/pro-players/' },
+  { name: 'Gear', url: '/pro-gaming-gear/' },
+  { name: gear.name, url: `/pro-gaming-gear/${gear.slug}/` },
+];
+
+// ── FAQ ──────────────────────────────────────────────────────────────────────
+const sensDesc = avgPlayerEdpi < 600 ? 'low' : avgPlayerEdpi < 900 ? 'medium' : 'high';
+const faqs = [
+  {
+    question: `How many CS2 pros use the ${gear.name}?`,
+    answer: `${gear.players.length} professional CS2 players in our database currently use the ${gear.name}. This makes it ${gear.players.length >= 10 ? 'one of the more popular' : 'a notable'} ${label.toLowerCase()} choices among the competitive scene.`,
+  },
+  {
+    question: `What settings do ${gear.name} users prefer?`,
+    answer: gear.type === 'mouse'
+      ? `Players using the ${gear.name} average ${avgDpi} DPI, ${avgSens} in-game sensitivity, and ${avgPlayerEdpi} eDPI. This puts them in the ${sensDesc} sensitivity range${avgPlayerEdpi < avgEdpi ? ', slightly below' : avgPlayerEdpi > avgEdpi ? ', slightly above' : ', right at'} the overall pro average of ${avgEdpi} eDPI.`
+      : gear.type === 'monitor'
+      ? `Pro players using the ${gear.name} average ${avgRefreshRate}Hz refresh rate with an average eDPI of ${avgPlayerEdpi}. The high refresh rate provides smoother visuals and reduced input lag for competitive play.`
+      : `Pro players using the ${gear.name} average ${avgPlayerEdpi} eDPI (${sensDesc} sensitivity). Their settings vary by role and playstyle \u2014 check the comparison table below for full details.`,
+  },
+  {
+    question: `Is the ${gear.name} good for competitive CS2?`,
+    answer: `With ${gear.players.length} professional player${gear.players.length !== 1 ? 's' : ''} using it, the ${gear.name} is a proven choice at the highest level of CS2.${topTeams.length > 0 ? ` Teams like ${topTeams.slice(0, 3).map(t => t[0]).join(', ')} have players using this ${label.toLowerCase()}.` : ''} However, personal comfort and preference are the most important factors when choosing gear.`,
+  },
+];
+---
+
+<Base {title} {description} currentNav="/pro-players/">
+<Fragment slot="head">
+<script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema(breadcrumbs))} />
+<script type="application/ld+json" set:html={JSON.stringify(faqSchema(faqs))} />
+</Fragment>
+
+<nav class="breadcrumb"><a href="/">Home</a> <span>/</span> <a href="/pro-players/">Pro Players</a> <span>/</span> <a href="/pro-gaming-gear/">Gear</a> <span>/</span> <span>{gear.name}</span></nav>
+
+<!-- Hero: left-aligned, horizontal layout -->
+<section class="ge-hero">
+  <div class="ge-hero-main">
+    <div class="ge-hero-ident">
+      {gearImage ? (
+        <img class="ge-hero-img" src={gearImage} alt={gear.name} width="80" height="80" loading="eager" onerror="this.style.display='none'" />
+      ) : (
+        <span class="ge-hero-icon">{icon}</span>
+      )}
+      <div class="ge-hero-text">
+        <span class="ge-hero-type">{label}</span>
+        <h1>{gear.name}</h1>
+        <p class="ge-hero-sub">{players.length} pro player{players.length !== 1 ? 's' : ''} use this {label.toLowerCase()}. Compare their configs in the <a href="/pro-players/" style="color:var(--accent)">Pro Player Settings</a> hub or calculate your sensitivity with the <a href="/edpi-calculator/" style="color:var(--accent)">eDPI Calculator</a>.</p>
+      </div>
+    </div>
+  </div>
+  <div class="ge-hero-stats">
+    {gear.type === 'mouse' && (
+      <>
+        <div class="ge-stat"><span class="ge-stat-val">{avgDpi}</span><span class="ge-stat-lbl">Avg DPI</span></div>
+        <div class="ge-stat"><span class="ge-stat-val">{avgSens}</span><span class="ge-stat-lbl">Avg Sens</span></div>
+        <div class="ge-stat"><span class="ge-stat-val">{avgPlayerEdpi}</span><span class="ge-stat-lbl">Avg eDPI</span></div>
+      </>
+    )}
+    {gear.type === 'monitor' && (
+      <>
+        <div class="ge-stat"><span class="ge-stat-val">{avgRefreshRate}Hz</span><span class="ge-stat-lbl">Avg Refresh Rate</span></div>
+        <div class="ge-stat"><span class="ge-stat-val">{avgPlayerEdpi}</span><span class="ge-stat-lbl">Avg eDPI</span></div>
+      </>
+    )}
+    {gear.type !== 'mouse' && gear.type !== 'monitor' && (
+      <div class="ge-stat"><span class="ge-stat-val">{avgPlayerEdpi}</span><span class="ge-stat-lbl">Avg eDPI</span></div>
+    )}
+    <div class="ge-stat"><span class="ge-stat-val">{players.length}</span><span class="ge-stat-lbl">Pro Players</span></div>
+    {topTeams.length > 0 && (
+      <div class="ge-stat"><span class="ge-stat-val">{topTeams.length}</span><span class="ge-stat-lbl">Teams</span></div>
+    )}
+  </div>
+</section>
+
+<!-- Product Analysis -->
+{gearDesc.overview && (
+<section class="ge-section">
+  <h2>About the {gear.name}</h2>
+  <div class="ge-about-layout">
+    <div class="ge-about-text">
+      <p class="ge-about-overview">{gearDesc.overview}</p>
+      <div class="ge-about-why">
+        <h3>Why Pros Use It in CS2</h3>
+        <p>{gearDesc.prosForCS2}</p>
+      </div>
+    </div>
+    {gearDesc.specs && gearDesc.specs.length > 0 && (
+      <div class="ge-specs">
+        <h3>Key Specifications</h3>
+        <dl class="ge-specs-dl">
+          {gearDesc.specs.map(s => (
+            <>
+              <dt>{s.label}</dt>
+              <dd>{s.value}</dd>
+            </>
+          ))}
+        </dl>
+      </div>
+    )}
+  </div>
+</section>
+)}
+
+<!-- Teams Using This Gear -->
+{topTeams.length > 0 && (
+<section class="ge-section">
+  <h2>Teams Using the {gear.name}</h2>
+  <p class="ge-section-sub">{topTeams.length} team{topTeams.length !== 1 ? 's' : ''} have players using this {label.toLowerCase()}.</p>
+  <div class="ge-teams" id="grTeamsGrid">
+    {topTeams.map(([team, data], i) => (
+      <a href={`/pro-teams/${data.slug}/`} class={`ge-team-row${i >= 12 ? ' ge-team-hidden' : ''}`}>
+        <span class="ge-team-name">{team}</span>
+        <div class="ge-team-bar-wrap">
+          <div class="ge-team-bar" style={`width:${Math.round((data.count / maxTeamCount) * 100)}%`}></div>
+        </div>
+        <span class="ge-team-badge">{data.count}</span>
+      </a>
+    ))}
+  </div>
+  {topTeams.length > 12 && (
+    <button class="ge-show-all" id="grTeamsToggle">Show all {topTeams.length} teams</button>
+  )}
+</section>
+)}
+
+<!-- Player Cards: row-based layout -->
+<section class="ge-section">
+  <h2>All Players Using the {gear.name}</h2>
+  <div class="ge-player-list" id="grPlayerGrid">
+    {players.map((p, i) => (
+      <a href={`/pro-players/${p.slug}/`} class={`ge-player-row${i >= 24 ? ' ge-player-paged' : ''}`} data-role={p.role} data-name={p.name.toLowerCase()} data-team={p.team.toLowerCase()} data-idx={i}>
+        <div class="ge-player-ident">
+          {p.image && <img class="ge-player-avatar" src={p.image} alt={p.name} width="44" height="44" loading="lazy" onerror="this.style.display='none'" />}
+          <div class="ge-player-info">
+            <span class="ge-player-name">{p.flag} {p.name}</span>
+            <span class="ge-player-team">{p.team}</span>
+          </div>
+          <span class="ge-player-role" data-r={p.role.toLowerCase().replace(/\s/g,'-')}>{p.role}</span>
+        </div>
+
+        <div class="ge-player-nums">
+          <div class="ge-pn"><span class="ge-pn-v">{p.dpi}</span><span class="ge-pn-l">DPI</span></div>
+          <div class="ge-pn"><span class="ge-pn-v">{p.sens}</span><span class="ge-pn-l">Sens</span></div>
+          <div class="ge-pn ge-pn-accent"><span class="ge-pn-v">{p.edpi}</span><span class="ge-pn-l">eDPI</span></div>
+          <div class="ge-pn"><span class="ge-pn-v">{p.res}</span><span class="ge-pn-l">{p.aspect} {p.stretch}</span></div>
+        </div>
+
+        {p.crosshairCode && (
+          <div class="ge-player-xhair" onclick="event.preventDefault();">
+            <code>{p.crosshairCode}</code>
+            <button class="ge-copy-btn" data-code={p.crosshairCode}>Copy</button>
+          </div>
+        )}
+
+        <div class="ge-player-gear">
+          <div class="ge-pg"><span class="ge-pg-k">Mouse</span><span class="ge-pg-v">{p.mouse}</span></div>
+          <div class="ge-pg"><span class="ge-pg-k">Monitor</span><span class="ge-pg-v">{p.monitor}</span></div>
+          <div class="ge-pg"><span class="ge-pg-k">Keyboard</span><span class="ge-pg-v">{p.keyboard}</span></div>
+          <div class="ge-pg"><span class="ge-pg-k">Headset</span><span class="ge-pg-v">{p.headset}</span></div>
+          <div class="ge-pg"><span class="ge-pg-k">Mousepad</span><span class="ge-pg-v">{p.mousepad}</span></div>
+        </div>
+
+        <div class="ge-edpi-indicator">
+          <div class="ge-edpi-track">
+            <div class="ge-edpi-fill" style={`width:${Math.min(100, Math.round(((p.edpi - 400) / (1700 - 400)) * 100))}%`}></div>
+          </div>
+          <span class="ge-edpi-label">{p.edpi} eDPI &mdash; {p.edpi < 600 ? 'Low' : p.edpi < 900 ? 'Medium' : 'High'} sens</span>
+        </div>
+
+        <div class="ge-player-cta">View Full Profile &rarr;</div>
+      </a>
+    ))}
+  </div>
+  {players.length > 24 && (
+    <div class="ge-loadmore-wrap" id="loadMoreWrap">
+      <button class="ge-loadmore" id="loadMoreBtn">Load More Players <span id="loadMoreCount"></span></button>
+    </div>
+  )}
+</section>
+
+<!-- Settings Comparison Table -->
+<section class="ge-section">
+  <h2>Settings Comparison Table</h2>
+  <div class="ge-table-scroll">
+    <table class="ge-table">
+      <thead>
+        <tr>
+          <th>Player</th><th>Team</th><th>Role</th><th>DPI</th><th>Sens</th><th>eDPI</th><th>Resolution</th><th>Aspect</th><th>Display</th><th>Refresh</th><th>Crosshair Code</th>
+        </tr>
+      </thead>
+      <tbody>
+        {players.map(p => (
+          <tr>
+            <td><a href={`/pro-players/${p.slug}/`} class="ge-tbl-link"><strong>{p.flag} {p.name}</strong></a></td>
+            <td>{p.team}</td>
+            <td><span class="ge-player-role ge-role-sm" data-r={p.role.toLowerCase().replace(/\s/g,'-')}>{p.role}</span></td>
+            <td>{p.dpi}</td>
+            <td>{p.sens}</td>
+            <td><strong>{p.edpi}</strong></td>
+            <td>{p.res}</td>
+            <td>{p.aspect}</td>
+            <td>{p.stretch}</td>
+            <td>{p.refreshRate}Hz</td>
+            <td>
+              {p.crosshairCode ? (
+                <span class="ge-xcode-wrap">
+                  <code class="ge-xcode">{p.crosshairCode}</code>
+                  <button class="ge-copy-sm" data-code={p.crosshairCode}>Copy</button>
+                </span>
+              ) : (
+                <span class="ge-na">N/A</span>
+              )}
+            </td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- Role Breakdown -->
+{roleBreakdown.length > 1 && (
+<section class="ge-section">
+  <h2>Role Breakdown</h2>
+  <p class="ge-section-sub">Distribution of player roles among {gear.name} users.</p>
+  <div class="ge-roles">
+    {roleBreakdown.map(([role, count]) => (
+      <div class="ge-role-row">
+        <span class="ge-player-role" data-r={role.toLowerCase().replace(/\s/g,'-')}>{role}</span>
+        <span class="ge-role-ct">{count} player{count !== 1 ? 's' : ''}</span>
+        <div class="ge-role-bar-wrap">
+          <div class="ge-role-bar" style={`width:${Math.round((count / players.length) * 100)}%`}></div>
+        </div>
+        <span class="ge-role-pct">{Math.round((count / players.length) * 100)}%</span>
+      </div>
+    ))}
+  </div>
+</section>
+)}
+
+<!-- Related Gear -->
+{relatedGear.length > 0 && (
+<section class="ge-section">
+  <h2>Other Popular {label === 'Mousepad' ? 'Mousepads' : label + 's'}</h2>
+  <div class="ge-related">
+    {relatedGear.map(g => (
+      <a href={`/pro-gaming-gear/${g.slug}/`} class="ge-related-row">
+        <span class="ge-related-icon">{typeIcons[g.type]}</span>
+        <div class="ge-related-info">
+          <span class="ge-related-name">{g.name}</span>
+          <span class="ge-related-ct">{g.players.length} player{g.players.length !== 1 ? 's' : ''}</span>
+        </div>
+        <span class="ge-related-arrow">&rarr;</span>
+      </a>
+    ))}
+  </div>
+</section>
+)}
+
+<!-- FAQ -->
+<section class="ge-section">
+  <h2>Frequently Asked Questions</h2>
+  {faqs.map(f => (
+    <details class="ge-faq-item">
+      <summary>{f.question}</summary>
+      <p>{f.answer}</p>
+    </details>
+  ))}
+</section>
+
+<!-- Internal Links -->
+<div class="internal-links">
+  <strong>Related:</strong>
+  <a href="/pro-players/">All Pro Settings</a>
+  <a href="/pro-teams/">Pro Teams</a>
+  <a href="/pro-gaming-gear/">All Gear</a>
+  <a href="/crosshair-codes/">Crosshair Codes</a>
+  <a href="/crosshair-generator/">Crosshair Generator</a>
+  <a href="/sensitivity-converter/">Sensitivity Converter</a>
+  <a href="/edpi-calculator/">eDPI Calculator</a>
+  <a href="/cm360-calculator/">cm/360 Calculator</a>
+  <a href="/resolution-calculator/">Resolution Calculator</a>
+  <a href="/autoexec-generator/">Autoexec Generator</a>
+  <a href="/bind-generator/">Bind Generator</a>
+  <a href="/cs2-weapons/">Weapon Database</a>
+  <a href="/cs2-skins/">Skin Database</a>
+  <a href="/cs2-guides/sensitivity-guide/">Sensitivity Guide</a>
+  <a href="/cs2-guides/crosshair-guide/">Crosshair Guide</a>
+  <a href="/cs2-guides/config-guide/">Config Guide</a>
+  <a href="/cs2-tools/">All Tools</a>
+</div>
+
+<ExploreMore context="general" />
+
+</Base>
+
+<style>
+/* ── Hero ── */
+.ge-hero{background:var(--bg2);border:1px solid var(--border);border-radius:4px;padding:2rem;margin-bottom:2rem}
+.ge-hero-main{margin-bottom:1.25rem}
+.ge-hero-ident{display:flex;align-items:center;gap:1rem}
+.ge-hero-img{width:80px;height:80px;object-fit:contain;border-radius:4px;background:var(--bg);flex-shrink:0}
+.ge-hero-icon{font-size:2.5rem;line-height:1;flex-shrink:0}
+.ge-hero-text{flex:1}
+.ge-hero-type{font-size:.72rem;text-transform:uppercase;font-weight:700;color:var(--accent);letter-spacing:.05em}
+.ge-hero h1{font-family:'Montserrat',sans-serif;font-size:1.8rem;margin:0;line-height:1.2;color:var(--text)}
+.ge-hero-sub{color:var(--text2);font-size:.92rem;margin:.25rem 0 0}
+.ge-hero-stats{display:flex;gap:.65rem;flex-wrap:wrap}
+.ge-stat{background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:.6rem .85rem;display:flex;flex-direction:column;align-items:center}
+.ge-stat-val{font-size:1.15rem;font-weight:800;color:var(--accent)}
+.ge-stat-lbl{font-size:.65rem;color:var(--text2);text-transform:uppercase;margin-top:.1rem}
+
+/* ── Sections ── */
+.ge-section{margin-bottom:2.5rem}
+.ge-section h2{font-family:'Montserrat',sans-serif;font-size:1.2rem;font-weight:700;margin:0 0 .85rem;color:var(--text)}
+.ge-section-sub{color:var(--text2);font-size:.88rem;margin:0 0 .85rem}
+
+/* ── About / Analysis ── */
+.ge-about-layout{display:flex;gap:1.5rem;align-items:flex-start}
+.ge-about-text{flex:1}
+.ge-about-overview{color:var(--text2);font-size:.92rem;line-height:1.7;margin:0 0 1rem}
+.ge-about-why{background:var(--bg3);border:1px solid var(--border);border-left:3px solid var(--accent);border-radius:4px;padding:1rem 1.25rem}
+.ge-about-why h3{font-size:.78rem;font-weight:700;color:var(--accent);margin:0 0 .5rem;text-transform:uppercase;letter-spacing:.03em}
+.ge-about-why p{color:var(--text2);font-size:.9rem;line-height:1.65;margin:0}
+.ge-specs{width:300px;flex-shrink:0;background:var(--bg2);border:1px solid var(--border);border-radius:4px;padding:1.25rem}
+.ge-specs h3{font-size:.9rem;font-weight:700;color:var(--text);margin:0 0 .85rem}
+.ge-specs-dl{margin:0;padding:0}
+.ge-specs-dl dt{font-size:.72rem;color:var(--text2);text-transform:uppercase;letter-spacing:.03em;font-weight:600;margin-top:.6rem;padding-top:.6rem;border-top:1px solid var(--border)}
+.ge-specs-dl dt:first-child{margin-top:0;padding-top:0;border-top:none}
+.ge-specs-dl dd{font-size:.88rem;color:var(--text);font-weight:600;margin:.1rem 0 0;padding:0}
+
+/* ── Teams ── */
+.ge-teams{display:flex;flex-direction:column;gap:2px}
+.ge-team-row{display:flex;align-items:center;gap:.75rem;text-decoration:none;background:var(--bg2);border:1px solid var(--border);border-left:3px solid transparent;border-radius:4px;padding:.6rem .85rem;transition:border-color .15s,background .15s}
+.ge-team-row:hover{border-left-color:var(--accent);background:var(--bg3)}
+.ge-team-hidden{display:none}
+.ge-team-row.ge-team-shown{display:flex}
+.ge-team-name{font-weight:700;color:var(--text);font-size:.88rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:140px;flex-shrink:0}
+.ge-team-bar-wrap{flex:1;height:6px;background:var(--bg3);border-radius:4px;overflow:hidden}
+.ge-team-bar{height:100%;background:var(--accent);border-radius:4px;opacity:.5}
+.ge-team-badge{background:var(--accent);color:#000;font-size:.7rem;font-weight:700;padding:.12rem .4rem;border-radius:4px;flex-shrink:0}
+.ge-show-all{display:block;margin:.85rem auto 0;background:var(--bg2);border:1px solid var(--border);color:var(--accent);padding:.45rem 1.25rem;border-radius:4px;font-size:.82rem;font-weight:600;cursor:pointer;font-family:'Montserrat',sans-serif;transition:border-color .15s}
+.ge-show-all:hover{border-color:var(--accent)}
+
+/* ── Player Rows ── */
+.ge-player-list{display:flex;flex-direction:column;gap:.75rem;margin-bottom:1rem}
+.ge-player-row{display:block;text-decoration:none;color:inherit;background:var(--bg2);border:1px solid var(--border);border-left:3px solid transparent;border-radius:4px;padding:1.15rem;transition:border-color .15s,background .15s}
+.ge-player-row:hover{border-left-color:var(--accent);background:var(--bg3)}
+.ge-player-row.hidden{display:none}
+.ge-player-ident{display:flex;align-items:center;gap:.65rem;margin-bottom:.85rem}
+.ge-player-avatar{width:44px;height:44px;border-radius:50%;object-fit:cover;border:2px solid var(--border);flex-shrink:0;background:var(--bg3)}
+.ge-player-info{flex:1;min-width:0}
+.ge-player-name{display:block;font-size:1.15rem;font-weight:800;color:var(--text)}
+.ge-player-team{display:block;color:var(--accent);font-size:.82rem;font-weight:600;margin-top:.15rem}
+.ge-player-cta{text-align:right;color:var(--accent);font-size:.8rem;font-weight:700;margin-top:.65rem;padding-top:.45rem;border-top:1px solid var(--border)}
+
+.ge-player-nums{display:flex;gap:.5rem;margin-bottom:.85rem;flex-wrap:wrap}
+.ge-pn{background:var(--bg);border:1px solid var(--border);border-radius:4px;padding:.4rem .6rem;text-align:center;flex:1;min-width:70px}
+.ge-pn-accent{border-color:var(--accent)}
+.ge-pn-v{display:block;font-size:1rem;font-weight:700;color:var(--text)}
+.ge-pn-accent .ge-pn-v{color:var(--accent)}
+.ge-pn-l{display:block;font-size:.6rem;color:var(--text2);text-transform:uppercase;margin-top:.1rem}
+
+.ge-player-xhair{display:flex;gap:.4rem;background:var(--bg);border:1px solid var(--border);border-radius:4px;padding:.35rem .5rem;margin-bottom:.85rem;align-items:center}
+.ge-player-xhair code{flex:1;font-size:.72rem;color:var(--text2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding:0 .3rem}
+.ge-copy-btn{background:var(--accent);color:#000;border:none;padding:.25rem .5rem;border-radius:4px;font-size:.72rem;font-weight:700;cursor:pointer;white-space:nowrap;font-family:'Montserrat',sans-serif}
+.ge-copy-btn:hover{opacity:.85}
+.ge-copy-btn.copied{background:#4caf50;color:#fff}
+
+.ge-player-gear{display:flex;flex-wrap:wrap;gap:.25rem .65rem;margin-bottom:.65rem;font-size:.8rem}
+.ge-pg{display:flex;gap:.25rem}
+.ge-pg-k{color:var(--text2);font-weight:600;white-space:nowrap}
+.ge-pg-k::after{content:':'}
+.ge-pg-v{color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+.ge-edpi-indicator{margin-bottom:.5rem}
+.ge-edpi-track{position:relative;background:var(--bg);border:1px solid var(--border);border-radius:4px;height:18px;overflow:hidden}
+.ge-edpi-fill{position:absolute;top:0;left:0;height:100%;background:linear-gradient(90deg,#4caf50,var(--accent),#ef5350);opacity:.2;border-radius:4px}
+.ge-edpi-label{font-size:.68rem;color:var(--text2);font-weight:600;margin-top:.2rem;display:block}
+
+.ge-loadmore-wrap{text-align:center;padding:1.25rem 0}
+.ge-loadmore{background:var(--accent);color:#000;border:none;padding:.65rem 1.75rem;border-radius:4px;font-size:.95rem;font-weight:700;cursor:pointer;font-family:'Montserrat',sans-serif;transition:opacity .15s}
+.ge-loadmore:hover{opacity:.85}
+.ge-loadmore span{font-weight:400;opacity:.8}
+.ge-player-paged{display:none}
+.ge-player-row.ge-player-paged.ge-player-shown{display:block}
+
+/* ── Role Badge ── */
+.ge-player-role{font-size:.7rem;font-weight:700;padding:.15rem .45rem;border-radius:4px;text-transform:uppercase;letter-spacing:.03em;background:var(--bg3);color:var(--text2);border:1px solid var(--border);white-space:nowrap}
+.ge-player-role[data-r="awper"]{background:rgba(239,83,80,.15);color:var(--red);border-color:var(--red)}
+.ge-player-role[data-r="rifler"]{background:rgba(66,165,245,.15);color:var(--blue);border-color:var(--blue)}
+.ge-player-role[data-r="igl"]{background:rgba(171,71,188,.15);color:var(--purple);border-color:var(--purple)}
+.ge-player-role[data-r="entry-fragger"]{background:rgba(46,204,113,.15);color:var(--accent);border-color:var(--accent)}
+.ge-player-role[data-r="support"]{background:rgba(76,175,80,.15);color:var(--green);border-color:var(--green)}
+.ge-role-sm{font-size:.62rem;padding:.12rem .35rem}
+
+/* ── Settings Table ── */
+.ge-table-scroll{overflow-x:auto;border:1px solid var(--border);border-radius:4px}
+.ge-table{width:100%;border-collapse:collapse;background:var(--bg2);font-size:.8rem}
+.ge-table thead{background:var(--bg3)}
+.ge-table th{padding:.6rem .45rem;text-align:left;font-weight:700;color:var(--text);text-transform:uppercase;font-size:.68rem;letter-spacing:.03em;white-space:nowrap}
+.ge-table td{padding:.45rem;border-bottom:1px solid var(--border);color:var(--text2);white-space:nowrap}
+.ge-table tbody tr:hover td{background:var(--bg3)}
+.ge-table td strong{color:var(--text)}
+.ge-tbl-link{color:var(--accent);text-decoration:none;font-weight:600}
+.ge-tbl-link:hover{text-decoration:underline}
+.ge-xcode-wrap{display:inline-flex;gap:.35rem;align-items:center}
+.ge-xcode{font-size:.7rem;color:var(--text2);max-width:110px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:inline-block;vertical-align:middle}
+.ge-copy-sm{background:var(--accent);color:#000;border:none;padding:.15rem .4rem;border-radius:4px;font-size:.65rem;font-weight:700;cursor:pointer;font-family:'Montserrat',sans-serif;white-space:nowrap}
+.ge-copy-sm:hover{opacity:.85}
+.ge-copy-sm.copied{background:#4caf50;color:#fff}
+.ge-na{color:var(--text2);font-size:.75rem;opacity:.5}
+
+/* ── Role Breakdown ── */
+.ge-roles{display:flex;flex-direction:column;gap:.5rem}
+.ge-role-row{display:flex;align-items:center;gap:.65rem;background:var(--bg2);border:1px solid var(--border);border-radius:4px;padding:.65rem .85rem}
+.ge-role-ct{font-size:.78rem;color:var(--text2);min-width:80px}
+.ge-role-bar-wrap{flex:1;height:8px;background:var(--bg3);border-radius:4px;overflow:hidden}
+.ge-role-bar{height:100%;background:var(--accent);border-radius:4px}
+.ge-role-pct{font-size:.75rem;color:var(--text2);font-weight:600;min-width:36px;text-align:right}
+
+/* ── Related Gear ── */
+.ge-related{display:flex;flex-direction:column;gap:2px}
+.ge-related-row{display:flex;align-items:center;gap:.75rem;background:var(--bg2);border:1px solid var(--border);border-left:3px solid transparent;border-radius:4px;padding:.65rem .85rem;text-decoration:none;transition:border-color .15s,background .15s}
+.ge-related-row:hover{border-left-color:var(--accent);background:var(--bg3)}
+.ge-related-icon{font-size:1.25rem}
+.ge-related-info{flex:1;display:flex;flex-direction:column}
+.ge-related-name{font-weight:700;color:var(--text);font-size:.9rem}
+.ge-related-ct{font-size:.75rem;color:var(--text2);margin-top:.1rem}
+.ge-related-arrow{color:var(--text2);font-size:.82rem}
+
+/* ── FAQ ── */
+.ge-faq-item{background:var(--bg2);border:1px solid var(--border);border-radius:4px;margin-bottom:.4rem;overflow:hidden}
+.ge-faq-item summary{padding:.8rem 1rem;font-weight:700;font-size:.92rem;color:var(--text);cursor:pointer;list-style:none;display:flex;align-items:center;gap:.5rem;transition:background .15s}
+.ge-faq-item summary::before{content:'+';font-size:1.1rem;font-weight:700;color:var(--accent);flex-shrink:0;width:20px;text-align:center}
+.ge-faq-item[open] summary::before{content:'\2212'}
+.ge-faq-item summary:hover{background:var(--bg3)}
+.ge-faq-item summary::-webkit-details-marker{display:none}
+.ge-faq-item p{padding:0 1rem .85rem 2.5rem;margin:0;color:var(--text2);font-size:.88rem;line-height:1.65}
+
+/* ── Breadcrumb ── */
+.breadcrumb{font-size:.82rem;color:var(--text2);margin-bottom:1.25rem;display:flex;gap:.35rem;flex-wrap:wrap}
+.breadcrumb a{color:var(--accent);text-decoration:none}
+.breadcrumb a:hover{text-decoration:underline}
+.breadcrumb span{color:var(--text2)}
+
+/* ── Internal Links ── */
+.internal-links{display:flex;flex-wrap:wrap;gap:.45rem;align-items:center;margin:2rem 0;font-size:.82rem}
+.internal-links strong{color:var(--text);margin-right:.2rem}
+.internal-links a{color:var(--accent);text-decoration:none;padding:.2rem .5rem;background:var(--bg2);border:1px solid var(--border);border-radius:4px;transition:border-color .15s}
+.internal-links a:hover{border-color:var(--accent)}
+
+/* ── Responsive ── */
+@media(max-width:768px){
+  .ge-hero h1{font-size:1.4rem}
+  .ge-hero-stats{flex-direction:row;flex-wrap:wrap}
+  .ge-about-layout{flex-direction:column}
+  .ge-specs{width:100%}
+  .ge-player-nums{flex-wrap:wrap}
+  .ge-pn{min-width:calc(50% - .5rem)}
+  .ge-player-gear{flex-direction:column}
+  .ge-team-name{min-width:100px}
+}
+@media(max-width:480px){
+  .ge-hero-stats{flex-direction:column}
+  .ge-hero-ident{flex-direction:column;align-items:flex-start}
+}
+</style>
+
+<script is:inline>
+(function(){
+  // ── Copy buttons (crosshair codes on cards) ──
+  document.querySelectorAll('.ge-copy-btn').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      navigator.clipboard.writeText(btn.dataset.code).then(function(){
+        btn.textContent = 'Copied!';
+        btn.classList.add('copied');
+        setTimeout(function(){ btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 1500);
+      });
+    });
+  });
+
+  // ── Copy buttons (table crosshair codes) ──
+  document.querySelectorAll('.ge-copy-sm').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      navigator.clipboard.writeText(btn.dataset.code).then(function(){
+        btn.textContent = 'Copied!';
+        btn.classList.add('copied');
+        setTimeout(function(){ btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 1500);
+      });
+    });
+  });
+
+  // ── Load More pagination ──
+  var loadMoreBtn = document.getElementById('loadMoreBtn');
+  var loadMoreWrap = document.getElementById('loadMoreWrap');
+  var loadMoreCount = document.getElementById('loadMoreCount');
+  var BATCH = 24;
+
+  function updateLoadMore() {
+    if (!loadMoreWrap) return;
+    var paginated = document.querySelectorAll('#grPlayerGrid .ge-player-row.ge-player-paged:not(.ge-player-shown)');
+    if (paginated.length === 0) {
+      loadMoreWrap.style.display = 'none';
+    } else {
+      loadMoreWrap.style.display = 'block';
+      if (loadMoreCount) loadMoreCount.textContent = '(' + paginated.length + ' remaining)';
+    }
+  }
+
+  if (loadMoreBtn) {
+    loadMoreBtn.addEventListener('click', function(){
+      var hidden = document.querySelectorAll('#grPlayerGrid .ge-player-row.ge-player-paged:not(.ge-player-shown)');
+      var count = 0;
+      hidden.forEach(function(c){
+        if (count < BATCH) {
+          c.classList.add('ge-player-shown');
+          c.style.display = '';
+          count++;
+        }
+      });
+      updateLoadMore();
+    });
+  }
+
+  updateLoadMore();
+
+  // ── Teams toggle ──
+  var teamsToggle = document.getElementById('grTeamsToggle');
+  if (teamsToggle) {
+    teamsToggle.addEventListener('click', function(){
+      document.querySelectorAll('.ge-team-hidden').forEach(function(c){
+        c.classList.add('ge-team-shown');
+      });
+      teamsToggle.style.display = 'none';
+    });
+  }
+})();
+</script>

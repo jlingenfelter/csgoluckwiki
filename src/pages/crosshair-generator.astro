@@ -3,7 +3,7 @@ import Base from '../layouts/Base.astro';
 import ExploreMore from '../components/ExploreMore.astro';
 import { faqSchema, breadcrumbSchema } from '../lib/weapons';
 
-const title = 'CS2 Crosshair Generator — Build & Preview Custom Crosshairs | CSDB.gg';
+const title = 'CS2 Crosshair Generator — Build & Preview Custom Crosshairs | CSGOLuck Wiki';
 const description = 'Create your perfect CS2 crosshair with our visual generator. Real-time preview, pro player presets, and instant console commands. Export your crosshair code with one click.';
 
 const breadcrumbs = [
@@ -41,14 +41,14 @@ const toolSchema = JSON.stringify({
   "applicationCategory": "UtilityApplication",
   "operatingSystem": "Web",
   "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
-  "author": { "@type": "Organization", "name": "CSDB.gg", "url": "https://csdb.gg" }
+  "author": { "@type": "Organization", "name": "CSGOLuck Wiki", "url": "https://wiki.csgoluck.com" }
 });
 
 const howToSchema = JSON.stringify({
   "@context": "https://schema.org",
   "@type": "HowTo",
   "name": "How to Create a Custom CS2 Crosshair",
-  "description": "Use the CSDB.gg Crosshair Generator to design, preview, and export a custom crosshair for Counter-Strike 2.",
+  "description": "Use the CSGOLuck Wiki Crosshair Generator to design, preview, and export a custom crosshair for Counter-Strike 2.",
   "step": [
     { "@type": "HowToStep", "name": "Choose a crosshair style", "text": "Select a crosshair style from the dropdown. Style 4 (Static Classic) and Style 5 (Static 1.6) are recommended for competitive play as they remain fixed during movement and shooting." },
     { "@type": "HowToStep", "name": "Adjust size, gap, and thickness", "text": "Use the sliders to set crosshair size (arm length), gap (distance from center), and thickness (arm width). Most pros use Size 1-2, Gap -2 to -3, and Thickness 0-0.5." },
@@ -59,92 +59,187 @@ const howToSchema = JSON.stringify({
 });
 ---
 
-<Base title={title} description={description} currentNav="/tools/">
+<Base title={title} description={description} currentNav="/cs2-tools/">
   <script type="application/ld+json" set:html={toolSchema}></script>
   <script type="application/ld+json" set:html={howToSchema}></script>
   <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema(breadcrumbs))}></script>
   <script type="application/ld+json" set:html={JSON.stringify(faqSchema(faqs))}></script>
 
-  <nav class="breadcrumb">
-    <a href="/">Home</a> / <a href="/crosshair-generator/">Tools</a> / <span>Crosshair Generator</span>
-  </nav>
+  <nav class="breadcrumb"><a href="/">Home</a> <span>/</span> <a href="/cs2-tools/">Tools</a> <span>/</span> <span>Crosshair Generator</span></nav>
 
-  <h1>CS2 Crosshair Generator</h1>
-  <p>Design your ideal crosshair with real-time visual preview. Adjust every parameter, load pro player presets, and copy the console commands instantly.</p>
+  <div class="cxg-hero">
+    <h1 class="cxg-title">CS2 Crosshair Generator</h1>
+    <p class="cxg-desc">Design your ideal crosshair with real-time visual preview. Adjust every parameter, load <a href="/pro-players/" style="color:var(--accent)">pro player</a> presets, and copy the <a href="/cs2-commands/" style="color:var(--accent)">console commands</a> instantly.</p>
+  </div>
 
-  <div class="calc-section">
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:2rem;align-items:start">
-      <div>
-        <h2 style="margin-top:0">Settings</h2>
-        <div class="calc-row"><label for="chStyle">Style</label><select id="chStyle"><option value="4">4 — Static (Classic)</option><option value="5">5 — Static (1.6 Style)</option><option value="2">2 — Classic Dynamic</option><option value="3">3 — Classic Static Dot</option></select></div>
-        <div class="calc-row"><label for="chSize">Size</label><input type="range" id="chSize" min="0" max="10" step="0.5" value="2"><span id="chSizeVal">2</span></div>
-        <div class="calc-row"><label for="chGap">Gap</label><input type="range" id="chGap" min="-5" max="5" step="0.5" value="-2"><span id="chGapVal">-2</span></div>
-        <div class="calc-row"><label for="chThick">Thickness</label><input type="range" id="chThick" min="0" max="6" step="0.5" value="0"><span id="chThickVal">0</span></div>
-        <div class="calc-row"><label for="chColor">Color</label><select id="chColor"><option value="0">Red</option><option value="1" selected>Green</option><option value="2">Yellow</option><option value="3">Blue</option><option value="4">Cyan</option></select></div>
-        <div class="calc-row"><label for="chDot">Center Dot</label><input type="checkbox" id="chDot"></div>
-        <div class="calc-row"><label for="chOutline">Outline</label><input type="range" id="chOutline" min="0" max="3" step="0.5" value="0"><span id="chOutlineVal">0</span></div>
-        <div class="calc-row"><label for="chAlpha">Alpha</label><input type="range" id="chAlpha" min="0" max="255" step="5" value="255"><span id="chAlphaVal">255</span></div>
+  <div class="cxg-panel">
+    <div class="cxg-layout">
+      <div class="cxg-settings">
+        <h2 class="cxg-section-title">Settings</h2>
+        <div class="cxg-field">
+          <label class="cxg-label" for="chStyle">Style</label>
+          <select id="chStyle" class="cxg-select">
+            <option value="4">4 — Static (Classic)</option>
+            <option value="5">5 — Static (1.6 Style)</option>
+            <option value="2">2 — Classic Dynamic</option>
+            <option value="3">3 — Classic Static Dot</option>
+          </select>
+        </div>
+        <div class="cxg-field">
+          <label class="cxg-label" for="chSize">Size <span class="cxg-range-val" id="chSizeVal">2</span></label>
+          <input type="range" id="chSize" min="0" max="10" step="0.5" value="2" class="cxg-slider">
+        </div>
+        <div class="cxg-field">
+          <label class="cxg-label" for="chGap">Gap <span class="cxg-range-val" id="chGapVal">-2</span></label>
+          <input type="range" id="chGap" min="-5" max="5" step="0.5" value="-2" class="cxg-slider">
+        </div>
+        <div class="cxg-field">
+          <label class="cxg-label" for="chThick">Thickness <span class="cxg-range-val" id="chThickVal">0</span></label>
+          <input type="range" id="chThick" min="0" max="6" step="0.5" value="0" class="cxg-slider">
+        </div>
+        <div class="cxg-field">
+          <label class="cxg-label" for="chColor">Color</label>
+          <select id="chColor" class="cxg-select">
+            <option value="0">Red</option>
+            <option value="1" selected>Green</option>
+            <option value="2">Yellow</option>
+            <option value="3">Blue</option>
+            <option value="4">Cyan</option>
+          </select>
+        </div>
+        <div class="cxg-field cxg-field-row">
+          <label class="cxg-label" for="chDot">Center Dot</label>
+          <input type="checkbox" id="chDot" class="cxg-checkbox">
+        </div>
+        <div class="cxg-field">
+          <label class="cxg-label" for="chOutline">Outline <span class="cxg-range-val" id="chOutlineVal">0</span></label>
+          <input type="range" id="chOutline" min="0" max="3" step="0.5" value="0" class="cxg-slider">
+        </div>
+        <div class="cxg-field">
+          <label class="cxg-label" for="chAlpha">Alpha <span class="cxg-range-val" id="chAlphaVal">255</span></label>
+          <input type="range" id="chAlpha" min="0" max="255" step="5" value="255" class="cxg-slider">
+        </div>
 
-        <h3>Pro Player Presets</h3>
-        <div style="display:flex;gap:.5rem;flex-wrap:wrap" id="presetBtns">
+        <h3 class="cxg-preset-title">Pro Player Presets</h3>
+        <div class="cxg-preset-btns" id="presetBtns">
           {proPresets.map(p => (
-            <button class="filter-btn" data-preset={JSON.stringify(p)}>{p.name}</button>
+            <button class="cxg-preset-btn" data-preset={JSON.stringify(p)}>{p.name}</button>
           ))}
         </div>
       </div>
 
-      <div>
-        <h2 style="margin-top:0">Preview</h2>
-        <div id="chPreview" style="width:100%;aspect-ratio:16/9;background:#333;border-radius:8px;position:relative;overflow:hidden;border:1px solid var(--border)">
+      <div class="cxg-preview-col">
+        <h2 class="cxg-section-title">Preview</h2>
+        <div class="cxg-preview-box" id="chPreview">
           <div id="crosshair" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%)"></div>
         </div>
-        <div class="result-box" style="margin-top:1rem">
-          <p style="margin:0 0 .5rem;font-weight:700;color:var(--text)">Console Commands</p>
-          <code id="chCommands" style="display:block;background:var(--bg);padding:.75rem;border-radius:6px;font-size:.82rem;color:var(--accent);word-break:break-all;line-height:1.6"></code>
-          <button id="copyBtn" style="margin-top:.75rem;padding:.5rem 1rem;background:var(--accent);color:#000;border:none;border-radius:6px;cursor:pointer;font-weight:700;font-size:.85rem">Copy Commands</button>
+        <div class="cxg-commands-box">
+          <span class="cxg-commands-label">Console Commands</span>
+          <code class="cxg-commands-code" id="chCommands"></code>
+          <button class="cxg-copy-btn" id="copyBtn">Copy Commands</button>
         </div>
       </div>
     </div>
   </div>
 
-  <h2>Understanding Crosshair Parameters</h2>
-  <p>
-    Every CS2 crosshair is defined by a handful of console variables. The <strong>style</strong> (cl_crosshairstyle) determines whether your crosshair expands during movement and shooting — Style 4 and 5 are static, meaning they stay the same size regardless of what you're doing. This is why the vast majority of competitive players choose one of these two styles.
-  </p>
-  <p>
-    <strong>Size</strong> (cl_crosshairsize) controls the length of the four crosshair arms, while <strong>gap</strong> (cl_crosshairgap) sets the distance between the centre point and where the arms begin. Negative gap values create a tight, compact crosshair popular in professional play. The <strong>thickness</strong> (cl_crosshairthickness) adjusts the width of each arm — most pros use 0 or 0.5 for the thinnest possible lines.
-  </p>
-  <p>
-    <strong>Color</strong> and <strong>alpha</strong> affect visibility. Green (Color 1) dominates professional play because it offers strong contrast against the brown, grey, and dark tones of most competitive maps. Alpha controls transparency — 255 is fully opaque, while lower values let you see through the crosshair.
-  </p>
+  <div class="cxg-two-col">
+    <div class="cxg-info-block">
+      <h2 class="cxg-section-title">Understanding Crosshair Parameters</h2>
+      <ul class="cxg-info-list">
+        <li><strong>Style:</strong> Determines whether your crosshair expands during movement/shooting. Styles 4 and 5 are static and preferred by competitive players.</li>
+        <li><strong>Size:</strong> Controls the length of the four crosshair arms.</li>
+        <li><strong>Gap:</strong> Sets the distance between the centre point and where arms begin. Negative values create a tighter crosshair.</li>
+        <li><strong>Thickness:</strong> Adjusts the width of each arm. Most pros use 0 or 0.5.</li>
+        <li><strong>Color & Alpha:</strong> Green (Color 1) dominates professional play. Alpha controls transparency (255 = fully opaque).</li>
+      </ul>
+    </div>
 
-  <div class="internal-links">
-    <strong>Related Tools & Guides:</strong>
-    <a href="/guides/crosshair-guide/">Crosshair Guide</a>
-    <a href="/sensitivity-converter/">Sensitivity Converter</a>
-    <a href="/edpi-calculator/">eDPI Calculator</a>
-    <a href="/autoexec-generator/">Autoexec Generator</a>
-    <a href="/launch-options/">Launch Options</a>
+    <div class="cxg-info-block">
+      <h2 class="cxg-section-title">Related Tools & Guides</h2>
+      <div class="cxg-link-list">
+        <a href="/cs2-guides/crosshair-guide/" class="cxg-link">Crosshair Guide</a>
+        <a href="/sensitivity-converter/" class="cxg-link">Sensitivity Converter</a>
+        <a href="/edpi-calculator/" class="cxg-link">eDPI Calculator</a>
+        <a href="/autoexec-generator/" class="cxg-link">Autoexec Generator</a>
+        <a href="/launch-options/" class="cxg-link">Launch Options</a>
+        <a href="/crosshair-codes/" class="cxg-link">Crosshair Codes</a>
+        <a href="/cs2-tools/" class="cxg-link">All Tools</a>
+        <a href="/pro-players/" class="cxg-link">Pro Player Settings</a>
+        <a href="/cs2-commands/" class="cxg-link">Console Commands</a>
+        <a href="/cs2-guides/config-guide/" class="cxg-link">Config & Settings Guide</a>
+      </div>
+    </div>
   </div>
 
-  <h2>Frequently Asked Questions</h2>
-  <dl class="faq">
+  <section class="cxg-faq">
+    <h2 class="cxg-section-title">Frequently Asked Questions</h2>
     {faqs.map(f => (
-      <Fragment>
-        <dt>{f.question}</dt>
-        <dd>{f.answer}</dd>
-      </Fragment>
+      <details class="cxg-faq-item">
+        <summary class="cxg-faq-q">{f.question}</summary>
+        <p class="cxg-faq-a">{f.answer}</p>
+      </details>
     ))}
-  </dl>
+  </section>
 
   <ExploreMore context="tools" />
 </Base>
 
 <style>
+  .cxg-hero{padding:1.5rem 0;margin-bottom:1.5rem}
+  .cxg-title{font-size:2rem;font-weight:800;margin:0 0 .5rem;color:var(--text)}
+  .cxg-desc{color:var(--text2);font-size:.95rem;margin:0;max-width:600px;line-height:1.6}
+
+  .cxg-panel{background:var(--bg2);border:1px solid var(--border);border-radius:4px;padding:1.5rem;margin-bottom:2rem}
+  .cxg-layout{display:grid;grid-template-columns:1fr 1fr;gap:2rem;align-items:start}
+  .cxg-settings{display:flex;flex-direction:column;gap:.75rem}
+  .cxg-section-title{font-size:1.1rem;font-weight:700;color:var(--text);margin:0 0 .5rem}
+
+  .cxg-field{display:flex;flex-direction:column;gap:.3rem}
+  .cxg-field-row{flex-direction:row;align-items:center;gap:.75rem}
+  .cxg-label{font-weight:600;color:var(--text2);font-size:.82rem;text-transform:uppercase;letter-spacing:.04em}
+  .cxg-range-val{color:var(--accent);font-weight:700}
+
+  .cxg-select,.cxg-slider{padding:.5rem;background:var(--bg3);border:1px solid var(--border);border-radius:4px;color:var(--text);font-size:.9rem;font-family:inherit}
+  .cxg-select:focus,.cxg-slider:focus{outline:none;border-color:var(--accent)}
+  .cxg-checkbox{width:18px;height:18px;accent-color:var(--accent)}
+
+  .cxg-preset-title{font-size:.95rem;font-weight:700;color:var(--text);margin:.75rem 0 .4rem}
+  .cxg-preset-btns{display:flex;gap:.4rem;flex-wrap:wrap}
+  .cxg-preset-btn{padding:.45rem .85rem;background:var(--bg3);border:1px solid var(--border);border-radius:4px;color:var(--text2);cursor:pointer;font-weight:500;font-size:.82rem;font-family:inherit;transition:all .15s}
+  .cxg-preset-btn:hover{border-color:var(--accent);color:var(--text)}
+
+  .cxg-preview-col{display:flex;flex-direction:column;gap:.75rem}
+  .cxg-preview-box{width:100%;aspect-ratio:16/9;background:#333;border-radius:4px;position:relative;overflow:hidden;border:1px solid var(--border)}
+
+  .cxg-commands-box{background:var(--bg);border:1px solid var(--border);border-radius:4px;padding:1rem;display:flex;flex-direction:column;gap:.5rem}
+  .cxg-commands-label{font-weight:700;color:var(--text);font-size:.85rem}
+  .cxg-commands-code{display:block;background:var(--bg3);padding:.6rem;border-radius:4px;font-size:.78rem;color:var(--accent);word-break:break-all;line-height:1.6;font-family:'Courier New',monospace}
+  .cxg-copy-btn{padding:.5rem 1rem;background:var(--accent);color:#000;border:none;border-radius:4px;cursor:pointer;font-weight:700;font-size:.85rem;font-family:inherit;transition:opacity .15s}
+  .cxg-copy-btn:hover{opacity:.9}
+
+  .cxg-two-col{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-bottom:2rem}
+  .cxg-info-block{background:var(--bg2);border:1px solid var(--border);border-radius:4px;padding:1.5rem}
+  .cxg-info-list{list-style:none;padding:0;margin:0}
+  .cxg-info-list li{padding:.6rem 0;border-bottom:1px solid var(--border);color:var(--text2);font-size:.88rem;line-height:1.5}
+  .cxg-info-list li:last-child{border-bottom:none}
+  .cxg-info-list strong{color:var(--text)}
+
+  .cxg-link-list{display:flex;flex-direction:column;gap:.4rem}
+  .cxg-link{display:block;padding:.5rem .75rem;background:var(--bg3);border:1px solid var(--border);border-left:3px solid transparent;border-radius:4px;color:var(--accent);text-decoration:none;font-size:.85rem;transition:border-left-color .15s}
+  .cxg-link:hover{border-left-color:var(--accent)}
+
+  .cxg-faq{margin-bottom:2rem}
+  .cxg-faq-item{background:var(--bg2);border:1px solid var(--border);border-radius:4px;margin-bottom:.5rem;overflow:hidden}
+  .cxg-faq-q{padding:.8rem 1rem;cursor:pointer;font-weight:600;font-size:.9rem;color:var(--text);list-style:none;display:flex;align-items:center;justify-content:space-between}
+  .cxg-faq-q::-webkit-details-marker{display:none}
+  .cxg-faq-q::after{content:'+';font-size:1.1rem;color:var(--accent);font-weight:700}
+  .cxg-faq-item[open] .cxg-faq-q::after{content:'-'}
+  .cxg-faq-item[open]{border-left:3px solid var(--accent)}
+  .cxg-faq-a{padding:0 1rem .8rem;margin:0;font-size:.88rem;color:var(--text2);line-height:1.6}
+
   @media(max-width:768px){
-    .calc-section [style*="grid-template-columns:1fr 1fr"]{
-      grid-template-columns:1fr!important;
-    }
+    .cxg-layout{grid-template-columns:1fr}
+    .cxg-two-col{grid-template-columns:1fr}
   }
 </style>
 

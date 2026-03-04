@@ -1,0 +1,221 @@
+---
+import Base from '../../layouts/Base.astro';
+import AuthorBox from '../../components/AuthorBox.astro';
+import { faqSchema, breadcrumbSchema } from '../../lib/weapons';
+
+const title = 'CS2 Skin Trading Guide — Trade Securely & Grow Your Inventory | CSGOLuck Wiki';
+const description = 'Everything you need for successful CS2 skin trading. Compare top marketplaces, spot and avoid scams, price items accurately, and steadily increase your inventory worth.';
+
+const breadcrumbs = [
+  { name: 'Home', url: '/' },
+  { name: 'Guides', url: '/cs2-guides' },
+  { name: 'Trading Guide', url: '/cs2-guides/trading-guide' },
+];
+
+const articleSchema = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": title,
+  "description": description,
+  "author": { "@type": "Person", "name": "Josh Lingenfelter", "url": "https://www.linkedin.com/in/josh-lingenfelter-8157274b/", "jobTitle": "Director", "worksFor": { "@type": "Organization", "name": "CSGOLuck" } },
+  "publisher": { "@type": "Organization", "name": "CSGOLuck Wiki", "url": "https://wiki.csgoluck.com" },
+  "mainEntityOfPage": `https://wiki.csgoluck.com/cs2-guides/trading-guide/`,
+  "inLanguage": "en-US"
+});
+
+const faqs = [
+  { question: 'What is the safest way to trade CS2 skins?', answer: 'Use established marketplaces like Buff163, Skinport, or the Steam Community Market. Always verify trade offers match what was agreed upon. Never trade outside of official platforms or click suspicious links.' },
+  { question: 'Which CS2 marketplace has the lowest fees?', answer: 'Buff163 has the lowest fees at 2.5%. Skinport charges 5-12%, DMarket 3-7%, and the Steam Community Market takes 15%. Lower fees mean more profit when selling and better prices when buying.' },
+  { question: 'How do I avoid CS2 trading scams?', answer: 'Never click links in Steam chat or trade messages. Always verify the other person profile. Use official marketplace escrow systems. Check that trade offers contain the correct items. Enable Steam Guard Mobile Authenticator for trade confirmations.' },
+  { question: 'What CS2 skins hold their value best?', answer: 'Knife skins, glove skins, and Covert-tier rifle skins from popular collections tend to hold value best. Limited-edition items from operations and discontinued drops appreciate over time. High-demand skins like AK-47 Fire Serpent and AWP Dragon Lore are considered blue-chip investments.' },
+  { question: 'How do I price my CS2 skins?', answer: 'Check prices across multiple marketplaces (Buff163, Skinport, Steam Market) and use the lowest price as your baseline. Factor in float value, sticker quality, and special patterns. Price slightly below the lowest listing for quick sales.' },
+];
+
+const sections = [
+  { id: 'marketplace', label: 'Choosing a Marketplace' },
+  { id: 'fees', label: 'Fee Comparison' },
+  { id: 'pricing', label: 'Skin Pricing' },
+  { id: 'scams', label: 'Scam Prevention' },
+  { id: 'strategy', label: 'Trading Strategy' },
+  { id: 'faq', label: 'FAQ' },
+  { id: 'resources', label: 'Resources' },
+];
+---
+
+<Base title={title} description={description} currentNav="/cs2-guides/">
+  <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema(breadcrumbs))}></script>
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema(faqs))}></script>
+  <script type="application/ld+json" set:html={articleSchema}></script>
+
+  <div class="tg-wrap">
+    <nav class="tg-breadcrumb">
+      <a href="/">Home</a>
+      <span class="tg-sep">/</span>
+      <a href="/cs2-guides">Guides</a>
+      <span class="tg-sep">/</span>
+      <span>Trading Guide</span>
+    </nav>
+
+    <header class="tg-header">
+      <h1>CS2 Skin Trading Guide</h1>
+      <p class="tg-subtitle">Navigate marketplaces, dodge scams, and maximise the value of every trade</p>
+    </header>
+
+    <nav class="tg-toc-mobile" aria-label="Table of contents">
+      {sections.map((s) => (
+        <a href={`#${s.id}`} class="tg-toc-mobile-link">{s.label}</a>
+      ))}
+    </nav>
+
+    <div class="tg-layout">
+      <aside class="tg-sidebar">
+        <nav class="tg-toc" aria-label="Table of contents">
+          <span class="tg-toc-title">Contents</span>
+          {sections.map((s) => (
+            <a href={`#${s.id}`} class="tg-toc-link">{s.label}</a>
+          ))}
+        </nav>
+      </aside>
+
+      <article class="tg-content">
+        <p class="tg-intro">
+          The CS2 trading scene spans Steam, Buff163, Skinport, DMarket, and dozens of smaller platforms -- each with its own fee structure, audience, and risk profile. This guide walks you through picking the right venue, spotting common scam patterns, and squeezing more value out of every transaction.
+        </p>
+
+        <section id="marketplace">
+          <div class="tg-section-header"><h2>Choosing a Marketplace</h2></div>
+          <p>The marketplace you trade on directly impacts your bottom line. The Steam Community Market is the most convenient option -- it integrates directly with your Steam inventory -- but its 15% combined fee (13% Steam tax + 2% CS2 tax) makes it the most expensive platform for sellers. For serious traders, third-party marketplaces offer significantly lower fees.</p>
+          <p><strong>Buff163</strong> dominates the international market with a 2.5% seller fee, making it the most cost-effective platform. The tradeoff is that it primarily serves the Chinese market, so listings are in CNY and require a Chinese payment method for deposits (though third-party balance services exist). <strong>Skinport</strong> and <strong>SkinBaron</strong> are the leading European alternatives with fees ranging from 5-12%, and they accept standard payment methods.</p>
+          <p><strong>DMarket</strong> and <strong>CS.Money</strong> offer bot-based instant trading where you deposit skins and receive credit to buy others. These are convenient for quick swaps but typically have wider spreads (the difference between buy and sell prices). <strong>Tradeit.gg</strong> operates similarly with a focus on instant trades.</p>
+        </section>
+
+        <section id="fees">
+          <div class="tg-section-header"><h2>Marketplace Fee Comparison</h2></div>
+          <table class="tg-table">
+            <thead><tr><th>Marketplace</th><th>Seller Fee</th><th>Payment Methods</th><th>Best For</th></tr></thead>
+            <tbody>
+              <tr><td>Buff163</td><td style="color:#4caf50;font-weight:700">2.5%</td><td>Alipay, WeChat, Bank Transfer</td><td>Lowest fees, highest volume</td></tr>
+              <tr><td>Skinport</td><td style="color:#d4956e;font-weight:700">5-12%</td><td>Cards, PayPal, Bank Transfer</td><td>European buyers/sellers</td></tr>
+              <tr><td>SkinBaron</td><td style="color:#d4956e;font-weight:700">5-15%</td><td>Cards, PayPal, Sofort</td><td>German/EU market</td></tr>
+              <tr><td>DMarket</td><td style="color:#d4956e;font-weight:700">3-7%</td><td>Cards, Crypto, Balance</td><td>Instant trades</td></tr>
+              <tr><td>Steam Market</td><td style="color:#ef5350;font-weight:700">15%</td><td>Steam Wallet</td><td>Convenience</td></tr>
+            </tbody>
+          </table>
+        </section>
+
+        <section id="pricing">
+          <div class="tg-section-header"><h2>Understanding Skin Pricing</h2></div>
+          <p>Skin prices are driven by supply, demand, rarity, and condition. A skin listed at $50 on one marketplace might sell for $45 on another -- these price discrepancies create arbitrage opportunities for attentive traders. Always cross-reference prices across at least three platforms before buying or selling. Browse listings by weapon in the <a href="/cs2-skins/">skin database</a>.</p>
+          <p><strong><a href="/cs2-guides/float-guide/">Float value</a></strong> has a major impact on price within the same wear tier. A Factory New AK-47 Redline with a 0.01 float commands a significant premium over one at 0.06 float, even though both are technically the same condition. Skins with float values near the boundary of a higher tier (e.g., 0.0699 FN vs 0.0701 MW) can have a dramatic price difference.</p>
+          <p><strong>Special patterns</strong> -- like the <a href="/cs2-guides/case-hardened-guide/">Case Hardened blue gem</a> pattern (#661) -- can multiply a skin's value by 10-100x over the standard price. Learn the pattern IDs for popular skins to spot underpriced listings. Similarly, <strong><a href="/cs2-stickers/">sticker</a> combinations</strong> add value, particularly Katowice 2014 holos, which can add thousands of dollars to a skin. Always verify a skin's exact wear with the <a href="/float-checker/">float checker</a> before committing to a purchase.</p>
+        </section>
+
+        <section id="scams">
+          <div class="tg-section-header"><h2>Scam Prevention</h2></div>
+          <p>The CS2 trading scene has sophisticated scams targeting both new and experienced traders. The most common include: fake marketplace websites with domains that look like real sites (skinnport.com instead of skinport.com), Steam impersonation where scammers copy a trusted trader profile, and "middleman" scams where someone offers to hold items during a trade.</p>
+          <p>Protect yourself by enabling Steam Guard Mobile Authenticator, never clicking links sent in trade chat, always navigating to marketplaces by typing the URL directly, and checking trade offer details carefully before confirming. If a deal seems too good to be true, it invariably is.</p>
+        </section>
+
+        <section id="strategy">
+          <div class="tg-section-header"><h2>Building a Trading Strategy</h2></div>
+          <p>Successful skin trading requires patience and market knowledge. Start small with $10-50 in skins from <a href="/cs2-cases/">cases</a> or marketplace purchases and practice buying underpriced items on one marketplace and selling them higher on another. Track your profits in a spreadsheet and aim for 5-10% margins after fees on each trade.</p>
+          <p>Look for market events that create price swings: major tournament sticker sales (prices drop during sales, recover after), operation releases (new skin drops crash existing prices temporarily), and game updates that change weapon meta (AWP price changes when AWP mechanics are updated). For long-term strategies, read the <a href="/cs2-guides/skins-investing-guide/">skins investing guide</a>.</p>
+        </section>
+
+        <section id="faq">
+          <div class="tg-section-header"><h2>Frequently Asked Questions</h2></div>
+          <div class="tg-faq-list">
+            {faqs.map(f => (
+              <details class="tg-faq-item">
+                <summary class="tg-faq-question">{f.question}</summary>
+                <p class="tg-faq-answer">{f.answer}</p>
+              </details>
+            ))}
+          </div>
+        </section>
+
+        <section id="resources">
+          <div class="tg-section-header"><h2>Related Resources</h2></div>
+          <div class="tg-resources-grid">
+            <a href="/cs2-skins/" class="tg-resource-card"><span class="tg-resource-name">Skin Database</span><span class="tg-resource-arrow">&rarr;</span></a>
+            <a href="/skin-compare/" class="tg-resource-card"><span class="tg-resource-name">Compare Skins</span><span class="tg-resource-arrow">&rarr;</span></a>
+            <a href="/price-tracker/" class="tg-resource-card"><span class="tg-resource-name">Price Tracker</span><span class="tg-resource-arrow">&rarr;</span></a>
+            <a href="/market-trends/" class="tg-resource-card"><span class="tg-resource-name">Market Trends</span><span class="tg-resource-arrow">&rarr;</span></a>
+            <a href="/float-checker/" class="tg-resource-card"><span class="tg-resource-name">Float Checker</span><span class="tg-resource-arrow">&rarr;</span></a>
+            <a href="/tradeup-calculator/" class="tg-resource-card"><span class="tg-resource-name">Trade-Up Calculator</span><span class="tg-resource-arrow">&rarr;</span></a>
+            <a href="/case-odds-calculator/" class="tg-resource-card"><span class="tg-resource-name">Case Odds Calculator</span><span class="tg-resource-arrow">&rarr;</span></a>
+            <a href="/case-simulator/" class="tg-resource-card"><span class="tg-resource-name">Case Simulator</span><span class="tg-resource-arrow">&rarr;</span></a>
+            <a href="/cs2-cases/" class="tg-resource-card"><span class="tg-resource-name">Cases & Collections</span><span class="tg-resource-arrow">&rarr;</span></a>
+            <a href="/inventory-lookup/" class="tg-resource-card"><span class="tg-resource-name">Inventory Lookup</span><span class="tg-resource-arrow">&rarr;</span></a>
+            <a href="/loadout-builder/" class="tg-resource-card"><span class="tg-resource-name">Loadout Builder</span><span class="tg-resource-arrow">&rarr;</span></a>
+            <a href="/cs2-guides/float-guide/" class="tg-resource-card"><span class="tg-resource-name">Float Value Guide</span><span class="tg-resource-arrow">&rarr;</span></a>
+            <a href="/cs2-guides/skins-investing-guide/" class="tg-resource-card"><span class="tg-resource-name">Skins Investing Guide</span><span class="tg-resource-arrow">&rarr;</span></a>
+          </div>
+        </section>
+      </article>
+    </div>
+  </div>
+
+  <style>
+    .tg-wrap{max-width:1100px;margin:0 auto;padding:0 1.5rem 2rem}
+    .tg-breadcrumb{display:flex;align-items:center;gap:.5rem;padding:1.25rem 0;font-size:.85rem;color:var(--text2)}
+    .tg-breadcrumb a{color:var(--accent);text-decoration:none}
+    .tg-breadcrumb a:hover{color:var(--accent2)}
+    .tg-sep{color:var(--border)}
+    .tg-header{padding:1.5rem 0 1.25rem;border-bottom:2px solid var(--accent);margin-bottom:1.5rem}
+    .tg-header h1{margin:0 0 .35rem;font-size:2.2rem;font-weight:800;color:var(--text);letter-spacing:-.02em;line-height:1.2}
+    .tg-subtitle{margin:0;font-size:1.05rem;color:var(--text2);font-weight:400}
+    .tg-toc-mobile{display:none}
+    .tg-layout{display:grid;grid-template-columns:220px 1fr;gap:2.5rem;align-items:start}
+    .tg-sidebar{position:sticky;top:80px}
+    .tg-toc{display:flex;flex-direction:column;gap:0;border-left:2px solid var(--border);padding-left:0}
+    .tg-toc-title{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--accent);padding:0 0 .6rem 1rem}
+    .tg-toc-link{display:block;padding:.4rem 1rem;font-size:.82rem;color:var(--text2);text-decoration:none;border-left:2px solid transparent;margin-left:-2px;transition:color .2s,border-color .2s}
+    .tg-toc-link:hover{color:var(--text);border-left-color:var(--accent)}
+    .tg-content{min-width:0}
+    .tg-intro{font-size:1rem;line-height:1.8;color:var(--text2);margin-bottom:2rem}
+    .tg-section-header{background:rgba(46,204,113,.05);margin:0 -1.25rem 1.25rem;padding:.75rem 1.25rem;border-radius:4px}
+    .tg-section-header h2{margin:0;padding:0;font-size:1.5rem;font-weight:700;color:var(--text);border:none;letter-spacing:-.01em}
+    section{margin-bottom:2.5rem}
+    p{line-height:1.7;color:var(--text2);margin-bottom:1rem}
+    .tg-table{width:100%;border-collapse:collapse;margin:1rem 0;font-size:.85rem}
+    .tg-table th,.tg-table td{padding:.6rem .8rem;border:1px solid var(--border);text-align:left}
+    .tg-table th{background:var(--bg3);color:var(--text);font-weight:600;font-size:.8rem}
+    .tg-table td{color:var(--text2)}
+    .tg-faq-list{display:flex;flex-direction:column;gap:.5rem}
+    .tg-faq-item{background:var(--bg2);border:1px solid var(--border);border-radius:4px;overflow:hidden}
+    .tg-faq-question{display:block;padding:1rem 1.25rem;font-size:.95rem;font-weight:600;color:var(--text);cursor:pointer;list-style:none;position:relative;padding-right:2.5rem;transition:background .2s}
+    .tg-faq-question::-webkit-details-marker{display:none}
+    .tg-faq-question::after{content:'+';position:absolute;right:1.25rem;top:50%;transform:translateY(-50%);font-size:1.2rem;color:var(--accent);font-weight:700}
+    .tg-faq-item[open] .tg-faq-question::after{content:'\2212'}
+    .tg-faq-item[open] .tg-faq-question{border-bottom:1px solid var(--border);background:rgba(46,204,113,.03)}
+    .tg-faq-question:hover{background:rgba(46,204,113,.03)}
+    .tg-faq-answer{padding:1rem 1.25rem;margin:0;font-size:.9rem;color:var(--text2);line-height:1.7}
+    .tg-resources-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.6rem;margin:.5rem 0 1.5rem}
+    .tg-resource-card{display:flex;align-items:center;justify-content:space-between;padding:.75rem 1rem;background:var(--bg2);border:1px solid var(--border);border-radius:4px;text-decoration:none;border-left:2px solid transparent;transition:border-left-color .2s,color .2s}
+    .tg-resource-card:hover{border-left-color:var(--accent)}
+    .tg-resource-name{font-size:.88rem;color:var(--text2);font-weight:500;transition:color .2s}
+    .tg-resource-card:hover .tg-resource-name{color:var(--text)}
+    .tg-resource-arrow{font-size:1rem;color:var(--accent);opacity:0;transition:opacity .2s}
+    .tg-resource-card:hover .tg-resource-arrow{opacity:1}
+    @media(max-width:860px){
+      .tg-layout{grid-template-columns:1fr;gap:0}
+      .tg-sidebar{display:none}
+      .tg-toc-mobile{display:flex;gap:.25rem;overflow-x:auto;padding:.75rem 0;margin-bottom:1rem;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+      .tg-toc-mobile::-webkit-scrollbar{display:none}
+      .tg-toc-mobile-link{flex-shrink:0;padding:.35rem .75rem;font-size:.78rem;font-weight:600;color:var(--text2);background:var(--bg2);border:1px solid var(--border);border-radius:4px;text-decoration:none;white-space:nowrap;transition:color .2s,border-color .2s}
+      .tg-toc-mobile-link:hover{color:var(--accent);border-color:var(--accent)}
+      .tg-header h1{font-size:1.7rem}
+      .tg-section-header{margin:0 -1rem 1rem;padding:.6rem 1rem}
+      .tg-resources-grid{grid-template-columns:repeat(2,1fr)}
+      .tg-table{font-size:.78rem}
+      .tg-table th,.tg-table td{padding:.4rem .5rem}
+    }
+    @media(max-width:600px){
+      .tg-wrap{padding:0 1rem 1.5rem}
+      .tg-resources-grid{grid-template-columns:1fr}
+      .tg-header h1{font-size:1.5rem}
+    }
+  </style>
+  <AuthorBox updated="2026-03-02" />
+</Base>

@@ -3,7 +3,7 @@ import Base from '../layouts/Base.astro';
 import ExploreMore from '../components/ExploreMore.astro';
 import { faqSchema, breadcrumbSchema } from '../lib/weapons';
 
-const title = 'CS2 Patch Notes & Update History — All Updates | CSDB.gg';
+const title = 'CS2 Patch Notes & Update History — All Updates | CSGOLuck Wiki';
 const description = 'Complete archive of Counter-Strike 2 patch notes, balance updates, and changelog history. Auto-updated from official Steam sources. Filter by weapon, map, anticheat, economy, and more.';
 
 const breadcrumbs = [
@@ -42,117 +42,112 @@ const faqs = [
   </Fragment>
 
 <style is:inline>
-  .pn-hero {
-    background: linear-gradient(135deg, #d4956e 0%, #ab47bc 100%);
-    padding: 60px 20px;
-    text-align: center;
-    margin-bottom: 2rem;
-    border-radius: 12px;
-  }
-  .pn-hero h1 { font-size: 2.5em; color: white; margin: 0 0 8px 0; font-weight: 800 }
-  .pn-hero p { font-size: 1.1em; color: rgba(255,255,255,.9); margin: 0 }
-  .pn-live-badge { display: inline-block; background: rgba(76,175,80,.9); color: white; padding: 4px 12px; border-radius: 20px; font-size: .8rem; font-weight: 600; margin-top: 12px }
-  .pn-live-badge::before { content: ''; display: inline-block; width: 8px; height: 8px; background: #fff; border-radius: 50%; margin-right: 6px; animation: pn-pulse 1.5s infinite }
-  @keyframes pn-pulse { 0%,100% { opacity: 1 } 50% { opacity: .4 } }
+  /* -- Breadcrumb -- */
+  .pn-breadcrumb{font-size:.82rem;color:var(--text2);margin-bottom:1.25rem;display:flex;gap:.35rem;flex-wrap:wrap}
+  .pn-breadcrumb a{color:var(--accent);text-decoration:none}
+  .pn-breadcrumb a:hover{text-decoration:underline}
 
-  .pn-controls { margin-bottom: 2rem }
-  .pn-search {
-    width: 100%; padding: 14px 20px; background: var(--bg2); border: 2px solid var(--border);
-    border-radius: 8px; font-size: 1em; color: var(--text); margin-bottom: 1rem; transition: border-color .3s
-  }
-  .pn-search:focus { outline: none; border-color: var(--accent) }
-  .pn-tags { display: flex; gap: 8px; flex-wrap: wrap }
-  .pn-tag-btn {
-    padding: 6px 14px; background: var(--bg2); border: 1px solid var(--border); color: var(--text2);
-    border-radius: 6px; cursor: pointer; font-size: .85em; transition: all .2s
-  }
-  .pn-tag-btn:hover { border-color: var(--accent); color: var(--text) }
-  .pn-tag-btn.active { background: var(--accent); color: white; border-color: var(--accent) }
+  /* -- Hero (left-aligned, no gradient) -- */
+  .pn-hero{background:var(--bg2);border:1px solid var(--border);border-radius:4px;padding:2rem;margin-bottom:1.5rem}
+  .pn-hero h1{font-family:'Montserrat',sans-serif;font-size:2rem;font-weight:800;margin:0 0 .35rem;color:var(--text)}
+  .pn-hero p{font-size:.95rem;color:var(--text2);margin:0 0 .75rem;line-height:1.6}
+  .pn-live-badge{display:inline-block;background:rgba(46,204,113,.15);color:var(--accent);padding:.2rem .65rem;border-radius:4px;font-size:.78rem;font-weight:700;border:1px solid rgba(46,204,113,.3)}
+  .pn-live-badge::before{content:'';display:inline-block;width:8px;height:8px;background:var(--accent);border-radius:50%;margin-right:6px;animation:pn-pulse 1.5s infinite}
+  @keyframes pn-pulse{0%,100%{opacity:1}50%{opacity:.4}}
 
-  .pn-latest {
-    background: linear-gradient(135deg, #4caf50 0%, #42a5f5 100%);
-    padding: 2rem; border-radius: 12px; margin-bottom: 2rem; color: white
-  }
-  .pn-latest h2 { font-size: 1.2em; margin: 0 0 4px 0; font-weight: 600; opacity: .9 }
-  .pn-latest-title { font-size: 1.8em; font-weight: 800; margin-bottom: .5rem }
-  .pn-latest-date { opacity: .85; font-size: .95em; margin-bottom: 1rem }
-  .pn-latest-changes { list-style: none; padding: 0; margin: 0 }
-  .pn-latest-changes li { padding: 6px 0 6px 20px; position: relative }
-  .pn-latest-changes li::before { content: '▸'; position: absolute; left: 0 }
-  .pn-latest-link { display: inline-block; margin-top: 1rem; color: white; font-weight: 600; text-decoration: underline; opacity: .85 }
-  .pn-latest-link:hover { opacity: 1 }
+  /* -- Controls -- */
+  .pn-controls{margin-bottom:1.5rem}
+  .pn-search{width:100%;padding:.65rem 1rem;background:var(--bg2);border:1px solid var(--border);border-radius:4px;font-size:.9rem;color:var(--text);margin-bottom:.75rem;transition:border-color .15s;font-family:'Montserrat',sans-serif}
+  .pn-search:focus{outline:none;border-color:var(--accent)}
+  .pn-tags{display:flex;gap:.35rem;flex-wrap:wrap}
+  .pn-tag-btn{padding:.3rem .7rem;background:var(--bg2);border:1px solid var(--border);color:var(--text2);border-radius:4px;cursor:pointer;font-size:.82rem;font-weight:600;font-family:'Montserrat',sans-serif;transition:border-color .15s,color .15s}
+  .pn-tag-btn:hover{border-color:var(--accent);color:var(--text)}
+  .pn-tag-btn.active{background:var(--accent);color:#000;border-color:var(--accent)}
 
-  .pn-loading { text-align: center; padding: 3rem; color: var(--text2) }
-  .pn-loading-spinner { display: inline-block; width: 32px; height: 32px; border: 3px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: pn-spin .8s linear infinite; margin-bottom: 1rem }
-  @keyframes pn-spin { to { transform: rotate(360deg) } }
+  /* -- Latest Update -- */
+  .pn-latest{background:var(--bg2);border:1px solid var(--border);border-left:3px solid var(--accent);border-radius:4px;padding:1.5rem;margin-bottom:1.5rem}
+  .pn-latest h2{font-family:'Montserrat',sans-serif;font-size:.88rem;font-weight:600;color:var(--text2);margin:0 0 .25rem;text-transform:uppercase;letter-spacing:.03em}
+  .pn-latest-title{font-family:'Montserrat',sans-serif;font-size:1.3rem;font-weight:800;color:var(--text);margin-bottom:.35rem}
+  .pn-latest-date{color:var(--text2);font-size:.88rem;margin-bottom:.75rem}
+  .pn-latest-changes{list-style:none;padding:0;margin:0}
+  .pn-latest-changes li{padding:.3rem 0 .3rem 1.25rem;position:relative;color:var(--text2);font-size:.88rem}
+  .pn-latest-changes li::before{content:'\25B8';position:absolute;left:0;color:var(--accent)}
+  .pn-latest-link{display:inline-block;margin-top:.75rem;color:var(--accent);font-weight:700;font-size:.85rem;text-decoration:none}
+  .pn-latest-link:hover{text-decoration:underline}
 
-  .pn-grid { display: grid; gap: 1.25rem; margin-bottom: 2rem }
-  .pn-card {
-    background: var(--bg2); border: 1px solid var(--border); border-radius: 8px; padding: 1.5rem; transition: all .2s
-  }
-  .pn-card:hover { border-color: var(--accent); box-shadow: 0 4px 16px rgba(212,149,110,.08) }
-  .pn-card-head { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: .75rem; flex-wrap: wrap; gap: .75rem }
-  .pn-card h3 { font-size: 1.25em; margin: 0 0 4px 0; color: var(--text) }
-  .pn-card-date { color: var(--text2); font-size: .9em }
-  .pn-card-tags { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: .75rem }
-  .pn-tag {
-    display: inline-block; padding: 3px 10px; background: var(--bg3); color: var(--text2);
-    border-radius: 4px; font-size: .8em; border: 1px solid var(--border)
-  }
-  .pn-tag.weapon { border-left: 3px solid #42a5f5 }
-  .pn-tag.map { border-left: 3px solid #ab47bc }
-  .pn-tag.economy { border-left: 3px solid #d4956e }
-  .pn-tag.anticheat { border-left: 3px solid #ef5350 }
-  .pn-tag.cosmetics { border-left: 3px solid #e8b992 }
-  .pn-tag.balance { border-left: 3px solid #ff9800 }
-  .pn-tag.competitive { border-left: 3px solid #ef5350 }
-  .pn-tag.bugfix { border-left: 3px solid #4caf50 }
-  .pn-tag.performance { border-left: 3px solid #42a5f5 }
-  .pn-tag.audio { border-left: 3px solid #ab47bc }
-  .pn-tag.server { border-left: 3px solid #ff9800 }
-  .pn-tag.ui { border-left: 3px solid #42a5f5 }
-  .pn-tag.update { border-left: 3px solid var(--accent) }
+  /* -- Loading -- */
+  .pn-loading{text-align:center;padding:2.5rem;color:var(--text2)}
+  .pn-loading-spinner{display:inline-block;width:28px;height:28px;border:3px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:pn-spin .8s linear infinite;margin-bottom:.75rem}
+  @keyframes pn-spin{to{transform:rotate(360deg)}}
 
-  .pn-card-changes { border-top: 1px solid var(--border); padding-top: .75rem }
-  .pn-card-changes ul { list-style: none; padding: 0; margin: 0 }
-  .pn-card-changes li { padding: 5px 0 5px 20px; position: relative; color: var(--text2); font-size: .92em }
-  .pn-card-changes li::before { content: '▸'; position: absolute; left: 0; color: var(--accent) }
-  .pn-card-link { display: inline-block; margin-top: .75rem; color: var(--accent); text-decoration: none; font-size: .85em }
-  .pn-card-link:hover { text-decoration: underline }
+  /* -- Card Grid -- */
+  .pn-grid{display:flex;flex-direction:column;gap:2px;margin-bottom:2rem}
+  .pn-card{background:var(--bg2);border:1px solid var(--border);border-left:3px solid transparent;border-radius:4px;padding:1.25rem;transition:border-color .15s,background .15s}
+  .pn-card:hover{border-left-color:var(--accent);background:var(--bg3)}
+  .pn-card-head{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:.5rem;flex-wrap:wrap;gap:.5rem}
+  .pn-card h3{font-family:'Montserrat',sans-serif;font-size:1.05rem;font-weight:700;margin:0 0 .15rem;color:var(--text)}
+  .pn-card-date{color:var(--text2);font-size:.82rem}
+  .pn-card-tags{display:flex;gap:.3rem;flex-wrap:wrap;margin-bottom:.5rem}
+  .pn-tag{display:inline-block;padding:.12rem .45rem;background:var(--bg3);color:var(--text2);border-radius:4px;font-size:.72rem;border:1px solid var(--border)}
+  .pn-tag.weapon{border-left:3px solid #42a5f5}
+  .pn-tag.map{border-left:3px solid #ab47bc}
+  .pn-tag.economy{border-left:3px solid var(--accent)}
+  .pn-tag.anticheat{border-left:3px solid #ef5350}
+  .pn-tag.cosmetics{border-left:3px solid #e8b992}
+  .pn-tag.balance{border-left:3px solid #ff9800}
+  .pn-tag.competitive{border-left:3px solid #ef5350}
+  .pn-tag.bugfix{border-left:3px solid #4caf50}
+  .pn-tag.performance{border-left:3px solid #42a5f5}
+  .pn-tag.audio{border-left:3px solid #ab47bc}
+  .pn-tag.server{border-left:3px solid #ff9800}
+  .pn-tag.ui{border-left:3px solid #42a5f5}
+  .pn-tag.update{border-left:3px solid var(--accent)}
 
-  .pn-error { text-align: center; padding: 2rem; background: var(--bg2); border: 1px solid var(--border); border-radius: 8px; color: var(--text2); margin-bottom: 2rem }
-  .pn-error-retry { margin-top: 1rem; padding: 8px 20px; background: var(--accent); color: white; border: none; border-radius: 6px; cursor: pointer; font-size: .9em }
+  .pn-card-changes{border-top:1px solid var(--border);padding-top:.6rem}
+  .pn-card-changes ul{list-style:none;padding:0;margin:0}
+  .pn-card-changes li{padding:.25rem 0 .25rem 1.25rem;position:relative;color:var(--text2);font-size:.85rem}
+  .pn-card-changes li::before{content:'\25B8';position:absolute;left:0;color:var(--accent)}
+  .pn-card-link{display:inline-block;margin-top:.5rem;color:var(--accent);text-decoration:none;font-size:.82rem;font-weight:600}
+  .pn-card-link:hover{text-decoration:underline}
 
-  .pn-faq { margin: 2rem 0 }
-  .pn-faq h2 { font-size: 1.5em; margin-bottom: 1.5rem }
-  .pn-faq-grid { display: grid; gap: 1rem }
-  .pn-faq-item { background: var(--bg2); border: 1px solid var(--border); border-radius: 8px; padding: 1.25rem }
-  .pn-faq-item h3 { margin: 0 0 .5rem 0; color: var(--accent); font-size: 1em }
-  .pn-faq-item p { margin: 0; color: var(--text2); line-height: 1.6; font-size: .92em }
+  /* -- Error -- */
+  .pn-error{text-align:center;padding:1.5rem;background:var(--bg2);border:1px solid var(--border);border-radius:4px;color:var(--text2);margin-bottom:2rem}
+  .pn-error-retry{margin-top:.75rem;padding:.4rem 1rem;background:var(--accent);color:#000;border:none;border-radius:4px;cursor:pointer;font-size:.88rem;font-weight:700;font-family:'Montserrat',sans-serif}
 
-  .pn-links { background: var(--bg2); border: 1px solid var(--border); border-radius: 8px; padding: 1.5rem; margin-top: 2rem }
-  .pn-links h2 { font-size: 1.3em; margin: 0 0 1rem 0 }
-  .pn-links-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: .75rem }
-  .pn-links-grid a { display: block; padding: .75rem 1rem; background: var(--bg3); border: 1px solid var(--border); border-radius: 6px; color: var(--accent); text-decoration: none; text-align: center; font-size: .9em; transition: all .2s }
-  .pn-links-grid a:hover { border-color: var(--accent); background: var(--bg) }
+  /* -- FAQ -- */
+  .pn-faq{margin:2rem 0}
+  .pn-faq h2{font-family:'Montserrat',sans-serif;font-size:1.15rem;font-weight:700;color:var(--text);margin:0 0 .75rem}
+  .pn-faq-item{background:var(--bg2);border:1px solid var(--border);border-radius:4px;margin-bottom:.35rem;overflow:hidden}
+  .pn-faq-item summary{padding:.75rem 1rem;font-weight:700;font-size:.9rem;color:var(--text);cursor:pointer;list-style:none;display:flex;align-items:center;gap:.5rem;transition:background .15s}
+  .pn-faq-item summary::before{content:'+';font-size:1.05rem;font-weight:700;color:var(--accent);flex-shrink:0;width:18px;text-align:center}
+  .pn-faq-item[open] summary::before{content:'\2212'}
+  .pn-faq-item summary:hover{background:var(--bg3)}
+  .pn-faq-item summary::-webkit-details-marker{display:none}
+  .pn-faq-item p{padding:0 1rem .85rem 2.25rem;margin:0;color:var(--text2);font-size:.88rem;line-height:1.6}
 
-  @media (max-width: 768px) {
-    .pn-hero { padding: 40px 16px }
-    .pn-hero h1 { font-size: 1.8em }
-    .pn-card-head { flex-direction: column }
-    .pn-links-grid { grid-template-columns: 1fr 1fr }
+  /* -- Related Links -- */
+  .pn-links{background:var(--bg2);border:1px solid var(--border);border-radius:4px;padding:1.5rem;margin-top:2rem}
+  .pn-links h2{font-family:'Montserrat',sans-serif;font-size:1.15rem;font-weight:700;color:var(--text);margin:0 0 .75rem}
+  .pn-links-list{display:flex;flex-direction:column;gap:2px}
+  .pn-links-list a{display:block;padding:.55rem .85rem;background:var(--bg3);border:1px solid var(--border);border-left:3px solid transparent;border-radius:4px;color:var(--text2);text-decoration:none;font-size:.88rem;font-weight:600;transition:border-color .15s,background .15s,color .15s}
+  .pn-links-list a:hover{border-left-color:var(--accent);color:var(--text)}
+
+  /* -- Responsive -- */
+  @media(max-width:768px){
+    .pn-hero h1{font-size:1.5rem}
+    .pn-card-head{flex-direction:column}
   }
 </style>
 
-  <nav class="breadcrumb">
+  <nav class="pn-breadcrumb">
     <a href="/">Home</a> / <span>Patch Notes</span>
   </nav>
 
-  <div class="pn-hero">
+  <section class="pn-hero">
     <h1>CS2 Patch Notes</h1>
     <p>Auto-updated from official Steam sources</p>
     <div class="pn-live-badge">Live Feed</div>
-  </div>
+  </section>
 
   <div class="pn-controls">
     <input type="text" class="pn-search" placeholder="Search updates..." id="pnSearch" />
@@ -177,29 +172,27 @@ const faqs = [
     </div>
   </div>
 
-  <div class="pn-faq">
+  <section class="pn-faq">
     <h2>Frequently Asked Questions</h2>
-    <div class="pn-faq-grid">
-      {faqs.map(f => (
-        <div class="pn-faq-item">
-          <h3>{f.question}</h3>
-          <p>{f.answer}</p>
-        </div>
-      ))}
-    </div>
-  </div>
+    {faqs.map(f => (
+      <details class="pn-faq-item">
+        <summary>{f.question}</summary>
+        <p>{f.answer}</p>
+      </details>
+    ))}
+  </section>
 
   <div class="pn-links">
     <h2>Related Resources</h2>
-    <div class="pn-links-grid">
-      <a href="/weapons/">Weapon Statistics</a>
-      <a href="/maps/">Map Guide</a>
-      <a href="/guides/">Strategy Guides</a>
+    <div class="pn-links-list">
+      <a href="/cs2-weapons/">Weapon Statistics</a>
+      <a href="/cs2-maps/">Map Guide</a>
+      <a href="/cs2-guides/">Strategy Guides</a>
       <a href="/spray-trainer/">Spray Trainer</a>
-      <a href="/skins/">Skin Database</a>
+      <a href="/cs2-skins/">Skin Database</a>
       <a href="/pro-players/">Pro Player Settings</a>
-      <a href="/tools/">All Tools</a>
-      <a href="/rank-distribution/">Rank Distribution</a>
+      <a href="/cs2-tools/">All Tools</a>
+      <a href="/cs2-rank-distribution/">Rank Distribution</a>
     </div>
   </div>
 
@@ -234,7 +227,7 @@ const faqs = [
             ${update.changes.slice(0, 8).map(c => `<li>${escapeHtml(c)}</li>`).join('')}
           </ul>
         ` : ''}
-        ${update.url ? `<a href="${escapeHtml(update.url)}" target="_blank" rel="noopener" class="pn-latest-link">View on Steam →</a>` : ''}
+        ${update.url ? `<a href="${escapeHtml(update.url)}" target="_blank" rel="noopener" class="pn-latest-link">View on Steam &rarr;</a>` : ''}
       </div>
     `;
   }
@@ -261,7 +254,7 @@ const faqs = [
             <ul>${u.changes.slice(0, 15).map(c => `<li>${escapeHtml(c)}</li>`).join('')}</ul>
           </div>
         ` : ''}
-        ${u.url ? `<a href="${escapeHtml(u.url)}" target="_blank" rel="noopener" class="pn-card-link">View on Steam →</a>` : ''}
+        ${u.url ? `<a href="${escapeHtml(u.url)}" target="_blank" rel="noopener" class="pn-card-link">View on Steam &rarr;</a>` : ''}
       </div>
     `).join('')}</div>`;
   }

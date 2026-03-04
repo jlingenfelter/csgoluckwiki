@@ -3,7 +3,7 @@ import Base from '../layouts/Base.astro';
 import ExploreMore from '../components/ExploreMore.astro';
 import { faqSchema, breadcrumbSchema, toolAppSchema } from '../lib/weapons';
 
-const title = 'CS2 Case Odds Calculator — Knife & Covert Drop Chances | CSDB.gg';
+const title = 'CS2 Case Odds Calculator — Knife & Covert Drop Chances | CSGOLuck Wiki';
 const description = 'Calculate your real odds of unboxing a knife, covert, or any rarity from CS2 cases. See expected costs, ROI analysis, and probability tables for every rarity tier.';
 
 const breadcrumbs = [
@@ -24,132 +24,227 @@ const rarityOdds = [
   { rarity: 'Mil-Spec (Blue)', chance: '79.92%', ratio: '~4 in 5', color: '#4b69ff' },
   { rarity: 'Restricted (Purple)', chance: '15.98%', ratio: '~1 in 6.3', color: '#8847ff' },
   { rarity: 'Classified (Pink)', chance: '3.20%', ratio: '~1 in 31.3', color: '#d32ce6' },
-  { rarity: 'Covert (Red)', chance: '0.64%', ratio: '~1 in 156.3', color: '#eb4b4b' },
+  { rarity: 'Covert (Red)', chance: '0.64%', ratio: '~1 in 156.3', color: '#2ecc71' },
   { rarity: 'Rare Special Item (Gold)', chance: '0.26%', ratio: '~1 in 384.6', color: '#ffd700' },
 ];
 ---
 
-<Base title={title} description={description} currentNav="/tools/">
+<Base title={title} description={description} currentNav="/cs2-tools/">
   <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema(breadcrumbs))}></script>
   <script type="application/ld+json" set:html={JSON.stringify(faqSchema(faqs))}></script>
-  <script type="application/ld+json" set:html={JSON.stringify(toolAppSchema({ name: 'CS2 Case Odds Calculator', url: 'https://csdb.gg/case-odds-calculator/', description }))}></script>
+  <script type="application/ld+json" set:html={JSON.stringify(toolAppSchema({ name: 'CS2 Case Odds Calculator', url: 'https://wiki.csgoluck.com/case-odds-calculator/', description }))}></script>
 
-  <nav class="breadcrumb">
+  <nav class="coc-breadcrumb">
     <a href="/">Home</a> / <a href="/case-odds-calculator/">Tools</a> / <span>Case Odds Calculator</span>
   </nav>
 
-  <h1>CS2 Case Odds Calculator</h1>
-  <p>Every CS2 case opening is a gamble. Use this calculator to understand exactly what your odds are before spending money on keys — and decide whether the expected return justifies the cost.</p>
+  <section class="coc-hero">
+    <h1>CS2 Case Odds Calculator</h1>
+    <p>Every CS2 case opening is a gamble. Use this calculator to understand exactly what your odds are before spending money on keys — and decide whether the expected return justifies the cost.</p>
+  </section>
 
-  <div class="calc-section">
+  <section class="coc-calc">
     <h2>How Many Cases Will You Open?</h2>
-    <div class="calc-row">
-      <label for="numCases">Number of Cases</label>
-      <input type="number" id="numCases" min="1" max="10000" value="100" />
-    </div>
-    <div class="calc-row">
-      <label for="casePrice">Cost Per Case + Key ($)</label>
-      <input type="number" id="casePrice" min="0.01" step="0.01" value="2.50" />
-    </div>
-
-    <div class="stats-grid" style="margin-top:1rem">
-      <div class="stat-card">
-        <div class="val" id="totalCost">$250.00</div>
-        <div class="label">Total Cost</div>
+    <div class="coc-inputs">
+      <div class="coc-input-group">
+        <label for="numCases">Number of Cases</label>
+        <input type="number" id="numCases" min="1" max="10000" value="100" />
       </div>
-      <div class="stat-card">
-        <div class="val" id="knifeChance">22.9%</div>
-        <div class="label">Chance of 1+ Knife</div>
-      </div>
-      <div class="stat-card">
-        <div class="val" id="covertChance">47.4%</div>
-        <div class="label">Chance of 1+ Covert</div>
-      </div>
-      <div class="stat-card">
-        <div class="val" id="classifiedChance">96.2%</div>
-        <div class="label">Chance of 1+ Classified</div>
+      <div class="coc-input-group">
+        <label for="casePrice">Cost Per Case + Key ($)</label>
+        <input type="number" id="casePrice" min="0.01" step="0.01" value="2.50" />
       </div>
     </div>
 
-    <h3 style="margin-top:1.5rem">Expected Drops from <span id="caseCount">100</span> Cases</h3>
-    <table>
-      <thead><tr><th>Rarity</th><th>Expected Drops</th><th>Probability of At Least 1</th></tr></thead>
-      <tbody id="dropTable"></tbody>
-    </table>
+    <div class="coc-stats">
+      <div class="coc-stat">
+        <div class="coc-stat-val" id="totalCost">$250.00</div>
+        <div class="coc-stat-label">Total Cost</div>
+      </div>
+      <div class="coc-stat">
+        <div class="coc-stat-val" id="knifeChance">22.9%</div>
+        <div class="coc-stat-label">Chance of 1+ Knife</div>
+      </div>
+      <div class="coc-stat">
+        <div class="coc-stat-val" id="covertChance">47.4%</div>
+        <div class="coc-stat-label">Chance of 1+ Covert</div>
+      </div>
+      <div class="coc-stat">
+        <div class="coc-stat-val" id="classifiedChance">96.2%</div>
+        <div class="coc-stat-label">Chance of 1+ Classified</div>
+      </div>
+    </div>
+
+    <h3>Expected Drops from <span id="caseCount">100</span> Cases</h3>
+    <div class="coc-table-wrap">
+      <table class="coc-table">
+        <thead><tr><th>Rarity</th><th>Expected Drops</th><th>Probability of At Least 1</th></tr></thead>
+        <tbody id="dropTable"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="coc-section">
+    <h2>Official CS2 Case Drop Rates</h2>
+    <p>Valve disclosed the exact rarity probabilities for CS2 cases. These odds are identical across every standard weapon case:</p>
+    <div class="coc-table-wrap">
+      <table class="coc-table">
+        <thead><tr><th>Rarity Tier</th><th>Drop Chance</th><th>Odds Ratio</th></tr></thead>
+        <tbody>
+          {rarityOdds.map(r => (
+            <tr>
+              <td><span style={`color:${r.color};font-weight:700`}>{r.rarity}</span></td>
+              <td>{r.chance}</td>
+              <td>{r.ratio}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="coc-section">
+    <h2>The Mathematics Behind Case Openings</h2>
+    <p>
+      CS2 case openings follow a binomial probability distribution. Each case is an independent event — opening 384 cases doesn't guarantee a knife, just as flipping heads 10 times in a row doesn't make the next flip more likely to be tails. The probability of getting at least one knife in N cases is: <code>P = 1 - (1 - 0.0026)^N</code>.
+    </p>
+    <p>
+      This means after 100 cases, your knife probability is about 22.9%. After 500 cases it rises to 72.7%, and after 1,000 cases you're at 92.6%. Even after 2,000 cases, there's still a 0.55% chance you haven't seen a single knife — that's the nature of independent random events.
+    </p>
+  </section>
+
+  <section class="coc-section">
+    <h3>Expected Value and ROI</h3>
+    <p>
+      The expected return from opening a standard CS2 case averages around $0.80–$1.50 per case depending on the specific case and current market prices. Since each opening costs approximately $2.50 (case + key), the average player loses about $1.00–$1.70 per case opened. Over 100 cases, you should expect to lose roughly $100–$170.
+    </p>
+    <p>
+      However, this average is heavily skewed by rare outcomes. Most of your returns come from the small chance of hitting a high-value knife or glove. A single Karambit Fade Factory New can be worth $1,000+, which would offset hundreds of losing cases. This variance is what makes case opening feel "worth it" despite the negative expected value.
+    </p>
+  </section>
+
+  <section class="coc-section">
+    <h3>StatTrak and Wear Probabilities</h3>
+    <p>
+      About 10% of case drops come with StatTrak technology. Combined with the five wear conditions (Factory New, Minimal Wear, Field-Tested, Well-Worn, Battle-Scarred), this creates tiered sub-probabilities. A specific StatTrak Factory New Covert skin has roughly a 0.0064% chance per case — about 1 in 15,600 openings.
+    </p>
+  </section>
+
+  <div class="csgoluck-cta" style="margin:2rem 0;background:linear-gradient(135deg,#1f222b 0%,#0d1a14 100%);border:1px solid rgba(46,204,113,0.2);border-radius:4px;overflow:hidden">
+  <div style="display:flex;align-items:center;gap:1rem;padding:1.25rem 1.5rem;flex-wrap:wrap">
+  <span style="font-size:1.5rem">🎲</span>
+  <div style="flex:1;min-width:200px"><strong style="display:block;color:#fff;font-size:.95rem">Test Your Odds</strong><span style="color:#909090;font-size:.82rem">Put the math to the test on CSGOLuck.com</span></div>
+  <a href="https://csgoluck.com" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:.5rem;padding:.55rem 1.25rem;background:#2ecc71;color:#fff;border-radius:4px;font-weight:700;font-size:.85rem;text-decoration:none;white-space:nowrap">Play Now →</a>
+  </div>
   </div>
 
-  <h2>Official CS2 Case Drop Rates</h2>
-  <p>Valve disclosed the exact rarity probabilities for CS2 cases. These odds are identical across every standard weapon case:</p>
-  <table>
-    <thead><tr><th>Rarity Tier</th><th>Drop Chance</th><th>Odds Ratio</th></tr></thead>
-    <tbody>
-      {rarityOdds.map(r => (
-        <tr>
-          <td><span style={`color:${r.color};font-weight:700`}>{r.rarity}</span></td>
-          <td>{r.chance}</td>
-          <td>{r.ratio}</td>
-        </tr>
-      ))}
-    </tbody>
-  </table>
+  <section class="coc-related">
+    <h2>Related Tools & Guides</h2>
+    <div class="coc-related-list">
+      <a href="/case-simulator/" class="coc-related-row">Case Simulator</a>
+      <a href="/cs2-cases/" class="coc-related-row">Cases & Collections</a>
+      <a href="/tradeup-calculator/" class="coc-related-row">Trade-Up Calculator</a>
+      <a href="/cs2-skins/" class="coc-related-row">Skin Database</a>
+      <a href="/skin-compare/" class="coc-related-row">Compare Skins</a>
+      <a href="/float-checker/" class="coc-related-row">Float Checker</a>
+      <a href="/price-tracker/" class="coc-related-row">Price Tracker</a>
+      <a href="/market-trends/" class="coc-related-row">Market Trends</a>
+      <a href="/inventory-lookup/" class="coc-related-row">Inventory Lookup</a>
+      <a href="/loadout-builder/" class="coc-related-row">Loadout Builder</a>
+      <a href="/cs2-weapons/" class="coc-related-row">Weapon Database</a>
+      <a href="/cs2-guides/trading-guide/" class="coc-related-row">Trading Guide</a>
+      <a href="/cs2-guides/float-guide/" class="coc-related-row">Float Value Guide</a>
+      <a href="/cs2-guides/skins-investing-guide/" class="coc-related-row">Skins Investing Guide</a>
+    </div>
+  </section>
 
-  <h2>The Mathematics Behind Case Openings</h2>
-  <p>
-    CS2 case openings follow a binomial probability distribution. Each case is an independent event — opening 384 cases doesn't guarantee a knife, just as flipping heads 10 times in a row doesn't make the next flip more likely to be tails. The probability of getting at least one knife in N cases is: <code>P = 1 - (1 - 0.0026)^N</code>.
-  </p>
-  <p>
-    This means after 100 cases, your knife probability is about 22.9%. After 500 cases it rises to 72.7%, and after 1,000 cases you're at 92.6%. Even after 2,000 cases, there's still a 0.55% chance you haven't seen a single knife — that's the nature of independent random events.
-  </p>
-
-  <h3>Expected Value and ROI</h3>
-  <p>
-    The expected return from opening a standard CS2 case averages around $0.80–$1.50 per case depending on the specific case and current market prices. Since each opening costs approximately $2.50 (case + key), the average player loses about $1.00–$1.70 per case opened. Over 100 cases, you should expect to lose roughly $100–$170.
-  </p>
-  <p>
-    However, this average is heavily skewed by rare outcomes. Most of your returns come from the small chance of hitting a high-value knife or glove. A single Karambit Fade Factory New can be worth $1,000+, which would offset hundreds of losing cases. This variance is what makes case opening feel "worth it" despite the negative expected value.
-  </p>
-
-  <h3>StatTrak and Wear Probabilities</h3>
-  <p>
-    About 10% of case drops come with StatTrak technology. Combined with the five wear conditions (Factory New, Minimal Wear, Field-Tested, Well-Worn, Battle-Scarred), this creates tiered sub-probabilities. A specific StatTrak Factory New Covert skin has roughly a 0.0064% chance per case — about 1 in 15,600 openings.
-  </p>
-
-  <div class="internal-links">
-    <strong>Related Tools & Guides:</strong>
-    <a href="/case-simulator/">Case Simulator</a>
-    <a href="/cases/">Cases & Collections</a>
-    <a href="/tradeup-calculator/">Trade-Up Calculator</a>
-    <a href="/skins/">Skin Database</a>
-    <a href="/skin-compare/">Compare Skins</a>
-    <a href="/float-checker/">Float Checker</a>
-    <a href="/price-tracker/">Price Tracker</a>
-    <a href="/market-trends/">Market Trends</a>
-    <a href="/inventory-lookup/">Inventory Lookup</a>
-    <a href="/loadout-builder/">Loadout Builder</a>
-    <a href="/weapons/">Weapon Database</a>
-    <a href="/guides/trading-guide/">Trading Guide</a>
-    <a href="/guides/float-guide/">Float Value Guide</a>
-    <a href="/guides/skins-investing-guide/">Skins Investing Guide</a>
-  </div>
-
-  <h2>Frequently Asked Questions</h2>
-  <dl class="faq">
+  <section class="coc-faq">
+    <h2>Frequently Asked Questions</h2>
     {faqs.map(f => (
-      <Fragment>
-        <dt>{f.question}</dt>
-        <dd>{f.answer}</dd>
-      </Fragment>
+      <details class="coc-faq-item">
+        <summary>{f.question}</summary>
+        <p>{f.answer}</p>
+      </details>
     ))}
-  </dl>
+  </section>
 
   <ExploreMore context="skins" />
 </Base>
+
+<style>
+/* ── Breadcrumb ── */
+.coc-breadcrumb{font-size:.82rem;color:var(--text2);margin-bottom:1.25rem;display:flex;gap:.35rem;flex-wrap:wrap}
+.coc-breadcrumb a{color:var(--accent);text-decoration:none}
+.coc-breadcrumb a:hover{text-decoration:underline}
+
+/* ── Hero ── */
+.coc-hero{background:var(--bg2);border:1px solid var(--border);border-radius:4px;padding:2rem;margin-bottom:1.5rem}
+.coc-hero h1{font-family:'Montserrat',sans-serif;font-size:2rem;font-weight:800;margin:0 0 .5rem;color:var(--text)}
+.coc-hero p{color:var(--text2);font-size:.95rem;line-height:1.6;margin:0}
+
+/* ── Calculator ── */
+.coc-calc{background:var(--bg2);border:1px solid var(--border);border-radius:4px;padding:1.5rem;margin-bottom:2rem}
+.coc-calc h2{font-family:'Montserrat',sans-serif;font-size:1.15rem;font-weight:700;color:var(--text);margin:0 0 1rem}
+.coc-calc h3{font-family:'Montserrat',sans-serif;font-size:1rem;font-weight:700;color:var(--text);margin:1.5rem 0 .75rem}
+.coc-inputs{display:flex;gap:1rem;flex-wrap:wrap;margin-bottom:1.5rem}
+.coc-input-group{display:flex;flex-direction:column;gap:.35rem}
+.coc-input-group label{font-size:.85rem;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.04em}
+.coc-input-group input{background:var(--bg3);color:var(--text);border:1px solid var(--border);padding:.5rem .75rem;border-radius:4px;font-size:.95rem;font-family:inherit;width:180px;transition:border-color .2s}
+.coc-input-group input:focus{outline:none;border-color:var(--accent)}
+
+/* ── Stats ── */
+.coc-stats{display:flex;gap:2px;flex-wrap:wrap;margin-bottom:1rem}
+.coc-stat{flex:1;min-width:120px;background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:.75rem;text-align:center}
+.coc-stat-val{font-family:'Montserrat',sans-serif;font-size:1.3rem;font-weight:800;color:var(--accent)}
+.coc-stat-label{font-size:.72rem;color:var(--text2);text-transform:uppercase;letter-spacing:.04em;font-weight:600;margin-top:.2rem}
+
+/* ── Tables ── */
+.coc-table-wrap{overflow-x:auto;border-radius:4px;border:1px solid var(--border)}
+.coc-table{width:100%;border-collapse:collapse;background:var(--bg2);font-size:.95rem}
+.coc-table thead{background:var(--bg3);border-bottom:2px solid var(--border)}
+.coc-table th{color:var(--text);padding:.75rem;text-align:left;font-weight:700;font-size:.9rem}
+.coc-table td{padding:.75rem;border-bottom:1px solid var(--border);color:var(--text)}
+.coc-table tbody tr:hover{background:var(--bg3)}
+
+/* ── Sections ── */
+.coc-section{margin-bottom:2rem}
+.coc-section h2{font-family:'Montserrat',sans-serif;font-size:1.15rem;font-weight:700;color:var(--text);margin:0 0 .5rem}
+.coc-section h3{font-family:'Montserrat',sans-serif;font-size:1rem;font-weight:700;color:var(--text);margin:0 0 .5rem}
+.coc-section p{color:var(--text2);font-size:.95rem;line-height:1.6}
+.coc-section code{background:var(--bg3);padding:.2rem .5rem;border-radius:4px;font-size:.85rem;color:var(--accent)}
+
+/* ── Related ── */
+.coc-related{margin-bottom:2rem}
+.coc-related h2{font-family:'Montserrat',sans-serif;font-size:1.15rem;font-weight:700;color:var(--text);margin:0 0 .75rem}
+.coc-related-list{display:flex;flex-direction:column;gap:2px}
+.coc-related-row{display:flex;align-items:center;text-decoration:none;color:var(--text);background:var(--bg2);border:1px solid var(--border);border-left:3px solid transparent;border-radius:4px;padding:.6rem 1rem;font-size:.9rem;font-weight:600;transition:border-color .15s,background .15s}
+.coc-related-row:hover{border-left-color:var(--accent);background:var(--bg3)}
+
+/* ── FAQ ── */
+.coc-faq{margin-bottom:2rem}
+.coc-faq h2{font-family:'Montserrat',sans-serif;font-size:1.15rem;font-weight:700;color:var(--text);margin:0 0 .75rem}
+.coc-faq-item{background:var(--bg2);border:1px solid var(--border);border-radius:4px;margin-bottom:.35rem;overflow:hidden}
+.coc-faq-item summary{padding:.75rem 1rem;font-weight:700;font-size:.9rem;color:var(--text);cursor:pointer;list-style:none;display:flex;align-items:center;gap:.5rem;transition:background .15s}
+.coc-faq-item summary::before{content:'+';font-size:1.05rem;font-weight:700;color:var(--accent);flex-shrink:0;width:18px;text-align:center}
+.coc-faq-item[open] summary::before{content:'\2212'}
+.coc-faq-item summary:hover{background:var(--bg3)}
+.coc-faq-item summary::-webkit-details-marker{display:none}
+.coc-faq-item p{padding:0 1rem .85rem 2.25rem;margin:0;color:var(--text2);font-size:.88rem;line-height:1.6}
+
+/* ── Responsive ── */
+@media(max-width:768px){
+  .coc-hero h1{font-size:1.5rem}
+  .coc-inputs{flex-direction:column}
+  .coc-input-group input{width:100%}
+  .coc-stats{flex-direction:column}
+}
+</style>
 
 <script is:inline>
 (function(){
   var numCases=document.getElementById('numCases');
   var casePrice=document.getElementById('casePrice');
-  var odds=[{name:'Mil-Spec (Blue)',p:0.7992,color:'#4b69ff'},{name:'Restricted (Purple)',p:0.1598,color:'#8847ff'},{name:'Classified (Pink)',p:0.0320,color:'#d32ce6'},{name:'Covert (Red)',p:0.0064,color:'#eb4b4b'},{name:'Knife / Glove (Gold)',p:0.0026,color:'#ffd700'}];
+  var odds=[{name:'Mil-Spec (Blue)',p:0.7992,color:'#4b69ff'},{name:'Restricted (Purple)',p:0.1598,color:'#8847ff'},{name:'Classified (Pink)',p:0.0320,color:'#d32ce6'},{name:'Covert (Red)',p:0.0064,color:'#2ecc71'},{name:'Knife / Glove (Gold)',p:0.0026,color:'#ffd700'}];
   function calc(){
     var n=parseInt(numCases.value)||100;
     var price=parseFloat(casePrice.value)||2.50;

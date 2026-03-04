@@ -1,0 +1,406 @@
+---
+import Base from '../../layouts/Base.astro';
+import AuthorBox from '../../components/AuthorBox.astro';
+import { faqSchema, breadcrumbSchema } from '../../lib/weapons';
+
+const title = 'CS2 Demo & Replay Guide — Review Matches Like the Pros | CSGOLuck Wiki';
+const description = 'Step-by-step instructions for grabbing, viewing, and studying CS2 match replays. Covers demo UI controls, helpful console shortcuts, and structured self-review methods.';
+
+const breadcrumbs = [
+  { name: 'Home', url: '/' },
+  { name: 'Guides', url: '/cs2-guides' },
+  { name: 'Demo & Replay Guide', url: '/cs2-guides/demo-guide' },
+];
+
+const faqs = [
+  {
+    question: 'Where are CS2 demo files stored on my computer?',
+    answer: 'CS2 demo files are stored in the Steam directory under steamapps/common/Counter-Strike Global Offensive/game/csgo/replays/ for downloaded match demos. Manually recorded demos using the record command are saved to the game/csgo/ root folder.',
+  },
+  {
+    question: 'What is the difference between GOTV and POV demos?',
+    answer: 'GOTV demos record the entire match from all player perspectives using server-side data. POV demos record only your personal perspective and inputs from the client side. GOTV demos are larger but allow you to spectate any player, while POV demos are smaller and capture your exact mouse movements and inputs.',
+  },
+  {
+    question: 'Can I speed up or slow down demo playback?',
+    answer: 'Yes. Use the demo_timescale command to adjust speed. For example, demo_timescale 4 plays at 4x speed and demo_timescale 0.25 plays at quarter speed. You can also use the demoui panel by pressing Shift+F2 to control playback with a slider.',
+  },
+  {
+    question: 'How do I skip to a specific round in a demo?',
+    answer: 'Open the demo UI with Shift+F2 or the demoui console command. Use the timeline bar to scrub to different points in the match. You can also use demo_goto followed by a tick number to jump to a specific moment, for example demo_goto 64000.',
+  },
+  {
+    question: 'How long are CS2 demo files available for download?',
+    answer: 'CS2 match demos from competitive and Premier modes are typically available for download for approximately 30 days after the match is played. After that period, the download links expire and the demo files are removed from Valve servers. Always download important demos promptly.',
+  },
+];
+
+const breadcrumbSchema_ = breadcrumbSchema(breadcrumbs);
+const faqSchema_ = faqSchema(faqs);
+
+const articleSchema = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": title,
+  "description": description,
+  "author": { "@type": "Person", "name": "Josh Lingenfelter", "url": "https://www.linkedin.com/in/josh-lingenfelter-8157274b/", "jobTitle": "Director", "worksFor": { "@type": "Organization", "name": "CSGOLuck" } },
+  "publisher": { "@type": "Organization", "name": "CSGOLuck Wiki", "url": "https://wiki.csgoluck.com" },
+  "mainEntityOfPage": `https://wiki.csgoluck.com/cs2-guides/demo-guide/`,
+  "inLanguage": "en-US"
+});
+
+const sections = [
+  { id: 'how-to-download', label: 'How to Download' },
+  { id: 'watching-demos-basic', label: 'Watching Demos' },
+  { id: 'gotv-demos-vs', label: 'GOTV vs POV' },
+  { id: 'essential-demo-conso', label: 'Console Commands' },
+  { id: 'how-to-analyze', label: 'Analyze Demos' },
+  { id: 'thirdparty-demo-anal', label: 'Third-Party Tools' },
+  { id: 'recording-clips-from', label: 'Recording Clips' },
+  { id: 'how-to-share', label: 'Sharing Demos' },
+  { id: 'demo-file-locations', label: 'File Locations' },
+  { id: 'faq', label: 'FAQ' },
+  { id: 'resources', label: 'Resources' },
+];
+---
+
+<Base title={title} description={description}>
+  <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema_)}></script>
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema_)}></script>
+  <script type="application/ld+json" set:html={articleSchema}></script>
+
+  <div class="dg-wrap">
+    <nav class="dg-breadcrumb">
+      <a href="/">Home</a>
+      <span class="dg-sep">/</span>
+      <a href="/cs2-guides">Guides</a>
+      <span class="dg-sep">/</span>
+      <span>Demo & Replay Guide</span>
+    </nav>
+
+    <header class="dg-header">
+      <h1>CS2 Demo & Replay Guide</h1>
+      <p class="dg-subtitle">Pull up any match replay, break down your mistakes, and level up through self-review</p>
+    </header>
+
+    <nav class="dg-toc-mobile" aria-label="Table of contents">
+      {sections.map((s) => (
+        <a href={`#${s.id}`} class="dg-toc-mobile-link">{s.label}</a>
+      ))}
+    </nav>
+
+    <div class="dg-layout">
+      <aside class="dg-sidebar">
+        <nav class="dg-toc" aria-label="Table of contents">
+          <span class="dg-toc-title">Contents</span>
+          {sections.map((s) => (
+            <a href={`#${s.id}`} class="dg-toc-link">{s.label}</a>
+          ))}
+        </nav>
+      </aside>
+
+      <article class="dg-content">
+        <p class="dg-intro">
+          Demo review is the single fastest feedback loop available to competitive CS2 players. Rewatching your rounds reveals positioning errors, missed utility timings, and patterns in how opponents play -- insights you simply cannot absorb mid-game. CS2 ships with a full-featured replay system, and this guide explains how to download, navigate, analyse, and clip from your match recordings.
+        </p>
+
+        <section id="how-to-download">
+          <div class="dg-section-header"><h2>How to Download Your Match Demos</h2></div>
+          <p>Valve servers automatically save replays of every competitive and Premier match. The files are stored remotely and can be pulled down directly from the CS2 client.</p>
+
+          <h3>Downloading from the CS2 Client</h3>
+          <ul class="dg-list">
+            <li><strong>Open your match history:</strong> Click your avatar in the top left of the main menu, then select the Matches tab to see your recent games</li>
+            <li><strong>Select a match:</strong> Click on any completed match to view the scoreboard and match details</li>
+            <li><strong>Download the demo:</strong> Click the download button to save the GOTV demo file to your local machine</li>
+            <li><strong>Wait for the download:</strong> Demo files range from 50-150 MB depending on match length and are saved to your replays folder</li>
+          </ul>
+
+          <h3>Download Availability</h3>
+          <p>Match demos are available for approximately 30 days after the match is played. After this window, the demo files are removed from Valve servers and can no longer be downloaded. If you want to keep a demo permanently, download it as soon as possible after the match.</p>
+
+          <h3>Downloading via Share Code</h3>
+          <p>Every CS2 match generates a unique share code. You can find this code on the match details screen. Share codes allow anyone to download and watch the demo by entering the code in CS2. Use the console command <code>playcast</code> followed by the share code URL to load a shared demo directly.</p>
+        </section>
+
+        <section id="watching-demos-basic">
+          <div class="dg-section-header"><h2>Watching Demos — Basic Playback</h2></div>
+          <p>Once a demo is downloaded, you can watch it directly from the match history screen or load it manually through the console. The demo playback system provides a full spectator interface with controls for navigating the match.</p>
+
+          <h3>Opening a Demo</h3>
+          <ul class="dg-list">
+            <li><strong>From match history:</strong> Click the Watch button on any downloaded match in your match history</li>
+            <li><strong>From console:</strong> Use <code>playdemo &lt;filename&gt;</code> to load a demo file manually from the console</li>
+            <li><strong>From file explorer:</strong> Double-click a .dem file in your replays folder to launch CS2 and begin playback</li>
+          </ul>
+
+          <h3>Demo UI Controls</h3>
+          <p>Press <strong>Shift+F2</strong> or type <code>demoui</code> in the console to open the demo playback control panel. This panel provides a timeline scrubber, play/pause controls, and speed adjustments.</p>
+          <ul class="dg-list">
+            <li><strong>Play/Pause:</strong> Toggle playback with the play button or press Space</li>
+            <li><strong>Speed control:</strong> Adjust playback speed using the slider or demo_timescale command</li>
+            <li><strong>Timeline scrubber:</strong> Click and drag the progress bar to jump to any point in the match</li>
+            <li><strong>Round navigation:</strong> Use the round markers on the timeline to quickly jump between rounds</li>
+          </ul>
+
+          <h3>Spectator Controls</h3>
+          <p>During demo playback, you have full spectator controls to observe the match from different perspectives:</p>
+          <ul class="dg-list">
+            <li><strong>Left/Right click:</strong> Switch between players to follow</li>
+            <li><strong>Number keys (1-0):</strong> Select specific players by their slot number</li>
+            <li><strong>Mouse3 (scroll click):</strong> Toggle between first-person, third-person, and free camera modes</li>
+            <li><strong>Free camera (WASD):</strong> Fly around the map freely in free camera mode to see the full picture</li>
+          </ul>
+        </section>
+
+        <section id="gotv-demos-vs">
+          <div class="dg-section-header"><h2>GOTV Demos vs POV Demos</h2></div>
+          <p>CS2 supports two types of demo recordings, each with distinct characteristics and use cases. Understanding the difference helps you choose the right demo type for your needs.</p>
+
+          <h3>GOTV Demos</h3>
+          <p>GOTV (Game TV) demos are server-side recordings that capture the entire match from all players' perspectives. These are the standard demo format for competitive and Premier matches downloaded through the CS2 client.</p>
+          <ul class="dg-list">
+            <li><strong>All players visible:</strong> Switch between any player at any time during playback</li>
+            <li><strong>Server-side data:</strong> Captures tick-accurate positions, shots, and events from the server perspective</li>
+            <li><strong>Larger file size:</strong> Typically 50-150 MB due to recording all ten players</li>
+            <li><strong>Slight interpolation:</strong> GOTV recordings may have minor smoothing compared to what players actually saw</li>
+            <li><strong>Best for:</strong> Team review, studying opponents, analyzing round strategies, and content creation</li>
+          </ul>
+
+          <h3>POV Demos</h3>
+          <p>POV (Point of View) demos are client-side recordings captured from a single player's perspective using the <code>record</code> console command. These capture your exact inputs and what your client rendered.</p>
+          <ul class="dg-list">
+            <li><strong>Single perspective:</strong> Only records your personal view and inputs</li>
+            <li><strong>Client-side accuracy:</strong> Captures your exact mouse movements, crosshair placement, and timing</li>
+            <li><strong>Smaller file size:</strong> Typically 10-30 MB since only one perspective is recorded</li>
+            <li><strong>No switching:</strong> You cannot switch to other players during playback</li>
+            <li><strong>Best for:</strong> Reviewing personal aim, crosshair placement, and reaction times</li>
+          </ul>
+
+          <h3>Recording a POV Demo</h3>
+          <p>To record a POV demo, open the console and type <code>record &lt;filename&gt;</code> before the match starts. The demo will begin recording immediately. To stop recording, type <code>stop</code> in the console. The .dem file will be saved to your game/csgo/ directory.</p>
+        </section>
+
+        <section id="essential-demo-conso">
+          <div class="dg-section-header"><h2>Essential Demo Console Commands</h2></div>
+          <p>CS2 provides a comprehensive set of <a href="/cs2-commands/">console commands</a> for controlling demo playback. These commands give you precise control over navigation, speed, and visual overlays.</p>
+
+          <h3>Playback Control Commands</h3>
+          <ul class="dg-list">
+            <li><strong>demoui:</strong> Opens the demo playback control panel with timeline and buttons</li>
+            <li><strong>demo_pause:</strong> Pauses demo playback at the current tick</li>
+            <li><strong>demo_resume:</strong> Resumes playback after pausing</li>
+            <li><strong>demo_timescale &lt;value&gt;:</strong> Sets playback speed — 1 is normal, 0.5 is half speed, 4 is 4x speed</li>
+            <li><strong>demo_goto &lt;tick&gt; &lt;0/1&gt;:</strong> Jumps to a specific tick number — use 0 for pause on arrival, 1 for play on arrival</li>
+            <li><strong>demo_gototick &lt;tick&gt;:</strong> Alternative command to jump to a specific tick</li>
+          </ul>
+
+          <h3>Visual Overlay Commands</h3>
+          <ul class="dg-list">
+            <li><strong>spec_show_xray 1:</strong> Enables X-ray outlines showing all player positions through walls</li>
+            <li><strong>cl_show_observer_crosshair 1:</strong> Shows the observed player's crosshair during playback</li>
+            <li><strong>cl_draw_only_deathnotices 1:</strong> Hides all HUD elements except kill feed — useful for recording clean clips</li>
+            <li><strong>r_drawothermodels 0:</strong> Hides player models — useful for studying smoke placements and grenade lineups</li>
+            <li><strong>sv_grenade_trajectory_prac_pipreview 1:</strong> Shows grenade trajectory previews in demo playback</li>
+          </ul>
+
+          <h3>Camera Commands</h3>
+          <ul class="dg-list">
+            <li><strong>spec_mode 1:</strong> Sets spectator to first-person view</li>
+            <li><strong>spec_mode 3:</strong> Sets spectator to third-person view</li>
+            <li><strong>spec_mode 4:</strong> Sets spectator to free-roam camera mode</li>
+            <li><strong>spec_mode 5:</strong> Sets spectator to directed camera (automatic switching)</li>
+            <li><strong>spec_next / spec_prev:</strong> Cycle forward or backward through players</li>
+          </ul>
+
+          <h3>Recording Commands</h3>
+          <ul class="dg-list">
+            <li><strong>record &lt;name&gt;:</strong> Starts recording a POV demo with the given filename</li>
+            <li><strong>stop:</strong> Stops the current recording</li>
+            <li><strong>playdemo &lt;name&gt;:</strong> Loads and plays a demo file by name</li>
+            <li><strong>listdemo &lt;name&gt;:</strong> Displays information about a demo file including tick count and duration</li>
+          </ul>
+        </section>
+
+        <section id="how-to-analyze">
+          <div class="dg-section-header"><h2>How to Analyze Demos for Improvement</h2></div>
+          <p>Simply watching demos passively is not enough. Effective demo review requires a structured approach focused on identifying specific mistakes and patterns.</p>
+
+          <h3>What to Look For</h3>
+          <ul class="dg-list">
+            <li><strong><a href="/cs2-guides/crosshair-guide/">Crosshair placement</a>:</strong> Watch where your crosshair is positioned as you move around the map — it should be at head height aimed at common angles</li>
+            <li><strong>Positioning mistakes:</strong> Identify times you were caught in the open, exposed to multiple angles, or holding a poor position</li>
+            <li><strong>Utility usage:</strong> Review whether your smokes, flashes, and molotovs were effective and properly timed -- compare with the <a href="/cs2-guides/grenade-guide/">grenade guide</a> lineups</li>
+            <li><strong>Economy decisions:</strong> Check if your buy decisions aligned with your team's <a href="/cs2-guides/economy-guide/">economy</a> and the round context</li>
+            <li><strong>Information usage:</strong> Notice situations where you had information but failed to act on it, or where you pushed without information</li>
+            <li><strong>Death analysis:</strong> For every death, ask whether the engagement was avoidable, whether your positioning was correct, and whether you had a realistic chance of winning the fight</li>
+          </ul>
+
+          <h3>Structured Review Process</h3>
+          <p>Focus on one aspect per review session. Watching a demo three times — once for positioning, once for utility, once for aim — is more effective than trying to catch everything in a single pass. Take notes on recurring mistakes and create specific practice goals based on your findings. Consistent demo review is one of the fastest paths to <a href="/cs2-guides/ranks-guide/">ranking up</a>.</p>
+
+          <h3>Reviewing Enemy Plays</h3>
+          <p>Switch to enemy perspectives to understand how they read your team's strategies. Pay attention to where enemies hold, how they rotate, and what utility they use. This information helps you predict opponent behavior in future matches on the same <a href="/cs2-maps/">map</a>. Study how <a href="/pro-players/">professional players</a> approach the same situations for additional insight.</p>
+        </section>
+
+        <section id="thirdparty-demo-anal">
+          <div class="dg-section-header"><h2>Third-Party Demo Analysis Tools</h2></div>
+          <p>Several external tools provide advanced analysis capabilities beyond the built-in demo viewer, offering statistics, heatmaps, and automated insights.</p>
+
+          <h3>Leetify</h3>
+          <p>Leetify automatically analyzes your CS2 matches and provides detailed statistics including aim accuracy, positioning ratings, utility usage grades, and specific improvement suggestions. It tracks your progress over time and compares your stats against players at different skill levels.</p>
+
+          <h3>SCOPE.GG</h3>
+          <p>SCOPE.GG offers round-by-round breakdowns with 2D map replays showing player movements, grenade trajectories, and engagement outcomes. It provides highlight clips and performance metrics for each match.</p>
+
+          <h3>Refrag</h3>
+          <p>Refrag provides a browser-based 3D demo viewer that allows you to watch demos without launching CS2. It includes advanced features like automatic highlight detection, round filtering, and the ability to share specific moments with teammates via links.</p>
+
+          <h3>CS2 Demo Manager</h3>
+          <p>CS2 Demo Manager is a desktop application for organizing and analyzing your demo collection. It extracts statistics from demo files, displays round-by-round scoreboards, generates heatmaps, and allows you to tag and categorize your demos for easy reference.</p>
+        </section>
+
+        <section id="recording-clips-from">
+          <div class="dg-section-header"><h2>Recording Clips from Demos</h2></div>
+          <p>Demos are an excellent source for creating highlight clips, educational content, or cinematic recordings. CS2 provides several tools for capturing footage from demo playback.</p>
+
+          <h3>Using Built-In Recording</h3>
+          <p>CS2 supports the <code>startmovie</code> command for frame-by-frame recording at any resolution. This produces high-quality footage suitable for editing. Use <code>startmovie &lt;filename&gt;</code> to begin recording and <code>endmovie</code> to stop. Frames are saved as individual TGA files that can be compiled into a video using editing software.</p>
+
+          <h3>Third-Party Recording Software</h3>
+          <ul class="dg-list">
+            <li><strong>OBS Studio:</strong> Free, open-source screen recording and streaming software — configure game capture for CS2 and record during demo playback</li>
+            <li><strong>NVIDIA ShadowPlay:</strong> Hardware-accelerated recording for NVIDIA GPU users with minimal performance impact</li>
+            <li><strong>AMD ReLive:</strong> Hardware recording solution for AMD GPU users</li>
+          </ul>
+
+          <h3>Tips for Clean Recordings</h3>
+          <ul class="dg-list">
+            <li><strong>Hide HUD elements:</strong> Use <code>cl_draw_only_deathnotices 1</code> to remove the HUD for cinematic recordings</li>
+            <li><strong>Smooth camera:</strong> Use free camera mode with smooth mouse movements for cinematic sweeps across the map</li>
+            <li><strong>Slow motion:</strong> Set <code>demo_timescale 0.25</code> for dramatic slow-motion replays of key moments</li>
+            <li><strong>X-ray toggle:</strong> Enable or disable X-ray with <code>spec_show_xray</code> to highlight player positions when needed</li>
+            <li><strong>Clean killfeed:</strong> Wait for the killfeed to clear or use commands to hide it entirely for minimal visual clutter</li>
+          </ul>
+        </section>
+
+        <section id="how-to-share">
+          <div class="dg-section-header"><h2>How to Share Demos with Others</h2></div>
+          <p>Sharing demos is essential for team practice, coaching sessions, and community content. CS2 provides built-in sharing mechanisms and you can also transfer demo files directly.</p>
+
+          <h3>Using Match Share Codes</h3>
+          <p>The simplest way to share a demo is via the match share code. Find the share code on your match details screen and send it to another player. They can enter the share code in CS2 to download and watch the same demo. Share codes work for as long as the demo remains available on Valve servers.</p>
+
+          <h3>Sending Demo Files Directly</h3>
+          <p>You can share the raw .dem file with others via file transfer services, cloud storage, or direct file sharing. The recipient places the .dem file in their CS2 replays folder and loads it via the console using <code>playdemo</code>. This method works even after the demo has expired from Valve servers.</p>
+
+          <h3>Sharing Specific Moments</h3>
+          <p>When discussing specific plays with teammates, note the round number and approximate tick number. You can use <code>demo_goto</code> to jump directly to the relevant moment. Third-party tools like Refrag also allow you to generate shareable links to specific timestamps within a demo.</p>
+        </section>
+
+        <section id="demo-file-locations">
+          <div class="dg-section-header"><h2>Demo File Locations on Disk</h2></div>
+          <p>Knowing where CS2 stores demo files helps you manage your collection, back up important recordings, and transfer files between machines.</p>
+
+          <h3>Default File Paths</h3>
+          <ul class="dg-list">
+            <li><strong>Windows (downloaded demos):</strong> C:\Program Files (x86)\Steam\steamapps\common\Counter-Strike Global Offensive\game\csgo\replays\</li>
+            <li><strong>Windows (POV recordings):</strong> C:\Program Files (x86)\Steam\steamapps\common\Counter-Strike Global Offensive\game\csgo\</li>
+            <li><strong>macOS:</strong> ~/Library/Application Support/Steam/steamapps/common/Counter-Strike Global Offensive/game/csgo/replays/</li>
+            <li><strong>Linux:</strong> ~/.local/share/Steam/steamapps/common/Counter-Strike Global Offensive/game/csgo/replays/</li>
+          </ul>
+
+          <h3>Managing Demo Storage</h3>
+          <p>Demo files can accumulate quickly, consuming several gigabytes of disk space. Periodically review your replays folder and delete demos you no longer need. For important demos, create a dedicated backup folder outside the Steam directory to prevent accidental deletion during game updates or reinstallation.</p>
+        </section>
+
+        <section id="faq">
+          <div class="dg-section-header"><h2>Frequently Asked Questions</h2></div>
+          <div class="dg-faq-list">
+            {faqs.map((faq) => (
+              <details class="dg-faq-item">
+                <summary class="dg-faq-question">{faq.question}</summary>
+                <p class="dg-faq-answer">{faq.answer}</p>
+              </details>
+            ))}
+          </div>
+        </section>
+
+        <section id="resources">
+          <div class="dg-section-header"><h2>Related Resources</h2></div>
+          <div class="dg-resources-grid">
+            <a href="/cs2-guides/" class="dg-resource-card"><span class="dg-resource-name">All Guides</span><span class="dg-resource-arrow">&rarr;</span></a>
+            <a href="/console-commands/" class="dg-resource-card"><span class="dg-resource-name">Console Commands</span><span class="dg-resource-arrow">&rarr;</span></a>
+            <a href="/practice-config/" class="dg-resource-card"><span class="dg-resource-name">Practice Config</span><span class="dg-resource-arrow">&rarr;</span></a>
+            <a href="/pro-players/" class="dg-resource-card"><span class="dg-resource-name">Pro Player Settings</span><span class="dg-resource-arrow">&rarr;</span></a>
+            <a href="/cs2-guides/beginners-guide/" class="dg-resource-card"><span class="dg-resource-name">Beginner's Guide</span><span class="dg-resource-arrow">&rarr;</span></a>
+            <a href="/cs2-guides/advanced-mechanics-guide/" class="dg-resource-card"><span class="dg-resource-name">Advanced Mechanics</span><span class="dg-resource-arrow">&rarr;</span></a>
+          </div>
+        </section>
+      </article>
+    </div>
+  </div>
+
+  <style>
+    .dg-wrap{max-width:1100px;margin:0 auto;padding:0 1.5rem 2rem}
+    .dg-breadcrumb{display:flex;align-items:center;gap:.5rem;padding:1.25rem 0;font-size:.85rem;color:var(--text2)}
+    .dg-breadcrumb a{color:var(--accent);text-decoration:none}
+    .dg-breadcrumb a:hover{color:var(--accent2)}
+    .dg-sep{color:var(--border)}
+    .dg-header{padding:1.5rem 0 1.25rem;border-bottom:2px solid var(--accent);margin-bottom:1.5rem}
+    .dg-header h1{margin:0 0 .35rem;font-size:2.2rem;font-weight:800;color:var(--text);letter-spacing:-.02em;line-height:1.2}
+    .dg-subtitle{margin:0;font-size:1.05rem;color:var(--text2);font-weight:400}
+    .dg-toc-mobile{display:none}
+    .dg-layout{display:grid;grid-template-columns:220px 1fr;gap:2.5rem;align-items:start}
+    .dg-sidebar{position:sticky;top:80px}
+    .dg-toc{display:flex;flex-direction:column;gap:0;border-left:2px solid var(--border);padding-left:0}
+    .dg-toc-title{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--accent);padding:0 0 .6rem 1rem}
+    .dg-toc-link{display:block;padding:.4rem 1rem;font-size:.82rem;color:var(--text2);text-decoration:none;border-left:2px solid transparent;margin-left:-2px;transition:color .2s,border-color .2s}
+    .dg-toc-link:hover{color:var(--text);border-left-color:var(--accent)}
+    .dg-content{min-width:0}
+    .dg-intro{font-size:1rem;line-height:1.8;color:var(--text2);margin-bottom:2rem}
+    .dg-section-header{background:rgba(46,204,113,.05);margin:0 -1.25rem 1.25rem;padding:.75rem 1.25rem;border-radius:4px}
+    .dg-section-header h2{margin:0;padding:0;font-size:1.5rem;font-weight:700;color:var(--text);border:none;letter-spacing:-.01em}
+    section{margin-bottom:2.5rem}
+    h3{font-size:1.15rem;font-weight:600;margin:1.5rem 0 .6rem;color:var(--text)}
+    p{line-height:1.7;color:var(--text2);margin-bottom:1rem}
+    .dg-list{list-style:none;padding:0;margin:.75rem 0 1.5rem}
+    .dg-list li{padding:.4rem 0 .4rem 1.6rem;position:relative;color:var(--text2);line-height:1.65}
+    .dg-list li::before{content:'';position:absolute;left:.25rem;top:.75rem;width:6px;height:6px;background:var(--accent);border-radius:1px}
+    .dg-list li strong{color:var(--text)}
+    code{background:var(--bg3);padding:.15rem .4rem;border-radius:3px;font-size:.85em;color:var(--accent);font-family:'Courier New',Courier,monospace}
+    .dg-faq-list{display:flex;flex-direction:column;gap:.5rem}
+    .dg-faq-item{background:var(--bg2);border:1px solid var(--border);border-radius:4px;overflow:hidden}
+    .dg-faq-question{display:block;padding:1rem 1.25rem;font-size:.95rem;font-weight:600;color:var(--text);cursor:pointer;list-style:none;position:relative;padding-right:2.5rem;transition:background .2s}
+    .dg-faq-question::-webkit-details-marker{display:none}
+    .dg-faq-question::after{content:'+';position:absolute;right:1.25rem;top:50%;transform:translateY(-50%);font-size:1.2rem;color:var(--accent);font-weight:700}
+    .dg-faq-item[open] .dg-faq-question::after{content:'\2212'}
+    .dg-faq-item[open] .dg-faq-question{border-bottom:1px solid var(--border);background:rgba(46,204,113,.03)}
+    .dg-faq-question:hover{background:rgba(46,204,113,.03)}
+    .dg-faq-answer{padding:1rem 1.25rem;margin:0;font-size:.9rem;color:var(--text2);line-height:1.7}
+    .dg-resources-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.6rem;margin:.5rem 0 1.5rem}
+    .dg-resource-card{display:flex;align-items:center;justify-content:space-between;padding:.75rem 1rem;background:var(--bg2);border:1px solid var(--border);border-radius:4px;text-decoration:none;border-left:2px solid transparent;transition:border-left-color .2s,color .2s}
+    .dg-resource-card:hover{border-left-color:var(--accent)}
+    .dg-resource-name{font-size:.88rem;color:var(--text2);font-weight:500;transition:color .2s}
+    .dg-resource-card:hover .dg-resource-name{color:var(--text)}
+    .dg-resource-arrow{font-size:1rem;color:var(--accent);opacity:0;transition:opacity .2s}
+    .dg-resource-card:hover .dg-resource-arrow{opacity:1}
+    @media(max-width:860px){
+      .dg-layout{grid-template-columns:1fr;gap:0}
+      .dg-sidebar{display:none}
+      .dg-toc-mobile{display:flex;gap:.25rem;overflow-x:auto;padding:.75rem 0;margin-bottom:1rem;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+      .dg-toc-mobile::-webkit-scrollbar{display:none}
+      .dg-toc-mobile-link{flex-shrink:0;padding:.35rem .75rem;font-size:.78rem;font-weight:600;color:var(--text2);background:var(--bg2);border:1px solid var(--border);border-radius:4px;text-decoration:none;white-space:nowrap;transition:color .2s,border-color .2s}
+      .dg-toc-mobile-link:hover{color:var(--accent);border-color:var(--accent)}
+      .dg-header h1{font-size:1.7rem}
+      .dg-section-header{margin:0 -1rem 1rem;padding:.6rem 1rem}
+      .dg-resources-grid{grid-template-columns:repeat(2,1fr)}
+    }
+    @media(max-width:600px){
+      .dg-wrap{padding:0 1rem 1.5rem}
+      .dg-resources-grid{grid-template-columns:1fr}
+      .dg-header h1{font-size:1.5rem}
+    }
+  </style>
+  <AuthorBox updated="2026-03-02" />
+</Base>

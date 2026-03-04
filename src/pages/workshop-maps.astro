@@ -3,7 +3,7 @@ import Base from '../layouts/Base.astro';
 import ExploreMore from '../components/ExploreMore.astro';
 import { breadcrumbSchema, faqSchema, toolAppSchema } from '../lib/weapons';
 
-const title = 'Best CS2 Workshop Maps — Aim Training, Movement & Utility Practice | CSDB.gg';
+const title = 'Best CS2 Workshop Maps — Aim Training, Movement & Utility Practice | CSGOLuck Wiki';
 const description = 'Curated directory of the best CS2 Steam Workshop maps for aim training, movement practice, utility lineups, warmup routines, and more. Links to subscribe directly.';
 const crumbs = [{ name: 'Home', url: '/' }, { name: 'Workshop Maps', url: '/workshop-maps/' }];
 const faqs = [
@@ -91,28 +91,35 @@ const popularMaps = MAPS.filter(m => m.popular);
 <Base title={title} description={description}>
   <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema(crumbs))}></script>
   <script type="application/ld+json" set:html={JSON.stringify(faqSchema(faqs))}></script>
-  <script type="application/ld+json" set:html={JSON.stringify(toolAppSchema({ name: 'CS2 Workshop Maps Directory', url: 'https://csdb.gg/workshop-maps/', description }))}></script>
+  <script type="application/ld+json" set:html={JSON.stringify(toolAppSchema({ name: 'CS2 Workshop Maps Directory', url: 'https://wiki.csgoluck.com/workshop-maps/', description }))}></script>
 
-  <nav class="breadcrumb"><a href="/">Home</a> / <span>Workshop Maps</span></nav>
-  <h1>Best CS2 Workshop Maps</h1>
-  <p>A curated collection of {MAPS.length} essential Steam Workshop maps for improving at Counter-Strike 2. From aim training to surf, utility lineups to movement practice.</p>
+  <nav class="wm-breadcrumb"><a href="/">Home</a> / <span>Workshop Maps</span></nav>
+
+  <section class="wm-hero">
+    <h1>Best CS2 Workshop Maps</h1>
+    <p class="wm-hero-desc">A curated collection of {MAPS.length} essential Steam Workshop maps for improving at Counter-Strike 2. From aim training to surf, utility lineups to movement practice.</p>
+  </section>
 
   <!-- Editor's Picks -->
-  <section class="wm-picks">
+  <section class="wm-section">
     <h2>Editor's Picks</h2>
-    <div class="wm-picks-grid">
+    <div class="wm-picks-list">
       {popularMaps.map(m => {
         const cat = CATEGORIES.find(c => c.slug === m.category);
         return (
-          <a href={m.steamUrl} target="_blank" rel="noopener nofollow" class="wm-pick-card">
-            <div class="wm-pick-badges">
-              <span class="wm-badge" style={`background:${cat?.color || 'var(--text2)'}`}>{cat?.icon} {cat?.label}</span>
-              <span class="wm-badge wm-badge-star">⭐ Recommended</span>
+          <a href={m.steamUrl} target="_blank" rel="noopener nofollow" class="wm-pick-row">
+            <div class="wm-pick-left">
+              <div class="wm-pick-badges">
+                <span class="wm-badge" style={`background:${cat?.color || 'var(--text2)'}`}>{cat?.icon} {cat?.label}</span>
+                <span class="wm-badge wm-badge-star">Recommended</span>
+              </div>
+              <h3 class="wm-pick-name">{m.name}</h3>
+              <span class="wm-pick-author">by {m.author}</span>
             </div>
-            <h3>{m.name}</h3>
-            <p class="wm-pick-author">by {m.author}</p>
-            <p>{m.description}</p>
-            <span class="wm-pick-link">Open in Steam →</span>
+            <div class="wm-pick-right">
+              <p class="wm-pick-desc">{m.description}</p>
+              <span class="wm-pick-link">Open in Steam &rarr;</span>
+            </div>
           </a>
         );
       })}
@@ -120,41 +127,47 @@ const popularMaps = MAPS.filter(m => m.popular);
   </section>
 
   <!-- Filters -->
-  <section>
+  <section class="wm-section">
     <h2>All Workshop Maps</h2>
     <div class="wm-filter-row">
       <span class="wm-filter-label">Category:</span>
-      <button class="filter-btn active" data-cat="all">All ({MAPS.length})</button>
+      <button class="wm-filter active" data-cat="all">All ({MAPS.length})</button>
       {CATEGORIES.map(c => {
         const count = MAPS.filter(m => m.category === c.slug).length;
-        return <button class="filter-btn" data-cat={c.slug}>{c.icon} {c.label} ({count})</button>;
+        return <button class="wm-filter" data-cat={c.slug}>{c.icon} {c.label} ({count})</button>;
       })}
     </div>
     <div class="wm-filter-row" style="margin-top:.5rem">
       <span class="wm-filter-label">Difficulty:</span>
-      <button class="filter-btn active" data-diff="all">All</button>
-      {DIFFICULTIES.map(d => <button class="filter-btn" data-diff={d.slug}>{d.label}</button>)}
+      <button class="wm-filter active" data-diff="all">All</button>
+      {DIFFICULTIES.map(d => <button class="wm-filter" data-diff={d.slug}>{d.label}</button>)}
     </div>
   </section>
 
-  <!-- Map Grid -->
-  <div class="wm-grid" id="wm-grid">
+  <!-- Map List -->
+  <div class="wm-list" id="wm-grid">
     {MAPS.map(m => {
       const cat = CATEGORIES.find(c => c.slug === m.category);
       const diff = DIFFICULTIES.find(d => d.slug === m.difficulty);
       return (
-        <div class="wm-card" data-cat={m.category} data-diff={m.difficulty}>
-          <div class="wm-card-top">
+        <div class="wm-map-row" data-cat={m.category} data-diff={m.difficulty}>
+          <div class="wm-map-top">
             <span class="wm-badge" style={`background:${cat?.color || 'var(--text2)'}`}>{cat?.icon} {cat?.label}</span>
             <span class="wm-badge" style={`background:${diff?.color || 'var(--text2)'}`}>{diff?.label}</span>
           </div>
-          <h3>{m.name}</h3>
-          <p class="wm-card-author">by {m.author}</p>
-          <p class="wm-card-desc">{m.description}</p>
-          <div class="wm-card-features">
-            {m.features.map(f => <span class="wm-feature">{f}</span>)}
+          <div class="wm-map-body">
+            <div class="wm-map-info">
+              <h3 class="wm-map-name">{m.name}</h3>
+              <span class="wm-map-author">by {m.author}</span>
+              <p class="wm-map-desc">{m.description}</p>
+            </div>
+            <div class="wm-map-side">
+              <div class="wm-map-features">
+                {m.features.map(f => <span class="wm-feature">{f}</span>)}
+              </div>
+              <a href={m.steamUrl} target="_blank" rel="noopener nofollow" class="wm-steam-btn">Open in Steam Workshop &rarr;</a>
+            </div>
           </div>
-          <a href={m.steamUrl} target="_blank" rel="noopener nofollow" class="wm-steam-btn">Open in Steam Workshop →</a>
         </div>
       );
     })}
@@ -163,47 +176,64 @@ const popularMaps = MAPS.filter(m => m.popular);
   <!-- Daily Routine -->
   <section class="wm-routine">
     <h2>Recommended Daily Warmup Routine</h2>
-    <p style="color:var(--text2);font-size:.9rem;margin-bottom:1.25rem">A structured 30-minute warmup routine used by competitive players to peak before matchmaking.</p>
-    <div class="wm-routine-grid">
-      <div class="wm-routine-card">
+    <p class="wm-routine-desc">A structured 30-minute warmup routine used by competitive players to peak before matchmaking.</p>
+    <div class="wm-routine-list">
+      <div class="wm-routine-item">
         <span class="wm-routine-time">10 min</span>
-        <h3>Aim Training</h3>
-        <p>Start with Aim Botz or training_aim_csgo2. Focus on headshot-only practice. Begin with static targets, then enable movement. Work on both tap shooting and spray control.</p>
-        <span class="wm-routine-map">Map: Aim Botz</span>
+        <div class="wm-routine-content">
+          <h3>Aim Training</h3>
+          <p>Start with Aim Botz or training_aim_csgo2. Focus on headshot-only practice. Begin with static targets, then enable movement. Work on both tap shooting and spray control.</p>
+          <span class="wm-routine-map">Map: Aim Botz</span>
+        </div>
       </div>
-      <div class="wm-routine-card">
+      <div class="wm-routine-item">
         <span class="wm-routine-time">10 min</span>
-        <h3>Movement & Prefire</h3>
-        <p>Load a Yprac Prefire map for the map you plan to play. Practice clearing every angle as both T and CT. Focus on crosshair placement and counter-strafing.</p>
-        <span class="wm-routine-map">Map: Yprac Prefire</span>
+        <div class="wm-routine-content">
+          <h3>Movement & Prefire</h3>
+          <p>Load a Yprac Prefire map for the map you plan to play. Practice clearing every angle as both T and CT. Focus on crosshair placement and counter-strafing.</p>
+          <span class="wm-routine-map">Map: Yprac Prefire</span>
+        </div>
       </div>
-      <div class="wm-routine-card">
+      <div class="wm-routine-item">
         <span class="wm-routine-time">5 min</span>
-        <h3>Utility Practice</h3>
-        <p>Run through your essential smokes and flashes on the Yprac utility map for your planned competitive map. Practice 3-5 key lineups until they are muscle memory.</p>
-        <span class="wm-routine-map">Map: Yprac Utility</span>
+        <div class="wm-routine-content">
+          <h3>Utility Practice</h3>
+          <p>Run through your essential smokes and flashes on the Yprac utility map for your planned competitive map. Practice 3-5 key lineups until they are muscle memory.</p>
+          <span class="wm-routine-map">Map: Yprac Utility</span>
+        </div>
       </div>
-      <div class="wm-routine-card">
+      <div class="wm-routine-item">
         <span class="wm-routine-time">5 min</span>
-        <h3>Deathmatch</h3>
-        <p>Finish with a quick Deathmatch to get into a competitive mindset. Focus on crosshair placement and positioning rather than kills. Take deliberate aim at every engagement.</p>
-        <span class="wm-routine-map">Mode: Community DM</span>
+        <div class="wm-routine-content">
+          <h3>Deathmatch</h3>
+          <p>Finish with a quick Deathmatch to get into a competitive mindset. Focus on crosshair placement and positioning rather than kills. Take deliberate aim at every engagement.</p>
+          <span class="wm-routine-map">Mode: Community DM</span>
+        </div>
       </div>
     </div>
   </section>
 
-  <div class="internal-links">
-    <strong>Related Pages:</strong>
-    <a href="/practice-config/">Practice Config</a>
-    <a href="/crosshair-generator/">Crosshair Generator</a>
-    <a href="/sensitivity-converter/">Sensitivity Converter</a>
-    <a href="/recoil-patterns/">Recoil Patterns</a>
-    <a href="/guides/advanced-mechanics-guide/">Advanced Mechanics</a>
-    <a href="/maps/mirage/">Mirage Callouts</a>
+  <div class="wm-related">
+    <h2>Related Pages</h2>
+    <div class="wm-related-list">
+      <a href="/practice-config/" class="wm-related-row">Practice Config</a>
+      <a href="/crosshair-generator/" class="wm-related-row">Crosshair Generator</a>
+      <a href="/sensitivity-converter/" class="wm-related-row">Sensitivity Converter</a>
+      <a href="/recoil-patterns/" class="wm-related-row">Recoil Patterns</a>
+      <a href="/cs2-guides/advanced-mechanics-guide/" class="wm-related-row">Advanced Mechanics</a>
+      <a href="/cs2-maps/mirage/" class="wm-related-row">Mirage Callouts</a>
+    </div>
   </div>
 
-  <h2>Frequently Asked Questions</h2>
-  <dl class="faq">{faqs.map(f => (<Fragment><dt>{f.question}</dt><dd>{f.answer}</dd></Fragment>))}</dl>
+  <section class="wm-faq">
+    <h2>Frequently Asked Questions</h2>
+    {faqs.map(f => (
+      <details class="wm-faq-item">
+        <summary>{f.question}</summary>
+        <p>{f.answer}</p>
+      </details>
+    ))}
+  </section>
 
   <ExploreMore context="maps" />
 </Base>
@@ -212,7 +242,7 @@ const popularMaps = MAPS.filter(m => m.popular);
 (function(){
   var catBtns = document.querySelectorAll('[data-cat]');
   var diffBtns = document.querySelectorAll('[data-diff]');
-  var cards = document.querySelectorAll('.wm-card');
+  var cards = document.querySelectorAll('.wm-map-row');
   var activeCat = 'all';
   var activeDiff = 'all';
 
@@ -247,46 +277,95 @@ const popularMaps = MAPS.filter(m => m.popular);
 </script>
 
 <style>
-  .wm-picks{margin-bottom:2.5rem}
-  .wm-picks-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1rem}
-  .wm-pick-card{display:flex;flex-direction:column;background:var(--bg2);border:2px solid var(--accent);border-radius:10px;padding:1.25rem;text-decoration:none;color:inherit;transition:transform .2s}
-  .wm-pick-card:hover{transform:translateY(-3px)}
-  .wm-pick-badges{display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:.5rem}
-  .wm-badge{display:inline-block;padding:.15rem .5rem;border-radius:3px;font-size:.72rem;font-weight:700;color:#000}
-  .wm-badge-star{background:var(--gold)!important}
-  .wm-pick-card h3{margin:0 0 .15rem;font-size:1.1rem}
-  .wm-pick-author{font-size:.8rem;color:var(--text2);margin:0 0 .5rem}
-  .wm-pick-card p{font-size:.85rem;color:var(--text2);line-height:1.5;flex:1}
-  .wm-pick-link{color:var(--accent);font-weight:700;font-size:.85rem;margin-top:.5rem}
+/* -- Breadcrumb -- */
+.wm-breadcrumb{font-size:.82rem;color:var(--text2);margin-bottom:1.25rem;display:flex;gap:.35rem;flex-wrap:wrap}
+.wm-breadcrumb a{color:var(--accent);text-decoration:none}
+.wm-breadcrumb a:hover{text-decoration:underline}
 
-  .wm-filter-row{display:flex;gap:.4rem;align-items:center;flex-wrap:wrap}
-  .wm-filter-label{font-size:.82rem;color:var(--text2);font-weight:700;min-width:70px}
+/* -- Hero -- */
+.wm-hero{background:var(--bg2);border:1px solid var(--border);border-radius:4px;padding:2rem;margin-bottom:1.5rem}
+.wm-hero h1{font-family:'Montserrat',sans-serif;font-size:2rem;font-weight:800;margin:0 0 .5rem;color:var(--text)}
+.wm-hero-desc{color:var(--text2);font-size:.95rem;line-height:1.6;margin:0}
 
-  .wm-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:1rem;margin:1.5rem 0}
-  .wm-card{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:1.25rem;display:flex;flex-direction:column;transition:border-color .2s}
-  .wm-card:hover{border-color:var(--accent)}
-  .wm-card-top{display:flex;gap:.4rem;margin-bottom:.5rem}
-  .wm-card h3{margin:0 0 .15rem;font-size:1.05rem}
-  .wm-card-author{font-size:.78rem;color:var(--text2);margin:0 0 .5rem}
-  .wm-card-desc{font-size:.85rem;color:var(--text2);line-height:1.5;margin:0 0 .75rem;flex:1}
-  .wm-card-features{display:flex;gap:.35rem;flex-wrap:wrap;margin-bottom:.75rem}
-  .wm-feature{background:var(--bg3);border:1px solid var(--border);border-radius:3px;padding:.15rem .4rem;font-size:.72rem;color:var(--text2)}
-  .wm-steam-btn{display:inline-block;background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:.4rem .8rem;font-size:.82rem;color:var(--accent);font-weight:700;text-decoration:none;transition:all .2s;text-align:center}
-  .wm-steam-btn:hover{background:var(--accent);color:#000;border-color:var(--accent)}
+/* -- Section headings -- */
+.wm-section{margin-bottom:2rem}
+.wm-section h2{font-family:'Montserrat',sans-serif;font-size:1.15rem;font-weight:700;color:var(--text);margin:0 0 .75rem}
 
-  .wm-routine{margin:2.5rem 0;background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:1.5rem 2rem}
-  .wm-routine-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:1rem}
-  .wm-routine-card{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:1rem;display:flex;flex-direction:column}
-  .wm-routine-time{display:inline-block;background:var(--accent);color:#000;padding:.15rem .5rem;border-radius:3px;font-size:.75rem;font-weight:800;margin-bottom:.5rem;width:fit-content}
-  .wm-routine-card h3{margin:0 0 .3rem;font-size:.95rem}
-  .wm-routine-card p{font-size:.82rem;color:var(--text2);line-height:1.5;flex:1;margin:0 0 .5rem}
-  .wm-routine-map{font-size:.75rem;color:var(--accent);font-weight:600}
+/* -- Editor's Picks (row layout) -- */
+.wm-picks-list{display:flex;flex-direction:column;gap:2px}
+.wm-pick-row{display:flex;gap:1rem;text-decoration:none;color:inherit;background:var(--bg2);border:1px solid var(--border);border-left:3px solid rgba(46,204,113,.2);border-radius:4px;padding:.85rem 1rem;transition:border-color .15s,background .15s}
+.wm-pick-row:hover{border-left-color:var(--accent);background:var(--bg3)}
+.wm-pick-left{flex-shrink:0;min-width:180px}
+.wm-pick-badges{display:flex;gap:.35rem;flex-wrap:wrap;margin-bottom:.35rem}
+.wm-badge{display:inline-block;padding:.12rem .45rem;border-radius:4px;font-size:.7rem;font-weight:700;color:#000}
+.wm-badge-star{background:var(--gold)!important}
+.wm-pick-name{font-family:'Montserrat',sans-serif;font-size:1rem;font-weight:700;color:var(--text);margin:0 0 .1rem}
+.wm-pick-author{font-size:.78rem;color:var(--text2)}
+.wm-pick-right{flex:1;display:flex;flex-direction:column;justify-content:center;min-width:0}
+.wm-pick-desc{font-size:.85rem;color:var(--text2);line-height:1.5;margin:0 0 .35rem}
+.wm-pick-link{color:var(--accent);font-weight:700;font-size:.82rem}
 
-  @media(max-width:768px){
-    .wm-grid{grid-template-columns:1fr}
-    .wm-picks-grid{grid-template-columns:1fr}
-    .wm-routine-grid{grid-template-columns:1fr 1fr}
-    .wm-routine{padding:1rem}
-  }
-  @media(max-width:480px){.wm-routine-grid{grid-template-columns:1fr}}
+/* -- Filters -- */
+.wm-filter-row{display:flex;gap:.4rem;align-items:center;flex-wrap:wrap}
+.wm-filter-label{font-size:.82rem;color:var(--text2);font-weight:700;min-width:70px}
+.wm-filter{background:var(--bg2);border:1px solid var(--border);color:var(--text2);padding:.3rem .7rem;border-radius:4px;cursor:pointer;font-size:.82rem;font-weight:600;font-family:'Montserrat',sans-serif;transition:border-color .15s,color .15s}
+.wm-filter:hover{border-color:var(--accent);color:var(--text)}
+.wm-filter.active{background:var(--accent);color:#000;border-color:var(--accent)}
+
+/* -- Map List (rows) -- */
+.wm-list{display:flex;flex-direction:column;gap:2px;margin:1.5rem 0}
+.wm-map-row{background:var(--bg2);border:1px solid var(--border);border-left:3px solid transparent;border-radius:4px;padding:1rem;transition:border-color .15s,background .15s}
+.wm-map-row:hover{border-left-color:var(--accent);background:var(--bg3)}
+.wm-map-top{display:flex;gap:.35rem;margin-bottom:.5rem}
+.wm-map-body{display:flex;gap:1.25rem}
+.wm-map-info{flex:1;min-width:0}
+.wm-map-name{font-family:'Montserrat',sans-serif;font-size:1rem;font-weight:700;color:var(--text);margin:0 0 .1rem}
+.wm-map-author{font-size:.78rem;color:var(--text2)}
+.wm-map-desc{font-size:.85rem;color:var(--text2);line-height:1.5;margin:.4rem 0 0}
+.wm-map-side{flex-shrink:0;display:flex;flex-direction:column;align-items:flex-end;gap:.5rem;min-width:180px}
+.wm-map-features{display:flex;gap:.3rem;flex-wrap:wrap;justify-content:flex-end}
+.wm-feature{background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:.12rem .4rem;font-size:.7rem;color:var(--text2)}
+.wm-steam-btn{display:inline-block;background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:.35rem .75rem;font-size:.82rem;color:var(--accent);font-weight:700;text-decoration:none;transition:border-color .15s,color .15s;white-space:nowrap}
+.wm-steam-btn:hover{border-color:var(--accent);color:var(--text)}
+
+/* -- Daily Routine -- */
+.wm-routine{margin:2rem 0;background:var(--bg2);border:1px solid var(--border);border-radius:4px;padding:1.5rem}
+.wm-routine h2{font-family:'Montserrat',sans-serif;font-size:1.15rem;font-weight:700;color:var(--text);margin:0 0 .35rem}
+.wm-routine-desc{color:var(--text2);font-size:.9rem;margin:0 0 1.25rem}
+.wm-routine-list{display:flex;flex-direction:column;gap:2px}
+.wm-routine-item{display:flex;gap:1rem;align-items:flex-start;background:var(--bg3);border:1px solid var(--border);border-left:3px solid transparent;border-radius:4px;padding:.85rem 1rem;transition:border-color .15s}
+.wm-routine-item:hover{border-left-color:var(--accent)}
+.wm-routine-time{display:inline-block;background:var(--accent);color:#000;padding:.15rem .5rem;border-radius:4px;font-size:.75rem;font-weight:800;flex-shrink:0;margin-top:.15rem}
+.wm-routine-content{flex:1;min-width:0}
+.wm-routine-content h3{font-family:'Montserrat',sans-serif;margin:0 0 .25rem;font-size:.95rem;font-weight:700;color:var(--text)}
+.wm-routine-content p{font-size:.82rem;color:var(--text2);line-height:1.5;margin:0 0 .35rem}
+.wm-routine-map{font-size:.75rem;color:var(--accent);font-weight:600}
+
+/* -- Related Links -- */
+.wm-related{margin-bottom:2rem}
+.wm-related h2{font-family:'Montserrat',sans-serif;font-size:1.15rem;font-weight:700;color:var(--text);margin:0 0 .75rem}
+.wm-related-list{display:flex;flex-direction:column;gap:2px}
+.wm-related-row{display:block;padding:.55rem .85rem;background:var(--bg2);border:1px solid var(--border);border-left:3px solid transparent;border-radius:4px;font-size:.88rem;color:var(--text2);text-decoration:none;font-weight:600;transition:border-color .15s,background .15s,color .15s}
+.wm-related-row:hover{border-left-color:var(--accent);background:var(--bg3);color:var(--text)}
+
+/* -- FAQ -- */
+.wm-faq{margin-bottom:2rem}
+.wm-faq h2{font-family:'Montserrat',sans-serif;font-size:1.15rem;font-weight:700;color:var(--text);margin:0 0 .75rem}
+.wm-faq-item{background:var(--bg2);border:1px solid var(--border);border-radius:4px;margin-bottom:.35rem;overflow:hidden}
+.wm-faq-item summary{padding:.75rem 1rem;font-weight:700;font-size:.9rem;color:var(--text);cursor:pointer;list-style:none;display:flex;align-items:center;gap:.5rem;transition:background .15s}
+.wm-faq-item summary::before{content:'+';font-size:1.05rem;font-weight:700;color:var(--accent);flex-shrink:0;width:18px;text-align:center}
+.wm-faq-item[open] summary::before{content:'\2212'}
+.wm-faq-item summary:hover{background:var(--bg3)}
+.wm-faq-item summary::-webkit-details-marker{display:none}
+.wm-faq-item p{padding:0 1rem .85rem 2.25rem;margin:0;color:var(--text2);font-size:.88rem;line-height:1.6}
+
+/* -- Responsive -- */
+@media(max-width:768px){
+  .wm-hero h1{font-size:1.5rem}
+  .wm-pick-row{flex-direction:column;gap:.5rem}
+  .wm-pick-left{min-width:0}
+  .wm-map-body{flex-direction:column;gap:.5rem}
+  .wm-map-side{align-items:flex-start;min-width:0}
+  .wm-map-features{justify-content:flex-start}
+}
 </style>

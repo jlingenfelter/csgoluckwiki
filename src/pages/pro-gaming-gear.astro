@@ -1,0 +1,460 @@
+---
+import Base from '../layouts/Base.astro';
+import ExploreMore from '../components/ExploreMore.astro';
+import { faqSchema } from '../lib/weapons';
+import { getAllGear, getGearByType, getTeams, getRoles, getCountries, getGearImageUrl, type GearItem, type GearType } from '../lib/pro-players';
+
+const allGear = getAllGear();
+
+const typeLabels: Record<GearType, string> = {
+  mouse: 'Mice',
+  keyboard: 'Keyboards',
+  headset: 'Headsets',
+  monitor: 'Monitors',
+  mousepad: 'Mousepads',
+};
+const typeIcons: Record<GearType, string> = {
+  mouse: '\u{1F5B1}\uFE0F',
+  keyboard: '\u2328\uFE0F',
+  headset: '\u{1F3A7}',
+  monitor: '\u{1F5A5}\uFE0F',
+  mousepad: '\u{1F3AF}',
+};
+const typeSingular: Record<GearType, string> = {
+  mouse: 'Mouse',
+  keyboard: 'Keyboard',
+  headset: 'Headset',
+  monitor: 'Monitor',
+  mousepad: 'Mousepad',
+};
+
+const GEAR_TYPES: GearType[] = ['mouse', 'keyboard', 'headset', 'monitor', 'mousepad'];
+
+// Per-type counts
+const typeCounts = GEAR_TYPES.map(t => ({
+  type: t,
+  label: typeLabels[t],
+  icon: typeIcons[t],
+  singular: typeSingular[t],
+  count: getGearByType(t).length,
+  totalPlayers: getGearByType(t).reduce((s, g) => s + g.players.length, 0),
+}));
+
+// Top 5 per type for analysis
+const topPerType = GEAR_TYPES.map(t => ({
+  type: t,
+  label: typeLabels[t],
+  items: getGearByType(t).slice(0, 5),
+}));
+
+const title = 'CS2 Pro Gear — Mice, Keyboards, Monitors & More | CSGOLuck Wiki';
+const description = `Browse ${allGear.length} gear items used by CS2 pros. Filter by mice, keyboards, headsets, monitors, and mousepads. See which peripherals the best players trust.`;
+
+const faqs = [
+  { question: 'What mouse do most CS2 pros use?', answer: `The most popular mice among CS2 professionals are lightweight wireless options. The top choices include the ${getGearByType('mouse')[0]?.name} (${getGearByType('mouse')[0]?.players.length} pros) and ${getGearByType('mouse')[1]?.name} (${getGearByType('mouse')[1]?.players.length} pros). Lightweight mice under 80g have become the standard for competitive play.` },
+  { question: 'Does expensive gear make you better at CS2?', answer: 'While pro-grade peripherals offer real advantages (higher polling rates, better sensors, lighter weight), they won\'t substitute for practice and game sense. A good mouse and 240Hz+ monitor provide the biggest competitive edge. Keyboard and headset choice is mostly personal preference.' },
+  { question: 'What monitor refresh rate do CS2 pros use?', answer: `Most CS2 professionals use 240Hz or 360Hz monitors. The ${getGearByType('monitor')[0]?.name} is the most popular choice. Higher refresh rates reduce input lag and provide smoother visuals, which is critical for tracking fast-moving targets.` },
+  { question: 'Should I buy the same gear as my favorite pro?', answer: 'Pro gear is a solid reference point, but comfort matters most. Mice depend on hand size and grip style. Keyboards are largely preference. Headsets need to fit your head comfortably. Use pro choices as a shortlist, then pick what feels best for you.' },
+];
+
+// Browse sections
+const topTeams = getTeams().slice(0, 8);
+const topRoles = getRoles();
+const topCountries = getCountries().slice(0, 8);
+---
+
+<Base {title} {description}>
+<Fragment slot="head">
+<script type="application/ld+json" set:html={JSON.stringify(faqSchema(faqs))} />
+<script type="application/ld+json" set:html={JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://wiki.csgoluck.com/" },
+    { "@type": "ListItem", "position": 2, "name": "Pro Players", "item": "https://wiki.csgoluck.com/pro-players/" },
+    { "@type": "ListItem", "position": 3, "name": "Gear" }
+  ]
+})} />
+</Fragment>
+
+<nav class="breadcrumb">
+  <a href="/">Home</a> <span>/</span>
+  <a href="/pro-players/">Pro Players</a> <span>/</span>
+  <span>Gear</span>
+</nav>
+
+<!-- Hero: left-aligned, two-column layout -->
+<section class="geh-hero">
+  <div class="geh-hero-content">
+    <h1>CS2 Pro Gear</h1>
+    <p class="geh-hero-desc">Browse {allGear.length} peripherals used by professional CS2 players. Filter by type, search by name, and see which gear the best players trust.</p>
+  </div>
+  <div class="geh-hero-counters">
+    {typeCounts.map(tc => (
+      <div class="geh-counter">
+        <span class="geh-counter-icon">{tc.icon}</span>
+        <div class="geh-counter-data">
+          <span class="geh-counter-val">{tc.count}</span>
+          <span class="geh-counter-lbl">{tc.label}</span>
+        </div>
+      </div>
+    ))}
+  </div>
+</section>
+
+<!-- Filters -->
+<section class="geh-toolbar">
+  <div class="geh-toolbar-top">
+    <div class="geh-type-pills">
+      <button class="geh-pill active" data-type="all">All ({allGear.length})</button>
+      {typeCounts.map(tc => (
+        <button class="geh-pill" data-type={tc.type}>
+          <span class="geh-pill-icon">{tc.icon}</span> {tc.label} ({tc.count})
+        </button>
+      ))}
+    </div>
+  </div>
+  <div class="geh-toolbar-bottom">
+    <div class="geh-search-wrap">
+      <input type="text" id="gearSearch" class="geh-search" placeholder="Search gear..." />
+    </div>
+    <div class="geh-sort-wrap">
+      <label class="geh-sort-label" for="gearSort">Sort:</label>
+      <select id="gearSort" class="geh-sort-select">
+        <option value="popular">Most Popular</option>
+        <option value="name-az">Name A-Z</option>
+        <option value="name-za">Name Z-A</option>
+      </select>
+    </div>
+    <div class="geh-result-info"><span id="visibleCount">{allGear.length}</span> of {allGear.length} items shown</div>
+  </div>
+</section>
+
+<!-- Gear List: horizontal rows instead of card grid -->
+<div class="geh-list" id="ghGrid">
+  {allGear.map((g, i) => (
+    <a href={`/pro-gaming-gear/${g.slug}/`} class={`geh-row${i >= 48 ? ' geh-paginated' : ''}`}
+       data-name={g.name.toLowerCase()} data-type={g.type}
+       data-players={g.players.length} data-idx={i}>
+      <div class="geh-row-left">
+        {getGearImageUrl(g.name) ? (
+          <img class="geh-row-img" src={getGearImageUrl(g.name)} alt={g.name} width="40" height="40" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display=''" />
+          <span class="geh-row-icon" style="display:none">{typeIcons[g.type]}</span>
+        ) : (
+          <span class="geh-row-icon">{typeIcons[g.type]}</span>
+        )}
+        <div class="geh-row-meta">
+          <span class="geh-row-name">{g.name}</span>
+          <span class="geh-row-type">{typeSingular[g.type]}</span>
+        </div>
+      </div>
+      <div class="geh-row-players">
+        {g.players.slice(0, 3).map(p => (
+          <span class="geh-player-chip">{p.flag} {p.name}</span>
+        ))}
+        {g.players.length > 3 && <span class="geh-player-extra">+{g.players.length - 3}</span>}
+      </div>
+      <div class="geh-row-right">
+        <span class="geh-row-badge">{g.players.length} pro{g.players.length !== 1 ? 's' : ''}</span>
+        <span class="geh-row-arrow">&rarr;</span>
+      </div>
+    </a>
+  ))}
+</div>
+
+<div class="geh-loadmore-wrap" id="loadMoreWrap">
+  <button class="geh-loadmore" id="loadMoreBtn">Load More Gear <span id="loadMoreCount"></span></button>
+</div>
+
+<!-- Analysis: Top Gear per Type -->
+<section class="geh-analysis">
+  <h2>Most Popular Gear by Type</h2>
+  <div class="geh-analysis-cols">
+    {topPerType.map(tp => (
+      <div class="geh-analysis-block">
+        <h3 class="geh-analysis-title">Top {tp.label}</h3>
+        <ol class="geh-rank-list">
+          {tp.items.map((g, idx) => (
+            <li class="geh-rank-item">
+              <span class="geh-rank-num">{idx + 1}</span>
+              <a href={`/pro-gaming-gear/${g.slug}/`} class="geh-rank-name">{g.name}</a>
+              <div class="geh-rank-bar">
+                <div class="geh-rank-fill" style={`width:${Math.round((g.players.length / (tp.items[0]?.players.length || 1)) * 100)}%`}></div>
+              </div>
+              <span class="geh-rank-count">{g.players.length}</span>
+            </li>
+          ))}
+        </ol>
+      </div>
+    ))}
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="geh-faq">
+  <h2>Frequently Asked Questions</h2>
+  {faqs.map(f => (
+    <details class="geh-faq-item">
+      <summary>{f.question}</summary>
+      <p>{f.answer}</p>
+    </details>
+  ))}
+</section>
+
+<!-- Browse by Team -->
+<section class="geh-browse">
+  <h2>Browse by Team</h2>
+  <div class="geh-browse-list">
+    {topTeams.map(t => (
+      <a href={`/pro-teams/${t.slug}/`} class="geh-browse-row">
+        <span class="geh-browse-name">{t.name}</span>
+        <span class="geh-browse-count">{t.players.length}</span>
+      </a>
+    ))}
+  </div>
+</section>
+
+<!-- Browse by Role -->
+<section class="geh-browse">
+  <h2>Browse by Role</h2>
+  <div class="geh-browse-list">
+    {topRoles.map(r => (
+      <a href={`/pro-players/role/${r.slug}/`} class="geh-browse-row">
+        <span class="geh-browse-name">{r.name}</span>
+        <span class="geh-browse-count">{r.players.length}</span>
+      </a>
+    ))}
+  </div>
+</section>
+
+<!-- Browse by Country -->
+<section class="geh-browse">
+  <h2>Browse by Country</h2>
+  <div class="geh-browse-list">
+    {topCountries.map(c => (
+      <a href={`/pro-players/country/${c.slug}/`} class="geh-browse-row">
+        <span class="geh-browse-flag">{c.flag}</span>
+        <span class="geh-browse-name">{c.name}</span>
+        <span class="geh-browse-count">{c.players.length}</span>
+      </a>
+    ))}
+  </div>
+</section>
+
+<ExploreMore context="general" />
+
+<div class="internal-links">
+  <a href="/pro-players/">All Pro Players</a>
+  <a href="/pro-teams/">Teams</a>
+  <a href="/crosshair-codes/">Crosshair Codes</a>
+  <a href="/sensitivity-converter/">Sensitivity Converter</a>
+  <a href="/edpi-calculator/">eDPI Calculator</a>
+  <a href="/cs2-weapons/">Weapon Stats</a>
+</div>
+
+</Base>
+
+<style>
+/* ── Hero ── */
+.geh-hero{display:flex;gap:2rem;align-items:flex-start;background:var(--bg2);border:1px solid var(--border);border-radius:4px;padding:2rem;margin-bottom:1.5rem}
+.geh-hero-content{flex:1}
+.geh-hero-content h1{font-family:'Montserrat',sans-serif;font-size:2rem;font-weight:800;margin:0 0 .5rem;color:var(--text)}
+.geh-hero-desc{color:var(--text2);font-size:.95rem;line-height:1.6;margin:0}
+.geh-hero-counters{display:flex;gap:.5rem;flex-wrap:wrap}
+.geh-counter{display:flex;align-items:center;gap:.5rem;background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:.5rem .75rem}
+.geh-counter-icon{font-size:1.1rem}
+.geh-counter-data{display:flex;flex-direction:column}
+.geh-counter-val{font-size:1.1rem;font-weight:800;color:var(--accent);line-height:1.2}
+.geh-counter-lbl{font-size:.65rem;color:var(--text2);text-transform:uppercase;letter-spacing:.03em}
+
+/* ── Toolbar ── */
+.geh-toolbar{background:var(--bg2);border:1px solid var(--border);border-radius:4px;padding:1rem 1.25rem;margin-bottom:1.5rem}
+.geh-toolbar-top{margin-bottom:.75rem}
+.geh-type-pills{display:flex;gap:.35rem;flex-wrap:wrap}
+.geh-pill{background:var(--bg3);color:var(--text2);border:1px solid var(--border);padding:.35rem .65rem;border-radius:4px;font-size:.8rem;font-weight:600;cursor:pointer;transition:border-color .15s,color .15s;font-family:'Montserrat',sans-serif;white-space:nowrap}
+.geh-pill:hover{border-color:var(--accent);color:var(--text)}
+.geh-pill.active{background:var(--accent);color:#000;border-color:var(--accent)}
+.geh-pill-icon{font-size:.82rem}
+.geh-toolbar-bottom{display:flex;gap:1rem;align-items:center;flex-wrap:wrap}
+.geh-search-wrap{flex:1;min-width:160px}
+.geh-search{width:100%;background:var(--bg3);color:var(--text);border:1px solid var(--border);padding:.45rem .7rem;border-radius:4px;font-size:.88rem;font-family:'Montserrat',sans-serif}
+.geh-search:focus{border-color:var(--accent);outline:none}
+.geh-sort-wrap{display:flex;align-items:center;gap:.4rem}
+.geh-sort-label{font-size:.82rem;font-weight:600;color:var(--text)}
+.geh-sort-select{background:var(--bg3);color:var(--text);border:1px solid var(--border);padding:.35rem .5rem;border-radius:4px;font-size:.82rem;font-family:'Montserrat',sans-serif}
+.geh-result-info{font-size:.78rem;color:var(--text2);margin-left:auto}
+
+/* ── Gear List (horizontal rows) ── */
+.geh-list{display:flex;flex-direction:column;gap:2px;margin-bottom:1rem}
+.geh-row{display:flex;align-items:center;gap:1rem;text-decoration:none;color:inherit;background:var(--bg2);border:1px solid var(--border);border-left:3px solid transparent;border-radius:4px;padding:.75rem 1rem;transition:border-color .15s,background .15s}
+.geh-row:hover{border-left-color:var(--accent);background:var(--bg3)}
+.geh-row.hidden{display:none}
+.geh-row-left{display:flex;align-items:center;gap:.65rem;min-width:220px;flex-shrink:0}
+.geh-row-img{width:40px;height:40px;object-fit:contain;border-radius:4px;flex-shrink:0;background:var(--bg)}
+.geh-row-icon{font-size:1.3rem;flex-shrink:0;width:40px;text-align:center}
+.geh-row-meta{display:flex;flex-direction:column;min-width:0}
+.geh-row-name{font-weight:700;font-size:.92rem;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.geh-row-type{font-size:.7rem;color:var(--text2);text-transform:uppercase;letter-spacing:.03em}
+.geh-row-players{display:flex;gap:.3rem;flex:1;flex-wrap:wrap;min-width:0}
+.geh-player-chip{font-size:.72rem;color:var(--text2);background:var(--bg);border:1px solid var(--border);padding:.1rem .35rem;border-radius:4px;white-space:nowrap}
+.geh-player-extra{font-size:.7rem;color:var(--text2);padding:.1rem .25rem}
+.geh-row-right{display:flex;align-items:center;gap:.75rem;flex-shrink:0}
+.geh-row-badge{font-size:.75rem;font-weight:700;background:var(--accent);color:#000;padding:.15rem .5rem;border-radius:4px;white-space:nowrap}
+.geh-row-arrow{color:var(--text2);font-size:.85rem}
+
+/* ── Load More ── */
+.geh-loadmore-wrap{text-align:center;padding:1.25rem 0}
+.geh-loadmore{background:var(--accent);color:#000;border:none;padding:.65rem 1.75rem;border-radius:4px;font-size:.95rem;font-weight:700;cursor:pointer;font-family:'Montserrat',sans-serif;transition:opacity .15s}
+.geh-loadmore:hover{opacity:.85}
+.geh-loadmore span{font-weight:400;opacity:.8}
+.geh-paginated{display:none}
+.geh-row.geh-paginated.geh-revealed{display:flex}
+
+/* ── Analysis ── */
+.geh-analysis{margin-bottom:2.5rem}
+.geh-analysis h2{font-family:'Montserrat',sans-serif;font-size:1.25rem;margin:0 0 1rem;color:var(--text)}
+.geh-analysis-cols{display:flex;flex-direction:column;gap:1.25rem}
+.geh-analysis-block{background:var(--bg2);border:1px solid var(--border);border-radius:4px;padding:1.25rem}
+.geh-analysis-title{font-size:.95rem;font-weight:700;margin:0 0 .75rem;color:var(--text)}
+.geh-rank-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:.4rem}
+.geh-rank-item{display:flex;align-items:center;gap:.5rem}
+.geh-rank-num{font-size:.72rem;font-weight:700;color:var(--text2);width:18px;text-align:center;flex-shrink:0}
+.geh-rank-name{font-size:.82rem;color:var(--accent);font-weight:600;text-decoration:none;min-width:120px;flex-shrink:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.geh-rank-name:hover{text-decoration:underline}
+.geh-rank-bar{flex:1;height:16px;background:var(--bg3);border-radius:4px;overflow:hidden}
+.geh-rank-fill{height:100%;background:var(--accent);border-radius:4px;opacity:.6}
+.geh-rank-count{font-size:.75rem;color:var(--text2);font-weight:600;min-width:24px;text-align:right;flex-shrink:0}
+
+/* ── FAQ (details accordion) ── */
+.geh-faq{margin-bottom:2.5rem}
+.geh-faq h2{font-family:'Montserrat',sans-serif;font-size:1.25rem;margin:0 0 1rem;color:var(--text)}
+.geh-faq-item{background:var(--bg2);border:1px solid var(--border);border-radius:4px;margin-bottom:.4rem;overflow:hidden}
+.geh-faq-item summary{padding:.85rem 1rem;font-weight:700;font-size:.95rem;color:var(--text);cursor:pointer;list-style:none;display:flex;align-items:center;gap:.5rem;transition:background .15s}
+.geh-faq-item summary::before{content:'+';font-size:1.1rem;font-weight:700;color:var(--accent);flex-shrink:0;width:20px;text-align:center}
+.geh-faq-item[open] summary::before{content:'\2212'}
+.geh-faq-item summary:hover{background:var(--bg3)}
+.geh-faq-item summary::-webkit-details-marker{display:none}
+.geh-faq-item p{padding:0 1rem 1rem 2.5rem;margin:0;color:var(--text2);font-size:.9rem;line-height:1.65}
+
+/* ── Browse Sections ── */
+.geh-browse{margin:2rem 0}
+.geh-browse h2{font-family:'Montserrat',sans-serif;font-size:1.15rem;margin:0 0 .75rem;color:var(--text)}
+.geh-browse-list{display:flex;flex-direction:column;gap:2px}
+.geh-browse-row{display:flex;align-items:center;gap:.65rem;padding:.55rem .85rem;background:var(--bg2);border:1px solid var(--border);border-left:3px solid transparent;border-radius:4px;text-decoration:none;transition:border-color .15s,background .15s;font-size:.88rem}
+.geh-browse-row:hover{border-left-color:var(--accent);background:var(--bg3)}
+.geh-browse-flag{font-size:1rem}
+.geh-browse-name{color:var(--text);font-weight:600;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.geh-browse-count{color:var(--text2);font-size:.72rem;font-weight:500;background:var(--bg3);padding:.12rem .45rem;border-radius:4px;white-space:nowrap}
+
+/* ── Responsive ── */
+@media(max-width:768px){
+  .geh-hero{flex-direction:column}
+  .geh-hero-content h1{font-size:1.5rem}
+  .geh-hero-counters{width:100%}
+  .geh-toolbar-bottom{flex-direction:column;align-items:stretch}
+  .geh-result-info{margin-left:0}
+  .geh-type-pills{overflow-x:auto;flex-wrap:nowrap;padding-bottom:.5rem}
+  .geh-row{flex-direction:column;align-items:flex-start;gap:.5rem}
+  .geh-row-left{min-width:0}
+  .geh-row-right{align-self:flex-end}
+  .geh-rank-name{min-width:90px}
+}
+</style>
+
+<script is:inline>
+(function(){
+  var typeBtns = document.querySelectorAll('.geh-pill');
+  var search = document.getElementById('gearSearch');
+  var sortSel = document.getElementById('gearSort');
+  var grid = document.getElementById('ghGrid');
+  var cards = Array.from(document.querySelectorAll('.geh-row'));
+  var countEl = document.getElementById('visibleCount');
+  var loadMoreBtn = document.getElementById('loadMoreBtn');
+  var loadMoreWrap = document.getElementById('loadMoreWrap');
+  var loadMoreCount = document.getElementById('loadMoreCount');
+
+  var BATCH = 48;
+  var isFiltering = false;
+  var activeType = 'all';
+
+  function updateLoadMore() {
+    if (isFiltering) {
+      loadMoreWrap.style.display = 'none';
+      return;
+    }
+    var paginated = document.querySelectorAll('.geh-row.geh-paginated:not(.geh-revealed)');
+    if (paginated.length === 0) {
+      loadMoreWrap.style.display = 'none';
+    } else {
+      loadMoreWrap.style.display = 'block';
+      loadMoreCount.textContent = '(' + paginated.length + ' remaining)';
+    }
+  }
+
+  function filterAndSort() {
+    var q = search.value.toLowerCase().trim();
+    var sortBy = sortSel.value;
+    isFiltering = q !== '' || activeType !== 'all';
+
+    var visible = [];
+    cards.forEach(function(c) {
+      var nameMatch = !q || c.dataset.name.indexOf(q) > -1;
+      var typeMatch = activeType === 'all' || c.dataset.type === activeType;
+      c._match = nameMatch && typeMatch;
+      if (c._match) visible.push(c);
+    });
+
+    // Sort
+    visible.sort(function(a, b) {
+      switch (sortBy) {
+        case 'name-az': return a.dataset.name.localeCompare(b.dataset.name);
+        case 'name-za': return b.dataset.name.localeCompare(a.dataset.name);
+        default: return Number(b.dataset.players) - Number(a.dataset.players);
+      }
+    });
+
+    // Re-append in sorted order
+    cards.forEach(function(c) { c.style.display = 'none'; });
+    visible.forEach(function(c) {
+      grid.appendChild(c);
+      if (isFiltering) {
+        c.style.display = '';
+      } else {
+        var isPaginated = c.classList.contains('geh-paginated') && !c.classList.contains('geh-revealed');
+        c.style.display = isPaginated ? 'none' : '';
+      }
+    });
+
+    countEl.textContent = visible.length;
+    updateLoadMore();
+  }
+
+  // Type filter buttons
+  typeBtns.forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      typeBtns.forEach(function(b) { b.classList.remove('active'); });
+      btn.classList.add('active');
+      activeType = btn.dataset.type;
+      filterAndSort();
+    });
+  });
+
+  loadMoreBtn.addEventListener('click', function() {
+    var hidden = document.querySelectorAll('.geh-row.geh-paginated:not(.geh-revealed)');
+    var count = 0;
+    hidden.forEach(function(c) {
+      if (count < BATCH) {
+        c.classList.add('geh-revealed');
+        if (c._match !== false) c.style.display = '';
+        count++;
+      }
+    });
+    updateLoadMore();
+  });
+
+  search.addEventListener('input', filterAndSort);
+  sortSel.addEventListener('change', filterAndSort);
+
+  updateLoadMore();
+})();
+</script>

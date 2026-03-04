@@ -1,0 +1,206 @@
+---
+import Base from '../layouts/Base.astro';
+import ExploreMore from '../components/ExploreMore.astro';
+import { breadcrumbSchema } from '../lib/weapons';
+
+const title = 'CS2 Guides — Sharpen Your Skills at Every Level | CSGOLuck Wiki';
+const description = 'Detailed CS2 walkthroughs built to make you a better player. Covering skin trading, performance tuning, recoil control, round economy, and ranked play tactics — all from veteran Counter-Strike enthusiasts.';
+
+const guides = [
+  { slug: 'beginners-guide', title: "Beginner's Guide", description: 'Everything a new player needs to know — from basic controls and weapon handling to round economy and essential map terminology.', tag: 'Fundamentals' },
+  { slug: 'crosshair-guide', title: 'Crosshair Guide', description: 'Dial in your perfect reticle with popular pro setups, console tweaks, and step-by-step customization advice for sharper aim.', tag: 'Settings' },
+  { slug: 'economy-guide', title: 'Economy Guide', description: 'Full breakdowns of buy rounds, save strats, force purchases, and cash flow tactics that keep your squad well-armed.', tag: 'Strategy' },
+  { slug: 'ranks-guide', title: 'Ranking System Guide', description: 'How competitive tiers and Premier ELO work, plus actionable tips for pushing your way from Silver into the Global Elite bracket.', tag: 'Competitive' },
+  { slug: 'trading-guide', title: 'Skin Trading Guide', description: 'Platform comparisons, fraud-proofing checklists, pricing know-how, and methods for growing your inventory value over time.', tag: 'Trading' },
+  { slug: 'float-guide', title: 'Float Value Guide', description: 'Explaining how float numbers dictate skin condition, influence market pricing, and factor into trade-up contract outcomes.', tag: 'Skins' },
+  { slug: 'skins-investing-guide', title: 'Skins Investing Guide', description: 'Identifying skins with growth potential, timing your buys, building a diversified portfolio, and mitigating market risk.', tag: 'Trading' },
+  { slug: 'fps-optimization-guide', title: 'FPS Optimization Guide', description: 'Video options, startup parameters, OS-level performance tweaks, and hardware guidance to hit the highest frame rates possible.', tag: 'Performance' },
+  { slug: 'advanced-mechanics-guide', title: 'Advanced Mechanics', description: 'Techniques for counter-strafing, jiggle and shoulder peeking, multi-target spray transfers, and head-level crosshair discipline.', tag: 'Gameplay' },
+  { slug: 'movement-guide', title: 'Movement Guide', description: 'Deep dives into counter-strafing, bhop timing, surf mechanics, mid-air strafes, and peek footwork used in high-level matches.', tag: 'Gameplay' },
+  { slug: 'grenade-guide', title: 'Grenades & Utility', description: 'Tested smoke spots, pop-flash setups, molotov placement, key binds for nades, and offline practice setups for utility excellence.', tag: 'Gameplay' },
+  { slug: 'audio-guide', title: 'Audio & Sound Settings', description: 'Tweak HRTF, dial in volume curves, apply console audio commands, and configure settings that make enemy footsteps impossible to miss.', tag: 'Settings' },
+  { slug: 'config-guide', title: 'Config & Settings', description: 'Autoexec creation, display tuning, network rate adjustments, launch flags, and general config file housekeeping.', tag: 'Settings' },
+  { slug: 'demo-guide', title: 'Demo & Replay', description: 'How to grab, play back, and break down CS2 replays using the demo UI, console shortcuts, and structured review workflows.', tag: 'Improvement' },
+  { slug: 'case-hardened-guide', title: 'Case Hardened & Blue Gems', description: 'Paint seed identification, blue gem tier lists, gold gem highlights, and value guides for the AK-47, knife, Five-SeveN, and beyond.', tag: 'Skins' },
+];
+
+const breadcrumbs = [
+  { name: 'Home', url: '/' },
+  { name: 'Guides', url: '/cs2-guides/' },
+];
+
+const itemListSchema = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "ItemList",
+  "name": "CS2 Guides",
+  "description": "A curated library of Counter-Strike 2 tutorials spanning combat skills, skin trading, configuration tweaks, frame rate tuning, and high-level mechanical techniques.",
+  "numberOfItems": guides.length,
+  "itemListElement": guides.map((guide, i) => ({
+    "@type": "ListItem",
+    "position": i + 1,
+    "name": guide.title,
+    "description": guide.description,
+    "url": `https://wiki.csgoluck.com/cs2-guides/${guide.slug}/`
+  }))
+});
+
+const allTags = [...new Set(guides.map(g => g.tag))];
+---
+
+<Base title={title} description={description}>
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema(breadcrumbs))} />
+    <script type="application/ld+json" set:html={itemListSchema} />
+  </Fragment>
+
+  <nav class="breadcrumb"><a href="/">Home</a> / <span>Guides</span></nav>
+
+  <div class="gh-hero">
+    <h1 class="gh-title">CS2 Knowledge Base</h1>
+    <p class="gh-subtitle">{guides.length} tutorials spanning combat, skins, configuration, and tactics. Pair these guides with our <a href="/cs2-tools/" style="color:var(--accent)">free CS2 tools</a> and study how the <a href="/pro-players/" style="color:var(--accent)">pros configure their setups</a>.</p>
+  </div>
+
+  <div class="gh-filters">
+    <button class="gh-pill gh-pill-active" data-filter="all">All</button>
+    {allTags.map(tag => (
+      <button class="gh-pill" data-filter={tag.toLowerCase()}>{tag}</button>
+    ))}
+  </div>
+
+  <div class="gh-reading-order">
+    <h2 class="gh-section-label">Suggested Reading Order</h2>
+    <div class="gh-steps">
+      <a href="/cs2-guides/beginners-guide/" class="gh-step"><span class="gh-step-num">1</span><span>Fundamentals</span></a>
+      <span class="gh-step-divider"></span>
+      <a href="/cs2-guides/economy-guide/" class="gh-step"><span class="gh-step-num">2</span><span>Economy</span></a>
+      <span class="gh-step-divider"></span>
+      <a href="/cs2-guides/crosshair-guide/" class="gh-step"><span class="gh-step-num">3</span><span>Crosshair</span></a>
+      <span class="gh-step-divider"></span>
+      <a href="/cs2-guides/ranks-guide/" class="gh-step"><span class="gh-step-num">4</span><span>Ranking</span></a>
+    </div>
+  </div>
+
+  <div class="gh-guides">
+    {guides.map((guide) => (
+      <a href={`/cs2-guides/${guide.slug}/`} class="gh-guide-row" data-tag={guide.tag.toLowerCase()}>
+        <div class="gh-guide-left">
+          <span class="gh-tag" data-tag={guide.tag.toLowerCase()}>{guide.tag}</span>
+          <h3 class="gh-guide-title">{guide.title}</h3>
+        </div>
+        <p class="gh-guide-desc">{guide.description}</p>
+        <span class="gh-guide-arrow">Read &rarr;</span>
+      </a>
+    ))}
+  </div>
+
+  <div class="gh-faq">
+    <h2 class="gh-section-label">Common Questions</h2>
+    <details class="gh-faq-item">
+      <summary>Is there a recommended reading path through these guides?</summary>
+      <p>Begin with the Beginner's Guide to nail down core concepts, then work through Economy and Crosshair to solidify your fundamentals. The Ranking System Guide is a natural next step. From there, branch out into whichever area you most want to sharpen — movement mechanics, grenade usage, or performance tuning.</p>
+    </details>
+    <details class="gh-faq-item">
+      <summary>Do these guides reflect the most recent CS2 updates?</summary>
+      <p>Absolutely. Every guide in the knowledge base is actively maintained. Whenever Valve ships a patch that alters gameplay mechanics, economy numbers, or configuration options, the affected guides are revised accordingly. You can verify the last revision date shown at the bottom of each article.</p>
+    </details>
+    <details class="gh-faq-item">
+      <summary>I have never played Counter-Strike before — which guide should I open first?</summary>
+      <p>Head straight to the Beginner's Guide — it walks through everything from basic movement and shooting to round economy fundamentals. Once you have that foundation, the Crosshair Guide and FPS Optimization Guide will help you dial in your settings for the smoothest possible experience.</p>
+    </details>
+  </div>
+
+  <!-- Internal Links -->
+  <div class="gh-links" style="display:flex;flex-wrap:wrap;gap:.5rem;align-items:center;padding:1rem;background:var(--bg2);border:1px solid var(--border);border-radius:4px;margin-bottom:1.5rem">
+    <strong style="width:100%;font-size:.85rem;color:var(--text);margin-bottom:.25rem">Related Resources:</strong>
+    <a href="/cs2-tools/" style="font-size:.82rem;color:var(--accent);text-decoration:none;padding:.3rem .6rem;background:var(--bg3);border:1px solid var(--border);border-radius:4px">All Tools</a>
+    <a href="/pro-players/" style="font-size:.82rem;color:var(--accent);text-decoration:none;padding:.3rem .6rem;background:var(--bg3);border:1px solid var(--border);border-radius:4px">Pro Player Settings</a>
+    <a href="/cs2-weapons/" style="font-size:.82rem;color:var(--accent);text-decoration:none;padding:.3rem .6rem;background:var(--bg3);border:1px solid var(--border);border-radius:4px">Weapon Database</a>
+    <a href="/cs2-maps/" style="font-size:.82rem;color:var(--accent);text-decoration:none;padding:.3rem .6rem;background:var(--bg3);border:1px solid var(--border);border-radius:4px">Map Database</a>
+    <a href="/cs2-skins/" style="font-size:.82rem;color:var(--accent);text-decoration:none;padding:.3rem .6rem;background:var(--bg3);border:1px solid var(--border);border-radius:4px">Skin Database</a>
+    <a href="/cs2-commands/" style="font-size:.82rem;color:var(--accent);text-decoration:none;padding:.3rem .6rem;background:var(--bg3);border:1px solid var(--border);border-radius:4px">Console Commands</a>
+    <a href="/sensitivity-converter/" style="font-size:.82rem;color:var(--accent);text-decoration:none;padding:.3rem .6rem;background:var(--bg3);border:1px solid var(--border);border-radius:4px">Sensitivity Converter</a>
+    <a href="/crosshair-generator/" style="font-size:.82rem;color:var(--accent);text-decoration:none;padding:.3rem .6rem;background:var(--bg3);border:1px solid var(--border);border-radius:4px">Crosshair Generator</a>
+    <a href="/damage-calculator/" style="font-size:.82rem;color:var(--accent);text-decoration:none;padding:.3rem .6rem;background:var(--bg3);border:1px solid var(--border);border-radius:4px">Damage Calculator</a>
+    <a href="/cs2-cases/" style="font-size:.82rem;color:var(--accent);text-decoration:none;padding:.3rem .6rem;background:var(--bg3);border:1px solid var(--border);border-radius:4px">Cases & Collections</a>
+  </div>
+
+  <ExploreMore context="guides" />
+</Base>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const pills = document.querySelectorAll('.gh-pill');
+    const rows = document.querySelectorAll('.gh-guide-row');
+    pills.forEach(pill => {
+      pill.addEventListener('click', () => {
+        pills.forEach(p => p.classList.remove('gh-pill-active'));
+        pill.classList.add('gh-pill-active');
+        const filter = pill.getAttribute('data-filter');
+        rows.forEach(row => {
+          if (filter === 'all' || row.getAttribute('data-tag') === filter) {
+            (row as HTMLElement).style.display = '';
+          } else {
+            (row as HTMLElement).style.display = 'none';
+          }
+        });
+      });
+    });
+  });
+</script>
+
+<style>
+  .gh-hero{margin-bottom:1.5rem}
+  .gh-title{font-size:1.8rem;margin:0 0 .5rem;color:var(--text)}
+  .gh-subtitle{color:var(--text2);font-size:.92rem;line-height:1.6;margin:0;max-width:560px}
+
+  .gh-section-label{font-size:.85rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--text2);margin:0 0 .8rem;padding-bottom:.4rem;border-bottom:1px solid var(--border)}
+
+  .gh-filters{display:flex;flex-wrap:wrap;gap:.4rem;margin-bottom:1.8rem}
+  .gh-pill{padding:.35rem .75rem;font-size:.78rem;font-weight:600;border-radius:4px;border:1px solid var(--border);background:var(--bg2);color:var(--text2);cursor:pointer;transition:all .15s;font-family:inherit}
+  .gh-pill:hover{border-color:var(--accent);color:var(--accent)}
+  .gh-pill-active{background:var(--accent);color:#000;border-color:var(--accent)}
+
+  .gh-reading-order{margin-bottom:2rem;padding:1rem 1.2rem;background:var(--bg2);border:1px solid var(--border);border-radius:4px}
+  .gh-steps{display:flex;align-items:center;gap:.6rem;flex-wrap:wrap}
+  .gh-step{display:inline-flex;align-items:center;gap:.4rem;padding:.35rem .7rem;background:var(--bg3);border:1px solid var(--border);border-radius:4px;text-decoration:none;color:var(--text);font-size:.8rem;font-weight:600;transition:border-color .15s}
+  .gh-step:hover{border-color:var(--accent);color:var(--accent)}
+  .gh-step-num{display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;background:var(--accent);color:#000;border-radius:4px;font-size:.68rem;font-weight:800}
+  .gh-step-divider{width:16px;height:1px;background:var(--border)}
+
+  .gh-guides{display:flex;flex-direction:column;gap:0;margin-bottom:2rem}
+  .gh-guide-row{display:grid;grid-template-columns:200px 1fr auto;align-items:center;gap:1rem;padding:.9rem 1rem;background:var(--bg2);border:1px solid var(--border);border-bottom:none;text-decoration:none;color:inherit;transition:border-left .15s,background .15s}
+  .gh-guide-row:first-child{border-radius:4px 4px 0 0}
+  .gh-guide-row:last-child{border-radius:0 0 4px 4px;border-bottom:1px solid var(--border)}
+  .gh-guide-row:hover{border-left:3px solid var(--accent);background:var(--bg3)}
+
+  .gh-guide-left{display:flex;align-items:center;gap:.6rem;min-width:0}
+  .gh-guide-title{margin:0;font-size:.9rem;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .gh-guide-desc{margin:0;font-size:.8rem;color:var(--text2);line-height:1.4;overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical}
+  .gh-guide-arrow{font-size:.78rem;font-weight:700;color:var(--accent);white-space:nowrap;flex-shrink:0}
+
+  .gh-tag{font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.04em;padding:.15rem .45rem;border-radius:4px;flex-shrink:0;background:var(--bg3);color:var(--text2);border:1px solid var(--border)}
+  .gh-tag[data-tag="gameplay"]{color:#4fc3f7;border-color:#4fc3f733}
+  .gh-tag[data-tag="settings"]{color:#ba68c8;border-color:#ba68c833}
+  .gh-tag[data-tag="strategy"]{color:#ffd54f;border-color:#ffd54f33}
+  .gh-tag[data-tag="competitive"]{color:#ef5350;border-color:#ef535033}
+  .gh-tag[data-tag="trading"]{color:#2ecc71;border-color:#2ecc7133}
+  .gh-tag[data-tag="skins"]{color:#ff9800;border-color:#ff980033}
+  .gh-tag[data-tag="fundamentals"]{color:#81c784;border-color:#81c78433}
+  .gh-tag[data-tag="performance"]{color:#7986cb;border-color:#7986cb33}
+  .gh-tag[data-tag="improvement"]{color:#4dd0e1;border-color:#4dd0e133}
+
+  .gh-faq{margin-bottom:2rem}
+  .gh-faq-item{background:var(--bg2);border:1px solid var(--border);border-radius:4px;margin-bottom:.5rem;overflow:hidden}
+  .gh-faq-item summary{padding:.8rem 1rem;font-size:.88rem;font-weight:600;color:var(--text);cursor:pointer;list-style:none;display:flex;align-items:center;justify-content:space-between}
+  .gh-faq-item summary::after{content:'+';font-size:1rem;color:var(--accent);font-weight:700}
+  .gh-faq-item[open] summary::after{content:'-'}
+  .gh-faq-item summary::-webkit-details-marker{display:none}
+  .gh-faq-item p{padding:0 1rem .8rem;margin:0;font-size:.84rem;color:var(--text2);line-height:1.6}
+
+  @media(max-width:700px){
+    .gh-guide-row{grid-template-columns:1fr;gap:.4rem}
+    .gh-guide-left{gap:.4rem}
+    .gh-guide-arrow{display:none}
+    .gh-step-divider{width:8px}
+  }
+</style>

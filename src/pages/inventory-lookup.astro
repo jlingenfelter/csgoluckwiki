@@ -3,12 +3,12 @@ import Base from '../layouts/Base.astro';
 import ExploreMore from '../components/ExploreMore.astro';
 import { faqSchema, breadcrumbSchema } from '../lib/weapons';
 
-const title = 'CS2 Steam Inventory Value Calculator | CSDB.gg';
+const title = 'CS2 Steam Inventory Value Calculator | CSGOLuck Wiki';
 const description = 'Check your Steam inventory CS2 skin value instantly. Get total inventory worth, item breakdown by category, and find your most valuable skins. Free steam inventory value checker for Counter-Strike 2.';
 
 const breadcrumbs = [
   { name: 'Home', url: '/' },
-  { name: 'Skins', url: '/skins/' },
+  { name: 'Skins', url: '/cs2-skins/' },
   { name: 'Inventory Lookup', url: '/inventory-lookup/' },
 ];
 
@@ -40,30 +40,30 @@ const faqs = [
 ];
 ---
 
-<Base title={title} description={description} currentNav="/skins/">
+<Base title={title} description={description} currentNav="/cs2-skins/">
   <Fragment slot="head">
     <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema(breadcrumbs))} />
     <script type="application/ld+json" set:html={JSON.stringify(faqSchema(faqs))} />
   </Fragment>
 
   <!-- Breadcrumb -->
-  <nav class="breadcrumb">
-    <a href="/">Home</a> / <a href="/skins/">Skins</a> / <span>Inventory Lookup</span>
+  <nav class="il-breadcrumb">
+    <a href="/">Home</a> / <a href="/cs2-skins/">Skins</a> / <span>Inventory Lookup</span>
   </nav>
 
   <!-- Hero Section -->
-  <section class="hero-section">
+  <section class="il-hero">
     <h1>CS2 Steam Inventory Value Calculator</h1>
     <p>Instantly calculate your total inventory value and break down your collection by weapon category. Look up any public Steam inventory.</p>
   </section>
 
   <!-- Lookup Form -->
-  <section class="calc-section">
+  <section class="il-lookup">
     <h2>Look Up Inventory</h2>
     <p>Enter your Steam ID, profile URL, or vanity username to analyze your inventory value.</p>
 
-    <div class="lookup-form">
-      <div class="form-group">
+    <div class="il-form">
+      <div class="il-form-group">
         <label for="steamInput">Steam ID / Profile URL / Username:</label>
         <input
           type="text"
@@ -73,96 +73,93 @@ const faqs = [
         >
         <small>Your inventory must be set to public in Steam privacy settings</small>
       </div>
-      <button id="lookupBtn" class="lookup-button">Look Up Inventory</button>
+      <button id="lookupBtn" class="il-lookup-btn">Look Up Inventory</button>
     </div>
 
     <!-- Loading State -->
-    <div id="loadingState" class="loading-state" style="display:none">
-      <div class="spinner"></div>
+    <div id="loadingState" class="il-loading" style="display:none">
+      <div class="il-spinner"></div>
       <p>Fetching your inventory...</p>
     </div>
 
     <!-- Error State -->
-    <div id="errorState" class="error-state" style="display:none">
+    <div id="errorState" class="il-error" style="display:none">
       <p id="errorMessage"></p>
     </div>
 
     <!-- Results Section -->
-    <div id="resultsSection" class="results-section" style="display:none">
+    <div id="resultsSection" class="il-results" style="display:none">
       <!-- Summary Stats -->
-      <div class="stats-grid">
-        <div class="stat-card">
-          <div class="val" id="totalValue">$0.00</div>
-          <div class="label">Total Value</div>
+      <div class="il-stats">
+        <div class="il-stat">
+          <div class="il-stat-val" id="totalValue">$0.00</div>
+          <div class="il-stat-label">Total Value</div>
         </div>
-        <div class="stat-card">
-          <div class="val" id="itemCount">0</div>
-          <div class="label">Items</div>
+        <div class="il-stat">
+          <div class="il-stat-val" id="itemCount">0</div>
+          <div class="il-stat-label">Items</div>
         </div>
-        <div class="stat-card">
-          <div class="val" id="mostValuableItem">—</div>
-          <div class="label">Most Valuable</div>
+        <div class="il-stat">
+          <div class="il-stat-val" id="mostValuableItem">—</div>
+          <div class="il-stat-label">Most Valuable</div>
         </div>
-        <div class="stat-card">
-          <div class="val" id="avgPrice">$0.00</div>
-          <div class="label">Avg Price</div>
+        <div class="il-stat">
+          <div class="il-stat-val" id="avgPrice">$0.00</div>
+          <div class="il-stat-label">Avg Price</div>
         </div>
       </div>
 
       <!-- Portfolio Grade -->
-      <div class="portfolio-grade" id="portfolioGrade" style="display:none">
-        <div class="grade-badge" id="gradeBadge">-</div>
-        <div class="grade-info">
-          <div class="grade-label">Portfolio Grade</div>
-          <div class="grade-desc" id="gradeDesc">-</div>
+      <div class="il-grade" id="portfolioGrade" style="display:none">
+        <div class="il-grade-badge" id="gradeBadge">-</div>
+        <div class="il-grade-info">
+          <div class="il-grade-label">Portfolio Grade</div>
+          <div class="il-grade-desc" id="gradeDesc">-</div>
         </div>
       </div>
 
       <!-- Category Breakdown -->
       <h3>Inventory by Category</h3>
-      <div class="breakdown-grid" id="categoryBreakdown"></div>
+      <div class="il-breakdown" id="categoryBreakdown"></div>
 
       <!-- Rarity Breakdown -->
       <div id="raritySection" style="display:none">
         <h3>Price Tier Distribution</h3>
-        <div class="rarity-breakdown" id="rarityBreakdown"></div>
+        <div class="il-rarity-breakdown" id="rarityBreakdown"></div>
       </div>
 
       <!-- Top Items -->
       <h3>Most Valuable Items</h3>
-      <div class="items-grid" id="topItems"></div>
+      <div class="il-items" id="topItems"></div>
 
       <!-- Actions -->
-      <div class="inv-actions">
-        <button class="inv-action-btn" id="copyValueBtn">Copy Total Value</button>
-        <a href="/skins/" class="inv-action-btn">Browse All Skins</a>
-        <a href="/market-trends/" class="inv-action-btn">Market Trends</a>
+      <div class="il-actions">
+        <button class="il-action-btn" id="copyValueBtn">Copy Total Value</button>
+        <a href="/cs2-skins/" class="il-action-btn">Browse All Skins</a>
+        <a href="/market-trends/" class="il-action-btn">Market Trends</a>
       </div>
     </div>
   </section>
 
   <!-- How to Find Steam ID -->
-  <section class="guide-section">
+  <section class="il-guide">
     <h2>How to Find Your Steam ID</h2>
-    <div class="card-grid">
-      <div class="card">
+    <div class="il-guide-list">
+      <div class="il-guide-row">
         <h3>Method 1: From Profile URL</h3>
         <p>Visit your Steam profile and look at the URL bar. Your Steam ID is the long number after /profiles/ or your username after /id/</p>
-        <code style="background: var(--bg3); padding: 0.5rem; border-radius: 4px; display: block; margin: 0.5rem 0; font-size: 0.8rem;">https://steamcommunity.com/profiles/76561198000000000</code>
+        <code class="il-code">https://steamcommunity.com/profiles/76561198000000000</code>
       </div>
-
-      <div class="card">
+      <div class="il-guide-row">
         <h3>Method 2: Vanity Username</h3>
         <p>If you set a custom URL, use just your username. We'll convert it to your numeric Steam ID automatically.</p>
-        <code style="background: var(--bg3); padding: 0.5rem; border-radius: 4px; display: block; margin: 0.5rem 0; font-size: 0.8rem;">https://steamcommunity.com/id/myusername</code>
+        <code class="il-code">https://steamcommunity.com/id/myusername</code>
       </div>
-
-      <div class="card">
+      <div class="il-guide-row">
         <h3>Method 3: SteamID Tools</h3>
         <p>Use online SteamID lookup tools if you don't have your ID handy. Search "SteamID finder" to find your numeric ID in seconds.</p>
       </div>
-
-      <div class="card">
+      <div class="il-guide-row">
         <h3>Privacy Settings</h3>
         <p>Make sure your profile is public and your inventory is visible. Go to Profile → Privacy Settings and set both to Public, then try again.</p>
       </div>
@@ -170,400 +167,161 @@ const faqs = [
   </section>
 
   <!-- Related Tools -->
-  <section class="related-section">
+  <section class="il-related">
     <h2>Related Tools & Resources</h2>
-    <div class="internal-links">
-      <a href="/skins/">Skin Database</a>
-      <a href="/skin-compare/">Compare Skins</a>
-      <a href="/price-tracker/">Price Tracker</a>
-      <a href="/market-trends/">Market Trends</a>
-      <a href="/float-checker/">Float Checker</a>
-      <a href="/tradeup-calculator/">Trade-Up Calculator</a>
-      <a href="/case-odds-calculator/">Case Odds Calculator</a>
-      <a href="/case-simulator/">Case Simulator</a>
-      <a href="/cases/">Cases & Collections</a>
-      <a href="/loadout-builder/">Loadout Builder</a>
-      <a href="/weapons/">Weapon Database</a>
-      <a href="/guides/trading-guide/">Trading Guide</a>
-      <a href="/guides/float-guide/">Float Guide</a>
-      <a href="/guides/skins-investing-guide/">Investing Guide</a>
+    <div class="il-related-list">
+      <a href="/cs2-skins/" class="il-related-row">Skin Database</a>
+      <a href="/skin-compare/" class="il-related-row">Compare Skins</a>
+      <a href="/price-tracker/" class="il-related-row">Price Tracker</a>
+      <a href="/market-trends/" class="il-related-row">Market Trends</a>
+      <a href="/float-checker/" class="il-related-row">Float Checker</a>
+      <a href="/tradeup-calculator/" class="il-related-row">Trade-Up Calculator</a>
+      <a href="/case-odds-calculator/" class="il-related-row">Case Odds Calculator</a>
+      <a href="/case-simulator/" class="il-related-row">Case Simulator</a>
+      <a href="/cs2-cases/" class="il-related-row">Cases & Collections</a>
+      <a href="/loadout-builder/" class="il-related-row">Loadout Builder</a>
+      <a href="/cs2-weapons/" class="il-related-row">Weapon Database</a>
+      <a href="/cs2-guides/trading-guide/" class="il-related-row">Trading Guide</a>
+      <a href="/cs2-guides/float-guide/" class="il-related-row">Float Guide</a>
+      <a href="/cs2-guides/skins-investing-guide/" class="il-related-row">Investing Guide</a>
     </div>
   </section>
 
+  <div class="csgoluck-cta" style="margin:2rem 0;background:linear-gradient(135deg,#1f222b 0%,#0d1a14 100%);border:1px solid rgba(46,204,113,0.2);border-radius:4px;overflow:hidden">
+  <div style="display:flex;align-items:center;gap:1rem;padding:1.25rem 1.5rem;flex-wrap:wrap">
+  <span style="font-size:1.5rem">🎯</span>
+  <div style="flex:1;min-width:200px"><strong style="display:block;color:#fff;font-size:.95rem">Got Skins? Try Your Luck</strong><span style="color:#909090;font-size:.82rem">Use your skins on CSGOLuck.com</span></div>
+  <a href="https://csgoluck.com" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:.5rem;padding:.55rem 1.25rem;background:#2ecc71;color:#fff;border-radius:4px;font-weight:700;font-size:.85rem;text-decoration:none;white-space:nowrap">Visit CSGOLuck →</a>
+  </div>
+  </div>
+
   <!-- FAQ -->
-  <section class="faq-section">
+  <section class="il-faq">
     <h2>Frequently Asked Questions</h2>
-    <dl class="faq">
-      {faqs.map(f => (
-        <Fragment>
-          <dt>{f.question}</dt>
-          <dd>{f.answer}</dd>
-        </Fragment>
-      ))}
-    </dl>
+    {faqs.map(f => (
+      <details class="il-faq-item">
+        <summary>{f.question}</summary>
+        <p>{f.answer}</p>
+      </details>
+    ))}
   </section>
 
   <ExploreMore context="skins" />
 </Base>
 
-<style>
-  .hero-section {
-    background: linear-gradient(135deg, rgba(212,149,110,0.15) 0%, rgba(255,200,87,0.1) 100%);
-    border-radius: 12px;
-    padding: 2rem;
-    margin-bottom: 2rem;
-    border: 1px solid var(--border);
-  }
+<style is:inline>
+/* ── Breadcrumb ── */
+.il-breadcrumb{font-size:.82rem;color:var(--text2);margin-bottom:1.25rem;display:flex;gap:.35rem;flex-wrap:wrap}
+.il-breadcrumb a{color:var(--accent);text-decoration:none}
+.il-breadcrumb a:hover{text-decoration:underline}
 
-  .hero-section h1 {
-    margin-top: 0;
-  }
+/* ── Hero ── */
+.il-hero{background:var(--bg2);border:1px solid var(--border);border-radius:4px;padding:2rem;margin-bottom:1.5rem}
+.il-hero h1{font-family:'Montserrat',sans-serif;font-size:2rem;font-weight:800;margin:0 0 .5rem;color:var(--text)}
+.il-hero p{color:var(--text2);font-size:.95rem;line-height:1.6;margin:0}
 
-  .lookup-form {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-    margin: 1.5rem 0;
-  }
+/* ── Lookup Section ── */
+.il-lookup{margin-bottom:2rem}
+.il-lookup h2{font-family:'Montserrat',sans-serif;font-size:1.15rem;font-weight:700;color:var(--text);margin:0 0 .5rem}
+.il-lookup>p{color:var(--text2);font-size:.95rem;margin-bottom:1rem}
 
-  .form-group {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-  }
+.il-form{display:flex;flex-direction:column;gap:1rem;margin:1.5rem 0}
+.il-form-group{display:flex;flex-direction:column;gap:.5rem}
+.il-form-group label{font-weight:600;color:var(--text)}
+.il-form-group input{background:var(--bg3);color:var(--text);border:1px solid var(--border);padding:.75rem 1rem;border-radius:4px;font-size:.95rem;transition:border-color .2s;font-family:inherit}
+.il-form-group input:focus{outline:none;border-color:var(--accent)}
+.il-form-group small{font-size:.8rem;color:var(--text2)}
 
-  .form-group label {
-    font-weight: 600;
-    color: var(--text);
-  }
+.il-lookup-btn{background:var(--accent);color:#000;border:none;padding:.75rem 1.5rem;border-radius:4px;font-weight:700;font-size:1rem;cursor:pointer;transition:background .2s;align-self:flex-start;font-family:inherit}
+.il-lookup-btn:hover{background:var(--accent2)}
 
-  .form-group input {
-    background: var(--bg3);
-    color: var(--text);
-    border: 1px solid var(--border);
-    padding: 0.75rem 1rem;
-    border-radius: 8px;
-    font-size: 0.95rem;
-    transition: border-color 0.2s, box-shadow 0.2s;
-    font-family: inherit;
-  }
+.il-loading{text-align:center;padding:2rem}
+.il-spinner{width:40px;height:40px;border:3px solid var(--bg3);border-top-color:var(--accent);border-radius:50%;animation:il-spin .8s linear infinite;margin:0 auto 1rem}
+@keyframes il-spin{to{transform:rotate(360deg)}}
 
-  .form-group input:focus {
-    outline: none;
-    border-color: var(--accent);
-    box-shadow: 0 0 0 3px rgba(245, 166, 35, 0.1);
-  }
+.il-error{background:rgba(239,83,80,0.1);border:1px solid rgba(239,83,80,0.5);border-radius:4px;padding:1rem;margin:1rem 0;color:#ffb3ad}
 
-  .form-group small {
-    font-size: 0.8rem;
-    color: var(--text2);
-  }
+.il-results{margin-top:2rem}
 
-  .lookup-button {
-    background: var(--accent);
-    color: #000;
-    border: none;
-    padding: 0.75rem 1.5rem;
-    border-radius: 8px;
-    font-weight: 700;
-    font-size: 1rem;
-    cursor: pointer;
-    transition: all 0.2s;
-    align-self: flex-start;
-  }
+/* ── Stats ── */
+.il-stats{display:flex;gap:2px;flex-wrap:wrap;margin-bottom:1.5rem}
+.il-stat{flex:1;min-width:120px;background:var(--bg2);border:1px solid var(--border);border-radius:4px;padding:1rem;text-align:center}
+.il-stat-val{font-family:'Montserrat',sans-serif;font-size:1.4rem;font-weight:800;color:var(--accent)}
+.il-stat-label{font-size:.78rem;color:var(--text2);text-transform:uppercase;letter-spacing:.04em;font-weight:600;margin-top:.25rem}
 
-  .lookup-button:hover {
-    background: var(--accent2);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(245, 166, 35, 0.3);
-  }
+/* ── Grade ── */
+.il-grade{display:flex;align-items:center;gap:1.25rem;background:var(--bg2);border:1px solid var(--border);border-radius:4px;padding:1.25rem 1.5rem;margin:1.5rem 0}
+.il-grade-badge{font-size:2rem;font-weight:900;width:60px;height:60px;display:flex;align-items:center;justify-content:center;border-radius:4px;background:var(--bg3);border:2px solid var(--border);flex-shrink:0}
+.il-grade-label{font-size:.82rem;color:var(--text2);text-transform:uppercase;letter-spacing:.05em;font-weight:700;margin-bottom:.25rem}
+.il-grade-desc{font-size:.9rem;color:var(--text);line-height:1.4}
 
-  .lookup-button:active {
-    transform: translateY(0);
-  }
+/* ── Breakdown ── */
+.il-breakdown{display:flex;flex-direction:column;gap:2px;margin:1rem 0 2rem}
+.il-category-card{background:var(--bg2);border:1px solid var(--border);border-left:3px solid transparent;border-radius:4px;padding:.75rem 1rem;display:flex;align-items:center;gap:1rem;transition:border-color .15s,background .15s}
+.il-category-card:hover{border-left-color:var(--accent);background:var(--bg3)}
+.il-category-card .il-cat-count{font-size:1.1rem;font-weight:800;color:var(--accent);min-width:40px}
+.il-category-card .il-cat-name{font-weight:600;color:var(--text);flex:1}
+.il-category-card .il-cat-value{font-size:.9rem;color:var(--text2)}
 
-  .loading-state {
-    text-align: center;
-    padding: 2rem;
-  }
+/* ── Rarity Breakdown ── */
+.il-rarity-breakdown{display:flex;flex-direction:column;gap:.5rem;margin:1rem 0 2rem;background:var(--bg2);border:1px solid var(--border);border-radius:4px;padding:1.25rem}
+.il-tier-row{display:grid;grid-template-columns:100px 1fr 80px;gap:.75rem;align-items:center}
+.il-tier-label{font-size:.82rem;font-weight:600;color:var(--text)}
+.il-tier-bar-wrap{height:22px;background:var(--bg3);border-radius:4px;overflow:hidden}
+.il-tier-bar{height:100%;border-radius:4px;transition:width .3s ease}
+.il-tier-count{font-size:.82rem;font-weight:700;text-align:right}
 
-  .spinner {
-    width: 40px;
-    height: 40px;
-    border: 3px solid var(--bg3);
-    border-top-color: var(--accent);
-    border-radius: 50%;
-    animation: spin 0.8s linear infinite;
-    margin: 0 auto 1rem;
-  }
+/* ── Items ── */
+.il-items{display:flex;flex-direction:column;gap:2px;margin:1rem 0 2rem}
+.il-item-card{display:flex;align-items:center;gap:1rem;background:var(--bg2);border:1px solid var(--border);border-left:3px solid transparent;border-radius:4px;padding:.75rem 1rem;text-decoration:none;color:inherit;transition:border-color .15s,background .15s}
+.il-item-card:hover{border-left-color:var(--accent);background:var(--bg3)}
+.il-item-img{width:60px;height:45px;background:var(--bg3);border-radius:4px;display:flex;align-items:center;justify-content:center;color:var(--text2);font-size:.7rem;flex-shrink:0;overflow:hidden}
+.il-item-info{flex:1;min-width:0}
+.il-item-name{font-weight:700;color:var(--text);font-size:.9rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.il-item-wear{font-size:.78rem;color:var(--text2)}
+.il-item-price{font-size:1rem;font-weight:800;color:var(--accent);flex-shrink:0}
 
-  @keyframes spin {
-    to { transform: rotate(360deg); }
-  }
+/* ── Actions ── */
+.il-actions{display:flex;gap:.75rem;flex-wrap:wrap;margin:2rem 0;padding-top:1.5rem;border-top:1px solid var(--border)}
+.il-action-btn{background:var(--bg3);color:var(--text);border:1px solid var(--border);padding:.6rem 1.25rem;border-radius:4px;font-size:.88rem;font-weight:600;cursor:pointer;text-decoration:none;transition:border-color .15s,color .15s;font-family:inherit}
+.il-action-btn:hover{border-color:var(--accent);color:var(--accent)}
 
-  .error-state {
-    background: rgba(239, 83, 80, 0.1);
-    border: 1px solid rgba(239, 83, 80, 0.5);
-    border-radius: 8px;
-    padding: 1rem;
-    margin: 1rem 0;
-    color: #ffb3ad;
-  }
+/* ── Guide Section ── */
+.il-guide{margin-bottom:2rem}
+.il-guide h2{font-family:'Montserrat',sans-serif;font-size:1.15rem;font-weight:700;color:var(--text);margin:0 0 .75rem}
+.il-guide-list{display:flex;flex-direction:column;gap:2px}
+.il-guide-row{background:var(--bg2);border:1px solid var(--border);border-left:3px solid transparent;border-radius:4px;padding:1rem 1.25rem;transition:border-color .15s,background .15s}
+.il-guide-row:hover{border-left-color:var(--accent);background:var(--bg3)}
+.il-guide-row h3{font-family:'Montserrat',sans-serif;color:var(--text);font-size:1rem;font-weight:700;margin:0 0 .35rem}
+.il-guide-row p{color:var(--text2);font-size:.9rem;line-height:1.5;margin:0 0 .5rem}
+.il-code{background:var(--bg3);padding:.5rem;border-radius:4px;display:block;font-size:.8rem;color:var(--text2)}
 
-  .results-section {
-    margin-top: 2rem;
-  }
+/* ── Related ── */
+.il-related{margin-bottom:2rem}
+.il-related h2{font-family:'Montserrat',sans-serif;font-size:1.15rem;font-weight:700;color:var(--text);margin:0 0 .75rem}
+.il-related-list{display:flex;flex-direction:column;gap:2px}
+.il-related-row{display:flex;align-items:center;text-decoration:none;color:var(--text);background:var(--bg2);border:1px solid var(--border);border-left:3px solid transparent;border-radius:4px;padding:.6rem 1rem;font-size:.9rem;font-weight:600;transition:border-color .15s,background .15s}
+.il-related-row:hover{border-left-color:var(--accent);background:var(--bg3)}
 
-  .breakdown-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-    gap: 1rem;
-    margin: 1.5rem 0;
-  }
+/* ── FAQ ── */
+.il-faq{margin-bottom:2rem}
+.il-faq h2{font-family:'Montserrat',sans-serif;font-size:1.15rem;font-weight:700;color:var(--text);margin:0 0 .75rem}
+.il-faq-item{background:var(--bg2);border:1px solid var(--border);border-radius:4px;margin-bottom:.35rem;overflow:hidden}
+.il-faq-item summary{padding:.75rem 1rem;font-weight:700;font-size:.9rem;color:var(--text);cursor:pointer;list-style:none;display:flex;align-items:center;gap:.5rem;transition:background .15s}
+.il-faq-item summary::before{content:'+';font-size:1.05rem;font-weight:700;color:var(--accent);flex-shrink:0;width:18px;text-align:center}
+.il-faq-item[open] summary::before{content:'\2212'}
+.il-faq-item summary:hover{background:var(--bg3)}
+.il-faq-item summary::-webkit-details-marker{display:none}
+.il-faq-item p{padding:0 1rem .85rem 2.25rem;margin:0;color:var(--text2);font-size:.88rem;line-height:1.6}
 
-  .category-card {
-    background: var(--bg2);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 1.25rem;
-    text-align: center;
-    transition: border-color 0.2s, box-shadow 0.2s;
-  }
-
-  .category-card:hover {
-    border-color: var(--accent);
-    box-shadow: 0 4px 12px rgba(245, 166, 35, 0.15);
-  }
-
-  .category-card .category-name {
-    font-weight: 600;
-    color: var(--text);
-    margin-bottom: 0.5rem;
-  }
-
-  .category-card .category-count {
-    font-size: 1.3rem;
-    font-weight: 800;
-    color: var(--accent);
-    margin-bottom: 0.25rem;
-  }
-
-  .category-card .category-value {
-    font-size: 0.9rem;
-    color: var(--text2);
-  }
-
-  .items-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-    gap: 1.5rem;
-    margin: 1.5rem 0;
-  }
-
-  .item-card {
-    background: var(--bg2);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    overflow: hidden;
-    transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
-  }
-
-  .item-card:hover {
-    border-color: var(--accent);
-    transform: translateY(-4px);
-    box-shadow: 0 8px 24px rgba(245, 166, 35, 0.2);
-  }
-
-  .item-image {
-    width: 100%;
-    height: 160px;
-    background: linear-gradient(135deg, var(--bg3) 0%, var(--bg) 100%);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: var(--text2);
-    font-size: 0.8rem;
-  }
-
-  .item-info {
-    padding: 1rem;
-  }
-
-  .item-name {
-    font-weight: 700;
-    color: var(--text);
-    margin-bottom: 0.5rem;
-    font-size: 0.95rem;
-    line-height: 1.3;
-  }
-
-  .item-meta {
-    display: flex;
-    justify-content: space-between;
-    gap: 0.5rem;
-    margin-bottom: 0.5rem;
-    font-size: 0.8rem;
-  }
-
-  .item-wear {
-    color: var(--text2);
-  }
-
-  .item-float {
-    color: var(--accent);
-    font-weight: 600;
-  }
-
-  .item-price {
-    font-size: 1.1rem;
-    font-weight: 800;
-    color: var(--accent);
-  }
-
-  .portfolio-grade {
-    display: flex;
-    align-items: center;
-    gap: 1.25rem;
-    background: var(--bg2);
-    border: 2px solid var(--border);
-    border-radius: 12px;
-    padding: 1.25rem 1.5rem;
-    margin: 1.5rem 0;
-  }
-
-  .grade-badge {
-    font-size: 2rem;
-    font-weight: 900;
-    width: 60px;
-    height: 60px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 12px;
-    background: var(--bg3);
-    border: 2px solid var(--border);
-    flex-shrink: 0;
-  }
-
-  .grade-label {
-    font-size: 0.82rem;
-    color: var(--text2);
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    font-weight: 700;
-    margin-bottom: 0.25rem;
-  }
-
-  .grade-desc {
-    font-size: 0.9rem;
-    color: var(--text);
-    line-height: 1.4;
-  }
-
-  .rarity-breakdown {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-    margin: 1rem 0 2rem;
-    background: var(--bg2);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 1.25rem;
-  }
-
-  .tier-row {
-    display: grid;
-    grid-template-columns: 100px 1fr 80px;
-    gap: 0.75rem;
-    align-items: center;
-  }
-
-  .tier-label {
-    font-size: 0.82rem;
-    font-weight: 600;
-    color: var(--text);
-  }
-
-  .tier-bar-wrap {
-    height: 22px;
-    background: var(--bg3);
-    border-radius: 4px;
-    overflow: hidden;
-  }
-
-  .tier-bar {
-    height: 100%;
-    border-radius: 4px;
-    transition: width 0.3s ease;
-  }
-
-  .tier-count {
-    font-size: 0.82rem;
-    font-weight: 700;
-    text-align: right;
-  }
-
-  .inv-actions {
-    display: flex;
-    gap: 0.75rem;
-    flex-wrap: wrap;
-    margin: 2rem 0;
-    padding-top: 1.5rem;
-    border-top: 1px solid var(--border);
-  }
-
-  .inv-action-btn {
-    background: var(--bg3);
-    color: var(--text);
-    border: 1px solid var(--border);
-    padding: 0.6rem 1.25rem;
-    border-radius: 8px;
-    font-size: 0.88rem;
-    font-weight: 600;
-    cursor: pointer;
-    text-decoration: none;
-    transition: all 0.2s;
-    font-family: inherit;
-  }
-
-  .inv-action-btn:hover {
-    border-color: var(--accent);
-    color: var(--accent);
-  }
-
-  .guide-section {
-    margin: 3rem 0 2rem;
-  }
-
-  .related-section {
-    margin: 3rem 0 2rem;
-  }
-
-  .faq-section {
-    margin: 3rem 0;
-  }
-
-  @media (max-width: 768px) {
-    .lookup-form {
-      flex-direction: column;
-    }
-
-    .lookup-button {
-      width: 100%;
-    }
-
-    .breakdown-grid {
-      grid-template-columns: repeat(2, 1fr);
-    }
-
-    .items-grid {
-      grid-template-columns: 1fr;
-    }
-
-    .stats-grid {
-      grid-template-columns: repeat(2, 1fr) !important;
-    }
-  }
+/* ── Responsive ── */
+@media(max-width:768px){
+  .il-hero h1{font-size:1.5rem}
+  .il-form{flex-direction:column}
+  .il-lookup-btn{width:100%}
+  .il-stats{flex-direction:column}
+  .il-tier-row{grid-template-columns:80px 1fr 60px}
+}
 </style>
 
 <script is:inline>
@@ -634,8 +392,6 @@ const faqs = [
       // Check if it's a vanity URL
       const vanityMatch = input.match(/\/id\/([a-zA-Z0-9_-]+)/);
       if (vanityMatch) {
-        // In production, you'd need to resolve the vanity name to a numeric ID
-        // For now, return the vanity name and let the API handle it
         return vanityMatch[1];
       }
 
@@ -685,10 +441,10 @@ const faqs = [
         var cat = entry[0], info = entry[1];
         var pct = data.totalValue > 0 ? ((info.value / data.totalValue) * 100).toFixed(0) : 0;
         var card = document.createElement('div');
-        card.className = 'category-card';
-        card.innerHTML = '<div class="category-count">' + info.count + '</div>' +
-          '<div class="category-name">' + cat + '</div>' +
-          '<div class="category-value">$' + info.value.toFixed(2) + ' (' + pct + '%)</div>';
+        card.className = 'il-category-card';
+        card.innerHTML = '<span class="il-cat-count">' + info.count + '</span>' +
+          '<span class="il-cat-name">' + cat + '</span>' +
+          '<span class="il-cat-value">$' + info.value.toFixed(2) + ' (' + pct + '%)</span>';
         categoryBreakdown.appendChild(card);
       });
 
@@ -712,10 +468,10 @@ const faqs = [
         tierCounts.forEach(function(t) {
           var barW = maxTier > 0 ? ((t.count / maxTier) * 100) : 0;
           var row = document.createElement('div');
-          row.className = 'tier-row';
-          row.innerHTML = '<div class="tier-label">' + t.label + '</div>' +
-            '<div class="tier-bar-wrap"><div class="tier-bar" style="width:' + barW + '%;background:' + t.color + '"></div></div>' +
-            '<div class="tier-count" style="color:' + t.color + '">' + t.count + ' items</div>';
+          row.className = 'il-tier-row';
+          row.innerHTML = '<div class="il-tier-label">' + t.label + '</div>' +
+            '<div class="il-tier-bar-wrap"><div class="il-tier-bar" style="width:' + barW + '%;background:' + t.color + '"></div></div>' +
+            '<div class="il-tier-count" style="color:' + t.color + '">' + t.count + ' items</div>';
           rarityBreakdown.appendChild(row);
         });
       }
@@ -726,13 +482,13 @@ const faqs = [
       data.items.sort(function(a, b) { return (b.price || 0) - (a.price || 0); }).slice(0, 12).forEach(function(item) {
         var skinSlug = itemNameToSlug(item.name);
         var card = document.createElement('a');
-        card.href = skinSlug ? '/skin/' + skinSlug + '/' : '/skins/';
-        card.className = 'item-card';
-        card.innerHTML = '<div class="item-image">' + escapeHtml(item.name.split('|')[0] || '') + '</div>' +
-          '<div class="item-info">' +
-          '<div class="item-name">' + escapeHtml(item.name) + '</div>' +
-          '<div class="item-meta"><span class="item-wear">' + (item.wear || '-') + '</span></div>' +
-          '<div class="item-price">$' + (item.price || 0).toFixed(2) + '</div></div>';
+        card.href = skinSlug ? '/cs2-skin/' + skinSlug + '/' : '/cs2-skins/';
+        card.className = 'il-item-card';
+        card.innerHTML = '<div class="il-item-img">' + escapeHtml(item.name.split('|')[0] || '') + '</div>' +
+          '<div class="il-item-info">' +
+          '<div class="il-item-name">' + escapeHtml(item.name) + '</div>' +
+          '<div class="il-item-wear">' + (item.wear || '-') + '</div></div>' +
+          '<div class="il-item-price">$' + (item.price || 0).toFixed(2) + '</div>';
         topItems.appendChild(card);
       });
 

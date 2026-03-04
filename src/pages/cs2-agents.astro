@@ -1,0 +1,651 @@
+---
+import Base from '../layouts/Base.astro';
+import ExploreMore from '../components/ExploreMore.astro';
+import { breadcrumbSchema, faqSchema } from '../lib/weapons';
+
+const title = 'CS2 Agents & Music Kits — Character & Audio Customization | CSGOLuck Wiki';
+const description = 'A comprehensive directory of Counter-Strike 2 agents and music kits. Explore every CT and T operative — including backstory and faction details — plus the full lineup of music kit artists.';
+
+const ctAgents = [
+  { name: 'Cmdr. Frank "Wet Sox" Baroud', faction: 'SEAL Frogman', operation: 'Operation Shattered Web', tier: 'Elite' },
+  { name: 'Operator', faction: 'SEAL Frogman', operation: 'Base', tier: 'Distinguished' },
+  { name: 'SEAL Frogman', faction: 'SEAL Frogman', operation: 'Base', tier: 'Exceptional' },
+  { name: 'Cmdr. Lee', faction: 'SEAL Frogman', operation: 'Hydra', tier: 'Superior' },
+  { name: 'Ava', faction: 'KSK', operation: 'Shattered Web', tier: 'Elite' },
+  { name: 'Eniqma', faction: 'KSK', operation: 'Shattered Web', tier: 'Exceptional' },
+  { name: 'John', faction: 'KSK', operation: 'Hydra', tier: 'Superior' },
+  { name: 'Anja', faction: 'KSK', operation: 'Riptide', tier: 'Exceptional' },
+  { name: 'Lerxst', faction: 'Sabre', operation: 'Shattered Web', tier: 'Elite' },
+  { name: 'Vypa Sista of Mercy', faction: 'Sabre', operation: 'Shattered Web', tier: 'Superior' },
+  { name: 'Dr. Romak "Twinkles" Kearsley', faction: 'Sabre', operation: 'Riptide', tier: 'Exceptional' },
+  { name: 'Stefan', faction: 'Sabre', operation: 'Hydra', tier: 'Distinguished' },
+  { name: 'Chem-Haz Cyberspace', faction: 'Professional', operation: 'Broken Fang', tier: 'Elite' },
+  { name: 'Trapper', faction: 'Professional', operation: 'Broken Fang', tier: 'Exceptional' },
+  { name: 'Operator', faction: 'Professional', operation: 'Broken Fang', tier: 'Superior' },
+  { name: 'Screech', faction: 'Professional', operation: 'Riptide', tier: 'Distinguished' },
+];
+
+const tAgents = [
+  { name: 'Vypa Sista of Mercy', faction: 'Sabre', operation: 'Shattered Web', tier: 'Elite' },
+  { name: 'Sabre', faction: 'Sabre', operation: 'Base', tier: 'Exceptional' },
+  { name: 'Sabre Capo', faction: 'Sabre', operation: 'Shattered Web', tier: 'Superior' },
+  { name: 'Sabre Intruder', faction: 'Sabre', operation: 'Hydra', tier: 'Distinguished' },
+  { name: 'Sabre Connoisseur', faction: 'Sabre', operation: 'Riptide', tier: 'Exceptional' },
+  { name: 'Ground Rebel', faction: 'Phoenix Connexion', operation: 'Shattered Web', tier: 'Elite' },
+  { name: 'Phoenix', faction: 'Phoenix Connexion', operation: 'Base', tier: 'Exceptional' },
+  { name: 'Bloodhound', faction: 'Phoenix Connexion', operation: 'Shattered Web', tier: 'Superior' },
+  { name: 'Elite Crew', faction: 'Phoenix Connexion', operation: 'Broken Fang', tier: 'Distinguished' },
+  { name: 'Soldier', faction: 'Balkans', operation: 'Shattered Web', tier: 'Elite' },
+  { name: 'Street Soldier', faction: 'Balkans', operation: 'Base', tier: 'Exceptional' },
+  { name: 'Balkan Captain', faction: 'Balkans', operation: 'Shattered Web', tier: 'Superior' },
+  { name: 'Balkan Swag', faction: 'Balkans', operation: 'Riptide', tier: 'Distinguished' },
+  { name: 'Diplomat', faction: 'The Doctor', operation: 'Broken Fang', tier: 'Elite' },
+  { name: 'The Doctor', faction: 'The Doctor', operation: 'Broken Fang', tier: 'Exceptional' },
+  { name: 'Ghoul', faction: 'The Doctor', operation: 'Riptide', tier: 'Superior' },
+];
+
+const musicKits = [
+  { artist: 'Valve', kits: ['Default', 'Operators', 'Cyberspace'], count: 3 },
+  { artist: 'Austin Wintory', kits: ['Arroword', 'Golden Knife', 'Ancient Chest'], count: 3 },
+  { artist: 'HeatleyBRO', kits: ['Earmuff Guardians', 'Legend', 'Snowglobe'], count: 3 },
+  { artist: 'Noisia', kits: ['Breakthrough', 'Fallout', 'Grit'], count: 3 },
+  { artist: 'Poul Henningsen', kits: ['Danish Joker', 'Embers', 'Riptide'], count: 3 },
+  { artist: 'Knife Party', kits: ['Clutch', 'Fanfare', 'Sleepover'], count: 3 },
+  { artist: 'Flashmob', kits: ['By the Numbers', 'Floss Mafioso', 'Supernova'], count: 3 },
+  { artist: 'Benn Down', kits: ['Main Stage', 'Phantom Poet', 'Thawed'], count: 3 },
+  { artist: 'Mike Morasky', kits: ['Half Dead', 'Jasmine Tea', 'Ozone'], count: 3 },
+  { artist: 'Flatbed Flowers', kits: ['Barricade', 'Blurred Lenses', 'Day Ones'], count: 3 },
+  { artist: 'Boneworks', kits: ['Aggression', 'Bloom', 'Chop Shop'], count: 3 },
+  { artist: 'Cataklysm', kits: ['Cold Steel', 'Dangerous', 'Ignition'], count: 3 },
+];
+
+const tiers = [
+  { name: 'Distinguished', icon: '🥉', description: 'Entry-level operatives obtainable through regular operations' },
+  { name: 'Exceptional', icon: '🥈', description: 'Battle-tested specialists with unique visual flair' },
+  { name: 'Superior', icon: '🥇', description: 'High-ranking agents sporting premium designs' },
+  { name: 'Elite', icon: '👑', description: 'The rarest rank — commanders and legendary figures' },
+];
+
+const breadcrumbs = [
+  { name: 'Home', url: '/' },
+  { name: 'Agents', url: '/cs2-agents/' },
+];
+
+const faqs = [
+  { q: 'How do I select and equip a different agent?', a: 'Navigate to the "Agents" section from the CS2 main menu. CT-side operatives can only be worn when playing Counter-Terrorist, and T-side operatives are exclusive to the Terrorist team. You need to own the agent in your inventory before it becomes available to equip, and you can set a separate agent for each faction.' },
+  { q: 'What is the typical price range for agents?', a: 'The majority of agents trade for somewhere between $8 and $20 on the Steam Community Market. Older operatives or those tied to early operations can climb well above that range because of shrinking supply. Agent bundles and collections sometimes offer a way to pick up multiple character skins at once.' },
+  { q: 'Are agents restricted to specific maps or modes?', a: 'Not at all. Agents are purely cosmetic and work across every map and game mode in CS2. Equipping a particular operative provides zero gameplay advantage — it is entirely about personalising how your character looks in-game.' },
+  { q: 'What qualifies an agent as a Master Agent?', a: 'Master Agents sit at the Elite tier and feature bespoke character designs with their own backstory. They originate from premium operations and carry accordingly higher market prices. Because of their exclusive origins and distinctive aesthetics, Elite-tier operatives are the most sought-after agents among collectors.' },
+  { q: 'Where can I pick up a music kit?', a: 'Music kits are available on the Steam Community Market, as rewards bundled with operation passes, or through direct purchase. Standalone kits generally fall in the $5-8 USD range, though rare or discontinued selections can command higher prices.' },
+  { q: 'What parts of the game does a music kit change?', a: 'A music kit replaces the default audio cues for menu screens, buy phase, round starts and endings, bomb timer warnings, and several other in-game moments. Every kit features original compositions tailored to each scenario. In casual play, only you hear your equipped music kit — teammates and opponents hear their own.' },
+  { q: 'Do any agents have limited availability?', a: 'Yes. Agents tied to specific operations were only obtainable during those events, making them progressively scarcer as time passes. Operatives from early operations such as Wildfire and Hydra have become collector items, and their market prices reflect that diminishing supply.' },
+  { q: 'Can agents and music kits be bought and sold on the market?', a: 'They can, provided the items are flagged as tradeable. Most agents and music kits listed on the Steam Community Market are freely exchangeable. However, certain store-exclusive or operation-bound items carry trade restrictions that prevent immediate resale after acquisition.' },
+];
+
+// Tier color helper
+function getTierColor(tier: string): string {
+  switch (tier) {
+    case 'Elite': return '#a855f7';
+    case 'Superior': return '#e4ae39';
+    case 'Exceptional': return '#2ecc71';
+    case 'Distinguished': return '#60a5fa';
+    default: return 'var(--text2)';
+  }
+}
+---
+
+<Base title={title} description={description} currentNav="/cs2-skins/">
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema(breadcrumbs))} />
+    <script type="application/ld+json" set:html={JSON.stringify(faqSchema(faqs))} />
+  </Fragment>
+
+  <nav class="ag-breadcrumb">
+    <a href="/">Home</a> <span class="ag-sep">/</span> <a href="/cs2-skins/">Skins</a> <span class="ag-sep">/</span> <span>Agents & Music Kits</span>
+  </nav>
+
+  <!-- Left-aligned hero -->
+  <div class="ag-hero">
+    <h1 class="ag-title">CS2 Agents & Music Kits</h1>
+    <p class="ag-subtitle">Your go-to directory for CS2 character and audio cosmetics. Pick from a roster of distinctive operatives spanning multiple factions, and set the soundtrack for your matches with music kits composed by world-class artists. Browse matching <a href="/cs2-skins/" style="color:var(--accent)">weapon skins</a> or explore <a href="/cs2-cases/" style="color:var(--accent)">case collections</a> to complete your loadout.</p>
+    <div class="ag-stat-pills">
+      <span class="ag-pill"><strong>30+</strong> CT Agents</span>
+      <span class="ag-pill"><strong>30+</strong> T Agents</span>
+      <span class="ag-pill"><strong>40+</strong> Music Kits</span>
+    </div>
+  </div>
+
+  <!-- Side filter pills for tiers -->
+  <section class="ag-tier-bar">
+    <h2 class="ag-section-heading">Agent Tier System</h2>
+    <div class="ag-tier-pills">
+      {tiers.map(tier => (
+        <span class="ag-tier-pill" style={`border-left: 3px solid ${getTierColor(tier.name)}`}>
+          <span class="ag-tier-icon">{tier.icon}</span>
+          <span class="ag-tier-name">{tier.name}</span>
+          <span class="ag-tier-desc">{tier.description}</span>
+        </span>
+      ))}
+    </div>
+  </section>
+
+  <!-- CT Agents as table rows -->
+  <section class="ag-agents">
+    <h2 class="ag-section-heading">Counter-Terrorist Agents</h2>
+    <p class="ag-section-desc">Internationally recruited counter-terrorism specialists from elite military units.</p>
+    <div class="ag-table">
+      <div class="ag-table-head">
+        <span>Agent</span>
+        <span>Faction</span>
+        <span>Operation</span>
+        <span>Tier</span>
+      </div>
+      {ctAgents.map(agent => (
+        <div class="ag-row">
+          <span class="ag-row-name">{agent.name}</span>
+          <span class="ag-row-faction">{agent.faction}</span>
+          <span class="ag-row-operation">{agent.operation}</span>
+          <span class="ag-row-tier" style={`color:${getTierColor(agent.tier)}`}>{agent.tier}</span>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <!-- T Agents as table rows -->
+  <section class="ag-agents">
+    <h2 class="ag-section-heading">Terrorist Agents</h2>
+    <p class="ag-section-desc">A varied lineup of hostile operatives representing the Sabre, Phoenix Connexion, Balkans, and The Doctor organisations.</p>
+    <div class="ag-table">
+      <div class="ag-table-head">
+        <span>Agent</span>
+        <span>Faction</span>
+        <span>Operation</span>
+        <span>Tier</span>
+      </div>
+      {tAgents.map(agent => (
+        <div class="ag-row">
+          <span class="ag-row-name">{agent.name}</span>
+          <span class="ag-row-faction">{agent.faction}</span>
+          <span class="ag-row-operation">{agent.operation}</span>
+          <span class="ag-row-tier" style={`color:${getTierColor(agent.tier)}`}>{agent.tier}</span>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <!-- Music Kits Section -->
+  <section class="ag-music">
+    <h2 class="ag-section-heading">Music Kits</h2>
+    <p class="ag-section-desc">Swap out the default soundtrack for original compositions by acclaimed producers and artists.</p>
+    <div class="ag-music-table">
+      <div class="ag-music-head">
+        <span>Artist</span>
+        <span>Kits</span>
+        <span>Count</span>
+      </div>
+      {musicKits.map(kit => (
+        <div class="ag-music-row">
+          <span class="ag-music-artist">{kit.artist}</span>
+          <div class="ag-music-kits">
+            {kit.kits.map(k => (
+              <span class="ag-kit-tag">{k}</span>
+            ))}
+          </div>
+          <span class="ag-music-count">{kit.count}</span>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <!-- Agent Factions Info -->
+  <section class="ag-factions">
+    <h2 class="ag-section-heading">Agent Factions</h2>
+    <div class="ag-factions-list">
+      <div class="ag-faction-row">
+        <span class="ag-faction-name">SEAL Frogman</span>
+        <span class="ag-faction-desc">America's premier naval special warfare operators, trained for amphibious and maritime missions.</span>
+        <span class="ag-faction-members">Cmdr. Baroud, Operator, SEAL Frogman</span>
+      </div>
+      <div class="ag-faction-row">
+        <span class="ag-faction-name">KSK</span>
+        <span class="ag-faction-desc">Germany's rapid-response commando force specialising in hostage rescue and counter-terror ops.</span>
+        <span class="ag-faction-members">Ava, Eniqma, John, Anja</span>
+      </div>
+      <div class="ag-faction-row">
+        <span class="ag-faction-name">Sabre</span>
+        <span class="ag-faction-desc">A well-funded private military outfit fielding versatile agents across both sides of the conflict.</span>
+        <span class="ag-faction-members">Lerxst, Vypa, Dr. Romak</span>
+      </div>
+      <div class="ag-faction-row">
+        <span class="ag-faction-name">Professional</span>
+        <span class="ag-faction-desc">Corporate-tier security contractors outfitted with advanced tech and tactical gear.</span>
+        <span class="ag-faction-members">Chem-Haz, Trapper, Operator</span>
+      </div>
+      <div class="ag-faction-row">
+        <span class="ag-faction-name">Phoenix Connexion</span>
+        <span class="ag-faction-desc">A global crime network staffed by former military personnel turned insurgents.</span>
+        <span class="ag-faction-members">Ground Rebel, Bloodhound, Elite Crew</span>
+      </div>
+      <div class="ag-faction-row">
+        <span class="ag-faction-name">Balkans</span>
+        <span class="ag-faction-desc">Hard-bitten regional mercenaries forged by years of street-level combat experience.</span>
+        <span class="ag-faction-members">Soldier, Balkan Captain, Balkan Swag</span>
+      </div>
+      <div class="ag-faction-row">
+        <span class="ag-faction-name">The Doctor</span>
+        <span class="ag-faction-desc">A shadowy organisation revolving around its cryptic namesake — unpredictable and lethal.</span>
+        <span class="ag-faction-members">Diplomat, The Doctor, Ghoul</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ as details -->
+  <section class="ag-faq">
+    <h2 class="ag-section-heading">Agents & Music Kits FAQ</h2>
+    {faqs.map(item => (
+      <details class="ag-faq-item">
+        <summary>{item.q}</summary>
+        <p>{item.a}</p>
+      </details>
+    ))}
+  </section>
+
+  <!-- Related Links -->
+  <section class="ag-related">
+    <h2 class="ag-section-heading">Related Resources</h2>
+    <div class="ag-link-row">
+      <a href="/cs2-skins/">Skin Database</a>
+      <a href="/cs2-stickers/">Sticker Database</a>
+      <a href="/cs2-cases/">Cases & Collections</a>
+      <a href="/price-tracker/">Price Tracker</a>
+      <a href="/cs2-guides/trading-guide/">Trading Guide</a>
+      <a href="/market-trends/">Market Trends</a>
+      <a href="/inventory-lookup/">Inventory Lookup</a>
+      <a href="/loadout-builder/">Loadout Builder</a>
+      <a href="/cs2-guides/skins-investing-guide/">Investing Guide</a>
+      <a href="/float-checker/">Float Checker</a>
+    </div>
+  </section>
+
+  <ExploreMore context="skins" />
+</Base>
+
+<style>
+  /* ── Breadcrumb ── */
+  .ag-breadcrumb {
+    font-size: 0.85rem;
+    color: var(--text2);
+    margin-bottom: 1.5rem;
+  }
+  .ag-breadcrumb a {
+    color: var(--accent);
+    text-decoration: none;
+  }
+  .ag-breadcrumb a:hover {
+    text-decoration: underline;
+  }
+  .ag-sep {
+    margin: 0 0.3rem;
+    color: var(--text2);
+  }
+
+  /* ── Hero ── */
+  .ag-hero {
+    margin-bottom: 2rem;
+    padding: 2rem 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .ag-title {
+    font-size: 2.2rem;
+    font-weight: 800;
+    color: var(--accent);
+    margin: 0 0 0.75rem;
+  }
+  .ag-subtitle {
+    font-size: 1rem;
+    color: var(--text2);
+    max-width: 700px;
+    line-height: 1.6;
+    margin: 0 0 1.25rem;
+  }
+  .ag-stat-pills {
+    display: flex;
+    gap: 0.6rem;
+    flex-wrap: wrap;
+  }
+  .ag-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.35rem 0.85rem;
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    font-size: 0.8rem;
+    color: var(--text2);
+  }
+  .ag-pill strong {
+    color: var(--accent);
+    font-weight: 700;
+  }
+
+  /* ── Section heading ── */
+  .ag-section-heading {
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin: 0 0 0.75rem;
+    color: var(--text);
+  }
+  .ag-section-desc {
+    font-size: 0.9rem;
+    color: var(--text2);
+    margin: 0 0 1rem;
+    line-height: 1.5;
+  }
+
+  /* ── Tier bar ── */
+  .ag-tier-bar {
+    margin-bottom: 2.5rem;
+  }
+  .ag-tier-pills {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 0.65rem;
+  }
+  .ag-tier-pill {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.7rem 0.85rem;
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    flex-wrap: wrap;
+  }
+  .ag-tier-icon {
+    font-size: 1.2rem;
+    flex-shrink: 0;
+  }
+  .ag-tier-name {
+    font-size: 0.88rem;
+    font-weight: 700;
+    color: var(--text);
+    flex-shrink: 0;
+  }
+  .ag-tier-desc {
+    font-size: 0.78rem;
+    color: var(--text2);
+    flex: 1;
+    min-width: 120px;
+  }
+
+  /* ── Agent tables ── */
+  .ag-agents {
+    margin-bottom: 2.5rem;
+  }
+  .ag-table {
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  .ag-table-head {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1.2fr 0.8fr;
+    padding: 0.55rem 1rem;
+    background: var(--bg3);
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: var(--text2);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    border-bottom: 1px solid var(--border);
+  }
+  .ag-row {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1.2fr 0.8fr;
+    padding: 0.65rem 1rem;
+    background: var(--bg2);
+    border-bottom: 1px solid var(--border);
+    align-items: center;
+    transition: border-left 0.15s, background 0.15s;
+    border-left: 3px solid transparent;
+  }
+  .ag-row:last-child {
+    border-bottom: none;
+  }
+  .ag-row:hover {
+    border-left: 3px solid var(--accent);
+    background: var(--bg3);
+  }
+  .ag-row-name {
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: var(--text);
+  }
+  .ag-row-faction {
+    font-size: 0.82rem;
+    color: var(--text2);
+  }
+  .ag-row-operation {
+    font-size: 0.82rem;
+    color: var(--text2);
+  }
+  .ag-row-tier {
+    font-size: 0.82rem;
+    font-weight: 600;
+  }
+
+  /* ── Music table ── */
+  .ag-music {
+    margin-bottom: 2.5rem;
+  }
+  .ag-music-table {
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  .ag-music-head {
+    display: grid;
+    grid-template-columns: 1fr 2fr 60px;
+    padding: 0.55rem 1rem;
+    background: var(--bg3);
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: var(--text2);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    border-bottom: 1px solid var(--border);
+  }
+  .ag-music-row {
+    display: grid;
+    grid-template-columns: 1fr 2fr 60px;
+    padding: 0.65rem 1rem;
+    background: var(--bg2);
+    border-bottom: 1px solid var(--border);
+    align-items: center;
+    gap: 0.75rem;
+    transition: border-left 0.15s, background 0.15s;
+    border-left: 3px solid transparent;
+  }
+  .ag-music-row:last-child {
+    border-bottom: none;
+  }
+  .ag-music-row:hover {
+    border-left: 3px solid var(--accent);
+    background: var(--bg3);
+  }
+  .ag-music-artist {
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: var(--text);
+  }
+  .ag-music-kits {
+    display: flex;
+    gap: 0.35rem;
+    flex-wrap: wrap;
+  }
+  .ag-kit-tag {
+    display: inline-block;
+    padding: 0.18rem 0.5rem;
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    font-size: 0.72rem;
+    color: var(--text2);
+  }
+  .ag-music-count {
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--text2);
+    text-align: center;
+  }
+
+  /* ── Factions ── */
+  .ag-factions {
+    margin-bottom: 2.5rem;
+  }
+  .ag-factions-list {
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  .ag-faction-row {
+    display: grid;
+    grid-template-columns: 150px 1fr 1fr;
+    padding: 0.75rem 1rem;
+    background: var(--bg2);
+    border-bottom: 1px solid var(--border);
+    align-items: center;
+    gap: 1rem;
+    transition: border-left 0.15s, background 0.15s;
+    border-left: 3px solid transparent;
+  }
+  .ag-faction-row:last-child {
+    border-bottom: none;
+  }
+  .ag-faction-row:hover {
+    border-left: 3px solid var(--accent);
+    background: var(--bg3);
+  }
+  .ag-faction-name {
+    font-size: 0.88rem;
+    font-weight: 700;
+    color: var(--accent);
+  }
+  .ag-faction-desc {
+    font-size: 0.82rem;
+    color: var(--text2);
+    line-height: 1.4;
+  }
+  .ag-faction-members {
+    font-size: 0.8rem;
+    color: var(--text2);
+  }
+
+  /* ── FAQ (details) ── */
+  .ag-faq {
+    margin: 2.5rem 0;
+  }
+  .ag-faq-item {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    margin-bottom: 0.5rem;
+    transition: border-color 0.2s;
+  }
+  .ag-faq-item[open] {
+    border-left: 3px solid var(--accent);
+  }
+  .ag-faq-item summary {
+    padding: 0.85rem 1rem;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 0.92rem;
+    color: var(--text);
+    list-style: none;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .ag-faq-item summary::before {
+    content: '+';
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--accent);
+    flex-shrink: 0;
+    width: 1.2rem;
+    text-align: center;
+  }
+  .ag-faq-item[open] summary::before {
+    content: '-';
+  }
+  .ag-faq-item summary::-webkit-details-marker {
+    display: none;
+  }
+  .ag-faq-item p {
+    padding: 0 1rem 1rem 2.7rem;
+    margin: 0;
+    font-size: 0.88rem;
+    color: var(--text2);
+    line-height: 1.6;
+  }
+
+  /* ── Related ── */
+  .ag-related {
+    margin: 2.5rem 0;
+  }
+  .ag-link-row {
+    display: flex;
+    gap: 0.6rem;
+    flex-wrap: wrap;
+  }
+  .ag-link-row a {
+    padding: 0.4rem 0.9rem;
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    font-size: 0.83rem;
+    color: var(--text2);
+    text-decoration: none;
+    transition: border-color 0.2s, color 0.2s;
+  }
+  .ag-link-row a:hover {
+    border-left: 3px solid var(--accent);
+    color: var(--accent);
+  }
+
+  /* ── Mobile ── */
+  @media (max-width: 768px) {
+    .ag-title {
+      font-size: 1.6rem;
+    }
+    .ag-table-head,
+    .ag-row {
+      grid-template-columns: 1fr 1fr;
+      gap: 0.25rem;
+    }
+    .ag-table-head span:nth-child(3),
+    .ag-table-head span:nth-child(4),
+    .ag-row-operation {
+      display: none;
+    }
+    .ag-row-tier {
+      text-align: right;
+    }
+    .ag-music-head,
+    .ag-music-row {
+      grid-template-columns: 1fr 2fr;
+    }
+    .ag-music-head span:nth-child(3),
+    .ag-music-count {
+      display: none;
+    }
+    .ag-faction-row {
+      grid-template-columns: 1fr;
+      gap: 0.25rem;
+    }
+    .ag-tier-pills {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+</style>

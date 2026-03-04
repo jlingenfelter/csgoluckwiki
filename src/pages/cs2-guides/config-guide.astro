@@ -1,0 +1,422 @@
+---
+import Base from '../../layouts/Base.astro';
+import AuthorBox from '../../components/AuthorBox.astro';
+import { faqSchema, breadcrumbSchema } from '../../lib/weapons';
+
+const title = 'CS2 Config & Settings Guide — Set Up Your Game the Right Way | CSGOLuck Wiki';
+const description = 'A complete walkthrough of CS2 configuration files. Covers autoexec creation, display settings, network rate tuning, startup flags, and day-to-day config management.';
+
+const breadcrumbs = [
+  { name: 'Home', url: '/' },
+  { name: 'Guides', url: '/cs2-guides' },
+  { name: 'Config & Settings Guide', url: '/cs2-guides/config-guide' },
+];
+
+const faqs = [
+  {
+    question: 'Where is the CS2 config file located?',
+    answer: 'On Windows, the CS2 config files are located at C:\\Program Files (x86)\\Steam\\steamapps\\common\\Counter-Strike Global Offensive\\game\\csgo\\cfg\\. On macOS, check ~/Library/Application Support/Steam/steamapps/common/Counter-Strike Global Offensive/game/csgo/cfg/. On Linux, look in ~/.local/share/Steam/steamapps/common/Counter-Strike Global Offensive/game/csgo/cfg/.',
+  },
+  {
+    question: 'Does autoexec.cfg still work in CS2?',
+    answer: 'Yes, autoexec.cfg works in CS2. Create a file named autoexec.cfg in your CS2 cfg folder and add the launch option +exec autoexec.cfg. CS2 will execute all commands in the file every time the game launches. Some commands from CS:GO may have been removed or changed in CS2.',
+  },
+  {
+    question: 'What are the best launch options for CS2?',
+    answer: 'Recommended launch options include -novid (skips intro video), -high (sets process priority to high), and +fps_max 0 (uncaps framerate). Avoid outdated options like -threads or -tickrate as these no longer apply in CS2. Keep launch options minimal — most settings belong in your autoexec.cfg.',
+  },
+  {
+    question: 'How do I reset CS2 settings to default?',
+    answer: 'To reset all settings, delete or rename the config files in your CS2 cfg folder (particularly cs2_machine_convars.vcfg and cs2_user_convars.vcfg), then launch the game. CS2 will regenerate default config files. You can also use the in-game settings menu to reset individual categories like video, audio, and controls.',
+  },
+  {
+    question: 'What network settings should I use in CS2?',
+    answer: 'Set rate to 786432 for the maximum bandwidth allowance. Use cl_interp_ratio 1 for a wired connection or cl_interp_ratio 2 for wireless. Set cl_interp 0 to let the game calculate the optimal interpolation value automatically. These settings minimize the delay between server updates and what you see on screen.',
+  },
+];
+
+const breadcrumbSchema_ = breadcrumbSchema(breadcrumbs);
+const faqSchema_ = faqSchema(faqs);
+
+const articleSchema = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": title,
+  "description": description,
+  "author": { "@type": "Person", "name": "Josh Lingenfelter", "url": "https://www.linkedin.com/in/josh-lingenfelter-8157274b/", "jobTitle": "Director", "worksFor": { "@type": "Organization", "name": "CSGOLuck" } },
+  "publisher": { "@type": "Organization", "name": "CSGOLuck Wiki", "url": "https://wiki.csgoluck.com" },
+  "mainEntityOfPage": `https://wiki.csgoluck.com/cs2-guides/config-guide/`,
+  "inLanguage": "en-US"
+});
+
+const sections = [
+  { id: 'config-file-location', label: 'Config File Locations' },
+  { id: 'how-autoexeccfg-work', label: 'How Autoexec Works' },
+  { id: 'important-config-set', label: 'Important Settings' },
+  { id: 'video-settings-for', label: 'Video Settings' },
+  { id: 'mouse-settings-raw', label: 'Mouse Settings' },
+  { id: 'network-settings', label: 'Network Settings' },
+  { id: 'launch-options-expla', label: 'Launch Options' },
+  { id: 'how-to-backup', label: 'Backup & Restore' },
+  { id: 'how-to-reset', label: 'Reset Settings' },
+  { id: 'sharing-configs-with', label: 'Sharing Configs' },
+  { id: 'faq', label: 'FAQ' },
+  { id: 'resources', label: 'Resources' },
+];
+---
+
+<Base title={title} description={description}>
+  <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema_)}></script>
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema_)}></script>
+  <script type="application/ld+json" set:html={articleSchema}></script>
+
+  <div class="cfg2-wrap">
+    <nav class="cfg2-breadcrumb">
+      <a href="/">Home</a>
+      <span class="cfg2-sep">/</span>
+      <a href="/cs2-guides">Guides</a>
+      <span class="cfg2-sep">/</span>
+      <span>Config & Settings Guide</span>
+    </nav>
+
+    <header class="cfg2-header">
+      <h1>CS2 Config & Settings Guide</h1>
+      <p class="cfg2-subtitle">Set up autoexec, video, network, and launch options for peak competitive performance</p>
+    </header>
+
+    <nav class="cfg2-toc-mobile" aria-label="Table of contents">
+      {sections.map((s) => (
+        <a href={`#${s.id}`} class="cfg2-toc-mobile-link">{s.label}</a>
+      ))}
+    </nav>
+
+    <div class="cfg2-layout">
+      <aside class="cfg2-sidebar">
+        <nav class="cfg2-toc" aria-label="Table of contents">
+          <span class="cfg2-toc-title">Contents</span>
+          {sections.map((s) => (
+            <a href={`#${s.id}`} class="cfg2-toc-link">{s.label}</a>
+          ))}
+        </nav>
+      </aside>
+
+      <article class="cfg2-content">
+        <p class="cfg2-intro">
+          Every aspect of CS2 -- from framerate and input lag to netcode smoothness -- is shaped by your configuration files. Dialing in the right settings eliminates inconsistency, squeezes out extra frames, and makes sure your controls feel identical every session. Below we cover file paths, autoexec setup, video and network tuning, launch options, and syncing configs between machines.
+        </p>
+
+        <section id="config-file-location">
+          <div class="cfg2-section-header"><h2>Config File Locations</h2></div>
+          <p>All CS2 config files live inside the game's cfg folder under your Steam installation. The exact file path varies by operating system and Steam library location.</p>
+
+          <h3>Windows</h3>
+          <ul class="cfg2-list">
+            <li><strong>Default Steam path:</strong> C:\Program Files (x86)\Steam\steamapps\common\Counter-Strike Global Offensive\game\csgo\cfg\</li>
+            <li><strong>Custom Steam library:</strong> &lt;drive&gt;:\SteamLibrary\steamapps\common\Counter-Strike Global Offensive\game\csgo\cfg\</li>
+            <li><strong>Cloud-synced settings:</strong> C:\Program Files (x86)\Steam\userdata\&lt;steamid&gt;\730\local\cfg\</li>
+          </ul>
+
+          <h3>macOS</h3>
+          <ul class="cfg2-list">
+            <li><strong>Default path:</strong> ~/Library/Application Support/Steam/steamapps/common/Counter-Strike Global Offensive/game/csgo/cfg/</li>
+            <li><strong>Access tip:</strong> The Library folder is hidden by default — press Cmd+Shift+G in Finder and paste the path</li>
+          </ul>
+
+          <h3>Linux</h3>
+          <ul class="cfg2-list">
+            <li><strong>Default path:</strong> ~/.local/share/Steam/steamapps/common/Counter-Strike Global Offensive/game/csgo/cfg/</li>
+            <li><strong>Flatpak Steam:</strong> ~/.var/app/com.valvesoftware.Steam/.local/share/Steam/steamapps/common/Counter-Strike Global Offensive/game/csgo/cfg/</li>
+          </ul>
+
+          <h3>Key Config Files</h3>
+          <ul class="cfg2-list">
+            <li><strong>cs2_machine_convars.vcfg:</strong> Machine-specific settings including video, audio, and hardware configuration</li>
+            <li><strong>cs2_user_convars.vcfg:</strong> User-specific settings including crosshair, keybinds, and gameplay preferences</li>
+            <li><strong>autoexec.cfg:</strong> Your custom configuration file — executed on every game launch when properly configured</li>
+            <li><strong>config.cfg:</strong> Legacy config file — CS2 primarily uses the .vcfg format but still supports .cfg execution</li>
+          </ul>
+        </section>
+
+        <section id="how-autoexeccfg-work">
+          <div class="cfg2-section-header"><h2>How Autoexec.cfg Works in CS2</h2></div>
+          <p>An autoexec.cfg is a plain text file containing console commands that execute automatically when CS2 launches. This is the recommended way to maintain custom settings because it ensures your configuration is applied consistently, is easy to back up, and can be shared with others.</p>
+
+          <h3>Creating an Autoexec</h3>
+          <p>Open a text editor (Notepad, VS Code, or any plain text editor) and create a new file. Add your desired console commands, one per line. Save the file as <code>autoexec.cfg</code> in your CS2 cfg folder. Make sure the file extension is .cfg and not .cfg.txt — enable file extensions in your file explorer to verify.</p>
+
+          <h3>Ensuring Autoexec Runs on Launch</h3>
+          <p>Add <code>+exec autoexec.cfg</code> to your CS2 launch options in Steam. Right-click Counter-Strike 2 in your Steam library, select Properties, and enter the command in the Launch Options field. This guarantees the autoexec runs every time the game starts.</p>
+
+          <h3>Autoexec Best Practices</h3>
+          <ul class="cfg2-list">
+            <li><strong>Comment your settings:</strong> Use // at the start of a line to add comments explaining each command</li>
+            <li><strong>Group related commands:</strong> Organize by category — crosshair, network, audio, keybinds — for easy editing</li>
+            <li><strong>End with host_writeconfig:</strong> Adding <code>host_writeconfig</code> at the end of your autoexec ensures changes are written to the active config</li>
+            <li><strong>Test incrementally:</strong> Add a few commands at a time and verify they work before adding more</li>
+            <li><strong>Include echo confirmation:</strong> Add <code>echo "Autoexec loaded successfully"</code> as the last line to confirm execution in the console</li>
+          </ul>
+
+          <h3>Example Autoexec Structure</h3>
+          <p>A well-organized autoexec typically contains sections for network settings, crosshair configuration, audio preferences, keybinds and buy binds, viewmodel positioning, and miscellaneous gameplay commands. Each section begins with a comment header for easy navigation.</p>
+        </section>
+
+        <section id="important-config-set">
+          <div class="cfg2-section-header"><h2>Important Config Settings</h2></div>
+          <p>These are the most impactful <a href="/cs2-commands/">console variables</a> you can customize in CS2. Each directly affects your gameplay experience and competitive performance.</p>
+
+          <h3>Crosshair Settings</h3>
+          <p>For a deeper dive into every crosshair variable, see the <a href="/cs2-guides/crosshair-guide/">crosshair customisation guide</a> or design your reticle visually with the <a href="/crosshair-generator/">crosshair generator</a>.</p>
+          <ul class="cfg2-list">
+            <li><strong>cl_crosshairstyle 1:</strong> Static crosshair — does not expand when moving or shooting</li>
+            <li><strong>cl_crosshairsize 2:</strong> Length of crosshair arms in pixels</li>
+            <li><strong>cl_crosshairgap -1:</strong> Gap between crosshair center and arm start — negative values pull arms inward</li>
+            <li><strong>cl_crosshairthickness 1:</strong> Width of crosshair lines</li>
+            <li><strong>cl_crosshaircolor 1:</strong> Crosshair color preset — 1 for green, 4 for custom RGB</li>
+            <li><strong>cl_crosshair_drawoutline 1:</strong> Adds a dark outline around the crosshair for visibility</li>
+          </ul>
+
+          <h3>Viewmodel Settings</h3>
+          <ul class="cfg2-list">
+            <li><strong>viewmodel_fov 68:</strong> Field of view for the weapon model — 68 is the maximum, showing more of the weapon</li>
+            <li><strong>viewmodel_offset_x 2.5:</strong> Horizontal position of the viewmodel</li>
+            <li><strong>viewmodel_offset_y 0:</strong> Depth position of the viewmodel</li>
+            <li><strong>viewmodel_offset_z -1.5:</strong> Vertical position of the viewmodel</li>
+            <li><strong>viewmodel_presetpos 0:</strong> Set to 0 to use custom offset values instead of presets</li>
+            <li><strong>cl_bob_lower_amt 5:</strong> Controls weapon bobbing while moving — lower values reduce distraction</li>
+          </ul>
+
+          <h3>Audio Settings</h3>
+          <p>The <a href="/cs2-guides/audio-guide/">audio guide</a> provides a full breakdown of HRTF, headphone EQ, and sound propagation settings.</p>
+          <ul class="cfg2-list">
+            <li><strong>volume 0.5:</strong> Master volume — keep moderate and adjust system volume instead</li>
+            <li><strong>snd_headphone_pan_exponent 1:</strong> Adjusts spatial audio panning for headphones</li>
+            <li><strong>snd_front_headphone_position 45:</strong> Front speaker simulation angle for headphones</li>
+            <li><strong>snd_rear_headphone_position 135:</strong> Rear speaker simulation angle for headphones</li>
+            <li><strong>snd_10ch_pan_rule 1:</strong> Headphone spatialization mode — set to 1 for stereo headphones</li>
+          </ul>
+        </section>
+
+        <section id="video-settings-for">
+          <div class="cfg2-section-header"><h2>Video Settings for Performance vs Quality</h2></div>
+          <p>Video settings have the largest impact on framerate. Finding the right balance between visual quality and performance is essential for competitive play, where high framerates translate directly to smoother aim and lower input latency. For a complete performance tuning walkthrough, see the <a href="/cs2-guides/fps-optimization-guide/">FPS optimization guide</a>.</p>
+
+          <h3>Resolution</h3>
+          <p>Resolution is the single most impactful video setting. Dropping from 1920x1080 to 1280x960 reduces pixel count by 44%, yielding 30-50% more frames on most systems. Many <a href="/pro-players/">professional players</a> use 1280x960 with 4:3 stretched aspect ratio, which makes player models appear wider. Use the <a href="/resolution-calculator/">resolution calculator</a> to compare aspect ratios and find the right fit for your monitor.</p>
+
+          <h3>Key Video Settings</h3>
+          <ul class="cfg2-list">
+            <li><strong>Global Shadow Quality:</strong> High impact on FPS — Low disables most dynamic shadows, saving significant GPU time. Medium is a reasonable compromise for visibility</li>
+            <li><strong>Shader Detail:</strong> Controls lighting calculations and reflections — Low provides the best performance. Set to at least Medium if you want to see Doppler skin patterns clearly</li>
+            <li><strong>Model / Texture Detail:</strong> Medium impact — Low reduces texture resolution. Most players use Medium for a balance of visibility and performance</li>
+            <li><strong>Multisampling Anti-Aliasing (MSAA):</strong> None provides the best performance. 2x MSAA is a reasonable compromise if jagged edges bother you. 4x and above significantly reduce framerate</li>
+            <li><strong>Texture Filtering:</strong> Bilinear for maximum performance, though the FPS difference from higher settings is minimal on modern GPUs</li>
+            <li><strong>VSync:</strong> Always disable VSync for competitive play — it adds significant input lag by synchronizing framerate to monitor refresh rate</li>
+            <li><strong>FXAA:</strong> Disable for best performance and sharpest image. FXAA adds slight blur that can obscure distant enemies</li>
+          </ul>
+
+          <h3>Recommended Competitive Settings</h3>
+          <p>For competitive play, prioritize framerate over visual quality. Use the lowest settings your visual comfort allows. Shadows on Low and Shaders on Low provide the largest FPS gains. Keep texture detail at Medium or higher so enemy models remain clear and distinguishable. Disable VSync, FXAA, and MSAA. Set your FPS limit with <code>fps_max 0</code> for uncapped framerate.</p>
+        </section>
+
+        <section id="mouse-settings-raw">
+          <div class="cfg2-section-header"><h2>Mouse Settings & Raw Input</h2></div>
+          <p>Consistent mouse input is critical for building aim muscle memory. CS2 offers several settings that control how your mouse input is processed.</p>
+
+          <h3>Essential Mouse Commands</h3>
+          <ul class="cfg2-list">
+            <li><strong>sensitivity:</strong> Your in-game sensitivity multiplier — most competitive players use values between 1.0 and 3.0 at 400 or 800 DPI</li>
+            <li><strong>m_rawinput 1:</strong> Bypasses Windows mouse acceleration and processing — always enable for consistent aim</li>
+            <li><strong>zoom_sensitivity_ratio 1.0:</strong> Multiplier applied when using scoped weapons — 1.0 keeps the same feel as unscoped, many prefer 0.8-1.0</li>
+          </ul>
+
+          <h3>DPI and Sensitivity Relationship</h3>
+          <p>Your effective sensitivity is DPI multiplied by in-game sensitivity. A player at 400 DPI with 2.0 sensitivity has the same effective sensitivity as someone at 800 DPI with 1.0 sensitivity. Most professional players use effective sensitivities (eDPI) between 600 and 1200. Calculate yours with the <a href="/edpi-calculator/">eDPI calculator</a> or convert between games using the <a href="/sensitivity-converter/">sensitivity converter</a>. Lower sensitivities provide more precise aim at the cost of requiring larger mouse movements.</p>
+
+          <h3>Windows Mouse Settings</h3>
+          <p>With raw input enabled (<code>m_rawinput 1</code>), Windows pointer speed and acceleration settings are bypassed entirely. However, it is still recommended to set Windows pointer speed to 6/11 (default) and disable Enhance Pointer Precision in Windows mouse settings. This provides a clean baseline if raw input is ever disabled.</p>
+        </section>
+
+        <section id="network-settings">
+          <div class="cfg2-section-header"><h2>Network Settings</h2></div>
+          <p>Network settings control how your client communicates with the game server. Proper network configuration reduces visual inconsistencies, improves hit registration feel, and minimizes the impact of latency.</p>
+
+          <h3>Essential Network Commands</h3>
+          <ul class="cfg2-list">
+            <li><strong>rate 786432:</strong> Maximum bandwidth in bytes per second — set to the maximum to allow the server to send full updates</li>
+            <li><strong>cl_interp 0:</strong> Client-side interpolation delay — setting to 0 lets the game calculate the optimal value automatically</li>
+            <li><strong>cl_interp_ratio 1:</strong> Interpolation ratio — use 1 for stable wired connections, 2 for wireless or unstable connections</li>
+            <li><strong>cl_updaterate 128:</strong> How often the client requests updates from the server — set to 128 for maximum update frequency</li>
+            <li><strong>cl_cmdrate 128:</strong> How often the client sends input updates to the server — match this with cl_updaterate</li>
+          </ul>
+
+          <h3>Understanding Interpolation</h3>
+          <p>Interpolation smooths the gap between server updates by predicting player positions between ticks. Lower interpolation values reduce the visual delay but can cause jittering on unstable connections. A cl_interp_ratio of 1 provides the lowest interpolation delay for reliable connections, while 2 adds a buffer for connections with packet loss.</p>
+
+          <h3>Diagnosing Network Issues</h3>
+          <p>Enable the network graph with <code>net_graph 1</code> to monitor your connection in real time. Watch for loss (packet loss percentage), choke (outgoing packet throttling), and variance in ping. High loss or choke values indicate network problems that no amount of config tuning can fix — address the underlying connection issue instead.</p>
+        </section>
+
+        <section id="launch-options-expla">
+          <div class="cfg2-section-header"><h2>Launch Options Explained</h2></div>
+          <p>Launch options are command-line parameters passed to CS2 when it starts. They configure engine-level behavior that cannot be changed through in-game settings or console commands during runtime.</p>
+
+          <h3>Recommended Launch Options</h3>
+          <ul class="cfg2-list">
+            <li><strong>-novid:</strong> Skips the Valve intro video on startup — saves a few seconds on every launch</li>
+            <li><strong>-high:</strong> Sets the CS2 process to high priority in Windows — can improve performance on systems with many background processes</li>
+            <li><strong>+exec autoexec.cfg:</strong> Executes your autoexec configuration file on launch</li>
+            <li><strong>+fps_max 0:</strong> Uncaps framerate from the start — avoids temporary cap during loading</li>
+            <li><strong>-console:</strong> Opens the developer console on startup</li>
+          </ul>
+
+          <h3>Launch Options to Avoid</h3>
+          <ul class="cfg2-list">
+            <li><strong>-threads:</strong> No longer does anything meaningful in CS2 — the engine manages threading automatically</li>
+            <li><strong>-tickrate 128:</strong> Obsolete — CS2 uses sub-tick architecture and this parameter has no effect</li>
+            <li><strong>-nod3d9ex:</strong> Does not apply to CS2 which uses DirectX 11 / Vulkan</li>
+            <li><strong>-lv:</strong> Low violence mode — not supported and has no effect in CS2</li>
+          </ul>
+
+          <h3>How to Set Launch Options</h3>
+          <p>Right-click Counter-Strike 2 in your Steam library, click Properties, and enter your launch options in the text field. Separate multiple options with spaces. Launch options take effect the next time you start the game — no restart is needed if CS2 is not currently running.</p>
+        </section>
+
+        <section id="how-to-backup">
+          <div class="cfg2-section-header"><h2>How to Backup and Restore Settings</h2></div>
+          <p>Backing up your config ensures you can quickly restore your settings after a reinstall, hardware change, or when setting up a new computer.</p>
+
+          <h3>What to Back Up</h3>
+          <ul class="cfg2-list">
+            <li><strong>autoexec.cfg:</strong> Your primary custom config file with all personal settings</li>
+            <li><strong>cs2_machine_convars.vcfg:</strong> Machine-specific settings including video and audio</li>
+            <li><strong>cs2_user_convars.vcfg:</strong> User preferences including crosshair, binds, and gameplay settings</li>
+            <li><strong>Any custom .cfg files:</strong> Practice configs, warmup configs, or custom bind configurations</li>
+          </ul>
+
+          <h3>Backup Methods</h3>
+          <p>Copy your cfg folder to a safe location — cloud storage (Google Drive, Dropbox, OneDrive), a USB drive, or a dedicated backup folder. If you use an autoexec.cfg with all your important settings, backing up that single file is often sufficient. Consider using version control (Git) if you frequently experiment with settings.</p>
+
+          <h3>Restoring Settings</h3>
+          <p>To restore, copy your backed-up config files into the CS2 cfg folder, overwriting the existing files. Launch CS2 with <code>+exec autoexec.cfg</code> in your launch options. Verify your settings are applied by checking key binds, crosshair appearance, and video settings in-game.</p>
+        </section>
+
+        <section id="how-to-reset">
+          <div class="cfg2-section-header"><h2>How to Reset Settings to Default</h2></div>
+          <p>If your configuration becomes corrupted, causes issues, or you simply want a fresh start, you can reset CS2 settings in several ways.</p>
+
+          <h3>Full Reset</h3>
+          <p>Navigate to your CS2 cfg folder and delete or rename the following files: cs2_machine_convars.vcfg, cs2_user_convars.vcfg, and any custom .cfg files. Launch CS2 and the game will regenerate default configuration files. You will need to reconfigure your keybinds, crosshair, video settings, and any custom preferences.</p>
+
+          <h3>Partial Reset</h3>
+          <p>To reset only specific categories, use the in-game settings menu. Each settings tab (Video, Audio, Controls, Game) typically has a Reset to Default option. This approach preserves your other settings while resetting only the selected category.</p>
+
+          <h3>Steam Cloud Considerations</h3>
+          <p>CS2 may sync settings through Steam Cloud. If you reset locally but Steam Cloud restores old settings, you may need to disable Steam Cloud sync for CS2 temporarily. Right-click CS2 in Steam, select Properties, and uncheck Steam Cloud synchronization. Perform your reset, then re-enable cloud sync if desired.</p>
+        </section>
+
+        <section id="sharing-configs-with">
+          <div class="cfg2-section-header"><h2>Sharing Configs with Others</h2></div>
+          <p>Sharing your configuration is useful for team standardization, helping friends set up their game, or publishing your settings for the community.</p>
+
+          <h3>Sharing Your Autoexec</h3>
+          <p>The simplest method is to share your autoexec.cfg file directly. Send the file via Discord, email, or any file-sharing platform. The recipient places it in their CS2 cfg folder and adds <code>+exec autoexec.cfg</code> to their launch options. Include comments in your autoexec explaining what each section does so the recipient can customize settings to their preference.</p>
+
+          <h3>Sharing Individual Settings</h3>
+          <p>For specific settings like crosshair codes, use the in-game crosshair sharing system. CS2 generates shareable crosshair codes that can be applied through the settings menu. For other settings, share the relevant console commands as text that the recipient can paste into their console.</p>
+
+          <h3>Team Standardization</h3>
+          <p>Competitive teams often standardize certain settings across all players. Common standardized settings include network rates, voice communication binds, and team-specific utility keybinds. Create a shared team.cfg that players exec alongside their personal autoexec to maintain consistency.</p>
+        </section>
+
+        <section id="faq">
+          <div class="cfg2-section-header"><h2>Frequently Asked Questions</h2></div>
+          <div class="cfg2-faq-list">
+            {faqs.map((faq) => (
+              <details class="cfg2-faq-item">
+                <summary class="cfg2-faq-question">{faq.question}</summary>
+                <p class="cfg2-faq-answer">{faq.answer}</p>
+              </details>
+            ))}
+          </div>
+        </section>
+
+        <section id="resources">
+          <div class="cfg2-section-header"><h2>Related Resources</h2></div>
+          <div class="cfg2-resources-grid">
+            <a href="/cs2-guides/" class="cfg2-resource-card"><span class="cfg2-resource-name">All Guides</span><span class="cfg2-resource-arrow">&rarr;</span></a>
+            <a href="/autoexec-generator/" class="cfg2-resource-card"><span class="cfg2-resource-name">Autoexec Generator</span><span class="cfg2-resource-arrow">&rarr;</span></a>
+            <a href="/launch-options/" class="cfg2-resource-card"><span class="cfg2-resource-name">Launch Options</span><span class="cfg2-resource-arrow">&rarr;</span></a>
+            <a href="/console-commands/" class="cfg2-resource-card"><span class="cfg2-resource-name">Console Commands</span><span class="cfg2-resource-arrow">&rarr;</span></a>
+            <a href="/cs2-guides/fps-optimization-guide/" class="cfg2-resource-card"><span class="cfg2-resource-name">FPS Optimization Guide</span><span class="cfg2-resource-arrow">&rarr;</span></a>
+            <a href="/sensitivity-converter/" class="cfg2-resource-card"><span class="cfg2-resource-name">Sensitivity Converter</span><span class="cfg2-resource-arrow">&rarr;</span></a>
+            <a href="/practice-config/" class="cfg2-resource-card"><span class="cfg2-resource-name">Practice Config</span><span class="cfg2-resource-arrow">&rarr;</span></a>
+            <a href="/crosshair-generator/" class="cfg2-resource-card"><span class="cfg2-resource-name">Crosshair Generator</span><span class="cfg2-resource-arrow">&rarr;</span></a>
+          </div>
+        </section>
+      </article>
+    </div>
+  </div>
+
+  <style>
+    .cfg2-wrap{max-width:1100px;margin:0 auto;padding:0 1.5rem 2rem}
+    .cfg2-breadcrumb{display:flex;align-items:center;gap:.5rem;padding:1.25rem 0;font-size:.85rem;color:var(--text2)}
+    .cfg2-breadcrumb a{color:var(--accent);text-decoration:none}
+    .cfg2-breadcrumb a:hover{color:var(--accent2)}
+    .cfg2-sep{color:var(--border)}
+    .cfg2-header{padding:1.5rem 0 1.25rem;border-bottom:2px solid var(--accent);margin-bottom:1.5rem}
+    .cfg2-header h1{margin:0 0 .35rem;font-size:2.2rem;font-weight:800;color:var(--text);letter-spacing:-.02em;line-height:1.2}
+    .cfg2-subtitle{margin:0;font-size:1.05rem;color:var(--text2);font-weight:400}
+    .cfg2-toc-mobile{display:none}
+    .cfg2-layout{display:grid;grid-template-columns:220px 1fr;gap:2.5rem;align-items:start}
+    .cfg2-sidebar{position:sticky;top:80px}
+    .cfg2-toc{display:flex;flex-direction:column;gap:0;border-left:2px solid var(--border);padding-left:0}
+    .cfg2-toc-title{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--accent);padding:0 0 .6rem 1rem}
+    .cfg2-toc-link{display:block;padding:.4rem 1rem;font-size:.82rem;color:var(--text2);text-decoration:none;border-left:2px solid transparent;margin-left:-2px;transition:color .2s,border-color .2s}
+    .cfg2-toc-link:hover{color:var(--text);border-left-color:var(--accent)}
+    .cfg2-content{min-width:0}
+    .cfg2-intro{font-size:1rem;line-height:1.8;color:var(--text2);margin-bottom:2rem}
+    .cfg2-section-header{background:rgba(46,204,113,.05);margin:0 -1.25rem 1.25rem;padding:.75rem 1.25rem;border-radius:4px}
+    .cfg2-section-header h2{margin:0;padding:0;font-size:1.5rem;font-weight:700;color:var(--text);border:none;letter-spacing:-.01em}
+    section{margin-bottom:2.5rem}
+    h3{font-size:1.15rem;font-weight:600;margin:1.5rem 0 .6rem;color:var(--text)}
+    p{line-height:1.7;color:var(--text2);margin-bottom:1rem}
+    .cfg2-list{list-style:none;padding:0;margin:.75rem 0 1.5rem}
+    .cfg2-list li{padding:.4rem 0 .4rem 1.6rem;position:relative;color:var(--text2);line-height:1.65}
+    .cfg2-list li::before{content:'';position:absolute;left:.25rem;top:.75rem;width:6px;height:6px;background:var(--accent);border-radius:1px}
+    .cfg2-list li strong{color:var(--text)}
+    code{background:var(--bg3);padding:.15rem .4rem;border-radius:3px;font-size:.85em;color:var(--accent);font-family:'Courier New',Courier,monospace}
+    .cfg2-faq-list{display:flex;flex-direction:column;gap:.5rem}
+    .cfg2-faq-item{background:var(--bg2);border:1px solid var(--border);border-radius:4px;overflow:hidden}
+    .cfg2-faq-question{display:block;padding:1rem 1.25rem;font-size:.95rem;font-weight:600;color:var(--text);cursor:pointer;list-style:none;position:relative;padding-right:2.5rem;transition:background .2s}
+    .cfg2-faq-question::-webkit-details-marker{display:none}
+    .cfg2-faq-question::after{content:'+';position:absolute;right:1.25rem;top:50%;transform:translateY(-50%);font-size:1.2rem;color:var(--accent);font-weight:700}
+    .cfg2-faq-item[open] .cfg2-faq-question::after{content:'\2212'}
+    .cfg2-faq-item[open] .cfg2-faq-question{border-bottom:1px solid var(--border);background:rgba(46,204,113,.03)}
+    .cfg2-faq-question:hover{background:rgba(46,204,113,.03)}
+    .cfg2-faq-answer{padding:1rem 1.25rem;margin:0;font-size:.9rem;color:var(--text2);line-height:1.7}
+    .cfg2-resources-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.6rem;margin:.5rem 0 1.5rem}
+    .cfg2-resource-card{display:flex;align-items:center;justify-content:space-between;padding:.75rem 1rem;background:var(--bg2);border:1px solid var(--border);border-radius:4px;text-decoration:none;border-left:2px solid transparent;transition:border-left-color .2s,color .2s}
+    .cfg2-resource-card:hover{border-left-color:var(--accent)}
+    .cfg2-resource-name{font-size:.88rem;color:var(--text2);font-weight:500;transition:color .2s}
+    .cfg2-resource-card:hover .cfg2-resource-name{color:var(--text)}
+    .cfg2-resource-arrow{font-size:1rem;color:var(--accent);opacity:0;transition:opacity .2s}
+    .cfg2-resource-card:hover .cfg2-resource-arrow{opacity:1}
+    @media(max-width:860px){
+      .cfg2-layout{grid-template-columns:1fr;gap:0}
+      .cfg2-sidebar{display:none}
+      .cfg2-toc-mobile{display:flex;gap:.25rem;overflow-x:auto;padding:.75rem 0;margin-bottom:1rem;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+      .cfg2-toc-mobile::-webkit-scrollbar{display:none}
+      .cfg2-toc-mobile-link{flex-shrink:0;padding:.35rem .75rem;font-size:.78rem;font-weight:600;color:var(--text2);background:var(--bg2);border:1px solid var(--border);border-radius:4px;text-decoration:none;white-space:nowrap;transition:color .2s,border-color .2s}
+      .cfg2-toc-mobile-link:hover{color:var(--accent);border-color:var(--accent)}
+      .cfg2-header h1{font-size:1.7rem}
+      .cfg2-section-header{margin:0 -1rem 1rem;padding:.6rem 1rem}
+      .cfg2-resources-grid{grid-template-columns:repeat(2,1fr)}
+    }
+    @media(max-width:600px){
+      .cfg2-wrap{padding:0 1rem 1.5rem}
+      .cfg2-resources-grid{grid-template-columns:1fr}
+      .cfg2-header h1{font-size:1.5rem}
+    }
+  </style>
+  <AuthorBox updated="2026-03-02" />
+</Base>

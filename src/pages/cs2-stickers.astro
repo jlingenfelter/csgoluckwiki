@@ -1,0 +1,862 @@
+---
+import Base from '../layouts/Base.astro';
+import ExploreMore from '../components/ExploreMore.astro';
+import { breadcrumbSchema, faqSchema } from '../lib/weapons';
+import {
+  STICKERS,
+  STICKERS_TOTAL,
+  ALL_TOURNAMENTS,
+  ALL_VARIANTS,
+  ALL_TEAMS,
+  getVariantColor,
+  getVariantBg,
+  VARIANT_COLORS,
+  VARIANT_BG,
+} from '../lib/stickers';
+
+const title = 'CS2 Sticker Database — Every Sticker with Live Pricing | CSGOLuck Wiki';
+const description = 'The full Counter-Strike 2 sticker catalog. Search tournament, team, and community stickers alongside current market values, rarity variant breakdowns, and long-term investment insights.';
+
+// Compute stats
+const totalStickers = STICKERS_TOTAL;
+const stickersWithPrices = STICKERS.filter(s => s.price > 0).length;
+const tournamentCount = ALL_TOURNAMENTS.length;
+const teamCount = ALL_TEAMS.length;
+const variantCount = ALL_VARIANTS.length;
+
+// STICKERS are already sorted price desc from the JSON build step.
+// Build compact JSON for client-side search/filter — only stickers with price > 0 or with images
+const clientStickers = STICKERS
+  .filter(s => s.price > 0 || s.image)
+  .map(s => ({
+    s: s.slug,
+    n: s.name,
+    i: s.image || '',
+    v: s.variant,
+    t: s.tournament || '',
+    m: s.team || '',
+    y: s.type,
+    p: s.price,
+    vol: s.volume7d || 0,
+  }));
+
+const stickersData = JSON.stringify(clientStickers);
+
+// Server-side: first 60 most expensive stickers for initial render
+const initialStickers = STICKERS.filter(s => s.price > 0 && s.image).slice(0, 60);
+
+const breadcrumbs = [
+  { name: 'Home', url: '/' },
+  { name: 'Skins', url: '/cs2-skins/' },
+  { name: 'Stickers', url: '/cs2-stickers/' },
+];
+
+const faqData = [
+  { q: 'How many sticker variant types exist in CS2?', a: 'Counter-Strike 2 features six distinct sticker variants. Paper is the baseline tier and the most abundant. Holo adds a holographic rainbow shimmer, Glitter introduces a sparkling texture, Foil delivers a metallic reflective surface, Gold is the scarcest tournament-exclusive variant, and Lenticular is the newest addition with a layered 3D visual effect. Each tier carries a different look and market premium.' },
+  { q: 'What happens if I want to take a sticker off a weapon?', a: 'You can scrape stickers from a weapon skin, but the process is irreversible — once fully scraped, the sticker is gone for good. Every scrape degrades roughly one-fifth of the sticker\'s appearance. Always consider the sticker\'s value carefully before applying it, because there is no way to reclaim it intact.' },
+  { q: 'When do new sticker capsules typically appear?', a: 'Fresh capsules tend to arrive alongside CS2 Major tournaments, which occur about twice annually. Each Major brings a new wave of team and tournament-branded stickers. Beyond Majors, Valve occasionally drops special capsule releases tied to community operations or seasonal events.' },
+  { q: 'Which stickers have the strongest track record for appreciation?', a: 'Legacy tournament stickers — particularly those from Katowice 2014 and other pre-2016 Majors — have shown the most dramatic long-term price growth. Among variant types, Holo and Foil versions from older events consistently outperform their Paper counterparts in both value retention and appreciation over time.' },
+  { q: 'What price range should I expect for CS2 stickers?', a: 'The spectrum is enormous. Run-of-the-mill Paper stickers can be picked up for pennies, while Holo and Foil stickers from iconic early Majors routinely trade for thousands. Opening a tournament capsule typically costs a dollar or two, but the sticker you pull could be worth anywhere from a few cents to a small fortune.' },
+  { q: 'Do professional players have autograph stickers?', a: 'They do. At every Major, Valve issues autograph capsules that contain stickers personally signed by competing pros. These are available across multiple variant tiers — Paper, Holo, Glitter, Foil, and Gold. Signatures from fan-favourite and legendary players naturally fetch the highest prices on the market.' },
+  { q: 'How does a Paper sticker compare to a Holo visually and in value?', a: 'Paper stickers present a flat, matte look with no special effects. Holo stickers, by contrast, display a rainbow holographic pattern that shifts as you change your viewing angle. Holos are substantially rarer in drops and consistently trade at a significant markup. The full variant hierarchy from most to least common runs: Paper, Holo, Glitter, Foil, Gold, Lenticular.' },
+  { q: 'Is it possible for sticker values to decline?', a: 'Certainly. Sticker prices are subject to the same market forces as any tradable item — supply shifts, demand trends, game patches, and overall market sentiment all play a role. Freshly released stickers frequently dip once the initial buzz dies down. On the flip side, stickers tied to tournaments that will never repeat tend to climb steadily as their available supply shrinks over time.' },
+];
+
+// Variant display info for filter buttons
+const variantFilters = ALL_VARIANTS.map(v => ({
+  name: v,
+  color: getVariantColor(v),
+  bg: getVariantBg(v),
+}));
+---
+
+<Base title={title} description={description} currentNav="/cs2-skins/">
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema(breadcrumbs))} />
+    <script type="application/ld+json" set:html={JSON.stringify(faqSchema(faqData))} />
+  </Fragment>
+
+  <nav class="sth-breadcrumb">
+    <a href="/">Home</a> <span class="sth-sep">/</span> <a href="/cs2-skins/">Skins</a> <span class="sth-sep">/</span> <span>Stickers</span>
+  </nav>
+
+  <!-- Left-aligned hero with stat pills -->
+  <div class="sth-hero">
+    <h1 class="sth-title">CS2 Sticker Database</h1>
+    <p class="sth-subtitle">Your one-stop sticker encyclopedia for CS2. Sift through {totalStickers.toLocaleString()} stickers spanning {tournamentCount} tournaments and {teamCount} teams, all backed by up-to-the-minute market pricing. Pair stickers with skins from our <a href="/cs2-skins/" style="color:var(--accent)">skin database</a> or track values with the <a href="/price-tracker/" style="color:var(--accent)">price tracker</a>.</p>
+    <div class="sth-stat-pills">
+      <span class="sth-pill"><strong>{totalStickers.toLocaleString()}</strong> Stickers</span>
+      <span class="sth-pill"><strong>{stickersWithPrices.toLocaleString()}</strong> Priced</span>
+      <span class="sth-pill"><strong>{variantCount}</strong> Variants</span>
+      <span class="sth-pill"><strong>{tournamentCount}</strong> Tournaments</span>
+    </div>
+  </div>
+
+  <!-- Horizontal filter pills & search -->
+  <section class="sth-controls">
+    <div class="sth-search-row">
+      <input type="text" id="stickerSearch" placeholder="Search stickers by name or team..." class="sth-search" autocomplete="off" />
+      <div class="sth-sort-wrap">
+        <label for="stickerSort">Sort:</label>
+        <select id="stickerSort" class="sth-sort">
+          <option value="price-desc">Price: High to Low</option>
+          <option value="price-asc">Price: Low to High</option>
+          <option value="name-asc">Name: A-Z</option>
+          <option value="volume">Volume (7d)</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="sth-filter-row">
+      <span class="sth-filter-label">Variant</span>
+      <div class="sth-pills-wrap" id="variantFilters">
+        <button class="sth-filter-pill active" data-variant="all">All</button>
+        {variantFilters.map(v => (
+          <button
+            class="sth-filter-pill sth-variant-pill"
+            data-variant={v.name}
+            style={`--vf-color:${v.color};--vf-bg:${v.bg}`}
+          >
+            {v.name}
+          </button>
+        ))}
+      </div>
+    </div>
+
+    <div class="sth-filter-row">
+      <span class="sth-filter-label">Type</span>
+      <div class="sth-pills-wrap" id="typeFilters">
+        <button class="sth-filter-pill active" data-type="all">All</button>
+        <button class="sth-filter-pill" data-type="tournament">Tournament</button>
+        <button class="sth-filter-pill" data-type="community">Community</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Results Count -->
+  <div class="sth-results-bar">
+    <span id="resultsCount">Showing 60 of {stickersWithPrices.toLocaleString()} stickers</span>
+  </div>
+
+  <!-- Table rows instead of card grid -->
+  <div class="sth-table" id="stickerGrid">
+    {initialStickers.map(s => {
+      const vColor = getVariantColor(s.variant);
+      const vBg = getVariantBg(s.variant);
+      const displayName = s.tournament
+        ? s.name.replace(new RegExp(`\\s*\\|?\\s*${s.tournament.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\s*\\(?\\d{4}\\)?`, 'i'), '').replace(/^\s*\|\s*/, '').trim() || s.name
+        : s.name;
+      return (
+        <a href={`/cs2-stickers/${s.slug}/`} class="sth-row">
+          <div class="sth-row-img">
+            {s.image && <img src={s.image} alt={s.name} loading="lazy" width="48" height="48" />}
+          </div>
+          <div class="sth-row-info">
+            <span class="sth-row-name">{displayName}</span>
+            {s.tournament && <span class="sth-row-tournament">{s.tournament}</span>}
+          </div>
+          <span class="sth-row-variant" style={`color:${vColor};background:${vBg}`}>{s.variant}</span>
+          <span class="sth-row-price">${s.price.toFixed(2)}</span>
+        </a>
+      );
+    })}
+  </div>
+
+  <!-- Load More -->
+  <div class="sth-load-wrap" id="loadMoreWrap">
+    <button class="sth-load-btn" id="loadMoreBtn">Show More Stickers</button>
+  </div>
+
+  <!-- Sticker Investing Section -->
+  <section class="sth-investing">
+    <h2 class="sth-section-heading">Sticker Investing & Price Trends</h2>
+    <div class="sth-investing-cols">
+      <div class="sth-invest-block">
+        <h3>Why Stickers Appreciate</h3>
+        <ul>
+          <li>Limited supply from tournament operations</li>
+          <li>Discontinued capsules become rarer over time</li>
+          <li>Holo/Foil/Gold variants command premium prices</li>
+          <li>Historic major stickers are highly collectible</li>
+          <li>Professional player signed stickers are ultra-rare</li>
+        </ul>
+      </div>
+      <div class="sth-invest-block">
+        <h3>High-Value Categories</h3>
+        <ul>
+          <li><strong>Katowice 2014</strong> — Historic, extremely limited supply</li>
+          <li><strong>Legends/Challengers</strong> — Vintage major stickers</li>
+          <li><strong>Gold Stickers</strong> — Rarest variant from majors</li>
+          <li><strong>Team Autographs</strong> — Signed by pro players</li>
+          <li><strong>Operation Exclusive</strong> — No longer obtainable</li>
+        </ul>
+      </div>
+      <div class="sth-invest-block">
+        <h3>Investment Tips</h3>
+        <ul>
+          <li>Focus on old majors (pre-2020) for long-term growth</li>
+          <li>Holo variants hold better value than paper</li>
+          <li>Capsule stickers appreciate after discontinuation</li>
+          <li>Monitor 7-day trading volume for market activity</li>
+          <li>Team organization changes can affect sticker value</li>
+        </ul>
+      </div>
+    </div>
+    <div class="sth-invest-cta">
+      <a href="/cs2-guides/skins-investing-guide/">Full Investing Guide</a>
+    </div>
+  </section>
+
+  <!-- FAQ as details/summary -->
+  <section class="sth-faq">
+    <h2 class="sth-section-heading">Sticker FAQ</h2>
+    {faqData.map(item => (
+      <details class="sth-faq-item">
+        <summary>{item.q}</summary>
+        <p>{item.a}</p>
+      </details>
+    ))}
+  </section>
+
+  <!-- Related Links -->
+  <section class="sth-related">
+    <h2 class="sth-section-heading">Related Resources</h2>
+    <div class="sth-link-row">
+      <a href="/cs2-skins/">Skin Database</a>
+      <a href="/cs2-cases/">Cases & Collections</a>
+      <a href="/cs2-guides/skins-investing-guide/">Skins Investing Guide</a>
+      <a href="/price-tracker/">Price Tracker</a>
+      <a href="/cs2-guides/trading-guide/">Trading Guide</a>
+      <a href="/market-trends/">Market Trends</a>
+      <a href="/float-checker/">Float Checker</a>
+      <a href="/inventory-lookup/">Inventory Lookup</a>
+      <a href="/cs2-agents/">Agents & Music Kits</a>
+      <a href="/pro-players/">Pro Player Settings</a>
+    </div>
+  </section>
+
+  <ExploreMore context="skins" />
+</Base>
+
+<style>
+  /* ── Breadcrumb ── */
+  .sth-breadcrumb {
+    font-size: 0.85rem;
+    color: var(--text2);
+    margin-bottom: 1.5rem;
+  }
+  .sth-breadcrumb a {
+    color: var(--accent);
+    text-decoration: none;
+  }
+  .sth-breadcrumb a:hover {
+    text-decoration: underline;
+  }
+  .sth-sep {
+    margin: 0 0.3rem;
+    color: var(--text2);
+  }
+
+  /* ── Hero ── */
+  .sth-hero {
+    margin-bottom: 2rem;
+    padding: 2rem 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .sth-title {
+    font-size: 2.2rem;
+    font-weight: 800;
+    color: var(--accent);
+    margin: 0 0 0.75rem;
+  }
+  .sth-subtitle {
+    font-size: 1rem;
+    color: var(--text2);
+    max-width: 700px;
+    line-height: 1.6;
+    margin: 0 0 1.25rem;
+  }
+  .sth-stat-pills {
+    display: flex;
+    gap: 0.6rem;
+    flex-wrap: wrap;
+  }
+  .sth-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.35rem 0.85rem;
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    font-size: 0.8rem;
+    color: var(--text2);
+  }
+  .sth-pill strong {
+    color: var(--accent);
+    font-weight: 700;
+  }
+
+  /* ── Controls ── */
+  .sth-controls {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 1.25rem;
+    margin-bottom: 1.25rem;
+  }
+  .sth-search-row {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+  }
+  .sth-search {
+    flex: 1;
+    min-width: 200px;
+    padding: 0.55rem 0.85rem;
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    color: var(--text);
+    font-size: 0.9rem;
+    font-family: inherit;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .sth-search:focus {
+    border-color: var(--accent);
+  }
+  .sth-search::placeholder {
+    color: var(--text2);
+  }
+  .sth-sort-wrap {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-shrink: 0;
+  }
+  .sth-sort-wrap label {
+    font-size: 0.85rem;
+    color: var(--text2);
+    white-space: nowrap;
+  }
+  .sth-sort {
+    padding: 0.55rem 0.75rem;
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    color: var(--text);
+    font-size: 0.85rem;
+    font-family: inherit;
+    cursor: pointer;
+    outline: none;
+  }
+
+  /* ── Filter rows ── */
+  .sth-filter-row {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-top: 0.75rem;
+    flex-wrap: wrap;
+  }
+  .sth-filter-label {
+    font-size: 0.75rem;
+    color: var(--text2);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    font-weight: 600;
+    flex-shrink: 0;
+    min-width: 55px;
+  }
+  .sth-pills-wrap {
+    display: flex;
+    gap: 0.4rem;
+    flex-wrap: wrap;
+  }
+  .sth-filter-pill {
+    background: var(--bg3);
+    color: var(--text2);
+    border: 1px solid var(--border);
+    padding: 0.3rem 0.75rem;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.78rem;
+    font-weight: 500;
+    font-family: inherit;
+    transition: border-color 0.2s, color 0.2s;
+  }
+  .sth-filter-pill:hover {
+    border-color: var(--accent);
+    color: var(--text);
+  }
+  .sth-filter-pill.active {
+    background: var(--accent);
+    color: #000;
+    border-color: var(--accent);
+  }
+  .sth-variant-pill.active {
+    background: var(--vf-bg);
+    color: var(--vf-color);
+    border-color: var(--vf-color);
+  }
+
+  /* ── Results Bar ── */
+  .sth-results-bar {
+    margin-bottom: 0.75rem;
+    padding: 0.4rem 0;
+  }
+  #resultsCount {
+    font-size: 0.83rem;
+    color: var(--text2);
+  }
+
+  /* ── Table rows ── */
+  .sth-table {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    margin-bottom: 1.5rem;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  .sth-row {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.65rem 1rem;
+    background: var(--bg2);
+    border-bottom: 1px solid var(--border);
+    text-decoration: none;
+    color: inherit;
+    transition: border-left 0.15s, background 0.15s;
+    border-left: 3px solid transparent;
+  }
+  .sth-row:last-child {
+    border-bottom: none;
+  }
+  .sth-row:hover {
+    border-left: 3px solid var(--accent);
+    background: var(--bg3);
+  }
+  .sth-row-img {
+    width: 48px;
+    height: 48px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--bg3);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  .sth-row-img img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+  }
+  .sth-row-info {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+  }
+  .sth-row-name {
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: var(--text);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .sth-row-tournament {
+    font-size: 0.72rem;
+    color: var(--text2);
+  }
+  .sth-row-variant {
+    display: inline-block;
+    padding: 0.2rem 0.55rem;
+    border-radius: 4px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    flex-shrink: 0;
+  }
+  .sth-row-price {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--accent);
+    flex-shrink: 0;
+    min-width: 70px;
+    text-align: right;
+  }
+
+  /* ── Load More ── */
+  .sth-load-wrap {
+    text-align: center;
+    margin: 1rem 0 2.5rem;
+  }
+  .sth-load-btn {
+    padding: 0.65rem 2rem;
+    background: var(--bg2);
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    font-size: 0.88rem;
+    font-weight: 600;
+    font-family: inherit;
+    cursor: pointer;
+    transition: border-color 0.2s, color 0.2s;
+  }
+  .sth-load-btn:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+  .sth-load-wrap.hidden {
+    display: none;
+  }
+
+  /* ── Investing ── */
+  .sth-investing {
+    margin: 2.5rem 0;
+    padding: 1.75rem;
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+  }
+  .sth-section-heading {
+    margin: 0 0 1.25rem;
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--text);
+  }
+  .sth-investing-cols {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 1.25rem;
+    margin-bottom: 1.25rem;
+  }
+  .sth-invest-block {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 1.15rem;
+    transition: border-color 0.2s;
+  }
+  .sth-invest-block:hover {
+    border-left: 3px solid var(--accent);
+  }
+  .sth-invest-block h3 {
+    margin: 0 0 0.75rem;
+    font-size: 0.95rem;
+    color: var(--text);
+  }
+  .sth-invest-block ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  .sth-invest-block li {
+    padding: 0.3rem 0;
+    color: var(--text2);
+    font-size: 0.85rem;
+    line-height: 1.5;
+  }
+  .sth-invest-block li strong {
+    color: var(--accent);
+  }
+  .sth-invest-cta {
+    text-align: center;
+    margin-top: 1rem;
+  }
+  .sth-invest-cta a {
+    display: inline-block;
+    padding: 0.5rem 1.5rem;
+    background: var(--accent);
+    color: #000;
+    border-radius: 4px;
+    font-weight: 600;
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: opacity 0.2s;
+  }
+  .sth-invest-cta a:hover {
+    opacity: 0.85;
+  }
+
+  /* ── FAQ (details) ── */
+  .sth-faq {
+    margin: 2.5rem 0;
+  }
+  .sth-faq-item {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    margin-bottom: 0.5rem;
+    transition: border-color 0.2s;
+  }
+  .sth-faq-item[open] {
+    border-left: 3px solid var(--accent);
+  }
+  .sth-faq-item summary {
+    padding: 0.85rem 1rem;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 0.92rem;
+    color: var(--text);
+    list-style: none;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .sth-faq-item summary::before {
+    content: '+';
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--accent);
+    flex-shrink: 0;
+    width: 1.2rem;
+    text-align: center;
+  }
+  .sth-faq-item[open] summary::before {
+    content: '-';
+  }
+  .sth-faq-item summary::-webkit-details-marker {
+    display: none;
+  }
+  .sth-faq-item p {
+    padding: 0 1rem 1rem 2.7rem;
+    margin: 0;
+    font-size: 0.88rem;
+    color: var(--text2);
+    line-height: 1.6;
+  }
+
+  /* ── Related ── */
+  .sth-related {
+    margin: 2.5rem 0;
+  }
+  .sth-link-row {
+    display: flex;
+    gap: 0.6rem;
+    flex-wrap: wrap;
+  }
+  .sth-link-row a {
+    padding: 0.4rem 0.9rem;
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    font-size: 0.83rem;
+    color: var(--text2);
+    text-decoration: none;
+    transition: border-color 0.2s, color 0.2s;
+  }
+  .sth-link-row a:hover {
+    border-left: 3px solid var(--accent);
+    color: var(--accent);
+  }
+
+  /* ── Mobile ── */
+  @media (max-width: 768px) {
+    .sth-title {
+      font-size: 1.6rem;
+    }
+    .sth-search-row {
+      flex-direction: column;
+    }
+    .sth-sort-wrap {
+      width: 100%;
+    }
+    .sth-sort {
+      flex: 1;
+    }
+    .sth-row {
+      padding: 0.55rem 0.75rem;
+      gap: 0.6rem;
+    }
+    .sth-row-img {
+      width: 40px;
+      height: 40px;
+    }
+    .sth-row-name {
+      font-size: 0.8rem;
+    }
+    .sth-row-price {
+      font-size: 0.85rem;
+      min-width: 55px;
+    }
+    .sth-investing-cols {
+      grid-template-columns: 1fr;
+    }
+    .sth-filter-pill {
+      font-size: 0.72rem;
+      padding: 0.25rem 0.55rem;
+    }
+  }
+</style>
+
+<script is:inline define:vars={{ stickersData }}>
+  document.addEventListener('DOMContentLoaded', function() {
+    var allStickers = JSON.parse(stickersData);
+    var PAGE_SIZE = 60;
+    var currentPage = 1;
+    var filteredStickers = allStickers;
+
+    var grid = document.getElementById('stickerGrid');
+    var countEl = document.getElementById('resultsCount');
+    var loadMoreWrap = document.getElementById('loadMoreWrap');
+    var loadMoreBtn = document.getElementById('loadMoreBtn');
+    var searchInput = document.getElementById('stickerSearch');
+    var sortSelect = document.getElementById('stickerSort');
+
+    var activeVariant = 'all';
+    var activeType = 'all';
+    var searchQuery = '';
+
+    // Variant color maps (passed as constants)
+    var VARIANT_COLORS = {
+      'Paper': '#b0c3d9',
+      'Holo': '#4b69ff',
+      'Glitter': '#8847ff',
+      'Foil': '#d32ce6',
+      'Gold': '#e4ae39',
+      'Lenticular': '#2ecc71'
+    };
+    var VARIANT_BG = {
+      'Paper': 'rgba(176,195,217,0.15)',
+      'Holo': 'rgba(75,105,255,0.15)',
+      'Glitter': 'rgba(136,71,255,0.15)',
+      'Foil': 'rgba(211,44,230,0.15)',
+      'Gold': 'rgba(228,174,57,0.15)',
+      'Lenticular': 'rgba(46,204,113,0.15)'
+    };
+
+    // --- Variant filter buttons ---
+    var variantBtns = document.querySelectorAll('#variantFilters .sth-filter-pill');
+    variantBtns.forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        variantBtns.forEach(function(b) { b.classList.remove('active'); });
+        btn.classList.add('active');
+        activeVariant = btn.getAttribute('data-variant');
+        currentPage = 1;
+        applyFilters();
+      });
+    });
+
+    // --- Type filter buttons ---
+    var typeBtns = document.querySelectorAll('#typeFilters .sth-filter-pill');
+    typeBtns.forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        typeBtns.forEach(function(b) { b.classList.remove('active'); });
+        btn.classList.add('active');
+        activeType = btn.getAttribute('data-type');
+        currentPage = 1;
+        applyFilters();
+      });
+    });
+
+    // --- Search ---
+    var searchTimer = null;
+    searchInput.addEventListener('input', function() {
+      clearTimeout(searchTimer);
+      searchTimer = setTimeout(function() {
+        searchQuery = searchInput.value.toLowerCase().trim();
+        currentPage = 1;
+        applyFilters();
+      }, 250);
+    });
+
+    // --- Sort ---
+    sortSelect.addEventListener('change', function() {
+      currentPage = 1;
+      applyFilters();
+    });
+
+    // --- Load More ---
+    loadMoreBtn.addEventListener('click', function() {
+      currentPage++;
+      renderPage();
+    });
+
+    function applyFilters() {
+      var q = searchQuery;
+      filteredStickers = allStickers.filter(function(s) {
+        if (activeVariant !== 'all' && s.v !== activeVariant) return false;
+        if (activeType !== 'all' && s.y !== activeType) return false;
+        if (q && s.n.toLowerCase().indexOf(q) === -1 && s.m.toLowerCase().indexOf(q) === -1) return false;
+        return true;
+      });
+
+      // Sort
+      var sortVal = sortSelect.value;
+      if (sortVal === 'price-desc') {
+        filteredStickers.sort(function(a, b) { return b.p - a.p; });
+      } else if (sortVal === 'price-asc') {
+        filteredStickers.sort(function(a, b) { return a.p - b.p; });
+      } else if (sortVal === 'name-asc') {
+        filteredStickers.sort(function(a, b) { return a.n.localeCompare(b.n); });
+      } else if (sortVal === 'volume') {
+        filteredStickers.sort(function(a, b) { return (b.vol || 0) - (a.vol || 0); });
+      }
+
+      renderPage();
+    }
+
+    function renderPage() {
+      var shown = currentPage * PAGE_SIZE;
+      var visible = filteredStickers.slice(0, shown);
+      var total = filteredStickers.length;
+
+      var html = '';
+      for (var i = 0; i < visible.length; i++) {
+        var s = visible[i];
+        var vColor = VARIANT_COLORS[s.v] || '#b0c3d9';
+        var vBg = VARIANT_BG[s.v] || 'rgba(176,195,217,0.15)';
+        var displayName = s.n;
+        if (s.t) {
+          // Try to strip tournament name from display
+          var tEscaped = s.t.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+          var tRegex = new RegExp('\\s*\\|?\\s*' + tEscaped + '\\s*\\(?\\d{4}\\)?', 'i');
+          var stripped = displayName.replace(tRegex, '').replace(/^\s*\|\s*/, '').trim();
+          if (stripped) displayName = stripped;
+        }
+        var priceStr = s.p > 0 ? '$' + s.p.toFixed(2) : '';
+
+        html += '<a href="/cs2-stickers/' + s.s + '/" class="sth-row">';
+        html += '<div class="sth-row-img">';
+        if (s.i) {
+          html += '<img src="' + s.i + '" alt="' + s.n.replace(/"/g, '&quot;') + '" loading="lazy" width="48" height="48" />';
+        }
+        html += '</div>';
+        html += '<div class="sth-row-info">';
+        html += '<span class="sth-row-name">' + escapeHtml(displayName) + '</span>';
+        if (s.t) {
+          html += '<span class="sth-row-tournament">' + escapeHtml(s.t) + '</span>';
+        }
+        html += '</div>';
+        html += '<span class="sth-row-variant" style="color:' + vColor + ';background:' + vBg + '">' + escapeHtml(s.v) + '</span>';
+        if (priceStr) {
+          html += '<span class="sth-row-price">' + priceStr + '</span>';
+        }
+        html += '</a>';
+      }
+
+      grid.innerHTML = html;
+      countEl.textContent = 'Showing ' + visible.length + ' of ' + total.toLocaleString() + ' stickers';
+
+      if (shown >= total) {
+        loadMoreWrap.classList.add('hidden');
+      } else {
+        loadMoreWrap.classList.remove('hidden');
+      }
+    }
+
+    function escapeHtml(str) {
+      var div = document.createElement('div');
+      div.textContent = str;
+      return div.innerHTML;
+    }
+  });
+</script>

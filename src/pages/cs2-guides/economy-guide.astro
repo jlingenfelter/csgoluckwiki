@@ -1,0 +1,368 @@
+---
+import Base from '../../layouts/Base.astro';
+import AuthorBox from '../../components/AuthorBox.astro';
+import { faqSchema, breadcrumbSchema } from '../../lib/weapons';
+
+const title = 'CS2 Economy Management Guide — Spend Smarter, Win More | CSGOLuck Wiki';
+const description = 'Understand full buys, eco saves, force-buy timing, and team-wide cash strategies that keep your squad equipped when it matters most.';
+
+const breadcrumbs = [
+  { name: 'Home', url: '/' },
+  { name: 'Guides', url: '/cs2-guides' },
+  { name: 'Economy Management Guide', url: '/cs2-guides/economy-guide' },
+];
+
+const faqs = [
+  {
+    question: 'How much money do you start with each round?',
+    answer: '$800 base amount. Add round bonuses: $2,900 for win, $1,400-$3,400 for loss (increases each loss). You also earn $300 per kill.',
+  },
+  {
+    question: 'What\'s the difference between a full buy and a half buy?',
+    answer: 'Full buy: $4,000-5,000 per player for primary weapon + armor + utility. Half buy: $2,000-3,000 with SMGs or basic rifles. Use based on your economy situation.',
+  },
+  {
+    question: 'When should we force buy?',
+    answer: 'Force buy when you have $4,000-5,000 total and need momentum. It\'s risky but can secure crucial rounds if you win, leading to full buys and map control.',
+  },
+  {
+    question: 'How do I manage economy after losing pistol round?',
+    answer: 'Save aggressively for 2-3 rounds. Buy minimal items (armor only), then execute a full buy on round 4 when bonuses accumulate. Avoid forcing prematurely.',
+  },
+  {
+    question: 'What\'s a stack buy strategy?',
+    answer: 'Concentrate purchases on 2-3 players while others eco. Useful for executing specific bomb site strategies with overwhelming firepower in one area.',
+  },
+];
+
+const breadcrumbSchema_ = breadcrumbSchema(breadcrumbs);
+const faqSchema_ = faqSchema(faqs);
+
+const articleSchema = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": title,
+  "description": description,
+  "author": { "@type": "Person", "name": "Josh Lingenfelter", "url": "https://www.linkedin.com/in/josh-lingenfelter-8157274b/", "jobTitle": "Director", "worksFor": { "@type": "Organization", "name": "CSGOLuck" } },
+  "publisher": { "@type": "Organization", "name": "CSGOLuck Wiki", "url": "https://wiki.csgoluck.com" },
+  "mainEntityOfPage": `https://wiki.csgoluck.com/cs2-guides/economy-guide/`,
+  "inLanguage": "en-US"
+});
+
+const sections = [
+  { id: 'money-system', label: 'Money System' },
+  { id: 'buy-rounds', label: 'Buy Rounds' },
+  { id: 'eco-rounds', label: 'Economy Rounds' },
+  { id: 'force-buy', label: 'Force Buy' },
+  { id: 'multi-round', label: 'Multi-Round Planning' },
+  { id: 'advanced', label: 'Advanced Tactics' },
+  { id: 'communication', label: 'Communication' },
+  { id: 'faq', label: 'FAQ' },
+  { id: 'resources', label: 'Resources' },
+];
+---
+
+<Base title={title} description={description}>
+  <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema_)}></script>
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema_)}></script>
+  <script type="application/ld+json" set:html={articleSchema}></script>
+
+  <div class="ecg-wrap">
+    <nav class="ecg-breadcrumb">
+      <a href="/">Home</a><span class="ecg-sep">/</span><a href="/cs2-guides">Guides</a><span class="ecg-sep">/</span><span>Economy Guide</span>
+    </nav>
+
+    <header class="ecg-header">
+      <h1>Economy Management Guide</h1>
+      <p class="ecg-subtitle">Turn disciplined spending into a consistent competitive edge</p>
+    </header>
+
+    <nav class="ecg-toc-mobile" aria-label="Table of contents">
+      {sections.map((s) => (
+        <a href={`#${s.id}`} class="ecg-toc-mobile-link">{s.label}</a>
+      ))}
+    </nav>
+
+    <div class="ecg-layout">
+      <aside class="ecg-sidebar">
+        <nav class="ecg-toc" aria-label="Table of contents">
+          <span class="ecg-toc-title">Contents</span>
+          {sections.map((s) => (
+            <a href={`#${s.id}`} class="ecg-toc-link">{s.label}</a>
+          ))}
+        </nav>
+      </aside>
+
+      <article class="ecg-content">
+        <p class="ecg-intro">Money management is arguably the single biggest strategic lever in CS2. Superior aim alone cannot overcome a team that consistently fields full loadouts at the right moments. If you are new to CS2, cover the fundamentals in the <a href="/cs2-guides/beginners-guide/">beginner's guide</a> first. This guide breaks down buy cycles, eco discipline, and force-buy timing so your squad always has the firepower it needs when the round matters most.</p>
+
+        <section id="money-system">
+          <div class="ecg-section-header"><h2>Understanding the Money System</h2></div>
+          <p>Each player receives $800 at the top of every round, with additional income from eliminations, bomb interactions, and round results. Spending that cash wisely is how you keep rifles and grenades flowing across the entire half.</p>
+          <h3>Money Sources</h3>
+          <ul class="ecg-list">
+            <li><strong>Round Win:</strong> $2,900 to each player</li>
+            <li><strong>Round Loss:</strong> $1,400-$3,400 loss bonus (increases per consecutive loss)</li>
+            <li><strong>Kill:</strong> $300 per elimination</li>
+            <li><strong>Bomb Plant (T):</strong> $300 bonus</li>
+            <li><strong>Bomb Defuse (CT):</strong> $300 bonus</li>
+            <li><strong>Base Amount:</strong> $800 per round</li>
+          </ul>
+          <h3>Loss Bonus System</h3>
+          <p>The loss bonus increases with each consecutive loss to prevent snowballing:</p>
+          <ul class="ecg-list">
+            <li>Round 1 loss: $1,400</li>
+            <li>Round 2 loss: $1,900</li>
+            <li>Round 3 loss: $2,400</li>
+            <li>Round 4+ loss: $3,400 (capped)</li>
+          </ul>
+          <p>This system allows teams to recover economically after losses. Plan purchases knowing your loss bonus increases.</p>
+        </section>
+
+        <section id="buy-rounds">
+          <div class="ecg-section-header"><h2>Buy Rounds Strategy</h2></div>
+          <p>A buy round is a coordinated investment in rifles, armour, and full utility aimed at giving your side the highest possible chance of winning. Nailing buy rounds also anchors your economy for the rounds that follow.</p>
+          <h3>Full Buy Setup</h3>
+          <p>Spend $4,000-5,000 per player for maximum loadout:</p>
+          <ul class="ecg-list">
+            <li><strong>Primary Weapon:</strong> $1,500-2,100 (<a href="/cs2-weapons/">AK-47, M4A4, or similar</a>)</li>
+            <li><strong>Pistol Secondary:</strong> $500</li>
+            <li><strong>Armor:</strong> $650</li>
+            <li><strong>Utility:</strong> $1,000-1,500 (grenades, smokes, flashes -- see the <a href="/cs2-guides/grenade-guide/">grenade guide</a> for optimal utility usage)</li>
+            <li><strong>Remaining:</strong> Save for future rounds or adjust utility</li>
+          </ul>
+          <h3>Half Buy Strategy</h3>
+          <p>Use when you have less total economy ($15,000-20,000 team total). Each player buys:</p>
+          <ul class="ecg-list">
+            <li><strong>Secondary Weapon:</strong> SMG like MP9 or MAC-10 ($500-800)</li>
+            <li><strong>Armor:</strong> $650</li>
+            <li><strong>Light Utility:</strong> $500-800</li>
+            <li><strong>Total per player:</strong> $2,000-2,500</li>
+          </ul>
+          <p>Half buys work best on maps where close-range encounters dominate or when you need to preserve economy.</p>
+          <h3>Full Buy Guidelines</h3>
+          <ul class="ecg-list">
+            <li>Execute full buys after winning the previous round</li>
+            <li>Ensure your team has $15,000+ total before committing</li>
+            <li>Prioritize armor -- unarmored players are vulnerable</li>
+            <li>Always have utility for site executes</li>
+            <li>Consider weapon consistency (all riflers should have similar guns)</li>
+          </ul>
+        </section>
+
+        <section id="eco-rounds">
+          <div class="ecg-section-header"><h2>Economy Rounds & Saving</h2></div>
+          <p>Eco rounds -- also known as save rounds -- trade short-term firepower for long-term stability. Spending virtually nothing now guarantees a full buy later, keeping your economy cycle healthy.</p>
+          <h3>Light Buy Eco Round</h3>
+          <p>Spend $500-1,500 total per player:</p>
+          <ul class="ecg-list">
+            <li>Pistol with armor ($800-1,000)</li>
+            <li>Maybe one smoke or utility item</li>
+            <li>Focus on surviving and getting picks</li>
+            <li>Save most money for next round</li>
+          </ul>
+          <p>Light buys work when you're close to full buy next round and don't want economy interruption.</p>
+          <h3>Full Eco/Force Eco</h3>
+          <p>Spend minimum ($800 base) on weapons, keep $0 utility:</p>
+          <ul class="ecg-list">
+            <li>Drop armor, buy only pistols</li>
+            <li>Focus on avoiding deaths and securing picks</li>
+            <li>Win rounds through superior positioning</li>
+            <li>Maximum savings for next round buy</li>
+          </ul>
+          <p>Full ecos are high-risk but maximize future buying power. Execute only when you need rapid economic recovery.</p>
+          <h3>When to Eco</h3>
+          <ul class="ecg-list">
+            <li>After losing a round you couldn't have won with full buy</li>
+            <li>When team total is $8,000-12,000 short of full buy</li>
+            <li>To set up a guaranteed next-round full buy</li>
+            <li>When waiting for loss bonuses to stack</li>
+          </ul>
+        </section>
+
+        <section id="force-buy">
+          <div class="ecg-section-header"><h2>Force Buy Strategy</h2></div>
+          <p>Force-buying means committing rifles and armour when the bank barely supports it. Done at the right moment, a successful force flips the momentum of an entire half; done recklessly, it deepens a financial hole.</p>
+          <h3>When to Force Buy</h3>
+          <ul class="ecg-list">
+            <li>Team has $4,000-5,000 and needs a confidence round</li>
+            <li>Momentum is strongly against you (0-3 down)</li>
+            <li>Opponents are likely in their own eco</li>
+            <li>Map control is critical at this stage</li>
+          </ul>
+          <h3>Force Buy Setup</h3>
+          <p>Each player buys $3,500-4,000:</p>
+          <ul class="ecg-list">
+            <li>Rifle (AK or M4) with some money remaining</li>
+            <li>Armor</li>
+            <li>Limited utility</li>
+            <li>Leave team with minimal reserve</li>
+          </ul>
+          <h3>Force Buy Execution</h3>
+          <p>Force buys succeed through superior setup and utility usage. Concentrate forces to overwhelm opponents in key areas rather than spreading thin. Know each weapon's kill reward and <a href="/damage-calculator/">damage output</a> so you can pick the most cost-efficient loadout.</p>
+          <h3>Force Buy Risk Assessment</h3>
+          <ul class="ecg-list">
+            <li><strong>High Success:</strong> Opponents are ecoing, you have momentum</li>
+            <li><strong>Medium Risk:</strong> Even economy, outcome depends on execution</li>
+            <li><strong>High Risk:</strong> Opponents have full buy, pistols, or superior position</li>
+          </ul>
+        </section>
+
+        <section id="multi-round">
+          <div class="ecg-section-header"><h2>Multi-Round Economy Planning</h2></div>
+          <p>Top teams think two or three rounds ahead when deciding how to spend. Mapping out buy cycles in advance prevents surprise bankruptcies at the worst possible time. Understanding economy is also a key factor in <a href="/cs2-guides/ranks-guide/">climbing the competitive ranks</a>.</p>
+          <h3>Win Round Economy</h3>
+          <p><strong>Round 1:</strong> Full buy (rifles, armor, utility)<br><strong>Round 2:</strong> Full buy (restock utility)<br><strong>Rounds 3+:</strong> Full buys continue with adjustments as needed</p>
+          <h3>Loss Round Economy</h3>
+          <p><strong>After Loss:</strong> Determine economy recovery plan<br><strong>If poor:</strong> Save 2 rounds, then full buy<br><strong>If decent:</strong> Light buy, progress to full buy next round<br><strong>Decision point:</strong> Risk force buy or guarantee recovery?</p>
+          <h3>Pistol Round Economy</h3>
+          <p><strong>Round 1 (Pistol):</strong> All players buy pistol + utility<br><strong>Possible outcomes:</strong></p>
+          <ul class="ecg-list">
+            <li><strong>Pistol Win:</strong> Full buy round 2, then full buys + restock</li>
+            <li><strong>Pistol Loss:</strong> Save rounds 2-3, full buy round 4</li>
+          </ul>
+          <h3>Sample 5-Round Economy Scenario</h3>
+          <p><strong>Round 1:</strong> Pistol buy (lose)<br><strong>Round 2:</strong> Eco/light buy (lose)<br><strong>Round 3:</strong> Light buy (lose, but getting loss bonus)<br><strong>Round 4:</strong> Full buy (now you can afford it)<br><strong>Round 5:</strong> Depends on round 4 outcome</p>
+        </section>
+
+        <section id="advanced">
+          <div class="ecg-section-header"><h2>Advanced Economy Tactics</h2></div>
+          <h3>Stack Buy Strategy</h3>
+          <p>Concentrate purchases on 2-3 players while others eco. Useful when one bomb site is the primary target:</p>
+          <ul class="ecg-list">
+            <li>Stack A site with full buys</li>
+            <li>B site players buy armor and pistols only</li>
+            <li>Bomb site stack executes with superior firepower</li>
+            <li>Works best in predictable economy phases</li>
+          </ul>
+          <h3>Floating Economy</h3>
+          <p>Keep team total within optimal range ($10,000-20,000) by making individual adjustments:</p>
+          <ul class="ecg-list">
+            <li>Rich players buy full utility and armor</li>
+            <li>Mid-economy players buy weapons and light utility</li>
+            <li>Poor players eco and save</li>
+            <li>Balance team purchases for cohesive strength</li>
+          </ul>
+          <h3>Utility Spacing</h3>
+          <p>Distribute utility efficiently:</p>
+          <ul class="ecg-list">
+            <li>Site entry players carry flashes and smokes</li>
+            <li>Support players carry utility for site setup</li>
+            <li>Rotators carry defensive utility</li>
+            <li>Avoid duplicate utility purchases</li>
+          </ul>
+        </section>
+
+        <section id="communication">
+          <div class="ecg-section-header"><h2>Economy Communication</h2></div>
+          <p>Coordinated spending relies on clear voice comms. Establish a quick pre-round check-in where everyone shares their bank balance and buying intention. Review your economy decisions in past matches by loading up <a href="/cs2-guides/demo-guide/">demo replays</a>.</p>
+          <h3>Money Callouts</h3>
+          <ul class="ecg-list">
+            <li>"I have $2,400" - Clear personal money status</li>
+            <li>"We're at $15k total" - Team economy status</li>
+            <li>"Buying next round" - Your buying intention</li>
+            <li>"Eco this round" - Team strategy confirmation</li>
+          </ul>
+          <h3>Pre-Round Buying Discussion</h3>
+          <ul class="ecg-list">
+            <li>Determine strategy before the round begins</li>
+            <li>Confirm who's buying what weapons</li>
+            <li>Plan utility distribution</li>
+            <li>Adjust based on unexpected kills/losses</li>
+          </ul>
+        </section>
+
+        <section id="faq">
+          <div class="ecg-section-header"><h2>Frequently Asked Questions</h2></div>
+          <div class="ecg-faq-list">
+            {faqs.map((faq) => (
+              <details class="ecg-faq-item">
+                <summary class="ecg-faq-question">{faq.question}</summary>
+                <p class="ecg-faq-answer">{faq.answer}</p>
+              </details>
+            ))}
+          </div>
+        </section>
+
+        <section id="resources">
+          <div class="ecg-section-header"><h2>Related Resources</h2></div>
+          <div class="ecg-resources-grid">
+            <a href="/cs2-guides/" class="ecg-resource-card"><span class="ecg-resource-name">All Guides</span><span class="ecg-resource-arrow">&rarr;</span></a>
+            <a href="/economy-calculator/" class="ecg-resource-card"><span class="ecg-resource-name">Economy Calculator</span><span class="ecg-resource-arrow">&rarr;</span></a>
+            <a href="/damage-calculator/" class="ecg-resource-card"><span class="ecg-resource-name">Damage Calculator</span><span class="ecg-resource-arrow">&rarr;</span></a>
+            <a href="/cs2-weapons/" class="ecg-resource-card"><span class="ecg-resource-name">Weapon Database</span><span class="ecg-resource-arrow">&rarr;</span></a>
+            <a href="/weapon-compare/" class="ecg-resource-card"><span class="ecg-resource-name">Weapon Compare</span><span class="ecg-resource-arrow">&rarr;</span></a>
+            <a href="/pro-players/" class="ecg-resource-card"><span class="ecg-resource-name">Pro Player Settings</span><span class="ecg-resource-arrow">&rarr;</span></a>
+            <a href="/cs2-tools/" class="ecg-resource-card"><span class="ecg-resource-name">All Tools</span><span class="ecg-resource-arrow">&rarr;</span></a>
+            <a href="/cs2-guides/beginners-guide/" class="ecg-resource-card"><span class="ecg-resource-name">Beginner's Guide</span><span class="ecg-resource-arrow">&rarr;</span></a>
+            <a href="/cs2-guides/ranks-guide/" class="ecg-resource-card"><span class="ecg-resource-name">Ranking System Guide</span><span class="ecg-resource-arrow">&rarr;</span></a>
+            <a href="/cs2-guides/advanced-mechanics-guide/" class="ecg-resource-card"><span class="ecg-resource-name">Advanced Mechanics Guide</span><span class="ecg-resource-arrow">&rarr;</span></a>
+            <a href="/cs2-maps/" class="ecg-resource-card"><span class="ecg-resource-name">Map Callouts</span><span class="ecg-resource-arrow">&rarr;</span></a>
+          </div>
+        </section>
+      </article>
+    </div>
+  </div>
+
+  <style>
+    .ecg-wrap{max-width:1100px;margin:0 auto;padding:0 1.5rem 2rem}
+    .ecg-breadcrumb{display:flex;align-items:center;gap:.5rem;padding:1.25rem 0;font-size:.85rem;color:var(--text2)}
+    .ecg-breadcrumb a{color:var(--accent);text-decoration:none}
+    .ecg-breadcrumb a:hover{color:var(--accent2)}
+    .ecg-sep{color:var(--border)}
+    .ecg-header{padding:1.5rem 0 1.25rem;border-bottom:2px solid var(--accent);margin-bottom:1.5rem}
+    .ecg-header h1{margin:0 0 .35rem;font-size:2.2rem;font-weight:800;color:var(--text);letter-spacing:-.02em;line-height:1.2}
+    .ecg-subtitle{margin:0;font-size:1.05rem;color:var(--text2);font-weight:400}
+    .ecg-toc-mobile{display:none}
+    .ecg-layout{display:grid;grid-template-columns:220px 1fr;gap:2.5rem;align-items:start}
+    .ecg-sidebar{position:sticky;top:80px}
+    .ecg-toc{display:flex;flex-direction:column;gap:0;border-left:2px solid var(--border);padding-left:0}
+    .ecg-toc-title{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--accent);padding:0 0 .6rem 1rem}
+    .ecg-toc-link{display:block;padding:.4rem 1rem;font-size:.82rem;color:var(--text2);text-decoration:none;border-left:2px solid transparent;margin-left:-2px;transition:color .2s,border-color .2s}
+    .ecg-toc-link:hover{color:var(--text);border-left-color:var(--accent)}
+    .ecg-content{min-width:0}
+    .ecg-intro{font-size:1rem;line-height:1.8;color:var(--text2);margin-bottom:2rem}
+    .ecg-section-header{background:rgba(46,204,113,.05);margin:0 -1.25rem 1.25rem;padding:.75rem 1.25rem;border-radius:4px}
+    .ecg-section-header h2{margin:0;padding:0;font-size:1.5rem;font-weight:700;color:var(--text);border:none;letter-spacing:-.01em}
+    section{margin-bottom:2.5rem}
+    h3{font-size:1.15rem;font-weight:600;margin:1.5rem 0 .6rem;color:var(--text)}
+    p{line-height:1.7;color:var(--text2);margin-bottom:1rem}
+    .ecg-list{list-style:none;padding:0;margin:.75rem 0 1.5rem}
+    .ecg-list li{padding:.4rem 0 .4rem 1.6rem;position:relative;color:var(--text2);line-height:1.65}
+    .ecg-list li::before{content:'';position:absolute;left:.25rem;top:.75rem;width:6px;height:6px;background:var(--accent);border-radius:1px}
+    .ecg-list li strong{color:var(--text)}
+    .ecg-faq-list{display:flex;flex-direction:column;gap:.5rem}
+    .ecg-faq-item{background:var(--bg2);border:1px solid var(--border);border-radius:4px;overflow:hidden}
+    .ecg-faq-question{display:block;padding:1rem 1.25rem;font-size:.95rem;font-weight:600;color:var(--text);cursor:pointer;list-style:none;position:relative;padding-right:2.5rem;transition:background .2s}
+    .ecg-faq-question::-webkit-details-marker{display:none}
+    .ecg-faq-question::after{content:'+';position:absolute;right:1.25rem;top:50%;transform:translateY(-50%);font-size:1.2rem;color:var(--accent);font-weight:700}
+    .ecg-faq-item[open] .ecg-faq-question::after{content:'\2212'}
+    .ecg-faq-item[open] .ecg-faq-question{border-bottom:1px solid var(--border);background:rgba(46,204,113,.03)}
+    .ecg-faq-question:hover{background:rgba(46,204,113,.03)}
+    .ecg-faq-answer{padding:1rem 1.25rem;margin:0;font-size:.9rem;color:var(--text2);line-height:1.7}
+    .ecg-resources-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.6rem;margin:.5rem 0 1.5rem}
+    .ecg-resource-card{display:flex;align-items:center;justify-content:space-between;padding:.75rem 1rem;background:var(--bg2);border:1px solid var(--border);border-radius:4px;text-decoration:none;border-left:2px solid transparent;transition:border-left-color .2s,color .2s}
+    .ecg-resource-card:hover{border-left-color:var(--accent)}
+    .ecg-resource-name{font-size:.88rem;color:var(--text2);font-weight:500;transition:color .2s}
+    .ecg-resource-card:hover .ecg-resource-name{color:var(--text)}
+    .ecg-resource-arrow{font-size:1rem;color:var(--accent);opacity:0;transition:opacity .2s}
+    .ecg-resource-card:hover .ecg-resource-arrow{opacity:1}
+    @media(max-width:860px){
+      .ecg-layout{grid-template-columns:1fr;gap:0}
+      .ecg-sidebar{display:none}
+      .ecg-toc-mobile{display:flex;gap:.25rem;overflow-x:auto;padding:.75rem 0;margin-bottom:1rem;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+      .ecg-toc-mobile::-webkit-scrollbar{display:none}
+      .ecg-toc-mobile-link{flex-shrink:0;padding:.35rem .75rem;font-size:.78rem;font-weight:600;color:var(--text2);background:var(--bg2);border:1px solid var(--border);border-radius:4px;text-decoration:none;white-space:nowrap;transition:color .2s,border-color .2s}
+      .ecg-toc-mobile-link:hover{color:var(--accent);border-color:var(--accent)}
+      .ecg-header h1{font-size:1.7rem}
+      .ecg-section-header{margin:0 -1rem 1rem;padding:.6rem 1rem}
+      .ecg-resources-grid{grid-template-columns:repeat(2,1fr)}
+    }
+    @media(max-width:600px){
+      .ecg-wrap{padding:0 1rem 1.5rem}
+      .ecg-resources-grid{grid-template-columns:1fr}
+      .ecg-header h1{font-size:1.5rem}
+    }
+  </style>
+  <AuthorBox updated="2026-03-02" />
+</Base>

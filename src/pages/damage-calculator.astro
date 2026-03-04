@@ -55,65 +55,73 @@ const toolSchema = JSON.stringify({
   "applicationCategory": "UtilityApplication",
   "operatingSystem": "Web",
   "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
-  "author": { "@type": "Organization", "name": "CSDB.gg", "url": "https://csdb.gg" }
+  "author": { "@type": "Organization", "name": "CSGOLuck Wiki", "url": "https://wiki.csgoluck.com" }
 });
 ---
 
 <Base title={title} description={description}>
-  <div class="calc-container">
-    <h1>CS2 Damage Calculator</h1>
-    <p class="subtitle">Calculate weapon damage with armor penetration</p>
+  <script type="application/ld+json" set:html={toolSchema}></script>
+  <script type="application/ld+json" set:html={JSON.stringify(schemaData)} />
 
-    <div class="calc-section">
-      <div class="calc-row">
-        <div class="input-group">
-          <label for="weapon">Weapon</label>
-          <select id="weapon" class="weapon-select">
-            {weaponData.map(w => <option value={w.name}>{w.name}</option>)}
-          </select>
-        </div>
+  <nav class="breadcrumb"><a href="/">Home</a> <span>/</span> <a href="/cs2-tools/">Tools</a> <span>/</span> <span>Damage Calculator</span></nav>
 
-        <div class="input-group">
-          <label for="distance">Distance (units)</label>
-          <input type="range" id="distance" min="0" max="100" value="50" class="slider">
-          <span id="distanceValue">50</span>
-        </div>
+  <div class="dc-hero">
+    <h1 class="dc-title">CS2 Damage Calculator</h1>
+    <p class="dc-desc">Calculate <a href="/cs2-weapons/" style="color:var(--accent)">weapon damage</a> with armor penetration, distance falloff, and <a href="/cs2-guides/advanced-mechanics-guide/" style="color:var(--accent)">headshot multipliers</a>.</p>
+  </div>
+
+  <div class="dc-panel">
+    <div class="dc-inputs">
+      <div class="dc-field">
+        <label class="dc-label" for="weapon">Weapon</label>
+        <select id="weapon" class="dc-select">
+          {weaponData.map(w => <option value={w.name}>{w.name}</option>)}
+        </select>
       </div>
 
-      <div class="calc-row">
-        <div class="input-group armor-toggle">
-          <label>Target Armor</label>
-          <div class="toggle-group">
-            <button class="armor-btn active" data-armor="none">No Armor</button>
-            <button class="armor-btn" data-armor="kevlar">Kevlar</button>
-            <button class="armor-btn" data-armor="helmet">Kevlar + Helmet</button>
-          </div>
-        </div>
+      <div class="dc-field">
+        <label class="dc-label" for="distance">Distance (units): <span id="distanceValue" class="dc-range-val">50</span></label>
+        <input type="range" id="distance" min="0" max="100" value="50" class="dc-slider">
       </div>
 
-      <div class="result-section">
-        <div class="result-box">
-          <h3>Base Damage</h3>
-          <p class="damage-value" id="baseDamage">41</p>
-        </div>
-        <div class="result-box">
-          <h3>Armor Reduction</h3>
-          <p class="damage-value" id="armorReduction">0%</p>
-        </div>
-        <div class="result-box highlight">
-          <h3>Final Damage</h3>
-          <p class="damage-value" id="finalDamage">41</p>
-        </div>
-        <div class="result-box">
-          <h3>Headshot Damage</h3>
-          <p class="damage-value" id="headshotDamage">123</p>
+      <div class="dc-field">
+        <label class="dc-label">Target Armor</label>
+        <div class="dc-armor-group">
+          <button class="dc-armor-btn dc-armor-active" data-armor="none">No Armor</button>
+          <button class="dc-armor-btn" data-armor="kevlar">Kevlar</button>
+          <button class="dc-armor-btn" data-armor="helmet">Kevlar + Helmet</button>
         </div>
       </div>
     </div>
 
-    <div class="info-section">
-      <h2>How It Works</h2>
-      <ul>
+    <div class="dc-results">
+      <div class="dc-result-row">
+        <div class="dc-result-item">
+          <span class="dc-result-label">Base Damage</span>
+          <span class="dc-result-value" id="baseDamage">41</span>
+        </div>
+        <div class="dc-result-item">
+          <span class="dc-result-label">Armor Reduction</span>
+          <span class="dc-result-value" id="armorReduction">0%</span>
+        </div>
+      </div>
+      <div class="dc-result-row">
+        <div class="dc-result-item dc-result-highlight">
+          <span class="dc-result-label">Final Damage</span>
+          <span class="dc-result-value" id="finalDamage">41</span>
+        </div>
+        <div class="dc-result-item">
+          <span class="dc-result-label">Headshot Damage</span>
+          <span class="dc-result-value" id="headshotDamage">123</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="dc-two-col">
+    <div class="dc-info-block">
+      <h2 class="dc-section-title">How It Works</h2>
+      <ul class="dc-info-list">
         <li><strong>Base Damage:</strong> The standard damage value for the selected weapon</li>
         <li><strong>Armor Reduction:</strong> Percentage of damage mitigated by armor</li>
         <li><strong>Distance Falloff:</strong> Some weapons lose damage over distance</li>
@@ -121,266 +129,89 @@ const toolSchema = JSON.stringify({
       </ul>
     </div>
 
-    <div class="faq-section">
-      <h2>Frequently Asked Questions</h2>
-      {faq.map(item => (
-        <div class="faq-item">
-          <h3>{item.question}</h3>
-          <p>{item.answer}</p>
-        </div>
-      ))}
-    </div>
-
-    <div class="links-section">
-      <h2>Related Tools</h2>
-      <ul>
-        <li><a href="/economy-calculator/">Economy Calculator</a></li>
-        <li><a href="/weapon-compare/">Weapon Compare</a></li>
-        <li><a href="/recoil-patterns/">Recoil Patterns</a></li>
-        <li><a href="/spray-trainer/">Spray Trainer</a></li>
-        <li><a href="/sensitivity-converter/">Sensitivity Converter</a></li>
-        <li><a href="/weapons/">Weapon Database</a></li>
-        <li><a href="/pro-players/">Pro Player Settings</a></li>
-        <li><a href="/tools/">All Tools</a></li>
-        <li><a href="/guides/advanced-mechanics-guide/">Advanced Mechanics Guide</a></li>
-      </ul>
+    <div class="dc-info-block">
+      <h2 class="dc-section-title">Related Tools</h2>
+      <div class="dc-link-list">
+        <a href="/economy-calculator/" class="dc-link">Economy Calculator</a>
+        <a href="/weapon-compare/" class="dc-link">Weapon Compare</a>
+        <a href="/recoil-patterns/" class="dc-link">Recoil Patterns</a>
+        <a href="/spray-trainer/" class="dc-link">Spray Trainer</a>
+        <a href="/sensitivity-converter/" class="dc-link">Sensitivity Converter</a>
+        <a href="/cs2-weapons/" class="dc-link">Weapon Database</a>
+        <a href="/pro-players/" class="dc-link">Pro Player Settings</a>
+        <a href="/cs2-tools/" class="dc-link">All Tools</a>
+        <a href="/cs2-guides/advanced-mechanics-guide/" class="dc-link">Advanced Mechanics Guide</a>
+        <a href="/cs2-maps/" class="dc-link">Map Database</a>
+        <a href="/cs2-guides/beginners-guide/" class="dc-link">Beginner's Guide</a>
+        <a href="/loadout-builder/" class="dc-link">Loadout Builder</a>
+        <a href="/cs2-guides/economy-guide/" class="dc-link">Economy Guide</a>
+      </div>
     </div>
   </div>
 
-  <script type="application/ld+json" set:html={toolSchema}></script>
-  <script type="application/ld+json" set:html={JSON.stringify(schemaData)} />
+  <section class="dc-faq">
+    <h2 class="dc-section-title">Frequently Asked Questions</h2>
+    {faq.map(item => (
+      <details class="dc-faq-item">
+        <summary class="dc-faq-q">{item.question}</summary>
+        <p class="dc-faq-a">{item.answer}</p>
+      </details>
+    ))}
+  </section>
 
   <ExploreMore context="tools" />
 </Base>
 
-<style is:inline>
-  .calc-container {
-    max-width: 900px;
-    margin: 0 auto;
-    padding: 2rem;
-    color: var(--text);
-  }
+<style>
+  .dc-hero{padding:1.5rem 0;margin-bottom:1.5rem}
+  .dc-title{font-size:2rem;font-weight:800;margin:0 0 .5rem;color:var(--text)}
+  .dc-desc{color:var(--text2);font-size:.95rem;margin:0;max-width:600px;line-height:1.6}
 
-  h1 {
-    font-size: 2.5rem;
-    margin-bottom: 0.5rem;
-    color: var(--accent);
-  }
+  .dc-panel{background:var(--bg2);border:1px solid var(--border);border-radius:4px;padding:1.5rem;margin-bottom:2rem}
+  .dc-inputs{display:flex;flex-direction:column;gap:1.25rem;margin-bottom:1.5rem}
+  .dc-field{display:flex;flex-direction:column;gap:.4rem}
+  .dc-label{font-weight:600;color:var(--text2);font-size:.85rem;text-transform:uppercase;letter-spacing:.04em}
+  .dc-range-val{color:var(--accent);font-weight:700}
 
-  .subtitle {
-    color: var(--text2);
-    font-size: 1.1rem;
-    margin-bottom: 2rem;
-  }
+  .dc-select,.dc-slider{padding:.6rem;background:var(--bg3);border:1px solid var(--border);border-radius:4px;color:var(--text);font-size:.95rem;font-family:inherit}
+  .dc-select:focus,.dc-slider:focus{outline:none;border-color:var(--accent)}
 
-  .calc-section {
-    background: var(--bg2);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 2rem;
-    margin-bottom: 2rem;
-  }
+  .dc-armor-group{display:flex;gap:.4rem;flex-wrap:wrap}
+  .dc-armor-btn{padding:.55rem 1rem;background:var(--bg3);border:1px solid var(--border);border-radius:4px;color:var(--text2);cursor:pointer;font-weight:500;font-size:.85rem;font-family:inherit;transition:all .15s}
+  .dc-armor-btn:hover{border-color:var(--accent);color:var(--text)}
+  .dc-armor-active{background:var(--accent);border-color:var(--accent);color:#000}
 
-  .calc-row {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 2rem;
-    margin-bottom: 2rem;
-  }
+  .dc-results{display:flex;flex-direction:column;gap:.75rem}
+  .dc-result-row{display:grid;grid-template-columns:1fr 1fr;gap:.75rem}
+  .dc-result-item{background:var(--bg);border:1px solid var(--border);border-radius:4px;padding:1.25rem;text-align:center}
+  .dc-result-highlight{border-left:3px solid var(--accent);background:rgba(46,204,113,.06)}
+  .dc-result-label{display:block;font-size:.78rem;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.04em;margin-bottom:.5rem}
+  .dc-result-value{display:block;font-size:2rem;font-weight:800;color:var(--accent)}
 
-  .input-group {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-  }
+  .dc-two-col{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-bottom:2rem}
+  .dc-info-block{background:var(--bg2);border:1px solid var(--border);border-radius:4px;padding:1.5rem}
+  .dc-section-title{font-size:1.1rem;font-weight:700;color:var(--text);margin:0 0 1rem}
+  .dc-info-list{list-style:none;padding:0;margin:0}
+  .dc-info-list li{padding:.6rem 0;border-bottom:1px solid var(--border);color:var(--text2);font-size:.88rem;line-height:1.5}
+  .dc-info-list li:last-child{border-bottom:none}
+  .dc-info-list strong{color:var(--text)}
 
-  label {
-    font-weight: 600;
-    color: var(--text2);
-    font-size: 0.9rem;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-  }
+  .dc-link-list{display:flex;flex-direction:column;gap:.4rem}
+  .dc-link{display:block;padding:.5rem .75rem;background:var(--bg3);border:1px solid var(--border);border-left:3px solid transparent;border-radius:4px;color:var(--accent);text-decoration:none;font-size:.85rem;transition:border-left-color .15s}
+  .dc-link:hover{border-left-color:var(--accent)}
 
-  select, input[type="range"] {
-    padding: 0.75rem;
-    background: var(--bg3);
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    color: var(--text);
-    font-size: 1rem;
-  }
+  .dc-faq{margin-bottom:2rem}
+  .dc-faq-item{background:var(--bg2);border:1px solid var(--border);border-radius:4px;margin-bottom:.5rem;overflow:hidden}
+  .dc-faq-q{padding:.8rem 1rem;cursor:pointer;font-weight:600;font-size:.9rem;color:var(--text);list-style:none;display:flex;align-items:center;justify-content:space-between}
+  .dc-faq-q::-webkit-details-marker{display:none}
+  .dc-faq-q::after{content:'+';font-size:1.1rem;color:var(--accent);font-weight:700}
+  .dc-faq-item[open] .dc-faq-q::after{content:'-'}
+  .dc-faq-item[open]{border-left:3px solid var(--accent)}
+  .dc-faq-a{padding:0 1rem .8rem;margin:0;font-size:.88rem;color:var(--text2);line-height:1.6}
 
-  select:hover, input[type="range"]:hover {
-    border-color: var(--accent);
-  }
-
-  select:focus, input[type="range"]:focus {
-    outline: none;
-    border-color: var(--accent);
-    box-shadow: 0 0 0 3px rgba(212, 149, 110, 0.1);
-  }
-
-  .slider {
-    cursor: pointer;
-  }
-
-  #distanceValue {
-    color: var(--accent);
-    font-weight: 600;
-  }
-
-  .armor-toggle {
-    grid-column: 1 / -1;
-  }
-
-  .toggle-group {
-    display: flex;
-    gap: 0.5rem;
-    flex-wrap: wrap;
-  }
-
-  .armor-btn {
-    padding: 0.75rem 1.5rem;
-    background: var(--bg3);
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    color: var(--text2);
-    cursor: pointer;
-    transition: all 0.2s;
-    font-weight: 500;
-  }
-
-  .armor-btn:hover {
-    border-color: var(--accent);
-    color: var(--text);
-  }
-
-  .armor-btn.active {
-    background: var(--accent);
-    border-color: var(--accent);
-    color: white;
-  }
-
-  .result-section {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 1.5rem;
-    margin-top: 2rem;
-  }
-
-  .result-box {
-    background: var(--bg);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 1.5rem;
-    text-align: center;
-  }
-
-  .result-box.highlight {
-    border-color: var(--accent);
-    background: rgba(212, 149, 110, 0.1);
-  }
-
-  .result-box h3 {
-    color: var(--text2);
-    font-size: 0.9rem;
-    margin-bottom: 0.75rem;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-  }
-
-  .damage-value {
-    font-size: 2.5rem;
-    font-weight: 700;
-    color: var(--accent);
-    margin: 0;
-  }
-
-  .info-section, .faq-section {
-    background: var(--bg2);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 2rem;
-    margin-bottom: 2rem;
-  }
-
-  .info-section h2, .faq-section h2 {
-    color: var(--accent);
-    font-size: 1.5rem;
-    margin-bottom: 1.5rem;
-  }
-
-  .info-section ul {
-    list-style: none;
-    padding: 0;
-  }
-
-  .info-section li {
-    padding: 0.75rem 0;
-    border-bottom: 1px solid var(--border);
-    color: var(--text2);
-  }
-
-  .info-section li:last-child {
-    border-bottom: none;
-  }
-
-  .faq-item {
-    margin-bottom: 1.5rem;
-    padding-bottom: 1.5rem;
-    border-bottom: 1px solid var(--border);
-  }
-
-  .faq-item:last-child {
-    border-bottom: none;
-  }
-
-  .faq-item h3 {
-    color: var(--accent);
-    margin-bottom: 0.5rem;
-  }
-
-  .faq-item p {
-    color: var(--text2);
-    line-height: 1.6;
-  }
-
-  .links-section {
-    background: var(--bg2);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 2rem;
-  }
-
-  .links-section h2 {
-    color: var(--accent);
-    font-size: 1.5rem;
-    margin-bottom: 1.5rem;
-  }
-
-  .links-section ul {
-    list-style: none;
-    padding: 0;
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 1rem;
-  }
-
-  .links-section a {
-    display: block;
-    padding: 0.75rem 1rem;
-    background: var(--bg3);
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    color: var(--accent);
-    text-decoration: none;
-    transition: all 0.2s;
-  }
-
-  .links-section a:hover {
-    background: var(--accent);
-    color: white;
+  @media(max-width:768px){
+    .dc-two-col{grid-template-columns:1fr}
+    .dc-result-row{grid-template-columns:1fr}
   }
 </style>
 
@@ -401,7 +232,7 @@ const toolSchema = JSON.stringify({
   const weaponSelect = document.getElementById('weapon');
   const distanceSlider = document.getElementById('distance');
   const distanceValue = document.getElementById('distanceValue');
-  const armorButtons = document.querySelectorAll('.armor-btn');
+  const armorButtons = document.querySelectorAll('.dc-armor-btn');
   const baseDamageEl = document.getElementById('baseDamage');
   const armorReductionEl = document.getElementById('armorReduction');
   const finalDamageEl = document.getElementById('finalDamage');
@@ -442,8 +273,8 @@ const toolSchema = JSON.stringify({
 
   armorButtons.forEach(btn => {
     btn.addEventListener('click', (e) => {
-      armorButtons.forEach(b => b.classList.remove('active'));
-      e.target.classList.add('active');
+      armorButtons.forEach(b => b.classList.remove('dc-armor-active'));
+      e.target.classList.add('dc-armor-active');
       selectedArmor = e.target.dataset.armor;
       calculateDamage();
     });

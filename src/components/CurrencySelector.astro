@@ -83,13 +83,13 @@ function initCurrencySelector() {
   container.style.display = '';
 
   // Restore saved preference
-  const saved = localStorage.getItem('csdb-currency');
+  const saved = localStorage.getItem('csgoluck-currency');
   if (saved && RATES[saved]) selector.value = saved;
 
   function convertPrices(currency: string) {
     const info = RATES[currency];
     if (!info) return;
-    localStorage.setItem('csdb-currency', currency);
+    localStorage.setItem('csgoluck-currency', currency);
 
     document.querySelectorAll('[data-usd]').forEach(el => {
       const htmlEl = el as HTMLElement;

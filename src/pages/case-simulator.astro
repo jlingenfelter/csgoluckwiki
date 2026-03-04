@@ -59,23 +59,23 @@ const casesJson = JSON.stringify(enrichedCases);
 
 const breadcrumbs = [
   { name: 'Home', url: '/' },
-  { name: 'Skins', url: '/skins/' },
+  { name: 'Skins', url: '/cs2-skins/' },
   { name: 'Case Simulator', url: '/case-simulator/' },
 ];
 ---
 
-<Base title="Case Simulator — Open CS2 Cases" description="Free CS2 case opening simulator with realistic roulette animation. Open Kilowatt, Gallery, Revolution and more cases. Track your luck and stats!" currentNav="/skins/">
+<Base title="Case Simulator — Open CS2 Cases" description="Free CS2 case opening simulator with realistic roulette animation. Open Kilowatt, Gallery, Revolution and more cases. Track your luck and stats!" currentNav="/cs2-skins/">
   <Fragment slot="head">
     <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema(breadcrumbs))} />
-    <script type="application/ld+json" set:html={JSON.stringify(toolAppSchema({ name: 'CS2 Case Opening Simulator', url: 'https://csdb.gg/case-simulator/', description: 'Free CS2 case opening simulator with realistic roulette animation. Open Kilowatt, Gallery, Revolution and more cases. Track your luck and stats!' }))} />
+    <script type="application/ld+json" set:html={JSON.stringify(toolAppSchema({ name: 'CS2 Case Opening Simulator', url: 'https://wiki.csgoluck.com/case-simulator/', description: 'Free CS2 case opening simulator with realistic roulette animation. Open Kilowatt, Gallery, Revolution and more cases. Track your luck and stats!' }))} />
   </Fragment>
-<div class="cs-page">
-  <div class="breadcrumb">
-    <a href="/">Home</a> / <a href="/cases/">Cases</a> / Case Simulator
-  </div>
 
-  <h1>Case Simulator</h1>
-  <p class="cs-subtitle">Open cases with realistic roulette animations. Track your stats and see if you'd profit!</p>
+  <nav class="breadcrumb"><a href="/">Home</a> <span>/</span> <a href="/cs2-cases/">Cases</a> <span>/</span> <span>Case Simulator</span></nav>
+
+  <div class="cs-hero">
+    <h1 class="cs-title">Case Simulator</h1>
+    <p class="cs-desc">Open <a href="/cs2-cases/" style="color:var(--accent)">CS2 cases</a> with realistic roulette animations. Check the <a href="/case-odds-calculator/" style="color:var(--accent)">odds calculator</a> and track your stats to see if you'd profit!</p>
+  </div>
 
   <div class="cs-layout">
     <!-- Left: Case selector -->
@@ -121,10 +121,10 @@ const breadcrumbs = [
         <!-- Controls -->
         <div class="cs-controls">
           <div class="cs-spin-options">
-            <button class="cs-spin-count active" data-count="1">×1</button>
-            <button class="cs-spin-count" data-count="3">×3</button>
-            <button class="cs-spin-count" data-count="5">×5</button>
-            <button class="cs-spin-count" data-count="10">×10</button>
+            <button class="cs-spin-count active" data-count="1">x1</button>
+            <button class="cs-spin-count" data-count="3">x3</button>
+            <button class="cs-spin-count" data-count="5">x5</button>
+            <button class="cs-spin-count" data-count="10">x10</button>
           </div>
           <button id="openBtn" class="cs-open-btn">
             Open Case
@@ -203,53 +203,62 @@ const breadcrumbs = [
     </div>
   </div>
 
-  <div class="internal-links" style="display:flex;flex-wrap:wrap;gap:.5rem;margin-top:2rem;padding:1rem;background:var(--bg2);border:1px solid var(--border);border-radius:10px">
-    <strong style="width:100%;margin-bottom:.25rem">Related Resources:</strong>
-    <a href="/cases/">Cases & Collections</a>
-    <a href="/case-odds-calculator/">Case Odds Calculator</a>
-    <a href="/skins/">Skin Database</a>
-    <a href="/skin-compare/">Compare Skins</a>
-    <a href="/price-tracker/">Price Tracker</a>
-    <a href="/market-trends/">Market Trends</a>
-    <a href="/float-checker/">Float Checker</a>
-    <a href="/tradeup-calculator/">Trade-Up Calculator</a>
-    <a href="/inventory-lookup/">Inventory Lookup</a>
-    <a href="/loadout-builder/">Loadout Builder</a>
-    <a href="/weapons/">Weapon Database</a>
-    <a href="/guides/skins-investing-guide/">Investing Guide</a>
-    <a href="/guides/trading-guide/">Trading Guide</a>
-    <a href="/guides/float-guide/">Float Guide</a>
+  <div class="cs-cta-block">
+    <div class="cs-cta-inner">
+      <div class="cs-cta-text"><strong>Open Real Cases</strong><span>Try case opening on CSGOLuck.com</span></div>
+      <a href="https://csgoluck.com" target="_blank" rel="noopener" class="cs-cta-btn">Open Cases</a>
+    </div>
   </div>
-</div>
+
+  <div class="cs-links-block">
+    <h2 class="cs-links-title">Related Resources</h2>
+    <div class="cs-link-list">
+      <a href="/cs2-cases/" class="cs-link">Cases & Collections</a>
+      <a href="/case-odds-calculator/" class="cs-link">Case Odds Calculator</a>
+      <a href="/cs2-skins/" class="cs-link">Skin Database</a>
+      <a href="/skin-compare/" class="cs-link">Compare Skins</a>
+      <a href="/price-tracker/" class="cs-link">Price Tracker</a>
+      <a href="/market-trends/" class="cs-link">Market Trends</a>
+      <a href="/float-checker/" class="cs-link">Float Checker</a>
+      <a href="/tradeup-calculator/" class="cs-link">Trade-Up Calculator</a>
+      <a href="/inventory-lookup/" class="cs-link">Inventory Lookup</a>
+      <a href="/loadout-builder/" class="cs-link">Loadout Builder</a>
+      <a href="/cs2-weapons/" class="cs-link">Weapon Database</a>
+      <a href="/cs2-guides/skins-investing-guide/" class="cs-link">Investing Guide</a>
+      <a href="/cs2-guides/trading-guide/" class="cs-link">Trading Guide</a>
+      <a href="/cs2-guides/float-guide/" class="cs-link">Float Guide</a>
+      <a href="/cs2-stickers/" class="cs-link">Sticker Database</a>
+      <a href="/cs2-agents/" class="cs-link">Agents & Music Kits</a>
+      <a href="/cs2-tools/" class="cs-link">All Tools</a>
+    </div>
+  </div>
 
 <ExploreMore context="skins" />
 
 <style is:inline>
-  .cs-page{display:flex;flex-direction:column}
-  .breadcrumb{font-size:.85rem;color:var(--text2);margin-bottom:1rem}
-  .breadcrumb a{color:var(--accent);text-decoration:none}
-  .breadcrumb a:hover{text-decoration:underline}
-  .cs-page h1{font-size:2rem;font-weight:800;margin-bottom:.25rem;color:var(--text)}
-  .cs-subtitle{color:var(--text2);margin-bottom:2rem;font-size:.95rem}
+  /* Hero */
+  .cs-hero{padding:1.5rem 0;margin-bottom:1.5rem}
+  .cs-title{font-size:2rem;font-weight:800;margin:0 0 .5rem;color:var(--text)}
+  .cs-desc{color:var(--text2);font-size:.95rem;margin:0;max-width:600px;line-height:1.6}
 
   .cs-layout{display:grid;grid-template-columns:240px minmax(0,1fr) 260px;gap:1rem;min-height:calc(100vh - 280px)}
 
   /* Sidebar */
   .cs-sidebar{display:flex;flex-direction:column;gap:.75rem}
-  .cs-sidebar-title{font-size:1.1rem;margin:0;color:var(--text)}
-  .cs-case-list{display:flex;flex-direction:column;gap:.5rem;max-height:calc(100vh - 240px);overflow-y:auto;padding-right:.25rem}
+  .cs-sidebar-title{font-size:1rem;margin:0;color:var(--text);font-weight:700;text-transform:uppercase;letter-spacing:.04em}
+  .cs-case-list{display:flex;flex-direction:column;gap:.4rem;max-height:calc(100vh - 240px);overflow-y:auto;padding-right:.25rem}
   .cs-case-list::-webkit-scrollbar{width:4px}
   .cs-case-list::-webkit-scrollbar-thumb{background:var(--border);border-radius:4px}
 
-  .cs-case-card{background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:.7rem .9rem;cursor:pointer;transition:all .15s;display:flex;justify-content:space-between;align-items:center}
-  .cs-case-card:hover{border-color:var(--accent);background:var(--bg3);transform:translateX(3px)}
-  .cs-case-card.active{border-color:#4ade80;background:rgba(74,222,128,.06);box-shadow:0 0 0 1px rgba(74,222,128,.15)}
+  .cs-case-card{background:var(--bg2);border:1px solid var(--border);border-left:3px solid transparent;border-radius:4px;padding:.6rem .8rem;cursor:pointer;transition:border-left-color .15s;display:flex;justify-content:space-between;align-items:center}
+  .cs-case-card:hover{border-left-color:var(--accent)}
+  .cs-case-card.active{border-left-color:var(--accent);background:rgba(46,204,113,.06)}
   .cs-case-card-name{font-weight:600;font-size:.85rem;color:var(--text)}
   .cs-case-card-meta{font-size:.7rem;color:var(--text2);margin-top:.15rem}
   .cs-case-card-price{color:var(--accent);font-weight:700;font-size:.8rem;white-space:nowrap}
 
   /* Main area */
-  .cs-main{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:1.25rem;display:flex;flex-direction:column;min-height:400px;min-width:0;overflow:hidden}
+  .cs-main{background:var(--bg2);border:1px solid var(--border);border-radius:4px;padding:1.25rem;display:flex;flex-direction:column;min-height:400px;min-width:0;overflow:hidden}
 
   .cs-welcome{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
   .cs-welcome-icon{width:56px;height:56px;stroke:var(--accent);opacity:.5;margin-bottom:1rem}
@@ -262,14 +271,14 @@ const breadcrumbs = [
   .cs-case-header{display:flex;justify-content:space-between;align-items:flex-start}
   .cs-case-name{margin:0;font-size:1.15rem;color:var(--text)}
   .cs-case-info{margin:.15rem 0 0;font-size:.8rem;color:var(--text2)}
-  .cs-back-btn{background:none;border:none;color:var(--text2);cursor:pointer;padding:.4rem;border-radius:6px;transition:all .15s}
-  .cs-back-btn:hover{color:var(--accent);background:var(--bg3)}
+  .cs-back-btn{background:none;border:1px solid var(--border);color:var(--text2);cursor:pointer;padding:.4rem;border-radius:4px;transition:border-color .15s}
+  .cs-back-btn:hover{color:var(--accent);border-color:var(--accent)}
 
   /* Roulette */
   .cs-reels-container{display:flex;flex-direction:column;gap:.5rem;margin:.5rem 0}
   .cs-roulette-wrap{position:relative}
-  .cs-pointer{position:absolute;top:0;left:50%;transform:translateX(-50%);width:0;height:0;border-left:10px solid transparent;border-right:10px solid transparent;border-top:14px solid #4ade80;z-index:5;filter:drop-shadow(0 2px 4px rgba(74,222,128,.4))}
-  .cs-roulette{background:var(--bg);border:2px solid var(--border);border-radius:8px;overflow:hidden;height:120px;display:flex;align-items:center;position:relative;width:100%}
+  .cs-pointer{position:absolute;top:0;left:50%;transform:translateX(-50%);width:0;height:0;border-left:10px solid transparent;border-right:10px solid transparent;border-top:14px solid var(--accent);z-index:5}
+  .cs-roulette{background:var(--bg);border:2px solid var(--border);border-radius:4px;overflow:hidden;height:120px;display:flex;align-items:center;position:relative;width:100%}
   .cs-reels-container.multi .cs-roulette{height:90px}
   .cs-reels-container.multi .cs-item{width:80px;height:80px}
   .cs-reels-container.multi .cs-item-img{width:48px;height:36px}
@@ -282,62 +291,61 @@ const breadcrumbs = [
   .cs-strip.animating{transition:transform 4s cubic-bezier(.15,.3,.2,1)}
   .cs-reel-label{position:absolute;left:8px;top:50%;transform:translateY(-50%);background:rgba(0,0,0,.6);color:var(--text2);font-size:.6rem;font-weight:700;padding:.15rem .4rem;border-radius:4px;z-index:4}
 
-  .cs-item{flex-shrink:0;width:100px;height:100px;border-radius:6px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:.3rem;border:2px solid;position:relative;overflow:hidden}
-  .cs-item-img{width:60px;height:45px;object-fit:contain;margin-bottom:.1rem;filter:drop-shadow(0 2px 4px rgba(0,0,0,.3))}
+  .cs-item{flex-shrink:0;width:100px;height:100px;border-radius:4px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:.3rem;border:2px solid;position:relative;overflow:hidden}
+  .cs-item-img{width:60px;height:45px;object-fit:contain;margin-bottom:.1rem}
   .cs-item-placeholder{width:50px;height:38px;display:flex;align-items:center;justify-content:center;font-size:1.4rem;margin-bottom:.1rem;opacity:.7}
-  .cs-item.mil-spec{background:rgba(75,105,255,.1);border-color:rgba(75,105,255,.4)}
-  .cs-item.restricted{background:rgba(136,71,255,.1);border-color:rgba(136,71,255,.4)}
-  .cs-item.classified{background:rgba(211,44,230,.1);border-color:rgba(211,44,230,.4)}
-  .cs-item.covert{background:rgba(235,75,75,.1);border-color:rgba(235,75,75,.4)}
-  .cs-item.special{background:rgba(228,174,57,.12);border-color:#e4ae39;box-shadow:0 0 8px rgba(228,174,57,.3)}
-  .cs-item.special.winner{box-shadow:0 0 25px rgba(228,174,57,.6),0 0 50px rgba(228,174,57,.3)!important;border-color:#ffd700!important;animation:goldPulse 1s ease-in-out infinite alternate!important}
-  @keyframes goldPulse{from{box-shadow:0 0 20px rgba(228,174,57,.4),0 0 40px rgba(228,174,57,.15)}to{box-shadow:0 0 35px rgba(255,215,0,.6),0 0 60px rgba(228,174,57,.3)}}
+  .cs-item.mil-spec{background:rgba(75,105,255,.08);border-color:rgba(75,105,255,.4)}
+  .cs-item.restricted{background:rgba(136,71,255,.08);border-color:rgba(136,71,255,.4)}
+  .cs-item.classified{background:rgba(211,44,230,.08);border-color:rgba(211,44,230,.4)}
+  .cs-item.covert{background:rgba(46,204,113,.08);border-color:rgba(46,204,113,.4)}
+  .cs-item.special{background:rgba(228,174,57,.08);border-color:#e4ae39}
+  .cs-item.special.winner{border-color:#ffd700!important;animation:goldPulse 1s ease-in-out infinite alternate!important}
+  @keyframes goldPulse{from{box-shadow:0 0 20px rgba(228,174,57,.4)}to{box-shadow:0 0 35px rgba(255,215,0,.6)}}
   .cs-item-weapon{font-weight:700;font-size:.7rem;color:var(--text);margin-bottom:.15rem}
   .cs-item-skin{font-size:.6rem;color:var(--text2);line-height:1.2}
-  .cs-item.winner{box-shadow:0 0 20px rgba(74,222,128,.4);border-color:#4ade80!important;animation:winPulse 1s ease-in-out infinite alternate}
-  @keyframes winPulse{from{box-shadow:0 0 15px rgba(74,222,128,.3)}to{box-shadow:0 0 30px rgba(74,222,128,.6)}}
+  .cs-item.winner{border-color:var(--accent)!important;animation:winPulse 1s ease-in-out infinite alternate}
+  @keyframes winPulse{from{box-shadow:0 0 15px rgba(46,204,113,.3)}to{box-shadow:0 0 30px rgba(46,204,113,.6)}}
 
   /* Controls */
   .cs-controls{display:flex;align-items:center;gap:1rem;justify-content:center;flex-wrap:wrap}
   .cs-spin-options{display:flex;gap:.35rem}
-  .cs-spin-count{background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:.35rem .65rem;font-size:.8rem;font-weight:600;color:var(--text2);cursor:pointer;transition:all .15s;font-family:inherit}
-  .cs-spin-count:hover{border-color:var(--text2)}
-  .cs-spin-count.active{background:rgba(74,222,128,.1);border-color:#4ade80;color:#4ade80}
-  .cs-open-btn{background:linear-gradient(135deg,#4ade80,#34d399);color:#0a1a0f;border:none;border-radius:8px;padding:.6rem 2rem;font-size:.95rem;font-weight:700;cursor:pointer;transition:all .2s;font-family:inherit;box-shadow:0 4px 12px rgba(74,222,128,.25)}
-  .cs-open-btn:hover:not(:disabled){transform:translateY(-1px);box-shadow:0 6px 18px rgba(74,222,128,.35)}
-  .cs-open-btn:active:not(:disabled){transform:translateY(0)}
+  .cs-spin-count{background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:.35rem .65rem;font-size:.8rem;font-weight:600;color:var(--text2);cursor:pointer;transition:border-color .15s;font-family:inherit}
+  .cs-spin-count:hover{border-color:var(--accent)}
+  .cs-spin-count.active{background:rgba(46,204,113,.08);border-color:var(--accent);color:var(--accent)}
+  .cs-open-btn{background:var(--accent);color:#fff;border:none;border-radius:4px;padding:.6rem 2rem;font-size:.95rem;font-weight:700;cursor:pointer;transition:opacity .15s;font-family:inherit}
+  .cs-open-btn:hover:not(:disabled){opacity:.85}
   .cs-open-btn:disabled{opacity:.5;cursor:not-allowed}
 
   /* Results */
   .cs-result{display:flex;flex-wrap:wrap;gap:.75rem;justify-content:center;padding:.75rem 0}
-  .cs-result-card{border:2px solid;border-radius:10px;padding:1rem 1.25rem;text-align:center;min-width:160px;animation:resultPop .4s cubic-bezier(.34,1.56,.64,1)}
+  .cs-result-card{border:2px solid;border-radius:4px;padding:1rem 1.25rem;text-align:center;min-width:160px;background:var(--bg3);animation:resultPop .4s cubic-bezier(.34,1.56,.64,1)}
   @keyframes resultPop{from{opacity:0;transform:scale(.85)}to{opacity:1;transform:scale(1)}}
-  .cs-result-card.mil-spec{border-color:#4b69ff;box-shadow:0 0 20px rgba(75,105,255,.2)}
-  .cs-result-card.restricted{border-color:#8847ff;box-shadow:0 0 20px rgba(136,71,255,.2)}
-  .cs-result-card.classified{border-color:#d32ce6;box-shadow:0 0 20px rgba(211,44,230,.2)}
-  .cs-result-card.covert{border-color:#eb4b4b;box-shadow:0 0 25px rgba(235,75,75,.3)}
-  .cs-result-card.special{border-color:#ffd700;box-shadow:0 0 30px rgba(228,174,57,.4),0 0 60px rgba(255,215,0,.15);background:linear-gradient(135deg,rgba(228,174,57,.08),rgba(255,215,0,.04));position:relative;overflow:hidden}
-  .cs-result-card.special::before{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:conic-gradient(from 0deg,transparent,rgba(255,215,0,.08),transparent,rgba(228,174,57,.08),transparent);animation:goldSpin 4s linear infinite}
+  .cs-result-card.mil-spec{border-color:#4b69ff}
+  .cs-result-card.restricted{border-color:#8847ff}
+  .cs-result-card.classified{border-color:#d32ce6}
+  .cs-result-card.covert{border-color:#2ecc71}
+  .cs-result-card.special{border-color:#ffd700;background:rgba(228,174,57,.06);position:relative;overflow:hidden}
+  .cs-result-card.special::before{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:conic-gradient(from 0deg,transparent,rgba(255,215,0,.06),transparent,rgba(228,174,57,.06),transparent);animation:goldSpin 4s linear infinite}
   @keyframes goldSpin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
-  .cs-result-img{width:80px;height:60px;object-fit:contain;margin:.4rem 0;filter:drop-shadow(0 4px 8px rgba(0,0,0,.4))}
+  .cs-result-img{width:80px;height:60px;object-fit:contain;margin:.4rem 0}
   .cs-result-rarity{font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin-bottom:.3rem}
-  .cs-result-rarity.mil-spec{color:#4b69ff}.cs-result-rarity.restricted{color:#8847ff}.cs-result-rarity.classified{color:#d32ce6}.cs-result-rarity.covert{color:#eb4b4b}.cs-result-rarity.special{color:#e4ae39}
+  .cs-result-rarity.mil-spec{color:#4b69ff}.cs-result-rarity.restricted{color:#8847ff}.cs-result-rarity.classified{color:#d32ce6}.cs-result-rarity.covert{color:#2ecc71}.cs-result-rarity.special{color:#e4ae39}
   .cs-result-weapon{font-size:1rem;font-weight:800;color:var(--text);margin-bottom:.15rem}
   .cs-result-skin{font-size:.85rem;color:var(--text2)}
   .cs-result-price{font-size:.85rem;font-weight:700;margin-top:.3rem}
-  .cs-result-price.profit{color:#4ade80}
-  .cs-result-price.loss{color:#ef4444}
+  .cs-result-price.profit{color:var(--green,#4ade80)}
+  .cs-result-price.loss{color:var(--red,#ef4444)}
   .cs-result-price.neutral{color:var(--text2)}
 
   /* Case contents */
   .cs-contents{margin-top:.5rem}
-  .cs-contents h4{font-size:.9rem;color:var(--text);margin:0 0 .6rem}
+  .cs-contents h4{font-size:.9rem;color:var(--text);margin:0 0 .6rem;font-weight:700}
   .cs-contents-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:.4rem;width:100%}
-  .cs-content-item{background:var(--bg3);border-radius:5px;padding:.4rem .55rem;font-size:.7rem;display:flex;align-items:center;gap:.4rem;border-left:3px solid}
+  .cs-content-item{background:var(--bg3);border-radius:4px;padding:.4rem .55rem;font-size:.7rem;display:flex;align-items:center;gap:.4rem;border-left:3px solid}
   .cs-content-item.mil-spec{border-left-color:#4b69ff}
   .cs-content-item.restricted{border-left-color:#8847ff}
   .cs-content-item.classified{border-left-color:#d32ce6}
-  .cs-content-item.covert{border-left-color:#eb4b4b}
+  .cs-content-item.covert{border-left-color:#2ecc71}
   .cs-content-item .ci-img{width:32px;height:24px;object-fit:contain;flex-shrink:0}
   .cs-content-item .ci-weapon{font-weight:600;color:var(--text);white-space:nowrap}
   .cs-content-item .ci-skin{color:var(--text2)}
@@ -347,37 +355,54 @@ const breadcrumbs = [
   .cs-odds{display:flex;flex-wrap:wrap;gap:.6rem 1.2rem;justify-content:center;font-size:.75rem;color:var(--text2);padding:.5rem 0}
   .cs-odds span{display:flex;align-items:center;gap:.3rem}
   .dot{width:8px;height:8px;border-radius:50%;display:inline-block;flex-shrink:0}
-  .dot.mil-spec{background:#4b69ff}.dot.restricted{background:#8847ff}.dot.classified{background:#d32ce6}.dot.covert{background:#eb4b4b}.dot.special{background:#ffd700;box-shadow:0 0 4px rgba(255,215,0,.5)}
+  .dot.mil-spec{background:#4b69ff}.dot.restricted{background:#8847ff}.dot.classified{background:#d32ce6}.dot.covert{background:#2ecc71}.dot.special{background:#ffd700}
 
   /* Stats panel */
-  .cs-stats{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:1rem;position:sticky;top:90px;height:fit-content;max-height:calc(100vh - 110px);overflow-y:auto;display:flex;flex-direction:column;gap:.6rem;min-width:0}
+  .cs-stats{background:var(--bg2);border:1px solid var(--border);border-radius:4px;padding:1rem;position:sticky;top:90px;height:fit-content;max-height:calc(100vh - 110px);overflow-y:auto;display:flex;flex-direction:column;gap:.6rem;min-width:0}
   .cs-stats::-webkit-scrollbar{width:4px}
   .cs-stats::-webkit-scrollbar-thumb{background:var(--border);border-radius:4px}
-  .cs-stats-title{font-size:1.1rem;margin:0;color:var(--text)}
-  .cs-stats-sub{font-size:.85rem;margin:0;color:var(--text)}
+  .cs-stats-title{font-size:1rem;margin:0;color:var(--text);font-weight:700;text-transform:uppercase;letter-spacing:.04em}
+  .cs-stats-sub{font-size:.85rem;margin:0;color:var(--text);font-weight:700}
   .cs-stat-cards{display:grid;grid-template-columns:1fr 1fr;gap:.5rem}
-  .cs-stat-card{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:.7rem;text-align:center}
+  .cs-stat-card{background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:.7rem;text-align:center}
   .cs-stat-val{font-size:1.3rem;font-weight:800;color:var(--accent)}
   .cs-stat-lbl{font-size:.65rem;color:var(--text2);text-transform:uppercase;letter-spacing:.04em;margin-top:.2rem}
   .cs-rarity-list{display:flex;flex-direction:column;gap:.4rem}
   .cs-rarity-row{display:flex;align-items:center;gap:.5rem;font-size:.8rem;color:var(--text2)}
   .cs-rarity-row b{margin-left:auto;color:var(--accent);font-size:.85rem}
-  .cs-best-pull,.cs-recent{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:.75rem;min-height:50px}
+  .cs-best-pull,.cs-recent{background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:.75rem;min-height:50px}
   .cs-empty{color:var(--text2);font-size:.8rem;margin:0;text-align:center}
   .cs-recent{max-height:150px;overflow-y:auto}
   .cs-recent-item{font-size:.75rem;padding:.25rem 0;border-bottom:1px solid var(--border);display:flex;justify-content:space-between}
   .cs-recent-item:last-child{border:none}
-  .cs-profit-card{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:.75rem;text-align:center}
+  .cs-profit-card{background:var(--bg3);border:1px solid var(--border);border-left:3px solid var(--accent);border-radius:4px;padding:.75rem;text-align:center}
   .cs-profit-val{font-size:1.3rem;font-weight:800}
-  .cs-profit-val.profit{color:#4ade80}
-  .cs-profit-val.loss{color:#ef4444}
+  .cs-profit-val.profit{color:var(--green,#4ade80)}
+  .cs-profit-val.loss{color:var(--red,#ef4444)}
+  .cs-profit-val.neutral{color:var(--text2)}
   .cs-profit-lbl{font-size:.65rem;color:var(--text2);text-transform:uppercase;letter-spacing:.04em;margin-top:.2rem}
-  .cs-reset-btn{background:var(--bg3);border:1px solid var(--border);color:var(--text2);border-radius:8px;padding:.5rem;font-size:.8rem;cursor:pointer;transition:all .15s;font-family:inherit;width:100%}
-  .cs-reset-btn:hover{border-color:var(--accent);color:var(--text)}
+  .cs-reset-btn{background:var(--bg3);border:1px solid var(--border);border-left:3px solid transparent;color:var(--text2);border-radius:4px;padding:.5rem;font-size:.8rem;cursor:pointer;transition:border-left-color .15s;font-family:inherit;width:100%}
+  .cs-reset-btn:hover{border-left-color:var(--accent);color:var(--text)}
 
   .bp-rarity{font-size:.6rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;margin-bottom:.15rem}
   .bp-weapon{font-size:.9rem;font-weight:700;color:var(--text)}
   .bp-skin{font-size:.75rem;color:var(--text2)}
+
+  /* CTA Block */
+  .cs-cta-block{background:var(--bg2);border:1px solid var(--border);border-left:3px solid var(--accent);border-radius:4px;margin:2rem 0;overflow:hidden}
+  .cs-cta-inner{display:flex;align-items:center;gap:1rem;padding:1.25rem 1.5rem;flex-wrap:wrap}
+  .cs-cta-text{flex:1;min-width:200px}
+  .cs-cta-text strong{display:block;color:var(--text);font-size:.95rem}
+  .cs-cta-text span{color:var(--text2);font-size:.82rem}
+  .cs-cta-btn{display:inline-flex;align-items:center;padding:.55rem 1.25rem;background:var(--accent);color:#fff;border-radius:4px;font-weight:700;font-size:.85rem;text-decoration:none;white-space:nowrap;transition:opacity .15s}
+  .cs-cta-btn:hover{opacity:.85}
+
+  /* Related Links */
+  .cs-links-block{background:var(--bg2);border:1px solid var(--border);border-radius:4px;padding:1.5rem;margin-bottom:2rem}
+  .cs-links-title{font-size:1.1rem;font-weight:700;color:var(--text);margin:0 0 1rem}
+  .cs-link-list{display:flex;flex-direction:column;gap:.4rem}
+  .cs-link{display:block;padding:.5rem .75rem;background:var(--bg3);border:1px solid var(--border);border-left:3px solid transparent;border-radius:4px;color:var(--accent);text-decoration:none;font-size:.85rem;transition:border-left-color .15s}
+  .cs-link:hover{border-left-color:var(--accent)}
 
   /* Responsive */
   @media(max-width:1200px){
@@ -425,7 +450,7 @@ const breadcrumbs = [
   const WINNER_INDEX = 55;
 
   const rarityOrder = { 'mil-spec': 0, 'restricted': 1, 'classified': 2, 'covert': 3, 'special': 4 };
-  const rarityColors = { 'mil-spec': '#4b69ff', 'restricted': '#8847ff', 'classified': '#d32ce6', 'covert': '#eb4b4b', 'special': '#e4ae39' };
+  const rarityColors = { 'mil-spec': '#4b69ff', 'restricted': '#8847ff', 'classified': '#d32ce6', 'covert': '#2ecc71', 'special': '#e4ae39' };
   const rarityEmoji = { 'mil-spec': '', 'restricted': '', 'classified': '', 'covert': '', 'special': '🔪' };
 
   // Normalize key for image/price matching

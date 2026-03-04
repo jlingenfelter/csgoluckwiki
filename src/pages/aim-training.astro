@@ -3,7 +3,7 @@ import Base from '../layouts/Base.astro';
 import ExploreMore from '../components/ExploreMore.astro';
 import { breadcrumbSchema, faqSchema, toolAppSchema } from '../lib/weapons';
 
-const currentNav = "/weapons/";
+const currentNav = "/cs2-weapons/";
 
 const trainingRoutines = [
   {
@@ -291,493 +291,96 @@ const relatedLinks = [
 
 const breadcrumbs = [
   { name: 'Home', url: '/' },
-  { name: 'Tools', url: '/tools/' },
+  { name: 'Tools', url: '/cs2-tools/' },
   { name: 'Aim Training', url: '/aim-training/' },
 ];
 
 const faqSchemaData = faqs.map(f => ({ q: f.question, a: f.answer }));
 ---
 
-<Base title="CS2 Aim Training Routines — Practice Plans & Workshop Maps | CSDB.gg" description="Complete CS2 aim training routines for all skill levels. Learn workshop maps, spray patterns, sensitivity optimization, and crosshair tips from beginner to pro." currentNav={currentNav}>
+<Base title="CS2 Aim Training Routines — Practice Plans & Workshop Maps | CSGOLuck Wiki" description="Complete CS2 aim training routines for all skill levels. Learn workshop maps, spray patterns, sensitivity optimization, and crosshair tips from beginner to pro." currentNav={currentNav}>
   <Fragment slot="head">
     <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema(breadcrumbs))} />
     <script type="application/ld+json" set:html={JSON.stringify(faqSchema(faqSchemaData))} />
-    <script type="application/ld+json" set:html={JSON.stringify(toolAppSchema({ name: 'CS2 Aim Training Routines', url: 'https://csdb.gg/aim-training/', description: 'Complete CS2 aim training routines for all skill levels. Learn workshop maps, spray patterns, sensitivity optimization, and crosshair tips from beginner to pro.' }))} />
+    <script type="application/ld+json" set:html={JSON.stringify(toolAppSchema({ name: 'CS2 Aim Training Routines', url: 'https://wiki.csgoluck.com/aim-training/', description: 'Complete CS2 aim training routines for all skill levels. Learn workshop maps, spray patterns, sensitivity optimization, and crosshair tips from beginner to pro.' }))} />
   </Fragment>
-  <style define:vars={{
-    bg: '#0e0e12',
-    bg2: '#16161d',
-    bg3: '#1e1e28',
-    text: '#e4e4ec',
-    text2: '#9595a8',
-    accent: '#d4956e',
-    accent2: '#e8b992',
-    border: '#2a2a38',
-    green: '#4caf50',
-    blue: '#42a5f5',
-    purple: '#ab47bc',
-    red: '#ef5350'
-  }}>
-      .hero {
-        background: linear-gradient(135deg, var(--blue) 0%, var(--purple) 100%);
-        padding: 80px 20px;
-        text-align: center;
-        margin-bottom: 60px;
-        border-radius: 12px;
-      }
+  <nav class="breadcrumb"><a href="/">Home</a> <span>/</span> <a href="/cs2-tools/">Tools</a> <span>/</span> <span>Aim Training</span></nav>
 
-      .hero h1 {
-        font-size: 3em;
-        color: white;
-        margin: 0 0 10px 0;
-        font-weight: 800;
-      }
-
-      .hero p {
-        font-size: 1.2em;
-        color: rgba(255, 255, 255, 0.9);
-        margin: 0;
-      }
-
-      .intro-section {
-        background: var(--bg2);
-        border: 1px solid var(--border);
-        border-radius: 8px;
-        padding: 40px;
-        margin-bottom: 60px;
-      }
-
-      .intro-section p {
-        color: var(--text2);
-        line-height: 1.8;
-        margin: 0;
-      }
-
-      .routines-container {
-        display: grid;
-        gap: 40px;
-        margin-bottom: 60px;
-      }
-
-      .routine-card {
-        background: var(--bg2);
-        border: 1px solid var(--border);
-        border-radius: 8px;
-        overflow: hidden;
-      }
-
-      .routine-header {
-        background: linear-gradient(135deg, var(--accent) 0%, var(--accent2) 100%);
-        padding: 32px;
-        color: white;
-      }
-
-      .routine-level {
-        font-size: 2em;
-        font-weight: 800;
-        margin: 0 0 8px 0;
-      }
-
-      .routine-meta {
-        display: flex;
-        gap: 24px;
-        margin-top: 16px;
-        font-size: 0.95em;
-        opacity: 0.95;
-      }
-
-      .routine-description {
-        color: rgba(255, 255, 255, 0.9);
-        margin: 12px 0 0 0;
-      }
-
-      .routine-body {
-        padding: 32px;
-      }
-
-      .section {
-        margin-bottom: 32px;
-      }
-
-      .section:last-child {
-        margin-bottom: 0;
-      }
-
-      .section-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 16px;
-        padding-bottom: 12px;
-        border-bottom: 2px solid var(--border);
-      }
-
-      .section-name {
-        font-size: 1.3em;
-        font-weight: 700;
-        color: var(--accent);
-        margin: 0;
-      }
-
-      .section-duration {
-        background: var(--bg3);
-        color: var(--text2);
-        padding: 6px 12px;
-        border-radius: 4px;
-        font-size: 0.9em;
-      }
-
-      .drills-list {
-        list-style: none;
-        padding: 0;
-        margin: 0;
-      }
-
-      .drills-list li {
-        padding: 10px 0;
-        padding-left: 28px;
-        position: relative;
-        color: var(--text2);
-        line-height: 1.5;
-      }
-
-      .drills-list li:before {
-        content: "▸";
-        position: absolute;
-        left: 0;
-        color: var(--accent);
-        font-weight: bold;
-      }
-
-      .workshop-section {
-        margin-bottom: 60px;
-      }
-
-      .workshop-section h2 {
-        font-size: 2em;
-        margin-bottom: 32px;
-        color: var(--text);
-      }
-
-      .maps-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-        gap: 24px;
-      }
-
-      .map-card {
-        background: var(--bg2);
-        border: 1px solid var(--border);
-        border-radius: 8px;
-        padding: 28px;
-        transition: all 0.3s;
-      }
-
-      .map-card:hover {
-        border-color: var(--accent);
-        box-shadow: 0 8px 24px rgba(245, 166, 35, 0.1);
-      }
-
-      .map-name {
-        font-size: 1.3em;
-        font-weight: 700;
-        color: var(--accent);
-        margin: 0 0 12px 0;
-      }
-
-      .map-description {
-        color: var(--text2);
-        margin-bottom: 16px;
-        line-height: 1.6;
-      }
-
-      .features-list {
-        list-style: none;
-        padding: 0;
-        margin: 0;
-      }
-
-      .features-list li {
-        padding: 6px 0;
-        padding-left: 20px;
-        position: relative;
-        font-size: 0.9em;
-        color: var(--text2);
-      }
-
-      .features-list li:before {
-        content: "✓";
-        position: absolute;
-        left: 0;
-        color: var(--green);
-        font-weight: bold;
-      }
-
-      .optimization-section {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-        gap: 24px;
-        margin-bottom: 60px;
-      }
-
-      .optimization-card {
-        background: var(--bg2);
-        border: 1px solid var(--border);
-        border-radius: 8px;
-        padding: 28px;
-      }
-
-      .optimization-title {
-        font-size: 1.2em;
-        font-weight: 700;
-        color: var(--text);
-        margin: 0 0 16px 0;
-      }
-
-      .links-list {
-        list-style: none;
-        padding: 0;
-        margin: 0;
-      }
-
-      .links-list li {
-        margin-bottom: 12px;
-      }
-
-      .links-list a {
-        color: var(--accent);
-        text-decoration: none;
-        font-weight: 600;
-        transition: all 0.3s;
-      }
-
-      .links-list a:hover {
-        text-decoration: underline;
-      }
-
-      .progress-section {
-        background: linear-gradient(135deg, var(--green) 0%, var(--blue) 100%);
-        padding: 40px;
-        border-radius: 8px;
-        margin-bottom: 60px;
-        color: white;
-      }
-
-      .progress-section h2 {
-        font-size: 1.5em;
-        margin: 0 0 16px 0;
-      }
-
-      .progress-tips {
-        list-style: none;
-        padding: 0;
-        margin: 0;
-      }
-
-      .progress-tips li {
-        padding: 8px 0;
-        padding-left: 24px;
-        position: relative;
-      }
-
-      .progress-tips li:before {
-        content: "▸";
-        position: absolute;
-        left: 0;
-      }
-
-      .faq-section {
-        margin-bottom: 60px;
-      }
-
-      .faq-section h2 {
-        font-size: 2em;
-        margin-bottom: 32px;
-        color: var(--text);
-      }
-
-      .faq-grid {
-        display: grid;
-        gap: 20px;
-      }
-
-      .faq-item {
-        background: var(--bg2);
-        border: 1px solid var(--border);
-        border-radius: 8px;
-        padding: 24px;
-      }
-
-      .faq-item h3 {
-        margin: 0 0 12px 0;
-        color: var(--accent);
-        font-size: 1.1em;
-      }
-
-      .faq-item p {
-        margin: 0;
-        color: var(--text2);
-        line-height: 1.6;
-      }
-
-      .related-links {
-        background: var(--bg2);
-        border: 1px solid var(--border);
-        border-radius: 8px;
-        padding: 32px;
-        margin-top: 60px;
-      }
-
-      .related-links h2 {
-        font-size: 1.5em;
-        margin: 0 0 24px 0;
-        color: var(--text);
-      }
-
-      .links-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-        gap: 16px;
-      }
-
-      .link-btn {
-        background: var(--bg3);
-        border: 1px solid var(--border);
-        border-radius: 6px;
-        padding: 16px;
-        text-align: center;
-        transition: all 0.3s;
-      }
-
-      .link-btn:hover {
-        border-color: var(--accent);
-        background: var(--bg);
-      }
-
-      .link-btn a {
-        color: var(--accent);
-        text-decoration: none;
-        font-weight: 600;
-      }
-
-      .link-btn a:hover {
-        text-decoration: underline;
-      }
-
-      @media (max-width: 768px) {
-        .hero {
-          padding: 40px 20px;
-        }
-
-        .hero h1 {
-          font-size: 2em;
-        }
-
-        .hero p {
-          font-size: 1em;
-        }
-
-        .routine-meta {
-          flex-direction: column;
-          gap: 8px;
-        }
-
-        .maps-grid {
-          grid-template-columns: 1fr;
-        }
-
-        .links-grid {
-          grid-template-columns: 1fr;
-        }
-      }
-  </style>
-
-  <div class="hero">
-    <h1>CS2 Aim Training Routines</h1>
-    <p>Master your aim with structured training routines for every skill level</p>
+  <div class="at-hero">
+    <h1 class="at-title">CS2 Aim Training Routines</h1>
+    <p class="at-desc">Master your aim with structured training routines for every skill level. Combine warmup drills, focused aim training, spray control practice, and competitive application.</p>
   </div>
 
-  <div class="intro-section">
-    <p>
-      Consistent aim training is the foundation of CS2 mastery. Whether you're just starting out or competing at the professional level,
-      these structured routines will help you develop precision, speed, and muscle memory. Each routine combines warmup drills, focused aim training,
-      spray control practice, and competitive application. Dedicate 30-90 minutes daily and you'll see measurable improvement within weeks.
-    </p>
-  </div>
+  <section class="at-intro">
+    <p>Consistent aim training is the foundation of CS2 mastery. Whether you are just starting out or competing at the professional level, these structured routines will help you develop precision, speed, and muscle memory. Dedicate 30-90 minutes daily and you will see measurable improvement within weeks.</p>
+  </section>
 
-  <div class="routines-container">
+  <div class="at-routines">
     {trainingRoutines.map((routine) => (
-      <div class="routine-card">
-        <div class="routine-header">
-          <h2 class="routine-level">{routine.level}</h2>
-          <p class="routine-description">{routine.description}</p>
-          <div class="routine-meta">
-            <span>Total Time: {routine.totalTime}</span>
-          </div>
+      <section class="at-routine">
+        <div class="at-routine-head">
+          <h2 class="at-routine-level">{routine.level}</h2>
+          <p class="at-routine-desc">{routine.description}</p>
+          <span class="at-routine-time">Total Time: {routine.totalTime}</span>
         </div>
-        <div class="routine-body">
+        <div class="at-routine-body">
           {routine.sections.map((section) => (
-            <div class="section">
-              <div class="section-header">
-                <h3 class="section-name">{section.name}</h3>
-                <span class="section-duration">{section.duration}</span>
+            <div class="at-drill-section">
+              <div class="at-drill-header">
+                <h3 class="at-drill-name">{section.name}</h3>
+                <span class="at-drill-dur">{section.duration}</span>
               </div>
-              <ul class="drills-list">
+              <ul class="at-drill-list">
                 {section.drills.map(drill => <li>{drill}</li>)}
               </ul>
             </div>
           ))}
         </div>
-      </div>
+      </section>
     ))}
   </div>
 
-  <div class="workshop-section">
-    <h2>Essential Workshop Maps</h2>
-    <div class="maps-grid">
+  <section class="at-section">
+    <h2 class="at-section-title">Essential Workshop Maps</h2>
+    <div class="at-maps-grid">
       {workshopMaps.map((map) => (
-        <div class="map-card">
-          <h3 class="map-name">{map.name}</h3>
-          <p class="map-description">{map.description}</p>
-          <ul class="features-list">
+        <div class="at-map-card">
+          <h3 class="at-map-name">{map.name}</h3>
+          <p class="at-map-desc">{map.description}</p>
+          <ul class="at-features">
             {map.features.map(feature => <li>{feature}</li>)}
           </ul>
         </div>
       ))}
     </div>
-  </div>
+  </section>
 
-  <div class="progress-section">
-    <h2>Track Your Progress</h2>
-    <ul class="progress-tips">
+  <section class="at-progress">
+    <h2 class="at-section-title">Track Your Progress</h2>
+    <ul class="at-tips">
       <li>Keep a practice log: date, maps played, kills per session, accuracy %</li>
       <li>Test your aim weekly with the same warmup routine to track improvement</li>
       <li>Review demos of your competitive games to identify weak areas</li>
       <li>Set specific goals: "reach 65% accuracy in Aim Lab" or "get 50+ kills in 2 minutes on Aimbotz"</li>
       <li>Share progress with teammates to stay motivated and accountable</li>
-      <li>Adjust routines based on where you're weakest: spray, flicking, tracking, etc.</li>
+      <li>Adjust routines based on where you are weakest: spray, flicking, tracking, etc.</li>
     </ul>
-  </div>
+  </section>
 
-  <div class="optimization-section">
-    <div class="optimization-card">
-      <h3 class="optimization-title">Sensitivity Optimization</h3>
-      <p style="color: var(--text2); margin-bottom: 16px;">
-        Finding the right sensitivity is crucial for consistent aim. Use our tools to convert between different sensitivity scales and calculate your eDPI.
-      </p>
-      <ul class="links-list">
+  <div class="at-opt-grid">
+    <div class="at-opt-card">
+      <h3 class="at-opt-title">Sensitivity Optimization</h3>
+      <p class="at-opt-desc">Finding the right sensitivity is crucial for consistent aim. Use our tools to convert between different sensitivity scales and calculate your eDPI.</p>
+      <ul class="at-opt-links">
         {sensitivityLinks.map(link => (
           <li><a href={link.path}>{link.name}</a></li>
         ))}
       </ul>
     </div>
-
-    <div class="optimization-card">
-      <h3 class="optimization-title">Crosshair Configuration</h3>
-      <p style="color: var(--text2); margin-bottom: 16px;">
-        Your crosshair should reflect your playstyle and preferences. Generate custom crosshairs or browse pro player configurations.
-      </p>
-      <ul class="links-list">
+    <div class="at-opt-card">
+      <h3 class="at-opt-title">Crosshair Configuration</h3>
+      <p class="at-opt-desc">Your crosshair should reflect your playstyle and preferences. Generate custom crosshairs or browse pro player configurations.</p>
+      <ul class="at-opt-links">
         {crosshairLinks.map(link => (
           <li><a href={link.path}>{link.name}</a></li>
         ))}
@@ -785,28 +388,101 @@ const faqSchemaData = faqs.map(f => ({ q: f.question, a: f.answer }));
     </div>
   </div>
 
-  <div class="faq-section">
-    <h2>Frequently Asked Questions</h2>
-    <div class="faq-grid">
-      {faqs.map((faq) => (
-        <div class="faq-item">
-          <h3>{faq.question}</h3>
-          <p>{faq.answer}</p>
-        </div>
-      ))}
-    </div>
+  <div class="at-links">
+    <span class="at-links-label">Related Resources:</span>
+    {relatedLinks.map(link => (
+      <a href={link.path}>{link.name}</a>
+    ))}
+    <a href="/cs2-tools/">All Tools</a>
   </div>
 
-  <div class="related-links">
-    <h2>Related Resources</h2>
-    <div class="links-grid">
-      {relatedLinks.map(link => (
-        <div class="link-btn">
-          <a href={link.path}>{link.name}</a>
-        </div>
-      ))}
-    </div>
-  </div>
+  <section class="at-section">
+    <h2 class="at-section-title">Frequently Asked Questions</h2>
+    {faqs.map((faq) => (
+      <details class="at-faq-item">
+        <summary class="at-faq-q">{faq.question}</summary>
+        <div class="at-faq-a">{faq.answer}</div>
+      </details>
+    ))}
+  </section>
 
   <ExploreMore context="tools" />
 </Base>
+
+<style>
+  /* Hero */
+  .at-hero{margin-bottom:1.5rem}
+  .at-title{font-size:1.8rem;font-weight:800;margin:0 0 .5rem}
+  .at-desc{color:var(--text2);font-size:.95rem;margin:0;line-height:1.6;max-width:700px}
+
+  /* Sections */
+  .at-section,.at-intro{background:var(--bg2);border:1px solid var(--border);border-radius:4px;padding:1.5rem;margin-bottom:1.5rem}
+  .at-intro p{color:var(--text2);line-height:1.7;margin:0;font-size:.92rem}
+  .at-section-title{font-size:1.15rem;font-weight:700;margin:0 0 1rem}
+
+  /* Routines */
+  .at-routines{display:flex;flex-direction:column;gap:1.5rem;margin-bottom:1.5rem}
+  .at-routine{background:var(--bg2);border:1px solid var(--border);border-radius:4px;overflow:hidden}
+  .at-routine-head{background:var(--bg3);padding:1.25rem 1.5rem;border-bottom:1px solid var(--border);border-left:3px solid var(--accent)}
+  .at-routine-level{font-size:1.3rem;font-weight:800;margin:0 0 .3rem;color:var(--accent)}
+  .at-routine-desc{color:var(--text2);margin:0 0 .5rem;font-size:.88rem}
+  .at-routine-time{font-size:.82rem;color:var(--text2);font-weight:600}
+  .at-routine-body{padding:1.5rem}
+
+  /* Drill sections */
+  .at-drill-section{margin-bottom:1.5rem}
+  .at-drill-section:last-child{margin-bottom:0}
+  .at-drill-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:.75rem;padding-bottom:.5rem;border-bottom:1px solid var(--border)}
+  .at-drill-name{font-size:1rem;font-weight:700;color:var(--text);margin:0}
+  .at-drill-dur{background:var(--bg3);color:var(--text2);padding:.25rem .6rem;border-radius:4px;font-size:.82rem;font-weight:600}
+  .at-drill-list{list-style:none;padding:0;margin:0}
+  .at-drill-list li{padding:.4rem 0 .4rem 1.25rem;position:relative;color:var(--text2);line-height:1.5;font-size:.88rem}
+  .at-drill-list li::before{content:"-";position:absolute;left:0;color:var(--accent);font-weight:700}
+
+  /* Maps */
+  .at-maps-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1rem}
+  .at-map-card{background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:1.25rem;transition:border-left .2s}
+  .at-map-card:hover{border-left:3px solid var(--accent)}
+  .at-map-name{font-size:1rem;font-weight:700;color:var(--text);margin:0 0 .5rem}
+  .at-map-desc{color:var(--text2);margin:0 0 .75rem;line-height:1.6;font-size:.85rem}
+  .at-features{list-style:none;padding:0;margin:0}
+  .at-features li{padding:.3rem 0 .3rem 1rem;position:relative;font-size:.82rem;color:var(--text2)}
+  .at-features li::before{content:"+";position:absolute;left:0;color:var(--accent);font-weight:700}
+
+  /* Progress */
+  .at-progress{background:var(--bg2);border:1px solid var(--border);border-left:3px solid var(--accent);border-radius:4px;padding:1.5rem;margin-bottom:1.5rem}
+  .at-tips{list-style:none;padding:0;margin:0}
+  .at-tips li{padding:.4rem 0 .4rem 1.25rem;position:relative;color:var(--text2);font-size:.88rem;line-height:1.5}
+  .at-tips li::before{content:"-";position:absolute;left:0;color:var(--accent);font-weight:700}
+
+  /* Optimization */
+  .at-opt-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.5rem}
+  .at-opt-card{background:var(--bg2);border:1px solid var(--border);border-radius:4px;padding:1.25rem}
+  .at-opt-title{font-size:1rem;font-weight:700;margin:0 0 .5rem;color:var(--text)}
+  .at-opt-desc{color:var(--text2);margin:0 0 .75rem;font-size:.85rem;line-height:1.6}
+  .at-opt-links{list-style:none;padding:0;margin:0}
+  .at-opt-links li{margin-bottom:.4rem}
+  .at-opt-links a{color:var(--accent);text-decoration:none;font-weight:600;font-size:.88rem}
+  .at-opt-links a:hover{text-decoration:underline}
+
+  /* Links */
+  .at-links{display:flex;flex-wrap:wrap;gap:.5rem;align-items:center;margin-bottom:1.5rem;padding:1rem;background:var(--bg2);border:1px solid var(--border);border-radius:4px}
+  .at-links-label{font-weight:700;font-size:.85rem;color:var(--text2);margin-right:.25rem}
+  .at-links a{color:var(--accent);font-size:.85rem;text-decoration:none;padding:.25rem .5rem;border-radius:4px;border:1px solid var(--border);transition:border-color .2s}
+  .at-links a:hover{border-color:var(--accent)}
+
+  /* FAQ */
+  .at-faq-item{background:var(--bg3);border:1px solid var(--border);border-radius:4px;margin-bottom:.5rem;overflow:hidden}
+  .at-faq-q{padding:.8rem 1rem;cursor:pointer;font-weight:600;font-size:.9rem;color:var(--text);list-style:none;display:flex;align-items:center;justify-content:space-between}
+  .at-faq-q::-webkit-details-marker{display:none}
+  .at-faq-q::after{content:'+';font-size:1.1rem;color:var(--accent);font-weight:700}
+  .at-faq-item[open] .at-faq-q::after{content:'-'}
+  .at-faq-item[open]{border-left:3px solid var(--accent)}
+  .at-faq-a{padding:0 1rem .8rem;font-size:.88rem;color:var(--text2);line-height:1.6}
+
+  @media(max-width:768px){
+    .at-title{font-size:1.4rem}
+    .at-maps-grid{grid-template-columns:1fr}
+    .at-opt-grid{grid-template-columns:1fr}
+  }
+</style>

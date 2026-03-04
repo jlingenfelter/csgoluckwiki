@@ -3,7 +3,7 @@ import Base from '../layouts/Base.astro';
 import ExploreMore from '../components/ExploreMore.astro';
 import { faqSchema, breadcrumbSchema, toolAppSchema } from '../lib/weapons';
 
-const title = 'CS2 Practice Config Generator — Grenade & Aim Training Commands | CSDB.gg';
+const title = 'CS2 Practice Config Generator — Grenade & Aim Training Commands | CSGOLuck Wiki';
 const description = 'Generate CS2 practice configs for grenade lineups, aim training, wallbang spots, and smoke practice. Instant copy-paste commands for offline server setup.';
 
 const faqs = [
@@ -37,7 +37,7 @@ const howToSchema = JSON.stringify({
   "@context": "https://schema.org",
   "@type": "HowTo",
   "name": "How to Set Up a CS2 Practice Server",
-  "description": "Use the CSDB.gg Practice Config Generator to create console commands for offline practice servers in Counter-Strike 2, including grenade lineups, aim training, and wallbang testing.",
+  "description": "Use the CSGOLuck Wiki Practice Config Generator to create console commands for offline practice servers in Counter-Strike 2, including grenade lineups, aim training, and wallbang testing.",
   "step": [
     { "@type": "HowToStep", "name": "Choose your map", "text": "Select the map you want to practice on from the available active duty maps (Mirage, Inferno, Dust 2, Ancient, Anubis, Nuke, Overpass, or Vertigo)." },
     { "@type": "HowToStep", "name": "Select a practice mode", "text": "Choose your practice focus: Grenade Practice (trajectory lines and infinite grenades), Aim Training (bots and damage readouts), Wallbang Testing (penetration data), Retake Practice (bot placement), or Movement Practice (bunny hopping and surfing)." },
@@ -47,97 +47,175 @@ const howToSchema = JSON.stringify({
 });
 ---
 
-<Base title={title} description={description} currentNav="/tools/">
+<Base title={title} description={description} currentNav="/cs2-tools/">
   <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema([{name:'Home',url:'/'},{name:'Tools',url:'/practice-config'},{name:'Practice Config',url:'/practice-config'}]))}></script>
   <script type="application/ld+json" set:html={JSON.stringify(faqSchema(faqs))}></script>
   <script type="application/ld+json" set:html={howToSchema}></script>
-  <script type="application/ld+json" set:html={JSON.stringify(toolAppSchema({ name: 'CS2 Practice Config Generator', url: 'https://csdb.gg/practice-config/', description }))}></script>
+  <script type="application/ld+json" set:html={JSON.stringify(toolAppSchema({ name: 'CS2 Practice Config Generator', url: 'https://wiki.csgoluck.com/practice-config/', description }))}></script>
 
-  <nav class="breadcrumb">
+  <nav class="pcf-breadcrumb">
     <a href="/">Home</a> / <a href="/practice-config/">Tools</a> / <span>Practice Config Generator</span>
   </nav>
 
-  <h1>CS2 Practice Config Generator</h1>
-  <p>Set up the perfect practice environment in seconds. Choose your map, practice mode, and copy the ready-to-paste console commands.</p>
+  <section class="pcf-hero">
+    <h1>CS2 Practice Config Generator</h1>
+    <p>Set up the perfect practice environment in seconds. Choose your map, practice mode, and copy the ready-to-paste console commands.</p>
+  </section>
 
-  <div class="calc-section">
+  <section class="pcf-section">
     <h2>1. Choose Your Map</h2>
-    <div style="display:flex;gap:.5rem;flex-wrap:wrap" id="mapSelect">
+    <div class="pcf-map-list" id="mapSelect">
       {maps.map((m, i) => (
-        <button class={`filter-btn ${i === 0 ? 'active' : ''}`} data-map={m.slug}>{m.icon} {m.name}</button>
+        <button class={`pcf-map-btn ${i === 0 ? 'active' : ''}`} data-map={m.slug}>{m.icon} {m.name}</button>
       ))}
     </div>
-  </div>
+  </section>
 
-  <div class="calc-section">
+  <section class="pcf-section">
     <h2>2. Select Practice Mode</h2>
-    <div class="card-grid" id="modeSelect">
+    <div class="pcf-mode-list" id="modeSelect">
       {modes.map((m, i) => (
-        <div class={`card ${i === 0 ? 'selected' : ''}`} data-mode={m.id} style="cursor:pointer;border-color:var(--border)">
-          <div style="font-size:1.5rem">{m.icon}</div>
-          <h3 style="margin:.25rem 0">{m.name}</h3>
-          <p style="font-size:.82rem">{m.desc}</p>
+        <div class={`pcf-mode-row ${i === 0 ? 'pcf-mode-selected' : ''}`} data-mode={m.id}>
+          <span class="pcf-mode-icon">{m.icon}</span>
+          <div class="pcf-mode-info">
+            <h3>{m.name}</h3>
+            <p>{m.desc}</p>
+          </div>
         </div>
       ))}
     </div>
-  </div>
+  </section>
 
-  <div class="calc-section">
+  <section class="pcf-section">
     <h2>3. Additional Options</h2>
-    <div style="display:flex;gap:1.5rem;flex-wrap:wrap">
-      <label style="display:flex;gap:.5rem;align-items:center;cursor:pointer"><input type="checkbox" id="optBots" checked style="accent-color:var(--accent)"> Add Bots</label>
-      <label style="display:flex;gap:.5rem;align-items:center;cursor:pointer"><input type="checkbox" id="optNoclip" checked style="accent-color:var(--accent)"> Enable Noclip</label>
-      <label style="display:flex;gap:.5rem;align-items:center;cursor:pointer"><input type="checkbox" id="optMoney" checked style="accent-color:var(--accent)"> Infinite Money</label>
-      <label style="display:flex;gap:.5rem;align-items:center;cursor:pointer"><input type="checkbox" id="optRoundTime" checked style="accent-color:var(--accent)"> Extended Round Time</label>
+    <div class="pcf-options">
+      <label class="pcf-option"><input type="checkbox" id="optBots" checked style="accent-color:var(--accent)"> Add Bots</label>
+      <label class="pcf-option"><input type="checkbox" id="optNoclip" checked style="accent-color:var(--accent)"> Enable Noclip</label>
+      <label class="pcf-option"><input type="checkbox" id="optMoney" checked style="accent-color:var(--accent)"> Infinite Money</label>
+      <label class="pcf-option"><input type="checkbox" id="optRoundTime" checked style="accent-color:var(--accent)"> Extended Round Time</label>
     </div>
-  </div>
+  </section>
 
-  <div class="result-box" style="margin:2rem 0">
-    <h2 style="margin-top:0">Your Practice Config</h2>
-    <pre id="configOutput" style="background:var(--bg);padding:1rem;border-radius:6px;font-size:.82rem;color:var(--accent);overflow-x:auto;white-space:pre-wrap;max-height:500px;line-height:1.6"></pre>
-    <div style="display:flex;gap:1rem;margin-top:1rem">
-      <button id="copyBtn" style="padding:.5rem 1.5rem;background:var(--accent);color:#000;border:none;border-radius:6px;cursor:pointer;font-weight:700">Copy Commands</button>
+  <section class="pcf-output">
+    <h2>Your Practice Config</h2>
+    <pre id="configOutput" class="pcf-code"></pre>
+    <button id="copyBtn" class="pcf-copy-btn">Copy Commands</button>
+  </section>
+
+  <section class="pcf-section">
+    <h2>Practice Mode Breakdown</h2>
+    <div class="pcf-breakdown-list">
+      <div class="pcf-breakdown-row">
+        <h3>Grenade Practice</h3>
+        <p>The grenade practice config enables trajectory visualization (sv_grenade_trajectory 1), showing the exact path your grenades travel through the air. Combined with sv_grenade_trajectory_time, the lines persist long enough to study your throws, line up setups, and verify smokes land correctly. The infinite ammo command lets you throw unlimited grenades without buying them.</p>
+      </div>
+      <div class="pcf-breakdown-row">
+        <h3>Aim Training</h3>
+        <p>Spawns stationary bots for target practice with full damage readouts. Each shot displays exact damage dealt, hitbox hit, and remaining health. The sv_showimpacts command reveals where your bullets actually land versus where you aimed, helping identify spray control issues.</p>
+      </div>
+      <div class="pcf-breakdown-row">
+        <h3>Wallbang Testing</h3>
+        <p>Shows bullet penetration data including damage falloff through surfaces. Essential for learning which walls, doors, and objects are bangable on each map. The sv_showimpacts_penetration command visualizes the bullet's path through materials.</p>
+      </div>
     </div>
-  </div>
+  </section>
 
-  <h2>Practice Mode Breakdown</h2>
-  <h3>Grenade Practice</h3>
-  <p>
-    The grenade practice config enables trajectory visualization (sv_grenade_trajectory 1), showing the exact path your grenades travel through the air. Combined with sv_grenade_trajectory_time, the lines persist long enough to study your throws, line up setups, and verify smokes land correctly. The infinite ammo command lets you throw unlimited grenades without buying them.
-  </p>
-  <h3>Aim Training</h3>
-  <p>
-    Spawns stationary bots for target practice with full damage readouts. Each shot displays exact damage dealt, hitbox hit, and remaining health. The sv_showimpacts command reveals where your bullets actually land versus where you aimed, helping identify spray control issues.
-  </p>
-  <h3>Wallbang Testing</h3>
-  <p>
-    Shows bullet penetration data including damage falloff through surfaces. Essential for learning which walls, doors, and objects are bangable on each map. The sv_showimpacts_penetration command visualizes the bullet's path through materials.
-  </p>
+  <section class="pcf-related">
+    <h2>Related Tools & Guides</h2>
+    <div class="pcf-related-list">
+      <a href="/autoexec-generator/" class="pcf-related-row">Autoexec Generator</a>
+      <a href="/launch-options/" class="pcf-related-row">Launch Options</a>
+      <a href="/crosshair-generator/" class="pcf-related-row">Crosshair Generator</a>
+      <a href="/cs2-maps/" class="pcf-related-row">Map Database</a>
+      <a href="/damage-calculator/" class="pcf-related-row">Damage Calculator</a>
+    </div>
+  </section>
 
-  <div class="internal-links">
-    <strong>Related Tools & Guides:</strong>
-    <a href="/autoexec-generator/">Autoexec Generator</a>
-    <a href="/launch-options/">Launch Options</a>
-    <a href="/crosshair-generator/">Crosshair Generator</a>
-    <a href="/maps/">Map Database</a>
-    <a href="/damage-calculator/">Damage Calculator</a>
-  </div>
-
-  <h2>Frequently Asked Questions</h2>
-  <dl class="faq">
+  <section class="pcf-faq">
+    <h2>Frequently Asked Questions</h2>
     {faqs.map(f => (
-      <Fragment>
-        <dt>{f.question}</dt>
-        <dd>{f.answer}</dd>
-      </Fragment>
+      <details class="pcf-faq-item">
+        <summary>{f.question}</summary>
+        <p>{f.answer}</p>
+      </details>
     ))}
-  </dl>
+  </section>
 
   <ExploreMore context="tools" />
 </Base>
 
 <style>
-  .card.selected{border-color:var(--accent)!important;box-shadow:0 0 0 1px var(--accent)}
+/* ── Breadcrumb ── */
+.pcf-breadcrumb{font-size:.82rem;color:var(--text2);margin-bottom:1.25rem;display:flex;gap:.35rem;flex-wrap:wrap}
+.pcf-breadcrumb a{color:var(--accent);text-decoration:none}
+.pcf-breadcrumb a:hover{text-decoration:underline}
+
+/* ── Hero ── */
+.pcf-hero{background:var(--bg2);border:1px solid var(--border);border-radius:4px;padding:2rem;margin-bottom:1.5rem}
+.pcf-hero h1{font-family:'Montserrat',sans-serif;font-size:2rem;font-weight:800;margin:0 0 .5rem;color:var(--text)}
+.pcf-hero p{color:var(--text2);font-size:.95rem;line-height:1.6;margin:0}
+
+/* ── Sections ── */
+.pcf-section{margin-bottom:2rem}
+.pcf-section h2{font-family:'Montserrat',sans-serif;font-size:1.15rem;font-weight:700;color:var(--text);margin:0 0 .75rem}
+
+/* ── Map Buttons ── */
+.pcf-map-list{display:flex;gap:.5rem;flex-wrap:wrap}
+.pcf-map-btn{background:var(--bg2);color:var(--text);border:1px solid var(--border);border-radius:4px;padding:.5rem 1rem;font-size:.88rem;font-weight:600;cursor:pointer;font-family:inherit;transition:border-color .15s,background .15s}
+.pcf-map-btn:hover{border-color:var(--accent);background:var(--bg3)}
+.pcf-map-btn.active{border-color:var(--accent);background:var(--bg3);color:var(--accent)}
+
+/* ── Mode List ── */
+.pcf-mode-list{display:flex;flex-direction:column;gap:2px}
+.pcf-mode-row{display:flex;align-items:center;gap:1rem;background:var(--bg2);border:1px solid var(--border);border-left:3px solid transparent;border-radius:4px;padding:.75rem 1rem;cursor:pointer;transition:border-color .15s,background .15s}
+.pcf-mode-row:hover{border-left-color:var(--accent);background:var(--bg3)}
+.pcf-mode-row.pcf-mode-selected{border-left-color:var(--accent);background:var(--bg3)}
+.pcf-mode-icon{font-size:1.3rem;flex-shrink:0}
+.pcf-mode-info h3{font-family:'Montserrat',sans-serif;font-size:.95rem;font-weight:700;color:var(--text);margin:0}
+.pcf-mode-info p{font-size:.82rem;color:var(--text2);margin:0}
+
+/* ── Options ── */
+.pcf-options{display:flex;gap:1.5rem;flex-wrap:wrap}
+.pcf-option{display:flex;gap:.5rem;align-items:center;cursor:pointer;font-size:.9rem;color:var(--text)}
+
+/* ── Output ── */
+.pcf-output{background:var(--bg2);border:1px solid var(--border);border-radius:4px;padding:1.5rem;margin-bottom:2rem}
+.pcf-output h2{font-family:'Montserrat',sans-serif;font-size:1.15rem;font-weight:700;color:var(--text);margin:0 0 .75rem}
+.pcf-code{background:var(--bg);padding:1rem;border-radius:4px;font-size:.82rem;color:var(--accent);overflow-x:auto;white-space:pre-wrap;max-height:500px;line-height:1.6;border:1px solid var(--border)}
+.pcf-copy-btn{margin-top:1rem;padding:.5rem 1.5rem;background:var(--accent);color:#000;border:none;border-radius:4px;cursor:pointer;font-weight:700;font-family:inherit;font-size:.9rem;transition:background .2s}
+.pcf-copy-btn:hover{background:var(--accent2)}
+
+/* ── Breakdown ── */
+.pcf-breakdown-list{display:flex;flex-direction:column;gap:2px}
+.pcf-breakdown-row{background:var(--bg2);border:1px solid var(--border);border-left:3px solid transparent;border-radius:4px;padding:1rem 1.25rem;transition:border-color .15s,background .15s}
+.pcf-breakdown-row:hover{border-left-color:var(--accent);background:var(--bg3)}
+.pcf-breakdown-row h3{font-family:'Montserrat',sans-serif;color:var(--text);font-size:1rem;font-weight:700;margin:0 0 .35rem}
+.pcf-breakdown-row p{color:var(--text2);font-size:.9rem;line-height:1.6;margin:0}
+
+/* ── Related ── */
+.pcf-related{margin-bottom:2rem}
+.pcf-related h2{font-family:'Montserrat',sans-serif;font-size:1.15rem;font-weight:700;color:var(--text);margin:0 0 .75rem}
+.pcf-related-list{display:flex;flex-direction:column;gap:2px}
+.pcf-related-row{display:flex;align-items:center;text-decoration:none;color:var(--text);background:var(--bg2);border:1px solid var(--border);border-left:3px solid transparent;border-radius:4px;padding:.6rem 1rem;font-size:.9rem;font-weight:600;transition:border-color .15s,background .15s}
+.pcf-related-row:hover{border-left-color:var(--accent);background:var(--bg3)}
+
+/* ── FAQ ── */
+.pcf-faq{margin-bottom:2rem}
+.pcf-faq h2{font-family:'Montserrat',sans-serif;font-size:1.15rem;font-weight:700;color:var(--text);margin:0 0 .75rem}
+.pcf-faq-item{background:var(--bg2);border:1px solid var(--border);border-radius:4px;margin-bottom:.35rem;overflow:hidden}
+.pcf-faq-item summary{padding:.75rem 1rem;font-weight:700;font-size:.9rem;color:var(--text);cursor:pointer;list-style:none;display:flex;align-items:center;gap:.5rem;transition:background .15s}
+.pcf-faq-item summary::before{content:'+';font-size:1.05rem;font-weight:700;color:var(--accent);flex-shrink:0;width:18px;text-align:center}
+.pcf-faq-item[open] summary::before{content:'\2212'}
+.pcf-faq-item summary:hover{background:var(--bg3)}
+.pcf-faq-item summary::-webkit-details-marker{display:none}
+.pcf-faq-item p{padding:0 1rem .85rem 2.25rem;margin:0;color:var(--text2);font-size:.88rem;line-height:1.6}
+
+/* ── Responsive ── */
+@media(max-width:768px){
+  .pcf-hero h1{font-size:1.5rem}
+  .pcf-map-list{flex-direction:column}
+  .pcf-options{flex-direction:column;gap:.75rem}
+}
 </style>
 
 <script is:inline>
@@ -152,7 +230,7 @@ const howToSchema = JSON.stringify({
   };
 
   function generate(){
-    var lines=['// ═══════════════════════════════════════════════════','// CS2 Practice Config — Generated by CSDB.gg','// Map: '+selectedMap,'// Mode: '+selectedMode,'// ═══════════════════════════════════════════════════','','game_mode 0','game_type 0','map '+selectedMap,''];
+    var lines=['// ═══════════════════════════════════════════════════','// CS2 Practice Config — Generated by CSGOLuck Wiki','// Map: '+selectedMap,'// Mode: '+selectedMode,'// ═══════════════════════════════════════════════════','','game_mode 0','game_type 0','map '+selectedMap,''];
     var modeCfg=configs[selectedMode]||configs.grenade;
     lines=lines.concat(modeCfg);
     if(document.getElementById('optBots').checked){
@@ -167,7 +245,7 @@ const howToSchema = JSON.stringify({
     if(document.getElementById('optRoundTime').checked){
       lines.push('','mp_roundtime_defuse 60','mp_roundtime 60');
     }
-    lines.push('','// Generated at csdb.gg/practice-config');
+    lines.push('','// Generated at wiki.csgoluck.com/practice-config');
     document.getElementById('configOutput').textContent=lines.join('\n');
   }
 
@@ -175,7 +253,7 @@ const howToSchema = JSON.stringify({
     var btn=e.target.closest('[data-map]');
     if(!btn)return;
     selectedMap=btn.dataset.map;
-    document.querySelectorAll('#mapSelect .filter-btn').forEach(function(b){b.classList.remove('active');});
+    document.querySelectorAll('#mapSelect .pcf-map-btn').forEach(function(b){b.classList.remove('active');});
     btn.classList.add('active');
     generate();
   });
@@ -184,8 +262,8 @@ const howToSchema = JSON.stringify({
     var card=e.target.closest('[data-mode]');
     if(!card)return;
     selectedMode=card.dataset.mode;
-    document.querySelectorAll('#modeSelect .card').forEach(function(c){c.classList.remove('selected');});
-    card.classList.add('selected');
+    document.querySelectorAll('#modeSelect .pcf-mode-row').forEach(function(c){c.classList.remove('pcf-mode-selected');});
+    card.classList.add('pcf-mode-selected');
     generate();
   });
 

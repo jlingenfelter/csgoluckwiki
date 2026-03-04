@@ -1,0 +1,331 @@
+---
+import Base from '../../../layouts/Base.astro';
+import ExploreMore from '../../../components/ExploreMore.astro';
+import { PRO_PLAYERS, getAverageEdpi, type ProPlayer } from '../../../lib/pro-players';
+import { breadcrumbSchema, faqSchema } from '../../../lib/weapons';
+import { getSkinBySlug } from '../../../lib/skins';
+
+export function getStaticPaths() {
+  const topSlugs = ['s1mple', 'zywoo', 'niko', 'donk', 'device', 'm0nesy', 'ropz', 'twistzz', 'electronic', 'broky', 'rain', 'frozen', 'b1t', 'jl', 'spinx', 'ax1le', 'hobbit', 'xantares', 'kopite', 'w0nderful'];
+  const topPlayers = topSlugs.map(s => PRO_PLAYERS.find(p => p.slug === s)).filter(Boolean) as ProPlayer[];
+  const paths: { params: { slug: string }; props: { p1: ProPlayer; p2: ProPlayer } }[] = [];
+  for (let i = 0; i < topPlayers.length; i++) {
+    for (let j = i + 1; j < topPlayers.length; j++) {
+      paths.push({
+        params: { slug: `${topPlayers[i].slug}-vs-${topPlayers[j].slug}` },
+        props: { p1: topPlayers[i], p2: topPlayers[j] },
+      });
+    }
+  }
+  return paths;
+}
+
+const { p1, p2 } = Astro.props as { p1: ProPlayer; p2: ProPlayer };
+const avgEdpi = getAverageEdpi();
+
+function sensLabel(edpi: number) {
+  return edpi < 600 ? 'Low' : edpi < 900 ? 'Medium' : 'High';
+}
+
+function slugify(s: string) {
+  return s.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+}
+function gearHref(type: string, name: string) {
+  return name ? `/pro-gaming-gear/${type}-${slugify(name)}/` : undefined;
+}
+function teamHref(team: string) {
+  const skip = ['free agent', 'retired', 'inactive', 'no team', 'none', 'benched', 'n/a', ''];
+  return skip.includes(team.toLowerCase().trim()) ? undefined : `/pro-teams/${slugify(team)}/`;
+}
+
+const title = `${p1.name} vs ${p2.name} Settings Comparison — CS2 Pro Settings | CSGOLuck Wiki`;
+const description = `Compare ${p1.name} and ${p2.name} CS2 settings side by side. Sensitivity, crosshair, resolution, gear, and configs compared for ${p1.team} vs ${p2.team}.`;
+
+const breadcrumbs = [
+  { name: 'Home', url: '/' },
+  { name: 'Pro Players', url: '/pro-players/' },
+  { name: `${p1.name} vs ${p2.name}`, url: `/pro-players/compare/${p1.slug}-vs-${p2.slug}/` },
+];
+
+const faqs = [
+  { question: `Who has higher sensitivity — ${p1.name} or ${p2.name}?`, answer: `${p1.name} plays at ${p1.edpi} eDPI while ${p2.name} plays at ${p2.edpi} eDPI. ${p1.edpi > p2.edpi ? `${p1.name} uses a higher sensitivity (${sensLabel(p1.edpi)})` : p1.edpi < p2.edpi ? `${p2.name} uses a higher sensitivity (${sensLabel(p2.edpi)})` : 'Both use the same eDPI'}. The pro average is ${avgEdpi} eDPI.` },
+  { question: `Do ${p1.name} and ${p2.name} use the same resolution?`, answer: `${p1.name} plays on ${p1.res} (${p1.aspect} ${p1.stretch}) while ${p2.name} plays on ${p2.res} (${p2.aspect} ${p2.stretch}). ${p1.res === p2.res ? 'Both use the same resolution.' : ''}` },
+  { question: `What mouse does ${p1.name} use vs ${p2.name}?`, answer: `${p1.name} uses the ${p1.mouse} at ${p1.dpi} DPI, while ${p2.name} uses the ${p2.mouse} at ${p2.dpi} DPI.` },
+];
+
+type Row = { label: string; v1: string; v2: string; highlight?: boolean; href1?: string; href2?: string };
+const rows: Row[] = [
+  { label: 'Team', v1: p1.team, v2: p2.team, href1: teamHref(p1.team), href2: teamHref(p2.team) },
+  { label: 'Role', v1: p1.role, v2: p2.role },
+  { label: 'DPI', v1: String(p1.dpi), v2: String(p2.dpi) },
+  { label: 'In-Game Sens', v1: String(p1.sens), v2: String(p2.sens) },
+  { label: 'eDPI', v1: String(p1.edpi), v2: String(p2.edpi), highlight: true },
+  { label: 'Zoom Sens', v1: String(p1.zoomSens), v2: String(p2.zoomSens) },
+  { label: 'Resolution', v1: p1.res, v2: p2.res },
+  { label: 'Aspect Ratio', v1: p1.aspect, v2: p2.aspect },
+  { label: 'Stretch', v1: p1.stretch, v2: p2.stretch },
+  { label: 'Crosshair Code', v1: p1.crosshairCode || '—', v2: p2.crosshairCode || '—', href1: p1.crosshairCode ? `/player/${p1.slug}/` : undefined, href2: p2.crosshairCode ? `/player/${p2.slug}/` : undefined },
+  { label: 'Mouse', v1: p1.mouse, v2: p2.mouse, href1: gearHref('mouse', p1.mouse), href2: gearHref('mouse', p2.mouse) },
+  { label: 'Polling Rate', v1: `${p1.pollingRate}Hz`, v2: `${p2.pollingRate}Hz` },
+  { label: 'Mousepad', v1: p1.mousepad, v2: p2.mousepad, href1: gearHref('mousepad', p1.mousepad), href2: gearHref('mousepad', p2.mousepad) },
+  { label: 'Monitor', v1: p1.monitor, v2: p2.monitor, href1: gearHref('monitor', p1.monitor), href2: gearHref('monitor', p2.monitor) },
+  { label: 'Keyboard', v1: p1.keyboard, v2: p2.keyboard, href1: gearHref('keyboard', p1.keyboard), href2: gearHref('keyboard', p2.keyboard) },
+  { label: 'Headset', v1: p1.headset, v2: p2.headset, href1: gearHref('headset', p1.headset), href2: gearHref('headset', p2.headset) },
+];
+
+// Loadout comparison data
+type LoadoutSlot = { label: string; slug1?: string; slug2?: string; name1?: string; name2?: string };
+const loadoutSlots: LoadoutSlot[] = [];
+if (p1.loadout || p2.loadout) {
+  const slots = ['knife', 'gloves', 'rifle', 'pistol', 'awp'] as const;
+  const slotLabels: Record<string, string> = { knife: 'Knife', gloves: 'Gloves', rifle: 'Rifle Skin', pistol: 'Pistol Skin', awp: 'AWP Skin' };
+  for (const slot of slots) {
+    const s1 = p1.loadout?.[slot];
+    const s2 = p2.loadout?.[slot];
+    if (s1 || s2) {
+      const skin1 = s1 ? getSkinBySlug(s1) : undefined;
+      const skin2 = s2 ? getSkinBySlug(s2) : undefined;
+      loadoutSlots.push({
+        label: slotLabels[slot],
+        slug1: s1, slug2: s2,
+        name1: skin1 ? `${skin1.weapon} | ${skin1.name}` : s1 || '—',
+        name2: skin2 ? `${skin2.weapon} | ${skin2.name}` : s2 || '—',
+      });
+    }
+  }
+}
+---
+
+<Base title={title} description={description} currentNav="/pro-players/">
+<script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema(breadcrumbs))} />
+<script type="application/ld+json" set:html={JSON.stringify(faqSchema(faqs))} />
+
+<nav class="breadcrumb">
+  <a href="/">Home</a> / <a href="/pro-players/">Pro Players</a> / <span>{p1.name} vs {p2.name}</span>
+</nav>
+
+<!-- Hero: Two players side-by-side with VS divider -->
+<section class="px-hero">
+  <div class="px-hero-player">
+    {p1.image && <img src={p1.image} alt={p1.name} width="72" height="72" class="px-avatar" />}
+    <h2 class="px-hero-name"><a href={`/pro-players/${p1.slug}/`}>{p1.name}</a></h2>
+    <span class="px-hero-meta">{teamHref(p1.team) ? <a href={teamHref(p1.team)} class="px-team-link">{p1.team}</a> : p1.team}</span>
+    <span class="px-hero-role">{p1.role}</span>
+  </div>
+  <div class="px-vs">
+    <span class="px-vs-text">VS</span>
+  </div>
+  <div class="px-hero-player px-hero-player-right">
+    {p2.image && <img src={p2.image} alt={p2.name} width="72" height="72" class="px-avatar" />}
+    <h2 class="px-hero-name"><a href={`/pro-players/${p2.slug}/`}>{p2.name}</a></h2>
+    <span class="px-hero-meta">{teamHref(p2.team) ? <a href={teamHref(p2.team)} class="px-team-link">{p2.team}</a> : p2.team}</span>
+    <span class="px-hero-role">{p2.role}</span>
+  </div>
+</section>
+
+<h1 class="px-title">{p1.name} vs {p2.name} &mdash; CS2 Settings Comparison</h1>
+
+<!-- Main Comparison Table -->
+<section class="px-section">
+  <h2>Settings Comparison</h2>
+  <div class="px-table-wrap">
+    <table class="px-table">
+      <thead>
+        <tr>
+          <th class="px-th-setting">Setting</th>
+          <th class="px-th-player">{p1.name}</th>
+          <th class="px-th-player">{p2.name}</th>
+        </tr>
+      </thead>
+      <tbody>
+        {rows.map((r, i) => (
+          <tr class={`${r.highlight ? 'px-row-hl' : ''} ${i % 2 === 0 ? 'px-row-even' : 'px-row-odd'}`}>
+            <td class="px-cell-label">{r.label}</td>
+            <td class={r.v1 !== r.v2 ? 'px-cell-diff' : ''}>{r.href1 ? <a href={r.href1} class="px-val-link">{r.v1}</a> : r.v1}</td>
+            <td class={r.v1 !== r.v2 ? 'px-cell-diff' : ''}>{r.href2 ? <a href={r.href2} class="px-val-link">{r.v2}</a> : r.v2}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- Gear Comparison Side-by-Side -->
+<section class="px-section">
+  <h2>Gear Comparison</h2>
+  <div class="px-gear-grid">
+    <div class="px-gear-col">
+      <h3 class="px-gear-name">{p1.name}</h3>
+      <ul class="px-gear-list">
+        <li><span class="px-gear-key">Mouse</span><span class="px-gear-val">{p1.mouse}</span></li>
+        <li><span class="px-gear-key">Mousepad</span><span class="px-gear-val">{p1.mousepad}</span></li>
+        <li><span class="px-gear-key">Monitor</span><span class="px-gear-val">{p1.monitor}</span></li>
+        <li><span class="px-gear-key">Keyboard</span><span class="px-gear-val">{p1.keyboard}</span></li>
+        <li><span class="px-gear-key">Headset</span><span class="px-gear-val">{p1.headset}</span></li>
+      </ul>
+    </div>
+    <div class="px-gear-col">
+      <h3 class="px-gear-name">{p2.name}</h3>
+      <ul class="px-gear-list">
+        <li><span class="px-gear-key">Mouse</span><span class="px-gear-val">{p2.mouse}</span></li>
+        <li><span class="px-gear-key">Mousepad</span><span class="px-gear-val">{p2.mousepad}</span></li>
+        <li><span class="px-gear-key">Monitor</span><span class="px-gear-val">{p2.monitor}</span></li>
+        <li><span class="px-gear-key">Keyboard</span><span class="px-gear-val">{p2.keyboard}</span></li>
+        <li><span class="px-gear-key">Headset</span><span class="px-gear-val">{p2.headset}</span></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- Loadout Comparison -->
+{loadoutSlots.length > 0 && (
+  <section class="px-section">
+    <h2>Loadout Comparison</h2>
+    <div class="px-table-wrap">
+      <table class="px-table">
+        <thead>
+          <tr>
+            <th class="px-th-setting">Slot</th>
+            <th class="px-th-player">{p1.name}</th>
+            <th class="px-th-player">{p2.name}</th>
+          </tr>
+        </thead>
+        <tbody>
+          {loadoutSlots.map((s, i) => (
+            <tr class={i % 2 === 0 ? 'px-row-even' : 'px-row-odd'}>
+              <td class="px-cell-label">{s.label}</td>
+              <td>{s.slug1 ? <a href={`/cs2-skin/${s.slug1}/`} class="px-val-link">{s.name1}</a> : s.name1 || '—'}</td>
+              <td>{s.slug2 ? <a href={`/cs2-skin/${s.slug2}/`} class="px-val-link">{s.name2}</a> : s.name2 || '—'}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  </section>
+)}
+
+<!-- Verdict/Summary Card -->
+<section class="px-section">
+  <div class="px-verdict">
+    <h2>Comparison Summary</h2>
+    <div class="px-verdict-grid">
+      <div class="px-verdict-item">
+        <span class="px-verdict-key">Sensitivity Style</span>
+        <span class="px-verdict-val">{p1.name}: {sensLabel(p1.edpi)} ({p1.edpi})</span>
+        <span class="px-verdict-val">{p2.name}: {sensLabel(p2.edpi)} ({p2.edpi})</span>
+      </div>
+      <div class="px-verdict-item">
+        <span class="px-verdict-key">Resolution</span>
+        <span class="px-verdict-val">{p1.name}: {p1.res} ({p1.stretch})</span>
+        <span class="px-verdict-val">{p2.name}: {p2.res} ({p2.stretch})</span>
+      </div>
+      <div class="px-verdict-item">
+        <span class="px-verdict-key">Mouse</span>
+        <span class="px-verdict-val">{p1.name}: {p1.mouse}</span>
+        <span class="px-verdict-val">{p2.name}: {p2.mouse}</span>
+      </div>
+      <div class="px-verdict-item">
+        <span class="px-verdict-key">Pro Average eDPI</span>
+        <span class="px-verdict-val">{avgEdpi} eDPI</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ Accordion -->
+<section class="px-section">
+  <h2>Frequently Asked Questions</h2>
+  <div class="px-faq-list">
+    {faqs.map(f => (
+      <details class="px-faq">
+        <summary>{f.question}</summary>
+        <p>{f.answer}</p>
+      </details>
+    ))}
+  </div>
+</section>
+
+<ExploreMore context="players" />
+</Base>
+
+<style>
+/* Hero */
+.px-hero{display:flex;align-items:center;justify-content:center;gap:0;margin-bottom:1rem;background:var(--bg2);border:1px solid var(--border);border-radius:4px;padding:2rem 1.5rem}
+.px-hero-player{display:flex;flex-direction:column;align-items:center;text-align:center;flex:1;gap:.4rem}
+.px-hero-player-right{order:3}
+.px-avatar{width:72px;height:72px;border-radius:4px;object-fit:cover;border:2px solid var(--border)}
+.px-hero-name{margin:0;font-size:1.4rem;font-weight:800}
+.px-hero-name a{color:inherit;text-decoration:none}
+.px-hero-name a:hover{color:var(--accent)}
+.px-hero-meta{font-size:.85rem;color:var(--text2)}
+.px-hero-role{font-size:.7rem;font-weight:700;padding:.15rem .5rem;border-radius:4px;text-transform:uppercase;background:var(--bg3);color:var(--text2);border:1px solid var(--border)}
+.px-team-link{color:var(--accent);text-decoration:none}
+.px-team-link:hover{text-decoration:underline}
+
+.px-vs{display:flex;align-items:center;justify-content:center;order:2;padding:0 1.5rem}
+.px-vs-text{font-size:2rem;font-weight:900;color:var(--accent);letter-spacing:.05em}
+
+.px-title{font-size:1rem;color:var(--text2);font-weight:400;margin:0 0 2rem}
+
+/* Sections */
+.px-section{margin-bottom:2.5rem}
+.px-section h2{font-size:1.2rem;margin:0 0 1rem;font-weight:700}
+
+/* Comparison Table */
+.px-table-wrap{overflow-x:auto;border:1px solid var(--border);border-radius:4px}
+.px-table{width:100%;border-collapse:collapse;font-size:.85rem}
+.px-table thead{background:var(--accent)}
+.px-table th{padding:.65rem 1rem;text-align:left;font-weight:700;color:#000;text-transform:uppercase;font-size:.7rem;letter-spacing:.04em;white-space:nowrap}
+.px-th-setting{width:180px}
+.px-th-player{width:auto}
+.px-table td{padding:.6rem 1rem;border-bottom:1px solid var(--border);white-space:nowrap}
+.px-row-even{background:var(--bg2)}
+.px-row-odd{background:var(--bg3)}
+.px-cell-label{font-weight:600;color:var(--text2);font-size:.82rem}
+.px-cell-diff{color:var(--accent);font-weight:600}
+.px-row-hl{background:rgba(46,204,113,0.08)}
+.px-row-hl .px-cell-label{color:var(--accent)}
+.px-row-hl td{font-weight:700}
+.px-val-link{color:var(--accent);text-decoration:none}
+.px-val-link:hover{text-decoration:underline}
+
+/* Gear Comparison */
+.px-gear-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem}
+.px-gear-col{background:var(--bg2);border:1px solid var(--border);border-radius:4px;padding:1.25rem}
+.px-gear-name{margin:0 0 .75rem;font-size:1rem;font-weight:700;color:var(--accent)}
+.px-gear-list{list-style:none;margin:0;padding:0}
+.px-gear-list li{display:flex;justify-content:space-between;padding:.4rem 0;border-bottom:1px solid var(--border);font-size:.82rem}
+.px-gear-list li:last-child{border-bottom:none}
+.px-gear-key{color:var(--text2);font-weight:600}
+.px-gear-val{color:var(--text);text-align:right;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:200px}
+
+/* Verdict Card */
+.px-verdict{background:var(--bg2);border:1px solid var(--border);border-top:3px solid var(--accent);border-radius:4px;padding:1.5rem}
+.px-verdict h2{margin:0 0 1rem;font-size:1.1rem;font-weight:700}
+.px-verdict-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem}
+.px-verdict-item{background:var(--bg);border:1px solid var(--border);border-radius:4px;padding:1rem;display:flex;flex-direction:column;gap:.25rem}
+.px-verdict-key{font-size:.75rem;text-transform:uppercase;letter-spacing:.04em;color:var(--accent);font-weight:700;margin-bottom:.2rem}
+.px-verdict-val{font-size:.82rem;color:var(--text2)}
+
+/* FAQ */
+.px-faq-list{display:flex;flex-direction:column;gap:.5rem}
+.px-faq{background:var(--bg2);border:1px solid var(--border);border-radius:4px;overflow:hidden}
+.px-faq summary{padding:.85rem 1rem;font-weight:600;font-size:.9rem;cursor:pointer;color:var(--text);list-style:none;display:flex;align-items:center;justify-content:space-between}
+.px-faq summary::after{content:'+';font-size:1.1rem;color:var(--accent);font-weight:700}
+.px-faq[open] summary::after{content:'\2212'}
+.px-faq summary::-webkit-details-marker{display:none}
+.px-faq p{padding:0 1rem 1rem;margin:0;font-size:.85rem;color:var(--text2);line-height:1.5}
+.px-faq:hover{border-left:3px solid var(--accent)}
+
+@media(max-width:640px){
+  .px-hero{flex-direction:column;gap:1rem;padding:1.5rem 1rem}
+  .px-hero-player-right{order:0}
+  .px-vs{padding:.5rem 0;order:0}
+  .px-hero-player{order:0}
+  .px-hero-name{font-size:1.2rem}
+  .px-gear-grid{grid-template-columns:1fr}
+  .px-table th:first-child,.px-table td:first-child{min-width:80px}
+  .px-table{font-size:.8rem}
+  .px-verdict-grid{grid-template-columns:1fr}
+}
+</style>

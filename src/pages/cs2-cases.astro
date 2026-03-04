@@ -1,0 +1,607 @@
+---
+import Base from '../layouts/Base.astro';
+import ExploreMore from '../components/ExploreMore.astro';
+import { breadcrumbSchema, faqSchema } from '../lib/weapons';
+import { caseDatabase } from '../lib/cases';
+import type { CaseData } from '../lib/cases';
+
+interface CaseItem {
+  id: string;
+  name: string;
+  year: number;
+  type: 'weapon' | 'souvenir' | 'collection';
+  keyPrice?: number;
+  notableSkins: string[];
+  releaseDate: string;
+  image?: string;
+  description?: string;
+}
+
+// Build the cases array from caseDatabase, enriched with images, descriptions, and real skin data
+const dbCases: CaseItem[] = Object.values(caseDatabase).map((c: CaseData) => ({
+  id: c.id,
+  name: c.name,
+  year: c.year,
+  type: c.type,
+  keyPrice: c.keyPrice,
+  notableSkins: c.skins
+    .filter((s) => s.rarity === 'covert' || s.rarity === 'classified')
+    .slice(0, 3)
+    .map((s) => `${s.weapon} ${s.name}`),
+  releaseDate: c.releaseDate,
+  image: c.image,
+  description: c.description,
+}));
+
+// IDs already covered by caseDatabase
+const dbIds = new Set(Object.keys(caseDatabase));
+
+// Fallback cases not in caseDatabase (keep them so the page still shows all cases)
+// All cases are now in caseDatabase — no fallback entries needed
+const fallbackCases: CaseItem[] = [];
+
+// Merge and sort by year descending, then by name
+const cases: CaseItem[] = [...dbCases, ...fallbackCases].sort((a, b) => b.year - a.year || a.name.localeCompare(b.name));
+
+const collections: { name: string; year: number; mapName: string }[] = [
+  { name: 'Dust 2 Collection', year: 2024, mapName: 'Dust 2' },
+  { name: 'Inferno Collection', year: 2024, mapName: 'Inferno' },
+  { name: 'Mirage Collection', year: 2024, mapName: 'Mirage' },
+  { name: 'Nuke Collection', year: 2024, mapName: 'Nuke' },
+  { name: 'Anubis Collection', year: 2023, mapName: 'Anubis' },
+  { name: 'Vertigo Collection', year: 2023, mapName: 'Vertigo' },
+  { name: 'Ancient Collection', year: 2023, mapName: 'Ancient' },
+  { name: 'Overpass Collection', year: 2023, mapName: 'Overpass' },
+];
+
+const breadcrumbs = [
+  { name: 'Home', url: '/' },
+  { name: 'Cases & Collections', url: '/cs2-cases/' },
+];
+
+const faqData = [
+  { q: 'What exactly is a case in CS2?', a: 'Cases are loot containers available in Counter-Strike 2. Each one requires a matching key to unlock. Once you open a case, you receive a randomly selected weapon skin from that case\'s pool — the rarity tier of the item you pull determines both its visual quality and its potential market worth.' },
+  { q: 'What are the drop rates for each rarity tier?', a: 'Every case follows a fixed probability table: Mil-Spec items drop at roughly 79.92%, Restricted at 15.98%, Classified at 3.2%, Covert at 0.64%, and the Special/Rare item at approximately 0.26%. Our Case Odds Calculator can help you crunch the expected return on any given case.' },
+  { q: 'How are souvenir cases different from standard weapon cases?', a: 'Souvenir packages are exclusively awarded during live competitive tournament matches and carry trade restrictions in certain regions. The skins inside bear unique match details and team logo stickers, which makes them particularly desirable among collectors willing to pay a premium.' },
+  { q: 'Do older cases lose their value over time?', a: 'It depends entirely on what is inside them. Key costs can fluctuate, but legacy cases frequently contain discontinued skins that have become extremely scarce. Early releases like the Arms Deal and Bravo collections, for instance, house items such as the Dragon Lore that fetch premium prices on secondary markets.' },
+  { q: 'Can you actually make money by opening cases?', a: 'On average, no — the cost of keys means the expected return is negative over a large sample size. If you want to experience the thrill without the financial risk, give our Case Simulator a spin. The reality is that most players crack cases for the excitement and to chase skins they genuinely want, not as a money-making strategy.' },
+  { q: 'What sets collections apart from cases?', a: 'Collections are thematic skin sets tied to specific map updates. Unlike cases, they do not require a purchased key — skins from collections are obtained through in-game drops or direct marketplace purchases. Their designs tend to reflect the visual identity of the map they are associated with.' },
+  { q: 'Which case skins tend to be the most valuable?', a: 'The Covert tier consistently produces the priciest pulls — these are usually standout rifles, pistols, or sniper skins. Dragon Lore variants remain some of the most sought-after and expensive items in CS2 history, commanding five-figure prices for pristine examples.' },
+  { q: 'Is it still possible to unbox skins from discontinued cases?', a: 'Absolutely. Legacy cases continue to exist in the drop system and can also be bought from the Steam Community Market or third-party platforms. Interestingly, key prices on older cases are sometimes lower, which can make them a more budget-friendly unboxing option compared to the latest releases.' },
+];
+
+const weaponCases = cases.filter(c => c.type === 'weapon');
+const specialCases = cases.filter(c => c.type !== 'weapon');
+const uniqueYears = [...new Set(cases.map(c => c.year))].sort((a, b) => b - a);
+---
+
+<Base
+  title="CS2 Case Archive — Every Weapon Case & Collection | CSGOLuck Wiki"
+  description="Explore the full catalog of CS2 weapon cases and collections. Filter by category, check drop probabilities, see headline skins, and compare key prices from the original Arms Deal through the latest releases."
+  currentNav="/cs2-skins/"
+>
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema(breadcrumbs))} />
+    <script type="application/ld+json" set:html={JSON.stringify(faqSchema(faqData))} />
+  </Fragment>
+
+  <!-- Hero -->
+  <section class="ch-hero">
+    <div class="ch-hero-text">
+      <h1 class="ch-hero-title">Case Archive</h1>
+      <p class="ch-hero-desc">
+        The complete index of CS2 weapon cases and map collections. Check the <a href="/case-odds-calculator/">drop probabilities</a> before you open, or fire up the <a href="/case-simulator/">Case Simulator</a> risk-free.
+      </p>
+    </div>
+    <div class="ch-hero-pills">
+      <span class="ch-pill"><strong>{cases.length}</strong> Cases</span>
+      <span class="ch-pill"><strong>{collections.length}</strong> Collections</span>
+      <span class="ch-pill"><strong>{uniqueYears.length}</strong> Years</span>
+    </div>
+  </section>
+
+  <!-- Filter Tabs -->
+  <div class="ch-tabs" id="ch-tabs">
+    <button class="ch-tab ch-tab-active" data-filter="all">All Cases</button>
+    <button class="ch-tab" data-filter="weapon">Weapon Cases</button>
+    <button class="ch-tab" data-filter="special">Special</button>
+    <button class="ch-tab" data-filter="collections">Collections</button>
+  </div>
+
+  <!-- Cases Table -->
+  <section id="ch-cases-section" class="ch-table-wrap">
+    <table class="ch-table">
+      <thead>
+        <tr>
+          <th class="ch-th-img"></th>
+          <th class="ch-th-name">Case</th>
+          <th class="ch-th-date">Released</th>
+          <th class="ch-th-rare">Rare Item</th>
+          <th class="ch-th-price">Key</th>
+          <th class="ch-th-action"></th>
+        </tr>
+      </thead>
+      <tbody>
+        {cases.map((caseItem) => (
+          <tr class="ch-tr" data-type={caseItem.type === 'weapon' ? 'weapon' : 'special'}>
+            <td class="ch-td-img">
+              {caseItem.image ? (
+                <img src={caseItem.image} alt={caseItem.name} loading="lazy" width="52" height="40" />
+              ) : (
+                <span class="ch-img-empty"></span>
+              )}
+            </td>
+            <td class="ch-td-name">
+              <a href={`/cs2-cases/${caseItem.id}/`} class="ch-case-link">
+                <span class="ch-name-main">{caseItem.name}</span>
+                <span class="ch-name-year">{caseItem.year}</span>
+              </a>
+            </td>
+            <td class="ch-td-date">{caseItem.releaseDate}</td>
+            <td class="ch-td-rare">{caseItem.notableSkins.length > 0 ? caseItem.notableSkins[0] : '--'}</td>
+            <td class="ch-td-price">{caseItem.keyPrice ? `$${caseItem.keyPrice}` : '--'}</td>
+            <td class="ch-td-action">
+              <a href={`/cs2-cases/${caseItem.id}/`} class="ch-view-link">&rarr;</a>
+            </td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </section>
+
+  <!-- Collections Table -->
+  <section id="ch-collections-section" class="ch-table-wrap" style="display:none;">
+    <table class="ch-table">
+      <thead>
+        <tr>
+          <th class="ch-th-name">Collection</th>
+          <th class="ch-th-date">Map</th>
+          <th class="ch-th-price">Year</th>
+          <th class="ch-th-action"></th>
+        </tr>
+      </thead>
+      <tbody>
+        {collections.map((coll) => (
+          <tr class="ch-tr">
+            <td class="ch-td-name">
+              <a href={`/cs2-maps/${coll.mapName.toLowerCase().replace(/ /g, '-')}/`} class="ch-case-link">
+                <span class="ch-name-main">{coll.name}</span>
+              </a>
+            </td>
+            <td class="ch-td-date">{coll.mapName}</td>
+            <td class="ch-td-price">{coll.year}</td>
+            <td class="ch-td-action">
+              <a href={`/cs2-maps/${coll.mapName.toLowerCase().replace(/ /g, '-')}/`} class="ch-view-link">&rarr;</a>
+            </td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </section>
+
+  <!-- FAQ Accordion -->
+  <section class="ch-faq">
+    <h2 class="ch-faq-title">Common Questions</h2>
+    {faqData.map((faq) => (
+      <details class="ch-faq-item">
+        <summary class="ch-faq-q">{faq.q}</summary>
+        <p class="ch-faq-a">{faq.a}</p>
+      </details>
+    ))}
+  </section>
+
+  <!-- Internal Links -->
+  <div class="ch-links">
+    <a href="/case-simulator/">Case Simulator</a>
+    <a href="/case-odds-calculator/">Case Odds Calculator</a>
+    <a href="/cs2-skins/">Skin Database</a>
+    <a href="/skin-compare/">Skin Compare</a>
+    <a href="/price-tracker/">Price Tracker</a>
+    <a href="/market-trends/">Market Trends</a>
+    <a href="/float-checker/">Float Checker</a>
+    <a href="/tradeup-calculator/">Trade-Up Calculator</a>
+    <a href="/inventory-lookup/">Inventory Lookup</a>
+    <a href="/loadout-builder/">Loadout Builder</a>
+    <a href="/cs2-weapons/">Weapon Database</a>
+    <a href="/cs2-guides/skins-investing-guide/">Investing Guide</a>
+    <a href="/cs2-guides/trading-guide/">Trading Guide</a>
+    <a href="/cs2-stickers/">Sticker Database</a>
+    <a href="/cs2-agents/">Agents & Music Kits</a>
+    <a href="/cs2-guides/float-guide/">Float Guide</a>
+    <a href="/cs2-guides/case-hardened-guide/">Case Hardened Guide</a>
+  </div>
+
+  <ExploreMore context="skins" />
+
+  <style is:inline>
+    :root {
+      --accent: #2ecc71;
+      --bg2: #13141a;
+      --bg3: #1a1c24;
+      --border: #242630;
+    }
+
+    /* ---- HERO ---- */
+    .ch-hero {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+      padding-bottom: 1.5rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .ch-hero-text {
+      flex: 1;
+    }
+
+    .ch-hero-title {
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: var(--text);
+      margin: 0 0 0.5rem;
+      letter-spacing: -0.02em;
+    }
+
+    .ch-hero-desc {
+      font-size: 0.92rem;
+      color: var(--text2);
+      margin: 0;
+      line-height: 1.6;
+      max-width: 540px;
+    }
+
+    .ch-hero-desc a {
+      color: var(--accent);
+      font-weight: 600;
+      text-decoration: none;
+    }
+
+    .ch-hero-desc a:hover {
+      text-decoration: underline;
+    }
+
+    .ch-hero-pills {
+      display: flex;
+      gap: 0.5rem;
+      flex-shrink: 0;
+    }
+
+    .ch-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 0.45rem 0.75rem;
+      font-size: 0.8rem;
+      color: var(--text2);
+    }
+
+    .ch-pill strong {
+      color: var(--accent);
+      font-weight: 700;
+      font-size: 0.92rem;
+    }
+
+    /* ---- FILTER TABS ---- */
+    .ch-tabs {
+      display: flex;
+      gap: 0.35rem;
+      margin-bottom: 1.25rem;
+      flex-wrap: wrap;
+    }
+
+    .ch-tab {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 0.4rem 0.85rem;
+      font-size: 0.82rem;
+      font-weight: 500;
+      color: var(--text2);
+      cursor: pointer;
+      font-family: inherit;
+      transition: color 0.15s, border-color 0.15s;
+    }
+
+    .ch-tab:hover {
+      color: var(--text);
+      border-color: var(--accent);
+    }
+
+    .ch-tab-active {
+      color: var(--accent);
+      border-color: var(--accent);
+      font-weight: 600;
+    }
+
+    /* ---- TABLE ---- */
+    .ch-table-wrap {
+      margin-bottom: 2rem;
+    }
+
+    .ch-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .ch-table thead th {
+      text-align: left;
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--text2);
+      padding: 0.5rem 0.75rem;
+      border-bottom: 1px solid var(--border);
+      font-weight: 500;
+    }
+
+    .ch-th-img {
+      width: 60px;
+    }
+
+    .ch-th-action {
+      width: 36px;
+    }
+
+    .ch-tr {
+      border-bottom: 1px solid var(--border);
+      border-left: 3px solid transparent;
+      transition: background 0.15s, border-left-color 0.15s;
+    }
+
+    .ch-tr:hover {
+      background: var(--bg3);
+      border-left-color: var(--accent);
+    }
+
+    .ch-tr td {
+      padding: 0.55rem 0.75rem;
+      vertical-align: middle;
+    }
+
+    .ch-td-img img {
+      display: block;
+      width: 52px;
+      height: auto;
+      object-fit: contain;
+      border-radius: 4px;
+    }
+
+    .ch-img-empty {
+      display: block;
+      width: 52px;
+      height: 40px;
+      background: var(--bg3);
+      border-radius: 4px;
+    }
+
+    .ch-case-link {
+      text-decoration: none;
+      color: inherit;
+      display: flex;
+      flex-direction: column;
+      gap: 0.1rem;
+    }
+
+    .ch-name-main {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .ch-name-year {
+      font-size: 0.72rem;
+      color: var(--text2);
+    }
+
+    .ch-td-date {
+      font-size: 0.82rem;
+      color: var(--text2);
+    }
+
+    .ch-td-rare {
+      font-size: 0.82rem;
+      color: var(--text2);
+      max-width: 200px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .ch-td-price {
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: var(--accent);
+    }
+
+    .ch-view-link {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 28px;
+      height: 28px;
+      font-size: 0.95rem;
+      color: var(--text2);
+      text-decoration: none;
+      border-radius: 4px;
+      transition: color 0.15s;
+      opacity: 0;
+    }
+
+    .ch-tr:hover .ch-view-link {
+      opacity: 1;
+      color: var(--accent);
+    }
+
+    /* ---- FAQ ACCORDION ---- */
+    .ch-faq {
+      margin: 2rem 0;
+    }
+
+    .ch-faq-title {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--text);
+      margin: 0 0 1rem;
+      padding-left: 0.85rem;
+      border-left: 3px solid var(--accent);
+    }
+
+    .ch-faq-item {
+      border-bottom: 1px solid var(--border);
+    }
+
+    .ch-faq-item[open] {
+      padding-bottom: 0.75rem;
+    }
+
+    .ch-faq-q {
+      font-size: 0.92rem;
+      font-weight: 600;
+      color: var(--text);
+      padding: 0.75rem 0;
+      cursor: pointer;
+      list-style: none;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: color 0.15s;
+    }
+
+    .ch-faq-q::-webkit-details-marker {
+      display: none;
+    }
+
+    .ch-faq-q::before {
+      content: '+';
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 20px;
+      height: 20px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--accent);
+      flex-shrink: 0;
+    }
+
+    .ch-faq-item[open] .ch-faq-q::before {
+      content: '-';
+    }
+
+    .ch-faq-q:hover {
+      color: var(--accent);
+    }
+
+    .ch-faq-a {
+      font-size: 0.88rem;
+      color: var(--text2);
+      line-height: 1.6;
+      margin: 0;
+      padding-left: 1.75rem;
+    }
+
+    .ch-faq-a a {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    .ch-faq-a a:hover {
+      text-decoration: underline;
+    }
+
+    /* ---- INTERNAL LINKS ---- */
+    .ch-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+      margin: 1.5rem 0;
+    }
+
+    .ch-links a {
+      font-size: 0.8rem;
+      color: var(--text2);
+      text-decoration: none;
+      padding: 0.3rem 0.6rem;
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      border-left: 3px solid transparent;
+      transition: border-left-color 0.15s, color 0.15s;
+    }
+
+    .ch-links a:hover {
+      border-left-color: var(--accent);
+      color: var(--accent);
+    }
+
+    /* ---- RESPONSIVE ---- */
+    @media (max-width: 768px) {
+      .ch-hero {
+        flex-direction: column;
+        gap: 1rem;
+      }
+
+      .ch-hero-pills {
+        flex-wrap: wrap;
+      }
+
+      .ch-th-date,
+      .ch-td-date,
+      .ch-th-rare,
+      .ch-td-rare {
+        display: none;
+      }
+
+      .ch-view-link {
+        opacity: 0.5;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .ch-th-price,
+      .ch-td-price {
+        display: none;
+      }
+    }
+  </style>
+
+  <script is:inline>
+    document.addEventListener('DOMContentLoaded', () => {
+      const tabs = document.querySelectorAll('.ch-tab');
+      const casesSection = document.getElementById('ch-cases-section');
+      const collsSection = document.getElementById('ch-collections-section');
+      const rows = document.querySelectorAll('.ch-tr[data-type]');
+
+      tabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+          tabs.forEach(t => t.classList.remove('ch-tab-active'));
+          tab.classList.add('ch-tab-active');
+          const filter = tab.getAttribute('data-filter');
+
+          if (filter === 'collections') {
+            casesSection.style.display = 'none';
+            collsSection.style.display = 'block';
+          } else {
+            casesSection.style.display = 'block';
+            collsSection.style.display = 'none';
+            rows.forEach(row => {
+              if (filter === 'all') {
+                row.style.display = '';
+              } else if (filter === 'weapon') {
+                row.style.display = row.getAttribute('data-type') === 'weapon' ? '' : 'none';
+              } else if (filter === 'special') {
+                row.style.display = row.getAttribute('data-type') === 'special' ? '' : 'none';
+              }
+            });
+          }
+        });
+      });
+    });
+  </script>
+</Base>

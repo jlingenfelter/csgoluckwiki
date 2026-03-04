@@ -4,7 +4,7 @@ import ExploreMore from '../components/ExploreMore.astro';
 import { faqSchema, toolAppSchema } from '../lib/weapons';
 
 const title = 'CS2 Float Checker - Analyze Skin Wear Values';
-const description = 'Interactive float value checker for CS2 skins. Determine wear conditions, compare against boundaries, and understand float tiers for better skin trading decisions on CSDB.';
+const description = 'Interactive float value checker for CS2 skins. Determine wear conditions, compare against boundaries, and understand float tiers for better skin trading decisions on CSGOLuck Wiki.';
 
 const faqs = [
   {
@@ -41,686 +41,335 @@ const faqs = [
 <Base title={title} description={description}>
   <Fragment slot="head">
     <script type="application/ld+json" set:html={JSON.stringify(faqSchema(faqs))} />
-    <script type="application/ld+json" set:html={JSON.stringify(toolAppSchema({ name: 'CS2 Float Checker', url: 'https://csdb.gg/float-checker/', description }))} />
+    <script type="application/ld+json" set:html={JSON.stringify(toolAppSchema({ name: 'CS2 Float Checker', url: 'https://wiki.csgoluck.com/float-checker/', description }))} />
   </Fragment>
 
-  <!-- Breadcrumb -->
-  <nav class="breadcrumb">
-    <a href="/">Home</a> > <a href="/">Tools</a> > <span>Float Checker</span>
-  </nav>
+  <nav class="breadcrumb"><a href="/">Home</a> <span>/</span> <a href="/cs2-tools/">Tools</a> <span>/</span> <span>Float Checker</span></nav>
 
-  <!-- Hero Section -->
-  <section class="hero">
-    <h1>CS2 Float Value Checker</h1>
-    <p>Understand skin wear values and make informed trading decisions. Use our interactive analyzer to determine wear conditions, compare boundaries, and identify float tiers.</p>
-  </section>
+  <div class="fc-hero">
+    <h1 class="fc-title">CS2 Float Value Checker</h1>
+    <p class="fc-desc">Understand <a href="/cs2-skins/" style="color:var(--accent)">skin</a> wear values and make informed <a href="/cs2-guides/trading-guide/" style="color:var(--accent)">trading</a> decisions. Analyze wear conditions, compare boundaries, and identify float tiers.</p>
+  </div>
 
   <!-- Interactive Float Analyzer -->
-  <section class="calc-section">
-    <h2>Float Value Analyzer</h2>
-    <p>Enter a float value between 0.00 and 1.00 to analyze its wear condition and tier placement.</p>
+  <div class="fc-panel">
+    <h2 class="fc-panel-title">Float Value Analyzer</h2>
+    <p class="fc-panel-sub">Enter a float value between 0.00 and 1.00 to analyze its wear condition and tier placement.</p>
 
-    <div class="calc-row">
-      <div>
-        <label for="floatInput">Float Value:</label>
-        <input
-          type="number"
-          id="floatInput"
-          min="0"
-          max="1"
-          step="0.0001"
-          placeholder="0.001"
-          value="0.001"
-        >
-        <small>Enter a value between 0.0000 and 1.0000</small>
-      </div>
+    <div class="fc-input-row">
+      <label class="fc-label" for="floatInput">Float Value</label>
+      <input type="number" id="floatInput" class="fc-input" min="0" max="1" step="0.0001" placeholder="0.001" value="0.001">
+      <small class="fc-hint">Enter a value between 0.0000 and 1.0000</small>
     </div>
 
     <!-- Float Bar Visualization -->
-    <div class="float-bar-container">
-      <div class="float-bar">
-        <div class="float-segment fn">FN<br><small>0.00-0.07</small></div>
-        <div class="float-segment mw">MW<br><small>0.07-0.15</small></div>
-        <div class="float-segment ft">FT<br><small>0.15-0.38</small></div>
-        <div class="float-segment ww">WW<br><small>0.38-0.45</small></div>
-        <div class="float-segment bs">BS<br><small>0.45-1.00</small></div>
-        <div class="float-indicator" id="floatIndicator"></div>
+    <div class="fc-bar-wrap">
+      <div class="fc-bar">
+        <div class="fc-seg fc-fn">FN<br><small>0.00-0.07</small></div>
+        <div class="fc-seg fc-mw">MW<br><small>0.07-0.15</small></div>
+        <div class="fc-seg fc-ft">FT<br><small>0.15-0.38</small></div>
+        <div class="fc-seg fc-ww">WW<br><small>0.38-0.45</small></div>
+        <div class="fc-seg fc-bs">BS<br><small>0.45-1.00</small></div>
+        <div class="fc-indicator" id="floatIndicator"></div>
       </div>
     </div>
 
     <!-- Results -->
-    <div class="result-box big">
-      <div class="result-grid">
-        <div class="result-item">
-          <div class="label">Wear Condition</div>
-          <div class="value" id="wearCondition">Factory New</div>
-        </div>
-        <div class="result-item">
-          <div class="label">Float Tier</div>
-          <div class="value" id="floatTier">Flawless</div>
-        </div>
-        <div class="result-item">
-          <div class="label">Rarity</div>
-          <div class="value" id="floatRarity">Extremely Rare</div>
-        </div>
-        <div class="result-item">
-          <div class="label">Classification</div>
-          <div class="value" id="floatClassification">Ultra-Low Float</div>
-        </div>
+    <div class="fc-results">
+      <div class="fc-result-card">
+        <div class="fc-result-label">Wear Condition</div>
+        <div class="fc-result-val" id="wearCondition">Factory New</div>
       </div>
-      <div class="result-details">
-        <p id="resultDescription">This is an extremely rare factory new skin with pristine appearance. Highly sought after by collectors.</p>
-        <p id="boundaryInfo">Distance to boundaries will appear here.</p>
+      <div class="fc-result-card">
+        <div class="fc-result-label">Float Tier</div>
+        <div class="fc-result-val" id="floatTier">Flawless</div>
+      </div>
+      <div class="fc-result-card">
+        <div class="fc-result-label">Rarity</div>
+        <div class="fc-result-val" id="floatRarity">Extremely Rare</div>
+      </div>
+      <div class="fc-result-card">
+        <div class="fc-result-label">Classification</div>
+        <div class="fc-result-val" id="floatClassification">Ultra-Low Float</div>
       </div>
     </div>
-  </section>
+    <div class="fc-detail-box">
+      <p id="resultDescription">This is an extremely rare factory new skin with pristine appearance. Highly sought after by collectors.</p>
+      <p id="boundaryInfo">Distance to boundaries will appear here.</p>
+    </div>
+  </div>
 
   <!-- Float Ranges Reference -->
-  <section class="float-ranges">
-    <h2>Float Ranges Reference</h2>
-    <p>All CS2 skins fall into one of these five wear conditions based on their float value:</p>
+  <div class="fc-section">
+    <h2 class="fc-section-title">Float Ranges Reference</h2>
+    <p class="fc-section-sub">All CS2 skins fall into one of these five wear conditions based on their float value.</p>
+    <div class="fc-ranges-grid">
+      <div class="fc-range-card fc-range-fn">
+        <h3 class="fc-range-name">Factory New (FN)</h3>
+        <div class="fc-range-val">0.00 - 0.07</div>
+        <p class="fc-range-desc">Pristine condition with minimal visible wear. Most expensive and highly desired by collectors.</p>
+        <div class="fc-range-tags"><span>Rarest</span><span>Highest Value</span></div>
+      </div>
+      <div class="fc-range-card fc-range-mw">
+        <h3 class="fc-range-name">Minimal Wear (MW)</h3>
+        <div class="fc-range-val">0.07 - 0.15</div>
+        <p class="fc-range-desc">Very light signs of use. Still highly valued and maintains most of the pristine appearance.</p>
+        <div class="fc-range-tags"><span>Very Rare</span><span>High Value</span></div>
+      </div>
+      <div class="fc-range-card fc-range-ft">
+        <h3 class="fc-range-name">Field-Tested (FT)</h3>
+        <div class="fc-range-val">0.15 - 0.38</div>
+        <p class="fc-range-desc">Moderate wear visible but skin remains recognizable and visually appealing. Most common range.</p>
+        <div class="fc-range-tags"><span>Common</span><span>Moderate Value</span></div>
+      </div>
+      <div class="fc-range-card fc-range-ww">
+        <h3 class="fc-range-name">Well-Worn (WW)</h3>
+        <div class="fc-range-val">0.38 - 0.45</div>
+        <p class="fc-range-desc">Heavy wear with significant damage visible. Noticeably aged appearance.</p>
+        <div class="fc-range-tags"><span>Common</span><span>Low Value</span></div>
+      </div>
+      <div class="fc-range-card fc-range-bs">
+        <h3 class="fc-range-name">Battle-Scarred (BS)</h3>
+        <div class="fc-range-val">0.45 - 1.00</div>
+        <p class="fc-range-desc">Most heavily worn condition with maximum battle damage. Cheapest tier but unique aesthetic.</p>
+        <div class="fc-range-tags"><span>Very Common</span><span>Lowest Value</span></div>
+      </div>
+    </div>
+  </div>
 
-    <div class="card-grid">
-      <div class="card fn-card">
-        <h3>Factory New (FN)</h3>
-        <div class="float-range">0.00 – 0.07</div>
-        <p>Pristine condition with minimal visible wear. Most expensive and highly desired by collectors.</p>
-        <div class="specs">
-          <span>Rarest</span>
-          <span>Highest Value</span>
+  <!-- Min/Max Float & Why Float Matters — Two Column -->
+  <div class="fc-two-col">
+    <div class="fc-info-block">
+      <h2 class="fc-block-title">Understanding Minimum & Maximum Floats</h2>
+      <p class="fc-block-sub">Not all skins can achieve the full 0.00-1.00 float range. Each skin design has its own minimum and maximum float values.</p>
+      <div class="fc-tip-list">
+        <div class="fc-tip"><strong>Minimum Float:</strong> The lowest float value a specific skin can have. Some skins cannot be Factory New below 0.04 or 0.05, meaning true 0.000x floats are impossible for those skins.</div>
+        <div class="fc-tip"><strong>Maximum Float:</strong> The highest float value a specific skin can have. Some rare skins cap at 0.80 or lower, never reaching true Battle-Scarred territory.</div>
+        <div class="fc-tip"><strong>Why It Matters:</strong> When hunting specific skins, knowing their min/max range helps you understand what float values are actually attainable and what would make a particular float extremely rare.</div>
+        <div class="fc-tip"><strong>Trading Impact:</strong> A 0.001 float of a skin with 0.04 minimum is much less impressive than a 0.001 float of a skin with 0.00 minimum. Always verify the specific skin's float range.</div>
+      </div>
+    </div>
+
+    <div class="fc-info-block">
+      <h2 class="fc-block-title">Why Float Value Matters</h2>
+      <div class="fc-matter-list">
+        <div class="fc-matter-item">
+          <h4 class="fc-matter-name">Visual Appearance</h4>
+          <p class="fc-matter-desc">Lower float values look significantly less worn in-game. The difference between a 0.01 and a 0.30 float is immediately noticeable.</p>
+        </div>
+        <div class="fc-matter-item">
+          <h4 class="fc-matter-name">Trading Value</h4>
+          <p class="fc-matter-desc">Float value is the primary factor determining skin price within the same condition. A 0.001 float can command premium prices vs. 0.06.</p>
+        </div>
+        <div class="fc-matter-item">
+          <h4 class="fc-matter-name">Investment Potential</h4>
+          <p class="fc-matter-desc">Ultra-low floats (0.000x-0.001) are extremely rare and function as collectible investments that appreciate over time.</p>
+        </div>
+        <div class="fc-matter-item">
+          <h4 class="fc-matter-name">Condition Distinction</h4>
+          <p class="fc-matter-desc">Float determines which wear condition category a skin falls into, affecting everything from availability to demand.</p>
+        </div>
+        <div class="fc-matter-item">
+          <h4 class="fc-matter-name">Verification</h4>
+          <p class="fc-matter-desc">Float values serve as a unique identifier. Two identical skins will never have the exact same float, making it an authenticity marker.</p>
+        </div>
+        <div class="fc-matter-item">
+          <h4 class="fc-matter-name">Personal Preference</h4>
+          <p class="fc-matter-desc">Many players seek specific float ranges or "lucky numbers" (0.420, 0.690). Personal aesthetics make certain floats more desirable.</p>
         </div>
       </div>
+    </div>
+  </div>
 
-      <div class="card mw-card">
-        <h3>Minimal Wear (MW)</h3>
-        <div class="float-range">0.07 – 0.15</div>
-        <p>Very light signs of use. Still highly valued and maintains most of the pristine appearance.</p>
-        <div class="specs">
-          <span>Very Rare</span>
-          <span>High Value</span>
-        </div>
+  <!-- Float Tiers -->
+  <div class="fc-section">
+    <h2 class="fc-section-title">Float Tiers Explained</h2>
+    <p class="fc-section-sub">The collector and trading community uses these informal tiers to describe ultra-precise float ranges.</p>
+    <div class="fc-tiers-grid">
+      <div class="fc-tier">
+        <h3 class="fc-tier-name">Flawless</h3>
+        <div class="fc-tier-range">0.000 - 0.001</div>
+        <p class="fc-tier-desc">Extremely rare drops with pristine appearance. Highly sought by serious collectors. Prices can be 5-10x higher than average Factory New.</p>
       </div>
-
-      <div class="card ft-card">
-        <h3>Field-Tested (FT)</h3>
-        <div class="float-range">0.15 – 0.38</div>
-        <p>Moderate wear visible but skin remains recognizable and visually appealing. Most common range.</p>
-        <div class="specs">
-          <span>Common</span>
-          <span>Moderate Value</span>
-        </div>
+      <div class="fc-tier">
+        <h3 class="fc-tier-name">Super Low</h3>
+        <div class="fc-tier-range">0.001 - 0.005</div>
+        <p class="fc-tier-desc">Very rare low floats with exceptional visual quality. Still command premium prices but more attainable than flawless tiers.</p>
       </div>
-
-      <div class="card ww-card">
-        <h3>Well-Worn (WW)</h3>
-        <div class="float-range">0.38 – 0.45</div>
-        <p>Heavy wear with significant damage visible. Noticeably aged appearance.</p>
-        <div class="specs">
-          <span>Common</span>
-          <span>Low Value</span>
-        </div>
+      <div class="fc-tier">
+        <h3 class="fc-tier-name">Low Float</h3>
+        <div class="fc-tier-range">0.005 - 0.015</div>
+        <p class="fc-tier-desc">Notably clean floats within their wear condition. Sought after for visual appeal and relative rarity without extreme price inflation.</p>
       </div>
-
-      <div class="card bs-card">
-        <h3>Battle-Scarred (BS)</h3>
-        <div class="float-range">0.45 – 1.00</div>
-        <p>Most heavily worn condition with maximum battle damage. Cheapest tier but unique aesthetic.</p>
-        <div class="specs">
-          <span>Very Common</span>
-          <span>Lowest Value</span>
-        </div>
+      <div class="fc-tier">
+        <h3 class="fc-tier-name">Mid Float</h3>
+        <div class="fc-tier-range">0.015 - 0.50</div>
+        <p class="fc-tier-desc">The average or standard float range. Standard pricing for the wear condition with no special rarity premium.</p>
+      </div>
+      <div class="fc-tier">
+        <h3 class="fc-tier-name">High Float</h3>
+        <div class="fc-tier-range">0.50 - 0.95</div>
+        <p class="fc-tier-desc">Higher wear values within conditions. Some collectors seek these for their unique aged appearance or meme value.</p>
+      </div>
+      <div class="fc-tier">
+        <h3 class="fc-tier-name">Max Float</h3>
+        <div class="fc-tier-range">0.95 - 1.00</div>
+        <p class="fc-tier-desc">Extremely worn appearance, nearly impossible to obtain. Highly collectible for maximum wear aesthetic and extreme rarity.</p>
       </div>
     </div>
-  </section>
+  </div>
 
-  <!-- Min/Max Float Per Skin -->
-  <section class="float-limits">
-    <h2>Understanding Minimum & Maximum Floats</h2>
-    <p>Not all skins can achieve the full 0.00-1.00 float range. Each skin design has its own minimum and maximum float values:</p>
-
-    <div class="tip-list">
-      <div class="tip">
-        <strong>Minimum Float:</strong> The lowest float value a specific skin can have. Some skins cannot be Factory New below 0.04 or 0.05, meaning true 0.000x floats are impossible for those skins.
-      </div>
-      <div class="tip">
-        <strong>Maximum Float:</strong> The highest float value a specific skin can have. Some rare skins cap at 0.80 or lower, never reaching true Battle-Scarred territory.
-      </div>
-      <div class="tip">
-        <strong>Why It Matters:</strong> When hunting specific skins, knowing their min/max range helps you understand what float values are actually attainable and what would make a particular float extremely rare.
-      </div>
-      <div class="tip">
-        <strong>Trading Impact:</strong> A 0.001 float of a skin with 0.04 minimum is much less impressive than a 0.001 float of a skin with 0.00 minimum. Always verify the specific skin's float range.
-      </div>
+  <!-- Float Trading Tips -->
+  <div class="fc-info-block" style="margin-bottom:2rem">
+    <h2 class="fc-block-title">Float Trading Tips</h2>
+    <div class="fc-tip-list">
+      <div class="fc-tip"><strong>Always Verify Min/Max:</strong> Before pursuing a specific float, check that skin's minimum and maximum float values. Some floats are mathematically impossible.</div>
+      <div class="fc-tip"><strong>Check Visual Difference:</strong> The same wear condition can look dramatically different at different floats. Use in-game inspection to verify appearance before trading.</div>
+      <div class="fc-tip"><strong>Compare Float Percentages:</strong> A 0.001 float in Field-Tested (1.5% of range) is much rarer than 0.001 in Factory New (1.4% of range). Use percentage to understand relative rarity.</div>
+      <div class="fc-tip"><strong>Hunt for Lucky Numbers:</strong> Floats like 0.420, 0.69, 0.777, and repeating patterns command premiums. These are often worth hunting for as novelty collectibles.</div>
+      <div class="fc-tip"><strong>Monitor Market Prices:</strong> Float premiums vary by demand and availability. Track pricing trends to identify good deals on low floats.</div>
+      <div class="fc-tip"><strong>Consider Wear Boundaries:</strong> Skins near wear condition boundaries (0.068 FN vs 0.071 MW) can have drastically different values.</div>
+      <div class="fc-tip"><strong>Use Inspection Tools:</strong> Third-party inspection tools can verify exact float values when buying, protecting you from fraud.</div>
+      <div class="fc-tip"><strong>Factor in Rarity:</strong> Don't just chase low floats -- understand which floats are actually rare for that specific skin based on its min/max range.</div>
     </div>
+  </div>
+
+  <!-- FAQ -->
+  <section class="fc-faq">
+    <h2 class="fc-block-title">Frequently Asked Questions</h2>
+    {faqs.map(faq => (
+      <details class="fc-faq-item">
+        <summary class="fc-faq-q">{faq.question}</summary>
+        <p class="fc-faq-a">{faq.answer}</p>
+      </details>
+    ))}
   </section>
 
-  <!-- Why Float Matters -->
-  <section class="why-float-matters">
-    <h2>Why Float Value Matters</h2>
-
-    <div class="card-grid">
-      <div class="card">
-        <h3>Visual Appearance</h3>
-        <p>Lower float values look significantly less worn in-game. The difference between a 0.01 and a 0.30 float is immediately noticeable, affecting how your gun looks during gameplay and in demos.</p>
-      </div>
-
-      <div class="card">
-        <h3>Trading Value</h3>
-        <p>Float value is the primary factor determining skin price within the same condition. A Factory New skin with 0.001 float can command premium prices compared to 0.06 float versions of the identical design.</p>
-      </div>
-
-      <div class="card">
-        <h3>Investment Potential</h3>
-        <p>Ultra-low floats (0.000x-0.001) are extremely rare and function as collectible investments. These skins appreciate over time as collectors compete for the rarest examples.</p>
-      </div>
-
-      <div class="card">
-        <h3>Personal Preference</h3>
-        <p>Many players seek specific float ranges or "lucky numbers" (0.420, 0.690, etc.). Personal aesthetics and superstitions make certain floats more desirable beyond objective rarity.</p>
-      </div>
-
-      <div class="card">
-        <h3>Condition Distinction</h3>
-        <p>Float determines which wear condition category a skin falls into, which is the primary classification system. This affects everything from availability to demand.</p>
-      </div>
-
-      <div class="card">
-        <h3>Verification</h3>
-        <p>Float values serve as a unique identifier for each skin instance. Two identical skins will never have the exact same float, making it a form of authenticity marker.</p>
-      </div>
+  <!-- Related Links -->
+  <div class="fc-info-block" style="margin-bottom:2rem">
+    <h2 class="fc-block-title">Related Pages</h2>
+    <div class="fc-link-list">
+      <a href="/cs2-skins/" class="fc-link">Skin Database</a>
+      <a href="/skin-compare/" class="fc-link">Compare Skins</a>
+      <a href="/price-tracker/" class="fc-link">Price Tracker</a>
+      <a href="/market-trends/" class="fc-link">Market Trends</a>
+      <a href="/tradeup-calculator/" class="fc-link">Trade-Up Calculator</a>
+      <a href="/case-odds-calculator/" class="fc-link">Case Odds Calculator</a>
+      <a href="/case-simulator/" class="fc-link">Case Simulator</a>
+      <a href="/cs2-cases/" class="fc-link">Cases & Collections</a>
+      <a href="/inventory-lookup/" class="fc-link">Inventory Lookup</a>
+      <a href="/loadout-builder/" class="fc-link">Loadout Builder</a>
+      <a href="/cs2-weapons/" class="fc-link">Weapon Database</a>
+      <a href="/cs2-guides/float-guide/" class="fc-link">Float Value Guide</a>
+      <a href="/cs2-guides/trading-guide/" class="fc-link">Trading Guide</a>
+      <a href="/cs2-guides/skins-investing-guide/" class="fc-link">Investing Guide</a>
+      <a href="/cs2-stickers/" class="fc-link">Sticker Database</a>
+      <a href="/cs2-agents/" class="fc-link">Agents & Music Kits</a>
+      <a href="/cs2-tools/" class="fc-link">All Tools</a>
     </div>
-  </section>
-
-  <!-- Float Tiers Explanation -->
-  <section class="float-tiers">
-    <h2>Float Tiers Explained</h2>
-    <p>The collector and trading community uses these informal tiers to describe ultra-precise float ranges:</p>
-
-    <div class="tiers-list">
-      <div class="tier">
-        <div class="tier-name">Flawless</div>
-        <div class="tier-range">0.000 – 0.001</div>
-        <p>Extremely rare drops with pristine appearance. Highly sought by serious collectors. Prices can be 5-10x higher than average Factory New.</p>
-      </div>
-
-      <div class="tier">
-        <div class="tier-name">Super Low</div>
-        <div class="tier-range">0.001 – 0.005</div>
-        <p>Very rare low floats with exceptional visual quality. Still command premium prices but more attainable than flawless tiers.</p>
-      </div>
-
-      <div class="tier">
-        <div class="tier-name">Low Float</div>
-        <div class="tier-range">0.005 – 0.015</div>
-        <p>Notably clean floats within their wear condition. Sought after for visual appeal and relative rarity without extreme price inflation.</p>
-      </div>
-
-      <div class="tier">
-        <div class="tier-name">Mid Float</div>
-        <div class="tier-range">0.015 – 0.50</div>
-        <p>The average or standard float range. Standard pricing for the wear condition with no special rarity premium.</p>
-      </div>
-
-      <div class="tier">
-        <div class="tier-name">High Float</div>
-        <div class="tier-range">0.50 – 0.95</div>
-        <p>Higher wear values within conditions. Some collectors seek these for their unique aged appearance or meme value.</p>
-      </div>
-
-      <div class="tier">
-        <div class="tier-name">Max Float</div>
-        <div class="tier-range">0.95 – 1.00</div>
-        <p>Extremely worn appearance, nearly impossible to obtain. Highly collectible for maximum wear aesthetic and extreme rarity.</p>
-      </div>
-    </div>
-  </section>
-
-  <!-- Tips for Float Trading -->
-  <section class="float-trading-tips">
-    <h2>Float Trading Tips</h2>
-
-    <div class="tip-list">
-      <div class="tip">
-        <strong>Always Verify Min/Max:</strong> Before pursuing a specific float, check that skin's minimum and maximum float values. Some floats are mathematically impossible.
-      </div>
-
-      <div class="tip">
-        <strong>Check Visual Difference:</strong> The same wear condition can look dramatically different at different floats. Use in-game inspection to verify appearance before trading.
-      </div>
-
-      <div class="tip">
-        <strong>Compare Float Percentages:</strong> A 0.001 float in Field-Tested (1.5% of range) is much rarer than 0.001 in Factory New (1.4% of range). Use percentage to understand relative rarity.
-      </div>
-
-      <div class="tip">
-        <strong>Hunt for Lucky Numbers:</strong> Floats like 0.420, 0.69, 0.777, and repeating patterns command premiums. These are often worth hunting for as novelty collectibles.
-      </div>
-
-      <div class="tip">
-        <strong>Monitor Market Prices:</strong> Float premiums vary by demand and availability. Track pricing trends to identify good deals on low floats vs. overpaying for specific conditions.
-      </div>
-
-      <div class="tip">
-        <strong>Consider Wear Boundaries:</strong> Skins near wear condition boundaries (0.068 FN vs 0.071 MW) can have drastically different values. Understand these critical numbers.
-      </div>
-
-      <div class="tip">
-        <strong>Use Inspection Tools:</strong> Third-party inspection tools can verify exact float values when buying, protecting you from fraud or miscounting decimals.
-      </div>
-
-      <div class="tip">
-        <strong>Factor in Rarity:</strong> Don't just chase low floats—understand which floats are actually rare for that specific skin based on its min/max range.
-      </div>
-    </div>
-  </section>
-
-  <!-- FAQ Section -->
-  <section class="faq-section">
-    <h2>Frequently Asked Questions</h2>
-
-    <dl class="faq">
-      {faqs.map(faq => (
-        <>
-          <dt>{faq.question}</dt>
-          <dd>{faq.answer}</dd>
-        </>
-      ))}
-    </dl>
-  </section>
-
-  <!-- Internal Links -->
-  <section class="internal-links">
-    <h2>Related Pages</h2>
-    <div class="link-grid">
-      <a href="/skins/" class="link-card">Skin Database</a>
-      <a href="/skin-compare/" class="link-card">Compare Skins</a>
-      <a href="/price-tracker/" class="link-card">Price Tracker</a>
-      <a href="/market-trends/" class="link-card">Market Trends</a>
-      <a href="/tradeup-calculator/" class="link-card">Trade-Up Calculator</a>
-      <a href="/case-odds-calculator/" class="link-card">Case Odds Calculator</a>
-      <a href="/case-simulator/" class="link-card">Case Simulator</a>
-      <a href="/cases/" class="link-card">Cases & Collections</a>
-      <a href="/inventory-lookup/" class="link-card">Inventory Lookup</a>
-      <a href="/loadout-builder/" class="link-card">Loadout Builder</a>
-      <a href="/weapons/" class="link-card">Weapon Database</a>
-      <a href="/guides/float-guide/" class="link-card">Float Value Guide</a>
-      <a href="/guides/trading-guide/" class="link-card">Trading Guide</a>
-      <a href="/guides/skins-investing-guide/" class="link-card">Investing Guide</a>
-    </div>
-  </section>
+  </div>
 
   <ExploreMore context="skins" />
 </Base>
 
-<style define:vars={{ '--fn-color': '#e8f5e9', '--mw-color': '#c8e6c9', '--ft-color': '#fff9c4', '--ww-color': '#ffe0b2', '--bs-color': '#ffccbc' }}>
-  .hero {
-    text-align: center;
-    padding: 3rem 1rem;
-    background: linear-gradient(135deg, var(--bg2) 0%, var(--bg3) 100%);
-    border-radius: 8px;
-    margin-bottom: 3rem;
-  }
+<style>
+  .fc-hero{padding:1.5rem 0;margin-bottom:1.5rem}
+  .fc-title{font-size:2rem;font-weight:800;margin:0 0 .5rem;color:var(--text)}
+  .fc-desc{color:var(--text2);font-size:.95rem;margin:0;max-width:600px;line-height:1.6}
 
-  .hero h1 {
-    color: var(--accent);
-    font-size: 2.5rem;
-    margin-bottom: 1rem;
-  }
+  .fc-panel{background:var(--bg2);border:1px solid var(--border);border-radius:4px;padding:1.5rem;margin-bottom:2rem}
+  .fc-panel-title{font-size:1.1rem;font-weight:700;color:var(--text);margin:0 0 .5rem}
+  .fc-panel-sub{color:var(--text2);font-size:.88rem;margin:0 0 1.25rem;line-height:1.6}
 
-  .hero p {
-    color: var(--text2);
-    font-size: 1.1rem;
-    max-width: 600px;
-    margin: 0 auto;
-  }
+  .fc-input-row{margin-bottom:1.25rem}
+  .fc-label{display:block;font-size:.85rem;font-weight:600;color:var(--text);margin-bottom:.4rem;text-transform:uppercase;letter-spacing:.04em}
+  .fc-input{width:100%;max-width:300px;padding:.6rem;background:var(--bg3);border:1px solid var(--border);border-radius:4px;color:var(--text);font-size:.95rem;font-family:monospace}
+  .fc-input:focus{outline:none;border-color:var(--accent)}
+  .fc-hint{display:block;margin-top:.35rem;color:var(--text2);font-size:.8rem}
 
-  .float-bar-container {
-    margin: 2rem 0;
-    padding: 1.5rem;
-    background: var(--bg2);
-    border-radius: 8px;
-    border: 1px solid var(--border);
-  }
+  /* Float Bar */
+  .fc-bar-wrap{margin:1.5rem 0}
+  .fc-bar{display:flex;height:100px;gap:2px;position:relative;border-radius:4px;overflow:hidden;background:var(--bg);border:2px solid var(--border)}
+  .fc-seg{display:flex;flex-direction:column;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:.85rem;text-shadow:0 0 2px rgba(0,0,0,.3)}
+  .fc-seg small{font-size:.6rem;font-weight:400;margin-top:2px}
+  .fc-fn{background:#4caf50;flex:.07}
+  .fc-mw{background:#8bc34a;flex:.08}
+  .fc-ft{background:#fdd835;color:rgba(0,0,0,.7);flex:.23}
+  .fc-ww{background:#ff9800;flex:.07}
+  .fc-bs{background:#f44336;flex:.55}
+  .fc-indicator{position:absolute;width:4px;height:100%;background:#fff;top:0;left:0;box-shadow:0 0 8px rgba(255,255,255,.8);z-index:10}
 
-  .float-bar {
-    display: flex;
-    height: 120px;
-    gap: 2px;
-    position: relative;
-    border-radius: 4px;
-    overflow: hidden;
-    background: var(--bg);
-    border: 2px solid var(--border);
-  }
+  /* Results Grid */
+  .fc-results{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:1rem;margin-bottom:1.25rem}
+  .fc-result-card{background:var(--bg3);border:1px solid var(--border);border-left:3px solid var(--accent);border-radius:4px;padding:.85rem;text-align:center}
+  .fc-result-label{color:var(--text2);font-size:.75rem;text-transform:uppercase;letter-spacing:.04em;margin-bottom:.35rem}
+  .fc-result-val{color:var(--accent);font-size:1.15rem;font-weight:700}
 
-  .float-segment {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    color: var(--text);
-    font-weight: bold;
-    font-size: 0.9rem;
-    text-shadow: 0 0 2px rgba(0,0,0,0.3);
-    position: relative;
-  }
+  .fc-detail-box{background:var(--bg3);border:1px solid var(--border);border-left:3px solid var(--accent);border-radius:4px;padding:1rem}
+  .fc-detail-box p{margin:.4rem 0;color:var(--text2);font-size:.88rem;line-height:1.6}
+  .fc-detail-box p:first-child{color:var(--text);font-weight:500}
 
-  .float-segment small {
-    font-size: 0.65rem;
-    font-weight: normal;
-    margin-top: 2px;
-  }
+  /* Section titles */
+  .fc-section{margin-bottom:2rem}
+  .fc-section-title{font-size:1.1rem;font-weight:700;color:var(--text);margin:0 0 .5rem}
+  .fc-section-sub{color:var(--text2);font-size:.88rem;margin:0 0 1.25rem;line-height:1.6}
 
-  .float-segment.fn {
-    background: linear-gradient(135deg, #4caf50 0%, #45a049 100%);
-    color: white;
-    flex: 0.07;
-  }
+  /* Float Ranges Grid */
+  .fc-ranges-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1rem}
+  .fc-range-card{background:var(--bg2);border:1px solid var(--border);border-radius:4px;padding:1.25rem;border-top:3px solid var(--border)}
+  .fc-range-fn{border-top-color:#4caf50}
+  .fc-range-mw{border-top-color:#8bc34a}
+  .fc-range-ft{border-top-color:#fdd835}
+  .fc-range-ww{border-top-color:#ff9800}
+  .fc-range-bs{border-top-color:#f44336}
+  .fc-range-name{font-size:1rem;font-weight:700;color:var(--text);margin:0 0 .4rem}
+  .fc-range-val{font-family:monospace;font-size:1.1rem;font-weight:700;color:var(--accent);margin-bottom:.6rem}
+  .fc-range-desc{color:var(--text2);margin:0 0 .75rem;line-height:1.6;font-size:.88rem}
+  .fc-range-tags{display:flex;gap:.5rem;flex-wrap:wrap}
+  .fc-range-tags span{padding:.25rem .6rem;background:var(--bg3);border:1px solid var(--border);border-radius:4px;font-size:.75rem;color:var(--text2)}
 
-  .float-segment.mw {
-    background: linear-gradient(135deg, #8bc34a 0%, #7cb342 100%);
-    color: white;
-    flex: 0.08;
-  }
+  /* Two Column */
+  .fc-two-col{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-bottom:2rem}
+  .fc-info-block{background:var(--bg2);border:1px solid var(--border);border-radius:4px;padding:1.5rem}
+  .fc-block-title{font-size:1.1rem;font-weight:700;color:var(--text);margin:0 0 .75rem}
+  .fc-block-sub{color:var(--text2);font-size:.88rem;margin:0 0 1rem;line-height:1.6}
 
-  .float-segment.ft {
-    background: linear-gradient(135deg, #fdd835 0%, #f9a825 100%);
-    color: rgba(0,0,0,0.7);
-    flex: 0.23;
-  }
+  .fc-tip-list{display:flex;flex-direction:column;gap:.5rem}
+  .fc-tip{background:var(--bg);border-left:3px solid var(--accent);border-radius:4px;padding:.75rem 1rem;color:var(--text2);font-size:.88rem;line-height:1.6}
+  .fc-tip strong{color:var(--text)}
 
-  .float-segment.ww {
-    background: linear-gradient(135deg, #ff9800 0%, #f57c00 100%);
-    color: white;
-    flex: 0.07;
-  }
+  .fc-matter-list{display:flex;flex-direction:column;gap:.5rem}
+  .fc-matter-item{background:var(--bg);border-left:3px solid var(--accent);border-radius:4px;padding:.75rem 1rem}
+  .fc-matter-name{color:var(--accent);font-size:.9rem;font-weight:700;margin:0 0 .25rem}
+  .fc-matter-desc{color:var(--text2);margin:0;font-size:.85rem;line-height:1.6}
 
-  .float-segment.bs {
-    background: linear-gradient(135deg, #f44336 0%, #d32f2f 100%);
-    color: white;
-    flex: 0.55;
-  }
+  /* Tiers Grid */
+  .fc-tiers-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1rem}
+  .fc-tier{background:var(--bg2);border:1px solid var(--border);border-left:3px solid var(--accent);border-radius:4px;padding:1.25rem}
+  .fc-tier-name{font-size:1rem;font-weight:700;color:var(--accent);margin:0 0 .35rem}
+  .fc-tier-range{font-family:monospace;font-size:.9rem;color:var(--text2);font-weight:600;margin-bottom:.6rem}
+  .fc-tier-desc{color:var(--text2);margin:0;font-size:.88rem;line-height:1.6}
 
-  .float-indicator {
-    position: absolute;
-    width: 4px;
-    height: 100%;
-    background: white;
-    top: 0;
-    left: 0;
-    box-shadow: 0 0 8px rgba(255,255,255,0.8);
-    z-index: 10;
-  }
+  /* FAQ */
+  .fc-faq{margin-bottom:2rem}
+  .fc-faq-item{background:var(--bg2);border:1px solid var(--border);border-radius:4px;margin-bottom:.5rem;overflow:hidden}
+  .fc-faq-q{padding:.8rem 1rem;cursor:pointer;font-weight:600;font-size:.9rem;color:var(--text);list-style:none;display:flex;align-items:center;justify-content:space-between}
+  .fc-faq-q::-webkit-details-marker{display:none}
+  .fc-faq-q::after{content:'+';font-size:1.1rem;color:var(--accent);font-weight:700}
+  .fc-faq-item[open] .fc-faq-q::after{content:'-'}
+  .fc-faq-item[open]{border-left:3px solid var(--accent)}
+  .fc-faq-a{padding:0 1rem .8rem;margin:0;font-size:.88rem;color:var(--text2);line-height:1.6}
 
-  .result-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-    gap: 1.5rem;
-    margin-bottom: 2rem;
-  }
+  /* Links */
+  .fc-link-list{display:flex;flex-direction:column;gap:.4rem}
+  .fc-link{display:block;padding:.5rem .75rem;background:var(--bg3);border:1px solid var(--border);border-left:3px solid transparent;border-radius:4px;color:var(--accent);text-decoration:none;font-size:.85rem;transition:border-left-color .15s}
+  .fc-link:hover{border-left-color:var(--accent)}
 
-  .result-item {
-    text-align: center;
-    padding: 1rem;
-    background: var(--bg2);
-    border-radius: 6px;
-    border-left: 4px solid var(--accent);
-  }
-
-  .result-item .label {
-    color: var(--text2);
-    font-size: 0.9rem;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    margin-bottom: 0.5rem;
-  }
-
-  .result-item .value {
-    color: var(--accent);
-    font-size: 1.5rem;
-    font-weight: bold;
-  }
-
-  .result-details {
-    padding: 1.5rem;
-    background: var(--bg2);
-    border-radius: 6px;
-    border-left: 4px solid var(--accent2);
-  }
-
-  .result-details p {
-    margin: 0.5rem 0;
-    color: var(--text);
-  }
-
-  .result-details p:first-child {
-    font-size: 1.1rem;
-    font-weight: 500;
-  }
-
-  .float-ranges {
-    margin: 3rem 0;
-  }
-
-  .float-ranges .card-grid {
-    margin-top: 1.5rem;
-  }
-
-  .float-ranges .card {
-    position: relative;
-    overflow: hidden;
-  }
-
-  .float-ranges .card::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 4px;
-    background: linear-gradient(90deg, var(--accent), var(--accent2));
-  }
-
-  .fn-card {
-    border-top: 4px solid #4caf50;
-  }
-
-  .mw-card {
-    border-top: 4px solid #8bc34a;
-  }
-
-  .ft-card {
-    border-top: 4px solid #fdd835;
-  }
-
-  .ww-card {
-    border-top: 4px solid #ff9800;
-  }
-
-  .bs-card {
-    border-top: 4px solid #f44336;
-  }
-
-  .float-range {
-    font-size: 1.3rem;
-    font-weight: bold;
-    color: var(--accent);
-    margin: 0.5rem 0;
-    font-family: monospace;
-  }
-
-  .specs {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-    margin-top: 1rem;
-  }
-
-  .specs span {
-    display: inline-block;
-    padding: 0.4rem 0.8rem;
-    background: var(--bg2);
-    border-radius: 4px;
-    font-size: 0.85rem;
-    color: var(--text2);
-  }
-
-  .float-limits {
-    background: linear-gradient(135deg, var(--bg2) 0%, var(--bg3) 100%);
-    padding: 2rem;
-    border-radius: 8px;
-    margin: 3rem 0;
-  }
-
-  .float-limits .tip-list {
-    margin-top: 1.5rem;
-  }
-
-  .why-float-matters {
-    margin: 3rem 0;
-  }
-
-  .float-tiers {
-    margin: 3rem 0;
-  }
-
-  .tiers-list {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 1.5rem;
-    margin-top: 1.5rem;
-  }
-
-  .tier {
-    padding: 1.5rem;
-    background: var(--bg2);
-    border-radius: 8px;
-    border-left: 4px solid var(--accent);
-    transition: transform 0.2s, box-shadow 0.2s;
-  }
-
-  .tier:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-  }
-
-  .tier-name {
-    font-size: 1.2rem;
-    font-weight: bold;
-    color: var(--accent);
-    margin-bottom: 0.5rem;
-  }
-
-  .tier-range {
-    font-family: monospace;
-    font-size: 1rem;
-    color: var(--text2);
-    margin-bottom: 1rem;
-    font-weight: 600;
-  }
-
-  .tier p {
-    color: var(--text);
-    margin: 0;
-    font-size: 0.95rem;
-  }
-
-  .float-trading-tips {
-    background: linear-gradient(135deg, var(--bg2) 0%, var(--bg3) 100%);
-    padding: 2rem;
-    border-radius: 8px;
-    margin: 3rem 0;
-  }
-
-  .faq-section {
-    margin: 3rem 0;
-  }
-
-  .faq {
-    display: grid;
-    gap: 1rem;
-  }
-
-  .faq dt {
-    font-weight: bold;
-    color: var(--accent);
-    padding: 1rem;
-    background: var(--bg2);
-    border-radius: 6px;
-    cursor: pointer;
-    transition: background 0.2s;
-  }
-
-  .faq dt:hover {
-    background: var(--bg3);
-  }
-
-  .faq dd {
-    margin: 0 0 1rem 0;
-    padding: 1rem;
-    background: var(--bg3);
-    border-left: 4px solid var(--accent2);
-    border-radius: 4px;
-    color: var(--text);
-  }
-
-  .internal-links {
-    margin: 3rem 0;
-  }
-
-  .link-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-    gap: 1rem;
-    margin-top: 1.5rem;
-  }
-
-  .link-card {
-    padding: 1.5rem;
-    background: linear-gradient(135deg, var(--accent), var(--accent2));
-    color: white;
-    text-decoration: none;
-    border-radius: 8px;
-    text-align: center;
-    font-weight: 500;
-    transition: transform 0.2s, box-shadow 0.2s;
-  }
-
-  .link-card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 16px rgba(0,0,0,0.15);
-  }
-
-  input[type="number"] {
-    width: 100%;
-    padding: 0.75rem;
-    border: 2px solid var(--border);
-    border-radius: 4px;
-    background: var(--bg);
-    color: var(--text);
-    font-size: 1rem;
-    font-family: monospace;
-  }
-
-  input[type="number"]:focus {
-    outline: none;
-    border-color: var(--accent);
-    box-shadow: 0 0 0 3px rgba(138, 43, 226, 0.1);
-  }
-
-  small {
-    display: block;
-    margin-top: 0.5rem;
-    color: var(--text2);
-    font-size: 0.85rem;
-  }
-
-  label {
-    display: block;
-    margin-bottom: 0.5rem;
-    color: var(--text);
-    font-weight: 600;
+  @media(max-width:768px){
+    .fc-two-col{grid-template-columns:1fr}
+    .fc-ranges-grid{grid-template-columns:1fr}
+    .fc-tiers-grid{grid-template-columns:1fr}
+    .fc-results{grid-template-columns:1fr 1fr}
   }
 </style>
 

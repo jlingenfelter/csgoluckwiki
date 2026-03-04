@@ -3,7 +3,7 @@ import Base from '../layouts/Base.astro';
 import ExploreMore from '../components/ExploreMore.astro';
 import { faqSchema, breadcrumbSchema } from '../lib/weapons';
 
-const title = 'CS2 eDPI Calculator — Find Your Effective DPI | CSDB.gg';
+const title = 'CS2 eDPI Calculator — Find Your Effective DPI | CSGOLuck Wiki';
 const description = 'Calculate your CS2 eDPI (effective DPI) instantly. Compare your eDPI to pro players, find your ideal sensitivity, and understand how DPI and in-game sens work together.';
 
 const breadcrumbs = [
@@ -53,126 +53,205 @@ const toolSchema = JSON.stringify({
   "applicationCategory": "UtilityApplication",
   "operatingSystem": "Web",
   "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
-  "author": { "@type": "Organization", "name": "CSDB.gg", "url": "https://csdb.gg" }
+  "author": { "@type": "Organization", "name": "CSGOLuck Wiki", "url": "https://wiki.csgoluck.com" }
 });
 ---
 
-<Base title={title} description={description} currentNav="/tools/">
+<Base title={title} description={description} currentNav="/cs2-tools/">
   <script type="application/ld+json" set:html={toolSchema}></script>
   <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema_)}></script>
   <script type="application/ld+json" set:html={JSON.stringify(faqSchema_)}></script>
 
   <nav class="breadcrumb">
-    <a href="/">Home</a> / <a href="/edpi-calculator/">Tools</a> / <span>eDPI Calculator</span>
+    <a href="/">Home</a> / <a href="/cs2-tools/">Tools</a> / <span>eDPI Calculator</span>
   </nav>
 
-  <h1>CS2 eDPI Calculator</h1>
-  <p>Your eDPI (effective dots per inch) is the single number that defines how fast your crosshair moves. Calculate yours below and compare it to the pros.</p>
+  <div class="edc-hero">
+    <h1 class="edc-title">CS2 eDPI Calculator</h1>
+    <p class="edc-desc">Your eDPI (effective dots per inch) is the single number that defines how fast your crosshair moves. Calculate yours below and compare it to the <a href="/pro-players/" style="color:var(--accent)">pros</a>. Pair your eDPI with the <a href="/sensitivity-converter/" style="color:var(--accent)">sensitivity converter</a> to match your feel across games.</p>
+  </div>
 
-  <div class="calc-section">
-    <h2>Calculate Your eDPI</h2>
-    <div class="calc-row">
-      <label for="dpi">Mouse DPI</label>
-      <select id="dpi">
-        <option value="400">400</option>
-        <option value="800" selected>800</option>
-        <option value="1200">1200</option>
-        <option value="1600">1600</option>
-        <option value="3200">3200</option>
-      </select>
+  <div class="edc-panel">
+    <h2 class="edc-panel-title">Calculate Your eDPI</h2>
+    <div class="edc-fields">
+      <div class="edc-field">
+        <label class="edc-label" for="dpi">Mouse DPI</label>
+        <select id="dpi" class="edc-select">
+          <option value="400">400</option>
+          <option value="800" selected>800</option>
+          <option value="1200">1200</option>
+          <option value="1600">1600</option>
+          <option value="3200">3200</option>
+        </select>
+      </div>
+      <div class="edc-field">
+        <label class="edc-label" for="sens">In-Game Sensitivity</label>
+        <input type="number" id="sens" min="0.01" max="20" step="0.01" value="1.0" class="edc-input" />
+      </div>
     </div>
-    <div class="calc-row">
-      <label for="sens">In-Game Sensitivity</label>
-      <input type="number" id="sens" min="0.01" max="20" step="0.01" value="1.0" />
-    </div>
-    <div class="result-box">
-      <div class="big" id="edpiResult">800</div>
-      <p style="margin:0;color:var(--text2)">Your CS2 eDPI</p>
-      <p id="edpiCategory" style="margin:.5rem 0 0;font-weight:600;color:var(--green)">Medium — Balanced for most playstyles</p>
-    </div>
-    <div class="calc-row" style="margin-top:1rem">
-      <label>Valorant Equivalent</label>
-      <div id="valResult" style="font-weight:700;color:var(--accent);font-size:1.2rem">251.2</div>
-    </div>
-    <div class="calc-row">
-      <label>cm/360°</label>
-      <div id="cmResult" style="font-weight:700;color:var(--accent);font-size:1.2rem">45.00 cm</div>
+    <div class="edc-output">
+      <div class="edc-output-main">
+        <span class="edc-output-big" id="edpiResult">800</span>
+        <span class="edc-output-label">Your CS2 eDPI</span>
+        <span class="edc-output-cat" id="edpiCategory">Medium — Balanced for most playstyles</span>
+      </div>
+      <div class="edc-output-row">
+        <div class="edc-output-item">
+          <span class="edc-output-sub-label">Valorant Equivalent</span>
+          <span class="edc-output-sub-val" id="valResult">251.2</span>
+        </div>
+        <div class="edc-output-item">
+          <span class="edc-output-sub-label">cm/360</span>
+          <span class="edc-output-sub-val" id="cmResult">45.00 cm</span>
+        </div>
+      </div>
     </div>
   </div>
 
-  <h2>eDPI Sensitivity Ranges</h2>
-  <p>Where does your eDPI fall on the spectrum? Here's how different ranges affect your gameplay:</p>
-  <table>
-    <thead><tr><th>Classification</th><th>eDPI Range</th><th>Playstyle</th></tr></thead>
-    <tbody>
-      {edpiRanges.map(r => (
-        <tr>
-          <td><span style={`color:${r.color};font-weight:700`}>{r.label}</span></td>
-          <td>{r.range}</td>
-          <td>{r.style}</td>
-        </tr>
-      ))}
-    </tbody>
-  </table>
+  <div class="edc-two-col">
+    <div class="edc-block">
+      <h2 class="edc-section-title">eDPI Sensitivity Ranges</h2>
+      <p class="edc-block-desc">Where does your eDPI fall on the spectrum?</p>
+      <table class="edc-table">
+        <thead><tr><th>Classification</th><th>eDPI Range</th><th>Playstyle</th></tr></thead>
+        <tbody>
+          {edpiRanges.map(r => (
+            <tr>
+              <td><span style={`color:${r.color};font-weight:700`}>{r.label}</span></td>
+              <td>{r.range}</td>
+              <td>{r.style}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
 
-  <h2>Pro Player eDPI Comparison</h2>
-  <p>See how your settings stack up against the world's best CS2 players:</p>
-  <table>
-    <thead><tr><th>Player</th><th>DPI</th><th>Sensitivity</th><th>eDPI</th></tr></thead>
-    <tbody>
-      {proPlayers.map(p => (
-        <tr>
-          <td style="font-weight:600;color:var(--text)">{p.name}</td>
-          <td>{p.dpi}</td>
-          <td>{p.sens}</td>
-          <td style="font-weight:700;color:var(--accent)">{p.edpi}</td>
-        </tr>
-      ))}
-    </tbody>
-  </table>
+    <div class="edc-block">
+      <h2 class="edc-section-title">Pro Player eDPI Comparison</h2>
+      <p class="edc-block-desc">See how your settings stack up against the best.</p>
+      <table class="edc-table">
+        <thead><tr><th>Player</th><th>DPI</th><th>Sensitivity</th><th>eDPI</th></tr></thead>
+        <tbody>
+          {proPlayers.map(p => (
+            <tr>
+              <td style="font-weight:600;color:var(--text)">{p.name}</td>
+              <td>{p.dpi}</td>
+              <td>{p.sens}</td>
+              <td style="font-weight:700;color:var(--accent)">{p.edpi}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  </div>
 
-  <h2>Understanding eDPI: The Complete Breakdown</h2>
-  <p>
-    Your effective DPI is the product of two independent settings that together determine cursor speed. The formula is straightforward: <strong>eDPI = Mouse DPI × In-Game Sensitivity</strong>. A player running 400 DPI at 2.0 sensitivity has the same 800 eDPI as someone at 1600 DPI with 0.5 sensitivity — the crosshair moves identically in both configurations.
-  </p>
-  <p>
-    This matters because comparing raw sensitivity numbers is meaningless without knowing the DPI. When a pro player says they use "2.0 sensitivity," that tells you nothing until you know their DPI. eDPI creates a universal measurement for direct comparison across any hardware setup.
-  </p>
+  <div class="edc-guide">
+    <h2 class="edc-section-title">Understanding eDPI: The Complete Breakdown</h2>
+    <p>
+      Your effective DPI is the product of two independent settings that together determine cursor speed. The formula is straightforward: <strong>eDPI = Mouse DPI x In-Game Sensitivity</strong>. A player running 400 DPI at 2.0 sensitivity has the same 800 eDPI as someone at 1600 DPI with 0.5 sensitivity — the crosshair moves identically in both configurations.
+    </p>
+    <p>
+      This matters because comparing raw sensitivity numbers is meaningless without knowing the DPI. When a pro player says they use "2.0 sensitivity," that tells you nothing until you know their DPI. eDPI creates a universal measurement for direct comparison across any hardware setup.
+    </p>
 
-  <h3>Choosing Your Ideal eDPI</h3>
-  <p>
-    Start around 800 eDPI if you're unsure — it sits right in the middle of the professional range. From there, adjust based on your role and mouse pad size. AWPers and support players tend toward 500–700 eDPI for the precision needed in holding angles, while entry fraggers and aggressive riflers often run 900–1200 eDPI for faster target acquisition during site takes.
-  </p>
-  <p>
-    Your physical setup also influences the right eDPI. A large mouse pad (45cm+ wide) accommodates lower eDPI with big arm sweeps. A smaller desk setup might require higher eDPI to maintain comfortable 180-degree turns without lifting your mouse. Consider the <a href="/cm360-calculator/">cm/360 calculator</a> to see exactly how far your mouse needs to travel for a full turn.
-  </p>
+    <h3>Choosing Your Ideal eDPI</h3>
+    <p>
+      Start around 800 eDPI if you're unsure — it sits right in the middle of the professional range. From there, adjust based on your role and mouse pad size. AWPers and support players tend toward 500-700 eDPI for the precision needed in holding angles, while entry fraggers and aggressive riflers often run 900-1200 eDPI for faster target acquisition during site takes.
+    </p>
+    <p>
+      Your physical setup also influences the right eDPI. A large mouse pad (45cm+ wide) accommodates lower eDPI with big arm sweeps. A smaller desk setup might require higher eDPI to maintain comfortable 180-degree turns without lifting your mouse. Consider the <a href="/cm360-calculator/">cm/360 calculator</a> to see exactly how far your mouse needs to travel for a full turn.
+    </p>
 
-  <h3>DPI Myths Debunked</h3>
-  <p>
-    A common misconception is that 400 DPI is inherently "better" for gaming. In reality, higher DPI settings (800 or 1600) with proportionally lower sensitivity reduce pixel skipping — the phenomenon where your crosshair jumps over pixels because the sensor doesn't report enough positional data. Modern sensors handle high DPI cleanly, so the choice between 400 and 1600 DPI is largely personal preference as long as your eDPI stays the same.
-  </p>
+    <h3>DPI Myths Debunked</h3>
+    <p>
+      A common misconception is that 400 DPI is inherently "better" for gaming. In reality, higher DPI settings (800 or 1600) with proportionally lower sensitivity reduce pixel skipping — the phenomenon where your crosshair jumps over pixels because the sensor doesn't report enough positional data. Modern sensors handle high DPI cleanly, so the choice between 400 and 1600 DPI is largely personal preference as long as your eDPI stays the same.
+    </p>
+  </div>
 
-  <div class="internal-links">
+  <div class="edc-links">
     <strong>Related Tools:</strong>
     <a href="/sensitivity-converter/">Sensitivity Converter</a>
     <a href="/cm360-calculator/">cm/360 Calculator</a>
     <a href="/crosshair-generator/">Crosshair Generator</a>
     <a href="/damage-calculator/">Damage Calculator</a>
-    <a href="/guides/crosshair-guide/">Crosshair Guide</a>
+    <a href="/cs2-guides/crosshair-guide/">Crosshair Guide</a>
+    <a href="/pro-players/">Pro Player Settings</a>
+    <a href="/cs2-tools/">All Tools</a>
+    <a href="/cs2-guides/mouse-settings-guide/">Mouse Settings Guide</a>
+    <a href="/cs2-weapons/">Weapon Database</a>
   </div>
 
-  <h2>Frequently Asked Questions</h2>
-  <dl class="faq">
+  <section class="edc-faq">
+    <h2 class="edc-section-title">Frequently Asked Questions</h2>
     {faqs.map(f => (
-      <Fragment>
-        <dt>{f.question}</dt>
-        <dd>{f.answer}</dd>
-      </Fragment>
+      <details class="edc-faq-item">
+        <summary class="edc-faq-q">{f.question}</summary>
+        <p class="edc-faq-a">{f.answer}</p>
+      </details>
     ))}
-  </dl>
+  </section>
 
   <ExploreMore context="tools" />
 </Base>
+
+<style>
+  .edc-hero{padding:1.5rem 0;margin-bottom:1.5rem}
+  .edc-title{font-size:2rem;font-weight:800;margin:0 0 .5rem;color:var(--text)}
+  .edc-desc{color:var(--text2);font-size:.95rem;margin:0;max-width:600px;line-height:1.6}
+
+  .edc-panel{background:var(--bg2);border:1px solid var(--border);border-radius:4px;padding:1.5rem;margin-bottom:2rem}
+  .edc-panel-title{margin:0 0 1rem;font-size:1.1rem;color:var(--text)}
+  .edc-fields{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.5rem}
+  .edc-field{display:flex;flex-direction:column;gap:.4rem}
+  .edc-label{font-weight:600;color:var(--text2);font-size:.85rem;text-transform:uppercase;letter-spacing:.04em}
+  .edc-select,.edc-input{padding:.6rem;background:var(--bg3);border:1px solid var(--border);border-radius:4px;color:var(--text);font-size:.95rem;font-family:inherit}
+  .edc-select:focus,.edc-input:focus{outline:none;border-color:var(--accent)}
+
+  .edc-output{background:var(--bg);border:1px solid var(--border);border-radius:4px;padding:1.5rem}
+  .edc-output-main{display:flex;flex-direction:column;align-items:center;margin-bottom:1rem;padding-bottom:1rem;border-bottom:1px solid var(--border)}
+  .edc-output-big{font-size:3rem;font-weight:800;color:var(--accent)}
+  .edc-output-label{font-size:.82rem;color:var(--text2);margin-top:.25rem}
+  .edc-output-cat{font-size:.88rem;font-weight:600;color:#4caf50;margin-top:.5rem}
+  .edc-output-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+  .edc-output-item{text-align:center}
+  .edc-output-sub-label{display:block;font-size:.78rem;color:var(--text2);margin-bottom:.25rem}
+  .edc-output-sub-val{display:block;font-size:1.15rem;font-weight:700;color:var(--accent)}
+
+  .edc-two-col{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-bottom:2rem}
+  .edc-block{background:var(--bg2);border:1px solid var(--border);border-radius:4px;padding:1.5rem;overflow-x:auto}
+  .edc-section-title{font-size:1.1rem;font-weight:700;color:var(--text);margin:0 0 .5rem}
+  .edc-block-desc{font-size:.85rem;color:var(--text2);margin:0 0 1rem}
+
+  .edc-table{width:100%;border-collapse:collapse;font-size:.85rem}
+  .edc-table th{text-align:left;padding:.6rem .5rem;background:var(--bg3);color:var(--text2);font-size:.78rem;text-transform:uppercase;letter-spacing:.04em;border-bottom:1px solid var(--border)}
+  .edc-table td{padding:.55rem .5rem;border-bottom:1px solid var(--border);color:var(--text2)}
+  .edc-table tr:last-child td{border-bottom:none}
+
+  .edc-guide{background:var(--bg2);border:1px solid var(--border);border-left:3px solid var(--accent);border-radius:4px;padding:1.5rem;margin-bottom:2rem}
+  .edc-guide p{color:var(--text2);font-size:.9rem;line-height:1.65;margin:.75rem 0}
+  .edc-guide h3{color:var(--text);font-size:1rem;margin:1.5rem 0 .5rem}
+  .edc-guide a{color:var(--accent)}
+  .edc-guide strong{color:var(--text)}
+
+  .edc-links{display:flex;flex-wrap:wrap;gap:.5rem;align-items:center;padding:1rem;background:var(--bg2);border:1px solid var(--border);border-radius:4px;margin-bottom:2rem}
+  .edc-links strong{width:100%;font-size:.85rem;color:var(--text);margin-bottom:.25rem}
+  .edc-links a{font-size:.82rem;color:var(--accent);text-decoration:none;padding:.3rem .6rem;background:var(--bg3);border:1px solid var(--border);border-radius:4px;transition:border-color .15s}
+  .edc-links a:hover{border-color:var(--accent)}
+
+  .edc-faq{margin-bottom:2rem}
+  .edc-faq-item{background:var(--bg2);border:1px solid var(--border);border-radius:4px;margin-bottom:.5rem;overflow:hidden}
+  .edc-faq-q{padding:.8rem 1rem;cursor:pointer;font-weight:600;font-size:.9rem;color:var(--text);list-style:none;display:flex;align-items:center;justify-content:space-between}
+  .edc-faq-q::-webkit-details-marker{display:none}
+  .edc-faq-q::after{content:'+';font-size:1.1rem;color:var(--accent);font-weight:700}
+  .edc-faq-item[open] .edc-faq-q::after{content:'-'}
+  .edc-faq-item[open]{border-left:3px solid var(--accent)}
+  .edc-faq-a{padding:0 1rem .8rem;margin:0;font-size:.88rem;color:var(--text2);line-height:1.6}
+
+  @media(max-width:768px){
+    .edc-two-col{grid-template-columns:1fr}
+    .edc-fields{grid-template-columns:1fr}
+  }
+</style>
 
 <script is:inline>
 (function(){

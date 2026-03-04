@@ -3,7 +3,7 @@ import Base from '../layouts/Base.astro';
 import ExploreMore from '../components/ExploreMore.astro';
 import { breadcrumbSchema, faqSchema, toolAppSchema } from '../lib/weapons';
 
-const title = 'CS2 Pro Crosshair Codes — 860+ Players Library | CSDB.gg';
+const title = 'CS2 Pro Crosshair Codes — 860+ Players Library | CSGOLuck Wiki';
 const description = 'Browse and copy crosshair codes from 860+ professional CS2 players including s1mple, ZywOo, NiKo, and more. Find your favorite pro\'s crosshair settings and playstyle.';
 
 const breadcrumbs = [
@@ -13,25 +13,25 @@ const breadcrumbs = [
 ];
 
 const faqs = [
-  { 
-    q: 'How do I import a CS2 crosshair code?', 
-    a: 'Copy the crosshair code (starts with "CSGO-"), go to Settings → Game → Crosshair → Import Shared Code, paste it, and click "Import". Your crosshair will update instantly.' 
+  {
+    q: 'How do I import a CS2 crosshair code?',
+    a: 'Copy the crosshair code (starts with "CSGO-"), go to Settings → Game → Crosshair → Import Shared Code, paste it, and click "Import". Your crosshair will update instantly.'
   },
-  { 
-    q: 'What makes a good crosshair?', 
-    a: 'A good crosshair balances visibility and minimal obstruction. Most pros use small gaps and thin lines to see through to their target. The dot helps track recoil while the outline aids visibility in bright areas.' 
+  {
+    q: 'What makes a good crosshair?',
+    a: 'A good crosshair balances visibility and minimal obstruction. Most pros use small gaps and thin lines to see through to their target. The dot helps track recoil while the outline aids visibility in bright areas.'
   },
-  { 
-    q: 'Should I use a crosshair code or customize my own?', 
-    a: 'Starting with a pro\'s code is great for learning their playstyle, but personalization matters. Tweak opacity, size, and gap to what feels natural for your eyes and monitor. Many pros fine-tune their crosshairs regularly.' 
+  {
+    q: 'Should I use a crosshair code or customize my own?',
+    a: 'Starting with a pro\'s code is great for learning their playstyle, but personalization matters. Tweak opacity, size, and gap to what feels natural for your eyes and monitor. Many pros fine-tune their crosshairs regularly.'
   },
-  { 
-    q: 'What\'s the difference between crosshair styles?', 
-    a: 'Styles 0-2 are static lines, style 3 is dynamic (expands on shoot), style 4 is a dot, and style 5 is a crosshair with a larger outline. Most pros use styles 1-2 for clean, static visibility.' 
+  {
+    q: 'What\'s the difference between crosshair styles?',
+    a: 'Styles 0-2 are static lines, style 3 is dynamic (expands on shoot), style 4 is a dot, and style 5 is a crosshair with a larger outline. Most pros use styles 1-2 for clean, static visibility.'
   },
-  { 
-    q: 'Do crosshair codes transfer between CS:GO and CS2?', 
-    a: 'Yes! Crosshair codes from CS:GO work in CS2. The sharing format remained the same, so you can use classic crosshairs from competitive history.' 
+  {
+    q: 'Do crosshair codes transfer between CS:GO and CS2?',
+    a: 'Yes! Crosshair codes from CS:GO work in CS2. The sharing format remained the same, so you can use classic crosshairs from competitive history.'
   },
 ];
 
@@ -123,427 +123,214 @@ const colorMap: Record<string, string> = {
 <Base title={title} description={description} currentNav="/crosshair-codes/">
   <script type="application/ld+json" set:html={JSON.stringify(breadcrumbJson)}></script>
   <script type="application/ld+json" set:html={JSON.stringify(faqJson)}></script>
-  <script type="application/ld+json" set:html={JSON.stringify(toolAppSchema({ name: 'CS2 Pro Crosshair Codes Library', url: 'https://csdb.gg/crosshair-codes/', description }))}></script>
+  <script type="application/ld+json" set:html={JSON.stringify(toolAppSchema({ name: 'CS2 Pro Crosshair Codes Library', url: 'https://wiki.csgoluck.com/crosshair-codes/', description }))}></script>
 
-  <nav class="breadcrumb">
-    <a href="/">Home</a> / <a href="/crosshair-codes/">Tools</a> / <span>Pro Crosshair Codes</span>
-  </nav>
+  <nav class="breadcrumb"><a href="/">Home</a> <span>/</span> <a href="/cs2-tools/">Tools</a> <span>/</span> <span>Pro Crosshair Codes</span></nav>
 
-  <h1>CS2 Pro Crosshair Codes</h1>
-  <p>Browse and copy crosshair codes from 860+ professional Counter-Strike 2 players. Learn from the pros and import their exact settings into your game.</p>
-
-  <div class="filter-section">
-    <div class="filters">
-      <button class="filter-btn active" data-role="All">All Roles</button>
-      {roles.slice(1).map(role => (
-        <button class="filter-btn" data-role={role}>{role}</button>
-      ))}
-    </div>
-    <input 
-      type="text" 
-      id="searchInput" 
-      class="search-input" 
-      placeholder="Search player name..." 
-      aria-label="Search players"
-    />
+  <div class="xc-hero">
+    <h1 class="xc-title">CS2 Pro Crosshair Codes</h1>
+    <p class="xc-desc">Browse and copy crosshair codes from 860+ professional Counter-Strike 2 players. Learn from the pros and import their exact settings into your game.</p>
   </div>
 
-  <div class="crosshair-grid" id="crosshairGrid">
+  <div class="xc-filter-bar">
+    <div class="xc-filters">
+      <button class="xc-filter-btn xc-filter-active" data-role="All">All Roles</button>
+      {roles.slice(1).map(role => (
+        <button class="xc-filter-btn" data-role={role}>{role}</button>
+      ))}
+    </div>
+    <input type="text" id="searchInput" class="xc-search" placeholder="Search player name..." aria-label="Search players" />
+  </div>
+
+  <div class="xc-grid" id="crosshairGrid">
     {CROSSHAIRS.map(ch => (
-      <div class="crosshair-card" data-role={ch.role} data-player={ch.player.toLowerCase()}>
-        <div class="crosshair-preview">
-          <div class="crosshair-container">
-            <div class="crosshair-vertical" style={`background-color: ${colorMap[ch.color] || ch.color}; width: ${ch.thickness}px; height: ${ch.size * 4}px; position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);`}></div>
-            <div class="crosshair-horizontal" style={`background-color: ${colorMap[ch.color] || ch.color}; width: ${ch.size * 4}px; height: ${ch.thickness}px; position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);`}></div>
+      <div class="xc-card" data-role={ch.role} data-player={ch.player.toLowerCase()}>
+        <div class="xc-card-preview">
+          <div class="xc-ch-container">
+            <div style={`background-color: ${colorMap[ch.color] || ch.color}; width: ${ch.thickness}px; height: ${ch.size * 4}px; position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);`}></div>
+            <div style={`background-color: ${colorMap[ch.color] || ch.color}; width: ${ch.size * 4}px; height: ${ch.thickness}px; position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);`}></div>
             {ch.gap > 0 && (
               <>
-                <div class="crosshair-top-vertical" style={`background-color: ${colorMap[ch.color] || ch.color}; width: ${ch.thickness}px; height: ${ch.size * 2}px; position: absolute; left: 50%; top: ${50 - ch.gap - ch.size}%; transform: translate(-50%, -50%);`}></div>
-                <div class="crosshair-bottom-vertical" style={`background-color: ${colorMap[ch.color] || ch.color}; width: ${ch.thickness}px; height: ${ch.size * 2}px; position: absolute; left: 50%; top: ${50 + ch.gap + ch.size}%; transform: translate(-50%, -50%);`}></div>
-                <div class="crosshair-left-horizontal" style={`background-color: ${colorMap[ch.color] || ch.color}; width: ${ch.size * 2}px; height: ${ch.thickness}px; position: absolute; left: ${50 - ch.gap - ch.size}%; top: 50%; transform: translate(-50%, -50%);`}></div>
-                <div class="crosshair-right-horizontal" style={`background-color: ${colorMap[ch.color] || ch.color}; width: ${ch.size * 2}px; height: ${ch.thickness}px; position: absolute; left: ${50 + ch.gap + ch.size}%; top: 50%; transform: translate(-50%, -50%);`}></div>
+                <div style={`background-color: ${colorMap[ch.color] || ch.color}; width: ${ch.thickness}px; height: ${ch.size * 2}px; position: absolute; left: 50%; top: ${50 - ch.gap - ch.size}%; transform: translate(-50%, -50%);`}></div>
+                <div style={`background-color: ${colorMap[ch.color] || ch.color}; width: ${ch.thickness}px; height: ${ch.size * 2}px; position: absolute; left: 50%; top: ${50 + ch.gap + ch.size}%; transform: translate(-50%, -50%);`}></div>
+                <div style={`background-color: ${colorMap[ch.color] || ch.color}; width: ${ch.size * 2}px; height: ${ch.thickness}px; position: absolute; left: ${50 - ch.gap - ch.size}%; top: 50%; transform: translate(-50%, -50%);`}></div>
+                <div style={`background-color: ${colorMap[ch.color] || ch.color}; width: ${ch.size * 2}px; height: ${ch.thickness}px; position: absolute; left: ${50 + ch.gap + ch.size}%; top: 50%; transform: translate(-50%, -50%);`}></div>
               </>
             )}
             {ch.dot && (
-              <div class="crosshair-dot" style={`background-color: ${colorMap[ch.color] || ch.color}; width: ${ch.thickness * 2}px; height: ${ch.thickness * 2}px; border-radius: 50%; position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);`}></div>
+              <div style={`background-color: ${colorMap[ch.color] || ch.color}; width: ${ch.thickness * 2}px; height: ${ch.thickness * 2}px; border-radius: 50%; position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);`}></div>
             )}
           </div>
         </div>
-        <div class="card-content">
-          <div class="player-info">
-            <h3>{ch.player}</h3>
-            <div class="team">{ch.team}</div>
+        <div class="xc-card-body">
+          <div class="xc-card-top">
+            <h3 class="xc-player-name">{ch.player}</h3>
+            <span class="xc-team">{ch.team}</span>
           </div>
-          <div class="role-badge" data-role-badge={ch.role}>{ch.role}</div>
-          <div class="code-section">
-            <code class="crosshair-code">{ch.code}</code>
-            <button class="copy-btn" data-code={ch.code} title="Copy crosshair code">
-              <span class="copy-icon">📋</span> Copy
-            </button>
+          <span class={`xc-role xc-role-${ch.role.toLowerCase()}`}>{ch.role}</span>
+          <div class="xc-code-row">
+            <code class="xc-code">{ch.code}</code>
+            <button class="xc-copy-btn" data-code={ch.code}>Copy</button>
           </div>
-          <div class="settings">
-            <div class="setting-item">
-              <span class="setting-label">Size:</span>
-              <span class="setting-value">{ch.size}</span>
-            </div>
-            <div class="setting-item">
-              <span class="setting-label">Gap:</span>
-              <span class="setting-value">{ch.gap}</span>
-            </div>
-            <div class="setting-item">
-              <span class="setting-label">Thickness:</span>
-              <span class="setting-value">{ch.thickness}</span>
-            </div>
-            {ch.dot && <div class="setting-item"><span class="setting-badge">Dot</span></div>}
-            {ch.outline && <div class="setting-item"><span class="setting-badge">Outline</span></div>}
+          <div class="xc-stats">
+            <span class="xc-stat"><strong>Size:</strong> {ch.size}</span>
+            <span class="xc-stat"><strong>Gap:</strong> {ch.gap}</span>
+            <span class="xc-stat"><strong>Thick:</strong> {ch.thickness}</span>
+            {ch.dot && <span class="xc-badge">Dot</span>}
+            {ch.outline && <span class="xc-badge">Outline</span>}
           </div>
         </div>
       </div>
     ))}
   </div>
 
-  <h2>Frequently Asked Questions</h2>
-  <dl class="faq">
+  <section class="xc-faq">
+    <h2 class="xc-section-title">Frequently Asked Questions</h2>
     {faqs.map(item => (
-      <>
-        <dt>{item.q}</dt>
-        <dd>{item.a}</dd>
-      </>
+      <details class="xc-faq-item">
+        <summary class="xc-faq-q">{item.q}</summary>
+        <p class="xc-faq-a">{item.a}</p>
+      </details>
     ))}
-  </dl>
+  </section>
 
-  <div class="internal-links">
-    <a href="/crosshair-generator/">Crosshair Generator</a>
-    <a href="/edpi-calculator/">eDPI Calculator</a>
-    <a href="/sensitivity-converter/">Sensitivity Converter</a>
-    <a href="/launch-options/">Launch Options</a>
-    <a href="/weapons/">Weapons Database</a>
+  <div class="xc-links-block">
+    <h2 class="xc-section-title">Related Tools</h2>
+    <div class="xc-link-list">
+      <a href="/crosshair-generator/" class="xc-link">Crosshair Generator</a>
+      <a href="/edpi-calculator/" class="xc-link">eDPI Calculator</a>
+      <a href="/sensitivity-converter/" class="xc-link">Sensitivity Converter</a>
+      <a href="/launch-options/" class="xc-link">Launch Options</a>
+      <a href="/cs2-weapons/" class="xc-link">Weapons Database</a>
+      <a href="/cs2-tools/" class="xc-link">All Tools</a>
+    </div>
   </div>
-
-  <style is:inline>
-    .filter-section {
-      background: var(--bg2);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 1.25rem;
-      margin: 1.5rem 0;
-      display: flex;
-      gap: 1rem;
-      flex-wrap: wrap;
-      align-items: center;
-    }
-    
-    .filters {
-      display: flex;
-      gap: 0.5rem;
-      flex-wrap: wrap;
-    }
-    
-    .search-input {
-      flex: 1;
-      min-width: 200px;
-      background: var(--bg3);
-      color: var(--text);
-      border: 1px solid var(--border);
-      padding: 0.5rem 0.75rem;
-      border-radius: 6px;
-      font-size: 0.9rem;
-      font-family: inherit;
-    }
-    
-    .search-input:focus {
-      outline: none;
-      border-color: var(--accent);
-      box-shadow: 0 0 0 2px rgba(245, 166, 35, 0.2);
-    }
-    
-    .crosshair-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-      gap: 1.25rem;
-      margin: 2rem 0;
-    }
-    
-    .crosshair-card {
-      background: var(--bg2);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      overflow: hidden;
-      transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
-      display: flex;
-      flex-direction: column;
-    }
-    
-    .crosshair-card:hover {
-      border-color: var(--accent);
-      transform: translateY(-4px);
-      box-shadow: 0 8px 20px rgba(245, 166, 35, 0.15);
-    }
-    
-    .crosshair-card.hidden {
-      display: none;
-    }
-    
-    .crosshair-preview {
-      background: linear-gradient(135deg, #0a0a0e 0%, #131318 100%);
-      border-bottom: 1px solid var(--border);
-      padding: 1.5rem;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      min-height: 120px;
-    }
-    
-    .crosshair-container {
-      position: relative;
-      width: 80px;
-      height: 80px;
-      border: 1px solid var(--border);
-      border-radius: 4px;
-      background: rgba(0, 0, 0, 0.5);
-    }
-    
-    .card-content {
-      padding: 1.25rem;
-      display: flex;
-      flex-direction: column;
-      gap: 0.75rem;
-      flex: 1;
-    }
-    
-    .player-info {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      gap: 0.75rem;
-    }
-    
-    .player-info h3 {
-      margin: 0;
-      font-size: 1.1rem;
-      color: var(--text);
-      flex: 1;
-    }
-    
-    .team {
-      font-size: 0.75rem;
-      color: var(--text2);
-      opacity: 0.8;
-      text-align: right;
-    }
-    
-    .role-badge {
-      display: inline-block;
-      padding: 0.35rem 0.6rem;
-      border-radius: 20px;
-      font-size: 0.75rem;
-      font-weight: 600;
-      width: fit-content;
-      border: 1px solid var(--border);
-    }
-    
-    .role-badge[data-role-badge="Rifler"] {
-      background: rgba(239, 83, 80, 0.1);
-      color: #ef5350;
-      border-color: #ef5350;
-    }
-    
-    .role-badge[data-role-badge="AWPer"] {
-      background: rgba(255, 193, 7, 0.1);
-      color: #e8b992;
-      border-color: #e8b992;
-    }
-    
-    .role-badge[data-role-badge="IGL"] {
-      background: rgba(66, 165, 245, 0.1);
-      color: #42a5f5;
-      border-color: #42a5f5;
-    }
-    
-    .role-badge[data-role-badge="Entry"] {
-      background: rgba(171, 71, 188, 0.1);
-      color: #ab47bc;
-      border-color: #ab47bc;
-    }
-    
-    .role-badge[data-role-badge="Support"] {
-      background: rgba(38, 166, 154, 0.1);
-      color: #26a69a;
-      border-color: #26a69a;
-    }
-    
-    .code-section {
-      display: flex;
-      gap: 0.5rem;
-      align-items: stretch;
-    }
-    
-    .crosshair-code {
-      flex: 1;
-      background: var(--bg3);
-      color: var(--accent);
-      padding: 0.5rem 0.75rem;
-      border-radius: 6px;
-      font-size: 0.75rem;
-      font-family: 'Courier New', monospace;
-      font-weight: 600;
-      border: 1px solid var(--border);
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-      display: flex;
-      align-items: center;
-    }
-    
-    .copy-btn {
-      background: var(--accent);
-      color: #000;
-      border: none;
-      padding: 0.5rem 0.75rem;
-      border-radius: 6px;
-      font-size: 0.75rem;
-      font-weight: 600;
-      cursor: pointer;
-      white-space: nowrap;
-      transition: all 0.2s;
-      font-family: inherit;
-      display: flex;
-      align-items: center;
-      gap: 0.3rem;
-    }
-    
-    .copy-btn:hover {
-      background: var(--accent2);
-      transform: translateY(-2px);
-    }
-    
-    .copy-btn:active {
-      transform: translateY(0);
-    }
-    
-    .copy-btn.copied {
-      background: #4caf50;
-    }
-    
-    .copy-icon {
-      font-size: 0.85em;
-    }
-    
-    .settings {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.75rem;
-      margin-top: 0.5rem;
-      padding-top: 0.75rem;
-      border-top: 1px solid var(--border);
-    }
-    
-    .setting-item {
-      font-size: 0.8rem;
-      color: var(--text2);
-      display: flex;
-      align-items: center;
-      gap: 0.3rem;
-    }
-    
-    .setting-label {
-      font-weight: 600;
-      color: var(--text);
-    }
-    
-    .setting-value {
-      color: var(--accent);
-      font-weight: 600;
-    }
-    
-    .setting-badge {
-      display: inline-block;
-      background: var(--accent);
-      color: #000;
-      padding: 0.15rem 0.45rem;
-      border-radius: 12px;
-      font-size: 0.7rem;
-      font-weight: 700;
-    }
-    
-    @media (max-width: 768px) {
-      .filter-section {
-        flex-direction: column;
-        align-items: stretch;
-      }
-      
-      .filters {
-        width: 100%;
-      }
-      
-      .search-input {
-        width: 100%;
-        min-width: unset;
-      }
-      
-      .crosshair-grid {
-        grid-template-columns: 1fr;
-      }
-    }
-  </style>
-
-  <script is:inline>
-    document.addEventListener('DOMContentLoaded', function() {
-      const grid = document.getElementById('crosshairGrid');
-      const filterBtns = document.querySelectorAll('.filter-btn');
-      const searchInput = document.getElementById('searchInput');
-      let activeRole = 'All';
-      let searchTerm = '';
-
-      function filterCards() {
-        const cards = grid.querySelectorAll('.crosshair-card');
-        cards.forEach(card => {
-          const cardRole = card.dataset.role;
-          const cardPlayer = card.dataset.player;
-          
-          const roleMatch = activeRole === 'All' || cardRole === activeRole;
-          const searchMatch = cardPlayer.includes(searchTerm.toLowerCase());
-          
-          if (roleMatch && searchMatch) {
-            card.classList.remove('hidden');
-          } else {
-            card.classList.add('hidden');
-          }
-        });
-      }
-
-      filterBtns.forEach(btn => {
-        btn.addEventListener('click', function() {
-          filterBtns.forEach(b => b.classList.remove('active'));
-          this.classList.add('active');
-          activeRole = this.dataset.role;
-          filterCards();
-        });
-      });
-
-      searchInput.addEventListener('input', function() {
-        searchTerm = this.value;
-        filterCards();
-      });
-
-      const copyBtns = document.querySelectorAll('.copy-btn');
-      copyBtns.forEach(btn => {
-        btn.addEventListener('click', function() {
-          const code = this.dataset.code;
-          navigator.clipboard.writeText(code).then(() => {
-            const originalText = this.innerHTML;
-            this.classList.add('copied');
-            this.innerHTML = '<span class="copy-icon">✓</span> Copied!';
-            setTimeout(() => {
-              this.classList.remove('copied');
-              this.innerHTML = originalText;
-            }, 2000);
-          }).catch(() => {
-            alert('Failed to copy: ' + code);
-          });
-        });
-      });
-    });
-  </script>
 
   <ExploreMore context="tools" />
 </Base>
+
+<style>
+  .xc-hero{padding:1.5rem 0;margin-bottom:1.5rem}
+  .xc-title{font-size:2rem;font-weight:800;margin:0 0 .5rem;color:var(--text)}
+  .xc-desc{color:var(--text2);font-size:.95rem;margin:0;max-width:600px;line-height:1.6}
+
+  .xc-filter-bar{background:var(--bg2);border:1px solid var(--border);border-radius:4px;padding:1rem;margin-bottom:1.5rem;display:flex;gap:1rem;flex-wrap:wrap;align-items:center}
+  .xc-filters{display:flex;gap:.4rem;flex-wrap:wrap}
+  .xc-filter-btn{padding:.45rem .85rem;background:var(--bg3);border:1px solid var(--border);border-radius:4px;color:var(--text2);cursor:pointer;font-weight:500;font-size:.82rem;font-family:inherit;transition:all .15s}
+  .xc-filter-btn:hover{border-color:var(--accent);color:var(--text)}
+  .xc-filter-active{background:var(--accent);border-color:var(--accent);color:#000}
+  .xc-search{flex:1;min-width:200px;background:var(--bg3);color:var(--text);border:1px solid var(--border);padding:.5rem .75rem;border-radius:4px;font-size:.9rem;font-family:inherit}
+  .xc-search:focus{outline:none;border-color:var(--accent)}
+
+  .xc-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:1rem;margin-bottom:2rem}
+
+  .xc-card{background:var(--bg2);border:1px solid var(--border);border-left:3px solid transparent;border-radius:4px;overflow:hidden;transition:border-left-color .15s;display:flex;flex-direction:column}
+  .xc-card:hover{border-left-color:var(--accent)}
+  .xc-card.xc-hidden{display:none}
+
+  .xc-card-preview{background:linear-gradient(135deg,#0a0a0e 0%,#131318 100%);border-bottom:1px solid var(--border);padding:1.25rem;display:flex;align-items:center;justify-content:center;min-height:100px}
+  .xc-ch-container{position:relative;width:80px;height:80px;border:1px solid var(--border);border-radius:4px;background:rgba(0,0,0,.5)}
+
+  .xc-card-body{padding:1rem;display:flex;flex-direction:column;gap:.6rem;flex:1}
+  .xc-card-top{display:flex;justify-content:space-between;align-items:flex-start;gap:.5rem}
+  .xc-player-name{margin:0;font-size:1rem;font-weight:700;color:var(--text)}
+  .xc-team{font-size:.72rem;color:var(--text2);text-align:right}
+
+  .xc-role{display:inline-block;padding:.25rem .5rem;border-radius:4px;font-size:.72rem;font-weight:600;width:fit-content;border:1px solid var(--border)}
+  .xc-role-rifler{background:rgba(239,83,80,.1);color:#ef5350;border-color:#ef5350}
+  .xc-role-awper{background:rgba(255,193,7,.1);color:#e8b992;border-color:#e8b992}
+  .xc-role-igl{background:rgba(66,165,245,.1);color:#42a5f5;border-color:#42a5f5}
+  .xc-role-entry{background:rgba(171,71,188,.1);color:#ab47bc;border-color:#ab47bc}
+  .xc-role-support{background:rgba(38,166,154,.1);color:#26a69a;border-color:#26a69a}
+
+  .xc-code-row{display:flex;gap:.4rem;align-items:stretch}
+  .xc-code{flex:1;background:var(--bg3);color:var(--accent);padding:.4rem .6rem;border-radius:4px;font-size:.72rem;font-family:'Courier New',monospace;font-weight:600;border:1px solid var(--border);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:flex;align-items:center}
+  .xc-copy-btn{background:var(--accent);color:#000;border:none;padding:.4rem .65rem;border-radius:4px;font-size:.72rem;font-weight:600;cursor:pointer;white-space:nowrap;font-family:inherit;transition:opacity .15s}
+  .xc-copy-btn:hover{opacity:.9}
+  .xc-copy-btn.xc-copied{background:#4caf50}
+
+  .xc-stats{display:flex;flex-wrap:wrap;gap:.5rem;padding-top:.6rem;border-top:1px solid var(--border);font-size:.78rem;color:var(--text2)}
+  .xc-stat strong{color:var(--text)}
+  .xc-badge{display:inline-block;background:var(--accent);color:#000;padding:.1rem .35rem;border-radius:4px;font-size:.68rem;font-weight:700}
+
+  .xc-section-title{font-size:1.1rem;font-weight:700;color:var(--text);margin:0 0 1rem}
+
+  .xc-faq{margin-bottom:2rem}
+  .xc-faq-item{background:var(--bg2);border:1px solid var(--border);border-radius:4px;margin-bottom:.5rem;overflow:hidden}
+  .xc-faq-q{padding:.8rem 1rem;cursor:pointer;font-weight:600;font-size:.9rem;color:var(--text);list-style:none;display:flex;align-items:center;justify-content:space-between}
+  .xc-faq-q::-webkit-details-marker{display:none}
+  .xc-faq-q::after{content:'+';font-size:1.1rem;color:var(--accent);font-weight:700}
+  .xc-faq-item[open] .xc-faq-q::after{content:'-'}
+  .xc-faq-item[open]{border-left:3px solid var(--accent)}
+  .xc-faq-a{padding:0 1rem .8rem;margin:0;font-size:.88rem;color:var(--text2);line-height:1.6}
+
+  .xc-links-block{background:var(--bg2);border:1px solid var(--border);border-radius:4px;padding:1.5rem;margin-bottom:2rem}
+  .xc-link-list{display:flex;flex-direction:column;gap:.4rem}
+  .xc-link{display:block;padding:.5rem .75rem;background:var(--bg3);border:1px solid var(--border);border-left:3px solid transparent;border-radius:4px;color:var(--accent);text-decoration:none;font-size:.85rem;transition:border-left-color .15s}
+  .xc-link:hover{border-left-color:var(--accent)}
+
+  @media(max-width:768px){
+    .xc-filter-bar{flex-direction:column;align-items:stretch}
+    .xc-search{width:100%;min-width:unset}
+    .xc-grid{grid-template-columns:1fr}
+  }
+</style>
+
+<script is:inline>
+  document.addEventListener('DOMContentLoaded', function() {
+    const grid = document.getElementById('crosshairGrid');
+    const filterBtns = document.querySelectorAll('.xc-filter-btn');
+    const searchInput = document.getElementById('searchInput');
+    let activeRole = 'All';
+    let searchTerm = '';
+
+    function filterCards() {
+      const cards = grid.querySelectorAll('.xc-card');
+      cards.forEach(card => {
+        const cardRole = card.dataset.role;
+        const cardPlayer = card.dataset.player;
+
+        const roleMatch = activeRole === 'All' || cardRole === activeRole;
+        const searchMatch = cardPlayer.includes(searchTerm.toLowerCase());
+
+        if (roleMatch && searchMatch) {
+          card.classList.remove('xc-hidden');
+        } else {
+          card.classList.add('xc-hidden');
+        }
+      });
+    }
+
+    filterBtns.forEach(btn => {
+      btn.addEventListener('click', function() {
+        filterBtns.forEach(b => b.classList.remove('xc-filter-active'));
+        this.classList.add('xc-filter-active');
+        activeRole = this.dataset.role;
+        filterCards();
+      });
+    });
+
+    searchInput.addEventListener('input', function() {
+      searchTerm = this.value;
+      filterCards();
+    });
+
+    const copyBtns = document.querySelectorAll('.xc-copy-btn');
+    copyBtns.forEach(btn => {
+      btn.addEventListener('click', function() {
+        const code = this.dataset.code;
+        navigator.clipboard.writeText(code).then(() => {
+          const originalText = this.textContent;
+          this.classList.add('xc-copied');
+          this.textContent = 'Copied!';
+          setTimeout(() => {
+            this.classList.remove('xc-copied');
+            this.textContent = originalText;
+          }, 2000);
+        }).catch(() => {
+          alert('Failed to copy: ' + code);
+        });
+      });
+    });
+  });
+</script>

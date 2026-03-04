@@ -1,0 +1,406 @@
+---
+import Base from '../layouts/Base.astro';
+import ExploreMore from '../components/ExploreMore.astro';
+import { WEAPONS, WEAPON_CATEGORIES, getWeaponsByCategory, breadcrumbSchema } from '../lib/weapons';
+
+const title = 'CS2 Weapons — Damage Numbers, Fire Rates & Skin Listings | CSGOLuck Wiki';
+const description = 'A thorough CS2 arms reference covering all rifles, SMGs, pistols, heavies, and grenades. Includes verified damage values, rate-of-fire data, spray profiles, purchase costs, and a full skin catalog for each weapon.';
+
+const breadcrumbs = [
+  { name: 'Home', url: '/' },
+  { name: 'Weapons', url: '/cs2-weapons/' },
+];
+
+const itemListSchema = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "ItemList",
+  "name": "CS2 Weapon Categories",
+  "description": "Every Counter-Strike 2 weapon class — rifles, submachine guns, pistols, heavies, throwables, knives, and gloves — organized with stats and skins.",
+  "numberOfItems": WEAPON_CATEGORIES.length,
+  "itemListElement": WEAPON_CATEGORIES.map((cat, i) => ({
+    "@type": "ListItem",
+    "position": i + 1,
+    "name": cat.name,
+    "description": cat.description,
+    "url": `https://wiki.csgoluck.com/cs2-weapons/${cat.slug}/`
+  }))
+});
+---
+
+<Base title={title} description={description} currentNav="/cs2-weapons/">
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema(breadcrumbs))} />
+    <script type="application/ld+json" set:html={itemListSchema} />
+  </Fragment>
+  <nav class="breadcrumb">
+    <a href="/">Home</a> / <span>Weapons</span>
+  </nav>
+
+  <!-- Hero: left-aligned with stat pills -->
+  <section class="wh-hero">
+    <h1 class="wh-hero-title">CS2 Weapon Database</h1>
+    <p class="wh-hero-desc">{WEAPONS.length} firearms indexed with hit damage, rounds per minute, armor penetration values, <a href="/recoil-patterns/" style="color:var(--accent)">recoil behavior</a>, and complete <a href="/cs2-skins/" style="color:var(--accent)">skin catalogs</a>.</p>
+    <div class="wh-hero-pills">
+      <span class="wh-pill"><strong>{WEAPONS.length}</strong> Weapons</span>
+      <span class="wh-pill"><strong>{WEAPON_CATEGORIES.length}</strong> Categories</span>
+      <span class="wh-pill"><strong>{WEAPONS.filter(w => !w.cosmetic).length}</strong> Combat</span>
+      <span class="wh-pill"><strong>{WEAPONS.filter(w => w.cosmetic).length}</strong> Cosmetic</span>
+    </div>
+  </section>
+
+  <!-- Category tab bar -->
+  <nav class="wh-tabs">
+    {WEAPON_CATEGORIES.map(cat => (
+      <a href={`#wh-cat-${cat.slug}`} class="wh-tab">{cat.name}</a>
+    ))}
+  </nav>
+
+  <!-- Weapon listings per category: table rows -->
+  {WEAPON_CATEGORIES.map(cat => {
+    const weapons = getWeaponsByCategory(cat.slug);
+    const isCosmetic = cat.slug === 'knife' || cat.slug === 'glove';
+    return (
+      <section class="wh-category" id={`wh-cat-${cat.slug}`}>
+        <div class="wh-cat-header">
+          <a href={`/cs2-weapons/${cat.slug}/`} class="wh-cat-name">{cat.name}</a>
+          <span class="wh-cat-count">{weapons.length}</span>
+          <span class="wh-cat-desc">{cat.description}</span>
+          <a href={`/cs2-weapons/${cat.slug}/`} class="wh-cat-link">View All &rarr;</a>
+        </div>
+        <div class="wh-table">
+          <div class="wh-table-head">
+            <span class="wh-th wh-th-name">Weapon</span>
+            <span class="wh-th wh-th-cat">Category</span>
+            {!isCosmetic && <span class="wh-th wh-th-price">Price</span>}
+            {!isCosmetic && <span class="wh-th wh-th-dmg">Damage</span>}
+            {!isCosmetic && <span class="wh-th wh-th-rpm">RPM</span>}
+          </div>
+          {weapons.map((w, i) => (
+            <a href={`/cs2-weapon/${w.slug}/`} class:list={['wh-row', { 'wh-row-alt': i % 2 === 1 }]}>
+              <span class="wh-td wh-td-name">{w.name}</span>
+              <span class="wh-td wh-td-cat">
+                <span class={`wh-side wh-side-${w.team}`}>{w.team === 'ct' ? 'CT' : w.team === 't' ? 'T' : 'Both'}</span>
+              </span>
+              {!isCosmetic && <span class="wh-td wh-td-price">${w.price.toLocaleString()}</span>}
+              {!isCosmetic && <span class="wh-td wh-td-dmg">{w.damage}</span>}
+              {!isCosmetic && <span class="wh-td wh-td-rpm">{w.rpm}</span>}
+            </a>
+          ))}
+        </div>
+      </section>
+    );
+  })}
+
+  <!-- Related Tools -->
+  <section class="wh-tools">
+    <h2 class="wh-tools-title">Related Tools</h2>
+    <div class="wh-tools-grid">
+      <a href="/damage-calculator/" class="wh-tool-row">
+        <strong>Damage Calculator</strong>
+        <span>Exact damage with armor &amp; range</span>
+      </a>
+      <a href="/weapon-compare/" class="wh-tool-row">
+        <strong>Weapon Compare</strong>
+        <span>Side-by-side stat comparison</span>
+      </a>
+      <a href="/recoil-patterns/" class="wh-tool-row">
+        <strong>Recoil Patterns</strong>
+        <span>Spray patterns for every weapon</span>
+      </a>
+      <a href="/economy-calculator/" class="wh-tool-row">
+        <strong>Economy Planner</strong>
+        <span>Buy round optimization</span>
+      </a>
+      <a href="/spray-trainer/" class="wh-tool-row">
+        <strong>Spray Trainer</strong>
+        <span>Interactive spray practice tool</span>
+      </a>
+      <a href="/loadout-builder/" class="wh-tool-row">
+        <strong>Loadout Builder</strong>
+        <span>Build &amp; budget your ideal loadout</span>
+      </a>
+    </div>
+  </section>
+
+  <!-- Internal Links -->
+  <div class="wh-links" style="display:flex;flex-wrap:wrap;gap:.5rem;align-items:center;padding:1rem;background:var(--bg2);border:1px solid var(--border);border-radius:4px;margin-bottom:1.5rem">
+    <strong style="width:100%;font-size:.85rem;color:var(--text);margin-bottom:.25rem">More Resources:</strong>
+    <a href="/pro-players/" style="font-size:.82rem;color:var(--accent);text-decoration:none;padding:.3rem .6rem;background:var(--bg3);border:1px solid var(--border);border-radius:4px">Pro Player Settings</a>
+    <a href="/cs2-skins/" style="font-size:.82rem;color:var(--accent);text-decoration:none;padding:.3rem .6rem;background:var(--bg3);border:1px solid var(--border);border-radius:4px">Skin Database</a>
+    <a href="/cs2-maps/" style="font-size:.82rem;color:var(--accent);text-decoration:none;padding:.3rem .6rem;background:var(--bg3);border:1px solid var(--border);border-radius:4px">Map Database</a>
+    <a href="/cs2-guides/beginners-guide/" style="font-size:.82rem;color:var(--accent);text-decoration:none;padding:.3rem .6rem;background:var(--bg3);border:1px solid var(--border);border-radius:4px">Beginner's Guide</a>
+    <a href="/cs2-guides/advanced-mechanics-guide/" style="font-size:.82rem;color:var(--accent);text-decoration:none;padding:.3rem .6rem;background:var(--bg3);border:1px solid var(--border);border-radius:4px">Advanced Mechanics</a>
+    <a href="/cs2-commands/" style="font-size:.82rem;color:var(--accent);text-decoration:none;padding:.3rem .6rem;background:var(--bg3);border:1px solid var(--border);border-radius:4px">Console Commands</a>
+    <a href="/cs2-tools/" style="font-size:.82rem;color:var(--accent);text-decoration:none;padding:.3rem .6rem;background:var(--bg3);border:1px solid var(--border);border-radius:4px">All Tools</a>
+  </div>
+
+  <ExploreMore context="weapons" />
+</Base>
+
+<style>
+  /* === Weapons Hub (wh-) === */
+
+  /* Hero */
+  .wh-hero {
+    margin-bottom: 2rem;
+  }
+  .wh-hero-title {
+    margin: 0 0 .5rem;
+    font-size: 2rem;
+    font-weight: 800;
+    line-height: 1.1;
+  }
+  .wh-hero-desc {
+    margin: 0 0 1rem;
+    color: var(--text2);
+    font-size: .9rem;
+    line-height: 1.6;
+    max-width: 560px;
+  }
+  .wh-hero-pills {
+    display: flex;
+    gap: .5rem;
+    flex-wrap: wrap;
+  }
+  .wh-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: .3rem;
+    padding: .3rem .7rem;
+    background: rgba(46,204,113,.08);
+    border: 1px solid rgba(46,204,113,.2);
+    border-radius: 4px;
+    font-size: .78rem;
+    color: var(--text2);
+  }
+  .wh-pill strong {
+    color: var(--accent);
+    font-weight: 700;
+  }
+
+  /* Tab bar */
+  .wh-tabs {
+    display: flex;
+    gap: 0;
+    border-bottom: 2px solid var(--border);
+    margin-bottom: 2rem;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  .wh-tab {
+    padding: .6rem 1.1rem;
+    font-size: .82rem;
+    font-weight: 700;
+    color: var(--text2);
+    text-decoration: none;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -2px;
+    white-space: nowrap;
+    transition: color .15s, border-color .15s;
+  }
+  .wh-tab:hover {
+    color: var(--accent);
+    border-bottom-color: var(--accent);
+  }
+
+  /* Category sections */
+  .wh-category {
+    margin-bottom: 2.5rem;
+  }
+  .wh-cat-header {
+    display: flex;
+    align-items: baseline;
+    gap: .6rem;
+    flex-wrap: wrap;
+    margin-bottom: .75rem;
+  }
+  .wh-cat-name {
+    font-size: 1.15rem;
+    font-weight: 800;
+    color: var(--text);
+    text-decoration: none;
+  }
+  .wh-cat-name:hover {
+    color: var(--accent);
+  }
+  .wh-cat-count {
+    font-size: .7rem;
+    font-weight: 700;
+    color: var(--accent);
+    background: rgba(46,204,113,.1);
+    padding: .12rem .45rem;
+    border-radius: 4px;
+  }
+  .wh-cat-desc {
+    font-size: .82rem;
+    color: var(--text2);
+    flex: 1;
+    min-width: 200px;
+  }
+  .wh-cat-link {
+    font-size: .78rem;
+    font-weight: 700;
+    color: var(--accent);
+    text-decoration: none;
+    margin-left: auto;
+  }
+  .wh-cat-link:hover {
+    text-decoration: underline;
+  }
+
+  /* Table */
+  .wh-table {
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  .wh-table-head {
+    display: grid;
+    grid-template-columns: 1fr 80px 90px 80px 70px;
+    gap: .5rem;
+    padding: .5rem 1rem;
+    background: var(--accent);
+    color: #000;
+    font-size: .72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .04em;
+  }
+  .wh-row {
+    display: grid;
+    grid-template-columns: 1fr 80px 90px 80px 70px;
+    gap: .5rem;
+    padding: .55rem 1rem;
+    text-decoration: none;
+    color: inherit;
+    border-left: 3px solid transparent;
+    transition: border-left-color .15s, background-color .15s;
+  }
+  .wh-row:not(:last-child) {
+    border-bottom: 1px solid var(--border);
+  }
+  .wh-row:hover {
+    border-left-color: var(--accent);
+    background: var(--bg3);
+  }
+  .wh-row-alt {
+    background: var(--bg2);
+  }
+  .wh-td {
+    font-size: .84rem;
+    display: flex;
+    align-items: center;
+  }
+  .wh-td-name {
+    font-weight: 600;
+    color: var(--text);
+  }
+  .wh-td-cat {
+    font-size: .78rem;
+  }
+  .wh-td-price {
+    font-weight: 700;
+    color: var(--accent);
+  }
+  .wh-td-dmg,
+  .wh-td-rpm {
+    color: var(--text2);
+  }
+  .wh-side {
+    font-size: .62rem;
+    font-weight: 700;
+    padding: .1rem .35rem;
+    border-radius: 3px;
+    text-transform: uppercase;
+  }
+  .wh-side-ct { background: #4a8db7; color: #fff; }
+  .wh-side-t { background: #c44; color: #fff; }
+  .wh-side-both { background: var(--accent); color: #000; }
+
+  /* Related Tools */
+  .wh-tools {
+    margin: 2rem 0;
+  }
+  .wh-tools-title {
+    margin: 0 0 .75rem;
+    font-size: 1.1rem;
+    font-weight: 700;
+  }
+  .wh-tools-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  .wh-tool-row {
+    display: flex;
+    flex-direction: column;
+    gap: .15rem;
+    padding: .8rem 1rem;
+    background: var(--bg2);
+    text-decoration: none;
+    color: inherit;
+    border-left: 3px solid transparent;
+    border-bottom: 1px solid var(--border);
+    border-right: 1px solid var(--border);
+    transition: border-left-color .15s;
+  }
+  .wh-tool-row:nth-child(2n) {
+    border-right: none;
+  }
+  .wh-tool-row:nth-last-child(-n+2) {
+    border-bottom: none;
+  }
+  .wh-tool-row:hover {
+    border-left-color: var(--accent);
+  }
+  .wh-tool-row strong {
+    font-size: .85rem;
+    color: var(--text);
+  }
+  .wh-tool-row span {
+    font-size: .75rem;
+    color: var(--text2);
+  }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .wh-table-head,
+    .wh-row {
+      grid-template-columns: 1fr 70px 80px;
+    }
+    .wh-th-dmg,
+    .wh-th-rpm,
+    .wh-td-dmg,
+    .wh-td-rpm {
+      display: none;
+    }
+    .wh-hero-title {
+      font-size: 1.5rem;
+    }
+  }
+  @media (max-width: 520px) {
+    .wh-table-head,
+    .wh-row {
+      grid-template-columns: 1fr 80px;
+    }
+    .wh-th-cat,
+    .wh-td-cat {
+      display: none;
+    }
+    .wh-tools-grid {
+      grid-template-columns: 1fr;
+    }
+    .wh-tool-row {
+      border-right: none;
+    }
+    .wh-tool-row:nth-last-child(-n+2) {
+      border-bottom: 1px solid var(--border);
+    }
+    .wh-tool-row:last-child {
+      border-bottom: none;
+    }
+  }
+</style>

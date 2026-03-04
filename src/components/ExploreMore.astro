@@ -26,35 +26,35 @@ const toolLinks = [
 ];
 
 const skinLinks = [
-  { href: '/skins/', label: 'All Skins', desc: '2,000+ skins with prices' },
+  { href: '/cs2-skins/', label: 'All Skins', desc: '2,000+ skins with prices' },
   { href: '/skin-compare/', label: 'Compare Skins', desc: 'Side-by-side comparison' },
   { href: '/price-tracker/', label: 'Price Tracker', desc: 'Track price trends' },
   { href: '/float-checker/', label: 'Float Checker', desc: 'Check float values' },
   { href: '/tradeup-calculator/', label: 'Trade-Up Calculator', desc: 'Plan trade-ups' },
   { href: '/inventory-lookup/', label: 'Inventory Lookup', desc: 'Check inventory value' },
-  { href: '/cases/', label: 'Cases & Collections', desc: 'Browse all cases' },
+  { href: '/cs2-cases/', label: 'Cases & Collections', desc: 'Browse all cases' },
   { href: '/market-trends/', label: 'Market Trends', desc: 'Market analysis' },
 ];
 
 const mapLinks = [
-  { href: '/maps/', label: 'All Maps', desc: 'Map callouts & radar' },
-  { href: '/maps/mirage/', label: 'Mirage', desc: 'Callouts & lineups' },
-  { href: '/maps/inferno/', label: 'Inferno', desc: 'Callouts & lineups' },
-  { href: '/maps/dust2/', label: 'Dust 2', desc: 'Callouts & lineups' },
-  { href: '/maps/anubis/', label: 'Anubis', desc: 'Callouts & lineups' },
+  { href: '/cs2-maps/', label: 'All Maps', desc: 'Map callouts & radar' },
+  { href: '/cs2-maps/mirage/', label: 'Mirage', desc: 'Callouts & lineups' },
+  { href: '/cs2-maps/inferno/', label: 'Inferno', desc: 'Callouts & lineups' },
+  { href: '/cs2-maps/dust2/', label: 'Dust 2', desc: 'Callouts & lineups' },
+  { href: '/cs2-maps/anubis/', label: 'Anubis', desc: 'Callouts & lineups' },
   { href: '/lineups/mirage/', label: 'Mirage Lineups', desc: 'Smokes, flashes, mollys' },
   { href: '/lineups/inferno/', label: 'Inferno Lineups', desc: 'Smokes, flashes, mollys' },
   { href: '/workshop-maps/', label: 'Workshop Maps', desc: 'Practice maps' },
 ];
 
 const guideLinks = [
-  { href: '/guides/', label: 'All Guides', desc: 'Learn CS2' },
+  { href: '/cs2-guides/', label: 'All Guides', desc: 'Learn CS2' },
   { href: '/economy-guide/', label: 'Economy Guide', desc: 'Money management' },
-  { href: '/rank-distribution/', label: 'Rank Distribution', desc: 'Where you stand' },
-  { href: '/guides/trading-guide/', label: 'Trading Guide', desc: 'Trade profitably' },
-  { href: '/guides/float-guide/', label: 'Float Guide', desc: 'Understand floats' },
-  { href: '/guides/skins-investing-guide/', label: 'Investing Guide', desc: 'Long-term strategies' },
-  { href: '/guides/fps-optimization-guide/', label: 'FPS Guide', desc: 'Maximize framerate' },
+  { href: '/cs2-rank-distribution/', label: 'Rank Distribution', desc: 'Where you stand' },
+  { href: '/cs2-guides/trading-guide/', label: 'Trading Guide', desc: 'Trade profitably' },
+  { href: '/cs2-guides/float-guide/', label: 'Float Guide', desc: 'Understand floats' },
+  { href: '/cs2-guides/skins-investing-guide/', label: 'Investing Guide', desc: 'Long-term strategies' },
+  { href: '/cs2-guides/fps-optimization-guide/', label: 'FPS Guide', desc: 'Maximize framerate' },
   { href: '/pro-players/', label: 'Pro Settings', desc: '860+ pro configs' },
 ];
 
@@ -117,17 +117,17 @@ if (context === 'tools') {
 }
 ---
 
-<div class="explore-more">
-  <h2 class="explore-title">Explore More on CSDB.gg</h2>
-  <div class="explore-grid">
+<div class="xplr">
+  <h2 class="xplr-title">More on CSGOLuck Wiki</h2>
+  <div class="xplr-cols">
     {sections.map(section => (
-      <div class="explore-section">
+      <div class="xplr-col">
         <h3>{section.title}</h3>
-        <div class="explore-links">
+        <div class="xplr-items">
           {section.links.map(link => (
-            <a href={link.href} class="explore-link">
-              <span class="explore-link-label">{link.label}</span>
-              <span class="explore-link-desc">{link.desc}</span>
+            <a href={link.href} class="xplr-item">
+              <span class="xplr-name">{link.label}</span>
+              <span class="xplr-desc">{link.desc}</span>
             </a>
           ))}
         </div>
@@ -137,16 +137,15 @@ if (context === 'tools') {
 </div>
 
 <style is:inline>
-.explore-more{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:1.5rem;margin:2rem 0}
-.explore-title{margin:0 0 1.2rem;font-size:1.1rem;font-weight:700;display:flex;align-items:center;gap:.6rem}
-.explore-title::before{content:'';width:3px;height:20px;background:var(--accent);border-radius:2px}
-.explore-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem}
-@media(max-width:768px){.explore-grid{grid-template-columns:1fr}}
-.explore-section h3{font-size:.82rem;text-transform:uppercase;letter-spacing:.06em;color:var(--text2);margin:0 0 .6rem;font-weight:600}
-.explore-links{display:flex;flex-direction:column;gap:.35rem}
-.explore-link{display:flex;justify-content:space-between;align-items:center;padding:.45rem .7rem;background:var(--bg3);border:1px solid var(--border);border-radius:6px;text-decoration:none;transition:all .2s;gap:.5rem}
-.explore-link:hover{border-color:var(--accent);background:rgba(212,149,110,0.06)}
-.explore-link-label{font-size:.85rem;font-weight:600;color:var(--text);white-space:nowrap}
-.explore-link:hover .explore-link-label{color:var(--accent)}
-.explore-link-desc{font-size:.72rem;color:var(--text2);text-align:right;white-space:nowrap}
+.xplr{background:var(--bg2);border:1px solid var(--border);border-radius:4px;border-left:4px solid var(--accent);padding:1.2rem;margin:2rem 0}
+.xplr-title{margin:0 0 1rem;font-size:1rem;font-weight:700}
+.xplr-cols{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem}
+@media(max-width:768px){.xplr-cols{grid-template-columns:1fr}}
+.xplr-col h3{font-size:.75rem;text-transform:uppercase;letter-spacing:.06em;color:var(--text2);margin:0 0 .5rem;font-weight:600}
+.xplr-items{display:flex;flex-direction:column;gap:.25rem}
+.xplr-item{display:flex;justify-content:space-between;align-items:center;padding:.35rem .5rem;background:var(--bg3);border:1px solid var(--border);border-radius:4px;text-decoration:none;transition:border-left .15s;gap:.5rem}
+.xplr-item:hover{border-left:3px solid var(--accent)}
+.xplr-name{font-size:.82rem;font-weight:600;color:var(--text);white-space:nowrap}
+.xplr-item:hover .xplr-name{color:var(--accent)}
+.xplr-desc{font-size:.7rem;color:var(--text2);text-align:right;white-space:nowrap}
 </style>

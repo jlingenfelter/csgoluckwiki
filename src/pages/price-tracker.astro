@@ -4,7 +4,7 @@ import ExploreMore from '../components/ExploreMore.astro';
 import { SKINS, getLowestPrice, getHighestPrice, RARITY_COLORS } from '../lib/skins';
 import { faqSchema, breadcrumbSchema, toolAppSchema } from '../lib/weapons';
 
-const title = 'CS2 Skin Price Tracker & Market Overview | CSDB.gg';
+const title = 'CS2 Skin Price Tracker & Market Overview | CSGOLuck Wiki';
 const description = 'Real-time CS2 skin price tracking and market analysis. Compare prices across all skins, find the cheapest deals, track market trends, and analyze price distributions by rarity and category.';
 
 const breadcrumbs = [
@@ -75,65 +75,67 @@ const faqs = [
   { question: 'Why do some cheap skins cost less than a dollar?', answer: 'Consumer Grade and Industrial Grade skins have lower rarity and are more common drops from cases or trades. These entry-level skins are perfect for beginners or players building a collection on a budget.' },
   { question: 'Do knife prices follow the same trends as weapon skins?', answer: 'Knives are rarer and typically much more expensive than weapon skins. While they follow general market trends, knife prices are more volatile because supply is extremely limited and demand is high among collectors.' },
   { question: 'What is a Factory New skin worth compared to Battle-Scarred?', answer: 'Factory New (FN) skins are typically 2–10x more expensive than Battle-Scarred versions of the same skin, depending on rarity and demand. The price difference reflects both aesthetics and collector preference.' },
-  { question: 'How often do skin prices update?', answer: 'Prices on CSDB.gg are sourced from multiple marketplaces and updated regularly. The exact update frequency varies by marketplace, but prices typically reflect current market conditions within hours.' },
+  { question: 'How often do skin prices update?', answer: 'Prices on CSGOLuck Wiki are sourced from multiple marketplaces and updated regularly. The exact update frequency varies by marketplace, but prices typically reflect current market conditions within hours.' },
   { question: 'Should I invest in expensive skins or cheap skins?', answer: 'Investment potential varies. Cheap skins can appreciate quickly if a case is discontinued or a pro uses the skin in-game. Expensive skins (Covert, knives) tend to hold value better but require more capital. Diversification is key.' },
 ];
 ---
 
-<Base title={title} description={description} currentNav="/tools/">
+<Base title={title} description={description} currentNav="/cs2-tools/">
   <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema(breadcrumbs))}></script>
   <script type="application/ld+json" set:html={JSON.stringify(faqSchema(faqs))}></script>
-  <script type="application/ld+json" set:html={JSON.stringify(toolAppSchema({ name: 'CS2 Skin Price Tracker', url: 'https://csdb.gg/price-tracker/', description }))}></script>
+  <script type="application/ld+json" set:html={JSON.stringify(toolAppSchema({ name: 'CS2 Skin Price Tracker', url: 'https://wiki.csgoluck.com/price-tracker/', description }))}></script>
 
-  <nav class="breadcrumb">
+  <nav class="pt-breadcrumb">
     <a href="/">Home</a> / <a href="/">Tools</a> / <span>Price Tracker</span>
   </nav>
 
-  <h1>CS2 Skin Price Tracker</h1>
-  <p>Explore live pricing data for all CS2 weapon skins, knives, and gloves. Track market trends, find the best deals, and analyze price distributions by rarity and weapon category.</p>
+  <section class="pt-hero">
+    <h1>CS2 Skin Price Tracker</h1>
+    <p>Explore live pricing data for all CS2 weapon skins, knives, and gloves. Track market trends, find the best deals, and analyze price distributions by rarity and weapon category.</p>
+  </section>
 
   <!-- Market Overview Stats -->
-  <section class="market-overview">
+  <section class="pt-overview">
     <h2>Market Overview</h2>
-    <div class="stats-grid">
-      <div class="stat-card">
-        <div class="val">{skinsWithPrices.length}</div>
-        <div class="label">Skins Tracked</div>
+    <div class="pt-stats">
+      <div class="pt-stat">
+        <div class="pt-stat-val">{skinsWithPrices.length}</div>
+        <div class="pt-stat-label">Skins Tracked</div>
       </div>
-      <div class="stat-card">
-        <div class="val">${totalValue.toFixed(0)}</div>
-        <div class="label">Total Market Value</div>
+      <div class="pt-stat">
+        <div class="pt-stat-val">${totalValue.toFixed(0)}</div>
+        <div class="pt-stat-label">Total Market Value</div>
       </div>
-      <div class="stat-card">
-        <div class="val">${avgPrice.toFixed(2)}</div>
-        <div class="label">Average Skin Price</div>
+      <div class="pt-stat">
+        <div class="pt-stat-val">${avgPrice.toFixed(2)}</div>
+        <div class="pt-stat-label">Average Skin Price</div>
       </div>
-      <div class="stat-card">
-        <div class="val">${getHighestPrice(mostExpensive[0]).toFixed(2)}</div>
-        <div class="label">Most Expensive Skin</div>
+      <div class="pt-stat">
+        <div class="pt-stat-val">${getHighestPrice(mostExpensive[0]).toFixed(2)}</div>
+        <div class="pt-stat-label">Most Expensive Skin</div>
       </div>
     </div>
   </section>
 
   <!-- Price Distribution -->
-  <section class="price-distribution">
+  <section class="pt-distribution">
     <h2>Price Range Distribution</h2>
     <p>How many CS2 skins fall into each price bracket.</p>
-    <div class="distribution-chart">
+    <div class="pt-chart">
       {ranges.map((range) => {
         const maxCount = Math.max(...ranges.map(r => r.count));
         const percentage = maxCount > 0 ? (range.count / maxCount) * 100 : 0;
         return (
-          <div class="chart-bar-wrapper">
-            <div class="chart-bar-label">{range.label}</div>
-            <div class="chart-bar-container">
+          <div class="pt-chart-row">
+            <div class="pt-chart-label">{range.label}</div>
+            <div class="pt-chart-bar-wrap">
               <div
-                class="chart-bar"
-                style={`width: ${percentage}%; --bar-color: hsl(${150 - (range.min / 2000) * 150}, 70%, 50%)`}
+                class="pt-chart-bar"
+                style={`width: ${percentage}%`}
                 title={`${range.count} skins`}
               ></div>
             </div>
-            <div class="chart-bar-count">{range.count}</div>
+            <div class="pt-chart-count">{range.count}</div>
           </div>
         );
       })}
@@ -141,18 +143,18 @@ const faqs = [
   </section>
 
   <!-- Most Expensive Skins Table -->
-  <section class="expensive-section">
+  <section class="pt-section">
     <h2>Most Expensive Skins</h2>
     <p>The top 20 highest-priced CS2 skins on the market.</p>
-    <div class="table-wrapper">
-      <table class="price-table">
+    <div class="pt-table-wrap">
+      <table class="pt-table">
         <thead>
           <tr>
-            <th class="rank-col">Rank</th>
-            <th class="name-col">Skin Name</th>
-            <th class="weapon-col">Weapon</th>
-            <th class="rarity-col">Rarity</th>
-            <th class="price-col">Highest Price</th>
+            <th class="pt-col-rank">Rank</th>
+            <th class="pt-col-name">Skin Name</th>
+            <th class="pt-col-weapon">Weapon</th>
+            <th class="pt-col-rarity">Rarity</th>
+            <th class="pt-col-price">Highest Price</th>
           </tr>
         </thead>
         <tbody>
@@ -160,17 +162,17 @@ const faqs = [
             const rarityColor = RARITY_COLORS[skin.rarity] || '#fff';
             return (
               <tr>
-                <td class="rank-col">{idx + 1}</td>
-                <td class="name-col">
-                  <a href={`/skin/${skin.slug}/`} class="skin-link">{skin.name}</a>
+                <td class="pt-col-rank">{idx + 1}</td>
+                <td class="pt-col-name">
+                  <a href={`/cs2-skin/${skin.slug}/`} class="pt-skin-link">{skin.name}</a>
                 </td>
-                <td class="weapon-col">{skin.weapon}</td>
-                <td class="rarity-col">
-                  <span class="rarity-badge" style={`color: ${rarityColor}`}>
+                <td class="pt-col-weapon">{skin.weapon}</td>
+                <td class="pt-col-rarity">
+                  <span class="pt-rarity-badge" style={`color: ${rarityColor}`}>
                     {skin.rarity}
                   </span>
                 </td>
-                <td class="price-col">${getHighestPrice(skin).toFixed(2)}</td>
+                <td class="pt-col-price">${getHighestPrice(skin).toFixed(2)}</td>
               </tr>
             );
           })}
@@ -180,18 +182,18 @@ const faqs = [
   </section>
 
   <!-- Cheapest Skins Table -->
-  <section class="budget-section">
+  <section class="pt-section">
     <h2>Best Budget Skins</h2>
     <p>The 20 cheapest CS2 skins to start your collection.</p>
-    <div class="table-wrapper">
-      <table class="price-table">
+    <div class="pt-table-wrap">
+      <table class="pt-table">
         <thead>
           <tr>
-            <th class="rank-col">Rank</th>
-            <th class="name-col">Skin Name</th>
-            <th class="weapon-col">Weapon</th>
-            <th class="rarity-col">Rarity</th>
-            <th class="price-col">Lowest Price</th>
+            <th class="pt-col-rank">Rank</th>
+            <th class="pt-col-name">Skin Name</th>
+            <th class="pt-col-weapon">Weapon</th>
+            <th class="pt-col-rarity">Rarity</th>
+            <th class="pt-col-price">Lowest Price</th>
           </tr>
         </thead>
         <tbody>
@@ -199,17 +201,17 @@ const faqs = [
             const rarityColor = RARITY_COLORS[skin.rarity] || '#fff';
             return (
               <tr>
-                <td class="rank-col">{idx + 1}</td>
-                <td class="name-col">
-                  <a href={`/skin/${skin.slug}/`} class="skin-link">{skin.name}</a>
+                <td class="pt-col-rank">{idx + 1}</td>
+                <td class="pt-col-name">
+                  <a href={`/cs2-skin/${skin.slug}/`} class="pt-skin-link">{skin.name}</a>
                 </td>
-                <td class="weapon-col">{skin.weapon}</td>
-                <td class="rarity-col">
-                  <span class="rarity-badge" style={`color: ${rarityColor}`}>
+                <td class="pt-col-weapon">{skin.weapon}</td>
+                <td class="pt-col-rarity">
+                  <span class="pt-rarity-badge" style={`color: ${rarityColor}`}>
                     {skin.rarity}
                   </span>
                 </td>
-                <td class="price-col">${getLowestPrice(skin).toFixed(2)}</td>
+                <td class="pt-col-price">${getLowestPrice(skin).toFixed(2)}</td>
               </tr>
             );
           })}
@@ -219,36 +221,36 @@ const faqs = [
   </section>
 
   <!-- Category Price Analysis -->
-  <section class="category-analysis">
+  <section class="pt-section">
     <h2>Average Price by Category</h2>
     <p>Compare average skin prices across weapon categories.</p>
-    <div class="stats-grid">
+    <div class="pt-cat-list">
       {Object.entries(categories)
         .sort((a, b) => b[1].avg - a[1].avg)
         .map(([cat, data]) => (
-          <div class="stat-card category-card">
-            <div class="val">${data.avg.toFixed(2)}</div>
-            <div class="label">{categoryLabels[cat] || cat}</div>
-            <div class="sub-label">{data.count} skins</div>
+          <div class="pt-cat-row">
+            <span class="pt-cat-name">{categoryLabels[cat] || cat}</span>
+            <span class="pt-cat-count">{data.count} skins</span>
+            <span class="pt-cat-avg">${data.avg.toFixed(2)}</span>
           </div>
         ))}
     </div>
   </section>
 
   <!-- Rarity Value Analysis -->
-  <section class="rarity-analysis">
+  <section class="pt-section">
     <h2>Average Price by Rarity</h2>
     <p>How rarity tier correlates with average skin value.</p>
-    <div class="rarity-grid">
+    <div class="pt-rarity-list">
       {Object.entries(rarities)
         .sort((a, b) => b[1].avg - a[1].avg)
         .map(([rarity, data]) => {
           const rarityColor = RARITY_COLORS[rarity] || '#fff';
           return (
-            <div class="rarity-card" style={`--rarity-color: ${rarityColor}`}>
-              <div class="rarity-name">{rarity}</div>
-              <div class="rarity-price">${data.avg.toFixed(2)}</div>
-              <div class="rarity-count">{data.count} skins</div>
+            <div class="pt-rarity-row" style={`--rarity-color: ${rarityColor}`}>
+              <span class="pt-rarity-name">{rarity}</span>
+              <span class="pt-rarity-count">{data.count} skins</span>
+              <span class="pt-rarity-price">${data.avg.toFixed(2)}</span>
             </div>
           );
         })}
@@ -256,30 +258,30 @@ const faqs = [
   </section>
 
   <!-- Price Trends Tips -->
-  <section class="price-trends">
+  <section class="pt-section">
     <h2>What Drives CS2 Skin Prices?</h2>
-    <div class="tips-grid">
-      <div class="tip-card">
+    <div class="pt-drivers-list">
+      <div class="pt-driver-row">
         <h3>Case Discontinuation</h3>
         <p>When Valve retires a case from rotation, supply decreases and prices often increase. Discontinued skins tend to become more valuable over time as supply dwindles.</p>
       </div>
-      <div class="tip-card">
+      <div class="pt-driver-row">
         <h3>Game Updates & Meta</h3>
         <p>Major weapon balance changes can shift player preference. When a gun gets buffed or nerfed, skins for that weapon often see price fluctuations within hours.</p>
       </div>
-      <div class="tip-card">
+      <div class="pt-driver-row">
         <h3>Pro Player Usage</h3>
         <p>Pro esports players have enormous influence. When a famous player uses a specific skin in a tournament, its popularity and price can spike dramatically.</p>
       </div>
-      <div class="tip-card">
+      <div class="pt-driver-row">
         <h3>Float Condition</h3>
         <p>Factory New (FN) skins are always more expensive than Battle-Scarred versions. The float value (wear condition) can affect prices by a factor of 2x–10x or more.</p>
       </div>
-      <div class="tip-card">
+      <div class="pt-driver-row">
         <h3>StatTrak & Souvenir</h3>
         <p>StatTrak versions (with kill counter) and Souvenir drops from major tournaments are rarer and command significant premiums—sometimes 2–5x the base price.</p>
       </div>
-      <div class="tip-card">
+      <div class="pt-driver-row">
         <h3>Rarity Tier</h3>
         <p>Covert and Classified skins are inherently rarer and more expensive. Consumer and Industrial Grade skins are abundant and cheap, making them perfect for budget collectors.</p>
       </div>
@@ -287,396 +289,140 @@ const faqs = [
   </section>
 
   <!-- FAQ -->
-  <section class="faq-section">
+  <section class="pt-faq">
     <h2>Frequently Asked Questions</h2>
-    <dl class="faq">
-      {faqs.map(f => (
-        <Fragment>
-          <dt>{f.question}</dt>
-          <dd>{f.answer}</dd>
-        </Fragment>
-      ))}
-    </dl>
+    {faqs.map(f => (
+      <details class="pt-faq-item">
+        <summary>{f.question}</summary>
+        <p>{f.answer}</p>
+      </details>
+    ))}
   </section>
 
   <!-- Internal Links -->
-  <div class="internal-links">
-    <strong>Related Tools & Guides:</strong>
-    <a href="/skins/">Skin Database</a>
-    <a href="/skin-compare/">Compare Skins</a>
-    <a href="/market-trends/">Market Trends</a>
-    <a href="/float-checker/">Float Checker</a>
-    <a href="/tradeup-calculator/">Trade-Up Calculator</a>
-    <a href="/case-odds-calculator/">Case Odds Calculator</a>
-    <a href="/case-simulator/">Case Simulator</a>
-    <a href="/cases/">Cases & Collections</a>
-    <a href="/inventory-lookup/">Inventory Lookup</a>
-    <a href="/loadout-builder/">Loadout Builder</a>
-    <a href="/weapons/">Weapon Database</a>
-    <a href="/guides/trading-guide/">Trading Guide</a>
-    <a href="/guides/float-guide/">Float Value Guide</a>
-    <a href="/guides/skins-investing-guide/">Skins Investing Guide</a>
-  </div>
+  <section class="pt-related">
+    <h2>Related Tools & Guides</h2>
+    <div class="pt-related-list">
+      <a href="/cs2-skins/" class="pt-related-row">Skin Database</a>
+      <a href="/skin-compare/" class="pt-related-row">Compare Skins</a>
+      <a href="/market-trends/" class="pt-related-row">Market Trends</a>
+      <a href="/float-checker/" class="pt-related-row">Float Checker</a>
+      <a href="/tradeup-calculator/" class="pt-related-row">Trade-Up Calculator</a>
+      <a href="/case-odds-calculator/" class="pt-related-row">Case Odds Calculator</a>
+      <a href="/case-simulator/" class="pt-related-row">Case Simulator</a>
+      <a href="/cs2-cases/" class="pt-related-row">Cases & Collections</a>
+      <a href="/inventory-lookup/" class="pt-related-row">Inventory Lookup</a>
+      <a href="/loadout-builder/" class="pt-related-row">Loadout Builder</a>
+      <a href="/cs2-weapons/" class="pt-related-row">Weapon Database</a>
+      <a href="/cs2-guides/trading-guide/" class="pt-related-row">Trading Guide</a>
+      <a href="/cs2-guides/float-guide/" class="pt-related-row">Float Value Guide</a>
+      <a href="/cs2-guides/skins-investing-guide/" class="pt-related-row">Skins Investing Guide</a>
+    </div>
+  </section>
 
   <ExploreMore context="skins" />
 </Base>
 
 <style>
-  /* ── Market Overview Section ────────────────────────────────────────────── */
-  .market-overview {
-    margin: 2rem 0;
-  }
+/* ── Breadcrumb ── */
+.pt-breadcrumb{font-size:.82rem;color:var(--text2);margin-bottom:1.25rem;display:flex;gap:.35rem;flex-wrap:wrap}
+.pt-breadcrumb a{color:var(--accent);text-decoration:none}
+.pt-breadcrumb a:hover{text-decoration:underline}
 
-  .market-overview h2 {
-    color: var(--text);
-    margin-bottom: 1rem;
-    font-size: 1.4rem;
-    font-weight: 700;
-  }
+/* ── Hero ── */
+.pt-hero{background:var(--bg2);border:1px solid var(--border);border-radius:4px;padding:2rem;margin-bottom:1.5rem}
+.pt-hero h1{font-family:'Montserrat',sans-serif;font-size:2rem;font-weight:800;margin:0 0 .5rem;color:var(--text)}
+.pt-hero p{color:var(--text2);font-size:.95rem;line-height:1.6;margin:0}
 
-  /* ── Price Distribution Chart ──────────────────────────────────────────── */
-  .price-distribution {
-    margin: 3rem 0;
-    padding: 1.5rem;
-    background: var(--bg2);
-    border-radius: 8px;
-    border: 1px solid var(--border);
-  }
+/* ── Overview Stats ── */
+.pt-overview{margin-bottom:2rem}
+.pt-overview h2{font-family:'Montserrat',sans-serif;font-size:1.15rem;font-weight:700;color:var(--text);margin:0 0 .75rem}
+.pt-stats{display:flex;gap:2px;flex-wrap:wrap}
+.pt-stat{flex:1;min-width:140px;background:var(--bg2);border:1px solid var(--border);border-radius:4px;padding:1rem;text-align:center}
+.pt-stat-val{font-family:'Montserrat',sans-serif;font-size:1.4rem;font-weight:800;color:var(--accent)}
+.pt-stat-label{font-size:.78rem;color:var(--text2);text-transform:uppercase;letter-spacing:.04em;font-weight:600;margin-top:.25rem}
 
-  .price-distribution h2 {
-    color: var(--text);
-    margin-bottom: 0.5rem;
-    font-size: 1.4rem;
-    font-weight: 700;
-  }
+/* ── Price Distribution ── */
+.pt-distribution{background:var(--bg2);border:1px solid var(--border);border-radius:4px;padding:1.5rem;margin-bottom:2rem}
+.pt-distribution h2{font-family:'Montserrat',sans-serif;font-size:1.15rem;font-weight:700;color:var(--text);margin:0 0 .5rem}
+.pt-distribution>p{color:var(--text2);margin-bottom:1.5rem;font-size:.95rem}
+.pt-chart{display:flex;flex-direction:column;gap:1rem}
+.pt-chart-row{display:grid;grid-template-columns:100px 1fr 50px;align-items:center;gap:1rem}
+.pt-chart-label{color:var(--text2);font-size:.9rem;font-weight:600;text-align:right}
+.pt-chart-bar-wrap{background:var(--bg3);border-radius:4px;overflow:hidden;min-height:28px;display:flex;align-items:center}
+.pt-chart-bar{height:24px;background:var(--accent);border-radius:4px;min-width:4px}
+.pt-chart-count{color:var(--text);font-weight:700;font-size:.9rem;text-align:right}
 
-  .price-distribution > p {
-    color: var(--text2);
-    margin-bottom: 1.5rem;
-    font-size: 0.95rem;
-  }
+/* ── Sections ── */
+.pt-section{margin-bottom:2rem}
+.pt-section h2{font-family:'Montserrat',sans-serif;font-size:1.15rem;font-weight:700;color:var(--text);margin:0 0 .5rem}
+.pt-section>p{color:var(--text2);margin-bottom:1rem;font-size:.95rem}
 
-  .distribution-chart {
-    display: flex;
-    flex-direction: column;
-    gap: 1.2rem;
-  }
+/* ── Tables ── */
+.pt-table-wrap{overflow-x:auto;border-radius:4px;border:1px solid var(--border)}
+.pt-table{width:100%;border-collapse:collapse;background:var(--bg2);font-size:.95rem}
+.pt-table thead{background:var(--bg3);border-bottom:2px solid var(--border)}
+.pt-table th{color:var(--text);padding:.75rem;text-align:left;font-weight:700;font-size:.9rem}
+.pt-table td{padding:.75rem;border-bottom:1px solid var(--border);color:var(--text)}
+.pt-table tbody tr:hover{background:var(--bg3)}
+.pt-col-rank{width:60px;text-align:center;font-weight:700;color:var(--accent)}
+.pt-col-name{min-width:200px}
+.pt-skin-link{color:var(--accent);text-decoration:none;font-weight:600}
+.pt-skin-link:hover{text-decoration:underline}
+.pt-col-weapon{width:120px;color:var(--text2);font-weight:500}
+.pt-col-rarity{width:140px}
+.pt-rarity-badge{font-weight:700;padding:.3rem .6rem;border-radius:4px;display:inline-block}
+.pt-col-price{width:130px;text-align:right;font-weight:700;color:var(--green)}
 
-  .chart-bar-wrapper {
-    display: grid;
-    grid-template-columns: 120px 1fr 60px;
-    align-items: center;
-    gap: 1rem;
-  }
+/* ── Category List ── */
+.pt-cat-list{display:flex;flex-direction:column;gap:2px}
+.pt-cat-row{display:flex;align-items:center;gap:1rem;background:var(--bg2);border:1px solid var(--border);border-left:3px solid transparent;border-radius:4px;padding:.75rem 1rem;transition:border-color .15s,background .15s}
+.pt-cat-row:hover{border-left-color:var(--accent);background:var(--bg3)}
+.pt-cat-name{font-weight:700;font-size:.95rem;color:var(--text);min-width:80px}
+.pt-cat-count{font-size:.82rem;color:var(--text2);flex:1}
+.pt-cat-avg{font-weight:700;font-size:1rem;color:var(--accent)}
 
-  .chart-bar-label {
-    color: var(--text2);
-    font-size: 0.9rem;
-    font-weight: 600;
-    text-align: right;
-  }
+/* ── Rarity List ── */
+.pt-rarity-list{display:flex;flex-direction:column;gap:2px}
+.pt-rarity-row{display:flex;align-items:center;gap:1rem;background:var(--bg2);border:1px solid var(--border);border-left:3px solid var(--rarity-color);border-radius:4px;padding:.75rem 1rem;transition:background .15s}
+.pt-rarity-row:hover{background:var(--bg3)}
+.pt-rarity-name{font-weight:700;font-size:.95rem;color:var(--rarity-color);min-width:100px}
+.pt-rarity-count{font-size:.82rem;color:var(--text2);flex:1}
+.pt-rarity-price{font-weight:700;font-size:1rem;color:var(--rarity-color)}
 
-  .chart-bar-container {
-    background: var(--bg3);
-    border-radius: 4px;
-    overflow: hidden;
-    min-height: 32px;
-    display: flex;
-    align-items: center;
-  }
+/* ── Price Drivers ── */
+.pt-drivers-list{display:flex;flex-direction:column;gap:2px}
+.pt-driver-row{background:var(--bg2);border:1px solid var(--border);border-left:3px solid transparent;border-radius:4px;padding:1rem 1.25rem;transition:border-color .15s,background .15s}
+.pt-driver-row:hover{border-left-color:var(--accent);background:var(--bg3)}
+.pt-driver-row h3{font-family:'Montserrat',sans-serif;color:var(--text);font-size:1rem;font-weight:700;margin:0 0 .35rem}
+.pt-driver-row p{color:var(--text2);font-size:.9rem;line-height:1.6;margin:0}
 
-  .chart-bar {
-    height: 28px;
-    background: var(--bar-color, var(--accent));
-    border-radius: 4px;
-    transition: all 0.3s ease;
-    min-width: 4px;
-    box-shadow: 0 0 8px rgba(255, 255, 255, 0.1);
-  }
+/* ── FAQ ── */
+.pt-faq{margin-bottom:2rem}
+.pt-faq h2{font-family:'Montserrat',sans-serif;font-size:1.15rem;font-weight:700;color:var(--text);margin:0 0 .75rem}
+.pt-faq-item{background:var(--bg2);border:1px solid var(--border);border-radius:4px;margin-bottom:.35rem;overflow:hidden}
+.pt-faq-item summary{padding:.75rem 1rem;font-weight:700;font-size:.9rem;color:var(--text);cursor:pointer;list-style:none;display:flex;align-items:center;gap:.5rem;transition:background .15s}
+.pt-faq-item summary::before{content:'+';font-size:1.05rem;font-weight:700;color:var(--accent);flex-shrink:0;width:18px;text-align:center}
+.pt-faq-item[open] summary::before{content:'\2212'}
+.pt-faq-item summary:hover{background:var(--bg3)}
+.pt-faq-item summary::-webkit-details-marker{display:none}
+.pt-faq-item p{padding:0 1rem .85rem 2.25rem;margin:0;color:var(--text2);font-size:.88rem;line-height:1.6}
 
-  .chart-bar-count {
-    color: var(--text);
-    font-weight: 700;
-    font-size: 0.9rem;
-    text-align: right;
-    min-width: 40px;
-  }
+/* ── Related ── */
+.pt-related{margin-bottom:2rem}
+.pt-related h2{font-family:'Montserrat',sans-serif;font-size:1.15rem;font-weight:700;color:var(--text);margin:0 0 .75rem}
+.pt-related-list{display:flex;flex-direction:column;gap:2px}
+.pt-related-row{display:flex;align-items:center;text-decoration:none;color:var(--text);background:var(--bg2);border:1px solid var(--border);border-left:3px solid transparent;border-radius:4px;padding:.6rem 1rem;font-size:.9rem;font-weight:600;transition:border-color .15s,background .15s}
+.pt-related-row:hover{border-left-color:var(--accent);background:var(--bg3)}
 
-  /* ── Table Sections ────────────────────────────────────────────────────── */
-  .expensive-section,
-  .budget-section,
-  .category-analysis,
-  .rarity-analysis,
-  .price-trends,
-  .faq-section {
-    margin: 3rem 0;
-  }
-
-  .expensive-section h2,
-  .budget-section h2,
-  .category-analysis h2,
-  .rarity-analysis h2,
-  .price-trends h2,
-  .faq-section h2 {
-    color: var(--text);
-    margin-bottom: 0.5rem;
-    font-size: 1.4rem;
-    font-weight: 700;
-  }
-
-  .expensive-section > p,
-  .budget-section > p,
-  .category-analysis > p,
-  .rarity-analysis > p,
-  .price-trends > p {
-    color: var(--text2);
-    margin-bottom: 1.5rem;
-    font-size: 0.95rem;
-  }
-
-  .table-wrapper {
-    overflow-x: auto;
-    border-radius: 8px;
-    border: 1px solid var(--border);
-  }
-
-  .price-table {
-    width: 100%;
-    border-collapse: collapse;
-    background: var(--bg2);
-    font-size: 0.95rem;
-  }
-
-  .price-table thead {
-    background: var(--bg3);
-    border-bottom: 2px solid var(--border);
-  }
-
-  .price-table th {
-    color: var(--text);
-    padding: 0.75rem;
-    text-align: left;
-    font-weight: 700;
-    font-size: 0.9rem;
-  }
-
-  .price-table td {
-    padding: 0.75rem;
-    border-bottom: 1px solid var(--border);
-    color: var(--text);
-  }
-
-  .price-table tbody tr:hover {
-    background: var(--bg3);
-    transition: background 0.2s ease;
-  }
-
-  .rank-col {
-    width: 60px;
-    text-align: center;
-    font-weight: 700;
-    color: var(--accent);
-  }
-
-  .name-col {
-    flex: 1;
-    min-width: 200px;
-  }
-
-  .skin-link {
-    color: var(--accent);
-    text-decoration: none;
-    font-weight: 600;
-    transition: color 0.2s ease;
-  }
-
-  .skin-link:hover {
-    color: var(--accent2);
-    text-decoration: underline;
-  }
-
-  .weapon-col {
-    width: 120px;
-    color: var(--text2);
-    font-weight: 500;
-  }
-
-  .rarity-col {
-    width: 140px;
-  }
-
-  .rarity-badge {
-    font-weight: 700;
-    padding: 0.3rem 0.6rem;
-    border-radius: 4px;
-    display: inline-block;
-  }
-
-  .price-col {
-    width: 130px;
-    text-align: right;
-    font-weight: 700;
-    color: var(--green);
-  }
-
-  /* ── Category Analysis Grid ────────────────────────────────────────────── */
-  .category-analysis .stats-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 1.5rem;
-  }
-
-  .category-card {
-    cursor: default;
-  }
-
-  .category-card .sub-label {
-    color: var(--text2);
-    font-size: 0.85rem;
-    margin-top: 0.5rem;
-  }
-
-  /* ── Rarity Analysis Grid ──────────────────────────────────────────────── */
-  .rarity-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-    gap: 1.5rem;
-  }
-
-  .rarity-card {
-    background: var(--bg2);
-    border: 2px solid var(--border);
-    border-left: 4px solid var(--rarity-color);
-    padding: 1.5rem;
-    border-radius: 8px;
-    text-align: center;
-    transition: all 0.3s ease;
-  }
-
-  .rarity-card:hover {
-    border-color: var(--rarity-color);
-    box-shadow: 0 4px 12px rgba(255, 255, 255, 0.05);
-    transform: translateY(-2px);
-  }
-
-  .rarity-name {
-    color: var(--text2);
-    font-size: 0.9rem;
-    font-weight: 600;
-    margin-bottom: 0.5rem;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-  }
-
-  .rarity-price {
-    color: var(--rarity-color);
-    font-size: 1.8rem;
-    font-weight: 700;
-    margin-bottom: 0.5rem;
-  }
-
-  .rarity-count {
-    color: var(--text2);
-    font-size: 0.85rem;
-  }
-
-  /* ── Price Trends Tips Grid ────────────────────────────────────────────── */
-  .tips-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 1.5rem;
-  }
-
-  .tip-card {
-    background: var(--bg2);
-    border: 1px solid var(--border);
-    border-top: 3px solid var(--accent);
-    padding: 1.5rem;
-    border-radius: 8px;
-    transition: all 0.3s ease;
-  }
-
-  .tip-card:hover {
-    border-color: var(--accent);
-    box-shadow: 0 4px 12px rgba(255, 255, 255, 0.05);
-    transform: translateY(-2px);
-  }
-
-  .tip-card h3 {
-    color: var(--text);
-    margin-bottom: 0.75rem;
-    font-size: 1.1rem;
-    font-weight: 700;
-  }
-
-  .tip-card p {
-    color: var(--text2);
-    font-size: 0.95rem;
-    line-height: 1.6;
-  }
-
-  /* ── FAQ Section ────────────────────────────────────────────────────────── */
-  .faq-section {
-    padding: 1.5rem;
-    background: var(--bg2);
-    border-radius: 8px;
-    border: 1px solid var(--border);
-  }
-
-  .faq {
-    margin-top: 1.5rem;
-  }
-
-  .faq dt {
-    color: var(--text);
-    font-weight: 700;
-    font-size: 1rem;
-    margin-top: 1.2rem;
-    margin-bottom: 0.5rem;
-    cursor: pointer;
-    transition: color 0.2s ease;
-  }
-
-  .faq dt:hover {
-    color: var(--accent);
-  }
-
-  .faq dd {
-    color: var(--text2);
-    margin-left: 0;
-    margin-bottom: 1rem;
-    line-height: 1.7;
-    font-size: 0.95rem;
-  }
-
-  /* ── Responsive Design ────────────────────────────────────────────────── */
-  @media (max-width: 768px) {
-    .chart-bar-wrapper {
-      grid-template-columns: 1fr;
-      gap: 0.5rem;
-    }
-
-    .chart-bar-label {
-      text-align: left;
-    }
-
-    .chart-bar-count {
-      text-align: left;
-    }
-
-    .price-table {
-      font-size: 0.85rem;
-    }
-
-    .price-table th,
-    .price-table td {
-      padding: 0.5rem;
-    }
-
-    .rarity-grid,
-    .tips-grid,
-    .category-analysis .stats-grid {
-      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-    }
-  }
+/* ── Responsive ── */
+@media(max-width:768px){
+  .pt-hero h1{font-size:1.5rem}
+  .pt-stats{flex-direction:column}
+  .pt-chart-row{grid-template-columns:1fr;gap:.5rem}
+  .pt-chart-label{text-align:left}
+  .pt-chart-count{text-align:left}
+  .pt-table{font-size:.85rem}
+  .pt-table th,.pt-table td{padding:.5rem}
+}
 </style>

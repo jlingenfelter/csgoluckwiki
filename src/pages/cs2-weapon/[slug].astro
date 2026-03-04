@@ -1,0 +1,839 @@
+---
+import Base from '../../layouts/Base.astro';
+import ExploreMore from '../../components/ExploreMore.astro';
+import { WEAPONS, WEAPON_CATEGORIES, getWeaponBySlug, getWeaponsByCategory, breadcrumbSchema, faqSchema } from '../../lib/weapons';
+import { getSkinsByWeapon, RARITY_COLORS, RARITY_BG, getLowestPrice, getHighestPrice } from '../../lib/skins';
+import { PRO_PLAYERS } from '../../lib/pro-players';
+
+export async function getStaticPaths() {
+  return WEAPONS.map(weapon => ({
+    params: { slug: weapon.slug }
+  }));
+}
+
+const { slug } = Astro.params;
+const weapon = getWeaponBySlug(slug);
+
+if (!weapon) {
+  return Astro.redirect('/cs2-weapons/');
+}
+
+const skins = getSkinsByWeapon(weapon.slug);
+const relatedWeapons = getWeaponsByCategory(weapon.category)
+  .filter(w => w.slug !== weapon.slug)
+  .slice(0, 5);
+
+const categoryInfo = WEAPON_CATEGORIES.find(c => c.slug === weapon.category);
+const categoryLabel = categoryInfo?.name || weapon.category.charAt(0).toUpperCase() + weapon.category.slice(1);
+
+const teamLabels: Record<string, string> = { ct: 'Counter-Terrorist', t: 'Terrorist', both: 'Both Sides' };
+const teamLabel = teamLabels[weapon.team] || weapon.team;
+
+// Calculate derived stats
+const isCosmetic = weapon.cosmetic === true;
+const dps = isCosmetic ? 0 : Math.round((weapon.damage * weapon.rpm) / 60);
+const ttk = !isCosmetic && weapon.rpm > 0 ? Math.round((60 / weapon.rpm) * 1000) : 0;
+const hsKill = !isCosmetic && weapon.damage * weapon.headshotMult >= 100;
+
+// SEO
+const pageTitle = isCosmetic
+  ? `${weapon.name} Skins — All ${skins.length} CS2 ${weapon.name} Skins & Prices | CSGOLuck Wiki`
+  : `${weapon.name} — CS2 Stats, Damage, Recoil & ${skins.length} Skins | CSGOLuck Wiki`;
+const pageDesc = isCosmetic
+  ? `Browse all ${skins.length} ${weapon.name} skins in Counter-Strike 2. Compare prices across marketplaces, view all wear conditions, and find the best deals.`
+  : `Complete ${weapon.name} guide for Counter-Strike 2. ${weapon.damage} damage, ${weapon.armorPen}% armor penetration, ${weapon.rpm} RPM. Browse ${skins.length} available skins with prices from all marketplaces.`;
+
+const breadcrumbs = [
+  { name: 'Home', url: '/' },
+  { name: 'Weapons', url: '/cs2-weapons/' },
+  { name: categoryLabel, url: `/cs2-weapons/${weapon.category}/` },
+  { name: weapon.name, url: `/cs2-weapon/${weapon.slug}/` }
+];
+
+const faqs = isCosmetic ? [
+  { question: `How many ${weapon.name} skins are there in CS2?`, answer: `There are currently ${skins.length} ${weapon.name} skins available in Counter-Strike 2. Each skin is available in up to five wear conditions: Factory New, Minimal Wear, Field-Tested, Well-Worn, and Battle-Scarred.` },
+  { question: `How do you get ${weapon.name} in CS2?`, answer: `${weapon.category === 'knife' ? 'Knives' : 'Gloves'} can be obtained by opening weapon cases or by trading/purchasing on third-party marketplaces like Buff163, Skinport, or the Steam Community Market.` },
+  { question: `Are ${weapon.name} rare in CS2?`, answer: `Yes, ${weapon.category === 'knife' ? 'knives' : 'gloves'} are among the rarest items in CS2. The chance of unboxing one from a case is approximately 0.26% (roughly 1 in 385 cases).` },
+  { question: `What is the cheapest ${weapon.name} skin?`, answer: skins.length > 0 ? `${weapon.name} skin prices vary significantly based on the pattern and wear condition. Check our price listings above for current market prices across all major marketplaces.` : `No skins are currently listed for the ${weapon.name}. Check back soon for updated pricing.` },
+] : [
+  { question: `How much damage does the ${weapon.name} do in CS2?`, answer: `The ${weapon.name} deals ${weapon.damage} base damage per hit with ${weapon.armorPen}% armor penetration. Headshot multiplier is ${weapon.headshotMult}x, meaning a headshot deals ${Math.round(weapon.damage * weapon.headshotMult)} damage before armor reduction.` },
+  { question: `How much does the ${weapon.name} cost in CS2?`, answer: `The ${weapon.name} costs $${weapon.price.toLocaleString()} to buy and gives a $${weapon.killReward.toLocaleString()} kill reward. It's available to ${teamLabel.toLowerCase()} players.` },
+  { question: `What is the ${weapon.name} fire rate?`, answer: `The ${weapon.name} fires at ${weapon.rpm} rounds per minute (RPM) with a ${weapon.magSize}-round magazine. Reload time is ${weapon.reloadTime} seconds.` },
+  { question: `How many skins does the ${weapon.name} have in CS2?`, answer: `The ${weapon.name} currently has ${skins.length} skins available in Counter-Strike 2, ranging across multiple rarity tiers from Consumer Grade to Covert.` },
+  { question: `Is the ${weapon.name} good in CS2?`, answer: weapon.description },
+];
+
+// Pro players who use this weapon (match loadout skin slugs starting with weapon slug)
+const weaponPros = PRO_PLAYERS.filter(p => {
+  if (!p.loadout) return false;
+  return Object.values(p.loadout).some(skinSlug => skinSlug && skinSlug.startsWith(weapon.slug));
+}).slice(0, 8);
+
+// Top skins by price tier
+const skinsWithPrice = skins.filter(s => !s.phase).map(s => ({ ...s, low: getLowestPrice(s) }));
+const budgetSkins = skinsWithPrice.filter(s => s.low > 0 && s.low <= 10).sort((a, b) => b.low - a.low).slice(0, 5);
+const midSkins = skinsWithPrice.filter(s => s.low > 10 && s.low <= 50).sort((a, b) => b.low - a.low).slice(0, 5);
+const premiumSkins = skinsWithPrice.filter(s => s.low > 50).sort((a, b) => b.low - a.low).slice(0, 5);
+---
+
+<Base title={pageTitle} description={pageDesc} currentNav="/cs2-weapons/">
+  <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema(breadcrumbs))}></script>
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema(faqs))}></script>
+
+  <nav class="wp-crumbs">
+    <a href="/">Home</a><span class="wp-sep">/</span><a href="/cs2-weapons/">Weapons</a><span class="wp-sep">/</span><a href={`/cs2-weapons/${weapon.category}/`}>{categoryLabel}</a><span class="wp-sep">/</span><span>{weapon.name}</span>
+  </nav>
+
+  <!-- Hero: two-column layout -->
+  <header class="wp-hero">
+    <div class="wp-hero-left">
+      <div class="wp-hero-img-wrap">
+        <span class="wp-hero-placeholder">{weapon.name.substring(0, 3)}</span>
+      </div>
+    </div>
+    <div class="wp-hero-right">
+      <h1 class="wp-hero-title">{weapon.name}</h1>
+      <div class="wp-hero-meta">
+        <span class="wp-badge wp-badge-cat">{categoryLabel}</span>
+        <span class={`wp-badge wp-badge-team wp-team-${weapon.team}`}>{teamLabel}</span>
+        {weapon.subcategory && <span class="wp-badge wp-badge-sub">{weapon.subcategory}</span>}
+      </div>
+      <p class="wp-hero-desc">{weapon.description} Use the <a href="/damage-calculator/">Damage Calculator</a> to compare damage across distances, or explore <a href="/recoil-patterns/">recoil patterns</a> to master spray control.</p>
+      <div class="wp-hero-tags">
+        {weapon.tags.map(tag => (
+          <span class="wp-tag">#{tag}</span>
+        ))}
+      </div>
+      {!isCosmetic && (
+        <div class="wp-hero-quick">
+          <span class="wp-qstat"><strong>${weapon.price.toLocaleString()}</strong> buy</span>
+          <span class="wp-qstat"><strong>+${weapon.killReward.toLocaleString()}</strong> kill</span>
+          <span class="wp-qstat"><strong>{weapon.damage}</strong> dmg</span>
+          <span class="wp-qstat"><strong>{weapon.rpm}</strong> rpm</span>
+        </div>
+      )}
+      {isCosmetic && skins.length > 0 && (
+        <div class="wp-hero-quick">
+          <span class="wp-qstat"><strong>{skins.length}</strong> skins</span>
+        </div>
+      )}
+    </div>
+  </header>
+
+  {!isCosmetic && (
+    <Fragment>
+    <!-- Stats data table with green header -->
+    <section class="wp-stats">
+      <h2 class="wp-section-title">Specifications</h2>
+      <div class="wp-stats-table">
+        <div class="wp-stats-head">
+          <span>Stat</span>
+          <span>Value</span>
+          <span>Visual</span>
+        </div>
+        <div class="wp-stats-row">
+          <span class="wp-stats-key">Damage</span>
+          <span class="wp-stats-val">{weapon.damage}</span>
+          <span class="wp-stats-bar"><span class="wp-bar-fill" style={`width:${Math.min(weapon.damage / 115 * 100, 100)}%`}></span></span>
+        </div>
+        <div class="wp-stats-row wp-stats-alt">
+          <span class="wp-stats-key">Armor Penetration</span>
+          <span class="wp-stats-val">{weapon.armorPen}%</span>
+          <span class="wp-stats-bar"><span class="wp-bar-fill" style={`width:${weapon.armorPen}%`}></span></span>
+        </div>
+        <div class="wp-stats-row">
+          <span class="wp-stats-key">Headshot Multi</span>
+          <span class="wp-stats-val">{weapon.headshotMult}x{hsKill ? ' (1-tap)' : ''}</span>
+          <span class="wp-stats-bar"></span>
+        </div>
+        <div class="wp-stats-row wp-stats-alt">
+          <span class="wp-stats-key">RPM</span>
+          <span class="wp-stats-val">{weapon.rpm}</span>
+          <span class="wp-stats-bar"><span class="wp-bar-fill" style={`width:${Math.min(weapon.rpm / 1000 * 100, 100)}%`}></span></span>
+        </div>
+        <div class="wp-stats-row">
+          <span class="wp-stats-key">DPS</span>
+          <span class="wp-stats-val">{dps}</span>
+          <span class="wp-stats-bar"></span>
+        </div>
+        <div class="wp-stats-row wp-stats-alt">
+          <span class="wp-stats-key">Magazine / Reserve</span>
+          <span class="wp-stats-val">{weapon.magSize} / {weapon.reserveAmmo}</span>
+          <span class="wp-stats-bar"></span>
+        </div>
+        <div class="wp-stats-row">
+          <span class="wp-stats-key">Reload Time</span>
+          <span class="wp-stats-val">{weapon.reloadTime}s</span>
+          <span class="wp-stats-bar"></span>
+        </div>
+        <div class="wp-stats-row wp-stats-alt">
+          <span class="wp-stats-key">Move Speed</span>
+          <span class="wp-stats-val">{weapon.moveSpeed} u/s</span>
+          <span class="wp-stats-bar"><span class="wp-bar-fill" style={`width:${weapon.moveSpeed / 250 * 100}%`}></span></span>
+        </div>
+        <div class="wp-stats-row">
+          <span class="wp-stats-key">Range Modifier</span>
+          <span class="wp-stats-val">{weapon.rangeModifier}</span>
+          <span class="wp-stats-bar"><span class="wp-bar-fill" style={`width:${weapon.rangeModifier * 100}%`}></span></span>
+        </div>
+        <div class="wp-stats-row wp-stats-alt">
+          <span class="wp-stats-key">Wallbang Power</span>
+          <span class="wp-stats-val">{weapon.penetration}</span>
+          <span class="wp-stats-bar"></span>
+        </div>
+      </div>
+    </section>
+    </Fragment>
+  )}
+
+  <!-- Usage Notes -->
+  {weapon.tips.length > 0 && (
+    <section class="wp-tips">
+      <h2 class="wp-section-title">Usage Notes</h2>
+      <ol class="wp-tips-list">
+        {weapon.tips.map(tip => (
+          <li>{tip}</li>
+        ))}
+      </ol>
+    </section>
+  )}
+
+  <!-- Pro Players: horizontal scrolling strip -->
+  {weaponPros.length > 0 && (
+    <section class="wp-pros">
+      <h2 class="wp-section-title">Used By Pros</h2>
+      <div class="wp-pros-scroll">
+        {weaponPros.map(p => (
+          <a href={`/pro-players/${p.slug}/`} class="wp-pro-card">
+            {p.image && <img src={p.image} alt={p.name} width="28" height="28" loading="lazy" />}
+            <span class="wp-pro-name">{p.name}</span>
+          </a>
+        ))}
+      </div>
+    </section>
+  )}
+
+  <!-- Skins: compact table rows -->
+  <section class="wp-skins">
+    <h2 class="wp-section-title">Skins ({skins.length})</h2>
+    <p style="font-size:.84rem;color:var(--text2);margin:-.25rem 0 .75rem">Browse all {skins.length} {weapon.name} skins below. Use the <a href="/float-checker/" style="color:var(--accent)">Float Checker</a> to inspect individual values or the <a href="/skin-compare/" style="color:var(--accent)">Skin Compare</a> tool to compare options side by side.</p>
+
+    {skins.length > 0 ? (
+      <div class="wp-skins-table">
+        <div class="wp-skins-head">
+          <span class="wp-sh wp-sh-img"></span>
+          <span class="wp-sh wp-sh-name">Name</span>
+          <span class="wp-sh wp-sh-rarity">Rarity</span>
+          <span class="wp-sh wp-sh-price">Price Range</span>
+          <span class="wp-sh wp-sh-wears">Wears</span>
+        </div>
+        {skins.map((skin, i) => {
+          const rc = RARITY_COLORS[skin.rarity] || '#d4956e';
+          const rbg = RARITY_BG[skin.rarity] || 'rgba(255,255,255,0.05)';
+          const low = getLowestPrice(skin);
+          const high = getHighestPrice(skin);
+          return (
+            <a href={`/cs2-skin/${skin.slug}/`} class:list={['wp-skin-row', { 'wp-skin-alt': i % 2 === 1 }]}>
+              <span class="wp-skin-thumb" style={`background:${rbg}`}>
+                {skin.image
+                  ? <img src={skin.image} alt={`${weapon.name} | ${skin.name}`} loading="lazy" width="50" height="38" />
+                  : <span class="wp-skin-ph" style={`color:${rc}`}>{skin.name.substring(0, 2)}</span>
+                }
+              </span>
+              <span class="wp-skin-name">{skin.name}</span>
+              <span class="wp-skin-rarity" style={`background:${rc}`}>{skin.rarity}</span>
+              <span class="wp-skin-price">${low.toFixed(2)}{low !== high ? ` - $${high.toFixed(2)}` : ''}</span>
+              <span class="wp-skin-wears">{skin.prices.length}W</span>
+            </a>
+          );
+        })}
+      </div>
+    ) : (
+      <p class="wp-empty">No skins listed for the {weapon.name} yet.</p>
+    )}
+  </section>
+
+  <!-- By Price Tier -->
+  {(budgetSkins.length > 0 || midSkins.length > 0 || premiumSkins.length > 0) && (
+    <section class="wp-tiers">
+      <h2 class="wp-section-title">By Price Tier</h2>
+      <div class="wp-tiers-grid">
+        {budgetSkins.length > 0 && (
+          <div class="wp-tier-col">
+            <h3 class="wp-tier-label">Under $10</h3>
+            {budgetSkins.map(s => (
+              <a href={`/cs2-skin/${s.slug}/`} class="wp-tier-item">
+                <span>{s.name}</span>
+                <span style={`color:${RARITY_COLORS[s.rarity] || '#fff'}`}>${s.low.toFixed(2)}</span>
+              </a>
+            ))}
+          </div>
+        )}
+        {midSkins.length > 0 && (
+          <div class="wp-tier-col">
+            <h3 class="wp-tier-label">$10 - $50</h3>
+            {midSkins.map(s => (
+              <a href={`/cs2-skin/${s.slug}/`} class="wp-tier-item">
+                <span>{s.name}</span>
+                <span style={`color:${RARITY_COLORS[s.rarity] || '#fff'}`}>${s.low.toFixed(2)}</span>
+              </a>
+            ))}
+          </div>
+        )}
+        {premiumSkins.length > 0 && (
+          <div class="wp-tier-col">
+            <h3 class="wp-tier-label">$50+</h3>
+            {premiumSkins.map(s => (
+              <a href={`/cs2-skin/${s.slug}/`} class="wp-tier-item">
+                <span>{s.name}</span>
+                <span style={`color:${RARITY_COLORS[s.rarity] || '#fff'}`}>${s.low.toFixed(2)}</span>
+              </a>
+            ))}
+          </div>
+        )}
+      </div>
+    </section>
+  )}
+
+  <!-- Related weapons: inline pill links -->
+  {relatedWeapons.length > 0 && (
+    <section class="wp-related">
+      <h2 class="wp-section-title">Related Weapons</h2>
+      <div class="wp-related-pills">
+        {relatedWeapons.map(rw => (
+          <a href={`/cs2-weapon/${rw.slug}/`} class="wp-related-pill">
+            {rw.name}
+            {!rw.cosmetic && <span class="wp-related-price">${rw.price.toLocaleString()}</span>}
+          </a>
+        ))}
+      </div>
+    </section>
+  )}
+
+  <!-- Related Links -->
+  <nav class="wp-nav">
+    <h2 class="wp-section-title">Related</h2>
+    <div class="wp-nav-links">
+      <a href="/damage-calculator/">Damage Calculator</a>
+      <a href="/weapon-compare/">Weapon Compare</a>
+      <a href="/recoil-patterns/">Recoil Patterns</a>
+      <a href="/spray-trainer/">Spray Trainer</a>
+      <a href="/economy-calculator/">Economy Calculator</a>
+      <a href="/sensitivity-converter/">Sensitivity Converter</a>
+      <a href={`/cs2-skins/${weapon.category}/${weapon.slug}/`}>{weapon.name} Skins</a>
+      <a href="/cs2-skins/">Skin Database</a>
+      <a href="/skin-compare/">Compare Skins</a>
+      <a href="/float-checker/">Float Checker</a>
+      <a href="/pro-players/">Pro Player Settings</a>
+      <a href="/pro-gaming-gear/">Pro Gaming Gear</a>
+      <a href={`/cs2-weapons/${weapon.category}/`}>All {categoryLabel}</a>
+      <a href="/cs2-weapons/">Weapons Database</a>
+      <a href="/cs2-cases/">Cases</a>
+      <a href="/cs2-maps/">Map Callouts</a>
+      <a href="/crosshair-generator/">Crosshair Generator</a>
+      <a href="/cs2-tools/">All Tools</a>
+      <a href="/cs2-guides/advanced-mechanics-guide/">Advanced Mechanics Guide</a>
+      <a href="/cs2-guides/beginners-guide/">Beginner's Guide</a>
+      <a href="/cs2-guides/economy-guide/">Economy Guide</a>
+    </div>
+  </nav>
+
+  <!-- FAQ -->
+  <section class="wp-faq">
+    <h2 class="wp-section-title">Common Questions</h2>
+    {faqs.map(f => (
+      <details class="wp-faq-item">
+        <summary class="wp-faq-q">{f.question}</summary>
+        <p class="wp-faq-a">{f.answer}</p>
+      </details>
+    ))}
+  </section>
+
+  <ExploreMore context="weapons" />
+</Base>
+
+<style>
+  /* === Weapon Page (wp-) === */
+
+  /* Breadcrumbs */
+  .wp-crumbs { font-size: .8rem; color: var(--text2); margin-bottom: 1.25rem; }
+  .wp-crumbs a { color: var(--text2); text-decoration: none; }
+  .wp-crumbs a:hover { color: var(--accent); }
+  .wp-sep { margin: 0 .35rem; opacity: .4; }
+
+  /* Section titles */
+  .wp-section-title {
+    margin: 0 0 .75rem;
+    font-size: 1.05rem;
+    font-weight: 700;
+    padding-bottom: .4rem;
+    border-bottom: 2px solid var(--border);
+  }
+
+  /* Hero: two-column */
+  .wp-hero {
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    gap: 2rem;
+    margin-bottom: 2rem;
+    padding: 1.5rem;
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+  }
+  .wp-hero-left {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .wp-hero-img-wrap {
+    width: 100%;
+    aspect-ratio: 4/3;
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+  .wp-hero-placeholder {
+    font-size: 2.5rem;
+    font-weight: 900;
+    color: var(--text2);
+    opacity: .15;
+    text-transform: uppercase;
+  }
+  .wp-hero-right {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: .5rem;
+  }
+  .wp-hero-title {
+    margin: 0;
+    font-size: 1.8rem;
+    font-weight: 800;
+    line-height: 1.1;
+  }
+  .wp-hero-meta {
+    display: flex;
+    gap: .4rem;
+    flex-wrap: wrap;
+  }
+  .wp-badge {
+    display: inline-block;
+    padding: .15rem .5rem;
+    border-radius: 4px;
+    font-size: .72rem;
+    font-weight: 600;
+  }
+  .wp-badge-cat { background: var(--bg3); border: 1px solid var(--border); color: var(--text2); }
+  .wp-badge-sub { background: var(--bg3); border: 1px solid var(--border); color: var(--text2); }
+  .wp-badge-team { color: #fff; }
+  .wp-team-ct { background: #4a8db7; }
+  .wp-team-t { background: #c44; }
+  .wp-team-both { background: var(--accent); color: #000; }
+  .wp-hero-desc {
+    margin: 0;
+    color: var(--text2);
+    font-size: .86rem;
+    line-height: 1.6;
+  }
+  .wp-hero-tags { display: flex; gap: .3rem; flex-wrap: wrap; }
+  .wp-tag {
+    font-size: .72rem;
+    color: var(--accent);
+    opacity: .7;
+  }
+  .wp-hero-quick {
+    display: flex;
+    gap: .6rem;
+    flex-wrap: wrap;
+    margin-top: .25rem;
+  }
+  .wp-qstat {
+    font-size: .78rem;
+    color: var(--text2);
+    background: var(--bg3);
+    padding: .2rem .55rem;
+    border-radius: 4px;
+    border: 1px solid var(--border);
+  }
+  .wp-qstat strong {
+    color: var(--accent);
+    font-weight: 700;
+    margin-right: .15rem;
+  }
+
+  /* Stats table with green header */
+  .wp-stats { margin-bottom: 2rem; }
+  .wp-stats-table {
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  .wp-stats-head {
+    display: grid;
+    grid-template-columns: 160px 120px 1fr;
+    gap: .5rem;
+    padding: .5rem 1rem;
+    background: var(--accent);
+    color: #000;
+    font-size: .72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .04em;
+  }
+  .wp-stats-row {
+    display: grid;
+    grid-template-columns: 160px 120px 1fr;
+    gap: .5rem;
+    padding: .5rem 1rem;
+    align-items: center;
+    border-bottom: 1px solid var(--border);
+  }
+  .wp-stats-row:last-child { border-bottom: none; }
+  .wp-stats-alt { background: var(--bg2); }
+  .wp-stats-key {
+    font-size: .82rem;
+    color: var(--text2);
+    font-weight: 500;
+  }
+  .wp-stats-val {
+    font-size: .86rem;
+    font-weight: 700;
+    color: var(--text);
+  }
+  .wp-stats-bar {
+    height: 5px;
+    background: var(--bg3);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  .wp-bar-fill {
+    display: block;
+    height: 100%;
+    background: var(--accent);
+    border-radius: 4px;
+  }
+
+  /* Usage Notes */
+  .wp-tips { margin-bottom: 2rem; }
+  .wp-tips-list {
+    margin: 0;
+    padding: 0 0 0 1.4rem;
+    list-style: decimal;
+  }
+  .wp-tips-list li {
+    font-size: .86rem;
+    color: var(--text2);
+    line-height: 1.6;
+    padding: .35rem 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .wp-tips-list li:last-child { border-bottom: none; }
+
+  /* Pro Players: horizontal scroll strip */
+  .wp-pros { margin-bottom: 2rem; }
+  .wp-pros-scroll {
+    display: flex;
+    gap: .5rem;
+    overflow-x: auto;
+    padding-bottom: .4rem;
+    -webkit-overflow-scrolling: touch;
+  }
+  .wp-pros-scroll::-webkit-scrollbar { height: 3px; }
+  .wp-pros-scroll::-webkit-scrollbar-track { background: var(--bg3); }
+  .wp-pros-scroll::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+  .wp-pro-card {
+    display: flex;
+    align-items: center;
+    gap: .45rem;
+    padding: .4rem .75rem;
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-left: 3px solid transparent;
+    border-radius: 4px;
+    text-decoration: none;
+    color: inherit;
+    white-space: nowrap;
+    flex-shrink: 0;
+    transition: border-left-color .15s;
+  }
+  .wp-pro-card:hover {
+    border-left-color: var(--accent);
+  }
+  .wp-pro-card img {
+    width: 28px;
+    height: 28px;
+    border-radius: 4px;
+    object-fit: cover;
+  }
+  .wp-pro-name {
+    font-size: .82rem;
+    font-weight: 600;
+  }
+
+  /* Skins: compact table */
+  .wp-skins { margin-bottom: 2rem; }
+  .wp-skins-table {
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  .wp-skins-head {
+    display: grid;
+    grid-template-columns: 50px 1fr 80px 130px 50px;
+    gap: .5rem;
+    padding: .45rem .75rem;
+    background: var(--accent);
+    color: #000;
+    font-size: .68rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .04em;
+    align-items: center;
+  }
+  .wp-skin-row {
+    display: grid;
+    grid-template-columns: 50px 1fr 80px 130px 50px;
+    gap: .5rem;
+    padding: .4rem .75rem;
+    text-decoration: none;
+    color: inherit;
+    align-items: center;
+    border-bottom: 1px solid var(--border);
+    border-left: 3px solid transparent;
+    transition: border-left-color .15s, background-color .15s;
+  }
+  .wp-skin-row:last-child { border-bottom: none; }
+  .wp-skin-row:hover {
+    border-left-color: var(--accent);
+    background: var(--bg3);
+  }
+  .wp-skin-alt { background: var(--bg2); }
+  .wp-skin-thumb {
+    width: 50px;
+    height: 38px;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    flex-shrink: 0;
+  }
+  .wp-skin-thumb img { max-width: 100%; max-height: 100%; object-fit: contain; }
+  .wp-skin-ph { font-size: .9rem; font-weight: 900; opacity: .2; }
+  .wp-skin-name {
+    font-size: .82rem;
+    font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .wp-skin-rarity {
+    padding: .1rem .35rem;
+    border-radius: 4px;
+    font-size: .6rem;
+    font-weight: 700;
+    color: #000;
+    white-space: nowrap;
+    text-align: center;
+  }
+  .wp-skin-price {
+    font-size: .78rem;
+    font-weight: 700;
+    color: var(--accent);
+    white-space: nowrap;
+  }
+  .wp-skin-wears {
+    font-size: .72rem;
+    color: var(--text2);
+    white-space: nowrap;
+    text-align: center;
+  }
+  .wp-empty {
+    padding: 1.5rem;
+    text-align: center;
+    color: var(--text2);
+    font-size: .88rem;
+    background: var(--bg2);
+    border: 1px dashed var(--border);
+    border-radius: 4px;
+  }
+
+  /* Price Tiers: side-by-side columns */
+  .wp-tiers { margin-bottom: 2rem; }
+  .wp-tiers-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+  }
+  .wp-tier-col {
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  .wp-tier-label {
+    margin: 0;
+    padding: .45rem .75rem;
+    font-size: .78rem;
+    font-weight: 700;
+    background: var(--bg3);
+    border-bottom: 1px solid var(--border);
+    color: var(--text2);
+  }
+  .wp-tier-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: .4rem .75rem;
+    background: var(--bg2);
+    text-decoration: none;
+    color: inherit;
+    font-size: .82rem;
+    border-bottom: 1px solid var(--border);
+    border-left: 3px solid transparent;
+    transition: border-left-color .15s;
+  }
+  .wp-tier-item:last-child { border-bottom: none; }
+  .wp-tier-item:hover {
+    border-left-color: var(--accent);
+  }
+  .wp-tier-item span:first-child { font-weight: 600; }
+  .wp-tier-item span:last-child { font-weight: 700; font-size: .8rem; }
+
+  /* Related weapons: pill links */
+  .wp-related { margin-bottom: 2rem; }
+  .wp-related-pills {
+    display: flex;
+    gap: .4rem;
+    flex-wrap: wrap;
+  }
+  .wp-related-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: .35rem;
+    padding: .35rem .7rem;
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    text-decoration: none;
+    color: var(--text);
+    font-size: .82rem;
+    font-weight: 600;
+    border-left: 3px solid transparent;
+    transition: border-left-color .15s, color .15s;
+  }
+  .wp-related-pill:hover {
+    border-left-color: var(--accent);
+    color: var(--accent);
+  }
+  .wp-related-price {
+    font-size: .72rem;
+    color: var(--text2);
+    font-weight: 400;
+  }
+
+  /* Related nav links */
+  .wp-nav { margin-bottom: 2rem; }
+  .wp-nav-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .3rem;
+  }
+  .wp-nav-links a {
+    padding: .25rem .55rem;
+    font-size: .78rem;
+    color: var(--text2);
+    text-decoration: none;
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    transition: color .15s, border-color .15s;
+  }
+  .wp-nav-links a:hover {
+    color: var(--accent);
+    border-color: var(--accent);
+  }
+
+  /* FAQ: collapsible details */
+  .wp-faq { margin-bottom: 2rem; }
+  .wp-faq-item {
+    border-bottom: 1px solid var(--border);
+  }
+  .wp-faq-item:last-child { border-bottom: none; }
+  .wp-faq-q {
+    display: block;
+    padding: .65rem 0;
+    font-weight: 700;
+    font-size: .88rem;
+    cursor: pointer;
+    border-left: 3px solid transparent;
+    padding-left: .75rem;
+    transition: border-left-color .15s;
+    list-style: none;
+  }
+  .wp-faq-q::-webkit-details-marker { display: none; }
+  .wp-faq-q::before {
+    content: '+';
+    display: inline-block;
+    width: 1rem;
+    font-weight: 700;
+    color: var(--accent);
+    margin-right: .35rem;
+  }
+  .wp-faq-item[open] .wp-faq-q {
+    border-left-color: var(--accent);
+  }
+  .wp-faq-item[open] .wp-faq-q::before {
+    content: '\2212';
+  }
+  .wp-faq-a {
+    margin: 0 0 .75rem;
+    padding-left: calc(.75rem + 3px + 1rem + .35rem);
+    font-size: .84rem;
+    color: var(--text2);
+    line-height: 1.6;
+  }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .wp-hero {
+      grid-template-columns: 1fr;
+      gap: 1rem;
+    }
+    .wp-hero-img-wrap {
+      max-width: 200px;
+      margin: 0 auto;
+    }
+    .wp-hero-title { font-size: 1.4rem; }
+    .wp-stats-head,
+    .wp-stats-row {
+      grid-template-columns: 130px 100px 1fr;
+    }
+    .wp-skins-head,
+    .wp-skin-row {
+      grid-template-columns: 45px 1fr auto auto;
+    }
+    .wp-sh-wears,
+    .wp-skin-wears { display: none; }
+  }
+  @media (max-width: 480px) {
+    .wp-stats-head,
+    .wp-stats-row {
+      grid-template-columns: 1fr 1fr;
+    }
+    .wp-stats-bar { display: none; }
+    .wp-skins-head,
+    .wp-skin-row {
+      grid-template-columns: 45px 1fr auto;
+    }
+    .wp-sh-rarity,
+    .wp-skin-rarity { display: none; }
+    .wp-tiers-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

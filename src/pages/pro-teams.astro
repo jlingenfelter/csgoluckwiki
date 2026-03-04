@@ -1,0 +1,632 @@
+---
+import Base from '../layouts/Base.astro';
+import ExploreMore from '../components/ExploreMore.astro';
+import { faqSchema } from '../lib/weapons';
+import { getTeams, getAverageEdpi, getRoles, getCountries, getGearByType, type TeamInfo, type ProPlayer } from '../lib/pro-players';
+
+const allTeams = getTeams();
+const globalAvgEdpi = getAverageEdpi();
+
+// Pre-compute per-team stats for cards & data attributes
+const teamCards = allTeams.map(t => {
+  const avgEdpi = Math.round(t.players.reduce((s, p) => s + p.edpi, 0) / t.players.length);
+
+  // Most common mouse
+  const mc: Record<string, number> = {};
+  t.players.forEach(p => { if (p.mouse) mc[p.mouse] = (mc[p.mouse] || 0) + 1; });
+  const topMouse = Object.entries(mc).sort((a, b) => b[1] - a[1])[0]?.[0] ?? '—';
+
+  // Most common resolution
+  const rc: Record<string, number> = {};
+  t.players.forEach(p => rc[p.res] = (rc[p.res] || 0) + 1);
+  const topRes = Object.entries(rc).sort((a, b) => b[1] - a[1])[0]?.[0] ?? '—';
+
+  // Top player names (up to 5)
+  const topNames = t.players.slice(0, 5).map(p => p.name);
+
+  return { ...t, avgEdpi, topMouse, topRes, topNames };
+});
+
+const totalPlayers = allTeams.reduce((s, t) => s + t.players.length, 0);
+const avgTeamSize = (totalPlayers / allTeams.length).toFixed(1);
+
+// eDPI distribution across teams
+const edpiRanges = { low: 0, mid: 0, high: 0 };
+teamCards.forEach(t => {
+  if (t.avgEdpi < 600) edpiRanges.low++;
+  else if (t.avgEdpi < 900) edpiRanges.mid++;
+  else edpiRanges.high++;
+});
+
+// Most common mouse across all teams
+const teamMouseCounts: Record<string, number> = {};
+teamCards.forEach(t => { if (t.topMouse !== '—') teamMouseCounts[t.topMouse] = (teamMouseCounts[t.topMouse] || 0) + 1; });
+const topTeamMice = Object.entries(teamMouseCounts).sort((a, b) => b[1] - a[1]).slice(0, 5);
+
+// Most common resolution across all teams
+const teamResCounts: Record<string, number> = {};
+teamCards.forEach(t => { if (t.topRes !== '—') teamResCounts[t.topRes] = (teamResCounts[t.topRes] || 0) + 1; });
+const topTeamRes = Object.entries(teamResCounts).sort((a, b) => b[1] - a[1]).slice(0, 5);
+
+const title = `CS2 Pro Teams — Settings, Gear & Configs | CSGOLuck Wiki`;
+const description = `Browse ${allTeams.length} CS2 professional teams and their players' settings. Compare sensitivity, crosshair, resolution, and gear configs across ${totalPlayers}+ pro players.`;
+
+const faqs = [
+  { question: 'How many CS2 pro teams are tracked?', answer: `We currently track settings for ${allTeams.length} professional CS2 teams, covering ${totalPlayers}+ individual players. Teams range from Tier 1 organizations like Natus Vincere and FaZe Clan to rising Tier 2 and Tier 3 rosters.` },
+  { question: 'What team has the lowest average sensitivity?', answer: `Team sensitivity varies significantly. Most professional teams average between 600 and 900 eDPI. Teams with AWPer-heavy rosters tend to have lower averages. Visit individual team pages to compare their exact settings.` },
+  { question: 'Should I copy a pro team\'s settings?', answer: `Pro team settings are useful as reference ranges rather than exact targets. Each player on a team typically has unique settings optimized for their role and playstyle. Use the team average eDPI as a starting point, then adjust based on your personal comfort and desk space.` },
+  { question: 'How often do team rosters change?', answer: `CS2 rosters change frequently, especially during transfer windows between Major cycles. We update player data regularly to reflect current rosters. Some players may appear on their most recent team even if they have since been benched or transferred.` },
+];
+
+// Browse sections
+const topRoles = getRoles();
+const topCountries = getCountries().slice(0, 12);
+const topMice = getGearByType('mouse').slice(0, 8);
+
+// Alphabetical jump links
+const teamLetters = [...new Set(teamCards.map(t => t.name.charAt(0).toUpperCase()))].sort();
+
+// Region grouping for filters (derive from player countries)
+const regionMap: Record<string, string[]> = {
+  'Europe': ['Denmark', 'Sweden', 'Finland', 'Russia', 'France', 'Germany', 'Poland', 'Ukraine', 'Norway', 'Bosnia', 'Serbia', 'Montenegro', 'Czech Republic', 'Slovakia', 'Latvia', 'Lithuania', 'Estonia', 'Netherlands', 'Belgium', 'Spain', 'Portugal', 'Italy', 'Romania', 'Bulgaria', 'Croatia', 'Hungary', 'Turkey', 'United Kingdom', 'Austria', 'Switzerland', 'Israel', 'Kosovo', 'Georgia', 'Kazakhstan', 'Belarus', 'Greece', 'Moldova', 'Albania', 'North Macedonia', 'Cyprus', 'Malta', 'Iceland', 'Ireland', 'Luxembourg', 'Slovenia'],
+  'Americas': ['United States', 'Canada', 'Brazil', 'Argentina', 'Chile', 'Mexico', 'Peru', 'Colombia', 'Uruguay', 'Venezuela'],
+  'Asia': ['China', 'South Korea', 'Japan', 'Indonesia', 'India', 'Thailand', 'Philippines', 'Vietnam', 'Malaysia', 'Singapore', 'Taiwan', 'Hong Kong', 'Pakistan', 'Bangladesh', 'Sri Lanka', 'Nepal', 'Myanmar'],
+  'Oceania': ['Australia', 'New Zealand'],
+  'CIS': ['Russia', 'Ukraine', 'Kazakhstan', 'Belarus', 'Uzbekistan', 'Georgia', 'Moldova'],
+};
+
+// Compute region per team based on majority of players
+function getTeamRegion(t: typeof teamCards[0]): string {
+  const regionCounts: Record<string, number> = {};
+  t.players.forEach(p => {
+    for (const [region, countries] of Object.entries(regionMap)) {
+      if (countries.includes(p.country)) {
+        regionCounts[region] = (regionCounts[region] || 0) + 1;
+      }
+    }
+  });
+  const sorted = Object.entries(regionCounts).sort((a, b) => b[1] - a[1]);
+  return sorted[0]?.[0] ?? 'Other';
+}
+
+const teamCardsWithRegion = teamCards.map(t => ({ ...t, region: getTeamRegion(t) }));
+const allRegions = [...new Set(teamCardsWithRegion.map(t => t.region))].sort();
+
+// Spotlight: top 6 teams by player count
+const spotlightTeams = [...teamCardsWithRegion].sort((a, b) => b.players.length - a.players.length).slice(0, 6);
+---
+
+<Base {title} {description}>
+<Fragment slot="head">
+<script type="application/ld+json" set:html={JSON.stringify(faqSchema(faqs))} />
+<script type="application/ld+json" set:html={JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://wiki.csgoluck.com/" },
+    { "@type": "ListItem", "position": 2, "name": "Pro Players", "item": "https://wiki.csgoluck.com/pro-players/" },
+    { "@type": "ListItem", "position": 3, "name": "Teams" }
+  ]
+})} />
+</Fragment>
+
+<nav class="breadcrumb">
+  <a href="/">Home</a> <span>/</span>
+  <a href="/pro-players/">Pro Players</a> <span>/</span>
+  <span>Teams</span>
+</nav>
+
+<!-- Hero: Left-aligned with team count stat -->
+<section class="th-hero">
+  <div class="th-hero-inner">
+    <div class="th-hero-text">
+      <span class="th-hero-badge">{allTeams.length} Teams Tracked</span>
+      <h1>CS2 Pro Teams</h1>
+      <p>Browse {allTeams.length} professional CS2 teams — compare team settings, gear, and player configs. Search by name or sort by roster size and average sensitivity.</p>
+    </div>
+    <div class="th-hero-metrics">
+      <div class="th-metric">
+        <span class="th-metric-num">{totalPlayers}</span>
+        <span class="th-metric-label">Total Players</span>
+      </div>
+      <div class="th-metric">
+        <span class="th-metric-num">{avgTeamSize}</span>
+        <span class="th-metric-label">Avg Team Size</span>
+      </div>
+      <div class="th-metric">
+        <span class="th-metric-num">{globalAvgEdpi}</span>
+        <span class="th-metric-label">Global Avg eDPI</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Region Filter Pills -->
+<section class="th-region-bar">
+  <div class="th-region-pills" id="regionPills">
+    <button class="th-region-pill th-region-active" data-region="all">All Regions</button>
+    {allRegions.map(r => (
+      <button class="th-region-pill" data-region={r}>{r}</button>
+    ))}
+  </div>
+</section>
+
+<!-- Alphabetical Jump Links -->
+<div class="th-alpha-bar">
+  <span class="th-alpha-label">Jump to:</span>
+  <div class="th-alpha-pills">
+    {teamLetters.map(letter => (
+      <a href={`#letter-${letter}`} class="th-alpha-pill">{letter}</a>
+    ))}
+  </div>
+</div>
+
+<!-- Search & Sort -->
+<section class="th-controls">
+  <div class="th-controls-row">
+    <div class="th-search-wrap">
+      <input type="text" id="teamSearch" placeholder="Search teams by name..." />
+    </div>
+    <div class="th-sort-wrap">
+      <label class="th-sort-label" for="teamSort">Sort by</label>
+      <select id="teamSort">
+        <option value="players">Most Players</option>
+        <option value="name-az">Name A-Z</option>
+        <option value="name-za">Name Z-A</option>
+        <option value="edpi-low">Avg eDPI (Low-High)</option>
+        <option value="edpi-high">Avg eDPI (High-Low)</option>
+      </select>
+    </div>
+  </div>
+  <div class="th-result-count"><span id="visibleCount">{allTeams.length}</span> of {allTeams.length} teams shown</div>
+</section>
+
+<!-- Spotlight: Top Teams -->
+<section class="th-spotlight">
+  <h2>Featured Teams</h2>
+  <div class="th-spotlight-grid">
+    {spotlightTeams.map(t => (
+      <a href={`/pro-teams/${t.slug}/`} class="th-spotlight-card">
+        <div class="th-spotlight-header">
+          <h3 class="th-spotlight-name">{t.name}</h3>
+          <span class="th-spotlight-region">{t.region}</span>
+        </div>
+        <div class="th-spotlight-body">
+          <div class="th-spotlight-stat">
+            <span class="th-spotlight-val">{t.players.length}</span>
+            <span class="th-spotlight-lbl">Players</span>
+          </div>
+          <div class="th-spotlight-stat">
+            <span class="th-spotlight-val">{t.avgEdpi}</span>
+            <span class="th-spotlight-lbl">Avg eDPI</span>
+          </div>
+          <div class="th-spotlight-stat">
+            <span class="th-spotlight-val">{t.topRes}</span>
+            <span class="th-spotlight-lbl">Top Res</span>
+          </div>
+        </div>
+        <div class="th-spotlight-roster">
+          {t.topNames.map(name => (
+            <span class="th-spotlight-player">{name}</span>
+          ))}
+          {t.players.length > 5 && <span class="th-spotlight-more">+{t.players.length - 5}</span>}
+        </div>
+      </a>
+    ))}
+  </div>
+</section>
+
+<!-- Team Listings: Horizontal Row Cards -->
+<section class="th-listings" id="thGrid">
+  {teamCardsWithRegion.map((t, i) => (
+    <a href={`/pro-teams/${t.slug}/`}
+       class={`th-row${i >= 48 ? ' th-paginated' : ''}`}
+       data-name={t.name.toLowerCase()}
+       data-players={t.players.length}
+       data-edpi={t.avgEdpi}
+       data-region={t.region}
+       data-letter={t.name.charAt(0).toUpperCase()}
+       data-idx={i}
+       id={i === 0 || teamCardsWithRegion[i - 1]?.name.charAt(0).toUpperCase() !== t.name.charAt(0).toUpperCase() ? `letter-${t.name.charAt(0).toUpperCase()}` : undefined}>
+      <div class="th-row-main">
+        <div class="th-row-identity">
+          <h3 class="th-row-name">{t.name}</h3>
+          <div class="th-row-tags">
+            <span class="th-row-region">{t.region}</span>
+            <span class="th-row-count">{t.players.length} player{t.players.length !== 1 ? 's' : ''}</span>
+          </div>
+        </div>
+        <div class="th-row-roster">
+          {t.topNames.map(name => (
+            <span class="th-row-player">{name}</span>
+          ))}
+          {t.players.length > 5 && <span class="th-row-more">+{t.players.length - 5}</span>}
+        </div>
+      </div>
+      <div class="th-row-stats">
+        <div class="th-row-stat">
+          <span class="th-row-sv">{t.avgEdpi}</span>
+          <span class="th-row-sl">eDPI</span>
+        </div>
+        <div class="th-row-stat">
+          <span class="th-row-sv">{t.topRes}</span>
+          <span class="th-row-sl">Resolution</span>
+        </div>
+        <div class="th-row-stat th-row-stat-wide">
+          <span class="th-row-sv">{t.topMouse}</span>
+          <span class="th-row-sl">Mouse</span>
+        </div>
+      </div>
+      <span class="th-row-arrow">&rarr;</span>
+    </a>
+  ))}
+</section>
+
+<div class="th-loadmore-wrap" id="loadMoreWrap">
+  <button class="th-loadmore-btn" id="loadMoreBtn">Load More Teams <span id="loadMoreCount"></span></button>
+</div>
+
+<!-- Analysis Section -->
+<section class="th-analysis">
+  <h2>Team Settings Overview</h2>
+  <div class="th-analysis-cols">
+    <div class="th-ablock">
+      <h3>eDPI Distribution</h3>
+      <p>Average eDPI across team rosters</p>
+      <div class="th-edpi-breakdown">
+        <div class="th-edpi-seg">
+          <span class="th-edpi-num">{edpiRanges.low}</span>
+          <span class="th-edpi-range">Low (&lt;600)</span>
+        </div>
+        <div class="th-edpi-seg">
+          <span class="th-edpi-num">{edpiRanges.mid}</span>
+          <span class="th-edpi-range">Medium</span>
+        </div>
+        <div class="th-edpi-seg">
+          <span class="th-edpi-num">{edpiRanges.high}</span>
+          <span class="th-edpi-range">High (&gt;900)</span>
+        </div>
+      </div>
+    </div>
+    <div class="th-ablock">
+      <h3>Popular Team Mouse</h3>
+      <div class="th-bar-list">
+        {topTeamMice.map(([name, count]) => (
+          <div class="th-bar-item">
+            <span class="th-bar-name">{name}</span>
+            <div class="th-bar-track">
+              <div class="th-bar-fill" style={`width:${Math.round((count / allTeams.length) * 100)}%`}></div>
+            </div>
+            <span class="th-bar-val">{count}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+    <div class="th-ablock">
+      <h3>Popular Team Resolution</h3>
+      <div class="th-bar-list">
+        {topTeamRes.map(([res, count]) => (
+          <div class="th-bar-item">
+            <span class="th-bar-name">{res}</span>
+            <div class="th-bar-track">
+              <div class="th-bar-fill" style={`width:${Math.round((count / allTeams.length) * 100)}%`}></div>
+            </div>
+            <span class="th-bar-val">{count}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="th-faq-section">
+  <h2>Frequently Asked Questions</h2>
+  <dl class="faq">
+    {faqs.map(f => (
+      <>
+        <dt>{f.question}</dt>
+        <dd>{f.answer}</dd>
+      </>
+    ))}
+  </dl>
+</section>
+
+<!-- Browse by Role -->
+<section class="th-browse">
+  <h2>Browse by Role</h2>
+  <div class="th-browse-list">
+    {topRoles.map(r => (
+      <a href={`/pro-players/role/${r.slug}/`} class="th-browse-item">
+        <span class="th-browse-name">{r.name}</span>
+        <span class="th-browse-count">{r.players.length}</span>
+      </a>
+    ))}
+  </div>
+</section>
+
+<!-- Browse by Country -->
+<section class="th-browse">
+  <h2>Browse by Country</h2>
+  <div class="th-browse-list">
+    {topCountries.map(c => (
+      <a href={`/pro-players/country/${c.slug}/`} class="th-browse-item">
+        <span class="th-browse-flag">{c.flag}</span>
+        <span class="th-browse-name">{c.name}</span>
+        <span class="th-browse-count">{c.players.length}</span>
+      </a>
+    ))}
+  </div>
+</section>
+
+<!-- Popular Mice -->
+<section class="th-browse">
+  <h2>Popular Mice</h2>
+  <div class="th-browse-list">
+    {topMice.map(g => (
+      <a href={`/pro-gaming-gear/${g.slug}/`} class="th-browse-item">
+        <span class="th-browse-name">{g.name}</span>
+        <span class="th-browse-count">{g.players.length} pros</span>
+      </a>
+    ))}
+  </div>
+</section>
+
+<ExploreMore context="general" />
+
+<div class="internal-links">
+  <a href="/pro-players/">All Pro Players</a>
+  <a href="/crosshair-codes/">Crosshair Codes</a>
+  <a href="/sensitivity-converter/">Sensitivity Converter</a>
+  <a href="/edpi-calculator/">eDPI Calculator</a>
+  <a href="/cm360-calculator/">cm/360 Calculator</a>
+  <a href="/cs2-weapons/">Weapon Stats</a>
+</div>
+
+</Base>
+
+<style>
+/* Hero: Left-aligned */
+.th-hero{background:var(--bg2);border-bottom:1px solid var(--border);padding:2.5rem 0;margin-bottom:0}
+.th-hero-inner{display:flex;gap:2.5rem;align-items:flex-start;justify-content:space-between;flex-wrap:wrap}
+.th-hero-text{flex:1;min-width:280px}
+.th-hero-badge{display:inline-block;font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--accent);background:rgba(46,204,113,.1);border:1px solid rgba(46,204,113,.25);padding:.3rem .8rem;border-radius:4px;margin-bottom:1rem}
+.th-hero h1{font-size:2.4rem;font-weight:800;margin:0 0 .75rem;line-height:1.15}
+.th-hero p{color:var(--text2);font-size:1rem;margin:0;line-height:1.6;max-width:560px}
+.th-hero-metrics{display:flex;gap:1.5rem;flex-shrink:0;padding-top:.5rem}
+.th-metric{text-align:center;min-width:90px}
+.th-metric-num{display:block;font-size:1.8rem;font-weight:800;color:var(--accent);line-height:1.2}
+.th-metric-label{display:block;font-size:.7rem;color:var(--text2);text-transform:uppercase;letter-spacing:.04em;margin-top:.2rem}
+
+/* Region Filter Pills */
+.th-region-bar{padding:1.25rem 0;border-bottom:1px solid var(--border);margin-bottom:1rem}
+.th-region-pills{display:flex;gap:.5rem;flex-wrap:wrap}
+.th-region-pill{background:var(--bg3);color:var(--text2);border:1px solid var(--border);border-radius:4px;padding:.4rem 1rem;font-size:.82rem;font-weight:600;cursor:pointer;font-family:inherit;transition:all .15s}
+.th-region-pill:hover{border-color:var(--accent);color:var(--text)}
+.th-region-active{background:var(--accent);color:#000;border-color:var(--accent)}
+
+/* Alphabetical Jump Links */
+.th-alpha-bar{display:flex;align-items:center;gap:.75rem;padding:.75rem 0;margin-bottom:1rem;flex-wrap:wrap}
+.th-alpha-label{font-size:.78rem;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.04em;white-space:nowrap}
+.th-alpha-pills{display:flex;gap:.3rem;flex-wrap:wrap}
+.th-alpha-pill{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;font-size:.75rem;font-weight:700;color:var(--text2);background:var(--bg2);border:1px solid var(--border);border-radius:4px;text-decoration:none;transition:all .15s}
+.th-alpha-pill:hover{border-color:var(--accent);color:var(--accent)}
+
+/* Search & Sort Controls */
+.th-controls{background:var(--bg2);border:1px solid var(--border);border-radius:4px;padding:1rem 1.25rem;margin-bottom:1.5rem}
+.th-controls-row{display:flex;gap:1rem;align-items:center;flex-wrap:wrap}
+.th-search-wrap{flex:1;min-width:200px}
+#teamSearch{width:100%;background:var(--bg);color:var(--text);border:1px solid var(--border);padding:.5rem .75rem;border-radius:4px;font-size:.88rem;font-family:inherit}
+#teamSearch:focus{border-color:var(--accent);outline:none}
+.th-sort-wrap{display:flex;align-items:center;gap:.5rem}
+.th-sort-label{font-size:.82rem;font-weight:600;color:var(--text2);white-space:nowrap}
+#teamSort{background:var(--bg);color:var(--text);border:1px solid var(--border);padding:.45rem .6rem;border-radius:4px;font-size:.82rem;font-family:inherit}
+.th-result-count{font-size:.78rem;color:var(--text2);margin-top:.6rem}
+
+/* Spotlight Section */
+.th-spotlight{margin-bottom:2.5rem}
+.th-spotlight h2{margin-bottom:1.25rem;font-size:1.3rem}
+.th-spotlight-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem}
+.th-spotlight-card{display:block;text-decoration:none;color:inherit;background:var(--bg2);border:1px solid var(--border);border-radius:4px;padding:1.25rem;transition:border-left .15s}
+.th-spotlight-card:hover{border-left:3px solid var(--accent)}
+.th-spotlight-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;gap:.5rem}
+.th-spotlight-name{margin:0;font-size:1.15rem;font-weight:800;color:var(--text)}
+.th-spotlight-region{font-size:.7rem;font-weight:600;color:var(--text2);background:var(--bg3);padding:.2rem .5rem;border-radius:4px;white-space:nowrap}
+.th-spotlight-body{display:flex;gap:1rem;margin-bottom:1rem}
+.th-spotlight-stat{flex:1;text-align:center;background:var(--bg);border:1px solid var(--border);border-radius:4px;padding:.5rem .25rem}
+.th-spotlight-val{display:block;font-size:1rem;font-weight:700;color:var(--accent)}
+.th-spotlight-lbl{display:block;font-size:.62rem;color:var(--text2);text-transform:uppercase;margin-top:.1rem}
+.th-spotlight-roster{display:flex;flex-wrap:wrap;gap:.3rem}
+.th-spotlight-player{font-size:.75rem;color:var(--text2);background:var(--bg);padding:.15rem .45rem;border-radius:4px;border:1px solid var(--border)}
+.th-spotlight-more{font-size:.72rem;color:var(--text2);padding:.15rem .35rem}
+
+/* Team Listings: Horizontal Row Cards */
+.th-listings{display:flex;flex-direction:column;gap:.5rem;margin-bottom:1rem}
+.th-row{display:flex;align-items:center;gap:1.25rem;text-decoration:none;color:inherit;background:var(--bg2);border:1px solid var(--border);border-radius:4px;padding:1rem 1.25rem;transition:border-left .15s}
+.th-row:hover{border-left:3px solid var(--accent)}
+.th-row.hidden{display:none}
+.th-row-main{flex:1;min-width:0;display:flex;align-items:center;gap:1.5rem}
+.th-row-identity{min-width:180px;flex-shrink:0}
+.th-row-name{margin:0;font-size:1.1rem;font-weight:800;color:var(--text)}
+.th-row-tags{display:flex;gap:.4rem;margin-top:.3rem}
+.th-row-region{font-size:.68rem;font-weight:600;color:var(--text2);background:var(--bg3);padding:.15rem .4rem;border-radius:4px}
+.th-row-count{font-size:.68rem;font-weight:700;color:#000;background:var(--accent);padding:.15rem .4rem;border-radius:4px}
+.th-row-roster{display:flex;flex-wrap:wrap;gap:.3rem;flex:1;min-width:0}
+.th-row-player{font-size:.75rem;color:var(--text2);background:var(--bg);padding:.15rem .45rem;border-radius:4px;border:1px solid var(--border);white-space:nowrap}
+.th-row-more{font-size:.72rem;color:var(--text2);padding:.15rem .3rem}
+.th-row-stats{display:flex;gap:.75rem;flex-shrink:0}
+.th-row-stat{text-align:center;min-width:70px}
+.th-row-stat-wide{min-width:110px}
+.th-row-sv{display:block;font-size:.92rem;font-weight:700;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.th-row-sl{display:block;font-size:.6rem;color:var(--text2);text-transform:uppercase;margin-top:.1rem}
+.th-row-arrow{font-size:1.1rem;color:var(--text2);flex-shrink:0;transition:color .15s}
+.th-row:hover .th-row-arrow{color:var(--accent)}
+
+/* Load More */
+.th-loadmore-wrap{text-align:center;padding:1.5rem 0}
+.th-loadmore-btn{background:var(--accent);color:#000;border:none;padding:.65rem 2rem;border-radius:4px;font-size:.92rem;font-weight:700;cursor:pointer;font-family:inherit;transition:opacity .15s}
+.th-loadmore-btn:hover{opacity:.85}
+.th-loadmore-btn span{font-weight:400;opacity:.8}
+.th-paginated{display:none}
+.th-row.th-paginated.th-revealed{display:flex}
+
+/* Analysis */
+.th-analysis{margin-bottom:3rem}
+.th-analysis h2{margin-bottom:1.25rem;font-size:1.3rem}
+.th-analysis-cols{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem}
+.th-ablock{background:var(--bg2);border:1px solid var(--border);border-radius:4px;padding:1.25rem}
+.th-ablock h3{margin:0 0 .4rem;font-size:1rem;font-weight:700}
+.th-ablock p{font-size:.82rem;color:var(--text2);margin:0 0 .75rem}
+.th-edpi-breakdown{display:flex;gap:.75rem}
+.th-edpi-seg{flex:1;text-align:center;background:var(--bg);border:1px solid var(--border);border-radius:4px;padding:.6rem .25rem}
+.th-edpi-num{display:block;font-size:1.5rem;font-weight:800;color:var(--accent)}
+.th-edpi-range{display:block;font-size:.7rem;color:var(--text2);margin-top:.15rem}
+.th-bar-list{display:flex;flex-direction:column;gap:.5rem}
+.th-bar-item{display:flex;align-items:center;gap:.5rem}
+.th-bar-name{min-width:90px;font-size:.78rem;color:var(--text);font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.th-bar-track{flex:1;height:16px;background:var(--bg);border-radius:4px;overflow:hidden}
+.th-bar-fill{height:100%;background:var(--accent);border-radius:4px;opacity:.6}
+.th-bar-val{font-size:.75rem;color:var(--text2);font-weight:600;min-width:20px;text-align:right}
+
+/* FAQ */
+.th-faq-section{margin-bottom:2.5rem}
+.th-faq-section h2{margin-bottom:1rem}
+
+/* Browse sections */
+.th-browse{margin:2rem 0}
+.th-browse h2{margin:0 0 1rem;font-size:1.2rem}
+.th-browse-list{display:flex;flex-wrap:wrap;gap:.5rem}
+.th-browse-item{display:inline-flex;align-items:center;gap:.4rem;padding:.5rem .85rem;background:var(--bg2);border:1px solid var(--border);border-radius:4px;text-decoration:none;font-size:.85rem;transition:border-left .15s}
+.th-browse-item:hover{border-left:3px solid var(--accent)}
+.th-browse-flag{font-size:1.05rem}
+.th-browse-name{color:var(--text);font-weight:600;white-space:nowrap}
+.th-browse-count{color:var(--text2);font-size:.72rem;font-weight:500;background:var(--bg);padding:.12rem .4rem;border-radius:4px;white-space:nowrap}
+
+/* Responsive */
+@media(max-width:1024px){
+  .th-spotlight-grid{grid-template-columns:repeat(2,1fr)}
+  .th-analysis-cols{grid-template-columns:1fr}
+  .th-row-roster{display:none}
+}
+@media(max-width:768px){
+  .th-hero h1{font-size:1.7rem}
+  .th-hero-inner{flex-direction:column;gap:1.25rem}
+  .th-hero-metrics{flex-wrap:wrap;gap:1rem}
+  .th-spotlight-grid{grid-template-columns:1fr}
+  .th-row{flex-direction:column;align-items:flex-start;gap:.75rem}
+  .th-row-main{flex-direction:column;gap:.5rem;width:100%}
+  .th-row-stats{width:100%;justify-content:space-between}
+  .th-row-arrow{display:none}
+  .th-controls-row{flex-direction:column}
+  .th-search-wrap{width:100%}
+  .th-alpha-bar{overflow-x:auto}
+  .th-browse-list{flex-direction:column}
+  .th-browse-item{width:100%}
+}
+</style>
+
+<script is:inline>
+(function(){
+  var search = document.getElementById('teamSearch');
+  var sortSel = document.getElementById('teamSort');
+  var grid = document.getElementById('thGrid');
+  var cards = Array.from(document.querySelectorAll('.th-row'));
+  var countEl = document.getElementById('visibleCount');
+  var loadMoreBtn = document.getElementById('loadMoreBtn');
+  var loadMoreWrap = document.getElementById('loadMoreWrap');
+  var loadMoreCount = document.getElementById('loadMoreCount');
+  var regionPills = document.querySelectorAll('.th-region-pill');
+
+  var BATCH = 48;
+  var isFiltering = false;
+  var activeRegion = 'all';
+
+  // Region filter
+  regionPills.forEach(function(pill) {
+    pill.addEventListener('click', function() {
+      regionPills.forEach(function(p) { p.classList.remove('th-region-active'); });
+      pill.classList.add('th-region-active');
+      activeRegion = pill.dataset.region;
+      filterAndSort();
+    });
+  });
+
+  function updateLoadMore() {
+    if (isFiltering) {
+      loadMoreWrap.style.display = 'none';
+      return;
+    }
+    var paginated = document.querySelectorAll('.th-row.th-paginated:not(.th-revealed)');
+    if (paginated.length === 0) {
+      loadMoreWrap.style.display = 'none';
+    } else {
+      loadMoreWrap.style.display = 'block';
+      loadMoreCount.textContent = '(' + paginated.length + ' remaining)';
+    }
+  }
+
+  function filterAndSort() {
+    var q = search.value.toLowerCase().trim();
+    var sortBy = sortSel.value;
+    isFiltering = q !== '' || activeRegion !== 'all';
+
+    // Filter
+    var visible = [];
+    cards.forEach(function(c) {
+      var name = c.dataset.name;
+      var region = c.dataset.region;
+      var matchName = !q || name.indexOf(q) > -1;
+      var matchRegion = activeRegion === 'all' || region === activeRegion;
+      var match = matchName && matchRegion;
+      c._match = match;
+      if (match) visible.push(c);
+    });
+
+    // Sort visible cards
+    visible.sort(function(a, b) {
+      switch (sortBy) {
+        case 'name-az': return a.dataset.name.localeCompare(b.dataset.name);
+        case 'name-za': return b.dataset.name.localeCompare(a.dataset.name);
+        case 'edpi-low': return Number(a.dataset.edpi) - Number(b.dataset.edpi);
+        case 'edpi-high': return Number(b.dataset.edpi) - Number(a.dataset.edpi);
+        default: return Number(b.dataset.players) - Number(a.dataset.players);
+      }
+    });
+
+    // Re-append in sorted order
+    cards.forEach(function(c) { c.style.display = 'none'; });
+    visible.forEach(function(c, i) {
+      grid.appendChild(c);
+      if (isFiltering) {
+        c.style.display = '';
+      } else {
+        // Respect pagination for non-filtered view
+        var isPaginated = c.classList.contains('th-paginated') && !c.classList.contains('th-revealed');
+        c.style.display = isPaginated ? 'none' : '';
+      }
+    });
+
+    countEl.textContent = visible.length;
+    updateLoadMore();
+  }
+
+  loadMoreBtn.addEventListener('click', function() {
+    var hidden = document.querySelectorAll('.th-row.th-paginated:not(.th-revealed)');
+    var count = 0;
+    hidden.forEach(function(c) {
+      if (count < BATCH) {
+        c.classList.add('th-revealed');
+        if (c._match !== false) c.style.display = '';
+        count++;
+      }
+    });
+    updateLoadMore();
+  });
+
+  search.addEventListener('input', filterAndSort);
+  sortSel.addEventListener('change', filterAndSort);
+
+  // Initial state
+  updateLoadMore();
+})();
+</script>

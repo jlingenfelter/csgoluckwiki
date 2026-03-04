@@ -4,12 +4,12 @@ import ExploreMore from '../components/ExploreMore.astro';
 import { SKINS, RARITY_COLORS } from '../lib/skins';
 import { faqSchema, breadcrumbSchema } from '../lib/weapons';
 
-const title = 'CS2 Trade-Up Calculator — Expected Value & Probability | CSDB.gg';
+const title = 'CS2 Trade-Up Calculator — Expected Value & Probability | CSGOLuck Wiki';
 const description = 'Calculate CS2 trade-up contract outcomes, probabilities, expected value, and ROI. Select skins visually, see possible results with images, and find profitable trade-up strategies.';
 
 const breadcrumbs = [
   { name: 'Home', url: '/' },
-  { name: 'Tools', url: '/tools/' },
+  { name: 'Tools', url: '/cs2-tools/' },
   { name: 'Trade-Up Calculator', url: '/tradeup-calculator/' },
 ];
 
@@ -51,21 +51,23 @@ const toolSchema = JSON.stringify({
   "applicationCategory": "UtilityApplication",
   "operatingSystem": "Web",
   "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
-  "author": { "@type": "Organization", "name": "CSDB.gg", "url": "https://csdb.gg" }
+  "author": { "@type": "Organization", "name": "CSGOLuck Wiki", "url": "https://wiki.csgoluck.com" }
 });
 ---
 
-<Base title={title} description={description} currentNav="/tools/">
+<Base title={title} description={description} currentNav="/cs2-tools/">
   <script type="application/ld+json" set:html={toolSchema}></script>
   <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema(breadcrumbs))}></script>
   <script type="application/ld+json" set:html={JSON.stringify(faqSchema(faqs))}></script>
 
   <nav class="breadcrumb">
-    <a href="/">Home</a> / <a href="/tools/">Tools</a> / <span>Trade-Up Calculator</span>
+    <a href="/">Home</a> <span>/</span> <a href="/cs2-tools/">Tools</a> <span>/</span> <span>Trade-Up Calculator</span>
   </nav>
 
-  <h1>CS2 Trade-Up Calculator</h1>
-  <p class="tu-intro">Select 10 input skins to calculate trade-up outcomes, probabilities, and expected value. Click any slot to pick a skin from the database.</p>
+  <div class="tuc-hero">
+    <h1 class="tuc-title">CS2 Trade-Up Calculator</h1>
+    <p class="tuc-desc">Select 10 input skins to calculate trade-up outcomes, probabilities, and expected value. Use the <a href="/float-checker/" style="color:var(--accent)">float checker</a> to verify wear values and read the <a href="/cs2-guides/float-guide/" style="color:var(--accent)">float guide</a> to understand how output floats are determined.</p>
+  </div>
 
   <!-- Rarity selector -->
   <div class="tu-rarity-bar">
@@ -112,96 +114,103 @@ const toolSchema = JSON.stringify({
   </div>
 
   <!-- Stats -->
-  <div class="tu-stats" id="tuStats" style="display:none">
-    <div class="stats-grid">
-      <div class="stat-card">
-        <div class="val" id="evResult">$0.00</div>
-        <div class="label">Expected Value</div>
+  <div class="tuc-stats" id="tuStats" style="display:none">
+    <div class="tuc-stats-grid">
+      <div class="tuc-stat-card">
+        <div class="tuc-stat-val" id="evResult">$0.00</div>
+        <div class="tuc-stat-label">Expected Value</div>
       </div>
-      <div class="stat-card">
-        <div class="val" id="roiResult">0%</div>
-        <div class="label">Expected ROI</div>
+      <div class="tuc-stat-card">
+        <div class="tuc-stat-val" id="roiResult">0%</div>
+        <div class="tuc-stat-label">Expected ROI</div>
       </div>
-      <div class="stat-card">
-        <div class="val" id="profitChance">0%</div>
-        <div class="label">Profit Probability</div>
+      <div class="tuc-stat-card">
+        <div class="tuc-stat-val" id="profitChance">0%</div>
+        <div class="tuc-stat-label">Profit Probability</div>
       </div>
-      <div class="stat-card">
-        <div class="val" id="verdict">—</div>
-        <div class="label">Verdict</div>
+      <div class="tuc-stat-card">
+        <div class="tuc-stat-val" id="verdict">---</div>
+        <div class="tuc-stat-label">Verdict</div>
       </div>
     </div>
   </div>
 
   <!-- Float Calculator -->
-  <div class="calc-section" style="margin-top:2rem">
-    <h2>Float Value Calculator</h2>
-    <p style="color:var(--text2);font-size:.9rem;margin-bottom:1rem">The average float of your input skins is auto-calculated when you add skins. You can also enter values manually.</p>
-    <div class="calc-row">
-      <label for="avgFloat">Average Input Float</label>
-      <input type="number" id="avgFloat" min="0" max="1" step="0.0001" value="0.15" />
+  <div class="tuc-float-panel">
+    <h2 class="tuc-section-title">Float Value Calculator</h2>
+    <p class="tuc-float-desc">The average float of your input skins is auto-calculated when you add skins. You can also enter values manually.</p>
+    <div class="tuc-float-fields">
+      <div class="tuc-field">
+        <label class="tuc-label" for="avgFloat">Average Input Float</label>
+        <input type="number" id="avgFloat" min="0" max="1" step="0.0001" value="0.15" class="tuc-input" />
+      </div>
+      <div class="tuc-field">
+        <label class="tuc-label" for="minFloat">Output Min Float</label>
+        <input type="number" id="minFloat" min="0" max="1" step="0.01" value="0.00" class="tuc-input" />
+      </div>
+      <div class="tuc-field">
+        <label class="tuc-label" for="maxFloat">Output Max Float</label>
+        <input type="number" id="maxFloat" min="0" max="1" step="0.01" value="0.80" class="tuc-input" />
+      </div>
     </div>
-    <div class="calc-row">
-      <label for="minFloat">Output Min Float</label>
-      <input type="number" id="minFloat" min="0" max="1" step="0.01" value="0.00" />
-    </div>
-    <div class="calc-row">
-      <label for="maxFloat">Output Max Float</label>
-      <input type="number" id="maxFloat" min="0" max="1" step="0.01" value="0.80" />
-    </div>
-    <div class="result-box">
-      <div class="big" id="outputFloat">0.1200</div>
-      <p style="margin:0;color:var(--text2)">Predicted Output Float</p>
-      <p id="wearLabel" style="margin:.5rem 0 0;font-weight:600;color:var(--green)">Minimal Wear</p>
+    <div class="tuc-float-result">
+      <div class="tuc-float-big" id="outputFloat">0.1200</div>
+      <p class="tuc-float-sublabel">Predicted Output Float</p>
+      <p class="tuc-float-wear" id="wearLabel">Minimal Wear</p>
     </div>
   </div>
 
   <!-- Trade-Up Info -->
-  <h2>How Trade-Up Probability Works</h2>
-  <p>
-    The outcome of a trade-up is determined by the collections your 10 input skins belong to. Each input skin represents one "ticket" in a weighted lottery. If 6 of your skins come from the Fracture Collection and 4 from the Dreams & Nightmares Collection, the output has a 60% chance of being a Fracture skin and 40% chance of being a Dreams & Nightmares skin at the next rarity tier.
-  </p>
-  <p>
-    Within each collection, the specific output skin is randomly selected from all available skins at the target rarity. If the Fracture Collection has 2 Restricted skins, each has an equal 50% chance of being selected (given the Fracture Collection is chosen). This means your effective probability for any specific skin is: <code>(collection tickets / 10) × (1 / skins at target rarity in that collection)</code>.
-  </p>
+  <div class="tuc-guide">
+    <h2 class="tuc-section-title">How Trade-Up Probability Works</h2>
+    <p>
+      The outcome of a trade-up is determined by the collections your 10 input skins belong to. Each input skin represents one "ticket" in a weighted lottery. If 6 of your skins come from the Fracture Collection and 4 from the Dreams & Nightmares Collection, the output has a 60% chance of being a Fracture skin and 40% chance of being a Dreams & Nightmares skin at the next rarity tier.
+    </p>
+    <p>
+      Within each collection, the specific output skin is randomly selected from all available skins at the target rarity. If the Fracture Collection has 2 Restricted skins, each has an equal 50% chance of being selected (given the Fracture Collection is chosen). This means your effective probability for any specific skin is: <code>(collection tickets / 10) x (1 / skins at target rarity in that collection)</code>.
+    </p>
 
-  <h3>Float Value Manipulation</h3>
-  <p>
-    The output float is calculated using the average float of your 10 inputs, mapped to the output skin's float range. By carefully selecting input skins with very low floats, you can produce outputs in Factory New or Minimal Wear conditions that command premium prices.
-  </p>
+    <h3>Float Value Manipulation</h3>
+    <p>
+      The output float is calculated using the average float of your 10 inputs, mapped to the output skin's float range. By carefully selecting input skins with very low floats, you can produce outputs in Factory New or Minimal Wear conditions that command premium prices.
+    </p>
 
-  <h3>Finding Profitable Trade-Ups</h3>
-  <p>
-    The most consistently profitable trade-ups share common patterns: cheap input skins from collections that contain high-value outputs at the next tier, combined with collections where the "miss" outcome still returns reasonable value.
-  </p>
+    <h3>Finding Profitable Trade-Ups</h3>
+    <p>
+      The most consistently profitable trade-ups share common patterns: cheap input skins from collections that contain high-value outputs at the next tier, combined with collections where the "miss" outcome still returns reasonable value.
+    </p>
+  </div>
 
   <!-- FAQ -->
-  <h2>Frequently Asked Questions</h2>
-  <dl class="faq">
+  <section class="tuc-faq">
+    <h2 class="tuc-section-title">Frequently Asked Questions</h2>
     {faqs.map(f => (
-      <Fragment>
-        <dt>{f.question}</dt>
-        <dd>{f.answer}</dd>
-      </Fragment>
+      <details class="tuc-faq-item">
+        <summary class="tuc-faq-q">{f.question}</summary>
+        <p class="tuc-faq-a">{f.answer}</p>
+      </details>
     ))}
-  </dl>
+  </section>
 
-  <div class="internal-links">
+  <div class="tuc-links">
     <strong>Related Tools & Guides:</strong>
     <a href="/case-odds-calculator/">Case Odds Calculator</a>
     <a href="/case-simulator/">Case Simulator</a>
-    <a href="/skins/">Skin Database</a>
+    <a href="/cs2-skins/">Skin Database</a>
     <a href="/skin-compare/">Compare Skins</a>
     <a href="/float-checker/">Float Checker</a>
     <a href="/price-tracker/">Price Tracker</a>
     <a href="/market-trends/">Market Trends</a>
-    <a href="/cases/">Cases & Collections</a>
+    <a href="/cs2-cases/">Cases & Collections</a>
     <a href="/inventory-lookup/">Inventory Lookup</a>
     <a href="/loadout-builder/">Loadout Builder</a>
-    <a href="/weapons/">Weapon Database</a>
-    <a href="/guides/float-guide/">Float Value Guide</a>
-    <a href="/guides/trading-guide/">Trading Guide</a>
-    <a href="/guides/skins-investing-guide/">Skins Investing Guide</a>
+    <a href="/cs2-weapons/">Weapon Database</a>
+    <a href="/cs2-guides/float-guide/">Float Value Guide</a>
+    <a href="/cs2-guides/trading-guide/">Trading Guide</a>
+    <a href="/cs2-guides/skins-investing-guide/">Skins Investing Guide</a>
+    <a href="/cs2-stickers/">Sticker Database</a>
+    <a href="/cs2-agents/">Agents & Music Kits</a>
+    <a href="/cs2-tools/">All Tools</a>
   </div>
 
   <!-- Skin Picker Modal -->
@@ -229,9 +238,11 @@ const toolSchema = JSON.stringify({
 </Base>
 
 <style is:inline>
-.tu-intro{color:var(--text2);font-size:.95rem;margin-bottom:1.5rem}
+.tuc-hero{padding:1.5rem 0;margin-bottom:1.5rem}
+.tuc-title{font-size:2rem;font-weight:800;margin:0 0 .5rem;color:var(--text)}
+.tuc-desc{color:var(--text2);font-size:.95rem;margin:0;max-width:640px;line-height:1.6}
 
-.tu-rarity-bar{display:flex;align-items:center;gap:.75rem;flex-wrap:wrap;margin-bottom:1.5rem;padding:1rem;background:var(--bg2);border:1px solid var(--border);border-radius:10px}
+.tu-rarity-bar{display:flex;align-items:center;gap:.75rem;flex-wrap:wrap;margin-bottom:1.5rem;padding:1rem;background:var(--bg2);border:1px solid var(--border);border-radius:4px}
 .tu-rarity-label{font-weight:600;font-size:.9rem;color:var(--text)}
 .tu-rarity-pills{display:flex;gap:.4rem;flex-wrap:wrap}
 .tu-pill{background:var(--bg3);border:1px solid var(--border);color:var(--text2);padding:.35rem .75rem;border-radius:6px;font-size:.82rem;cursor:pointer;transition:all .2s;font-family:inherit}
@@ -241,7 +252,7 @@ const toolSchema = JSON.stringify({
 .tu-layout{display:grid;grid-template-columns:1fr auto 1fr;gap:1rem;align-items:start;margin-bottom:1.5rem}
 .tu-arrow{display:flex;align-items:center;justify-content:center;padding-top:3rem;color:var(--accent)}
 
-.tu-inputs-panel,.tu-output-panel{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:1.25rem}
+.tu-inputs-panel,.tu-output-panel{background:var(--bg2);border:1px solid var(--border);border-radius:4px;padding:1.25rem}
 .tu-panel-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem}
 .tu-panel-head h2{margin:0;font-size:1.15rem}
 .tu-slot-counter{font-size:.85rem;color:var(--text2);font-weight:400;margin-left:.5rem}
@@ -249,8 +260,8 @@ const toolSchema = JSON.stringify({
 .tu-clear-btn:hover{border-color:var(--accent);color:var(--text)}
 
 .tu-slots{display:grid;grid-template-columns:repeat(5,1fr);gap:.5rem}
-.tu-slot{background:var(--bg3);border:2px dashed var(--border);border-radius:8px;min-height:110px;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;transition:all .15s;position:relative;padding:.4rem;text-align:center;overflow:hidden}
-.tu-slot:hover{border-color:var(--accent);background:rgba(212,149,110,.04)}
+.tu-slot{background:var(--bg3);border:2px dashed var(--border);border-radius:4px;min-height:110px;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;transition:all .15s;position:relative;padding:.4rem;text-align:center;overflow:hidden}
+.tu-slot:hover{border-color:var(--accent);background:rgba(46,204,113,.04)}
 .tu-slot.filled{border-style:solid;border-color:var(--slot-color,var(--border))}
 .tu-slot.filled:hover{border-color:#ef4444}
 .tu-slot-num{position:absolute;top:4px;left:6px;font-size:.6rem;color:var(--text2);font-weight:600}
@@ -270,7 +281,7 @@ const toolSchema = JSON.stringify({
 .tu-outcomes{display:flex;flex-direction:column;gap:.6rem}
 .tu-empty-state{text-align:center;color:var(--text2);padding:2rem;font-size:.9rem}
 
-.tu-outcome{display:flex;align-items:center;gap:.75rem;padding:.75rem;background:var(--bg3);border:1px solid var(--border);border-radius:8px;border-left:4px solid var(--oc,var(--border))}
+.tu-outcome{display:flex;align-items:center;gap:.75rem;padding:.75rem;background:var(--bg3);border:1px solid var(--border);border-radius:4px;border-left:4px solid var(--oc,var(--border))}
 .tu-outcome-img{width:64px;height:48px;object-fit:contain;flex-shrink:0;border-radius:4px}
 .tu-outcome-info{flex:1;min-width:0}
 .tu-outcome-weapon{font-weight:700;font-size:.88rem;color:var(--text)}
@@ -283,12 +294,48 @@ const toolSchema = JSON.stringify({
 .tu-outcome-ev.profit{color:#4ade80}
 .tu-outcome-ev.loss{color:#ef4444}
 
-.tu-stats{margin:1.5rem 0}
+.tuc-stats{margin:1.5rem 0}
+.tuc-stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:.75rem}
+.tuc-stat-card{background:var(--bg2);border:1px solid var(--border);border-radius:4px;padding:1rem;text-align:center}
+.tuc-stat-val{font-size:1.5rem;font-weight:800;color:var(--accent)}
+.tuc-stat-label{font-size:.75rem;color:var(--text2);text-transform:uppercase;letter-spacing:.04em;margin-top:.25rem}
+
+.tuc-float-panel{background:var(--bg2);border:1px solid var(--border);border-radius:4px;padding:1.5rem;margin-top:2rem}
+.tuc-section-title{font-size:1.1rem;font-weight:700;color:var(--text);margin:0 0 .75rem}
+.tuc-float-desc{color:var(--text2);font-size:.9rem;margin:0 0 1rem}
+.tuc-float-fields{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem;margin-bottom:1rem}
+.tuc-field{display:flex;flex-direction:column;gap:.4rem}
+.tuc-label{font-weight:600;color:var(--text2);font-size:.85rem;text-transform:uppercase;letter-spacing:.04em}
+.tuc-input{padding:.6rem;background:var(--bg3);border:1px solid var(--border);border-radius:4px;color:var(--text);font-size:.95rem;font-family:inherit}
+.tuc-input:focus{outline:none;border-color:var(--accent)}
+.tuc-float-result{background:var(--bg);border:1px solid var(--border);border-left:3px solid var(--accent);border-radius:4px;padding:1.25rem;text-align:center}
+.tuc-float-big{font-size:2rem;font-weight:800;color:var(--accent)}
+.tuc-float-sublabel{margin:0;color:var(--text2);font-size:.85rem}
+.tuc-float-wear{margin:.5rem 0 0;font-weight:600;color:#4caf50}
+
+.tuc-guide{background:var(--bg2);border:1px solid var(--border);border-left:3px solid var(--accent);border-radius:4px;padding:1.5rem;margin:2rem 0}
+.tuc-guide p{color:var(--text2);font-size:.9rem;line-height:1.65;margin:.75rem 0}
+.tuc-guide h3{color:var(--text);font-size:1rem;margin:1.5rem 0 .5rem}
+.tuc-guide code{background:var(--bg3);padding:.15rem .4rem;border-radius:4px;font-size:.85rem;color:var(--accent)}
+
+.tuc-faq{margin:2rem 0}
+.tuc-faq-item{background:var(--bg2);border:1px solid var(--border);border-radius:4px;margin-bottom:.5rem;overflow:hidden}
+.tuc-faq-q{padding:.8rem 1rem;cursor:pointer;font-weight:600;font-size:.9rem;color:var(--text);list-style:none;display:flex;align-items:center;justify-content:space-between}
+.tuc-faq-q::-webkit-details-marker{display:none}
+.tuc-faq-q::after{content:'+';font-size:1.1rem;color:var(--accent);font-weight:700}
+.tuc-faq-item[open] .tuc-faq-q::after{content:'-'}
+.tuc-faq-item[open]{border-left:3px solid var(--accent)}
+.tuc-faq-a{padding:0 1rem .8rem;margin:0;font-size:.88rem;color:var(--text2);line-height:1.6}
+
+.tuc-links{display:flex;flex-wrap:wrap;gap:.5rem;align-items:center;padding:1rem;background:var(--bg2);border:1px solid var(--border);border-radius:4px;margin-bottom:1.5rem}
+.tuc-links strong{width:100%;font-size:.85rem;color:var(--text);margin-bottom:.25rem}
+.tuc-links a{font-size:.82rem;color:var(--accent);text-decoration:none;padding:.3rem .6rem;background:var(--bg3);border:1px solid var(--border);border-radius:4px;transition:border-color .15s}
+.tuc-links a:hover{border-color:var(--accent)}
 
 /* Skin Picker Modal */
 .tu-modal-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.7);z-index:1000;display:none;align-items:center;justify-content:center;padding:1rem}
 .tu-modal-overlay.open{display:flex}
-.tu-modal{background:var(--bg);border:1px solid var(--border);border-radius:12px;width:100%;max-width:800px;max-height:80vh;display:flex;flex-direction:column;overflow:hidden}
+.tu-modal{background:var(--bg);border:1px solid var(--border);border-radius:4px;width:100%;max-width:800px;max-height:80vh;display:flex;flex-direction:column;overflow:hidden}
 .tu-modal-head{display:flex;justify-content:space-between;align-items:center;padding:1rem 1.25rem;border-bottom:1px solid var(--border)}
 .tu-modal-head h3{margin:0;font-size:1.1rem}
 .tu-modal-close{background:none;border:none;color:var(--text2);cursor:pointer;padding:.25rem;border-radius:4px}
@@ -298,8 +345,8 @@ const toolSchema = JSON.stringify({
 .tu-modal-search:focus{outline:none;border-color:var(--accent)}
 .tu-modal-select{background:var(--bg2);color:var(--text);border:1px solid var(--border);padding:.5rem .75rem;border-radius:6px;font-size:.82rem;font-family:inherit;max-width:220px}
 .tu-modal-grid{overflow-y:auto;padding:1rem 1.25rem;display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:.5rem;max-height:60vh}
-.tu-modal-skin{display:flex;flex-direction:column;align-items:center;padding:.6rem;background:var(--bg2);border:1px solid var(--border);border-radius:8px;cursor:pointer;transition:all .15s;text-align:center}
-.tu-modal-skin:hover{border-color:var(--accent);transform:translateY(-1px);box-shadow:0 4px 12px rgba(212,149,110,.1)}
+.tu-modal-skin{display:flex;flex-direction:column;align-items:center;padding:.6rem;background:var(--bg2);border:1px solid var(--border);border-radius:4px;cursor:pointer;transition:all .15s;text-align:center}
+.tu-modal-skin:hover{border-color:var(--accent);}
 .tu-modal-skin-img{width:80px;height:60px;object-fit:contain;margin-bottom:.3rem}
 .tu-modal-skin-name{font-size:.72rem;font-weight:700;color:var(--text);line-height:1.2}
 .tu-modal-skin-desc{font-size:.62rem;color:var(--text2);line-height:1.2;margin-top:.1rem}
@@ -316,6 +363,8 @@ const toolSchema = JSON.stringify({
   .tu-slots{grid-template-columns:repeat(3,1fr)}
   .tu-slot{min-height:90px}
   .tu-modal-grid{grid-template-columns:repeat(2,1fr)}
+  .tuc-stats-grid{grid-template-columns:1fr 1fr}
+  .tuc-float-fields{grid-template-columns:1fr}
 }
 </style>
 
@@ -323,7 +372,7 @@ const toolSchema = JSON.stringify({
 (function(){
   const allSkins = JSON.parse(skinDataJson);
   const RARITY_ORDER = ['Consumer','Industrial','Mil-Spec','Restricted','Classified','Covert'];
-  const RARITY_COLORS = {'Consumer':'#b0c3d9','Industrial':'#5e98d9','Mil-Spec':'#4b69ff','Restricted':'#8847ff','Classified':'#d32ce6','Covert':'#eb4b4b'};
+  const RARITY_COLORS = {'Consumer':'#b0c3d9','Industrial':'#5e98d9','Mil-Spec':'#4b69ff','Restricted':'#8847ff','Classified':'#d32ce6','Covert':'#2ecc71'};
   const NEXT_RARITY = {'Consumer':'Industrial','Industrial':'Mil-Spec','Mil-Spec':'Restricted','Restricted':'Classified','Classified':'Covert'};
 
   let currentRarity = 'Mil-Spec';

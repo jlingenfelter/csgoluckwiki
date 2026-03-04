@@ -1,8 +1,8 @@
 ---
 import Base from '../../layouts/Base.astro';
 
-const title = 'Josh Lingenfelter — Author & CS2 Expert | CSDB.gg';
-const description = 'Articles and guides by Josh Lingenfelter, Director at Bettor Media. CS player since 2013 covering skin trading, pro settings, marketplace analysis, and competitive CS2.';
+const title = 'Josh Lingenfelter — Author & CS2 Expert | CSGOLuck Wiki';
+const description = 'Articles and guides by Josh Lingenfelter, Director at CSGOLuck. CS player since 2013 covering skin trading, pro settings, marketplace analysis, and competitive CS2.';
 
 const breadcrumbs = [
   { name: 'Home', url: '/' },
@@ -14,43 +14,42 @@ const articles = [
   {
     category: 'Trading & Investing',
     pages: [
-      { title: 'CS2 Skin Trading Guide', url: '/guides/trading-guide/', description: 'Comprehensive guide to marketplace comparison, scam prevention, and profitable trading strategies.' },
-      { title: 'Skins Investing Guide', url: '/guides/skins-investing-guide/', description: 'How to identify undervalued skins, manage your portfolio, and build long-term value.' },
-      { title: 'Best CS2 Trading Sites 2026', url: '/trading-sites/', description: 'Compare 15+ CS2 skin marketplaces and bot traders with fees, ratings, and features.' },
-      { title: 'Case Hardened Pattern Guide', url: '/guides/case-hardened-guide/', description: 'Blue gem tiers, pattern IDs, and pricing for Case Hardened skins.' },
+      { title: 'CS2 Skin Trading Guide', url: '/cs2-guides/trading-guide/', description: 'Comprehensive guide to marketplace comparison, scam prevention, and profitable trading strategies.' },
+      { title: 'Skins Investing Guide', url: '/cs2-guides/skins-investing-guide/', description: 'How to identify undervalued skins, manage your portfolio, and build long-term value.' },
+      { title: 'Case Hardened Pattern Guide', url: '/cs2-guides/case-hardened-guide/', description: 'Blue gem tiers, pattern IDs, and pricing for Case Hardened skins.' },
     ],
   },
   {
     category: 'Game Mechanics & Skills',
     pages: [
-      { title: 'Crosshair Settings Guide', url: '/guides/crosshair-guide/', description: 'How to customize your crosshair for better aim and visibility in CS2.' },
-      { title: 'CS2 Movement Guide', url: '/guides/movement-guide/', description: 'Counter-strafing, bunny hopping, and advanced movement techniques.' },
-      { title: 'Grenade Lineup Guide', url: '/guides/grenade-guide/', description: 'Essential smoke, flash, and molotov lineups for competitive play.' },
-      { title: 'Advanced Mechanics Guide', url: '/guides/advanced-mechanics-guide/', description: 'Spray control, peeking, positioning, and high-level gameplay concepts.' },
-      { title: 'Audio Settings Guide', url: '/guides/audio-guide/', description: 'Optimize your audio setup for better sound positioning and callouts.' },
+      { title: 'Crosshair Settings Guide', url: '/cs2-guides/crosshair-guide/', description: 'How to customize your crosshair for better aim and visibility in CS2.' },
+      { title: 'CS2 Movement Guide', url: '/cs2-guides/movement-guide/', description: 'Counter-strafing, bunny hopping, and advanced movement techniques.' },
+      { title: 'Grenade Lineup Guide', url: '/cs2-guides/grenade-guide/', description: 'Essential smoke, flash, and molotov lineups for competitive play.' },
+      { title: 'Advanced Mechanics Guide', url: '/cs2-guides/advanced-mechanics-guide/', description: 'Spray control, peeking, positioning, and high-level gameplay concepts.' },
+      { title: 'Audio Settings Guide', url: '/cs2-guides/audio-guide/', description: 'Optimize your audio setup for better sound positioning and callouts.' },
     ],
   },
   {
     category: 'Getting Started',
     pages: [
-      { title: 'Beginner\'s Guide to CS2', url: '/guides/beginners-guide/', description: 'Everything new players need to know about Counter-Strike 2.' },
-      { title: 'CS2 Ranks Guide', url: '/guides/ranks-guide/', description: 'Understanding the CS2 ranking system, Premier mode, and how to rank up.' },
-      { title: 'CS2 Economy Guide', url: '/guides/economy-guide/', description: 'Buy rounds, eco rounds, and money management in competitive CS2.' },
+      { title: 'Beginner\'s Guide to CS2', url: '/cs2-guides/beginners-guide/', description: 'Everything new players need to know about Counter-Strike 2.' },
+      { title: 'CS2 Ranks Guide', url: '/cs2-guides/ranks-guide/', description: 'Understanding the CS2 ranking system, Premier mode, and how to rank up.' },
+      { title: 'CS2 Economy Guide', url: '/cs2-guides/economy-guide/', description: 'Buy rounds, eco rounds, and money management in competitive CS2.' },
     ],
   },
   {
     category: 'Technical & Configuration',
     pages: [
-      { title: 'Float Values Explained', url: '/guides/float-guide/', description: 'How float values work, wear ranges, and their impact on skin prices.' },
-      { title: 'FPS Optimization Guide', url: '/guides/fps-optimization-guide/', description: 'Launch options, video settings, and system tweaks for maximum FPS.' },
-      { title: 'Config & Settings Guide', url: '/guides/config-guide/', description: 'autoexec.cfg setup, key binds, and recommended competitive settings.' },
-      { title: 'Demo Review Guide', url: '/guides/demo-guide/', description: 'How to watch demos, analyze your gameplay, and learn from pros.' },
+      { title: 'Float Values Explained', url: '/cs2-guides/float-guide/', description: 'How float values work, wear ranges, and their impact on skin prices.' },
+      { title: 'FPS Optimization Guide', url: '/cs2-guides/fps-optimization-guide/', description: 'Launch options, video settings, and system tweaks for maximum FPS.' },
+      { title: 'Config & Settings Guide', url: '/cs2-guides/config-guide/', description: 'autoexec.cfg setup, key binds, and recommended competitive settings.' },
+      { title: 'Demo Review Guide', url: '/cs2-guides/demo-guide/', description: 'How to watch demos, analyze your gameplay, and learn from pros.' },
     ],
   },
   {
     category: 'Reference & Tools',
     pages: [
-      { title: 'Frequently Asked Questions', url: '/faq/', description: 'Common questions about CS2, skins, trading, and CSDB.gg.' },
+      { title: 'Frequently Asked Questions', url: '/faq/', description: 'Common questions about CS2, skins, trading, and CSGOLuck Wiki.' },
     ],
   },
 ];
@@ -63,11 +62,11 @@ const personSchema = JSON.stringify({
   "mainEntity": {
     "@type": "Person",
     "name": "Josh Lingenfelter",
-    "url": "https://csdb.gg/author/josh-lingenfelter/",
+    "url": "https://wiki.csgoluck.com/author/josh-lingenfelter/",
     "jobTitle": "Director",
     "worksFor": {
       "@type": "Organization",
-      "name": "Bettor Media"
+      "name": "CSGOLuck"
     },
     "sameAs": [
       "https://www.linkedin.com/in/josh-lingenfelter-8157274b/"
@@ -92,7 +91,7 @@ import { breadcrumbSchema } from '../../lib/weapons';
       <div class="author-profile-avatar">JL</div>
       <div class="author-profile-info">
         <h1>Josh Lingenfelter</h1>
-        <p class="author-profile-role">Director at <strong>Bettor Media</strong></p>
+        <p class="author-profile-role">Director at <strong>CSGOLuck</strong></p>
         <div class="author-profile-links">
           <a href="https://www.linkedin.com/in/josh-lingenfelter-8157274b/" target="_blank" rel="noopener" class="author-social-link">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
@@ -108,10 +107,10 @@ import { breadcrumbSchema } from '../../lib/weapons';
         CS player since 2013, starting with CS:GO and transitioning to CS2. With over a decade of experience in the Counter-Strike ecosystem, I cover skin trading and marketplace analysis, professional player settings and configurations, competitive strategy and game mechanics, and the economics of the CS2 skin market.
       </p>
       <p>
-        As Director at Bettor Media, I focus on creating data-driven content that helps players make informed decisions — whether that's choosing the right trading platform, understanding skin float values, or optimising their gameplay settings.
+        As Director at CSGOLuck, I focus on creating data-driven content that helps players make informed decisions — whether that's choosing the right trading platform, understanding skin float values, or optimising their gameplay settings.
       </p>
       <p>
-        CSDB.gg is built to be the most comprehensive CS2 resource available, with real-time pricing data from 14+ marketplaces, settings from 860+ professional players, and in-depth guides covering every aspect of the game.
+        CSGOLuck Wiki is built to be the most comprehensive CS2 resource available, with real-time pricing data from 14+ marketplaces, settings from 860+ professional players, and in-depth guides covering every aspect of the game.
       </p>
     </div>
 
@@ -157,7 +156,7 @@ import { breadcrumbSchema } from '../../lib/weapons';
   .breadcrumb{font-size:0.85rem;color:var(--text2);margin-bottom:1.5rem}
   .breadcrumb a{color:var(--accent)}
 
-  .author-profile{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:2rem;margin-bottom:2rem}
+  .author-profile{background:var(--bg2);border:1px solid var(--border);border-radius:4px;padding:2rem;margin-bottom:2rem}
   .author-profile-header{display:flex;gap:1.5rem;align-items:center;margin-bottom:1.5rem}
   .author-profile-avatar{width:80px;height:80px;border-radius:50%;background:var(--accent);color:var(--bg);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:1.6rem;flex-shrink:0}
   .author-profile-info{flex:1}
@@ -183,8 +182,8 @@ import { breadcrumbSchema } from '../../lib/weapons';
   .article-group{margin-bottom:2rem}
   .article-group h3{font-size:1rem;color:var(--accent);margin:0 0 0.75rem;padding-bottom:0.5rem;border-bottom:1px solid var(--border)}
   .article-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:0.75rem}
-  .article-card{display:block;background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:1rem 1.2rem;transition:all 0.2s;text-decoration:none}
-  .article-card:hover{border-color:var(--accent);transform:translateY(-2px);box-shadow:0 4px 12px rgba(0,0,0,0.2)}
+  .article-card{display:block;background:var(--bg2);border:1px solid var(--border);border-radius:4px;padding:1rem 1.2rem;transition:all 0.2s;text-decoration:none}
+  .article-card:hover{border-color:var(--accent)}
   .article-card-title{font-weight:600;font-size:0.95rem;color:var(--text);margin-bottom:0.3rem}
   .article-card-desc{font-size:0.82rem;color:var(--text2);line-height:1.5}
 

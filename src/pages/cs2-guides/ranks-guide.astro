@@ -1,0 +1,833 @@
+---
+import Base from '../../layouts/Base.astro';
+import AuthorBox from '../../components/AuthorBox.astro';
+import { faqSchema, breadcrumbSchema } from '../../lib/weapons';
+
+const title = 'CS2 Ranking System Explained — Competitive & Premier Tiers | CSGOLuck Wiki';
+const description = 'A detailed breakdown of CS2 competitive ranks and the Premier rating ladder, with proven strategies for climbing to higher divisions faster.';
+
+const breadcrumbs = [
+  { name: 'Home', url: '/' },
+  { name: 'Guides', url: '/cs2-guides' },
+  { name: 'Ranking System Guide', url: '/cs2-guides/ranks-guide' },
+];
+
+const faqs = [
+  {
+    question: 'What are the competitive ranks in CS2?',
+    answer: 'CS2 has 18 competitive ranks divided into 6 divisions (Bronze, Silver, Gold, Master Guardian, Legendary Eagle, Global Elite). Each division has 3 ranks within it (except Global which is single).',
+  },
+  {
+    question: 'How does the rating/ELO system work?',
+    answer: 'Your rating increases/decreases based on match results and individual performance. Wins gain rating, losses lose rating. The amount gained/lost depends on your opponent\'s rating and your current rating.',
+  },
+  {
+    question: 'What is Premier rating and how is it different?',
+    answer: 'Premier is CS2\'s newest competitive ladder using a rating system (0-3000+) instead of ranks. It\'s team-based, focuses on consistency, and has explicit skill requirements for each division.',
+  },
+  {
+    question: 'Can I derank by not playing?',
+    answer: 'In traditional competitive, inactivity doesn\'t cause immediate deranking. However, your rating does decay slightly. In Premier, inactivity has greater rating consequences.',
+  },
+  {
+    question: 'How many wins do I need to rank up?',
+    answer: 'There\'s no fixed number of wins needed to rank up. Ranking up depends on rating gains from wins and opponent skill levels. Better performance and beating higher-ranked opponents generates more rating.',
+  },
+];
+
+const breadcrumbSchema_ = breadcrumbSchema(breadcrumbs);
+const faqSchema_ = faqSchema(faqs);
+
+const articleSchema = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": title,
+  "description": description,
+  "author": { "@type": "Person", "name": "Josh Lingenfelter", "url": "https://www.linkedin.com/in/josh-lingenfelter-8157274b/", "jobTitle": "Director", "worksFor": { "@type": "Organization", "name": "CSGOLuck" } },
+  "publisher": { "@type": "Organization", "name": "CSGOLuck Wiki", "url": "https://wiki.csgoluck.com" },
+  "mainEntityOfPage": `https://wiki.csgoluck.com/cs2-guides/ranks-guide/`,
+  "inLanguage": "en-US"
+});
+
+const sections = [
+  { id: 'competitive', label: 'Competitive Ranks' },
+  { id: 'premier', label: 'Premier System' },
+  { id: 'factors', label: 'Rank Factors' },
+  { id: 'strategies', label: 'Strategies' },
+  { id: 'plateaus', label: 'Plateaus' },
+  { id: 'expectations', label: 'Expectations' },
+  { id: 'faq', label: 'FAQ' },
+  { id: 'resources', label: 'Resources' },
+];
+
+const rankDivisions = [
+  { name: 'Silver', range: 'Ranks 1-3', desc: 'New players still building core mechanics', color: '#a8a8a8' },
+  { name: 'Gold', range: 'Ranks 4-6', desc: 'Developing competitors with a grasp of basics', color: '#e8c96e' },
+  { name: 'Master Guardian', range: 'Ranks 7-9', desc: 'Mid-tier competitors refining game sense', color: '#6db3e8' },
+  { name: 'Legendary Eagle', range: 'Ranks 10-12', desc: 'Skilled players with strong fundamentals', color: '#b07cc6' },
+  { name: 'Supreme', range: 'Ranks 13-16', desc: 'High-calibre players nearing semi-pro territory', color: '#e07070' },
+  { name: 'Global Elite', range: 'Rank 18', desc: 'The highest echelon of matchmaking competition', color: '#2ecc71' },
+];
+
+const strategies = [
+  { num: '01', title: 'Master Fewer Maps', desc: 'Specialise in 3-4 maps instead of spreading yourself thin. Deeper knowledge of timings, callouts, and angles gives you a measurable edge in every round.' },
+  { num: '02', title: 'Find Consistent Teammates', desc: 'Queue with the same group regularly. Shared habits and built-up chemistry translate directly into tighter coordination and a better win rate.' },
+  { num: '03', title: 'Focus on Weapon Consistency', desc: 'Pick one primary rifle -- AK-47 or M4 -- and drill its spray until it is automatic. Reliability with a single gun outweighs mediocrity across many.' },
+  { num: '04', title: 'Improve Positioning & Game Sense', desc: 'Winning a fight often starts before anyone shoots. When ranking up, refining where and how you hold angles pays off faster than raw aim training alone.' },
+  { num: '05', title: 'Play for the Team, Not Kills', desc: 'Prioritise enabling your squad over padding your stats. Support-oriented players tend to climb more steadily because they boost the team\'s overall win probability.' },
+  { num: '06', title: 'Analyze Your Demos', desc: 'Reviewing past matches exposes repeated habits you miss in the moment -- poor rotations, wasted utility, bad economic calls. Fix one pattern at a time.' },
+  { num: '07', title: 'Maintain Positive Mentality', desc: 'The climb demands hundreds of games. Staying level-headed during loss streaks prevents the tilt spiral that tanks decision-making and burns rating points.' },
+  { num: '08', title: 'Practice Aim in Deathmatch', desc: 'A focused 30-minute deathmatch session each day compounds into noticeably sharper mechanics within weeks. Fine-tune your <a href="/sensitivity-converter/">sensitivity settings</a> and <a href="/cs2-guides/crosshair-guide/">crosshair</a> before drilling.' },
+];
+
+const resources = [
+  { name: 'All Guides', url: '/cs2-guides/' },
+  { name: 'Rank Distribution', url: '/cs2-rank-distribution/' },
+  { name: 'Sensitivity Converter', url: '/sensitivity-converter/' },
+  { name: 'Crosshair Generator', url: '/crosshair-generator/' },
+  { name: 'Pro Player Settings', url: '/pro-players/' },
+  { name: 'All Tools', url: '/cs2-tools/' },
+  { name: 'Beginner\'s Guide', url: '/cs2-guides/beginners-guide/' },
+  { name: 'Economy Guide', url: '/cs2-guides/economy-guide/' },
+  { name: 'Crosshair Guide', url: '/cs2-guides/crosshair-guide/' },
+  { name: 'Advanced Mechanics', url: '/cs2-guides/advanced-mechanics-guide/' },
+  { name: 'Map Callouts', url: '/cs2-maps/' },
+];
+---
+
+<Base title={title} description={description}>
+  <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema_)}></script>
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema_)}></script>
+  <script type="application/ld+json" set:html={articleSchema}></script>
+
+  <div class="rg-wrap">
+    <!-- Breadcrumb -->
+    <nav class="rg-breadcrumb">
+      <a href="/">Home</a>
+      <span class="rg-sep">/</span>
+      <a href="/cs2-guides">Guides</a>
+      <span class="rg-sep">/</span>
+      <span>Ranking System Guide</span>
+    </nav>
+
+    <!-- Full-width header -->
+    <header class="rg-header">
+      <h1>Counter-Strike 2 Ranking System Guide</h1>
+      <p class="rg-subtitle">How CS2 ranks work, what influences your rating, and practical tips for climbing</p>
+    </header>
+
+    <!-- Mobile TOC bar -->
+    <nav class="rg-toc-mobile" aria-label="Table of contents">
+      {sections.map((s) => (
+        <a href={`#${s.id}`} class="rg-toc-mobile-link">{s.label}</a>
+      ))}
+    </nav>
+
+    <!-- 2-column layout -->
+    <div class="rg-layout">
+      <!-- Sidebar TOC -->
+      <aside class="rg-sidebar">
+        <nav class="rg-toc" aria-label="Table of contents">
+          <span class="rg-toc-title">Contents</span>
+          {sections.map((s) => (
+            <a href={`#${s.id}`} class="rg-toc-link">{s.label}</a>
+          ))}
+        </nav>
+      </aside>
+
+      <!-- Main content -->
+      <article class="rg-content">
+        <p class="rg-intro">
+          CS2 uses a multi-layered ranking system to pair you with opponents of comparable ability. Check our <a href="/cs2-rank-distribution/">rank distribution</a> page to see where you stand globally. Knowing the mechanics behind rank calculation -- and the habits that actually move the needle -- helps you set realistic milestones and choose the most efficient path up the ladder. This guide explains both the classic Competitive tiers and the newer Premier rating system.
+        </p>
+
+        <!-- Competitive Ranking System -->
+        <section id="competitive">
+          <div class="rg-section-header">
+            <h2>Competitive Ranking System</h2>
+          </div>
+          <p>
+            CS2's traditional Competitive mode uses 18 ranks divided into 6 divisions. Ranks are earned through consistent winning and good individual performance against similarly skilled opponents.
+          </p>
+
+          <h3>Rank Divisions</h3>
+          <div class="rg-divisions-grid">
+            {rankDivisions.map((div) => (
+              <div class="rg-division-card" style={`--div-color: ${div.color}`}>
+                <span class="rg-division-pip"></span>
+                <strong class="rg-division-name">{div.name}</strong>
+                <span class="rg-division-range">{div.range}</span>
+                <span class="rg-division-desc">{div.desc}</span>
+              </div>
+            ))}
+          </div>
+
+          <h3>How Competitive Ranking Works</h3>
+          <p>
+            Your competitive rank is determined by an internal ELO-style rating system. Factors influencing rating changes:
+          </p>
+          <ul class="rg-list">
+            <li><strong>Match Outcome:</strong> Wins increase rating, losses decrease rating</li>
+            <li><strong>Opponent Strength:</strong> Beating higher-ranked opponents gains more rating</li>
+            <li><strong>Your Performance:</strong> Individual stats influence rating changes</li>
+            <li><strong>Team Performance:</strong> Team coordination and execution matter</li>
+            <li><strong>Consistency:</strong> Streaks (win/loss) can accelerate ranking</li>
+          </ul>
+
+          <h3>Ranking Up</h3>
+          <p>
+            To rank up, accumulate enough rating to surpass your current rank threshold. There's no fixed number of wins required—it depends on:
+          </p>
+          <ul class="rg-list">
+            <li>Quality of opponents (harder opponents = more rating per win)</li>
+            <li>Consistency (steady performance gains rating faster)</li>
+            <li>Individual statistics (K/D ratio, ADR, etc.)</li>
+            <li>Round impact (winning important rounds matters)</li>
+          </ul>
+
+          <h3>Ranking Down</h3>
+          <p>
+            Losing matches decreases your rating. You'll derank when your rating falls below your current rank threshold. Deranking happens faster when:
+          </p>
+          <ul class="rg-list">
+            <li>You lose against lower-ranked opponents</li>
+            <li>You have poor individual performance</li>
+            <li>Your team coordination breaks down</li>
+            <li>You go on losing streaks</li>
+          </ul>
+        </section>
+
+        <!-- Premier Rating System -->
+        <section id="premier">
+          <div class="rg-section-header">
+            <h2>Premier Rating System</h2>
+          </div>
+          <p>
+            Premier is CS2's newer competitive system featuring a rating-based ladder (0-3000+) instead of discrete ranks. It emphasizes team play and consistency with explicit skill divisions.
+          </p>
+
+          <h3>Premier Divisions & Ratings</h3>
+          <ul class="rg-list">
+            <li><strong>Emerging (0-499):</strong> New/beginner Premier players</li>
+            <li><strong>Intermediate (500-999):</strong> Developing competitive players</li>
+            <li><strong>Advanced (1000-1499):</strong> Competitive-level players</li>
+            <li><strong>Expert (1500-1999):</strong> High-level players</li>
+            <li><strong>Elite (2000-2499):</strong> Professional-level players</li>
+            <li><strong>Supreme (2500+):</strong> Top-tier competitive players</li>
+          </ul>
+
+          <h3>Premier Key Features</h3>
+          <ul class="rg-list">
+            <li><strong>Team-Based:</strong> Emphasizes organized team play</li>
+            <li><strong>Weekly Seasons:</strong> Resets weekly for fresh competition</li>
+            <li><strong>Consistent Matchmaking:</strong> Teams face balanced opposition</li>
+            <li><strong>Clear Skill Indicators:</strong> Rating directly reflects skill level</li>
+            <li><strong>Rating Decay:</strong> Inactivity causes rating loss</li>
+          </ul>
+
+          <h3>Premier Ranking Strategy</h3>
+          <p>
+            Premier success requires:
+          </p>
+          <ul class="rg-list">
+            <li>Stable team composition (same players)</li>
+            <li>Regular practice and coordination</li>
+            <li>Consistent individual performance</li>
+            <li>Strategic map pool understanding</li>
+            <li>Tactical depth and adaptation</li>
+          </ul>
+        </section>
+
+        <!-- Factors Affecting Rank Progression -->
+        <section id="factors">
+          <div class="rg-section-header">
+            <h2>Factors Affecting Rank Progression</h2>
+          </div>
+
+          <h3>Individual Performance</h3>
+          <p>
+            Your personal statistics significantly influence rating changes:
+          </p>
+          <ul class="rg-list">
+            <li><strong>K/D Ratio:</strong> Positive kills-to-deaths ratio helps</li>
+            <li><strong>ADR (Average Damage per Round):</strong> Consistent damage output</li>
+            <li><strong>First Kill Rate:</strong> Winning initial engagements</li>
+            <li><strong>Utility Usage:</strong> Effective grenade and positioning play</li>
+            <li><strong>Clutch Rounds:</strong> Winning difficult 1v1, 1v2 situations</li>
+          </ul>
+
+          <h3>Team Dynamics</h3>
+          <p>
+            Ranking isn't purely individual—team factors matter enormously:
+          </p>
+          <ul class="rg-list">
+            <li><strong>Communication:</strong> Clear callouts and coordination</li>
+            <li><strong>Role Assignment:</strong> Defined player roles and responsibilities</li>
+            <li><strong>Economy Management:</strong> Strategic team purchasing</li>
+            <li><strong>Map Execution:</strong> Coordinated attack and defense strategies</li>
+            <li><strong>Rotation Efficiency:</strong> Quick response to threats</li>
+          </ul>
+
+          <h3>Game Knowledge</h3>
+          <p>
+            Understanding game mechanics helps ranking progression:
+          </p>
+          <ul class="rg-list">
+            <li><strong>Map Knowledge:</strong> Understanding <a href="/cs2-maps/">callouts</a>, rotations, positioning</li>
+            <li><strong>Economy Strategy:</strong> Proper <a href="/cs2-guides/economy-guide/">buy decisions</a> and money management</li>
+            <li><strong>Weapon Mechanics:</strong> Spray control, <a href="/recoil-patterns/">recoil patterns</a>, accuracy</li>
+            <li><strong>Utility Usage:</strong> Effective <a href="/cs2-guides/grenade-guide/">grenade timing</a> and positioning</li>
+            <li><strong>Game Sense:</strong> Predicting opponent strategies and positioning</li>
+          </ul>
+        </section>
+
+        <!-- Strategies for Ranking Up -->
+        <section id="strategies">
+          <div class="rg-section-header">
+            <h2>Strategies for Ranking Up</h2>
+          </div>
+          <div class="rg-strategies-grid">
+            {strategies.map((s) => (
+              <div class="rg-strategy-card">
+                <span class="rg-strategy-num">{s.num}</span>
+                <h3 class="rg-strategy-title">{s.title}</h3>
+                <p class="rg-strategy-desc">{s.desc}</p>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <!-- Breaking Through Rank Plateaus -->
+        <section id="plateaus">
+          <div class="rg-section-header">
+            <h2>Breaking Through Rank Plateaus</h2>
+          </div>
+          <p>
+            Many players hit ranks where they consistently win and lose without progressing. Breaking through requires identifying and fixing specific weaknesses.
+          </p>
+
+          <h3>Identifying Your Weakness</h3>
+          <ul class="rg-list">
+            <li><strong>If you lose duels:</strong> Practice aim training daily</li>
+            <li><strong>If you get caught out of position:</strong> Study <a href="/cs2-guides/demo-guide/">demo positioning</a></li>
+            <li><strong>If your team loses rounds:</strong> Improve economy/strategy</li>
+            <li><strong>If you underperform in specific maps:</strong> Focus on those maps</li>
+            <li><strong>If your team struggles against certain teams:</strong> Analyze their tactics</li>
+          </ul>
+
+          <h3>Progressive Improvement Plan</h3>
+          <ol class="rg-ordered-list">
+            <li>Identify your primary weakness (aim, positioning, strategy, etc.)</li>
+            <li>Dedicate 2-3 weeks to improving that specific skill</li>
+            <li>Practice in appropriate training modes or scrims</li>
+            <li>Play competitive to apply improvements</li>
+            <li>Re-evaluate weaknesses and repeat</li>
+          </ol>
+        </section>
+
+        <!-- Realistic Rank Progression Expectations -->
+        <section id="expectations">
+          <div class="rg-section-header">
+            <h2>Realistic Rank Progression Expectations</h2>
+          </div>
+
+          <h3>Timeline for Rank Progression</h3>
+          <ul class="rg-list">
+            <li><strong>Ranks 1-6 (Silver-Gold):</strong> 20-50 matches with focus on learning</li>
+            <li><strong>Ranks 7-12 (MG-LE):</strong> 50-150 matches as skill consolidates</li>
+            <li><strong>Ranks 13-17 (Supreme):</strong> 150-500+ matches with diminishing progression</li>
+            <li><strong>Rank 18 (Global Elite):</strong> 500+ matches, extremely competitive</li>
+          </ul>
+
+          <h3>Climbing From Different Starting Points</h3>
+          <p>
+            Your starting rank depends on placement matches and initial calibration. If you start below your true skill level, faster ranking is possible. If placed above, expect ranking down initially.
+          </p>
+
+          <h3>Long-Term Ranking Strategy</h3>
+          <p>
+            Focus on consistency over streaks. A 51% win rate over 200 matches ranks you up faster than a 75% win rate over 50 matches. Play many matches against strong opponents for the best ranking progression.
+          </p>
+        </section>
+
+        <!-- FAQ -->
+        <section id="faq">
+          <div class="rg-section-header">
+            <h2>Frequently Asked Questions</h2>
+          </div>
+          <div class="rg-faq-list">
+            {faqs.map((faq) => (
+              <details class="rg-faq-item">
+                <summary class="rg-faq-question">{faq.question}</summary>
+                <p class="rg-faq-answer">{faq.answer}</p>
+              </details>
+            ))}
+          </div>
+        </section>
+
+        <!-- Related Resources -->
+        <section id="resources">
+          <div class="rg-section-header">
+            <h2>Related Resources</h2>
+          </div>
+          <div class="rg-resources-grid">
+            {resources.map((r) => (
+              <a href={r.url} class="rg-resource-card">
+                <span class="rg-resource-name">{r.name}</span>
+                <span class="rg-resource-arrow">&rarr;</span>
+              </a>
+            ))}
+          </div>
+        </section>
+      </article>
+    </div>
+  </div>
+
+  <style>
+    /* ========== Layout wrapper ========== */
+    .rg-wrap {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 1.5rem 2rem;
+    }
+
+    /* ========== Breadcrumb ========== */
+    .rg-breadcrumb {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 1.25rem 0;
+      font-size: 0.85rem;
+      color: var(--text2);
+    }
+    .rg-breadcrumb a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+    .rg-breadcrumb a:hover {
+      color: var(--accent2);
+    }
+    .rg-sep {
+      color: var(--border);
+    }
+
+    /* ========== Header ========== */
+    .rg-header {
+      padding: 1.5rem 0 1.25rem;
+      border-bottom: 2px solid var(--accent);
+      margin-bottom: 1.5rem;
+    }
+    .rg-header h1 {
+      margin: 0 0 0.35rem;
+      font-size: 2.2rem;
+      font-weight: 800;
+      color: var(--text);
+      letter-spacing: -0.02em;
+      line-height: 1.2;
+    }
+    .rg-subtitle {
+      margin: 0;
+      font-size: 1.05rem;
+      color: var(--text2);
+      font-weight: 400;
+    }
+
+    /* ========== Mobile TOC bar ========== */
+    .rg-toc-mobile {
+      display: none;
+    }
+
+    /* ========== 2-column layout ========== */
+    .rg-layout {
+      display: grid;
+      grid-template-columns: 220px 1fr;
+      gap: 2.5rem;
+      align-items: start;
+    }
+
+    /* ========== Sidebar ========== */
+    .rg-sidebar {
+      position: sticky;
+      top: 80px;
+    }
+    .rg-toc {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      border-left: 2px solid var(--border);
+      padding-left: 0;
+    }
+    .rg-toc-title {
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--accent);
+      padding: 0 0 0.6rem 1rem;
+    }
+    .rg-toc-link {
+      display: block;
+      padding: 0.4rem 1rem;
+      font-size: 0.82rem;
+      color: var(--text2);
+      text-decoration: none;
+      border-left: 2px solid transparent;
+      margin-left: -2px;
+      transition: color 0.2s, border-color 0.2s;
+    }
+    .rg-toc-link:hover {
+      color: var(--text);
+      border-left-color: var(--accent);
+    }
+
+    /* ========== Main content ========== */
+    .rg-content {
+      min-width: 0;
+    }
+    .rg-intro {
+      font-size: 1rem;
+      line-height: 1.8;
+      color: var(--text2);
+      margin-bottom: 2rem;
+    }
+
+    /* ========== Section headers (green-tinted strip) ========== */
+    .rg-section-header {
+      background: rgba(46, 204, 113, 0.05);
+      margin: 0 -1.25rem 1.25rem;
+      padding: 0.75rem 1.25rem;
+      border-radius: 4px;
+    }
+    .rg-section-header h2 {
+      margin: 0;
+      padding: 0;
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--text);
+      border: none;
+      letter-spacing: -0.01em;
+    }
+
+    section {
+      margin-bottom: 2.5rem;
+    }
+
+    h3 {
+      font-size: 1.15rem;
+      font-weight: 600;
+      margin: 1.5rem 0 0.6rem;
+      color: var(--text);
+    }
+
+    p {
+      line-height: 1.7;
+      color: var(--text2);
+      margin-bottom: 1rem;
+    }
+
+    /* ========== Lists with green square bullets ========== */
+    .rg-list {
+      list-style: none;
+      padding: 0;
+      margin: 0.75rem 0 1.5rem;
+    }
+    .rg-list li {
+      padding: 0.4rem 0 0.4rem 1.6rem;
+      position: relative;
+      color: var(--text2);
+      line-height: 1.65;
+    }
+    .rg-list li::before {
+      content: '';
+      position: absolute;
+      left: 0.25rem;
+      top: 0.75rem;
+      width: 6px;
+      height: 6px;
+      background: var(--accent);
+      border-radius: 1px;
+    }
+    .rg-list li strong {
+      color: var(--text);
+    }
+
+    /* ========== Ordered list ========== */
+    .rg-ordered-list {
+      list-style: none;
+      padding: 0;
+      margin: 0.75rem 0 1.5rem;
+      counter-reset: rg-step;
+    }
+    .rg-ordered-list li {
+      padding: 0.4rem 0 0.4rem 2rem;
+      position: relative;
+      color: var(--text2);
+      line-height: 1.65;
+      counter-increment: rg-step;
+    }
+    .rg-ordered-list li::before {
+      content: counter(rg-step) '.';
+      position: absolute;
+      left: 0;
+      top: 0.4rem;
+      color: var(--accent);
+      font-weight: 700;
+      font-size: 0.9rem;
+    }
+
+    /* ========== Rank division cards ========== */
+    .rg-divisions-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.75rem;
+      margin: 1rem 0 1.75rem;
+    }
+    .rg-division-card {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+      position: relative;
+      overflow: hidden;
+    }
+    .rg-division-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: var(--div-color);
+    }
+    .rg-division-pip {
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--div-color);
+      margin-bottom: 0.25rem;
+    }
+    .rg-division-name {
+      font-size: 0.95rem;
+      color: var(--text);
+    }
+    .rg-division-range {
+      font-size: 0.78rem;
+      color: var(--div-color);
+      font-weight: 600;
+    }
+    .rg-division-desc {
+      font-size: 0.8rem;
+      color: var(--text2);
+      line-height: 1.4;
+    }
+
+    /* ========== Strategies grid ========== */
+    .rg-strategies-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0.75rem;
+      margin: 0.5rem 0 1.5rem;
+    }
+    .rg-strategy-card {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 1.25rem;
+      position: relative;
+    }
+    .rg-strategy-num {
+      display: block;
+      font-size: 1.8rem;
+      font-weight: 800;
+      color: var(--accent);
+      line-height: 1;
+      margin-bottom: 0.5rem;
+      opacity: 0.8;
+    }
+    .rg-strategy-title {
+      margin: 0 0 0.4rem;
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--text);
+    }
+    .rg-strategy-desc {
+      margin: 0;
+      font-size: 0.88rem;
+      color: var(--text2);
+      line-height: 1.6;
+    }
+
+    /* ========== FAQ accordion ========== */
+    .rg-faq-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+    .rg-faq-item {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+    .rg-faq-question {
+      display: block;
+      padding: 1rem 1.25rem;
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--text);
+      cursor: pointer;
+      list-style: none;
+      position: relative;
+      padding-right: 2.5rem;
+      transition: background 0.2s;
+    }
+    .rg-faq-question::-webkit-details-marker {
+      display: none;
+    }
+    .rg-faq-question::after {
+      content: '+';
+      position: absolute;
+      right: 1.25rem;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 1.2rem;
+      color: var(--accent);
+      font-weight: 700;
+      transition: transform 0.2s;
+    }
+    .rg-faq-item[open] .rg-faq-question::after {
+      content: '−';
+    }
+    .rg-faq-item[open] .rg-faq-question {
+      border-bottom: 1px solid var(--border);
+      background: rgba(46, 204, 113, 0.03);
+    }
+    .rg-faq-question:hover {
+      background: rgba(46, 204, 113, 0.03);
+    }
+    .rg-faq-answer {
+      padding: 1rem 1.25rem;
+      margin: 0;
+      font-size: 0.9rem;
+      color: var(--text2);
+      line-height: 1.7;
+    }
+
+    /* ========== Related resources grid ========== */
+    .rg-resources-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.6rem;
+      margin: 0.5rem 0 1.5rem;
+    }
+    .rg-resource-card {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.75rem 1rem;
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      text-decoration: none;
+      transition: border-left-color 0.2s, border-left-width 0.15s, color 0.2s;
+      border-left: 2px solid transparent;
+    }
+    .rg-resource-card:hover {
+      border-left-color: var(--accent);
+    }
+    .rg-resource-name {
+      font-size: 0.88rem;
+      color: var(--text2);
+      font-weight: 500;
+      transition: color 0.2s;
+    }
+    .rg-resource-card:hover .rg-resource-name {
+      color: var(--text);
+    }
+    .rg-resource-arrow {
+      font-size: 1rem;
+      color: var(--accent);
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+    .rg-resource-card:hover .rg-resource-arrow {
+      opacity: 1;
+    }
+
+    /* ========== Responsive ========== */
+    @media (max-width: 860px) {
+      .rg-layout {
+        grid-template-columns: 1fr;
+        gap: 0;
+      }
+      .rg-sidebar {
+        display: none;
+      }
+      .rg-toc-mobile {
+        display: flex;
+        gap: 0.25rem;
+        overflow-x: auto;
+        padding: 0.75rem 0;
+        margin-bottom: 1rem;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+      }
+      .rg-toc-mobile::-webkit-scrollbar {
+        display: none;
+      }
+      .rg-toc-mobile-link {
+        flex-shrink: 0;
+        padding: 0.35rem 0.75rem;
+        font-size: 0.78rem;
+        font-weight: 600;
+        color: var(--text2);
+        background: var(--bg2);
+        border: 1px solid var(--border);
+        border-radius: 4px;
+        text-decoration: none;
+        white-space: nowrap;
+        transition: color 0.2s, border-color 0.2s;
+      }
+      .rg-toc-mobile-link:hover {
+        color: var(--accent);
+        border-color: var(--accent);
+      }
+      .rg-header h1 {
+        font-size: 1.7rem;
+      }
+      .rg-section-header {
+        margin: 0 -1rem 1rem;
+        padding: 0.6rem 1rem;
+      }
+      .rg-divisions-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .rg-resources-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 600px) {
+      .rg-wrap {
+        padding: 0 1rem 1.5rem;
+      }
+      .rg-strategies-grid {
+        grid-template-columns: 1fr;
+      }
+      .rg-divisions-grid {
+        grid-template-columns: 1fr;
+      }
+      .rg-resources-grid {
+        grid-template-columns: 1fr;
+      }
+      .rg-header h1 {
+        font-size: 1.5rem;
+      }
+    }
+  </style>
+  <AuthorBox updated="2026-03-02" />
+</Base>

@@ -4,8 +4,8 @@ import ExploreMore from '../components/ExploreMore.astro';
 import { faqSchema } from '../lib/weapons';
 import { PRO_PLAYERS, getAverageEdpi, getMostCommonRes, getMostCommonDpi, getMouseBrandBreakdown, getStretchedBreakdown, getRoleBreakdown, getTeams, getRoles, getCountries, getGearByType } from '../lib/pro-players';
 
-const title = 'CS2 Pro Player Settings & Loadouts — Crosshair, Sensitivity, Resolution | CSDB.gg';
-const description = `Browse ${PRO_PLAYERS.length}+ CS2 pro player settings including crosshair codes, sensitivity, resolution, mouse, keyboard, and gear. Copy settings from s1mple, ZywOo, NiKo, donk, and more.`;
+const title = 'CS2 Pro Player Configs — Sensitivity, Crosshairs, Gear & Settings | CSGOLuck Wiki';
+const description = `Access ${PRO_PLAYERS.length}+ confirmed professional player setups. Crosshair share codes, sensitivity values, display resolution, mouse and monitor choices, and full peripheral inventories from s1mple, ZywOo, NiKo, donk, and every other top-tier CS2 competitor.`;
 
 const avgEdpi = getAverageEdpi();
 const topRes = getMostCommonRes();
@@ -27,14 +27,14 @@ const resBreakdown = Object.entries(resCounts).sort((a, b) => b[1] - a[1]).map((
 }));
 
 const faqs = [
-  { question: 'What sensitivity do most CS2 pros use?', answer: `The average eDPI among professional players is around ${avgEdpi}. Most pros fall between 480 and 880 eDPI, with ${topDpi} DPI being the most common hardware setting. AWPers tend to use slightly lower sensitivities for precision, while entry fraggers may go higher for faster target acquisition.` },
-  { question: 'Should I copy a pro player\'s settings exactly?', answer: 'Pro settings are a great starting point, but your ideal settings depend on your desk space, mouse pad size, grip style, and personal preference. Use pro settings as a reference range, then fine-tune over 20-30 hours of practice. The most important thing is consistency.' },
-  { question: 'What is eDPI and why does it matter?', answer: 'eDPI (effective DPI) is calculated by multiplying your mouse DPI by your in-game sensitivity. It normalizes sensitivity across different DPI settings — a player using 400 DPI × 2.0 sens (800 eDPI) has the same effective speed as 800 DPI × 1.0 sens (800 eDPI). eDPI is the best way to compare sensitivities between players.' },
-  { question: 'Why do most pros use 4:3 stretched resolution?', answer: `About ${Math.round((stretchData.stretched / PRO_PLAYERS.length) * 100)}% of pros use stretched resolution. It makes player models appear wider (easier to hit), provides higher FPS, and many pros have years of muscle memory built on 4:3. However, ${Math.round((stretchData.native / PRO_PLAYERS.length) * 100)}% use native 16:9 for the wider field of view — there\'s no objectively "best" choice.` },
-  { question: 'What mouse do most CS2 pros use?', answer: `The most popular mouse brand among pros is ${mouseBrands[0]?.name} (${mouseBrands[0]?.pct}%), followed by ${mouseBrands[1]?.name} (${mouseBrands[1]?.pct}%) and ${mouseBrands[2]?.name} (${mouseBrands[2]?.pct}%). Lightweight wireless mice with top-tier sensors have become the standard, with the Logitech G Pro X Superlight and Zowie EC2 being especially popular.` },
-  { question: 'How often do pro players change their settings?', answer: 'Most pros rarely change settings once they find something comfortable. Muscle memory is critical at the professional level and takes weeks to rebuild after a change. Some players have used the same sensitivity for 5+ years. Only change settings if you have a specific reason, not just because you\'re in a slump.' },
-  { question: 'Does monitor refresh rate matter for CS2?', answer: 'Yes, enormously. All professional players use 240Hz or 360Hz monitors. Higher refresh rates provide smoother visuals, reduce input lag, and make tracking enemies easier. The jump from 60Hz to 240Hz is one of the biggest competitive advantages you can get from hardware.' },
-  { question: 'What\'s the best crosshair for CS2?', answer: 'There is no single "best" crosshair — it depends on personal preference. Most pros use a small static crosshair with a gap, no dot, and subtle colors (green, cyan, or white). The key is finding one that\'s visible without being distracting. Use our crosshair codes page to try different pro crosshairs.' },
+  { question: 'Which sensitivity range is popular among professional players?', answer: `Pro players typically land around ${avgEdpi} eDPI on average. The sweet spot for most competitors sits between 480 and 880 eDPI, and ${topDpi} DPI is the go-to hardware setting. Snipers generally opt for the lower end of that spectrum for steadier aim, while aggressive fraggers may push higher to whip around corners faster.` },
+  { question: 'Is it smart to mirror a pro\'s exact configuration?', answer: 'Think of pro configs as a useful benchmark rather than a prescription. Your physical setup — available desk real estate, pad dimensions, how you grip your mouse — all influence what actually works for you. Start within the pro range, then spend a couple of weeks adjusting until the sensitivity feels natural. Sticking with your choice matters more than picking the "perfect" number.' },
+  { question: 'How does eDPI work and why should I care about it?', answer: 'eDPI stands for effective dots per inch — you get it by multiplying your hardware DPI by your CS2 sensitivity value. It creates a universal comparison metric: someone on 400 DPI with 2.0 sens ends up at 800 eDPI, identical in speed to 800 DPI at 1.0 sens. When browsing pro configs, eDPI lets you make apples-to-apples sensitivity comparisons regardless of each player\'s DPI choice.' },
+  { question: 'What draws so many pros to 4:3 stretched resolution?', answer: `Roughly ${Math.round((stretchData.stretched / PRO_PLAYERS.length) * 100)}% of competitive players run stretched mode. The appeal is threefold: character models look physically wider on screen, frame rates tend to climb, and many veterans have thousands of hours of muscle memory trained on that aspect ratio. That said, ${Math.round((stretchData.native / PRO_PLAYERS.length) * 100)}% stick with native 16:9 to benefit from the extended field of view — neither option is categorically superior.` },
+  { question: 'Which mouse brand dominates the CS2 pro scene?', answer: `${mouseBrands[0]?.name} leads the pack at ${mouseBrands[0]?.pct}% adoption, with ${mouseBrands[1]?.name} at ${mouseBrands[1]?.pct}% and ${mouseBrands[2]?.name} at ${mouseBrands[2]?.pct}% rounding out the top three. The modern trend heavily favours ultra-light wireless designs equipped with flagship sensors — models like the GPX Superlight and Zowie EC2 show up on desks at virtually every tournament.` },
+  { question: 'Do professionals frequently tweak their configs?', answer: 'Hardly ever. Once a pro locks in settings that feel right, they tend to leave them alone for years. At the top level, muscle memory is everything, and even a small sensitivity shift can take weeks to readjust. Plenty of players have run the same sens since their CS:GO days. The general advice is to only make changes when you have a clear, specific reason — not just because you hit a rough patch.' },
+  { question: 'How important is monitor refresh rate in competitive CS2?', answer: 'It is a massive factor. Every pro competes on a 240Hz or 360Hz display without exception. The higher refresh rate delivers noticeably smoother motion, cuts perceived input delay, and makes it far easier to track moving targets. Upgrading from a standard 60Hz panel to 240Hz is widely considered one of the single largest hardware improvements a competitive player can make.' },
+  { question: 'Is there a universally ideal crosshair in CS2?', answer: 'No single crosshair suits everyone — it comes down to what your eyes lock onto best. The majority of professionals run a compact, static design with a centre gap, no dot, and a clean colour like green, cyan, or white. Your goal is a crosshair that stands out against all map backgrounds without cluttering your view. Check out our crosshair codes section to test configurations used by top-tier players.' },
 ];
 
 // Browse sections data
@@ -49,160 +49,153 @@ const topMice = getGearByType('mouse').slice(0, 8);
 <script type="application/ld+json" set:html={JSON.stringify(faqSchema(faqs))} />
 </Fragment>
 
-<nav class="breadcrumb"><a href="/">Home</a> <span>/</span> <span>Pro Player Settings</span></nav>
+<nav class="breadcrumb"><a href="/">Home</a> <span>/</span> <span>Players</span></nav>
 
-<section class="pp-hero">
-  <h1>CS2 Pro Player Settings & Loadouts</h1>
-  <p>Complete gear configs, crosshair codes, sensitivity, and resolution from {PRO_PLAYERS.length} professional CS2 players. Filter by role, team, or search by name.</p>
-  <div class="pp-hero-stats">
-    <div class="pp-hstat"><span class="pp-hval">{PRO_PLAYERS.length}</span><span class="pp-hlbl">Pro Players</span></div>
-    <div class="pp-hstat"><span class="pp-hval">{topRes}</span><span class="pp-hlbl">Most Common Res</span></div>
-    <div class="pp-hstat"><span class="pp-hval">{avgEdpi}</span><span class="pp-hlbl">Average eDPI</span></div>
-    <div class="pp-hstat"><span class="pp-hval">{topDpi} DPI</span><span class="pp-hlbl">Most Common DPI</span></div>
-    <div class="pp-hstat"><span class="pp-hval">{Math.round((stretchData.stretched / PRO_PLAYERS.length) * 100)}%</span><span class="pp-hlbl">Use Stretched</span></div>
-    <div class="pp-hstat"><span class="pp-hval">{mouseBrands[0]?.name}</span><span class="pp-hlbl">Top Mouse Brand</span></div>
+<!-- Hero: Left-aligned with stat pills -->
+<section class="pph-hero">
+  <div class="pph-hero-text">
+    <h1 class="pph-title">Pro Config Archive</h1>
+    <p class="pph-subtitle">Authenticated competitive setups, peripheral choices, and <a href="/crosshair-codes/" style="color:var(--accent)">crosshair share codes</a> sourced from the CS2 professional circuit. Use our <a href="/edpi-calculator/" style="color:var(--accent)">eDPI calculator</a> to compare your sensitivity against the pros.</p>
+  </div>
+  <div class="pph-stat-pills">
+    <span class="pph-pill"><span class="pph-pill-val">{PRO_PLAYERS.length}+</span><span class="pph-pill-lbl">Configs</span></span>
+    <span class="pph-pill"><span class="pph-pill-val">{avgEdpi}</span><span class="pph-pill-lbl">Avg eDPI</span></span>
+    <span class="pph-pill"><span class="pph-pill-val">{topRes}</span><span class="pph-pill-lbl">Top Res</span></span>
+    <span class="pph-pill"><span class="pph-pill-val">{topDpi}</span><span class="pph-pill-lbl">Common DPI</span></span>
+    <span class="pph-pill"><span class="pph-pill-val">{Math.round((stretchData.stretched / PRO_PLAYERS.length) * 100)}%</span><span class="pph-pill-lbl">Stretched</span></span>
+    <span class="pph-pill"><span class="pph-pill-val">{mouseBrands[0]?.name}</span><span class="pph-pill-lbl">Top Mouse</span></span>
   </div>
 </section>
 
-<!-- Filters -->
-<section class="pp-filters">
-  <div class="pp-filter-row">
-    <div class="pp-filter-group">
-      <span class="pp-flabel">Role:</span>
-      <button class="filter-btn active" data-role="all">All ({PRO_PLAYERS.length})</button>
-      {uniqueRoles.map(r => {
-        const count = PRO_PLAYERS.filter(p => p.role === r).length;
-        return <button class="filter-btn" data-role={r}>{r} ({count})</button>;
-      })}
-    </div>
-    <div class="pp-filter-group">
-      <span class="pp-flabel">Team:</span>
-      <select id="teamFilter">
-        <option value="all">All Teams</option>
-        {uniqueTeams.map(t => <option value={t.toLowerCase()}>{t}</option>)}
-      </select>
-    </div>
-    <div class="pp-search">
-      <input type="text" id="playerSearch" placeholder="Search player or team..." />
-    </div>
+<!-- Role Filter: Horizontal pill tabs -->
+<section class="pph-filters">
+  <div class="pph-role-tabs" id="roleTabs">
+    <button class="pph-role-pill active" data-role="all">All ({PRO_PLAYERS.length})</button>
+    {uniqueRoles.map(r => {
+      const count = PRO_PLAYERS.filter(p => p.role === r).length;
+      return <button class="pph-role-pill" data-role={r}>{r} ({count})</button>;
+    })}
   </div>
-  <div class="pp-result-count"><span id="visibleCount">{PRO_PLAYERS.length}</span> players shown</div>
+  <div class="pph-filter-row">
+    <input type="text" id="playerSearch" class="pph-search" placeholder="Search by name or team..." />
+    <select id="teamFilter" class="pph-select">
+      <option value="all">All Teams</option>
+      {uniqueTeams.map(t => <option value={t.toLowerCase()}>{t}</option>)}
+    </select>
+    <select id="sortFilter" class="pph-select">
+      <option value="default">Sort: Default</option>
+      <option value="edpi-asc">eDPI: Low to High</option>
+      <option value="edpi-desc">eDPI: High to Low</option>
+      <option value="name-az">Name: A-Z</option>
+      <option value="name-za">Name: Z-A</option>
+    </select>
+  </div>
+  <div class="pph-count"><span id="visibleCount">{PRO_PLAYERS.length}</span> players shown</div>
 </section>
 
-<!-- Player Cards -->
-<section class="pp-grid" id="ppGrid">
-  {PRO_PLAYERS.map((p, i) => (
-    <a href={`/player/${p.slug}/`} class={`pp-card${i >= 48 ? ' pp-paginated' : ''}`} data-role={p.role} data-name={p.name.toLowerCase()} data-team={p.team.toLowerCase()} data-idx={i}>
-      <div class="pp-card-top">
-        {p.image && <img class="pp-avatar" src={p.image} alt={p.name} width="56" height="56" loading="lazy" onerror="this.style.display='none'" />}
-        <div class="pp-card-info">
-          <h3 class="pp-name">{p.flag} {p.name}</h3>
-          <div class="pp-team-role">
-            <span class="pp-team">{p.team}</span>
-            <span class="pp-role" data-r={p.role.toLowerCase().replace(/\s/g,'-')}>{p.role}</span>
+<!-- Featured Players: 2-column spotlight cards (first 4) -->
+<section class="pph-featured">
+  <h2 class="pph-section-title">Featured Players</h2>
+  <div class="pph-spotlight-grid">
+    {PRO_PLAYERS.slice(0, 4).map(p => (
+      <a href={`/pro-players/${p.slug}/`} class="pph-spotlight-card">
+        <div class="pph-spotlight-img-wrap">
+          {p.image && <img class="pph-spotlight-img" src={p.image} alt={p.name} width="80" height="80" loading="eager" onerror="this.style.display='none'" />}
+        </div>
+        <div class="pph-spotlight-info">
+          <span class="pph-spotlight-name">{p.flag} {p.name}</span>
+          <span class="pph-spotlight-team">{p.team}</span>
+          <span class="pph-spotlight-role" data-r={p.role.toLowerCase().replace(/\s/g,'-')}>{p.role}</span>
+          <div class="pph-spotlight-stats">
+            <span><strong>{p.edpi}</strong> eDPI</span>
+            <span><strong>{p.res}</strong></span>
+            <span><strong>{p.mouse}</strong></span>
           </div>
-          {p.realName && <div class="pp-realname">{p.realName}</div>}
         </div>
-        <span class="pp-style">{p.style}</span>
+      </a>
+    ))}
+  </div>
+</section>
+
+<!-- Player Cards: Horizontal row layout (image left, info right) -->
+<section class="pph-list" id="cfgList">
+  {PRO_PLAYERS.map((p, i) => (
+    <a href={`/pro-players/${p.slug}/`} class={`pph-card${i >= 48 ? ' pph-paginated' : ''}`} data-role={p.role} data-name={p.name.toLowerCase()} data-team={p.team.toLowerCase()} data-edpi={p.edpi} data-idx={i}>
+      <div class="pph-card-left">
+        {p.image && <img class="pph-card-avatar" src={p.image} alt={p.name} width="48" height="48" loading="lazy" onerror="this.style.display='none'" />}
       </div>
-
-      <div class="pp-stats">
-        <div class="pp-s"><span class="pp-sv">{p.dpi}</span><span class="pp-sl">DPI</span></div>
-        <div class="pp-s"><span class="pp-sv">{p.sens}</span><span class="pp-sl">Sens</span></div>
-        <div class="pp-s pp-edpi"><span class="pp-sv">{p.edpi}</span><span class="pp-sl">eDPI</span></div>
-        <div class="pp-s"><span class="pp-sv">{p.res}</span><span class="pp-sl">{p.aspect} {p.stretch}</span></div>
+      <div class="pph-card-mid">
+        <span class="pph-card-name">{p.flag} {p.name}</span>
+        <span class="pph-card-team">{p.team}</span>
+        <span class="pph-card-role" data-r={p.role.toLowerCase().replace(/\s/g,'-')}>{p.role}</span>
       </div>
-
-      {p.crosshairCode && (
-        <div class="pp-xhair" onclick="event.preventDefault();">
-          <code>{p.crosshairCode}</code>
-          <button class="pp-copy" data-code={p.crosshairCode}>Copy</button>
-        </div>
-      )}
-
-      <div class="pp-gear">
-        <div class="pp-gi"><span class="pp-gk">Mouse</span><span class="pp-gv">{p.mouse}</span></div>
-        <div class="pp-gi"><span class="pp-gk">Monitor</span><span class="pp-gv">{p.monitor}</span></div>
-        <div class="pp-gi"><span class="pp-gk">Keyboard</span><span class="pp-gv">{p.keyboard}</span></div>
-        <div class="pp-gi"><span class="pp-gk">Headset</span><span class="pp-gv">{p.headset}</span></div>
-        <div class="pp-gi"><span class="pp-gk">Mousepad</span><span class="pp-gv">{p.mousepad}</span></div>
+      <div class="pph-card-stats">
+        <div class="pph-card-stat"><span class="pph-card-stat-val">{p.dpi}</span><span class="pph-card-stat-lbl">DPI</span></div>
+        <div class="pph-card-stat"><span class="pph-card-stat-val">{p.sens}</span><span class="pph-card-stat-lbl">Sens</span></div>
+        <div class="pph-card-stat pph-card-stat-accent"><span class="pph-card-stat-val">{p.edpi}</span><span class="pph-card-stat-lbl">eDPI</span></div>
       </div>
-
-      <div class="pp-edpi-bar">
-        <div class="pp-ebar-fill" style={`width:${Math.min(100, Math.round(((p.edpi - 400) / (1700 - 400)) * 100))}%`}></div>
-        <span class="pp-ebar-label">{p.edpi} eDPI — {p.edpi < 600 ? 'Low' : p.edpi < 900 ? 'Medium' : 'High'} sens</span>
+      <div class="pph-card-right">
+        <span class="pph-card-res">{p.res} <span class="pph-card-aspect">{p.aspect}</span></span>
+        <span class="pph-card-mouse">{p.mouse}</span>
       </div>
-
-      <div class="pp-view-more">View Full Profile →</div>
+      <span class="pph-card-arrow">&rarr;</span>
     </a>
   ))}
 </section>
-<div class="pp-loadmore-wrap" id="loadMoreWrap">
-  <button class="pp-loadmore-btn" id="loadMoreBtn">Load More Players <span id="loadMoreCount"></span></button>
+<div class="pph-loadmore-wrap" id="loadMoreWrap">
+  <button class="pph-loadmore-btn" id="loadMoreBtn">Load More Players <span id="loadMoreCount"></span></button>
 </div>
 
-<!-- Analysis Section -->
-<section class="pp-analysis">
-  <h2>Settings Analysis — What Do The Pros Use?</h2>
-  <div class="pp-analysis-grid">
-    <div class="pp-acard">
-      <h3>eDPI Distribution</h3>
-      <div class="pp-astat">{edpiMin} – {edpiMax}</div>
-      <p>Range across all pros. Median is {edpiMedian} eDPI. Most cluster between 560-840.</p>
-      <div class="pp-abar-wrap">
-        <div class="pp-abar-zone" style="left:0;width:15%"><span>Low</span></div>
-        <div class="pp-abar-zone pp-amid" style="left:15%;width:50%"><span>Sweet Spot</span></div>
-        <div class="pp-abar-zone" style="left:65%;width:35%"><span>High</span></div>
+<!-- Scene Overview: 3-column layout with left border accents -->
+<section class="pph-overview">
+  <h2 class="pph-section-title">Scene Overview</h2>
+  <div class="pph-overview-grid">
+    <div class="pph-overview-block">
+      <div class="pph-overview-header">Sensitivity Range</div>
+      <div class="pph-overview-big">{edpiMin} &ndash; {edpiMax} eDPI</div>
+      <p class="pph-overview-desc">Full range across all pros. The median sits at {edpiMedian} eDPI, with most falling between 560 and 840.</p>
+      <div class="pph-range-bar">
+        <div class="pph-range-seg pph-range-low"><span>Low</span></div>
+        <div class="pph-range-seg pph-range-mid"><span>Sweet Spot</span></div>
+        <div class="pph-range-seg pph-range-high"><span>High</span></div>
       </div>
     </div>
-    <div class="pp-acard">
-      <h3>Resolution Breakdown</h3>
+    <div class="pph-overview-block">
+      <div class="pph-overview-header">Resolution Split</div>
       {resBreakdown.map(r => (
-        <div class="pp-res-bar">
-          <span class="pp-res-name">{r.res}</span>
-          <div class="pp-res-fill" style={`width:${r.pct}%`}></div>
-          <span class="pp-res-pct">{r.pct}%</span>
+        <div class="pph-bar-row">
+          <span class="pph-bar-label">{r.res}</span>
+          <div class="pph-bar-track"><div class="pph-bar-fill" style={`width:${r.pct}%`}></div></div>
+          <span class="pph-bar-pct">{r.pct}%</span>
         </div>
       ))}
     </div>
-    <div class="pp-acard">
-      <h3>Mouse Brand Share</h3>
+    <div class="pph-overview-block">
+      <div class="pph-overview-header">Popular Mice</div>
       {mouseBrands.slice(0, 5).map(b => (
-        <div class="pp-res-bar">
-          <span class="pp-res-name">{b.name}</span>
-          <div class="pp-res-fill" style={`width:${b.pct}%`}></div>
-          <span class="pp-res-pct">{b.pct}%</span>
+        <div class="pph-bar-row">
+          <span class="pph-bar-label">{b.name}</span>
+          <div class="pph-bar-track"><div class="pph-bar-fill" style={`width:${b.pct}%`}></div></div>
+          <span class="pph-bar-pct">{b.pct}%</span>
         </div>
       ))}
     </div>
-    <div class="pp-acard">
-      <h3>Display Mode</h3>
-      <div class="pp-stretch-grid">
-        <div class="pp-stretch-item">
-          <span class="pp-stretch-val">{stretchData.stretched}</span>
-          <span class="pp-stretch-lbl">Stretched</span>
-        </div>
-        <div class="pp-stretch-item">
-          <span class="pp-stretch-val">{stretchData.native}</span>
-          <span class="pp-stretch-lbl">Native</span>
-        </div>
-        <div class="pp-stretch-item">
-          <span class="pp-stretch-val">{stretchData.bars}</span>
-          <span class="pp-stretch-lbl">Black Bars</span>
-        </div>
-      </div>
-    </div>
+  </div>
+  <div class="pph-aspect-strip">
+    <div class="pph-aspect-item"><span class="pph-aspect-num">{stretchData.stretched}</span><span class="pph-aspect-lbl">Stretched</span></div>
+    <div class="pph-aspect-item"><span class="pph-aspect-num">{stretchData.native}</span><span class="pph-aspect-lbl">Native</span></div>
+    <div class="pph-aspect-item"><span class="pph-aspect-num">{stretchData.bars}</span><span class="pph-aspect-lbl">Black Bars</span></div>
   </div>
 </section>
 
 <!-- Full Comparison Table -->
-<section class="pp-table-section">
-  <h2>Complete Settings Comparison Table</h2>
-  <div class="pp-table-search">
-    <input type="text" id="tableSearch" placeholder="Search players in table..." />
+<section class="pph-table-section">
+  <h2 class="pph-section-title">Full Settings Comparison</h2>
+  <div class="pph-table-filter">
+    <input type="text" id="tableSearch" placeholder="Filter table by player..." />
   </div>
-  <div class="pp-table-wrap">
-    <table class="pp-table">
+  <div class="pph-table-wrap">
+    <table class="pph-table">
       <thead>
         <tr>
           <th>Player</th><th>Team</th><th>Role</th><th>Mouse</th><th>DPI</th><th>Sens</th><th>eDPI</th><th>Resolution</th><th>Aspect</th><th>Display</th><th>Mousepad</th><th>Style</th>
@@ -210,10 +203,10 @@ const topMice = getGearByType('mouse').slice(0, 8);
       </thead>
       <tbody id="tableBody">
         {PRO_PLAYERS.map((p, i) => (
-          <tr class={i >= 50 ? 'pp-trow-hidden' : ''}>
-            <td><a href={`/player/${p.slug}/`} class="pp-tlink"><strong>{p.flag} {p.name}</strong></a></td>
+          <tr class={i >= 50 ? 'pph-trow-hidden' : ''}>
+            <td><a href={`/pro-players/${p.slug}/`} class="pph-tlink"><strong>{p.flag} {p.name}</strong></a></td>
             <td>{p.team}</td>
-            <td><span class="pp-role pp-role-sm" data-r={p.role.toLowerCase().replace(/\s/g,'-')}>{p.role}</span></td>
+            <td><span class="pph-card-role pph-role-sm" data-r={p.role.toLowerCase().replace(/\s/g,'-')}>{p.role}</span></td>
             <td>{p.mouse}</td>
             <td>{p.dpi}</td>
             <td>{p.sens}</td>
@@ -228,83 +221,70 @@ const topMice = getGearByType('mouse').slice(0, 8);
       </tbody>
     </table>
   </div>
-  <div class="pp-loadmore-wrap" id="tableLoadMoreWrap">
-    <button class="pp-loadmore-btn" id="tableLoadMoreBtn">Show All {PRO_PLAYERS.length} Rows</button>
+  <div class="pph-loadmore-wrap" id="tableLoadMoreWrap">
+    <button class="pph-loadmore-btn" id="tableLoadMoreBtn">Show All {PRO_PLAYERS.length} Rows</button>
   </div>
 </section>
 
 <!-- Tips -->
-<h2>How to Choose Your Settings</h2>
-<ul class="tip-list">
-  <li><strong>Start with the average eDPI ({avgEdpi}):</strong> This is a proven comfortable range. Go lower if you have a large mousepad and prefer precision. Go higher if you have limited desk space or prefer wrist aiming.</li>
-  <li><strong>AWPers vs Riflers:</strong> AWPers average slightly lower eDPI for precision flicks, while entry fraggers trend higher for faster 180-degree turns. Match your sensitivity to your typical role.</li>
-  <li><strong>4:3 Stretched isn't mandatory:</strong> While {Math.round((stretchData.stretched / PRO_PLAYERS.length) * 100)}% of pros use it, {Math.round((stretchData.native / PRO_PLAYERS.length) * 100)}% use native 16:9 (including ropz and frozen). Test both for a week each.</li>
-  <li><strong>Mouse weight matters:</strong> Most pros now use sub-80g wireless mice. A lighter mouse reduces fatigue and improves micro-adjustments during long sessions.</li>
-  <li><strong>Mousepad surface affects your aim:</strong> Speed pads (Artisan Hien) allow faster flicks but less stopping power. Control pads (Zowie G-SR) offer more precision at the cost of speed. Match to your playstyle.</li>
-  <li><strong>Give changes time:</strong> After changing sensitivity, commit to at least 2 weeks of practice before evaluating. Your muscle memory needs time to adjust and initial discomfort is normal.</li>
-  <li><strong>Don't chase the "perfect" settings:</strong> The best pros disagree wildly on sensitivity (eDPI ranges from {edpiMin} to {edpiMax}). What matters most is finding YOUR comfortable zone and building consistency.</li>
+<h2 class="pph-section-title">Finding Your Setup</h2>
+<ul class="pph-tips">
+  <li><strong>Use {avgEdpi} eDPI as a baseline:</strong> That is the pro average. Lower works better with large mousepads and arm-aiming; higher suits wrist players with limited desk space.</li>
+  <li><strong>Role matters:</strong> AWPers tend toward lower eDPI for precision. Entry fraggers lean higher for faster 180-degree checks. Pick a range that matches how you play.</li>
+  <li><strong>Stretched is not required:</strong> {Math.round((stretchData.stretched / PRO_PLAYERS.length) * 100)}% of pros run stretched, but {Math.round((stretchData.native / PRO_PLAYERS.length) * 100)}% play native 16:9. Both are viable at the highest level. Try each for at least a week.</li>
+  <li><strong>Lighter mice help:</strong> Sub-80g wireless mice dominate the pro scene now. Less weight means less fatigue and more precise micro-corrections.</li>
+  <li><strong>Mousepad surface changes everything:</strong> Speed surfaces let you flick faster; control pads give more stopping power. Match the surface to your sensitivity and role.</li>
+  <li><strong>Commit to changes:</strong> Allow two full weeks after any sensitivity change before judging it. Muscle memory takes time to recalibrate.</li>
+  <li><strong>There is no single answer:</strong> Pro eDPI ranges from {edpiMin} to {edpiMax}. Consistency matters far more than copying any one player exactly.</li>
 </ul>
 
-<!-- FAQ -->
-<h2>Frequently Asked Questions</h2>
-<dl class="faq">
+<!-- FAQ: <details> accordion -->
+<section class="pph-faq-section">
+  <h2 class="pph-section-title">Common Questions</h2>
   {faqs.map(f => (
-    <>
-      <dt>{f.question}</dt>
-      <dd>{f.answer}</dd>
-    </>
+    <details class="pph-faq">
+      <summary class="pph-faq-q">{f.question}</summary>
+      <p class="pph-faq-a">{f.answer}</p>
+    </details>
   ))}
-</dl>
+</section>
 
-<!-- Browse by Team -->
-<section class="pp-browse-section">
-  <h2>Browse by Team</h2>
-  <div class="pp-browse-grid">
+<!-- Browse by Team: inline tag cloud -->
+<section class="pph-browse">
+  <h2 class="pph-section-title">Browse by Team</h2>
+  <div class="pph-tag-cloud">
     {topTeams.map(t => (
-      <a href={`/team/${t.slug}/`} class="pp-browse-pill">
-        <span class="pp-browse-name">{t.name}</span>
-        <span class="pp-browse-count">{t.players.length}</span>
-      </a>
+      <a href={`/pro-teams/${t.slug}/`} class="pph-tag">{t.name} <span class="pph-tag-count">{t.players.length}</span></a>
     ))}
   </div>
 </section>
 
-<!-- Browse by Role -->
-<section class="pp-browse-section">
-  <h2>Browse by Role</h2>
-  <div class="pp-browse-grid">
+<!-- Browse by Role: inline tag cloud -->
+<section class="pph-browse">
+  <h2 class="pph-section-title">Browse by Role</h2>
+  <div class="pph-tag-cloud">
     {allRoles.map(r => (
-      <a href={`/players/role/${r.slug}/`} class="pp-browse-pill">
-        <span class="pp-browse-name">{r.name}</span>
-        <span class="pp-browse-count">{r.players.length}</span>
-      </a>
+      <a href={`/pro-players/role/${r.slug}/`} class="pph-tag">{r.name} <span class="pph-tag-count">{r.players.length}</span></a>
     ))}
   </div>
 </section>
 
-<!-- Browse by Country -->
-<section class="pp-browse-section">
-  <h2>Browse by Country</h2>
-  <div class="pp-browse-grid">
+<!-- Browse by Country: inline tag cloud -->
+<section class="pph-browse">
+  <h2 class="pph-section-title">Browse by Country</h2>
+  <div class="pph-tag-cloud">
     {topCountries.map(c => (
-      <a href={`/players/country/${c.slug}/`} class="pp-browse-pill">
-        <span class="pp-browse-flag">{c.flag}</span>
-        <span class="pp-browse-name">{c.name}</span>
-        <span class="pp-browse-count">{c.players.length}</span>
-      </a>
+      <a href={`/pro-players/country/${c.slug}/`} class="pph-tag">{c.flag} {c.name} <span class="pph-tag-count">{c.players.length}</span></a>
     ))}
   </div>
 </section>
 
-<!-- Popular Gear -->
-<section class="pp-browse-section">
-  <h2>Popular Mice</h2>
-  <div class="pp-browse-grid">
+<!-- Popular Mice: inline tag cloud -->
+<section class="pph-browse">
+  <h2 class="pph-section-title">Popular Mice</h2>
+  <div class="pph-tag-cloud">
     {topMice.map(g => (
-      <a href={`/gear/${g.slug}/`} class="pp-browse-pill">
-        <span class="pp-browse-name">{g.name}</span>
-        <span class="pp-browse-count">{g.players.length} pros</span>
-      </a>
+      <a href={`/pro-gaming-gear/${g.slug}/`} class="pph-tag">{g.name} <span class="pph-tag-count">{g.players.length}</span></a>
     ))}
   </div>
 </section>
@@ -320,149 +300,194 @@ const topMice = getGearByType('mouse').slice(0, 8);
   <a href="/resolution-calculator/">Resolution Calculator</a>
   <a href="/crosshair-generator/">Crosshair Generator</a>
   <a href="/bind-generator/">Bind Generator</a>
-  <a href="/weapons/">Weapon Stats</a>
-  <a href="/rank-distribution/">Rank Distribution</a>
-  <a href="/trading-sites/">Trading Sites</a>
+  <a href="/cs2-weapons/">Weapon Stats</a>
+  <a href="/cs2-rank-distribution/">Rank Distribution</a>
+  <a href="/cs2-guides/crosshair-guide/">Crosshair Guide</a>
+  <a href="/damage-calculator/">Damage Calculator</a>
+  <a href="/cs2-maps/">Map Database</a>
+  <a href="/cs2-guides/ranks-guide/">Ranking Guide</a>
+  <a href="/cs2-tools/">All Tools</a>
 </div>
 
 </Base>
 
 <style>
-.pp-hero{background:linear-gradient(135deg,var(--bg2),var(--bg3));border:1px solid var(--border);border-radius:12px;padding:2rem;margin-bottom:2rem}
-.pp-hero h1{font-size:2.2rem;margin:0 0 .75rem}
-.pp-hero>p{color:var(--text2);font-size:1.05rem;margin:0 0 1.5rem}
-.pp-hero-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:.75rem}
-.pp-hstat{background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:1rem;text-align:center}
-.pp-hval{display:block;font-size:1.4rem;font-weight:800;color:var(--accent)}
-.pp-hlbl{display:block;font-size:.75rem;color:var(--text2);margin-top:.25rem}
+/* ── Hero: Left-aligned with stat pills ──────────────────────────────────── */
+.pph-hero{margin-bottom:2rem;padding-bottom:1.5rem;border-bottom:1px solid var(--border)}
+.pph-title{font-size:2rem;font-weight:800;margin:0 0 .4rem;letter-spacing:-.02em}
+.pph-subtitle{color:var(--text2);font-size:.9rem;margin:0 0 1.25rem;line-height:1.6;max-width:680px}
+.pph-stat-pills{display:flex;flex-wrap:wrap;gap:.5rem}
+.pph-pill{display:flex;flex-direction:column;align-items:center;padding:.5rem 1rem;background:var(--bg2);border:1px solid var(--border);border-radius:4px;min-width:80px}
+.pph-pill-val{font-size:1rem;font-weight:800;color:var(--accent);line-height:1.2}
+.pph-pill-lbl{font-size:.65rem;color:var(--text2);text-transform:uppercase;letter-spacing:.04em;margin-top:.15rem}
 
-.pp-filters{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:1.25rem;margin-bottom:1.5rem}
-.pp-filter-row{display:flex;gap:1rem;flex-wrap:wrap;align-items:center}
-.pp-filter-group{display:flex;gap:.5rem;flex-wrap:wrap;align-items:center}
-.pp-flabel{font-size:.85rem;font-weight:600;color:var(--text)}
-#teamFilter{background:var(--bg3);color:var(--text);border:1px solid var(--border);padding:.4rem .6rem;border-radius:6px;font-size:.85rem}
-.pp-search{margin-left:auto;min-width:200px}
-#playerSearch{width:100%;background:var(--bg3);color:var(--text);border:1px solid var(--border);padding:.5rem .75rem;border-radius:6px;font-size:.9rem}
-#playerSearch:focus{border-color:var(--accent);outline:none}
-.pp-result-count{font-size:.82rem;color:var(--text2);margin-top:.75rem}
+/* ── Role Pill Tabs & Filter Row ─────────────────────────────────────────── */
+.pph-filters{margin-bottom:1.5rem}
+.pph-role-tabs{display:flex;flex-wrap:wrap;gap:.35rem;margin-bottom:.75rem}
+.pph-role-pill{background:var(--bg2);color:var(--text2);border:1px solid var(--border);padding:.35rem .85rem;border-radius:4px;font-size:.78rem;font-weight:600;cursor:pointer;font-family:inherit;transition:all .15s}
+.pph-role-pill:hover{border-color:var(--accent);color:var(--text)}
+.pph-role-pill.active{background:var(--accent);color:#000;border-color:var(--accent)}
+.pph-filter-row{display:flex;gap:.6rem;flex-wrap:wrap;align-items:center}
+.pph-search{flex:1;min-width:180px;background:var(--bg2);color:var(--text);border:1px solid var(--border);padding:.5rem .75rem;border-radius:4px;font-size:.88rem;font-family:inherit}
+.pph-search:focus{border-color:var(--accent);outline:none}
+.pph-select{background:var(--bg2);color:var(--text);border:1px solid var(--border);padding:.5rem .6rem;border-radius:4px;font-size:.84rem;font-family:inherit;cursor:pointer}
+.pph-select:focus{border-color:var(--accent);outline:none}
+.pph-count{font-size:.78rem;color:var(--text2);margin-top:.5rem}
 
-.pp-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(380px,1fr));gap:1.25rem;margin-bottom:3rem}
-.pp-card{display:block;text-decoration:none;color:inherit;background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:1.25rem;transition:border-color .2s,transform .2s,box-shadow .2s}
-.pp-card:hover{border-color:var(--accent);transform:translateY(-2px);box-shadow:0 4px 16px rgba(212,149,110,.1)}
-.pp-card.hidden{display:none}
-.pp-realname{color:var(--text2);font-size:.78rem;margin-top:.2rem}
-.pp-view-more{text-align:center;color:var(--accent);font-size:.82rem;font-weight:700;margin-top:.75rem;padding-top:.5rem;border-top:1px solid var(--border)}
-.pp-tlink{color:var(--accent);text-decoration:none;font-weight:600}
-.pp-tlink:hover{text-decoration:underline}
-.pp-card-top{display:flex;align-items:flex-start;margin-bottom:1rem;gap:.75rem}
-.pp-avatar{width:56px;height:56px;border-radius:50%;object-fit:cover;border:2px solid var(--border);flex-shrink:0;background:var(--bg3)}
-.pp-card-info{flex:1;min-width:0}
-.pp-name{margin:0;font-size:1.3rem;font-weight:800}
-.pp-team-role{display:flex;gap:.5rem;align-items:center;margin-top:.3rem}
-.pp-team{color:var(--accent);font-size:.85rem;font-weight:600}
-.pp-role{font-size:.72rem;font-weight:700;padding:.2rem .5rem;border-radius:4px;text-transform:uppercase;letter-spacing:.03em;background:var(--bg3);color:var(--text2);border:1px solid var(--border)}
-.pp-role[data-r="awper"]{background:rgba(239,83,80,.15);color:var(--red);border-color:var(--red)}
-.pp-role[data-r="rifler"]{background:rgba(66,165,245,.15);color:var(--blue);border-color:var(--blue)}
-.pp-role[data-r="igl"]{background:rgba(171,71,188,.15);color:var(--purple);border-color:var(--purple)}
-.pp-role[data-r="entry-fragger"]{background:rgba(212,149,110,.15);color:var(--accent);border-color:var(--accent)}
-.pp-role[data-r="support"]{background:rgba(76,175,80,.15);color:var(--green);border-color:var(--green)}
-.pp-role-sm{font-size:.65rem;padding:.15rem .4rem}
-.pp-style{font-size:.75rem;color:var(--text2);background:var(--bg3);padding:.25rem .6rem;border-radius:4px;white-space:nowrap;border:1px solid var(--border)}
+/* ── Featured: 2-column spotlight cards ──────────────────────────────────── */
+.pph-featured{margin-bottom:2rem}
+.pph-section-title{font-size:1.2rem;font-weight:700;margin:0 0 .85rem}
+.pph-spotlight-grid{display:grid;grid-template-columns:1fr 1fr;gap:.75rem;margin-bottom:.5rem}
+.pph-spotlight-card{display:flex;align-items:center;gap:1rem;padding:1rem 1.25rem;background:var(--bg2);border:1px solid var(--border);border-left:3px solid transparent;border-radius:4px;text-decoration:none;color:inherit;transition:border-left-color .15s}
+.pph-spotlight-card:hover{border-left-color:var(--accent)}
+.pph-spotlight-img-wrap{flex-shrink:0;width:80px;height:80px;display:flex;align-items:center;justify-content:center}
+.pph-spotlight-img{width:80px;height:80px;border-radius:4px;object-fit:cover;border:2px solid var(--border);background:var(--bg3)}
+.pph-spotlight-info{display:flex;flex-direction:column;gap:.2rem;min-width:0}
+.pph-spotlight-name{font-size:1.05rem;font-weight:800;color:var(--text)}
+.pph-spotlight-team{font-size:.8rem;color:var(--accent);font-weight:600}
+.pph-spotlight-role{font-size:.62rem;font-weight:700;padding:.15rem .4rem;border-radius:4px;text-transform:uppercase;letter-spacing:.03em;background:var(--bg3);color:var(--text2);border:1px solid var(--border);align-self:flex-start}
+.pph-spotlight-role[data-r="awper"]{background:rgba(239,83,80,.12);color:var(--red);border-color:var(--red)}
+.pph-spotlight-role[data-r="rifler"]{background:rgba(66,165,245,.12);color:var(--blue);border-color:var(--blue)}
+.pph-spotlight-role[data-r="igl"]{background:rgba(171,71,188,.12);color:var(--purple);border-color:var(--purple)}
+.pph-spotlight-role[data-r="entry-fragger"]{background:rgba(46,204,113,.12);color:var(--accent);border-color:var(--accent)}
+.pph-spotlight-role[data-r="support"]{background:rgba(76,175,80,.12);color:var(--green);border-color:var(--green)}
+.pph-spotlight-stats{display:flex;gap:.75rem;font-size:.78rem;color:var(--text2);margin-top:.25rem;flex-wrap:wrap}
+.pph-spotlight-stats strong{color:var(--text);font-weight:700}
 
-.pp-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:.5rem;margin-bottom:1rem}
-.pp-s{background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:.5rem;text-align:center}
-.pp-s.pp-edpi{border-color:var(--accent)}
-.pp-sv{display:block;font-size:1.1rem;font-weight:700;color:var(--text)}
-.pp-edpi .pp-sv{color:var(--accent)}
-.pp-sl{display:block;font-size:.65rem;color:var(--text2);text-transform:uppercase;margin-top:.15rem}
+/* ── Player Cards: Horizontal row (image left, info right) ───────────────── */
+.pph-list{display:flex;flex-direction:column;gap:2px;margin-bottom:2rem}
+.pph-card{display:flex;align-items:center;gap:.85rem;padding:.6rem 1rem;background:var(--bg2);border:1px solid var(--border);border-left:3px solid transparent;border-radius:4px;text-decoration:none;color:inherit;transition:border-left-color .15s}
+.pph-card:hover{border-left-color:var(--accent)}
+.pph-card.hidden{display:none}
 
-.pp-xhair{display:flex;gap:.5rem;background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:.4rem;margin-bottom:1rem;align-items:center}
-.pp-xhair code{flex:1;font-size:.75rem;color:var(--text2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding:0 .4rem}
-.pp-copy{background:var(--accent);color:#000;border:none;padding:.3rem .6rem;border-radius:4px;font-size:.75rem;font-weight:700;cursor:pointer;white-space:nowrap;font-family:inherit}
-.pp-copy:hover{opacity:.9}
-.pp-copy.copied{background:var(--green);color:#fff}
+.pph-card-left{flex-shrink:0;width:48px;height:48px;display:flex;align-items:center;justify-content:center}
+.pph-card-avatar{width:48px;height:48px;border-radius:4px;object-fit:cover;border:1px solid var(--border);background:var(--bg3)}
 
-.pp-gear{display:grid;grid-template-columns:1fr 1fr;gap:.3rem .75rem;margin-bottom:.75rem;font-size:.82rem}
-.pp-gi{display:flex;gap:.3rem}
-.pp-gk{color:var(--text2);font-weight:600;white-space:nowrap}
-.pp-gk::after{content:':'}
-.pp-gv{color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pph-card-mid{display:flex;flex-direction:column;gap:.1rem;min-width:140px;flex:1}
+.pph-card-name{font-weight:700;font-size:.9rem;color:var(--text)}
+.pph-card-team{font-size:.72rem;color:var(--text2)}
+.pph-card-role{font-size:.6rem;font-weight:700;padding:.12rem .35rem;border-radius:4px;text-transform:uppercase;letter-spacing:.03em;background:var(--bg3);color:var(--text2);border:1px solid var(--border);align-self:flex-start}
+.pph-card-role[data-r="awper"]{background:rgba(239,83,80,.12);color:var(--red);border-color:var(--red)}
+.pph-card-role[data-r="rifler"]{background:rgba(66,165,245,.12);color:var(--blue);border-color:var(--blue)}
+.pph-card-role[data-r="igl"]{background:rgba(171,71,188,.12);color:var(--purple);border-color:var(--purple)}
+.pph-card-role[data-r="entry-fragger"]{background:rgba(46,204,113,.12);color:var(--accent);border-color:var(--accent)}
+.pph-card-role[data-r="support"]{background:rgba(76,175,80,.12);color:var(--green);border-color:var(--green)}
+.pph-role-sm{font-size:.58rem;padding:.1rem .3rem}
 
-.pp-edpi-bar{position:relative;background:var(--bg);border:1px solid var(--border);border-radius:4px;height:22px;overflow:hidden}
-.pp-ebar-fill{position:absolute;top:0;left:0;height:100%;background:linear-gradient(90deg,var(--green),var(--accent),var(--red));opacity:.25;border-radius:4px}
-.pp-ebar-label{position:absolute;top:50%;left:.5rem;transform:translateY(-50%);font-size:.7rem;color:var(--text2);font-weight:600}
+.pph-card-stats{display:flex;gap:.6rem;align-items:center}
+.pph-card-stat{display:flex;flex-direction:column;align-items:center;min-width:44px}
+.pph-card-stat-val{font-size:.88rem;font-weight:700;color:var(--text);line-height:1.2}
+.pph-card-stat-lbl{font-size:.58rem;color:var(--text2);text-transform:uppercase;letter-spacing:.03em}
+.pph-card-stat-accent .pph-card-stat-val{color:var(--accent)}
 
-.pp-analysis{margin-bottom:3rem}
-.pp-analysis h2{margin-bottom:1.25rem}
-.pp-analysis-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.25rem}
-.pp-acard{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:1.25rem}
-.pp-acard h3{margin:0 0 .75rem;font-size:1.05rem}
-.pp-astat{font-size:1.8rem;font-weight:800;color:var(--accent);margin-bottom:.5rem}
-.pp-acard p{font-size:.88rem;color:var(--text2);margin:0 0 .75rem}
-.pp-abar-wrap{position:relative;height:24px;background:var(--bg3);border-radius:4px;overflow:hidden;display:flex}
-.pp-abar-zone{height:100%;display:flex;align-items:center;justify-content:center;position:relative}
-.pp-abar-zone span{font-size:.65rem;font-weight:600;color:var(--text2)}
-.pp-amid{background:rgba(212,149,110,.15)}
+.pph-card-right{display:flex;flex-direction:column;gap:.1rem;min-width:130px;text-align:right}
+.pph-card-res{font-size:.82rem;color:var(--text);font-weight:600}
+.pph-card-aspect{color:var(--text2);font-weight:400;font-size:.72rem}
+.pph-card-mouse{font-size:.75rem;color:var(--text2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 
-.pp-res-bar{display:flex;align-items:center;gap:.5rem;margin-bottom:.5rem}
-.pp-res-name{min-width:90px;font-size:.82rem;color:var(--text);font-weight:600}
-.pp-res-fill{height:20px;background:var(--accent);border-radius:3px;min-width:4px;opacity:.7}
-.pp-res-pct{font-size:.78rem;color:var(--text2);font-weight:600}
+.pph-card-arrow{color:var(--accent);font-size:1rem;font-weight:700;flex-shrink:0;opacity:.4;transition:opacity .15s}
+.pph-card:hover .pph-card-arrow{opacity:1}
 
-.pp-stretch-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.75rem;text-align:center}
-.pp-stretch-item{background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:.75rem}
-.pp-stretch-val{display:block;font-size:1.6rem;font-weight:800;color:var(--accent)}
-.pp-stretch-lbl{display:block;font-size:.75rem;color:var(--text2);margin-top:.2rem}
+/* ── Load More ───────────────────────────────────────────────────────────── */
+.pph-loadmore-wrap{text-align:center;padding:1.25rem 0}
+.pph-loadmore-btn{background:var(--accent);color:#000;border:none;padding:.55rem 1.5rem;border-radius:4px;font-size:.88rem;font-weight:700;cursor:pointer;font-family:inherit;transition:opacity .15s}
+.pph-loadmore-btn:hover{opacity:.85}
+.pph-loadmore-btn span{font-weight:400;opacity:.8}
+.pph-paginated{display:none}
+.pph-card.pph-paginated.pph-revealed{display:flex}
 
-.pp-table-section{margin-bottom:3rem}
-.pp-table-section h2{margin-bottom:1rem}
-.pp-table-search{margin-bottom:.75rem}
-.pp-table-search input{width:100%;max-width:360px;background:var(--bg2);color:var(--text);border:1px solid var(--border);padding:.5rem .75rem;border-radius:6px;font-size:.9rem;font-family:inherit}
-.pp-table-search input:focus{border-color:var(--accent);outline:none}
-.pp-table-wrap{overflow-x:auto;border:1px solid var(--border);border-radius:8px}
-.pp-table{width:100%;border-collapse:collapse;background:var(--bg2);font-size:.82rem}
-.pp-table thead{background:var(--bg3)}
-.pp-table th{padding:.65rem .5rem;text-align:left;font-weight:700;color:var(--text);text-transform:uppercase;font-size:.7rem;letter-spacing:.03em;white-space:nowrap}
-.pp-table td{padding:.5rem;border-bottom:1px solid var(--border);color:var(--text2);white-space:nowrap}
-.pp-table tbody tr:hover td{background:var(--bg3)}
-.pp-table td strong{color:var(--text)}
-.pp-trow-hidden{display:none}
+/* ── Scene Overview: 3-column grid ───────────────────────────────────────── */
+.pph-overview{margin-bottom:2.5rem}
+.pph-overview-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-bottom:1rem}
+.pph-overview-block{background:var(--bg2);border:1px solid var(--border);border-left:3px solid var(--accent);border-radius:4px;padding:1.25rem}
+.pph-overview-header{font-size:.9rem;font-weight:700;color:var(--text);margin-bottom:.5rem}
+.pph-overview-big{font-size:1.4rem;font-weight:800;color:var(--accent);margin-bottom:.35rem}
+.pph-overview-desc{font-size:.82rem;color:var(--text2);margin:0 0 .6rem;line-height:1.5}
 
-.pp-loadmore-wrap{text-align:center;padding:1.5rem 0}
-.pp-loadmore-btn{background:var(--accent);color:#000;border:none;padding:.75rem 2rem;border-radius:8px;font-size:1rem;font-weight:700;cursor:pointer;font-family:inherit;transition:opacity .2s,transform .2s}
-.pp-loadmore-btn:hover{opacity:.9;transform:translateY(-1px)}
-.pp-loadmore-btn span{font-weight:400;opacity:.8}
-.pp-paginated{display:none}
-.pp-card.pp-paginated.pp-revealed{display:block}
+.pph-range-bar{display:flex;height:18px;border-radius:4px;overflow:hidden;background:var(--bg3)}
+.pph-range-seg{display:flex;align-items:center;justify-content:center}
+.pph-range-seg span{font-size:.58rem;font-weight:600;color:var(--text2)}
+.pph-range-low{width:15%}
+.pph-range-mid{width:50%;background:rgba(46,204,113,.12)}
+.pph-range-high{width:35%}
 
-@media(max-width:768px){
-  .pp-hero h1{font-size:1.6rem}
-  .pp-hero-stats{grid-template-columns:repeat(3,1fr)}
-  .pp-grid{grid-template-columns:1fr}
-  .pp-stats{grid-template-columns:repeat(2,1fr)}
-  .pp-gear{grid-template-columns:1fr}
-  .pp-filter-row{flex-direction:column}
-  .pp-search{margin-left:0;width:100%}
-  .pp-browse-grid{grid-template-columns:repeat(2,1fr)}
+.pph-bar-row{display:flex;align-items:center;gap:.5rem;margin-bottom:.35rem}
+.pph-bar-label{min-width:80px;font-size:.78rem;color:var(--text);font-weight:600}
+.pph-bar-track{flex:1;height:14px;background:var(--bg3);border-radius:4px;overflow:hidden}
+.pph-bar-fill{height:100%;background:var(--accent);border-radius:4px;opacity:.6;min-width:3px}
+.pph-bar-pct{font-size:.72rem;color:var(--text2);font-weight:600;min-width:28px;text-align:right}
+
+.pph-aspect-strip{display:flex;gap:.75rem}
+.pph-aspect-item{flex:1;text-align:center;padding:.65rem;background:var(--bg2);border:1px solid var(--border);border-radius:4px}
+.pph-aspect-num{display:block;font-size:1.2rem;font-weight:800;color:var(--accent)}
+.pph-aspect-lbl{display:block;font-size:.68rem;color:var(--text2);margin-top:.1rem}
+
+/* ── Table ────────────────────────────────────────────────────────────────── */
+.pph-table-section{margin-bottom:2.5rem}
+.pph-table-filter{margin-bottom:.6rem}
+.pph-table-filter input{width:100%;max-width:340px;background:var(--bg2);color:var(--text);border:1px solid var(--border);padding:.45rem .7rem;border-radius:4px;font-size:.88rem;font-family:inherit}
+.pph-table-filter input:focus{border-color:var(--accent);outline:none}
+.pph-table-wrap{overflow-x:auto;border:1px solid var(--border);border-radius:4px}
+.pph-table{width:100%;border-collapse:collapse;background:var(--bg2);font-size:.78rem}
+.pph-table thead{background:var(--bg3);border-bottom:2px solid var(--accent)}
+.pph-table th{padding:.5rem .4rem;text-align:left;font-weight:700;color:var(--text);text-transform:uppercase;font-size:.65rem;letter-spacing:.03em;white-space:nowrap}
+.pph-table td{padding:.4rem;border-bottom:1px solid var(--border);color:var(--text2);white-space:nowrap}
+.pph-table tbody tr:hover td{background:var(--bg3)}
+.pph-table td strong{color:var(--text)}
+.pph-tlink{color:var(--accent);text-decoration:none;font-weight:600}
+.pph-tlink:hover{text-decoration:underline}
+.pph-trow-hidden{display:none}
+
+/* ── Tips ─────────────────────────────────────────────────────────────────── */
+.pph-tips{list-style:none;padding:0;margin:0 0 2rem}
+.pph-tips li{padding:.65rem .85rem;margin-bottom:.35rem;background:var(--bg2);border:1px solid var(--border);border-left:3px solid var(--accent);border-radius:4px;font-size:.88rem;color:var(--text2);line-height:1.55}
+.pph-tips li strong{color:var(--text);font-weight:700}
+
+/* ── FAQ: <details> accordion ────────────────────────────────────────────── */
+.pph-faq-section{margin-bottom:2.5rem}
+.pph-faq{background:var(--bg2);border:1px solid var(--border);border-radius:4px;margin-bottom:.35rem;overflow:hidden}
+.pph-faq-q{padding:.7rem 1rem;font-size:.9rem;font-weight:700;color:var(--text);cursor:pointer;user-select:none;list-style:none;display:flex;justify-content:space-between;align-items:center}
+.pph-faq-q::-webkit-details-marker{display:none}
+.pph-faq-q::after{content:'+';font-size:1.1rem;color:var(--accent);font-weight:700;flex-shrink:0;margin-left:.5rem}
+.pph-faq[open] .pph-faq-q::after{content:'\2212'}
+.pph-faq[open] .pph-faq-q{border-bottom:1px solid var(--border)}
+.pph-faq-a{padding:.7rem 1rem;font-size:.85rem;color:var(--text2);line-height:1.65;margin:0}
+
+/* ── Browse: Tag Cloud ───────────────────────────────────────────────────── */
+.pph-browse{margin-bottom:2rem}
+.pph-tag-cloud{display:flex;flex-wrap:wrap;gap:.4rem}
+.pph-tag{display:inline-flex;align-items:center;gap:.3rem;padding:.35rem .7rem;background:var(--bg2);border:1px solid var(--border);border-radius:4px;color:var(--accent);text-decoration:none;font-size:.82rem;font-weight:600;transition:border-color .15s}
+.pph-tag:hover{border-color:var(--accent)}
+.pph-tag-count{color:var(--text2);font-weight:400;font-size:.72rem}
+
+/* ── Responsive ──────────────────────────────────────────────────────────── */
+@media(max-width:960px){
+  .pph-spotlight-grid{grid-template-columns:1fr}
+  .pph-overview-grid{grid-template-columns:1fr}
+  .pph-card-right{display:none}
+  .pph-card-arrow{display:none}
 }
-
-.pp-browse-section{margin:2.5rem 0}
-.pp-browse-section h2{margin:0 0 1rem;font-size:1.25rem}
-.pp-browse-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:.6rem}
-.pp-browse-pill{display:flex;align-items:center;gap:.5rem;padding:.6rem 1rem;background:var(--bg2);border:1px solid var(--border);border-radius:8px;text-decoration:none;transition:all .15s;font-size:.88rem}
-.pp-browse-pill:hover{border-color:var(--accent);background:var(--bg3);transform:translateY(-1px)}
-.pp-browse-flag{font-size:1.1rem}
-.pp-browse-name{color:var(--text);font-weight:600;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.pp-browse-count{color:var(--text2);font-size:.75rem;font-weight:500;background:var(--bg3);padding:.15rem .5rem;border-radius:4px;white-space:nowrap}
+@media(max-width:640px){
+  .pph-title{font-size:1.5rem}
+  .pph-stat-pills{gap:.35rem}
+  .pph-pill{padding:.4rem .6rem;min-width:65px}
+  .pph-pill-val{font-size:.85rem}
+  .pph-filter-row{flex-direction:column}
+  .pph-search{min-width:100%}
+  .pph-card-stats{gap:.35rem}
+  .pph-card-stat{min-width:36px}
+}
 </style>
 
 <script is:inline>
 (function(){
-  var btns = document.querySelectorAll('.pp-filters .filter-btn');
-  var cards = document.querySelectorAll('.pp-card');
-  var search = document.getElementById('playerSearch');
+  var roleTabs = document.querySelectorAll('.pph-role-pill');
   var teamSel = document.getElementById('teamFilter');
+  var sortSel = document.getElementById('sortFilter');
+  var search = document.getElementById('playerSearch');
   var countEl = document.getElementById('visibleCount');
+  var rows = document.querySelectorAll('.pph-card');
+  var listEl = document.getElementById('cfgList');
   var loadMoreBtn = document.getElementById('loadMoreBtn');
   var loadMoreWrap = document.getElementById('loadMoreWrap');
   var loadMoreCount = document.getElementById('loadMoreCount');
@@ -470,15 +495,25 @@ const topMice = getGearByType('mouse').slice(0, 8);
   var tableLoadMoreWrap = document.getElementById('tableLoadMoreWrap');
 
   var BATCH = 48;
-  var cardLimit = BATCH;
   var isFiltering = false;
+  var activeRole = 'all';
+
+  // Role pill tab click
+  roleTabs.forEach(function(pill){
+    pill.addEventListener('click', function(){
+      roleTabs.forEach(function(p){ p.classList.remove('active'); });
+      pill.classList.add('active');
+      activeRole = pill.dataset.role;
+      filter();
+    });
+  });
 
   function updateLoadMore() {
     if (isFiltering) {
       loadMoreWrap.style.display = 'none';
       return;
     }
-    var paginated = document.querySelectorAll('.pp-card.pp-paginated:not(.pp-revealed)');
+    var paginated = document.querySelectorAll('.pph-card.pph-paginated:not(.pph-revealed)');
     if (paginated.length === 0) {
       loadMoreWrap.style.display = 'none';
     } else {
@@ -488,25 +523,23 @@ const topMice = getGearByType('mouse').slice(0, 8);
   }
 
   function filter(){
-    var role = document.querySelector('.pp-filters .filter-btn.active').dataset.role;
+    var role = activeRole;
     var q = search.value.toLowerCase();
     var team = teamSel.value;
     var vis = 0;
     isFiltering = (role !== 'all' || q !== '' || team !== 'all');
 
-    cards.forEach(function(c){
+    rows.forEach(function(c){
       var mr = role === 'all' || c.dataset.role === role;
       var ms = !q || c.dataset.name.indexOf(q) > -1 || c.dataset.team.indexOf(q) > -1;
       var mt = team === 'all' || c.dataset.team === team;
       var show = mr && ms && mt;
 
       if (isFiltering) {
-        // When filtering, show all matches regardless of pagination
         c.classList.toggle('hidden', !show);
         c.style.display = show ? '' : 'none';
       } else {
-        // When not filtering, respect pagination
-        var isPaginated = c.classList.contains('pp-paginated') && !c.classList.contains('pp-revealed');
+        var isPaginated = c.classList.contains('pph-paginated') && !c.classList.contains('pph-revealed');
         c.classList.toggle('hidden', !show);
         c.style.display = (show && !isPaginated) ? '' : 'none';
       }
@@ -516,12 +549,27 @@ const topMice = getGearByType('mouse').slice(0, 8);
     updateLoadMore();
   }
 
+  function sortRows(){
+    var val = sortSel.value;
+    if (val === 'default') return;
+    var arr = Array.from(rows);
+    arr.sort(function(a, b){
+      if (val === 'edpi-asc') return Number(a.dataset.edpi) - Number(b.dataset.edpi);
+      if (val === 'edpi-desc') return Number(b.dataset.edpi) - Number(a.dataset.edpi);
+      if (val === 'name-az') return a.dataset.name.localeCompare(b.dataset.name);
+      if (val === 'name-za') return b.dataset.name.localeCompare(a.dataset.name);
+      return 0;
+    });
+    arr.forEach(function(r){ listEl.appendChild(r); });
+    filter();
+  }
+
   loadMoreBtn.addEventListener('click', function(){
-    var hidden = document.querySelectorAll('.pp-card.pp-paginated:not(.pp-revealed)');
+    var hidden = document.querySelectorAll('.pph-card.pph-paginated:not(.pph-revealed)');
     var count = 0;
     hidden.forEach(function(c){
       if (count < BATCH) {
-        c.classList.add('pp-revealed');
+        c.classList.add('pph-revealed');
         if (!c.classList.contains('hidden')) c.style.display = '';
         count++;
       }
@@ -531,7 +579,7 @@ const topMice = getGearByType('mouse').slice(0, 8);
 
   // Table load more
   tableLoadMoreBtn.addEventListener('click', function(){
-    document.querySelectorAll('.pp-trow-hidden').forEach(function(r){ r.classList.remove('pp-trow-hidden'); });
+    document.querySelectorAll('.pph-trow-hidden').forEach(function(r){ r.classList.remove('pph-trow-hidden'); });
     tableLoadMoreWrap.style.display = 'none';
   });
 
@@ -541,8 +589,7 @@ const topMice = getGearByType('mouse').slice(0, 8);
   tableSearch.addEventListener('input', function(){
     var q = tableSearch.value.toLowerCase();
     if (q) {
-      // When searching, show all rows and filter
-      document.querySelectorAll('.pp-trow-hidden').forEach(function(r){ r.classList.remove('pp-trow-hidden'); });
+      document.querySelectorAll('.pph-trow-hidden').forEach(function(r){ r.classList.remove('pph-trow-hidden'); });
       tableLoadMoreWrap.style.display = 'none';
     }
     tableRows.forEach(function(row){
@@ -550,34 +597,17 @@ const topMice = getGearByType('mouse').slice(0, 8);
       row.style.display = (!q || text.indexOf(q) > -1) ? '' : 'none';
     });
     if (!q) {
-      // Restore pagination if search cleared
       tableRows.forEach(function(row, i){
-        if (i >= 50) row.classList.add('pp-trow-hidden');
+        if (i >= 50) row.classList.add('pph-trow-hidden');
         row.style.display = '';
       });
       tableLoadMoreWrap.style.display = 'block';
     }
   });
 
-  btns.forEach(function(b){
-    b.addEventListener('click', function(){
-      btns.forEach(function(x){ x.classList.remove('active'); });
-      b.classList.add('active');
-      filter();
-    });
-  });
-  search.addEventListener('input', filter);
   teamSel.addEventListener('change', filter);
-
-  document.querySelectorAll('.pp-copy').forEach(function(btn){
-    btn.addEventListener('click', function(){
-      navigator.clipboard.writeText(btn.dataset.code).then(function(){
-        btn.textContent = 'Copied!';
-        btn.classList.add('copied');
-        setTimeout(function(){ btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 1500);
-      });
-    });
-  });
+  sortSel.addEventListener('change', sortRows);
+  search.addEventListener('input', filter);
 
   // Initial state
   updateLoadMore();

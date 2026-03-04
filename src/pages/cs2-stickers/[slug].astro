@@ -1,0 +1,995 @@
+---
+import Base from '../../layouts/Base.astro';
+import ExploreMore from '../../components/ExploreMore.astro';
+import { STICKERS, getStickerBySlug, getStickersByTournament, getStickersByTeam, getStickersByCollection, getStickersByType, getVariantColor, getVariantBg, VARIANT_COLORS } from '../../lib/stickers';
+import { breadcrumbSchema, faqSchema } from '../../lib/weapons';
+
+export function getStaticPaths() {
+  return STICKERS.map(s => ({
+    params: { slug: s.slug },
+    props: { sticker: s },
+  }));
+}
+
+const { sticker } = Astro.props;
+
+// ── Variant styling ─────────────────────────────────────────────────────────
+const variantColor = getVariantColor(sticker.variant);
+const variantBg = getVariantBg(sticker.variant);
+
+// ── Marketplace display names ───────────────────────────────────────────────
+const MARKETPLACE_NAMES: Record<string, string> = {
+  'buff163': 'Buff163',
+  'buff163_buy': 'Buff163 Buy',
+  'steam': 'Steam Market',
+  'skinport': 'Skinport',
+  'csmoney': 'CS.Money',
+  'csmoney2': 'CS.Money 2.0',
+  'dmarket': 'DMarket',
+  'bitskins': 'BitSkins',
+  'csfloat': 'CSFloat',
+  'waxpeer': 'Waxpeer',
+  'tradeit': 'Tradeit.gg',
+  'skinbaron': 'SkinBaron',
+  'gamerpay': 'GamerPay',
+  'lootfarm': 'Loot.Farm',
+  'shadowpay': 'ShadowPay',
+  'skinswap': 'SkinSwap',
+  'lis-skins': 'LIS-SKINS',
+  'youpin': 'Youpin (UU)',
+  'swap_gg': 'Swap.gg',
+  'mannco': 'Mannco.store',
+  'csdeals': 'CS.Deals',
+  'c5game': 'C5Game',
+  'igxe': 'IGXE',
+  'haloskins': 'HaloSkins',
+  'lootbear': 'LootBear',
+  'skinbid': 'SkinBid',
+};
+
+const MARKETPLACE_DOMAINS: Record<string, string> = {
+  'buff163': 'buff.163.com',
+  'buff163_buy': 'buff.163.com',
+  'steam': 'store.steampowered.com',
+  'skinport': 'skinport.com',
+  'csmoney': 'cs.money',
+  'csmoney2': 'cs.money',
+  'dmarket': 'dmarket.com',
+  'bitskins': 'bitskins.com',
+  'csfloat': 'csfloat.com',
+  'waxpeer': 'waxpeer.com',
+  'tradeit': 'tradeit.gg',
+  'skinbaron': 'skinbaron.de',
+  'gamerpay': 'gamerpay.gg',
+  'lootfarm': 'loot.farm',
+  'shadowpay': 'shadowpay.com',
+  'skinswap': 'skinswap.com',
+  'lis-skins': 'lis-skins.com',
+  'youpin': 'youpin898.com',
+  'swap_gg': 'swap.gg',
+  'mannco': 'mannco.store',
+  'csdeals': 'cs.deals',
+  'c5game': 'c5game.com',
+  'igxe': 'igxe.cn',
+  'haloskins': 'haloskins.com',
+  'lootbear': 'lootbear.com',
+  'skinbid': 'skinbid.com',
+};
+
+function getMarketplaceName(key: string): string {
+  return MARKETPLACE_NAMES[key] || key;
+}
+
+function getMarketplaceDomain(key: string): string {
+  return MARKETPLACE_DOMAINS[key] || '';
+}
+
+// ── Blocked providers ───────────────────────────────────────────────────────
+const BLOCKED_PROVIDERS = new Set(['csgoempire', 'csgoroll']);
+
+// ── Provider prices, sorted cheapest-first ──────────────────────────────────
+const providerEntries = sticker.providers
+  ? Object.entries(sticker.providers)
+      .filter(([k, v]) => v > 0 && !BLOCKED_PROVIDERS.has(k))
+      .sort((a, b) => a[1] - b[1])
+  : [];
+const providerCount = providerEntries.length;
+const bestPrice = providerEntries.length > 0 ? providerEntries[0][1] : (sticker.price > 0 ? sticker.price : 0);
+const bestProvider = providerEntries.length > 0 ? providerEntries[0][0] : '';
+
+// ── Deep-link URL builder ───────────────────────────────────────────────────
+const searchTerm = `Sticker | ${sticker.name}`.replace(/\s+/g, '+');
+
+function getMarketplaceUrl(key: string): string {
+  switch (key) {
+    case 'steam':
+      return `https://steamcommunity.com/market/search?appid=730&q=${searchTerm}`;
+    case 'skinport':
+      return `https://skinport.com/market?search=${searchTerm}`;
+    case 'csmoney':
+    case 'csmoney2':
+      return `https://cs.money/market/buy/?search=${searchTerm}`;
+    case 'dmarket':
+      return `https://dmarket.com/ingame-items/item-list/csgo-skins?title=${searchTerm}`;
+    case 'tradeit':
+      return `https://tradeit.gg/csgo/store?search=${searchTerm}`;
+    case 'shadowpay':
+      return `https://shadowpay.com/csgo-items?search=${searchTerm}`;
+    case 'skinbaron':
+      return `https://skinbaron.de/en/csgo?str=${searchTerm}`;
+    case 'waxpeer':
+      return `https://waxpeer.com/`;
+    case 'buff163':
+    case 'buff163_buy':
+      return `https://buff.163.com/market/csgo#tab=selling&page_num=1&search=${searchTerm}`;
+    case 'skinswap':
+      return `https://skinswap.com/market/cs2?search=${searchTerm}`;
+    case 'csfloat':
+      return `https://csfloat.com/`;
+    case 'bitskins':
+      return `https://bitskins.com/market/cs2`;
+    case 'gamerpay':
+      return `https://gamerpay.gg/`;
+    case 'lootfarm':
+      return `https://loot.farm/`;
+    default:
+      return '#';
+  }
+}
+
+// ── Related stickers ────────────────────────────────────────────────────────
+let relatedStickers: typeof STICKERS = [];
+let relatedLabel = '';
+
+if (sticker.tournament) {
+  relatedStickers = getStickersByTournament(sticker.tournament)
+    .filter(s => s.slug !== sticker.slug)
+    .slice(0, 12);
+  relatedLabel = `More ${sticker.tournament} Stickers`;
+} else if (sticker.team) {
+  relatedStickers = getStickersByTeam(sticker.team)
+    .filter(s => s.slug !== sticker.slug)
+    .slice(0, 12);
+  relatedLabel = `More ${sticker.team} Stickers`;
+} else {
+  // Community or other — show stickers from same collection or same type
+  if (sticker.collection) {
+    relatedStickers = getStickersByCollection(sticker.collection)
+      .filter(s => s.slug !== sticker.slug)
+      .slice(0, 12);
+    relatedLabel = `More from ${sticker.collection}`;
+  }
+  if (relatedStickers.length === 0) {
+    relatedStickers = getStickersByType(sticker.type)
+      .filter(s => s.slug !== sticker.slug && s.price > 0)
+      .slice(0, 12);
+    relatedLabel = `More ${sticker.type === 'tournament' ? 'Tournament' : 'Community'} Stickers`;
+  }
+}
+
+// ── SEO ─────────────────────────────────────────────────────────────────────
+const priceDisplay = bestPrice > 0 ? `$${bestPrice.toFixed(2)}` : 'N/A';
+const tournamentInfo = sticker.tournament ? ` From ${sticker.tournament}.` : '';
+const title = `${sticker.name} Sticker — Price & Marketplace Data | CSGOLuck Wiki`;
+const description = `Buy ${sticker.name} sticker. Compare prices across ${providerCount > 0 ? providerCount : 'multiple'} marketplaces. Current price: ${priceDisplay}.${tournamentInfo}`;
+
+// ── Breadcrumbs ─────────────────────────────────────────────────────────────
+const crumbs = [
+  { name: 'Home', url: 'https://wiki.csgoluck.com/' },
+  { name: 'Skins', url: 'https://wiki.csgoluck.com/cs2-skins/' },
+  { name: 'Stickers', url: 'https://wiki.csgoluck.com/cs2-stickers/' },
+  { name: sticker.name, url: `https://wiki.csgoluck.com/cs2-stickers/${sticker.slug}/` },
+];
+
+// ── Product Schema ──────────────────────────────────────────────────────────
+const productSchema = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "Product",
+  "name": `Sticker | ${sticker.name}`,
+  "image": sticker.image || undefined,
+  "description": `${sticker.name} is a ${sticker.variant} variant ${sticker.type} sticker in Counter-Strike 2.${sticker.tournament ? ` From ${sticker.tournament}.` : ''}${sticker.team ? ` ${sticker.team} team sticker.` : ''}`,
+  "brand": { "@type": "Brand", "name": "Counter-Strike 2" },
+  "category": "CS2 Stickers",
+  "sku": sticker.slug,
+  ...(bestPrice > 0 ? {
+    "offers": {
+      "@type": "Offer",
+      "priceCurrency": "USD",
+      "price": bestPrice.toFixed(2),
+      "availability": "https://schema.org/InStock",
+    },
+  } : {}),
+});
+
+// ── FAQs ────────────────────────────────────────────────────────────────────
+const faqs = [
+  {
+    q: `How much does the ${sticker.name} sticker cost?`,
+    a: bestPrice > 0
+      ? `The ${sticker.name} sticker is currently priced from ${priceDisplay} across ${providerCount > 0 ? providerCount : 'multiple'} marketplaces. Prices vary by marketplace, so compare above for the best deal.`
+      : `The ${sticker.name} sticker pricing varies by marketplace. Check current listings on Buff163, Skinport, or Steam Market for up-to-date pricing.`,
+  },
+  {
+    q: `What variant is the ${sticker.name} sticker?`,
+    a: `The ${sticker.name} sticker is a ${sticker.variant} variant.${sticker.variant === 'Gold' ? ' Gold stickers are the rarest and most valuable variant.' : sticker.variant === 'Holo' ? ' Holo stickers have a holographic rainbow effect and are rarer than Paper.' : sticker.variant === 'Foil' ? ' Foil stickers have a metallic reflective finish.' : sticker.variant === 'Glitter' ? ' Glitter stickers have a sparkle effect and are quite rare.' : ' Paper stickers are the most common variant.'}`,
+  },
+  {
+    q: `Where can I buy the ${sticker.name} sticker?`,
+    a: bestProvider
+      ? `The cheapest listing for the ${sticker.name} sticker is currently on ${getMarketplaceName(bestProvider)} at ${priceDisplay}. You can also compare prices on ${providerCount > 1 ? `${providerCount - 1} other marketplaces` : 'other marketplaces'} above.`
+      : `You can buy the ${sticker.name} sticker on marketplaces like Buff163, Skinport, CS.Money, and Steam Market. Compare prices above to find the best deal.`,
+  },
+  {
+    q: `Is the ${sticker.name} sticker a good investment?`,
+    a: `${sticker.type === 'tournament' ? 'Tournament stickers can appreciate over time, especially after the associated operation ends.' : 'Community stickers can gain value as they become discontinued.'} The ${sticker.variant} variant ${sticker.variant === 'Gold' || sticker.variant === 'Holo' || sticker.variant === 'Foil' ? 'is a rarer variant which tends to hold value better' : 'is a common variant with more supply'}. Always research market trends before investing.`,
+  },
+];
+
+// ── Market data helpers ─────────────────────────────────────────────────────
+function formatNumber(n: number | null | undefined): string {
+  if (n == null) return 'N/A';
+  if (n >= 1000) return `${(n / 1000).toFixed(1)}k`;
+  return n.toFixed(0);
+}
+
+function formatPrice(p: number): string {
+  return p >= 1000 ? `$${p.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` : `$${p.toFixed(2)}`;
+}
+
+function getLiquidityLabel(liq: number | null | undefined): { label: string; color: string } {
+  if (liq == null) return { label: 'Unknown', color: 'var(--text2)' };
+  if (liq >= 0.8) return { label: 'Very High', color: '#4caf50' };
+  if (liq >= 0.5) return { label: 'High', color: '#8bc34a' };
+  if (liq >= 0.2) return { label: 'Medium', color: '#ff9800' };
+  return { label: 'Low', color: '#f44336' };
+}
+
+const liquidity = getLiquidityLabel(sticker.liquidity);
+const hasMarketData = sticker.liquidity != null || sticker.volume7d != null || sticker.trades7d != null || sticker.listingCount != null;
+---
+
+<Base title={title} description={description} currentNav="/cs2-skins/" ogImage={sticker.image || undefined}>
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema(crumbs))} />
+    <script type="application/ld+json" set:html={JSON.stringify(faqSchema(faqs))} />
+    <script type="application/ld+json" set:html={productSchema} />
+  </Fragment>
+
+  <!-- Breadcrumbs -->
+  <nav class="st-breadcrumb">
+    <a href="/">Home</a> <span class="st-sep">/</span>
+    <a href="/cs2-skins/">Skins</a> <span class="st-sep">/</span>
+    <a href="/cs2-stickers/">Stickers</a> <span class="st-sep">/</span>
+    <span>{sticker.name}</span>
+  </nav>
+
+  <!-- Two-column hero: image left, stats right -->
+  <div class="st-hero">
+    <div class="st-hero-image">
+      {sticker.image ? (
+        <img
+          src={sticker.image}
+          alt={`${sticker.name} Sticker`}
+          class="st-img"
+          width="280"
+          height="280"
+          loading="eager"
+        />
+      ) : (
+        <div class="st-placeholder">No Image</div>
+      )}
+    </div>
+    <div class="st-hero-info">
+      <h1 class="st-name">{sticker.name}</h1>
+      <span class="st-variant-tag" style={`background:${variantBg};color:${variantColor};border:1px solid ${variantColor}`}>
+        {sticker.variant}
+      </span>
+      {providerCount > 0 && <span class="st-mp-count">{providerCount} marketplace{providerCount !== 1 ? 's' : ''}</span>}
+
+      <!-- Best Price -->
+      <div class="st-best-price">
+        <span class="st-price-label">Best Price</span>
+        <span class="st-price-value">{bestPrice > 0 ? formatPrice(bestPrice) : 'Price unavailable'}</span>
+        {bestProvider && <span class="st-price-source">on {getMarketplaceName(bestProvider)}</span>}
+      </div>
+
+      {bestProvider && bestPrice > 0 && (
+        <a href={getMarketplaceUrl(bestProvider)} target="_blank" rel="noopener noreferrer nofollow" class="st-buy-btn">
+          Buy on {getMarketplaceName(bestProvider)}
+        </a>
+      )}
+
+      <!-- Sticker details inline -->
+      <div class="st-details-grid">
+        <div class="st-detail">
+          <span class="st-detail-key">Type</span>
+          <span class="st-detail-val">{sticker.type === 'tournament' ? 'Tournament' : 'Community'}</span>
+        </div>
+        <div class="st-detail">
+          <span class="st-detail-key">Variant</span>
+          <span class="st-detail-val" style={`color:${variantColor}`}>{sticker.variant}</span>
+        </div>
+        {sticker.tournament && (
+          <div class="st-detail">
+            <span class="st-detail-key">Tournament</span>
+            <span class="st-detail-val">{sticker.tournament}</span>
+          </div>
+        )}
+        {sticker.team && (
+          <div class="st-detail">
+            <span class="st-detail-key">Team</span>
+            <span class="st-detail-val">{sticker.team}</span>
+          </div>
+        )}
+        {sticker.collection && (
+          <div class="st-detail">
+            <span class="st-detail-key">Collection</span>
+            <span class="st-detail-val">{sticker.collection}</span>
+          </div>
+        )}
+        {sticker.rarity && (
+          <div class="st-detail">
+            <span class="st-detail-key">Rarity</span>
+            <span class="st-detail-val">{sticker.rarity}</span>
+          </div>
+        )}
+      </div>
+    </div>
+  </div>
+
+  <!-- Market Data -->
+  {hasMarketData && (
+    <section class="st-market-section">
+      <h2 class="st-section-heading">Market Data</h2>
+      <div class="st-market-pills">
+        {sticker.liquidity != null && (
+          <div class="st-market-pill">
+            <span class="st-mp-label">Liquidity</span>
+            <span class="st-mp-val" style={`color:${liquidity.color}`}>{liquidity.label}</span>
+          </div>
+        )}
+        {sticker.volume7d != null && (
+          <div class="st-market-pill">
+            <span class="st-mp-label">7-Day Volume</span>
+            <span class="st-mp-val">{formatNumber(sticker.volume7d)}</span>
+          </div>
+        )}
+        {sticker.trades7d != null && (
+          <div class="st-market-pill">
+            <span class="st-mp-label">7-Day Trades</span>
+            <span class="st-mp-val">{formatNumber(sticker.trades7d)}</span>
+          </div>
+        )}
+        {sticker.listingCount != null && (
+          <div class="st-market-pill">
+            <span class="st-mp-label">Active Listings</span>
+            <span class="st-mp-val">{formatNumber(sticker.listingCount)}</span>
+          </div>
+        )}
+      </div>
+    </section>
+  )}
+
+  <!-- Price Table -->
+  {providerEntries.length > 0 && (
+    <section class="st-prices-section">
+      <div class="st-prices-header">
+        <h2 class="st-section-heading">Compare Prices</h2>
+        <span class="st-prices-count">{providerEntries.length} marketplace{providerEntries.length !== 1 ? 's' : ''}</span>
+      </div>
+      <div class="st-price-table">
+        <div class="st-price-table-head">
+          <span>Marketplace</span>
+          <span>Price</span>
+          <span></span>
+        </div>
+        {providerEntries.map(([pk, pv], idx) => {
+          const mpName = getMarketplaceName(pk);
+          const mpDomain = getMarketplaceDomain(pk);
+          const cheapest = providerEntries[0][1];
+          const diff = cheapest > 0 && idx > 0 ? Math.round((pv - cheapest) / cheapest * 100) : 0;
+          return (
+            <div class={`st-price-row ${idx === 0 ? 'st-price-row-best' : ''}`}>
+              <div class="st-price-mp">
+                <span class="st-price-icon">
+                  {mpDomain
+                    ? <img src={`https://www.google.com/s2/favicons?domain=${mpDomain}&sz=32`} alt={mpName} loading="lazy" width="16" height="16" />
+                    : <span class="st-price-icon-text">{pk.substring(0, 2).toUpperCase()}</span>
+                  }
+                </span>
+                <span class="st-price-name">{mpName}</span>
+              </div>
+              <div class="st-price-amount-wrap">
+                <span class="st-price-amount">{formatPrice(pv)}</span>
+                {idx === 0 && <span class="st-badge st-badge-best">Best</span>}
+                {diff > 0 && <span class="st-badge st-badge-diff">+{diff}%</span>}
+              </div>
+              <a href={getMarketplaceUrl(pk)} target="_blank" rel="noopener noreferrer nofollow" class="st-price-link">Buy</a>
+            </div>
+          );
+        })}
+      </div>
+    </section>
+  )}
+
+  {providerEntries.length === 0 && (
+    <section class="st-no-data">
+      <p>No marketplace price data currently available. Check Buff163, Skinport, or Steam Market directly for current listings.</p>
+    </section>
+  )}
+
+  <!-- Related Stickers as horizontal scroll strip -->
+  {relatedStickers.length > 0 && (
+    <section class="st-related">
+      <h2 class="st-section-heading">{relatedLabel}</h2>
+      <div class="st-related-strip">
+        {relatedStickers.map(rs => {
+          const rsColor = getVariantColor(rs.variant);
+          const rsBg = getVariantBg(rs.variant);
+          return (
+            <a href={`/cs2-stickers/${rs.slug}/`} class="st-related-item">
+              <div class="st-related-img">
+                {rs.image ? (
+                  <img src={rs.image} alt={rs.name} loading="lazy" width="80" height="80" />
+                ) : (
+                  <div class="st-related-ph">?</div>
+                )}
+              </div>
+              <span class="st-related-name">{rs.name}</span>
+              <span class="st-related-variant" style={`color:${rsColor}`}>{rs.variant}</span>
+              {rs.price > 0 && <span class="st-related-price">${rs.price.toFixed(2)}</span>}
+            </a>
+          );
+        })}
+      </div>
+    </section>
+  )}
+
+  <!-- FAQ as details/summary -->
+  <section class="st-faq">
+    <h2 class="st-section-heading">Frequently Asked Questions</h2>
+    {faqs.map(f => (
+      <details class="st-faq-item">
+        <summary>{f.q}</summary>
+        <p>{f.a}</p>
+      </details>
+    ))}
+  </section>
+
+  <!-- Internal Links -->
+  <section class="st-links">
+    <h2 class="st-section-heading">Related Resources</h2>
+    <div class="st-link-row">
+      <a href="/cs2-stickers/">All Stickers</a>
+      <a href="/cs2-skins/">Skin Database</a>
+      <a href="/cs2-cases/">Cases & Collections</a>
+      <a href="/cs2-guides/skins-investing-guide/">Investing Guide</a>
+      <a href="/price-tracker/">Price Tracker</a>
+    </div>
+  </section>
+
+  <ExploreMore context="skins" />
+</Base>
+
+<style>
+  /* ── Breadcrumbs ── */
+  .st-breadcrumb {
+    font-size: 0.85rem;
+    color: var(--text2);
+    margin-bottom: 1.5rem;
+  }
+  .st-breadcrumb a {
+    color: var(--accent);
+    text-decoration: none;
+  }
+  .st-breadcrumb a:hover {
+    text-decoration: underline;
+  }
+  .st-sep {
+    margin: 0 0.3rem;
+    color: var(--text2);
+  }
+
+  /* ── Two-column Hero ── */
+  .st-hero {
+    display: grid;
+    grid-template-columns: 300px 1fr;
+    gap: 2rem;
+    align-items: start;
+    margin-bottom: 2.5rem;
+    padding-bottom: 2rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .st-hero-image {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 280px;
+  }
+  .st-img {
+    max-width: 100%;
+    height: auto;
+    max-height: 260px;
+    object-fit: contain;
+  }
+  .st-placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 180px;
+    height: 180px;
+    background: var(--bg3);
+    border-radius: 4px;
+    color: var(--text2);
+    font-size: 0.9rem;
+  }
+
+  .st-hero-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.65rem;
+  }
+  .st-name {
+    font-size: 1.8rem;
+    font-weight: 800;
+    margin: 0;
+    color: var(--text);
+    line-height: 1.2;
+  }
+  .st-variant-tag {
+    display: inline-block;
+    padding: 0.25rem 0.7rem;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    width: fit-content;
+  }
+  .st-mp-count {
+    font-size: 0.8rem;
+    color: var(--text2);
+  }
+
+  /* ── Best Price ── */
+  .st-best-price {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+    margin-top: 0.5rem;
+  }
+  .st-price-label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--text2);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .st-price-value {
+    font-size: 2rem;
+    font-weight: 800;
+    color: var(--accent);
+    line-height: 1.2;
+  }
+  .st-price-source {
+    font-size: 0.8rem;
+    color: var(--text2);
+  }
+  .st-buy-btn {
+    display: inline-block;
+    width: fit-content;
+    padding: 0.55rem 1.25rem;
+    background: var(--accent);
+    color: #000;
+    border-radius: 4px;
+    font-weight: 700;
+    font-size: 0.88rem;
+    text-decoration: none;
+    transition: opacity 0.2s;
+    margin-top: 0.25rem;
+  }
+  .st-buy-btn:hover {
+    opacity: 0.85;
+  }
+
+  /* ── Details grid ── */
+  .st-details-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    margin-top: 0.5rem;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  .st-detail {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+    padding: 0.6rem 0.85rem;
+    border-bottom: 1px solid var(--border);
+    border-right: 1px solid var(--border);
+  }
+  .st-detail:nth-child(even) {
+    border-right: none;
+  }
+  .st-detail:nth-last-child(-n+2) {
+    border-bottom: none;
+  }
+  .st-detail-key {
+    font-size: 0.72rem;
+    color: var(--text2);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+  .st-detail-val {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text);
+  }
+
+  /* ── Market Data Section ── */
+  .st-market-section {
+    margin-bottom: 2rem;
+  }
+  .st-section-heading {
+    font-size: 1.15rem;
+    font-weight: 700;
+    margin: 0 0 1rem;
+    color: var(--text);
+  }
+  .st-market-pills {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+  }
+  .st-market-pill {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 0.65rem 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+    flex: 1;
+    min-width: 120px;
+  }
+  .st-mp-label {
+    font-size: 0.72rem;
+    color: var(--text2);
+  }
+  .st-mp-val {
+    font-size: 1rem;
+    font-weight: 700;
+  }
+
+  /* ── Prices Section ── */
+  .st-prices-section {
+    margin-bottom: 2.5rem;
+  }
+  .st-prices-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.75rem;
+  }
+  .st-prices-header .st-section-heading {
+    margin: 0;
+  }
+  .st-prices-count {
+    font-size: 0.8rem;
+    color: var(--text2);
+  }
+  .st-price-table {
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  .st-price-table-head {
+    display: grid;
+    grid-template-columns: 1fr 150px 60px;
+    padding: 0.55rem 1rem;
+    background: var(--bg3);
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: var(--text2);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    border-bottom: 1px solid var(--border);
+  }
+  .st-price-row {
+    display: grid;
+    grid-template-columns: 1fr 150px 60px;
+    align-items: center;
+    padding: 0.7rem 1rem;
+    background: var(--bg2);
+    border-bottom: 1px solid var(--border);
+    transition: border-left 0.15s, background 0.15s;
+    border-left: 3px solid transparent;
+  }
+  .st-price-row:last-child {
+    border-bottom: none;
+  }
+  .st-price-row:hover {
+    border-left: 3px solid var(--accent);
+    background: var(--bg3);
+  }
+  .st-price-row-best {
+    background: rgba(46, 204, 113, 0.04);
+  }
+  .st-price-mp {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .st-price-icon {
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .st-price-icon img {
+    width: 16px;
+    height: 16px;
+  }
+  .st-price-icon-text {
+    font-size: 0.6rem;
+    font-weight: 700;
+    color: var(--text2);
+  }
+  .st-price-name {
+    font-size: 0.88rem;
+    font-weight: 500;
+    color: var(--text);
+  }
+  .st-price-amount-wrap {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+  .st-price-amount {
+    font-size: 0.92rem;
+    font-weight: 700;
+    color: var(--text);
+  }
+  .st-badge {
+    display: inline-block;
+    padding: 0.12rem 0.4rem;
+    border-radius: 4px;
+    font-size: 0.65rem;
+    font-weight: 600;
+  }
+  .st-badge-best {
+    background: rgba(76, 175, 80, 0.2);
+    color: #4caf50;
+  }
+  .st-badge-diff {
+    background: rgba(255, 152, 0, 0.15);
+    color: #ff9800;
+  }
+  .st-price-link {
+    font-size: 0.8rem;
+    color: var(--accent);
+    text-decoration: none;
+    font-weight: 600;
+  }
+  .st-price-link:hover {
+    text-decoration: underline;
+  }
+  .st-no-data {
+    margin-bottom: 2rem;
+    padding: 1.25rem;
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+  }
+  .st-no-data p {
+    color: var(--text2);
+    font-size: 0.9rem;
+    margin: 0;
+    line-height: 1.5;
+  }
+
+  /* ── Related Stickers (horizontal scroll strip) ── */
+  .st-related {
+    margin: 2.5rem 0;
+  }
+  .st-related-strip {
+    display: flex;
+    gap: 0.75rem;
+    overflow-x: auto;
+    padding-bottom: 0.5rem;
+    scrollbar-width: thin;
+    scrollbar-color: var(--border) transparent;
+  }
+  .st-related-strip::-webkit-scrollbar {
+    height: 6px;
+  }
+  .st-related-strip::-webkit-scrollbar-thumb {
+    background: var(--border);
+    border-radius: 3px;
+  }
+  .st-related-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.65rem;
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    text-decoration: none;
+    transition: border-color 0.2s;
+    flex-shrink: 0;
+    width: 110px;
+  }
+  .st-related-item:hover {
+    border-left: 3px solid var(--accent);
+  }
+  .st-related-img {
+    width: 70px;
+    height: 70px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .st-related-img img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+  }
+  .st-related-ph {
+    width: 50px;
+    height: 50px;
+    background: var(--bg3);
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text2);
+    font-size: 0.8rem;
+  }
+  .st-related-name {
+    font-size: 0.68rem;
+    font-weight: 500;
+    color: var(--text);
+    text-align: center;
+    line-height: 1.3;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .st-related-variant {
+    font-size: 0.6rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+  }
+  .st-related-price {
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: var(--accent);
+  }
+
+  /* ── FAQ (details/summary) ── */
+  .st-faq {
+    margin: 2.5rem 0;
+  }
+  .st-faq-item {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    margin-bottom: 0.5rem;
+    transition: border-color 0.2s;
+  }
+  .st-faq-item[open] {
+    border-left: 3px solid var(--accent);
+  }
+  .st-faq-item summary {
+    padding: 0.85rem 1rem;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 0.92rem;
+    color: var(--text);
+    list-style: none;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .st-faq-item summary::before {
+    content: '+';
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--accent);
+    flex-shrink: 0;
+    width: 1.2rem;
+    text-align: center;
+  }
+  .st-faq-item[open] summary::before {
+    content: '-';
+  }
+  .st-faq-item summary::-webkit-details-marker {
+    display: none;
+  }
+  .st-faq-item p {
+    padding: 0 1rem 1rem 2.7rem;
+    margin: 0;
+    font-size: 0.88rem;
+    color: var(--text2);
+    line-height: 1.6;
+  }
+
+  /* ── Internal Links ── */
+  .st-links {
+    margin: 2.5rem 0;
+  }
+  .st-link-row {
+    display: flex;
+    gap: 0.6rem;
+    flex-wrap: wrap;
+  }
+  .st-link-row a {
+    padding: 0.4rem 0.9rem;
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    font-size: 0.83rem;
+    color: var(--text2);
+    text-decoration: none;
+    transition: border-color 0.2s, color 0.2s;
+  }
+  .st-link-row a:hover {
+    border-left: 3px solid var(--accent);
+    color: var(--accent);
+  }
+
+  /* ── Responsive ── */
+  @media (max-width: 768px) {
+    .st-hero {
+      grid-template-columns: 1fr;
+      gap: 1.25rem;
+    }
+    .st-hero-image {
+      min-height: 200px;
+      padding: 1rem;
+    }
+    .st-img {
+      max-height: 200px;
+    }
+    .st-name {
+      font-size: 1.4rem;
+    }
+    .st-price-value {
+      font-size: 1.6rem;
+    }
+    .st-details-grid {
+      grid-template-columns: 1fr;
+    }
+    .st-detail {
+      border-right: none;
+    }
+    .st-detail:nth-last-child(-n+2) {
+      border-bottom: 1px solid var(--border);
+    }
+    .st-detail:last-child {
+      border-bottom: none;
+    }
+    .st-price-table-head,
+    .st-price-row {
+      grid-template-columns: 1fr 100px 50px;
+    }
+    .st-market-pills {
+      flex-direction: column;
+    }
+    .st-market-pill {
+      min-width: auto;
+    }
+  }
+</style>

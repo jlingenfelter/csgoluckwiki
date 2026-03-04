@@ -33,7 +33,7 @@ const guardianRanks = allRanks.filter(r => r.tier === 'Master Guardian');
 const eliteRanks = allRanks.filter(r => ['Distinguished', 'Legendary', 'Supreme', 'Global Elite'].includes(r.tier));
 ---
 <!DOCTYPE html>
-<html lang="en" style="background:#121218">
+<html lang="en" style="background:#0d0e12">
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -41,63 +41,44 @@ const eliteRanks = allRanks.filter(r => ['Distinguished', 'Legendary', 'Supreme'
 <meta name="description" content={description} />
 <link rel="canonical" href={canonical} />
 <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-<meta name="theme-color" content="#d4956e" />
+<meta name="theme-color" content="#2ecc71" />
 <meta property="og:title" content={title} />
 <meta property="og:description" content={description} />
 <meta property="og:url" content={canonical} />
 <meta property="og:type" content="website" />
 <meta property="og:image" content={ogImageUrl} />
-<meta property="og:site_name" content="CSDB.gg" />
+<meta property="og:site_name" content="CSGOLuck Wiki" />
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:title" content={title} />
 <meta name="twitter:description" content={description} />
 <meta name="twitter:image" content={ogImageUrl} />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-ZE7C49PMZZ"></script>
-<script is:inline>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-ZE7C49PMZZ');
-</script>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
 <!-- Site-wide Schema.org: Organization + WebSite + SearchAction -->
 <script type="application/ld+json">{
   "@context": "https://schema.org",
   "@graph": [
     {
       "@type": "Organization",
-      "@id": "https://csdb.gg/#organization",
-      "name": "CSDB.gg",
-      "url": "https://csdb.gg",
-      "description": "The most comprehensive Counter-Strike 2 database — skins, weapons, tools, calculators, and guides.",
-      "foundingDate": "2024",
-      "founder": {
-        "@type": "Person",
-        "name": "Josh Lingenfelter",
-        "url": "https://www.linkedin.com/in/josh-lingenfelter-8157274b/",
-        "jobTitle": "Director",
-        "worksFor": {
-          "@type": "Organization",
-          "name": "Bettor Media"
-        }
-      },
-      "sameAs": []
+      "@id": "https://wiki.csgoluck.com/#organization",
+      "name": "CSGOLuck Wiki",
+      "url": "https://wiki.csgoluck.com",
+      "description": "The ultimate Counter-Strike 2 wiki — skins, weapons, tools, calculators, pro settings, and guides.",
+      "sameAs": ["https://csgoluck.com"]
     },
     {
       "@type": "WebSite",
-      "@id": "https://csdb.gg/#website",
-      "name": "CSDB.gg",
-      "url": "https://csdb.gg",
-      "publisher": {"@id": "https://csdb.gg/#organization"},
-      "description": "CS2 Skin Database — prices, tools, calculators, guides, and pro player settings.",
+      "@id": "https://wiki.csgoluck.com/#website",
+      "name": "CSGOLuck Wiki",
+      "url": "https://wiki.csgoluck.com",
+      "publisher": {"@id": "https://wiki.csgoluck.com/#organization"},
+      "description": "CS2 Wiki — skins database, weapon stats, tools, calculators, guides, and pro player settings.",
       "potentialAction": {
         "@type": "SearchAction",
         "target": {
           "@type": "EntryPoint",
-          "urlTemplate": "https://csdb.gg/search/?q={search_term_string}"
+          "urlTemplate": "https://wiki.csgoluck.com/search/?q={search_term_string}"
         },
         "query-input": "required name=search_term_string"
       },
@@ -107,184 +88,133 @@ const eliteRanks = allRanks.filter(r => ['Distinguished', 'Legendary', 'Supreme'
 }</script>
 <slot name="head" />
 </head>
-<body style="background:#121218;color:#dcdce6">
+<body style="background:#0d0e12;color:#ffffff">
 <header>
 <nav>
-<a href="/" class="logo"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-3px;margin-right:4px"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/><line x1="12" y1="2" x2="12" y2="4"/><line x1="12" y1="20" x2="12" y2="22"/><line x1="2" y1="12" x2="4" y2="12"/><line x1="20" y1="12" x2="22" y2="12"/></svg>CSDB.gg</a>
+<a href="/" class="logo"><span class="logo-csgo">CSGO</span><svg class="logo-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="10" stroke="#2ecc71" stroke-width="2"/><circle cx="12" cy="12" r="4" stroke="#2ecc71" stroke-width="2"/><line x1="12" y1="0" x2="12" y2="5" stroke="#2ecc71" stroke-width="2"/><line x1="12" y1="19" x2="12" y2="24" stroke="#2ecc71" stroke-width="2"/><line x1="0" y1="12" x2="5" y2="12" stroke="#2ecc71" stroke-width="2"/><line x1="19" y1="12" x2="24" y2="12" stroke="#2ecc71" stroke-width="2"/></svg><span class="logo-luck">LUCK</span></a>
 <button class="hamburger" id="hamburgerBtn" aria-label="Toggle menu" aria-expanded="false"><span></span><span></span><span></span></button>
 <div class="nav-links">
 <a href="/" class:list={[{ active: currentNav === '/' }]}>Home</a>
 
-<!-- Weapons Mega Menu -->
+<!-- Database Mega Menu -->
 <div class="nav-dropdown nav-mega">
-<button class="nav-dropdown-btn" class:list={[{ active: currentNav?.startsWith('/weapon') }]} aria-expanded="false">Weapons ▾</button>
+<button class="nav-dropdown-btn" class:list={[{ active: currentNav?.startsWith('/cs2-weapon') || currentNav?.startsWith('/cs2-skin') }]} aria-expanded="false">Database ▾</button>
 <div class="nav-mega-menu">
 <div class="mega-col">
-<a href="/weapons/rifle/" class="mega-heading">Rifles</a>
-{rifles.map(w => (
-<a href={`/weapon/${w.slug}/`} class="mega-link"><span>{w.name}</span></a>
-))}
-</div>
-<div class="mega-col">
-<a href="/weapons/pistol/" class="mega-heading">Pistols</a>
-{pistols.slice(0, 6).map(w => (
-<a href={`/weapon/${w.slug}/`} class="mega-link"><span>{w.name}</span></a>
-))}
-<a href="/weapons/pistol/" class="mega-view-all">All Pistols &rarr;</a>
+<a href="/cs2-weapons/" class="mega-heading">Weapons</a>
+<a href="/cs2-weapons/rifle/" class="mega-link"><span>Rifles</span></a>
+<a href="/cs2-weapons/pistol/" class="mega-link"><span>Pistols</span></a>
+<a href="/cs2-weapons/smg/" class="mega-link"><span>SMGs</span></a>
+<a href="/cs2-weapons/heavy/" class="mega-link"><span>Heavy</span></a>
+<a href="/cs2-weapons/knife/" class="mega-link"><span>Knives</span></a>
 <div class="mega-divider"></div>
-<a href="/weapons/smg/" class="mega-heading">SMGs</a>
-{smgs.slice(0, 4).map(w => (
-<a href={`/weapon/${w.slug}/`} class="mega-link"><span>{w.name}</span></a>
-))}
-<a href="/weapons/smg/" class="mega-view-all">All SMGs &rarr;</a>
-</div>
-<div class="mega-col">
-<a href="/weapons/heavy/" class="mega-heading">Heavy</a>
-{heavies.map(w => (
-<a href={`/weapon/${w.slug}/`} class="mega-link"><span>{w.name}</span></a>
-))}
-<div class="mega-divider"></div>
-<span class="mega-heading mega-heading-static">Grenades</span>
-{grenades.map(w => (
-<a href={`/weapon/${w.slug}/`} class="mega-link"><span>{w.name}</span></a>
-))}
-</div>
-<div class="mega-col">
-<span class="mega-heading mega-heading-static">Quick Links</span>
-<a href="/weapons/" class="mega-link" style="font-weight:700"><span>All Weapons</span></a>
 <a href="/weapon-compare/" class="mega-link"><span>Compare Weapons</span></a>
 <a href="/damage-calculator/" class="mega-link"><span>Damage Calculator</span></a>
-<a href="/recoil-patterns/" class="mega-link"><span>Recoil Patterns</span></a>
-<a href="/spray-trainer/" class="mega-link"><span>Spray Trainer</span></a>
+</div>
+<div class="mega-col">
+<a href="/cs2-skins/" class="mega-heading">Skins</a>
+<a href="/cs2-skins/rifles/" class="mega-link"><span>Rifle Skins</span></a>
+<a href="/cs2-skins/pistols/" class="mega-link"><span>Pistol Skins</span></a>
+<a href="/cs2-skins/knives/" class="mega-link mega-cat-link"><span>Knife Skins</span><span class="mega-count">{knifeCount}</span></a>
+<a href="/cs2-skins/gloves/" class="mega-link mega-cat-link"><span>Glove Skins</span><span class="mega-count">{gloveCount}</span></a>
+<a href="/cs2-skins/smgs/" class="mega-link"><span>SMG Skins</span></a>
+<a href="/cs2-skins/heavy/" class="mega-link"><span>Heavy Skins</span></a>
+<a href="/cs2-skins/" class="mega-view-all">Browse All Skins &rarr;</a>
+</div>
+<div class="mega-col">
+<span class="mega-heading mega-heading-static">Collections</span>
+<a href="/cs2-cases/" class="mega-link"><span>Cases</span></a>
+<a href="/cs2-stickers/" class="mega-link"><span>Stickers</span></a>
+<a href="/cs2-agents/" class="mega-link"><span>Agents</span></a>
+<a href="/cs2-collection-tracker/" class="mega-link"><span>Collection Tracker</span></a>
+<div class="mega-divider"></div>
+<a href="/cs2-skins/finder/" class="mega-link"><span>Skin Finder</span></a>
+<a href="/cs2-skins/best-deals/" class="mega-link"><span>Best Deals</span></a>
+</div>
+<div class="mega-col">
+<span class="mega-heading mega-heading-static">Market</span>
+<a href="/market-trends/" class="mega-link"><span>Market Trends</span></a>
+<a href="/price-tracker/" class="mega-link"><span>Price Tracker</span></a>
+<a href="/float-checker/" class="mega-link"><span>Float Checker</span></a>
+<a href="/skin-compare/" class="mega-link"><span>Compare Skins</span></a>
+<a href="/tradeup-calculator/" class="mega-link"><span>Trade-Up Calculator</span></a>
+<a href="/inventory-lookup/" class="mega-link"><span>Inventory Lookup</span></a>
+<a href="/case-simulator/" class="mega-link"><span>Case Simulator</span></a>
+<a href="/loadout-builder/" class="mega-link"><span>Loadout Builder</span></a>
 </div>
 </div>
 </div>
 
 <!-- Maps Mega Menu -->
-<div class="nav-dropdown nav-mega nav-mega-3col">
-<button class="nav-dropdown-btn" class:list={[{ active: currentNav?.startsWith('/maps/') || currentNav?.startsWith('/lineups/') }]} aria-expanded="false">Maps ▾</button>
+<div class="nav-dropdown nav-mega nav-mega-2col">
+<button class="nav-dropdown-btn" class:list={[{ active: currentNav?.startsWith('/cs2-maps/') || currentNav?.startsWith('/lineups/') }]} aria-expanded="false">Maps ▾</button>
 <div class="nav-mega-menu">
 <div class="mega-col">
-<span class="mega-heading mega-heading-static">Active Duty Maps</span>
+<a href="/cs2-maps/" class="mega-heading">Maps &amp; Callouts</a>
 {MAP_CALLOUTS.map(m => (
-<a href={`/maps/${m.slug}/`} class="mega-link"><span>{m.name}</span></a>
+<a href={`/cs2-maps/${m.slug}/`} class="mega-link"><span>{m.name}</span></a>
 ))}
-<a href="/maps/" class="mega-view-all">All Maps &rarr;</a>
 </div>
 <div class="mega-col">
-<span class="mega-heading mega-heading-static">Utility Lineups</span>
+<span class="mega-heading mega-heading-static">Lineups &amp; Practice</span>
 {MAP_CALLOUTS.map(m => (
 <a href={`/lineups/${m.slug}/`} class="mega-link"><span>{m.name} Lineups</span></a>
 ))}
-</div>
-<div class="mega-col">
-<span class="mega-heading mega-heading-static">Resources</span>
-<a href="/maps/" class="mega-link" style="font-weight:700"><span>Maps Hub</span></a>
-<a href="/workshop-maps/" class="mega-link"><span>Workshop Maps</span></a>
+<div class="mega-divider"></div>
+<a href="/workshop-maps/" class="mega-link" style="font-weight:700"><span>Workshop Maps</span></a>
 <a href="/practice-config/" class="mega-link"><span>Practice Config</span></a>
 </div>
 </div>
 </div>
 
-<!-- Skins Mega Menu -->
-<div class="nav-dropdown nav-mega">
-<button class="nav-dropdown-btn" aria-expanded="false">Skins ▾</button>
+<!-- Pro Scene Mega Menu -->
+<div class="nav-dropdown nav-mega nav-mega-2col">
+<button class="nav-dropdown-btn" class:list={[{ active: currentNav?.startsWith('/pro-') }]} aria-expanded="false">Pro Scene ▾</button>
 <div class="nav-mega-menu">
 <div class="mega-col">
-<a href="/skins/rifles/" class="mega-heading">Rifles</a>
-{rifleWeapons.map(w => (
-<a href={`/skins/rifles/#${w.weaponSlug}`} class="mega-link"><span>{w.weapon}</span><span class="mega-count">{w.count}</span></a>
-))}
-<a href="/skins/rifles/" class="mega-view-all">All Rifle Skins &rarr;</a>
-</div>
-<div class="mega-col">
-<a href="/skins/pistols/" class="mega-heading">Pistols</a>
-{pistolWeapons.map(w => (
-<a href={`/skins/pistols/#${w.weaponSlug}`} class="mega-link"><span>{w.weapon}</span><span class="mega-count">{w.count}</span></a>
-))}
-<a href="/skins/pistols/" class="mega-view-all">All Pistol Skins &rarr;</a>
-</div>
-<div class="mega-col">
-<a href="/skins/knives/" class="mega-heading">Knives & Gloves</a>
-<a href="/skins/knives/" class="mega-link mega-cat-link"><span>Knives</span><span class="mega-count">{knifeCount}</span></a>
-<a href="/skins/gloves/" class="mega-link mega-cat-link"><span>Gloves</span><span class="mega-count">{gloveCount}</span></a>
-<a href="/skins/heavy/" class="mega-link mega-cat-link"><span>Heavy Weapons</span><span class="mega-count">{heavyCount}</span></a>
-<a href="/skins/smgs/" class="mega-link mega-cat-link"><span>SMGs</span><span class="mega-count">{smgCount}</span></a>
+<a href="/pro-players/" class="mega-heading">Players &amp; Roles</a>
+<a href="/pro-players/" class="mega-link" style="font-weight:700"><span>All Pro Players</span></a>
+<a href="/pro-players/role/rifler/" class="mega-link"><span>Riflers</span></a>
+<a href="/pro-players/role/awper/" class="mega-link"><span>AWPers</span></a>
+<a href="/pro-players/role/igl/" class="mega-link"><span>IGLs</span></a>
+<a href="/pro-players/role/entry-fragger/" class="mega-link"><span>Entry Fraggers</span></a>
+<a href="/pro-players/role/support/" class="mega-link"><span>Support</span></a>
 <div class="mega-divider"></div>
-<a href="/cases/" class="mega-link"><span>Cases & Collections</span></a>
-<a href="/stickers/" class="mega-link"><span>Stickers</span></a>
-<a href="/agents/" class="mega-link"><span>Agents & Music Kits</span></a>
+<a href="/pro-teams/" class="mega-link" style="font-weight:700"><span>All Teams</span></a>
 </div>
 <div class="mega-col">
-<span class="mega-heading mega-heading-static">Market & Tools</span>
-<a href="/skins/" class="mega-link" style="font-weight:700"><span>Browse All Skins</span></a>
-<a href="/market-trends/" class="mega-link"><span>Market Trends</span></a>
-<a href="/skin-compare/" class="mega-link"><span>Compare Skins</span></a>
-<a href="/price-tracker/" class="mega-link"><span>Price Tracker</span></a>
-<a href="/float-checker/" class="mega-link"><span>Float Checker</span></a>
-<a href="/tradeup-calculator/" class="mega-link"><span>Trade-Up Calculator</span></a>
-<a href="/inventory-lookup/" class="mega-link"><span>Inventory Lookup</span></a>
-<a href="/loadout-builder/" class="mega-link"><span>Loadout Builder</span></a>
-<a href="/case-simulator/" class="mega-link"><span>Case Simulator</span></a>
-<a href="/trading-sites/" class="mega-link"><span>Trading Sites</span></a>
-</div>
-</div>
-</div>
-
-<!-- Ranks Mega Menu -->
-<div class="nav-dropdown nav-mega">
-<button class="nav-dropdown-btn" class:list={[{ active: currentNav?.startsWith('/rank') }]} aria-expanded="false">Ranks ▾</button>
-<div class="nav-mega-menu">
-<div class="mega-col">
-<span class="mega-heading mega-heading-static">Silver</span>
-{silverRanks.map(r => (
-<a href={`/rank/${r.slug}/`} class="mega-link"><span>{r.rank}</span><span class="mega-count">{r.abbr}</span></a>
-))}
-</div>
-<div class="mega-col">
-<span class="mega-heading mega-heading-static">Gold Nova</span>
-{goldRanks.map(r => (
-<a href={`/rank/${r.slug}/`} class="mega-link"><span>{r.rank}</span><span class="mega-count">{r.abbr}</span></a>
-))}
-<div class="mega-divider"></div>
-<span class="mega-heading mega-heading-static">Master Guardian</span>
-{guardianRanks.map(r => (
-<a href={`/rank/${r.slug}/`} class="mega-link"><span>{r.rank}</span><span class="mega-count">{r.abbr}</span></a>
-))}
-</div>
-<div class="mega-col">
-<span class="mega-heading mega-heading-static">Elite</span>
-{eliteRanks.map(r => (
-<a href={`/rank/${r.slug}/`} class="mega-link"><span>{r.rank}</span><span class="mega-count">{r.abbr}</span></a>
-))}
-</div>
-<div class="mega-col">
-<span class="mega-heading mega-heading-static">Resources</span>
-<a href="/rank-distribution/" class="mega-link" style="font-weight:700"><span>Rank Distribution</span></a>
-<a href="/guides/ranks-guide/" class="mega-link"><span>Ranking System Guide</span></a>
-<a href="/pro-players/" class="mega-link"><span>Pro Player Settings</span></a>
+<span class="mega-heading mega-heading-static">Gear &amp; Settings</span>
+<a href="/pro-gaming-gear/" class="mega-link" style="font-weight:700"><span>Pro Gear</span></a>
+<a href="/crosshair-codes/" class="mega-link"><span>Crosshair Codes</span></a>
+<a href="/sensitivity-converter/" class="mega-link"><span>Sensitivity Converter</span></a>
+<a href="/edpi-calculator/" class="mega-link"><span>eDPI Calculator</span></a>
+<a href="/cm360-calculator/" class="mega-link"><span>cm/360 Calculator</span></a>
+<a href="/resolution-calculator/" class="mega-link"><span>Resolution Calculator</span></a>
 </div>
 </div>
 </div>
 
 <!-- Tools Mega Menu -->
-<div class="nav-dropdown nav-mega nav-mega-3col">
-<button class="nav-dropdown-btn" class:list={[{ active: currentNav === '/tools/' }]} aria-expanded="false">Tools ▾</button>
+<div class="nav-dropdown nav-mega">
+<button class="nav-dropdown-btn" class:list={[{ active: currentNav === '/cs2-tools/' }]} aria-expanded="false">Tools ▾</button>
 <div class="nav-mega-menu">
 <div class="mega-col">
-<span class="mega-heading mega-heading-static">Calculators</span>
-<a href="/damage-calculator/" class="mega-link"><span>Damage Calculator</span></a>
-<a href="/economy-calculator/" class="mega-link"><span>Economy Calculator</span></a>
-<a href="/edpi-calculator/" class="mega-link"><span>eDPI Calculator</span></a>
-<a href="/cm360-calculator/" class="mega-link"><span>cm/360 Calculator</span></a>
-<a href="/sensitivity-converter/" class="mega-link"><span>Sensitivity Converter</span></a>
-<a href="/resolution-calculator/" class="mega-link"><span>Resolution Calculator</span></a>
-<a href="/case-odds-calculator/" class="mega-link"><span>Case Odds Calculator</span></a>
-</div>
-<div class="mega-col">
-<span class="mega-heading mega-heading-static">Generators & Config</span>
+<span class="mega-heading mega-heading-static">Crosshair &amp; Aim</span>
 <a href="/crosshair-generator/" class="mega-link"><span>Crosshair Generator</span></a>
 <a href="/crosshair-codes/" class="mega-link"><span>Crosshair Codes</span></a>
+<a href="/spray-trainer/" class="mega-link"><span>Spray Trainer</span></a>
+<a href="/recoil-patterns/" class="mega-link"><span>Recoil Patterns</span></a>
+<a href="/aim-training/" class="mega-link"><span>Aim Training</span></a>
+</div>
+<div class="mega-col">
+<span class="mega-heading mega-heading-static">Sensitivity</span>
+<a href="/edpi-calculator/" class="mega-link"><span>eDPI Calculator</span></a>
+<a href="/sensitivity-converter/" class="mega-link"><span>Sensitivity Converter</span></a>
+<a href="/cm360-calculator/" class="mega-link"><span>cm/360 Calculator</span></a>
+<a href="/resolution-calculator/" class="mega-link"><span>Resolution Calculator</span></a>
+</div>
+<div class="mega-col">
+<span class="mega-heading mega-heading-static">Config &amp; Setup</span>
 <a href="/bind-generator/" class="mega-link"><span>Bind Generator</span></a>
 <a href="/autoexec-generator/" class="mega-link"><span>Autoexec Generator</span></a>
 <a href="/launch-options/" class="mega-link"><span>Launch Options</span></a>
@@ -292,50 +222,53 @@ const eliteRanks = allRanks.filter(r => ['Distinguished', 'Legendary', 'Supreme'
 <a href="/cs2-commands/" class="mega-link"><span>Console Commands</span></a>
 </div>
 <div class="mega-col">
-<span class="mega-heading mega-heading-static">Training & Analysis</span>
-<a href="/tools/" class="mega-link" style="font-weight:700"><span>All Tools</span></a>
-<a href="/recoil-patterns/" class="mega-link"><span>Recoil Patterns</span></a>
-<a href="/spray-trainer/" class="mega-link"><span>Spray Trainer</span></a>
-<a href="/aim-training/" class="mega-link"><span>Aim Training</span></a>
+<span class="mega-heading mega-heading-static">Combat &amp; Economy</span>
+<a href="/cs2-tools/" class="mega-link" style="font-weight:700"><span>All Tools</span></a>
+<a href="/damage-calculator/" class="mega-link"><span>Damage Calculator</span></a>
+<a href="/economy-calculator/" class="mega-link"><span>Economy Calculator</span></a>
 <a href="/weapon-compare/" class="mega-link"><span>Compare Weapons</span></a>
+<a href="/case-odds-calculator/" class="mega-link"><span>Case Odds Calculator</span></a>
 </div>
 </div>
 </div>
 
+<!-- Learn Mega Menu -->
 <div class="nav-dropdown nav-mega nav-mega-3col">
-<button class="nav-dropdown-btn" class:list={[{ active: currentNav === '/pro-players/' }]} aria-expanded="false">Pros ▾</button>
+<button class="nav-dropdown-btn" class:list={[{ active: currentNav === '/cs2-guides/' || currentNav?.startsWith('/cs2-rank') }]} aria-expanded="false">Learn ▾</button>
 <div class="nav-mega-menu">
 <div class="mega-col">
-<span class="mega-heading mega-heading-static">Players</span>
-<a href="/pro-players/" class="mega-link" style="font-weight:700"><span>All Pro Players</span></a>
-<a href="/crosshair-codes/" class="mega-link"><span>Crosshair Codes</span></a>
-<a href="/players/role/rifler/" class="mega-link"><span>Riflers</span></a>
-<a href="/players/role/awper/" class="mega-link"><span>AWPers</span></a>
-<a href="/players/role/igl/" class="mega-link"><span>IGLs</span></a>
-<a href="/players/role/entry-fragger/" class="mega-link"><span>Entry Fraggers</span></a>
-<a href="/players/role/support/" class="mega-link"><span>Support</span></a>
+<a href="/cs2-guides/" class="mega-heading">Guides</a>
+<a href="/cs2-guides/beginners-guide/" class="mega-link"><span>Beginner's Guide</span></a>
+<a href="/cs2-guides/advanced-guide/" class="mega-link"><span>Advanced Guide</span></a>
+<a href="/cs2-guides/aim-guide/" class="mega-link"><span>Aim Guide</span></a>
+<a href="/cs2-guides/movement-guide/" class="mega-link"><span>Movement Guide</span></a>
+<a href="/cs2-guides/economy-guide/" class="mega-link"><span>Economy Guide</span></a>
+<a href="/cs2-guides/crosshair-guide/" class="mega-link"><span>Crosshair Guide</span></a>
+<a href="/cs2-guides/" class="mega-view-all">All Guides &rarr;</a>
 </div>
 <div class="mega-col">
-<span class="mega-heading mega-heading-static">Teams</span>
-<a href="/teams/" class="mega-link" style="font-weight:700"><span>All Teams</span></a>
-<a href="/team/natus-vincere/" class="mega-link"><span>Natus Vincere</span></a>
-<a href="/team/faze-clan/" class="mega-link"><span>FaZe Clan</span></a>
-<a href="/team/g2-esports/" class="mega-link"><span>G2 Esports</span></a>
-<a href="/team/vitality/" class="mega-link"><span>Vitality</span></a>
-<a href="/team/spirit/" class="mega-link"><span>Spirit</span></a>
+<a href="/cs2-rank-distribution/" class="mega-heading">Ranks</a>
+<a href="/cs2-rank-distribution/" class="mega-link" style="font-weight:700"><span>Rank Distribution</span></a>
+<a href="/cs2-guides/ranks-guide/" class="mega-link"><span>Ranking Guide</span></a>
+{silverRanks.slice(0, 2).map(r => (
+<a href={`/cs2-ranks/${r.slug}/`} class="mega-link"><span>{r.rank}</span><span class="mega-count">{r.abbr}</span></a>
+))}
+{goldRanks.slice(0, 2).map(r => (
+<a href={`/cs2-ranks/${r.slug}/`} class="mega-link"><span>{r.rank}</span><span class="mega-count">{r.abbr}</span></a>
+))}
+<a href="/cs2-ranks/global-elite/" class="mega-link"><span>Global Elite</span><span class="mega-count">GE</span></a>
 </div>
 <div class="mega-col">
-<span class="mega-heading mega-heading-static">Gear</span>
-<a href="/gear/" class="mega-link" style="font-weight:700"><span>All Gear</span></a>
-<a href="/sensitivity-converter/" class="mega-link"><span>Sensitivity Converter</span></a>
-<a href="/edpi-calculator/" class="mega-link"><span>eDPI Calculator</span></a>
-<a href="/cm360-calculator/" class="mega-link"><span>cm/360 Calculator</span></a>
-<a href="/resolution-calculator/" class="mega-link"><span>Resolution Calculator</span></a>
+<span class="mega-heading mega-heading-static">Resources</span>
+<a href="/patch-notes/" class="mega-link" style="font-weight:700"><span>Patch Notes</span></a>
+<a href="/faq/" class="mega-link"><span>FAQ</span></a>
+<a href="/cs2-guides/fps-optimization-guide/" class="mega-link"><span>FPS Optimization</span></a>
+<a href="/cs2-guides/skins-investing-guide/" class="mega-link"><span>Investing Guide</span></a>
+<a href="/cs2-guides/float-guide/" class="mega-link"><span>Float Guide</span></a>
+<a href="/economy-guide/" class="mega-link"><span>Economy Overview</span></a>
 </div>
 </div>
 </div>
-<a href="/guides/" class:list={[{ active: currentNav === '/guides/' }]}>Guides</a>
-<a href="/patch-notes/" class:list={[{ active: currentNav === '/patch-notes/' }]}>Updates</a>
 </div>
 <CurrencySelector />
 <div class="nav-search">
@@ -347,7 +280,7 @@ const eliteRanks = allRanks.filter(r => ['Distinguished', 'Legendary', 'Supreme'
 <!-- Mobile Drawer Menu -->
 <div class="mobile-drawer" id="mobileDrawer">
 <div class="mobile-drawer-header">
-<a href="/" class="logo"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-3px;margin-right:4px"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/><line x1="12" y1="2" x2="12" y2="4"/><line x1="12" y1="20" x2="12" y2="22"/><line x1="2" y1="12" x2="4" y2="12"/><line x1="20" y1="12" x2="22" y2="12"/></svg>CSDB.gg</a>
+<a href="/" class="logo"><span class="logo-csgo">CSGO</span><svg class="logo-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="10" stroke="#2ecc71" stroke-width="2"/><circle cx="12" cy="12" r="4" stroke="#2ecc71" stroke-width="2"/><line x1="12" y1="0" x2="12" y2="5" stroke="#2ecc71" stroke-width="2"/><line x1="12" y1="19" x2="12" y2="24" stroke="#2ecc71" stroke-width="2"/><line x1="0" y1="12" x2="5" y2="12" stroke="#2ecc71" stroke-width="2"/><line x1="19" y1="12" x2="24" y2="12" stroke="#2ecc71" stroke-width="2"/></svg><span class="logo-luck">LUCK</span></a>
 <button class="mobile-close" id="mobileClose" aria-label="Close menu">&times;</button>
 </div>
 <div class="mobile-drawer-search">
@@ -356,87 +289,86 @@ const eliteRanks = allRanks.filter(r => ['Distinguished', 'Legendary', 'Supreme'
 <div class="mobile-drawer-links">
 <a href="/" class:list={[{ active: currentNav === '/' }]}>Home</a>
 <details class="mobile-section">
-<summary>Weapons</summary>
+<summary>Database</summary>
 <div class="mobile-sub">
-<a href="/weapons/">All Weapons</a>
-<a href="/weapons/rifle/">Rifles</a>
-<a href="/weapons/pistol/">Pistols</a>
-<a href="/weapons/smg/">SMGs</a>
-<a href="/weapons/heavy/">Heavy</a>
-<a href="/weapons/knife/">Knives</a>
-<a href="/weapon-compare/">Compare Weapons</a>
-<a href="/damage-calculator/">Damage Calculator</a>
-<a href="/recoil-patterns/">Recoil Patterns</a>
+<a href="/cs2-weapons/">All Weapons</a>
+<a href="/cs2-weapons/rifle/">Rifles</a>
+<a href="/cs2-weapons/pistol/">Pistols</a>
+<a href="/cs2-weapons/smg/">SMGs</a>
+<a href="/cs2-weapons/heavy/">Heavy</a>
+<div class="mobile-divider"></div>
+<a href="/cs2-skins/">All Skins</a>
+<a href="/cs2-skins/rifles/">Rifle Skins</a>
+<a href="/cs2-skins/pistols/">Pistol Skins</a>
+<a href="/cs2-skins/knives/">Knife Skins</a>
+<a href="/cs2-skins/gloves/">Glove Skins</a>
+<div class="mobile-divider"></div>
+<a href="/cs2-cases/">Cases</a>
+<a href="/cs2-stickers/">Stickers</a>
+<a href="/cs2-agents/">Agents</a>
+<a href="/market-trends/">Market Trends</a>
+<a href="/float-checker/">Float Checker</a>
 </div>
 </details>
 <details class="mobile-section">
 <summary>Maps</summary>
 <div class="mobile-sub">
-<a href="/maps/">All Maps</a>
-{MAP_CALLOUTS.map(m => <a href={`/maps/${m.slug}/`}>{m.name}</a>)}
+<a href="/cs2-maps/">All Maps</a>
+{MAP_CALLOUTS.map(m => <a href={`/cs2-maps/${m.slug}/`}>{m.name}</a>)}
 <div class="mobile-divider"></div>
 {MAP_CALLOUTS.map(m => <a href={`/lineups/${m.slug}/`}>{m.name} Lineups</a>)}
 <a href="/workshop-maps/">Workshop Maps</a>
 </div>
 </details>
 <details class="mobile-section">
-<summary>Skins</summary>
+<summary>Pro Scene</summary>
 <div class="mobile-sub">
-<a href="/skins/">All Skins</a>
-<a href="/skins/rifles/">Rifle Skins</a>
-<a href="/skins/pistols/">Pistol Skins</a>
-<a href="/skins/knives/">Knife Skins</a>
-<a href="/skins/gloves/">Glove Skins</a>
-<a href="/cases/">Cases</a>
-<a href="/stickers/">Stickers</a>
-<a href="/market-trends/">Market Trends</a>
-<a href="/float-checker/">Float Checker</a>
-<a href="/trading-sites/">Trading Sites</a>
-</div>
-</details>
-<details class="mobile-section">
-<summary>Ranks</summary>
-<div class="mobile-sub">
-<a href="/rank-distribution/">Rank Distribution</a>
-<a href="/guides/ranks-guide/">Ranking Guide</a>
-{allRanks.map(r => <a href={`/rank/${r.slug}/`}>{r.abbr} — {r.rank}</a>)}
+<a href="/pro-players/">All Pro Players</a>
+<a href="/pro-teams/">Teams</a>
+<a href="/pro-gaming-gear/">Gear</a>
+<a href="/crosshair-codes/">Crosshair Codes</a>
+<div class="mobile-divider"></div>
+<a href="/pro-players/role/rifler/">Riflers</a>
+<a href="/pro-players/role/awper/">AWPers</a>
+<a href="/pro-players/role/igl/">IGLs</a>
+<a href="/pro-players/role/entry-fragger/">Entry Fraggers</a>
+<a href="/pro-players/role/support/">Support</a>
 </div>
 </details>
 <details class="mobile-section">
 <summary>Tools</summary>
 <div class="mobile-sub">
-<a href="/tools/">All Tools</a>
-<a href="/damage-calculator/">Damage Calculator</a>
-<a href="/economy-calculator/">Economy Calculator</a>
+<a href="/cs2-tools/">All Tools</a>
 <a href="/crosshair-generator/">Crosshair Generator</a>
 <a href="/crosshair-codes/">Crosshair Codes</a>
-<a href="/bind-generator/">Bind Generator</a>
-<a href="/autoexec-generator/">Autoexec Generator</a>
+<a href="/damage-calculator/">Damage Calculator</a>
+<a href="/economy-calculator/">Economy Calculator</a>
 <a href="/edpi-calculator/">eDPI Calculator</a>
 <a href="/sensitivity-converter/">Sensitivity Converter</a>
+<div class="mobile-divider"></div>
+<a href="/bind-generator/">Bind Generator</a>
+<a href="/autoexec-generator/">Autoexec Generator</a>
 <a href="/cs2-commands/">Console Commands</a>
 <a href="/practice-config/">Practice Config</a>
 <a href="/launch-options/">Launch Options</a>
 </div>
 </details>
 <details class="mobile-section">
-<summary>Pro Players</summary>
+<summary>Learn</summary>
 <div class="mobile-sub">
-<a href="/pro-players/">All Pro Players</a>
-<a href="/teams/">Teams</a>
-<a href="/gear/">Gear</a>
-<a href="/crosshair-codes/">Crosshair Codes</a>
-<a href="/players/role/rifler/">Riflers</a>
-<a href="/players/role/awper/">AWPers</a>
-<a href="/players/role/igl/">IGLs</a>
-<a href="/players/role/entry-fragger/">Entry Fraggers</a>
-<a href="/players/role/support/">Support</a>
-<a href="/sensitivity-converter/">Sensitivity Converter</a>
-<a href="/edpi-calculator/">eDPI Calculator</a>
+<a href="/cs2-guides/">All Guides</a>
+<a href="/cs2-guides/beginners-guide/">Beginner's Guide</a>
+<a href="/cs2-guides/advanced-guide/">Advanced Guide</a>
+<a href="/cs2-guides/aim-guide/">Aim Guide</a>
+<div class="mobile-divider"></div>
+<a href="/cs2-rank-distribution/">Rank Distribution</a>
+<a href="/cs2-guides/ranks-guide/">Ranking Guide</a>
+{allRanks.slice(0, 6).map(r => <a href={`/cs2-ranks/${r.slug}/`}>{r.abbr} — {r.rank}</a>)}
+<div class="mobile-divider"></div>
+<a href="/patch-notes/">Patch Notes</a>
+<a href="/faq/">FAQ</a>
 </div>
 </details>
-<a href="/guides/">Guides</a>
-<a href="/patch-notes/">Updates</a>
 </div>
 </div>
 <div class="mobile-overlay" id="mobileOverlay"></div>
@@ -448,99 +380,70 @@ const eliteRanks = allRanks.filter(r => ['Distinguished', 'Legendary', 'Supreme'
 <div class="footer-inner">
 <div class="footer-grid">
 <div class="footer-col">
-<h4>Browse Skins</h4>
-<a href="/skins/"><strong>All Skins</strong></a>
-<a href="/skins/rifles/">Rifle Skins</a>
-<a href="/skins/pistols/">Pistol Skins</a>
-<a href="/skins/knives/">Knife Skins</a>
-<a href="/skins/gloves/">Glove Skins</a>
-<a href="/skins/smgs/">SMG Skins</a>
-<a href="/skins/heavy/">Heavy Skins</a>
-<a href="/cases/">Cases & Collections</a>
-<a href="/stickers/">Stickers</a>
-<a href="/agents/">Agents</a>
+<h4>CS2 Database</h4>
+<a href="/cs2-weapons/"><strong>All Weapons</strong></a>
+<a href="/cs2-skins/"><strong>All Skins</strong></a>
+<a href="/cs2-cases/">Cases &amp; Collections</a>
+<a href="/cs2-stickers/">Stickers</a>
+<a href="/cs2-agents/">Agents</a>
+<a href="/cs2-maps/">Maps Hub</a>
+<a href="/cs2-rank-distribution/">Rank Distribution</a>
 </div>
 <div class="footer-col">
-<h4>Skin Tools</h4>
+<h4>Market &amp; Skins</h4>
 <a href="/market-trends/">Market Trends</a>
-<a href="/skin-compare/">Compare Skins</a>
 <a href="/price-tracker/">Price Tracker</a>
 <a href="/float-checker/">Float Checker</a>
+<a href="/skin-compare/">Compare Skins</a>
 <a href="/tradeup-calculator/">Trade-Up Calculator</a>
-<a href="/case-odds-calculator/">Case Odds</a>
 <a href="/inventory-lookup/">Inventory Lookup</a>
-<a href="/loadout-builder/">Loadout Builder</a>
 <a href="/case-simulator/">Case Simulator</a>
-<a href="/trading-sites/">Trading Sites</a>
+<a href="/loadout-builder/">Loadout Builder</a>
 </div>
 <div class="footer-col">
-<h4>Weapons & Maps</h4>
-<a href="/weapons/">All Weapons</a>
-<a href="/weapons/rifle/">Rifles</a>
-<a href="/weapons/smg/">SMGs</a>
-<a href="/weapons/pistol/">Pistols</a>
-<a href="/maps/">Maps Hub</a>
-<a href="/maps/mirage/">Mirage</a>
-<a href="/maps/inferno/">Inferno</a>
-<a href="/maps/dust2/">Dust 2</a>
-<a href="/lineups/mirage/">Mirage Lineups</a>
-<a href="/lineups/inferno/">Inferno Lineups</a>
-</div>
-<div class="footer-col">
-<h4>Tools</h4>
-<a href="/tools/"><strong>All Tools</strong></a>
-<a href="/damage-calculator/">Damage Calculator</a>
-<a href="/economy-calculator/">Economy Calculator</a>
-<a href="/sensitivity-converter/">Sensitivity Converter</a>
+<h4>Tools &amp; Config</h4>
+<a href="/cs2-tools/"><strong>All Tools</strong></a>
 <a href="/crosshair-generator/">Crosshair Generator</a>
-<a href="/crosshair-codes/">Crosshair Codes</a>
-<a href="/bind-generator/">Bind Generator</a>
+<a href="/damage-calculator/">Damage Calculator</a>
 <a href="/edpi-calculator/">eDPI Calculator</a>
-<a href="/resolution-calculator/">Resolution Calculator</a>
-<a href="/autoexec-generator/">Autoexec Generator</a>
-<a href="/launch-options/">Launch Options</a>
-</div>
-<div class="footer-col">
-<h4>Pro Players</h4>
-<a href="/pro-players/"><strong>All Pro Players</strong></a>
-<a href="/teams/">Teams</a>
-<a href="/gear/">Gear</a>
-<a href="/crosshair-codes/">Crosshair Codes</a>
 <a href="/sensitivity-converter/">Sensitivity Converter</a>
-<a href="/edpi-calculator/">eDPI Calculator</a>
+<a href="/bind-generator/">Bind Generator</a>
+<a href="/autoexec-generator/">Autoexec Generator</a>
+<a href="/cs2-commands/">Console Commands</a>
 </div>
 <div class="footer-col">
-<h4>Guides & Learning</h4>
-<a href="/guides/">All Guides</a>
-<a href="/aim-training/">Aim Training</a>
-<a href="/economy-guide/">Economy Guide</a>
-<a href="/rank-distribution/">Rank Distribution</a>
-<a href="/guides/trading-guide/">Trading Guide</a>
-<a href="/guides/float-guide/">Float Guide</a>
-<a href="/guides/skins-investing-guide/">Investing Guide</a>
-<a href="/guides/fps-optimization-guide/">FPS Optimization</a>
+<h4>Pro Scene &amp; Learning</h4>
+<a href="/pro-players/"><strong>All Pro Players</strong></a>
+<a href="/pro-teams/">Teams</a>
+<a href="/pro-gaming-gear/">Gear</a>
+<a href="/cs2-guides/">Guides</a>
 <a href="/patch-notes/">Patch Notes</a>
 <a href="/faq/">FAQ</a>
+<a href="/search/">Search</a>
 </div>
 </div>
-<p>CSDB.gg is an independent resource for Counter-Strike 2 players. Not affiliated with Valve Corporation. All game content and trademarks belong to their respective owners. Data sourced from Steam, PriceEmpire, and community APIs.</p>
+<p>CSGOLuck Wiki is a Counter-Strike 2 resource brought to you by <a href="https://csgoluck.com" target="_blank" rel="noopener" style="color:var(--accent)">CSGOLuck.com</a>. Not affiliated with Valve Corporation. All game content and trademarks belong to their respective owners.</p>
 </div>
 </footer>
 <style is:inline>
 *{margin:0;padding:0;box-sizing:border-box}
-:root{--bg:#121218;--bg2:#1a1a24;--bg3:#232330;--text:#dcdce6;--text2:#8e8ea3;--accent:#d4956e;--accent2:#e8b992;--border:#2d2d3c;--green:#5cb85c;--blue:#6db3e8;--purple:#b07cc6;--red:#e07070;--gold:#e8c96e;--teal:#4db8a8;--ct:#6db3e8;--t:#e0c060}
+:root{--bg:#0d0e12;--bg2:#13141a;--bg3:#1a1c24;--text:#ffffff;--text2:#909090;--accent:#2ecc71;--accent2:#5dde9e;--border:#242630;--green:#2ecc71;--blue:#6db3e8;--purple:#b07cc6;--red:#e07070;--gold:#e8c96e;--teal:#4db8a8;--ct:#6db3e8;--t:#e0c060}
 html{scroll-behavior:smooth}
 ::-webkit-scrollbar{width:8px;height:8px}
 ::-webkit-scrollbar-track{background:var(--bg)}
 ::-webkit-scrollbar-thumb{background:var(--bg3);border-radius:4px;transition:background .2s}
 ::-webkit-scrollbar-thumb:hover{background:var(--accent)}
-body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;line-height:1.7;min-height:100vh}
+body{background:var(--bg);color:var(--text);font-family:'Montserrat',sans-serif;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;line-height:1.7;min-height:100vh}
 a{color:var(--accent);text-decoration:none;transition:color .2s,text-shadow .2s}
 a:hover{color:var(--accent2)}
-::selection{background:rgba(212,149,110,0.25);color:var(--text)}
-header{background:rgba(26,26,36,0.88);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);box-shadow:0 2px 12px rgba(0,0,0,0.3);position:sticky;top:0;z-index:100}
+::selection{background:rgba(46,204,113,0.25);color:var(--text)}
+header{background:rgba(26,26,36,0.88);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);box-shadow:0 2px 12px rgba(0,0,0,0.3);position:sticky;top:0;z-index:1000}
+header::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--green),var(--accent2),var(--green));z-index:1001}
 nav{max-width:1200px;margin:0 auto;padding:.7rem 1.5rem;display:flex;align-items:center;gap:1.5rem;flex-wrap:wrap}
-.logo{font-weight:800;font-size:1.3rem;color:var(--accent)!important;text-decoration:none;white-space:nowrap}
+.logo{display:inline-flex;align-items:center;gap:2px;font-weight:800;font-size:1.3rem;text-decoration:none;white-space:nowrap;letter-spacing:-.02em}
+.logo-csgo{color:#fff}
+.logo-icon{margin:0 1px;vertical-align:middle;flex-shrink:0}
+.logo-luck{color:#2ecc71}
 .nav-links{display:flex;gap:.25rem;flex-wrap:wrap}
 .nav-links>a{padding:.35rem .7rem;border-radius:6px;font-size:.85rem;font-weight:500;color:var(--text2);white-space:nowrap;position:relative;transition:color .2s,background-color .2s}
 .nav-links>a::after{content:'';position:absolute;bottom:0;left:0;width:0;height:2px;background:var(--accent);transition:width .3s cubic-bezier(.25,.46,.45,.94)}
@@ -549,14 +452,14 @@ nav{max-width:1200px;margin:0 auto;padding:.7rem 1.5rem;display:flex;align-items
 .nav-dropdown{position:relative}
 .nav-dropdown-btn{background:none;border:none;padding:.35rem .7rem;border-radius:6px;font-size:.85rem;font-weight:500;color:var(--text2);cursor:pointer;white-space:nowrap;font-family:inherit;transition:color .2s,background-color .2s}
 .nav-dropdown-btn:hover,.nav-dropdown.open .nav-dropdown-btn{background:var(--bg3);color:var(--accent)}
-.nav-dropdown-menu{display:none;position:absolute;top:100%;left:0;margin-top:.35rem;background:var(--bg2);border:1px solid var(--border);border-radius:8px;min-width:220px;box-shadow:0 8px 24px rgba(0,0,0,.5);z-index:200;padding:.35rem 0;overflow:hidden;opacity:0;transform:translateY(-8px);transition:opacity .2s,transform .2s cubic-bezier(.25,.46,.45,.94),display .2s}
+.nav-dropdown-menu{display:none;position:absolute;top:100%;left:0;margin-top:.35rem;background:var(--bg2);border:1px solid var(--border);border-radius:4px;min-width:220px;box-shadow:0 8px 24px rgba(0,0,0,.5);z-index:1100;padding:.35rem 0;overflow:hidden;opacity:0;transform:translateY(-8px);transition:opacity .2s,transform .2s cubic-bezier(.25,.46,.45,.94),display .2s}
 .nav-dropdown.open .nav-dropdown-menu{display:block;opacity:1;transform:translateY(0)}
 .nav-dropdown-menu a{display:flex;align-items:center;gap:.5rem;padding:.5rem 1rem;font-size:.85rem;color:var(--text2);white-space:nowrap;text-decoration:none}
 .nav-icon{width:16px;height:16px;flex-shrink:0;opacity:.7;transition:opacity .2s}
 .nav-dropdown-menu a:hover .nav-icon{opacity:1}
 .nav-dropdown-menu a:hover{background:var(--bg3);color:var(--accent)}
 /* Mega Menu */
-.nav-mega-menu{display:none;position:absolute;top:100%;left:50%;transform:translateX(-50%) translateY(-8px);margin-top:.35rem;background:var(--bg2);border:1px solid var(--border);border-radius:12px;box-shadow:0 12px 40px rgba(0,0,0,.6);z-index:200;padding:1rem;opacity:0;transition:opacity .2s,transform .2s cubic-bezier(.25,.46,.45,.94),display .2s;width:max-content;max-width:720px}
+.nav-mega-menu{display:none;position:absolute;top:100%;left:50%;transform:translateX(-50%) translateY(-8px);margin-top:.35rem;background:var(--bg2);border:1px solid var(--border);border-radius:4px;box-shadow:0 12px 40px rgba(0,0,0,.6);z-index:1100;padding:1rem;opacity:0;transition:opacity .2s,transform .2s cubic-bezier(.25,.46,.45,.94),display .2s;width:max-content;max-width:720px}
 .nav-mega.open .nav-mega-menu{display:grid;grid-template-columns:repeat(4,1fr);gap:.75rem;opacity:1;transform:translateX(-50%) translateY(0)}
 .mega-col{display:flex;flex-direction:column;gap:.15rem;min-width:140px}
 .mega-heading{display:block;font-size:.78rem;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:.06em;padding:.3rem .5rem;margin-bottom:.2rem;text-decoration:none;border-radius:4px;transition:background .2s}
@@ -572,8 +475,9 @@ nav{max-width:1200px;margin:0 auto;padding:.7rem 1.5rem;display:flex;align-items
 .mega-view-all:hover{color:var(--accent2)}
 .mega-divider{height:1px;background:var(--border);margin:.35rem 0}
 .nav-mega-3col.open .nav-mega-menu{grid-template-columns:repeat(3,1fr)}
+.nav-mega-2col.open .nav-mega-menu{grid-template-columns:repeat(2,1fr)}
 .nav-dropdown-btn.active{color:var(--accent)}
-@media(max-width:768px){.nav-mega-menu{left:0;transform:translateX(0) translateY(-8px);max-width:calc(100vw - 2rem)}.nav-mega.open .nav-mega-menu,.nav-mega-3col.open .nav-mega-menu{grid-template-columns:repeat(2,1fr);transform:translateX(0) translateY(0)}}
+@media(max-width:768px){.nav-mega-menu{left:0;transform:translateX(0) translateY(-8px);max-width:calc(100vw - 2rem)}.nav-mega.open .nav-mega-menu,.nav-mega-3col.open .nav-mega-menu,.nav-mega-2col.open .nav-mega-menu{grid-template-columns:repeat(2,1fr);transform:translateX(0) translateY(0)}}
 .nav-search{margin-left:auto}
 .nav-search input{background:var(--bg3);color:var(--text);border:1px solid var(--border);padding:.35rem .7rem;border-radius:6px;font-size:.85rem;width:140px;transition:width .3s,border-color .3s}
 .nav-search input:focus{width:200px;border-color:var(--accent);outline:none}
@@ -583,24 +487,25 @@ h2{font-size:1.5rem;font-weight:700;margin:2rem 0 .75rem;color:var(--text);lette
 h3{font-size:1.15rem;font-weight:600;margin:1.5rem 0 .5rem;color:var(--text);letter-spacing:-.005em}
 p{margin-bottom:1rem;color:var(--text2)}
 footer{margin-top:4rem;padding:2rem 1.5rem;background:var(--bg2);border-top:1px solid var(--border);text-align:center;position:relative}
-footer::before{content:'';position:absolute;top:0;left:0;right:0;height:40px;background:linear-gradient(to bottom,transparent,rgba(22,22,29,1));pointer-events:none}
+footer::before{content:'';position:absolute;top:0;left:0;right:0;height:40px;background:linear-gradient(to bottom,transparent,rgba(18,19,25,1));pointer-events:none}
 .footer-inner{max-width:1200px;margin:0 auto}
-.footer-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:1.5rem;text-align:left;margin-bottom:2rem}
+.footer-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1.5rem;text-align:left;margin-bottom:2rem;max-width:1000px}
 .footer-col h4{color:var(--accent);font-size:.82rem;text-transform:uppercase;letter-spacing:.08em;margin:0 0 .75rem;font-weight:700;transition:color .2s}
 .footer-col{display:flex;flex-direction:column;gap:.35rem}
 .footer-col a{font-size:.82rem;color:var(--text2);text-decoration:none}
 .footer-col a:hover{color:var(--accent)}
 footer p{font-size:.78rem;color:var(--text2);opacity:.7}
-.breadcrumb{font-size:.85rem;color:var(--text2);margin-bottom:1rem}
-.breadcrumb a{color:var(--accent)}
+.breadcrumb{font-size:.82rem;color:var(--text2);margin-bottom:1rem;letter-spacing:.02em}
+.breadcrumb a{color:var(--accent);font-weight:500}
+.breadcrumb span.sep{margin:0 .4rem;color:var(--border);font-size:.75rem}
 .card-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1rem;margin:1.5rem 0}
-.card{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:1.25rem;transition:border-color .2s,transform .2s,box-shadow .2s;box-shadow:0 2px 8px rgba(0,0,0,0.2)}
-.card:hover{border-color:var(--accent);transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,0.3),inset 0 1px 0 rgba(212,149,110,0.08)}
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:4px;padding:1.25rem;transition:border-color .2s,border-left .2s,box-shadow .2s;box-shadow:0 2px 8px rgba(0,0,0,0.2)}
+.card:hover{border-color:var(--accent);border-left:3px solid var(--accent);box-shadow:0 4px 16px rgba(0,0,0,0.3)}
 .card h3{margin:0 0 .4rem;font-size:1.05rem}
 .card p{font-size:.88rem;margin:0;color:var(--text2)}
 .card a{display:block;text-decoration:none;color:inherit}
 .card .card-meta{font-size:.78rem;color:var(--text2);margin-top:.5rem;display:flex;gap:.75rem;flex-wrap:wrap}
-.tag{display:inline-block;padding:.2rem .6rem;border-radius:20px;font-size:.75rem;font-weight:600;background:var(--bg3);color:var(--text2);border:1px solid var(--border)}
+.tag{display:inline-block;padding:.2rem .6rem;border-radius:4px;font-size:.75rem;font-weight:600;background:var(--bg3);color:var(--text2);border:1px solid var(--border)}
 .tag.rifle{border-color:var(--red);color:var(--red)}
 .tag.smg{border-color:var(--accent);color:var(--accent)}
 .tag.pistol{border-color:var(--blue);color:var(--blue)}
@@ -613,18 +518,19 @@ th,td{padding:.6rem .8rem;text-align:left;border-bottom:1px solid var(--border)}
 th{background:var(--bg2);color:var(--text);font-weight:600;font-size:.82rem;text-transform:uppercase;letter-spacing:.03em}
 td{color:var(--text2)}
 tr:hover td{background:var(--bg2)}
+tr:hover td:first-child{border-left:2px solid var(--accent)}
 .stats-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:.75rem;margin:1rem 0}
-.stat-card{background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:.75rem;text-align:center;transition:border-color .2s,box-shadow .2s;box-shadow:0 2px 8px rgba(0,0,0,0.2)}
-.stat-card:hover{border-color:var(--accent);box-shadow:0 4px 12px rgba(212,149,110,0.12)}
+.stat-card{background:var(--bg2);border:1px solid var(--border);border-radius:4px;padding:.75rem;text-align:center;transition:border-color .2s,border-left .2s,box-shadow .2s;box-shadow:0 2px 8px rgba(0,0,0,0.2)}
+.stat-card:hover{border-color:var(--accent);border-left:3px solid var(--green);box-shadow:0 4px 12px rgba(46,204,113,0.12)}
 .stat-card .val{font-size:1.5rem;font-weight:800;color:var(--accent)}
 .stat-card .label{font-size:.78rem;color:var(--text2);margin-top:.2rem}
-.calc-section{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:1.5rem;margin:1.5rem 0}
+.calc-section{background:var(--bg2);border:1px solid var(--border);border-radius:4px;padding:1.5rem;margin:1.5rem 0}
 .calc-row{display:flex;gap:1rem;align-items:center;margin:.75rem 0;flex-wrap:wrap}
 .calc-row label{font-weight:600;min-width:120px;font-size:.9rem}
-.calc-row select,.calc-row input[type="number"]{background:var(--bg3);color:var(--text);border:1px solid var(--border);padding:.5rem .75rem;border-radius:6px;font-size:.9rem;transition:border-color .2s,box-shadow .2s}
-.calc-row select:focus,.calc-row input[type="number"]:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(212,149,110,0.1)}
+.calc-row select,.calc-row input[type="number"]{background:var(--bg3);color:var(--text);border:1px solid var(--border);padding:.5rem .75rem;border-radius:4px;font-size:.9rem;transition:border-color .2s,box-shadow .2s}
+.calc-row select:focus,.calc-row input[type="number"]:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(46,204,113,0.1)}
 .calc-row input[type="range"]{flex:1;accent-color:var(--accent)}
-.result-box{background:var(--bg3);border:2px solid var(--accent);border-radius:10px;padding:1.25rem;margin:1rem 0;box-shadow:0 4px 12px rgba(212,149,110,0.1);transition:box-shadow .2s}
+.result-box{background:var(--bg3);border:none;border-left:2px solid var(--accent);border-radius:4px;padding:1.25rem;margin:1rem 0;box-shadow:0 4px 12px rgba(46,204,113,0.1);transition:box-shadow .2s}
 .result-box .big{font-size:2rem;font-weight:800;color:var(--accent)}
 .tip-list{list-style:none;padding:0;margin:1rem 0}
 .tip-list li{padding:.5rem 0 .5rem 1.5rem;position:relative;font-size:.9rem;color:var(--text2);border-bottom:1px solid var(--border)}
@@ -632,19 +538,19 @@ tr:hover td{background:var(--bg2)}
 .faq{margin:2rem 0}
 .faq dt{font-weight:700;color:var(--text);padding:.75rem 0 .25rem;border-top:1px solid var(--border)}
 .faq dd{color:var(--text2);padding-bottom:.75rem;font-size:.92rem}
-.internal-links{display:flex;gap:.75rem;flex-wrap:wrap;margin:2rem 0;padding:1rem;background:var(--bg2);border-radius:10px;border:1px solid var(--border)}
-.internal-links a{padding:.35rem .75rem;background:var(--bg3);border-radius:6px;font-size:.85rem;color:var(--text2);border:1px solid var(--border);transition:border-color .2s,color .2s,background-color .2s}
+.internal-links{display:flex;gap:.75rem;flex-wrap:wrap;margin:2rem 0;padding:1rem;background:var(--bg2);border-radius:4px;border:1px solid var(--border)}
+.internal-links a{padding:.35rem .75rem;background:var(--bg3);border-radius:4px;font-size:.85rem;color:var(--text2);border:1px solid var(--border);transition:border-color .2s,color .2s,background-color .2s}
 .internal-links a:hover{border-color:var(--accent);color:var(--accent);background:var(--bg)}
-.filter-btn{background:var(--bg3);color:var(--text2);border:1px solid var(--border);padding:.35rem .75rem;border-radius:6px;cursor:pointer;font-size:.82rem;font-family:inherit;transition:all .2s,text-shadow .2s}
+.filter-btn{background:var(--bg3);color:var(--text2);border:1px solid var(--border);padding:.35rem .75rem;border-radius:4px;cursor:pointer;font-size:.82rem;font-family:inherit;transition:all .2s,text-shadow .2s}
 .filter-btn:hover,.filter-btn.active{background:var(--accent);color:var(--bg);border-color:var(--accent);font-weight:600}
 /* Hamburger button */
-.hamburger{display:none;background:none;border:none;cursor:pointer;padding:6px;margin-left:auto;flex-direction:column;gap:5px;z-index:101}
+.hamburger{display:none;background:none;border:none;cursor:pointer;padding:6px;margin-left:auto;flex-direction:column;gap:5px;z-index:1001}
 .hamburger span{display:block;width:22px;height:2px;background:var(--text);border-radius:2px;transition:all .3s}
 .hamburger.active span:nth-child(1){transform:rotate(45deg) translate(5px,5px)}
 .hamburger.active span:nth-child(2){opacity:0}
 .hamburger.active span:nth-child(3){transform:rotate(-45deg) translate(5px,-5px)}
 /* Mobile drawer */
-.mobile-drawer{position:fixed;top:0;right:-320px;width:300px;max-width:85vw;height:100vh;background:var(--bg2);border-left:1px solid var(--border);z-index:300;overflow-y:auto;transition:right .3s cubic-bezier(.25,.46,.45,.94);padding:0}
+.mobile-drawer{position:fixed;top:0;right:-320px;width:300px;max-width:85vw;height:100vh;background:var(--bg2);border-left:1px solid var(--border);z-index:1200;overflow-y:auto;transition:right .3s cubic-bezier(.25,.46,.45,.94);padding:0}
 .mobile-drawer.open{right:0}
 .mobile-drawer-header{display:flex;align-items:center;justify-content:space-between;padding:1rem 1.25rem;border-bottom:1px solid var(--border)}
 .mobile-close{background:none;border:none;color:var(--text);font-size:1.8rem;cursor:pointer;padding:0;line-height:1}
@@ -664,7 +570,7 @@ tr:hover td{background:var(--bg2)}
 .mobile-sub a{padding:.45rem 1.25rem .45rem 2rem;font-size:.88rem;color:var(--text2);text-decoration:none;transition:background .2s,color .2s}
 .mobile-sub a:hover{background:var(--bg3);color:var(--accent)}
 .mobile-divider{height:1px;background:var(--border);margin:.25rem 2rem}
-.mobile-overlay{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.6);z-index:299;backdrop-filter:blur(2px)}
+.mobile-overlay{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.6);z-index:1199;backdrop-filter:blur(2px)}
 .mobile-overlay.open{display:block}
 @media(max-width:768px){
   nav{padding:.5rem 1rem;flex-wrap:nowrap}

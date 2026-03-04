@@ -198,8 +198,8 @@ const stats = {
 // Breadcrumbs data
 const breadcrumbs = [
   { label: 'Home', url: '/' },
-  { label: 'Maps', url: '/maps' },
-  { label: mapName, url: `/maps/${map}` },
+  { label: 'Maps', url: '/cs2-maps' },
+  { label: mapName, url: `/cs2-maps/${map}` },
   { label: 'Lineups', url: `#` }
 ];
 
@@ -229,6 +229,9 @@ const faqs = [
 
 const breadcrumbData = breadcrumbSchema(breadcrumbs);
 const faqData = faqSchema(faqs);
+
+const allMaps = ['mirage', 'inferno', 'dust2', 'anubis', 'ancient', 'nuke', 'overpass', 'vertigo'];
+const relatedMaps = allMaps.filter(m => m !== map);
 ---
 
 <Base title={title} description={description} currentNav="lineups">
@@ -242,9 +245,13 @@ const faqData = faqSchema(faqs);
     window.pinnedLineup = localStorage.getItem(RADAR_STORAGE_KEY);
 
     function applyFilters() {
-      const typeFilter = document.querySelector('[data-filter="type"]').value;
-      const sideFilter = document.querySelector('[data-filter="side"]').value;
-      const difficultyFilter = document.querySelector('[data-filter="difficulty"]').value;
+      const activeType = document.querySelector('[data-filter-type].lu-active');
+      const activeSide = document.querySelector('[data-filter-side].lu-active');
+      const activeDifficulty = document.querySelector('[data-filter-difficulty].lu-active');
+
+      const typeFilter = activeType ? activeType.dataset.filterType : 'all';
+      const sideFilter = activeSide ? activeSide.dataset.filterSide : 'all';
+      const difficultyFilter = activeDifficulty ? activeDifficulty.dataset.filterDifficulty : 'all';
 
       const cards = document.querySelectorAll('[data-lineup-card]');
       let visibleCount = 0;
@@ -259,7 +266,7 @@ const faqData = faqSchema(faqs);
         const difficultyMatch = difficultyFilter === 'all' || difficulty === difficultyFilter;
 
         if (typeMatch && sideMatch && difficultyMatch) {
-          card.style.display = 'block';
+          card.style.display = '';
           visibleCount++;
         } else {
           card.style.display = 'none';
@@ -307,9 +314,9 @@ const faqData = faqSchema(faqs);
         }
 
         if (isLearned) {
-          card.classList.add('learned');
+          card.classList.add('lu-learned');
         } else {
-          card.classList.remove('learned');
+          card.classList.remove('lu-learned');
         }
       });
     }
@@ -425,8 +432,38 @@ const faqData = faqSchema(faqs);
       return { x: 0.5, y: 0.5 };
     }
 
-    document.querySelectorAll('[data-filter]').forEach(filter => {
-      filter.addEventListener('change', applyFilters);
+    // Filter pill click handlers
+    document.querySelectorAll('[data-filter-type]').forEach(pill => {
+      pill.addEventListener('click', () => {
+        const wasActive = pill.classList.contains('lu-active');
+        document.querySelectorAll('[data-filter-type]').forEach(p => p.classList.remove('lu-active'));
+        if (!wasActive) {
+          pill.classList.add('lu-active');
+        }
+        applyFilters();
+      });
+    });
+
+    document.querySelectorAll('[data-filter-side]').forEach(pill => {
+      pill.addEventListener('click', () => {
+        const wasActive = pill.classList.contains('lu-active');
+        document.querySelectorAll('[data-filter-side]').forEach(p => p.classList.remove('lu-active'));
+        if (!wasActive) {
+          pill.classList.add('lu-active');
+        }
+        applyFilters();
+      });
+    });
+
+    document.querySelectorAll('[data-filter-difficulty]').forEach(pill => {
+      pill.addEventListener('click', () => {
+        const wasActive = pill.classList.contains('lu-active');
+        document.querySelectorAll('[data-filter-difficulty]').forEach(p => p.classList.remove('lu-active'));
+        if (!wasActive) {
+          pill.classList.add('lu-active');
+        }
+        applyFilters();
+      });
     });
 
     document.querySelectorAll('[data-learn-checkbox]').forEach((checkbox, idx) => {
@@ -438,15 +475,15 @@ const faqData = faqSchema(faqs);
         if (window.pinnedLineup === idx.toString()) {
           window.pinnedLineup = null;
           localStorage.removeItem(RADAR_STORAGE_KEY);
-          btn.classList.remove('pinned');
+          btn.classList.remove('lu-pinned');
         } else {
           // Unpin previous
-          const prevPin = document.querySelector('[data-radar-pin].pinned');
-          if (prevPin) prevPin.classList.remove('pinned');
+          const prevPin = document.querySelector('[data-radar-pin].lu-pinned');
+          if (prevPin) prevPin.classList.remove('lu-pinned');
 
           window.pinnedLineup = idx.toString();
           localStorage.setItem(RADAR_STORAGE_KEY, idx.toString());
-          btn.classList.add('pinned');
+          btn.classList.add('lu-pinned');
         }
         updateRadarMap();
       });
@@ -484,7 +521,7 @@ const faqData = faqSchema(faqs);
   </script>
 
   <!-- Breadcrumbs -->
-  <nav class="breadcrumbs">
+  <nav class="lu-breadcrumbs">
     <ol>
       {breadcrumbs.map((crumb, idx) => (
         <li>
@@ -498,243 +535,222 @@ const faqData = faqSchema(faqs);
     </ol>
   </nav>
 
-  <!-- Hero Section -->
-  <section class="hero">
-    <div class="hero-content">
-      <h1>{mapName} Lineups</h1>
-      <p class="hero-subtitle">Master <span data-visible-count>{lineups.length}</span> essential smokes, flashes, molotovs and HE grenades</p>
-    </div>
-  </section>
-
-  <!-- Stats Summary Bar -->
-  <section class="stats-bar">
-    <!-- Total Lineups -->
-    <div class="stat-card">
-      <div class="stat-value">{stats.total}</div>
-      <div class="stat-label">Total Lineups</div>
-    </div>
-
-    <!-- Grenade Type Breakdown -->
-    <div class="stat-card">
-      <div class="stat-label">Grenade Types</div>
-      <div class="type-breakdown">
-        <div class="breakdown-item" style={`width: ${(stats.byType.smoke / stats.total * 100)}%; background-color: #888888;`} title={`Smoke: ${stats.byType.smoke}`}></div>
-        <div class="breakdown-item" style={`width: ${(stats.byType.flash / stats.total * 100)}%; background-color: #FFEB3B;`} title={`Flash: ${stats.byType.flash}`}></div>
-        <div class="breakdown-item" style={`width: ${(stats.byType.molotov / stats.total * 100)}%; background-color: #FF9800;`} title={`Molotov: ${stats.byType.molotov}`}></div>
-        <div class="breakdown-item" style={`width: ${(stats.byType.he / stats.total * 100)}%; background-color: #F44336;`} title={`HE: ${stats.byType.he}`}></div>
-      </div>
-      <div class="type-legend">
-        <span class="legend-item"><span class="legend-dot" style="background-color: #888888;"></span>Smoke</span>
-        <span class="legend-item"><span class="legend-dot" style="background-color: #FFEB3B;"></span>Flash</span>
-        <span class="legend-item"><span class="legend-dot" style="background-color: #FF9800;"></span>Molotov</span>
-        <span class="legend-item"><span class="legend-dot" style="background-color: #F44336;"></span>HE</span>
-      </div>
-    </div>
-
-    <!-- Side Split -->
-    <div class="stat-card">
-      <div class="stat-label">Side Distribution</div>
-      <div class="side-split">
-        <div class="side-item t-side" style={`width: ${(stats.bySide.t / stats.total * 100)}%`}>
-          <span class="side-label">T: {stats.bySide.t}</span>
-        </div>
-        <div class="side-item ct-side" style={`width: ${(stats.bySide.ct / stats.total * 100)}%`}>
-          <span class="side-label">CT: {stats.bySide.ct}</span>
-        </div>
-      </div>
-    </div>
-
-    <!-- Difficulty Distribution -->
-    <div class="stat-card">
-      <div class="stat-label">Difficulty</div>
-      <div class="difficulty-bars">
-        <div class="difficulty-item">
-          <div class="bar-label">Easy</div>
-          <div class="bar" style={`width: ${(stats.byDifficulty.easy / stats.total * 100)}%; background-color: #4CAF50;`}></div>
-          <div class="bar-count">{stats.byDifficulty.easy}</div>
-        </div>
-        <div class="difficulty-item">
-          <div class="bar-label">Medium</div>
-          <div class="bar" style={`width: ${(stats.byDifficulty.medium / stats.total * 100)}%; background-color: #FFC107;`}></div>
-          <div class="bar-count">{stats.byDifficulty.medium}</div>
-        </div>
-        <div class="difficulty-item">
-          <div class="bar-label">Hard</div>
-          <div class="bar" style={`width: ${(stats.byDifficulty.hard / stats.total * 100)}%; background-color: #F44336;`}></div>
-          <div class="bar-count">{stats.byDifficulty.hard}</div>
-        </div>
-      </div>
+  <!-- Hero Section - Left Aligned -->
+  <section class="lu-hero">
+    <h1 class="lu-hero-title">{mapName} Lineups</h1>
+    <p class="lu-hero-sub">Master <span data-visible-count>{lineups.length}</span> essential grenade lineups for competitive play. Learn the <a href={`/cs2-maps/${map}/`} style="color:var(--accent)">{mapName} callouts</a> first, then use a <a href="/practice-config/" style="color:var(--accent)">practice config</a> to drill these throws offline.</p>
+    <div class="lu-hero-pills">
+      <span class="lu-pill">{stats.total} Lineups</span>
+      <span class="lu-pill">T: {stats.bySide.t}</span>
+      <span class="lu-pill">CT: {stats.bySide.ct}</span>
+      <span class="lu-pill lu-pill-smoke">Smoke: {stats.byType.smoke}</span>
+      <span class="lu-pill lu-pill-flash">Flash: {stats.byType.flash}</span>
+      <span class="lu-pill lu-pill-molotov">Molotov: {stats.byType.molotov}</span>
+      <span class="lu-pill lu-pill-he">HE: {stats.byType.he}</span>
     </div>
   </section>
 
   <!-- Progress Tracker -->
-  <section class="learned-tracker">
-    <div class="progress-header">
-      <h3>Learning Progress</h3>
-      <span data-progress-text>{0}/{lineups.length} lineups learned</span>
+  <section class="lu-progress">
+    <div class="lu-progress-header">
+      <span class="lu-progress-label">Learning Progress</span>
+      <span class="lu-progress-count" data-progress-text>0/{lineups.length} lineups learned</span>
     </div>
-    <div class="progress-container">
-      <div class="progress-bar-background">
-        <div class="progress-bar-fill" data-progress-bar style="width: 0%"></div>
-      </div>
+    <div class="lu-progress-track">
+      <div class="lu-progress-fill" data-progress-bar style="width: 0%"></div>
     </div>
   </section>
 
-  <!-- Filter Section -->
-  <section class="filters">
-    <div class="filter-group">
-      <label for="type-filter">Grenade Type:</label>
-      <select id="type-filter" data-filter="type">
-        <option value="all">All Types</option>
-        <option value="smoke">Smokes</option>
-        <option value="flash">Flashes</option>
-        <option value="molotov">Molotovs</option>
-        <option value="he">HE Grenades</option>
-      </select>
+  <!-- Filters - Horizontal Pill Tabs -->
+  <section class="lu-filters">
+    <div class="lu-filter-row">
+      <span class="lu-filter-label">Side</span>
+      <div class="lu-filter-pills">
+        <button data-filter-side="t" class="lu-filter-pill">T Side</button>
+        <button data-filter-side="ct" class="lu-filter-pill">CT Side</button>
+      </div>
     </div>
-
-    <div class="filter-group">
-      <label for="side-filter">Side:</label>
-      <select id="side-filter" data-filter="side">
-        <option value="all">All Sides</option>
-        <option value="t">T Side</option>
-        <option value="ct">CT Side</option>
-      </select>
+    <div class="lu-filter-row">
+      <span class="lu-filter-label">Type</span>
+      <div class="lu-filter-pills">
+        <button data-filter-type="smoke" class="lu-filter-pill">Smoke</button>
+        <button data-filter-type="flash" class="lu-filter-pill">Flash</button>
+        <button data-filter-type="molotov" class="lu-filter-pill">Molotov</button>
+        <button data-filter-type="he" class="lu-filter-pill">HE</button>
+      </div>
     </div>
-
-    <div class="filter-group">
-      <label for="difficulty-filter">Difficulty:</label>
-      <select id="difficulty-filter" data-filter="difficulty">
-        <option value="all">All Difficulties</option>
-        <option value="easy">Easy</option>
-        <option value="medium">Medium</option>
-        <option value="hard">Hard</option>
-      </select>
+    <div class="lu-filter-row">
+      <span class="lu-filter-label">Difficulty</span>
+      <div class="lu-filter-pills">
+        <button data-filter-difficulty="easy" class="lu-filter-pill">Easy</button>
+        <button data-filter-difficulty="medium" class="lu-filter-pill">Medium</button>
+        <button data-filter-difficulty="hard" class="lu-filter-pill">Hard</button>
+      </div>
     </div>
   </section>
 
   <!-- Interactive Radar Map -->
   {mapLayout && (
-    <section class="radar-section">
-      <h2>Trajectory Map</h2>
-      <div class="radar-container">
-        <svg
-          data-radar-svg
-          viewBox={mapLayout.viewBox}
-          xmlns="http://www.w3.org/2000/svg"
-          style={`background-image: url('${mapLayout.radarImageUrl}'); background-size: contain; background-repeat: no-repeat; background-position: center;`}
-        >
-          <!-- Trajectories will be drawn here by JS -->
-        </svg>
-      </div>
-      <div class="radar-legend">
-        <p>Hover over cards to highlight their trajectory. Click to pin a trajectory.</p>
-        <div class="legend-items">
-          <span class="legend-item"><span class="legend-dot green"></span>From Position</span>
-          <span class="legend-item"><span class="legend-dot gray"></span>Smoke</span>
-          <span class="legend-item"><span class="legend-dot yellow"></span>Flash</span>
-          <span class="legend-item"><span class="legend-dot orange"></span>Molotov</span>
-          <span class="legend-item"><span class="legend-dot red"></span>HE Grenade</span>
+    <section class="lu-radar">
+      <h2 class="lu-section-title">Trajectory Map</h2>
+      <div class="lu-radar-wrap">
+        <div class="lu-radar-box">
+          <svg
+            data-radar-svg
+            viewBox={mapLayout.viewBox}
+            xmlns="http://www.w3.org/2000/svg"
+            style={`background-image: url('${mapLayout.radarImageUrl}'); background-size: contain; background-repeat: no-repeat; background-position: center;`}
+          >
+          </svg>
+        </div>
+        <div class="lu-radar-legend">
+          <p>Hover over lineup rows to highlight trajectory. Click pin to lock.</p>
+          <div class="lu-legend-items">
+            <span class="lu-legend-item"><span class="lu-legend-dot" style="background:#4CAF50;"></span>From</span>
+            <span class="lu-legend-item"><span class="lu-legend-dot" style="background:#888;"></span>Smoke</span>
+            <span class="lu-legend-item"><span class="lu-legend-dot" style="background:#FFEB3B;"></span>Flash</span>
+            <span class="lu-legend-item"><span class="lu-legend-dot" style="background:#FF9800;"></span>Molotov</span>
+            <span class="lu-legend-item"><span class="lu-legend-dot" style="background:#F44336;"></span>HE</span>
+          </div>
         </div>
       </div>
     </section>
   )}
 
-  <!-- Lineups Grid -->
-  <section class="lineups-grid">
+  <!-- Lineups List (Horizontal Rows) -->
+  <section class="lu-list">
+    <h2 class="lu-section-title">All Lineups</h2>
     {lineups.map((lineup, idx) => (
-      <article class="lineup-card" data-lineup-card data-type={lineup.type} data-side={lineup.side} data-difficulty={lineup.difficulty}>
-        <!-- Learned Indicator and Checkbox -->
-        <div class="card-learned-section">
-          <div class="card-header">
-            <h3>{lineup.name}</h3>
-            <div class="badges">
-              <span class="badge badge-side">{lineup.side === 't' ? 'T Side' : 'CT Side'}</span>
-              <span class={`badge badge-difficulty badge-${lineup.difficulty}`}>{lineup.difficulty}</span>
+      <article class="lu-row" data-lineup-card data-type={lineup.type} data-side={lineup.side} data-difficulty={lineup.difficulty}>
+        <div class="lu-row-main">
+          <div class="lu-row-left">
+            <label class="lu-checkbox-wrap">
+              <input type="checkbox" data-learn-checkbox class="lu-checkbox" />
+              <span class="lu-checkmark"></span>
+            </label>
+            <div class="lu-row-info">
+              <div class="lu-row-top">
+                <h3 class="lu-row-name">{lineup.name}</h3>
+                <div class="lu-row-tags">
+                  <span class={`lu-tag lu-tag-${lineup.type}`}>
+                    {lineup.type === 'smoke' && 'Smoke'}
+                    {lineup.type === 'flash' && 'Flash'}
+                    {lineup.type === 'molotov' && 'Molotov'}
+                    {lineup.type === 'he' && 'HE'}
+                  </span>
+                  <span class="lu-tag lu-tag-side">{lineup.side === 't' ? 'T' : 'CT'}</span>
+                  <span class={`lu-tag lu-tag-diff lu-tag-${lineup.difficulty}`}>{lineup.difficulty}</span>
+                </div>
+              </div>
+              <div class="lu-row-route">
+                <span class="lu-route-from">{lineup.from}</span>
+                <span class="lu-route-arrow">&rarr;</span>
+                <span class="lu-route-to">{lineup.to}</span>
+              </div>
             </div>
           </div>
-          <label class="learn-checkbox-container">
-            <input type="checkbox" data-learn-checkbox class="learn-checkbox" />
-            <span class="checkmark">✓</span>
-          </label>
+          {mapLayout && (
+            <button class="lu-pin-btn" data-radar-pin title="Pin on trajectory map">
+              <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 2C7.58 2 4 5.58 4 10c0 5.25 8 13 8 13s8-7.75 8-13c0-4.42-3.58-8-8-8zm0 11c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3z" fill="currentColor"/>
+              </svg>
+            </button>
+          )}
         </div>
-
-        <!-- Grenade Type with SVG Icons -->
-        <div class="card-type">
-          {lineup.type === 'smoke' && (
-            <svg class="icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M12 2C6.48 2 2 6.48 2 12c0 3.28 1.54 6.21 3.92 8.08.69.52 1.16 1.34 1.16 2.27 0 1.93-1.57 3.5-3.5 3.5h2.34C7.5 26.5 9.94 24.06 9.94 21.2c0-.72-.23-1.39-.62-1.95 2.28-1.45 3.82-4.01 3.82-6.95 0-4.42-3.58-8-8-8zm0 14c-3.31 0-6-2.69-6-6s2.69-6 6-6 6 2.69 6 6-2.69 6-6 6zm3-10h-2v2h2v-2zm-4 0H9v2h2v-2zm4 4h-2v2h2v-2zm-4 0H9v2h2v-2z" fill="currentColor"/>
-            </svg>
-          )}
-          {lineup.type === 'flash' && (
-            <svg class="icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" fill="currentColor" stroke="currentColor" stroke-width="1.5"/>
-            </svg>
-          )}
-          {lineup.type === 'molotov' && (
-            <svg class="icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M8 13c0-1.1.9-2 2-2h4c1.1 0 2 .9 2 2v6H8v-6z" fill="currentColor"/>
-              <path d="M12 2c-1.1 0-2 .9-2 2v2h4V4c0-1.1-.9-2-2-2z" fill="currentColor"/>
-              <path d="M6 20h12v2H6z" fill="currentColor"/>
-              <path d="M10 11h4v1h-4z" fill="currentColor"/>
-            </svg>
-          )}
-          {lineup.type === 'he' && (
-            <svg class="icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.5"/>
-              <path d="M12 5v14M5 12h14M8 8l11.31 11.31M16 8L4.69 19.31" stroke="currentColor" stroke-width="1.5"/>
-            </svg>
-          )}
-          <span class="type-label">
-            {lineup.type === 'smoke' && 'Smoke'}
-            {lineup.type === 'flash' && 'Flash'}
-            {lineup.type === 'molotov' && 'Molotov'}
-            {lineup.type === 'he' && 'HE Grenade'}
-          </span>
-        </div>
-
-        <div class="card-route">
-          <div class="route-item">
-            <span class="label">From:</span>
-            <span class="value">{lineup.from}</span>
+        <div class="lu-row-detail">
+          <div class="lu-detail-desc">
+            <p class="lu-desc-text">{lineup.description}</p>
           </div>
-          <span class="arrow">→</span>
-          <div class="route-item">
-            <span class="label">To:</span>
-            <span class="value">{lineup.to}</span>
+          <div class="lu-detail-usecase">
+            <span class="lu-usecase-label">Use Case:</span> {lineup.useCase}
           </div>
         </div>
-
-        <p class="description">{lineup.description}</p>
-
-        <div class="use-case">
-          <strong>Use Case:</strong> {lineup.useCase}
-        </div>
-
-        <!-- Radar Pin Button -->
-        {mapLayout && (
-          <button class="radar-pin-btn" data-radar-pin title="Pin on trajectory map">
-            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M12 2C7.58 2 4 5.58 4 10c0 5.25 8 13 8 13s8-7.75 8-13c0-4.42-3.58-8-8-8zm0 11c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3z" fill="currentColor"/>
-            </svg>
-          </button>
-        )}
       </article>
     ))}
   </section>
 
+  <!-- Tips Section -->
+  <section class="lu-tips">
+    <h2 class="lu-section-title">Lineup Practice Tips</h2>
+    <ol class="lu-tips-list">
+      <li class="lu-tip-item">
+        <span class="lu-tip-num">1</span>
+        <div class="lu-tip-content">
+          <strong>Start with Easy Lineups</strong>
+          <p>Begin with easy-difficulty lineups that require minimal positioning. These give you quick utility coverage and build muscle memory for consistent throws.</p>
+        </div>
+      </li>
+      <li class="lu-tip-item">
+        <span class="lu-tip-num">2</span>
+        <div class="lu-tip-content">
+          <strong>Use Private Servers</strong>
+          <p>Load a private match with cheats enabled. Use sv_infinite_ammo 1 and give yourself grenades to practice each throw repeatedly until consistent.</p>
+        </div>
+      </li>
+      <li class="lu-tip-item">
+        <span class="lu-tip-num">3</span>
+        <div class="lu-tip-content">
+          <strong>Learn Both Sides</strong>
+          <p>Master T-side executes and CT-side retake lineups. Knowing both sides makes you a more versatile and valuable teammate in competitive play.</p>
+        </div>
+      </li>
+      <li class="lu-tip-item">
+        <span class="lu-tip-num">4</span>
+        <div class="lu-tip-content">
+          <strong>Coordinate with Teammates</strong>
+          <p>Many lineups are most effective when combined with other utility. Practice timing your throws with teammates for synchronized site executes.</p>
+        </div>
+      </li>
+      <li class="lu-tip-item">
+        <span class="lu-tip-num">5</span>
+        <div class="lu-tip-content">
+          <strong>Track Your Progress</strong>
+          <p>Use the checkboxes on each lineup to mark which ones you have mastered. Aim to learn all easy lineups before moving to medium and hard difficulty.</p>
+        </div>
+      </li>
+    </ol>
+  </section>
+
   <!-- FAQ Section -->
-  <section class="faq">
-    <h2>Frequently Asked Questions</h2>
-    <div class="faq-list">
+  <section class="lu-faq">
+    <h2 class="lu-section-title">Frequently Asked Questions</h2>
+    <div class="lu-faq-list">
       {faqs.map(faq => (
-        <details class="faq-item">
+        <details class="lu-faq-item">
           <summary>{faq.question}</summary>
           <p>{faq.answer}</p>
         </details>
       ))}
     </div>
   </section>
+
+  <!-- Related Maps -->
+  <section class="lu-related">
+    <h2 class="lu-section-title">Lineups for Other Maps</h2>
+    <div class="lu-related-pills">
+      {relatedMaps.map(m => (
+        <a href={`/lineups/${m}`} class="lu-related-pill">
+          {mapNames[m] || m.charAt(0).toUpperCase() + m.slice(1)}
+        </a>
+      ))}
+    </div>
+  </section>
+
+  <!-- Internal Links -->
+  <div class="internal-links" style="display:flex;flex-wrap:wrap;gap:.45rem;align-items:center;margin:2rem 0;font-size:.82rem">
+    <strong style="color:var(--text);margin-right:.2rem">Related:</strong>
+    <a href={`/cs2-maps/${map}/`} style="color:var(--accent);text-decoration:none;padding:.2rem .5rem;background:var(--bg2);border:1px solid var(--border);border-radius:4px">{mapName} Callouts</a>
+    <a href="/cs2-maps/" style="color:var(--accent);text-decoration:none;padding:.2rem .5rem;background:var(--bg2);border:1px solid var(--border);border-radius:4px">All Maps</a>
+    <a href="/practice-config/" style="color:var(--accent);text-decoration:none;padding:.2rem .5rem;background:var(--bg2);border:1px solid var(--border);border-radius:4px">Practice Config</a>
+    <a href="/workshop-maps/" style="color:var(--accent);text-decoration:none;padding:.2rem .5rem;background:var(--bg2);border:1px solid var(--border);border-radius:4px">Workshop Maps</a>
+    <a href="/cs2-guides/grenade-guide/" style="color:var(--accent);text-decoration:none;padding:.2rem .5rem;background:var(--bg2);border:1px solid var(--border);border-radius:4px">Grenade Guide</a>
+    <a href="/cs2-guides/positioning-guide/" style="color:var(--accent);text-decoration:none;padding:.2rem .5rem;background:var(--bg2);border:1px solid var(--border);border-radius:4px">Positioning Guide</a>
+    <a href="/cs2-commands/" style="color:var(--accent);text-decoration:none;padding:.2rem .5rem;background:var(--bg2);border:1px solid var(--border);border-radius:4px">Console Commands</a>
+    <a href="/crosshair-generator/" style="color:var(--accent);text-decoration:none;padding:.2rem .5rem;background:var(--bg2);border:1px solid var(--border);border-radius:4px">Crosshair Generator</a>
+    <a href="/pro-players/" style="color:var(--accent);text-decoration:none;padding:.2rem .5rem;background:var(--bg2);border:1px solid var(--border);border-radius:4px">Pro Player Settings</a>
+    <a href="/damage-calculator/" style="color:var(--accent);text-decoration:none;padding:.2rem .5rem;background:var(--bg2);border:1px solid var(--border);border-radius:4px">Damage Calculator</a>
+    <a href="/cs2-tools/" style="color:var(--accent);text-decoration:none;padding:.2rem .5rem;background:var(--bg2);border:1px solid var(--border);border-radius:4px">All Tools</a>
+  </div>
 
   <!-- Schema Markup -->
   <script type="application/ld+json" set:html={JSON.stringify(breadcrumbData)} />
@@ -748,12 +764,13 @@ const faqData = faqSchema(faqs);
   <ExploreMore context="maps" />
 
   <style>
-    .breadcrumbs {
-      margin-bottom: 2rem;
-      font-size: 0.95rem;
+    /* Breadcrumbs */
+    .lu-breadcrumbs {
+      margin-bottom: 1.5rem;
+      font-size: 0.9rem;
     }
 
-    .breadcrumbs ol {
+    .lu-breadcrumbs ol {
       display: flex;
       gap: 0.5rem;
       list-style: none;
@@ -761,683 +778,627 @@ const faqData = faqSchema(faqs);
       margin: 0;
     }
 
-    .breadcrumbs li:not(:last-child)::after {
+    .lu-breadcrumbs li:not(:last-child)::after {
       content: '/';
       margin-left: 0.5rem;
-      color: var(--text-secondary);
+      color: var(--text2);
     }
 
-    .breadcrumbs a {
+    .lu-breadcrumbs a {
       color: var(--accent);
       text-decoration: none;
     }
 
-    .breadcrumbs a:hover {
+    .lu-breadcrumbs a:hover {
       text-decoration: underline;
     }
 
-    .hero {
-      background: linear-gradient(135deg, var(--accent), var(--accent-dark));
-      color: white;
-      padding: 4rem 2rem;
-      border-radius: 12px;
-      margin-bottom: 3rem;
-      text-align: center;
+    /* Hero - Left Aligned */
+    .lu-hero {
+      padding: 2.5rem 0 2rem 0;
+      margin-bottom: 2rem;
+      border-bottom: 1px solid var(--border);
     }
 
-    .hero h1 {
-      font-size: 2.5rem;
-      margin: 0;
+    .lu-hero-title {
+      font-size: 2.2rem;
       font-weight: 700;
+      margin: 0 0 0.5rem 0;
+      color: var(--text);
     }
 
-    .hero-subtitle {
-      font-size: 1.1rem;
-      margin: 1rem 0 0 0;
-      opacity: 0.95;
+    .lu-hero-sub {
+      font-size: 1.05rem;
+      color: var(--text2);
+      margin: 0 0 1.25rem 0;
     }
 
-    /* Stats Bar */
-    .stats-bar {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 1.5rem;
-      margin-bottom: 3rem;
+    .lu-hero-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
     }
 
-    .stat-card {
-      background: var(--bg-secondary);
+    .lu-pill {
+      display: inline-block;
+      padding: 0.3rem 0.75rem;
+      background: var(--bg3);
       border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 1.5rem;
-      display: flex;
-      flex-direction: column;
-      gap: 1rem;
-    }
-
-    .stat-value {
-      font-size: 2.5rem;
-      font-weight: 700;
-      color: var(--accent);
-    }
-
-    .stat-label {
-      font-size: 0.95rem;
-      color: var(--text-secondary);
+      border-radius: 4px;
+      font-size: 0.8rem;
       font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
+      color: var(--text2);
     }
 
-    .type-breakdown {
+    .lu-pill-smoke { border-left: 3px solid #888; }
+    .lu-pill-flash { border-left: 3px solid #FFEB3B; }
+    .lu-pill-molotov { border-left: 3px solid #FF9800; }
+    .lu-pill-he { border-left: 3px solid #F44336; }
+
+    /* Progress */
+    .lu-progress {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 1rem 1.25rem;
+      margin-bottom: 2rem;
+    }
+
+    .lu-progress-header {
       display: flex;
-      height: 30px;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.6rem;
+    }
+
+    .lu-progress-label {
+      font-weight: 600;
+      font-size: 0.9rem;
+      color: var(--text);
+    }
+
+    .lu-progress-count {
+      font-size: 0.85rem;
+      color: var(--text2);
+      font-weight: 600;
+    }
+
+    .lu-progress-track {
+      width: 100%;
+      height: 6px;
+      background: var(--bg);
       border-radius: 4px;
       overflow: hidden;
-      gap: 1px;
-      background: var(--border);
     }
 
-    .breakdown-item {
-      min-width: 20px;
-      transition: all 0.3s ease;
+    .lu-progress-fill {
+      height: 100%;
+      background: var(--accent);
+      border-radius: 4px;
+      transition: width 0.3s ease;
     }
 
-    .breakdown-item:hover {
-      filter: brightness(1.2);
-    }
-
-    .type-legend {
+    /* Filters */
+    .lu-filters {
       display: flex;
-      gap: 1rem;
-      flex-wrap: wrap;
-      font-size: 0.85rem;
+      flex-direction: column;
+      gap: 0.75rem;
+      margin-bottom: 2rem;
+      padding: 1.25rem;
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 4px;
     }
 
-    .legend-item {
+    .lu-filter-row {
       display: flex;
       align-items: center;
-      gap: 0.4rem;
-      color: var(--text-secondary);
+      gap: 0.75rem;
     }
 
-    .legend-dot {
+    .lu-filter-label {
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--text2);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      min-width: 70px;
+    }
+
+    .lu-filter-pills {
+      display: flex;
+      gap: 0.4rem;
+      flex-wrap: wrap;
+    }
+
+    .lu-filter-pill {
+      padding: 0.35rem 0.85rem;
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      color: var(--text2);
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .lu-filter-pill:hover {
+      border-color: var(--accent);
+      color: var(--text);
+    }
+
+    .lu-filter-pill.lu-active {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #fff;
+    }
+
+    /* Section Titles */
+    .lu-section-title {
+      font-size: 1.4rem;
+      font-weight: 700;
+      margin: 0 0 1.25rem 0;
+      color: var(--text);
+    }
+
+    /* Radar */
+    .lu-radar {
+      margin-bottom: 2.5rem;
+    }
+
+    .lu-radar-wrap {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 1.5rem;
+    }
+
+    .lu-radar-box {
+      width: 100%;
+      max-width: 550px;
+      margin: 0 auto 1.25rem;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      overflow: hidden;
+      background: var(--bg);
+      aspect-ratio: 1;
+    }
+
+    .lu-radar-box svg {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    .lu-radar-legend {
+      text-align: center;
+      font-size: 0.85rem;
+      color: var(--text2);
+    }
+
+    .lu-radar-legend p {
+      margin: 0 0 0.75rem 0;
+      font-style: italic;
+    }
+
+    .lu-legend-items {
+      display: flex;
+      gap: 1.25rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .lu-legend-item {
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+
+    .lu-legend-dot {
       width: 10px;
       height: 10px;
       border-radius: 2px;
       display: inline-block;
     }
 
-    .side-split {
-      display: flex;
-      height: 30px;
-      border-radius: 4px;
-      overflow: hidden;
-    }
-
-    .side-item {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: white;
-      font-weight: 600;
-      font-size: 0.85rem;
-      transition: all 0.3s ease;
-    }
-
-    .side-item:hover {
-      filter: brightness(1.1);
-    }
-
-    .side-item.t-side {
-      background: linear-gradient(90deg, #FF6B6B, #FF5252);
-    }
-
-    .side-item.ct-side {
-      background: linear-gradient(90deg, #4A90E2, #357ABD);
-    }
-
-    .side-label {
-      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
-    }
-
-    .difficulty-bars {
-      display: flex;
-      flex-direction: column;
-      gap: 0.75rem;
-    }
-
-    .difficulty-item {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      font-size: 0.85rem;
-    }
-
-    .bar-label {
-      min-width: 50px;
-      color: var(--text-secondary);
-      font-weight: 600;
-    }
-
-    .bar {
-      height: 20px;
-      border-radius: 4px;
-      min-width: 40px;
-      transition: all 0.3s ease;
-    }
-
-    .bar:hover {
-      filter: brightness(1.1);
-    }
-
-    .bar-count {
-      min-width: 30px;
-      text-align: right;
-      color: var(--text-secondary);
-      font-weight: 600;
-      font-size: 0.8rem;
-    }
-
-    /* Learning Tracker */
-    .learned-tracker {
-      background: var(--bg-secondary);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 1.5rem;
+    /* Lineup Rows */
+    .lu-list {
       margin-bottom: 3rem;
     }
 
-    .progress-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 1rem;
-    }
-
-    .progress-header h3 {
-      margin: 0;
-      color: var(--text-primary);
-      font-size: 1.1rem;
-    }
-
-    [data-progress-text] {
-      color: var(--text-secondary);
-      font-size: 0.9rem;
-      font-weight: 600;
-    }
-
-    .progress-container {
-      width: 100%;
-    }
-
-    .progress-bar-background {
-      width: 100%;
-      height: 8px;
-      background: var(--bg-primary);
+    .lu-row {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-left: 3px solid transparent;
       border-radius: 4px;
-      overflow: hidden;
+      margin-bottom: 0.5rem;
+      transition: border-left-color 0.15s ease;
     }
 
-    .progress-bar-fill {
-      height: 100%;
-      background: linear-gradient(90deg, #4CAF50, #8BC34A);
-      border-radius: 4px;
-      transition: width 0.3s ease;
+    .lu-row:hover {
+      border-left-color: var(--accent);
     }
 
-    /* Radar Section */
-    .radar-section {
-      background: var(--bg-secondary);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 2rem;
-      margin-bottom: 3rem;
-    }
-
-    .radar-section h2 {
-      margin: 0 0 1.5rem 0;
-      font-size: 1.3rem;
-      color: var(--text-primary);
-    }
-
-    .radar-container {
-      width: 100%;
-      max-width: 600px;
-      margin: 0 auto 2rem;
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      overflow: hidden;
-      background: var(--bg-primary);
-      aspect-ratio: 1;
-    }
-
-    [data-radar-svg] {
-      width: 100%;
-      height: 100%;
-      display: block;
-    }
-
-    .radar-legend {
-      font-size: 0.9rem;
-      color: var(--text-secondary);
-      text-align: center;
-    }
-
-    .radar-legend p {
-      margin: 0 0 1rem 0;
-      font-style: italic;
-    }
-
-    .legend-items {
-      display: flex;
-      gap: 1.5rem;
-      justify-content: center;
-      flex-wrap: wrap;
-    }
-
-    .legend-items .legend-item {
-      display: flex;
-      align-items: center;
-      gap: 0.4rem;
-    }
-
-    .legend-dot.green {
-      background-color: #4CAF50;
-    }
-
-    .legend-dot.gray {
-      background-color: #888888;
-    }
-
-    .legend-dot.yellow {
-      background-color: #FFEB3B;
-    }
-
-    .legend-dot.orange {
-      background-color: #FF9800;
-    }
-
-    .legend-dot.red {
-      background-color: #F44336;
-    }
-
-    /* Filter Section */
-    .filters {
-      display: flex;
-      gap: 2rem;
-      margin-bottom: 3rem;
-      flex-wrap: wrap;
-      background: var(--bg-secondary);
-      padding: 2rem;
-      border-radius: 12px;
-    }
-
-    .filter-group {
-      display: flex;
-      flex-direction: column;
-      gap: 0.5rem;
-    }
-
-    .filter-group label {
-      font-weight: 600;
-      font-size: 0.95rem;
-    }
-
-    .filter-group select {
-      padding: 0.75rem;
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      background: var(--bg-primary);
-      color: var(--text-primary);
-      cursor: pointer;
-      font-size: 0.95rem;
-    }
-
-    /* Lineups Grid */
-    .lineups-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-      gap: 2rem;
-      margin-bottom: 3rem;
-    }
-
-    .lineup-card {
-      background: var(--bg-secondary);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 1.5rem;
-      transition: all 0.3s ease;
-      position: relative;
-      border-left: 4px solid transparent;
-    }
-
-    .lineup-card:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
-      border-color: var(--accent);
-    }
-
-    .lineup-card.learned {
+    .lu-row.lu-learned {
       border-left-color: #4CAF50;
-      background: linear-gradient(90deg, rgba(76, 175, 80, 0.05), transparent);
+      background: linear-gradient(90deg, rgba(76, 175, 80, 0.04), transparent);
     }
 
-    .card-learned-section {
+    .lu-row-main {
       display: flex;
+      align-items: center;
       justify-content: space-between;
-      align-items: flex-start;
+      padding: 0.85rem 1rem;
       gap: 1rem;
-      margin-bottom: 1rem;
     }
 
-    .card-header {
-      flex: 1;
-    }
-
-    .card-header h3 {
-      font-size: 1.3rem;
-      margin: 0 0 0.75rem 0;
-      color: var(--text-primary);
-    }
-
-    .badges {
+    .lu-row-left {
       display: flex;
-      gap: 0.5rem;
-      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.85rem;
+      flex: 1;
+      min-width: 0;
     }
 
-    .badge {
-      display: inline-block;
-      padding: 0.35rem 0.75rem;
-      border-radius: 4px;
-      font-size: 0.8rem;
-      font-weight: 600;
-      text-transform: uppercase;
-    }
-
-    .badge-side {
-      background: var(--accent-light);
-      color: var(--accent);
-    }
-
-    .badge-difficulty {
-      background: var(--bg-primary);
-      color: var(--text-secondary);
-    }
-
-    .badge-easy {
-      background: rgba(76, 175, 80, 0.2);
-      color: #4caf50;
-    }
-
-    .badge-medium {
-      background: rgba(255, 193, 7, 0.2);
-      color: #ffc107;
-    }
-
-    .badge-hard {
-      background: rgba(244, 67, 54, 0.2);
-      color: #f44336;
-    }
-
-    /* Learn Checkbox */
-    .learn-checkbox-container {
+    /* Checkbox */
+    .lu-checkbox-wrap {
       position: relative;
       display: inline-flex;
       align-items: center;
       cursor: pointer;
+      flex-shrink: 0;
     }
 
-    .learn-checkbox {
+    .lu-checkbox {
       appearance: none;
-      width: 32px;
-      height: 32px;
+      width: 24px;
+      height: 24px;
       border: 2px solid var(--border);
-      border-radius: 6px;
-      background: var(--bg-primary);
+      border-radius: 4px;
+      background: var(--bg);
       cursor: pointer;
-      transition: all 0.2s ease;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 0;
+      transition: all 0.15s ease;
       margin: 0;
+      padding: 0;
     }
 
-    .learn-checkbox:hover {
+    .lu-checkbox:hover {
       border-color: #4CAF50;
-      background: rgba(76, 175, 80, 0.1);
     }
 
-    .learn-checkbox:checked {
+    .lu-checkbox:checked {
       background: #4CAF50;
       border-color: #4CAF50;
     }
 
-    .checkmark {
+    .lu-checkmark {
       position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
       pointer-events: none;
-      font-size: 1.2rem;
-      color: white;
+      font-size: 0;
+      width: 10px;
+      height: 6px;
+      border-left: 2px solid #fff;
+      border-bottom: 2px solid #fff;
+      transform: translate(-50%, -60%) rotate(-45deg);
       display: none;
-      font-weight: bold;
     }
 
-    .learn-checkbox:checked ~ .checkmark {
+    .lu-checkbox:checked ~ .lu-checkmark {
       display: block;
     }
 
-    /* Grenade Type Icons */
-    .card-type {
+    /* Row Info */
+    .lu-row-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .lu-row-top {
       display: flex;
       align-items: center;
       gap: 0.75rem;
-      margin-bottom: 1rem;
-      padding: 1rem;
-      background: var(--bg-primary);
-      border-radius: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 0.3rem;
     }
 
-    .icon {
-      width: 28px;
-      height: 28px;
-      color: var(--text-primary);
-      flex-shrink: 0;
-    }
-
-    .card-type svg.icon {
-      color: #888888;
-    }
-
-    .card-type [data-lineup-card*="flash"] svg.icon {
-      color: #FFEB3B;
-    }
-
-    .card-type [data-lineup-card*="molotov"] svg.icon {
-      color: #FF9800;
-    }
-
-    .card-type [data-lineup-card*="he"] svg.icon {
-      color: #F44336;
-    }
-
-    .type-label {
+    .lu-row-name {
+      font-size: 1rem;
       font-weight: 600;
-      color: var(--text-primary);
+      margin: 0;
+      color: var(--text);
+      white-space: nowrap;
     }
 
-    /* Route Info */
-    .card-route {
+    .lu-row-tags {
+      display: flex;
+      gap: 0.35rem;
+      flex-wrap: wrap;
+    }
+
+    .lu-tag {
+      display: inline-block;
+      padding: 0.15rem 0.5rem;
+      border-radius: 4px;
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+
+    .lu-tag-smoke { background: rgba(136,136,136,0.2); color: #aaa; }
+    .lu-tag-flash { background: rgba(255,235,59,0.15); color: #FFEB3B; }
+    .lu-tag-molotov { background: rgba(255,152,0,0.15); color: #FF9800; }
+    .lu-tag-he { background: rgba(244,67,54,0.15); color: #F44336; }
+    .lu-tag-side { background: rgba(46,204,113,0.15); color: var(--accent); }
+
+    .lu-tag-diff { background: var(--bg3); color: var(--text2); }
+    .lu-tag-easy { background: rgba(76,175,80,0.15); color: #4CAF50; }
+    .lu-tag-medium { background: rgba(255,193,7,0.15); color: #FFC107; }
+    .lu-tag-hard { background: rgba(244,67,54,0.15); color: #F44336; }
+
+    .lu-row-route {
       display: flex;
       align-items: center;
-      gap: 1rem;
-      margin-bottom: 1.5rem;
-      font-size: 0.9rem;
-    }
-
-    .route-item {
-      display: flex;
-      flex-direction: column;
-      gap: 0.25rem;
-    }
-
-    .route-item .label {
+      gap: 0.4rem;
       font-size: 0.8rem;
-      color: var(--text-secondary);
-      font-weight: 600;
+      color: var(--text2);
     }
 
-    .route-item .value {
-      color: var(--text-primary);
-      font-weight: 500;
-    }
-
-    .arrow {
+    .lu-route-arrow {
       color: var(--accent);
-      font-weight: bold;
-      font-size: 1.2rem;
+      font-weight: 700;
     }
 
-    /* Description and Use Case */
-    .description {
-      font-size: 0.9rem;
-      color: var(--text-secondary);
-      margin: 0 0 1rem 0;
-      line-height: 1.5;
-    }
-
-    .use-case {
-      padding: 0.75rem;
-      background: var(--bg-primary);
-      border-radius: 6px;
-      font-size: 0.85rem;
-      border-left: 3px solid var(--accent);
-      margin-bottom: 1rem;
-    }
-
-    /* Radar Pin Button */
-    .radar-pin-btn {
-      position: absolute;
-      bottom: 1.5rem;
-      right: 1.5rem;
-      width: 36px;
-      height: 36px;
+    /* Pin Button */
+    .lu-pin-btn {
+      width: 30px;
+      height: 30px;
       border: 1px solid var(--border);
-      border-radius: 6px;
-      background: var(--bg-primary);
-      color: var(--text-secondary);
+      border-radius: 4px;
+      background: var(--bg3);
+      color: var(--text2);
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
-      transition: all 0.2s ease;
       padding: 0;
+      flex-shrink: 0;
+      transition: all 0.15s ease;
     }
 
-    .radar-pin-btn:hover {
+    .lu-pin-btn:hover {
       color: var(--accent);
       border-color: var(--accent);
-      background: rgba(var(--accent-rgb), 0.1);
     }
 
-    .radar-pin-btn.pinned {
+    .lu-pin-btn.lu-pinned {
       background: var(--accent);
-      color: white;
+      color: #fff;
       border-color: var(--accent);
     }
 
-    .radar-pin-btn svg {
-      width: 18px;
-      height: 18px;
+    .lu-pin-btn svg {
+      width: 16px;
+      height: 16px;
     }
 
-    /* FAQ Section */
-    .faq {
-      margin-top: 4rem;
+    /* Row Detail */
+    .lu-row-detail {
+      padding: 0 1rem 0.85rem 3.75rem;
     }
 
-    .faq h2 {
-      font-size: 2rem;
-      margin-bottom: 2rem;
+    .lu-desc-text {
+      font-size: 0.85rem;
+      color: var(--text2);
+      line-height: 1.55;
+      margin: 0 0 0.6rem 0;
     }
 
-    .faq-list {
+    .lu-detail-usecase {
+      font-size: 0.8rem;
+      color: var(--text2);
+      padding: 0.5rem 0.75rem;
+      background: var(--bg);
+      border-radius: 4px;
+      border-left: 3px solid var(--accent);
+    }
+
+    .lu-usecase-label {
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    /* Tips */
+    .lu-tips {
+      margin-bottom: 3rem;
+    }
+
+    .lu-tips-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
       display: flex;
       flex-direction: column;
-      gap: 1rem;
+      gap: 0.75rem;
     }
 
-    .faq-item {
-      background: var(--bg-secondary);
+    .lu-tip-item {
+      display: flex;
+      gap: 1rem;
+      padding: 1rem 1.25rem;
+      background: var(--bg2);
       border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 1.5rem;
+      border-radius: 4px;
+    }
+
+    .lu-tip-num {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 32px;
+      height: 32px;
+      background: rgba(46, 204, 113, 0.12);
+      color: var(--accent);
+      font-size: 1rem;
+      font-weight: 700;
+      border-radius: 4px;
+      flex-shrink: 0;
+    }
+
+    .lu-tip-content {
+      flex: 1;
+    }
+
+    .lu-tip-content strong {
+      display: block;
+      font-size: 0.95rem;
+      color: var(--text);
+      margin-bottom: 0.25rem;
+    }
+
+    .lu-tip-content p {
+      font-size: 0.85rem;
+      color: var(--text2);
+      line-height: 1.55;
+      margin: 0;
+    }
+
+    /* FAQ */
+    .lu-faq {
+      margin-bottom: 3rem;
+    }
+
+    .lu-faq-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .lu-faq-item {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 1rem 1.25rem;
       cursor: pointer;
     }
 
-    .faq-item summary {
+    .lu-faq-item summary {
       font-weight: 600;
-      color: var(--text-primary);
+      font-size: 0.95rem;
+      color: var(--text);
       cursor: pointer;
       user-select: none;
+      list-style: none;
     }
 
-    .faq-item summary:hover {
+    .lu-faq-item summary::-webkit-details-marker {
+      display: none;
+    }
+
+    .lu-faq-item summary::before {
+      content: '+';
+      display: inline-block;
+      width: 20px;
+      color: var(--accent);
+      font-weight: 700;
+      font-size: 1.1rem;
+    }
+
+    .lu-faq-item[open] summary::before {
+      content: '-';
+    }
+
+    .lu-faq-item summary:hover {
       color: var(--accent);
     }
 
-    .faq-item p {
-      margin: 1rem 0 0 0;
-      color: var(--text-secondary);
+    .lu-faq-item p {
+      margin: 0.75rem 0 0 20px;
+      color: var(--text2);
+      font-size: 0.9rem;
       line-height: 1.6;
     }
 
+    /* Related Maps */
+    .lu-related {
+      margin-bottom: 3rem;
+    }
+
+    .lu-related-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .lu-related-pill {
+      display: inline-block;
+      padding: 0.45rem 1rem;
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      color: var(--text2);
+      font-size: 0.85rem;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.15s ease;
+    }
+
+    .lu-related-pill:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+      border-left: 3px solid var(--accent);
+    }
+
+    /* Responsive */
     @media (max-width: 768px) {
-      .hero {
-        padding: 2rem 1rem;
+      .lu-hero-title {
+        font-size: 1.6rem;
       }
 
-      .hero h1 {
-        font-size: 1.8rem;
+      .lu-hero-pills {
+        gap: 0.35rem;
       }
 
-      .stats-bar {
-        grid-template-columns: 1fr;
-      }
-
-      .filters {
-        flex-direction: column;
-        gap: 1rem;
-      }
-
-      .lineups-grid {
-        grid-template-columns: 1fr;
-        gap: 1.5rem;
-      }
-
-      .card-learned-section {
-        flex-direction: column;
-      }
-
-      .card-route {
+      .lu-filter-row {
         flex-direction: column;
         align-items: flex-start;
+        gap: 0.4rem;
       }
 
-      .arrow {
-        transform: rotate(90deg);
+      .lu-filter-label {
+        min-width: auto;
       }
 
-      .radar-container {
+      .lu-row-main {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+      }
+
+      .lu-row-top {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.3rem;
+      }
+
+      .lu-row-detail {
+        padding-left: 1rem;
+      }
+
+      .lu-radar-box {
         max-width: 100%;
       }
 
-      .radar-section {
-        padding: 1rem;
+      .lu-tip-item {
+        flex-direction: column;
+        gap: 0.5rem;
       }
 
-      .legend-items {
+      .lu-legend-items {
         gap: 0.75rem;
       }
     }

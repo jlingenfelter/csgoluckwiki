@@ -1,0 +1,427 @@
+---
+import Base from '../../layouts/Base.astro';
+import ExploreMore from '../../components/ExploreMore.astro';
+import { getTeams, getAverageEdpi, type TeamInfo } from '../../lib/pro-players';
+import { breadcrumbSchema, faqSchema } from '../../lib/weapons';
+
+export function getStaticPaths() {
+  return getTeams().map(t => ({
+    params: { slug: t.slug },
+    props: { team: t },
+  }));
+}
+
+const { team } = Astro.props as { team: TeamInfo };
+const players = team.players;
+const globalAvgEdpi = getAverageEdpi();
+
+// Team-level computed stats
+const teamAvgEdpi = Math.round(players.reduce((s, p) => s + p.edpi, 0) / players.length);
+
+// Most common resolution
+const resCounts: Record<string, number> = {};
+players.forEach(p => resCounts[p.res] = (resCounts[p.res] || 0) + 1);
+const mostCommonRes = Object.entries(resCounts).sort((a, b) => b[1] - a[1])[0]?.[0] ?? 'N/A';
+
+// Most common mouse
+const mouseCounts: Record<string, number> = {};
+players.forEach(p => { if (p.mouse) mouseCounts[p.mouse] = (mouseCounts[p.mouse] || 0) + 1; });
+const mostCommonMouse = Object.entries(mouseCounts).sort((a, b) => b[1] - a[1])[0]?.[0] ?? 'N/A';
+
+// Most common aspect ratio
+const aspectCounts: Record<string, number> = {};
+players.forEach(p => aspectCounts[p.aspect] = (aspectCounts[p.aspect] || 0) + 1);
+const mostCommonAspect = Object.entries(aspectCounts).sort((a, b) => b[1] - a[1])[0]?.[0] ?? 'N/A';
+
+// eDPI range
+const edpiMin = Math.min(...players.map(p => p.edpi));
+const edpiMax = Math.max(...players.map(p => p.edpi));
+
+// DPI range
+const dpiValues = [...new Set(players.map(p => p.dpi))].sort((a, b) => a - b);
+
+// Stretched vs native counts
+let stretchedCount = 0, barsCount = 0, nativeCount = 0;
+players.forEach(p => {
+  if (p.stretch === 'Stretched') stretchedCount++;
+  else if (p.stretch === 'Black Bars') barsCount++;
+  else nativeCount++;
+});
+
+// Role breakdown
+const roleCounts: Record<string, number> = {};
+players.forEach(p => roleCounts[p.role] = (roleCounts[p.role] || 0) + 1);
+
+// Other teams for internal linking
+const allTeams = getTeams().filter(t => t.slug !== team.slug);
+const relatedTeams = allTeams.slice(0, 8);
+
+const title = `${team.name} CS2 Settings — Crosshair, Sensitivity & Gear | CSGOLuck Wiki`;
+const description = `Complete ${team.name} CS2 team settings: crosshair codes, sensitivity, resolution, mouse, and gear from ${players.length} players. Copy pro configs instantly.`;
+
+const breadcrumbs = [
+  { name: 'Home', url: '/' },
+  { name: 'Pro Players', url: '/pro-players/' },
+  { name: 'Teams', url: '/pro-teams/' },
+  { name: `${team.name}`, url: `/team/${team.slug}/` },
+];
+
+const edpiCompare = teamAvgEdpi < globalAvgEdpi ? 'below' : teamAvgEdpi > globalAvgEdpi ? 'above' : 'at';
+
+const faqs = [
+  {
+    question: `What sensitivity do ${team.name} players use?`,
+    answer: `${team.name} players use an average eDPI of ${teamAvgEdpi}, which is ${edpiCompare} the global pro average of ${globalAvgEdpi}. The team's eDPI ranges from ${edpiMin} to ${edpiMax}. Most players on the roster use ${dpiValues[0] || 400} DPI as their hardware setting.`,
+  },
+  {
+    question: `What resolution does ${team.name} use in CS2?`,
+    answer: `The most common resolution on ${team.name} is ${mostCommonRes} (${mostCommonAspect}). ${stretchedCount > 0 ? `${stretchedCount} player${stretchedCount > 1 ? 's' : ''} use stretched mode` : ''}${barsCount > 0 ? `${stretchedCount > 0 ? ', ' : ''}${barsCount} use black bars` : ''}${nativeCount > 0 ? `${stretchedCount > 0 || barsCount > 0 ? ', and ' : ''}${nativeCount} use native resolution` : ''}.`,
+  },
+  {
+    question: `What mouse does ${team.name} use?`,
+    answer: `The most popular mouse on ${team.name} is the ${mostCommonMouse}. Each player has their own preferred peripherals, and you can find their exact gear listed on this page with links to purchase.`,
+  },
+  {
+    question: `Should I copy ${team.name}'s settings?`,
+    answer: `${team.name}'s settings are a great reference point, especially for understanding what works at the highest level of CS2. However, the best approach is to use their settings as a starting point and adjust based on your own comfort, desk space, and playstyle. Focus on staying within the team's eDPI range (${edpiMin}–${edpiMax}) and give any changes at least 2 weeks of practice.`,
+  },
+];
+---
+
+<Base {title} {description}>
+<Fragment slot="head">
+<script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema(breadcrumbs))} />
+<script type="application/ld+json" set:html={JSON.stringify(faqSchema(faqs))} />
+</Fragment>
+
+<nav class="breadcrumb">
+  <a href="/">Home</a> <span>/</span>
+  <a href="/pro-players/">Pro Players</a> <span>/</span>
+  <a href="/pro-teams/">Teams</a> <span>/</span>
+  <span>{team.name}</span>
+</nav>
+
+<!-- Hero: Two-column layout -->
+<section class="tp-hero">
+  <div class="tp-hero-left">
+    <div class="tp-hero-icon">
+      <span class="tp-hero-letter">{team.name.charAt(0)}</span>
+    </div>
+  </div>
+  <div class="tp-hero-right">
+    <h1>{team.name}</h1>
+    <p>Full settings breakdown for {players.length} {team.name} player{players.length !== 1 ? 's' : ''} -- crosshair codes, sensitivity, resolution, and gear. Use the <a href="/edpi-calculator/" style="color:var(--accent)">eDPI Calculator</a> to compare their sensitivity, or generate your own crosshair with the <a href="/crosshair-generator/" style="color:var(--accent)">Crosshair Generator</a>.</p>
+    <table class="tp-hero-table">
+      <tbody>
+        <tr><td class="tp-ht-label">Players</td><td class="tp-ht-value">{players.length}</td></tr>
+        <tr><td class="tp-ht-label">Avg eDPI</td><td class="tp-ht-value tp-ht-accent">{teamAvgEdpi}</td></tr>
+        <tr><td class="tp-ht-label">eDPI Range</td><td class="tp-ht-value">{edpiMin} - {edpiMax}</td></tr>
+        <tr><td class="tp-ht-label">Top Resolution</td><td class="tp-ht-value">{mostCommonRes}</td></tr>
+        <tr><td class="tp-ht-label">Top Mouse</td><td class="tp-ht-value">{mostCommonMouse}</td></tr>
+        <tr><td class="tp-ht-label">Top Aspect Ratio</td><td class="tp-ht-value">{mostCommonAspect}</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- Team Stats: Horizontal Stat Pills -->
+<section class="tp-stats-bar">
+  <div class="tp-pill"><span class="tp-pill-val">{teamAvgEdpi}</span><span class="tp-pill-lbl">Avg eDPI</span></div>
+  <div class="tp-pill"><span class="tp-pill-val">{mostCommonRes}</span><span class="tp-pill-lbl">Resolution</span></div>
+  <div class="tp-pill"><span class="tp-pill-val">{mostCommonAspect}</span><span class="tp-pill-lbl">Aspect</span></div>
+  <div class="tp-pill"><span class="tp-pill-val">{edpiMin}-{edpiMax}</span><span class="tp-pill-lbl">eDPI Range</span></div>
+  {Object.entries(roleCounts).map(([role, count]) => (
+    <div class="tp-pill"><span class="tp-pill-val">{count}</span><span class="tp-pill-lbl">{role}{count !== 1 ? 's' : ''}</span></div>
+  ))}
+  {stretchedCount > 0 && <div class="tp-pill"><span class="tp-pill-val">{stretchedCount}</span><span class="tp-pill-lbl">Stretched</span></div>}
+  {barsCount > 0 && <div class="tp-pill"><span class="tp-pill-val">{barsCount}</span><span class="tp-pill-lbl">Black Bars</span></div>}
+  {nativeCount > 0 && <div class="tp-pill"><span class="tp-pill-val">{nativeCount}</span><span class="tp-pill-lbl">Native</span></div>}
+</section>
+
+<!-- Roster Table -->
+<section class="tp-section">
+  <h2>Roster</h2>
+  <div class="tp-roster-wrap">
+    <table class="tp-roster">
+      <thead>
+        <tr>
+          <th>Player</th>
+          <th>Role</th>
+          <th>Country</th>
+          <th>DPI</th>
+          <th>Sens</th>
+          <th>eDPI</th>
+          <th>Resolution</th>
+          <th>Settings</th>
+        </tr>
+      </thead>
+      <tbody>
+        {players.map(p => (
+          <tr>
+            <td class="tp-roster-name">
+              {p.image && <img class="tp-roster-avatar" src={p.image} alt={p.name} width="28" height="28" loading="lazy" onerror="this.style.display='none'" />}
+              <strong>{p.flag} {p.name}</strong>
+            </td>
+            <td><span class="tp-role" data-r={p.role.toLowerCase().replace(/\s/g,'-')}>{p.role}</span></td>
+            <td class="tp-roster-country">{p.country || '—'}</td>
+            <td>{p.dpi}</td>
+            <td>{p.sens}</td>
+            <td class="tp-roster-edpi"><strong>{p.edpi}</strong></td>
+            <td>{p.res} <span class="tp-roster-sub">{p.aspect}</span></td>
+            <td><a href={`/pro-players/${p.slug}/`} class="tp-roster-link">View &rarr;</a></td>
+          </tr>
+        ))}
+      </tbody>
+      <tfoot>
+        <tr>
+          <td><strong>Team Average</strong></td>
+          <td>—</td>
+          <td>—</td>
+          <td>{Math.round(players.reduce((s, p) => s + p.dpi, 0) / players.length)}</td>
+          <td>{(players.reduce((s, p) => s + p.sens, 0) / players.length).toFixed(2)}</td>
+          <td class="tp-roster-edpi"><strong>{teamAvgEdpi}</strong></td>
+          <td>{mostCommonRes}</td>
+          <td>—</td>
+        </tr>
+      </tfoot>
+    </table>
+  </div>
+</section>
+
+<!-- Full Gear Comparison Table -->
+<section class="tp-section">
+  <h2>{team.name} Gear Comparison</h2>
+  <p class="tp-section-desc">Side-by-side comparison of all {team.name} players' peripherals and settings.</p>
+  <div class="tp-gear-wrap">
+    <table class="tp-gear-table">
+      <thead>
+        <tr>
+          <th>Player</th>
+          <th>Mouse</th>
+          <th>Mousepad</th>
+          <th>Keyboard</th>
+          <th>Headset</th>
+          <th>Monitor</th>
+          <th>Refresh</th>
+          <th>Display</th>
+        </tr>
+      </thead>
+      <tbody>
+        {players.map(p => (
+          <tr>
+            <td><a href={`/pro-players/${p.slug}/`} class="tp-gear-link"><strong>{p.flag} {p.name}</strong></a></td>
+            <td>{p.mouse || '—'}</td>
+            <td>{p.mousepad || '—'}</td>
+            <td>{p.keyboard || '—'}</td>
+            <td>{p.headset || '—'}</td>
+            <td>{p.monitor || '—'}</td>
+            <td>{p.refreshRate ? `${p.refreshRate}Hz` : '—'}</td>
+            <td>{p.stretch || '—'}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- Crosshair Codes Section -->
+<section class="tp-section">
+  <h2>{team.name} Crosshair Codes</h2>
+  <p class="tp-section-desc">Copy any {team.name} player's crosshair code and paste it in CS2 settings.</p>
+  <div class="tp-xhair-list">
+    {players.filter(p => p.crosshairCode).map(p => (
+      <div class="tp-xhair-row">
+        <div class="tp-xhair-player">
+          <strong>{p.flag} {p.name}</strong>
+          <span class="tp-role tp-role-sm" data-r={p.role.toLowerCase().replace(/\s/g,'-')}>{p.role}</span>
+        </div>
+        <div class="tp-xhair-code">
+          <code>{p.crosshairCode}</code>
+          <button class="tp-copy" data-code={p.crosshairCode}>Copy</button>
+        </div>
+      </div>
+    ))}
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="tp-section">
+  <h2>Frequently Asked Questions</h2>
+  <dl class="faq">
+    {faqs.map(f => (
+      <>
+        <dt>{f.question}</dt>
+        <dd>{f.answer}</dd>
+      </>
+    ))}
+  </dl>
+</section>
+
+<!-- Related Teams: Horizontal Scrolling Strip -->
+<section class="tp-section">
+  <h2>More CS2 Teams</h2>
+  <div class="tp-related-strip">
+    {relatedTeams.map(t => (
+      <a href={`/pro-teams/${t.slug}/`} class="tp-related-card">
+        <span class="tp-related-letter">{t.name.charAt(0)}</span>
+        <div class="tp-related-info">
+          <span class="tp-related-name">{t.name}</span>
+          <span class="tp-related-count">{t.players.length} players</span>
+        </div>
+      </a>
+    ))}
+  </div>
+</section>
+
+<!-- Internal Links -->
+<section class="tp-section">
+  <div class="internal-links">
+    <a href="/pro-teams/">All Teams</a>
+    <a href="/pro-players/">All Pro Players</a>
+    <a href="/pro-gaming-gear/">Pro Gaming Gear</a>
+    <a href="/crosshair-codes/">Crosshair Codes</a>
+    <a href="/crosshair-generator/">Crosshair Generator</a>
+    <a href="/sensitivity-converter/">Sensitivity Converter</a>
+    <a href="/edpi-calculator/">eDPI Calculator</a>
+    <a href="/cm360-calculator/">cm/360 Calculator</a>
+    <a href="/resolution-calculator/">Resolution Calculator</a>
+    <a href="/autoexec-generator/">Autoexec Generator</a>
+    <a href="/bind-generator/">Bind Generator</a>
+    <a href="/cs2-weapons/">Weapon Database</a>
+    <a href="/cs2-skins/">Skin Database</a>
+    <a href="/cs2-guides/crosshair-guide/">Crosshair Guide</a>
+    <a href="/cs2-guides/sensitivity-guide/">Sensitivity Guide</a>
+    <a href="/cs2-guides/config-guide/">Config Guide</a>
+    <a href="/cs2-tools/">All Tools</a>
+  </div>
+</section>
+
+<ExploreMore context="general" />
+
+</Base>
+
+<style>
+/* Hero: Two-column */
+.tp-hero{display:flex;gap:2rem;align-items:flex-start;background:var(--bg2);border:1px solid var(--border);border-radius:4px;padding:2rem;margin-bottom:0}
+.tp-hero-left{flex-shrink:0;display:flex;align-items:center;justify-content:center}
+.tp-hero-icon{width:100px;height:100px;background:var(--bg);border:2px solid var(--border);border-radius:4px;display:flex;align-items:center;justify-content:center}
+.tp-hero-letter{font-size:2.8rem;font-weight:800;color:var(--accent);line-height:1}
+.tp-hero-right{flex:1;min-width:0}
+.tp-hero-right h1{font-size:2rem;font-weight:800;margin:0 0 .5rem;line-height:1.2}
+.tp-hero-right p{color:var(--text2);font-size:.95rem;margin:0 0 1.25rem;line-height:1.5}
+.tp-hero-table{width:100%;max-width:380px;border-collapse:collapse}
+.tp-hero-table td{padding:.35rem 0;font-size:.88rem}
+.tp-ht-label{color:var(--text2);font-weight:600;padding-right:1.5rem;white-space:nowrap}
+.tp-ht-value{color:var(--text);font-weight:700}
+.tp-ht-accent{color:var(--accent)}
+.tp-hero-table tr{border-bottom:1px solid var(--border)}
+.tp-hero-table tr:last-child{border-bottom:none}
+
+/* Stat Pills Bar */
+.tp-stats-bar{display:flex;flex-wrap:wrap;gap:.5rem;padding:1.25rem 0;border-bottom:1px solid var(--border);margin-bottom:2rem}
+.tp-pill{display:inline-flex;align-items:center;gap:.4rem;background:var(--bg2);border:1px solid var(--border);border-radius:4px;padding:.4rem .8rem}
+.tp-pill-val{font-size:.88rem;font-weight:700;color:var(--accent)}
+.tp-pill-lbl{font-size:.72rem;color:var(--text2);text-transform:uppercase}
+
+/* Section spacing */
+.tp-section{margin-bottom:2.5rem}
+.tp-section h2{margin-bottom:1rem;font-size:1.3rem}
+.tp-section-desc{font-size:.88rem;color:var(--text2);margin-bottom:1rem}
+
+/* Role badges */
+.tp-role{font-size:.7rem;font-weight:700;padding:.18rem .45rem;border-radius:4px;text-transform:uppercase;letter-spacing:.03em;background:var(--bg3);color:var(--text2);border:1px solid var(--border);white-space:nowrap}
+.tp-role[data-r="awper"]{background:rgba(239,83,80,.12);color:var(--red);border-color:var(--red)}
+.tp-role[data-r="rifler"]{background:rgba(66,165,245,.12);color:var(--blue);border-color:var(--blue)}
+.tp-role[data-r="igl"]{background:rgba(171,71,188,.12);color:var(--purple);border-color:var(--purple)}
+.tp-role[data-r="entry-fragger"]{background:rgba(46,204,113,.12);color:var(--accent);border-color:var(--accent)}
+.tp-role[data-r="support"]{background:rgba(76,175,80,.12);color:var(--green);border-color:var(--green)}
+.tp-role-sm{font-size:.62rem;padding:.12rem .35rem}
+
+/* Roster Table */
+.tp-roster-wrap{overflow-x:auto;border:1px solid var(--border);border-radius:4px}
+.tp-roster{width:100%;border-collapse:collapse;background:var(--bg2);font-size:.85rem}
+.tp-roster thead{background:var(--bg3)}
+.tp-roster th{padding:.7rem .6rem;text-align:left;font-weight:700;color:var(--text);text-transform:uppercase;font-size:.68rem;letter-spacing:.04em;white-space:nowrap}
+.tp-roster td{padding:.6rem;border-bottom:1px solid var(--border);color:var(--text2);white-space:nowrap}
+.tp-roster tbody tr:hover td{background:var(--bg3)}
+.tp-roster td strong{color:var(--text)}
+.tp-roster-name{display:flex;align-items:center;gap:.5rem}
+.tp-roster-avatar{width:28px;height:28px;border-radius:50%;object-fit:cover;border:1px solid var(--border);flex-shrink:0;background:var(--bg3)}
+.tp-roster-country{color:var(--text2);font-size:.82rem}
+.tp-roster-edpi{color:var(--accent);font-weight:700}
+.tp-roster-sub{color:var(--text2);font-size:.72rem}
+.tp-roster-link{color:var(--accent);text-decoration:none;font-weight:600;font-size:.82rem;transition:opacity .15s}
+.tp-roster-link:hover{opacity:.8}
+.tp-roster tfoot td{background:var(--bg3);font-weight:600;color:var(--text);border-top:2px solid var(--accent)}
+
+/* Gear Comparison Table */
+.tp-gear-wrap{overflow-x:auto;border:1px solid var(--border);border-radius:4px}
+.tp-gear-table{width:100%;border-collapse:collapse;background:var(--bg2);font-size:.82rem}
+.tp-gear-table thead{background:var(--bg3)}
+.tp-gear-table th{padding:.65rem .5rem;text-align:left;font-weight:700;color:var(--text);text-transform:uppercase;font-size:.68rem;letter-spacing:.03em;white-space:nowrap}
+.tp-gear-table td{padding:.5rem;border-bottom:1px solid var(--border);color:var(--text2);white-space:nowrap}
+.tp-gear-table tbody tr:hover td{background:var(--bg3)}
+.tp-gear-table td strong{color:var(--text)}
+.tp-gear-link{color:var(--accent);text-decoration:none;font-weight:600}
+.tp-gear-link:hover{opacity:.8}
+
+/* Crosshair Codes */
+.tp-xhair-list{display:flex;flex-direction:column;gap:.6rem}
+.tp-xhair-row{display:flex;align-items:center;gap:1rem;background:var(--bg2);border:1px solid var(--border);border-radius:4px;padding:.75rem 1rem;transition:border-left .15s}
+.tp-xhair-row:hover{border-left:3px solid var(--accent)}
+.tp-xhair-player{display:flex;align-items:center;gap:.5rem;min-width:160px;flex-shrink:0}
+.tp-xhair-player strong{font-size:.9rem;color:var(--text)}
+.tp-xhair-code{flex:1;display:flex;align-items:center;gap:.5rem;background:var(--bg);border:1px solid var(--border);border-radius:4px;padding:.35rem .6rem}
+.tp-xhair-code code{flex:1;font-size:.72rem;color:var(--text2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tp-copy{background:var(--accent);color:#000;border:none;padding:.25rem .6rem;border-radius:4px;font-size:.72rem;font-weight:700;cursor:pointer;white-space:nowrap;font-family:inherit;transition:opacity .15s}
+.tp-copy:hover{opacity:.85}
+.tp-copy.copied{background:var(--green);color:#fff}
+
+/* Related Teams: Horizontal Scrolling Strip */
+.tp-related-strip{display:flex;gap:.75rem;overflow-x:auto;padding-bottom:.5rem;-webkit-overflow-scrolling:touch;scrollbar-width:thin}
+.tp-related-strip::-webkit-scrollbar{height:4px}
+.tp-related-strip::-webkit-scrollbar-track{background:var(--bg)}
+.tp-related-strip::-webkit-scrollbar-thumb{background:var(--border);border-radius:4px}
+.tp-related-card{display:flex;align-items:center;gap:.65rem;text-decoration:none;color:inherit;background:var(--bg2);border:1px solid var(--border);border-radius:4px;padding:.75rem 1rem;min-width:180px;flex-shrink:0;transition:border-left .15s}
+.tp-related-card:hover{border-left:3px solid var(--accent)}
+.tp-related-letter{width:36px;height:36px;display:flex;align-items:center;justify-content:center;background:var(--bg);border:1px solid var(--border);border-radius:4px;font-size:1.1rem;font-weight:800;color:var(--accent);flex-shrink:0}
+.tp-related-info{display:flex;flex-direction:column;min-width:0}
+.tp-related-name{font-size:.88rem;font-weight:700;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tp-related-count{font-size:.7rem;color:var(--text2)}
+
+/* Responsive */
+@media(max-width:768px){
+  .tp-hero{flex-direction:column;gap:1.25rem;padding:1.5rem}
+  .tp-hero-icon{width:72px;height:72px}
+  .tp-hero-letter{font-size:2rem}
+  .tp-hero-right h1{font-size:1.6rem}
+  .tp-hero-table{max-width:100%}
+  .tp-stats-bar{gap:.35rem}
+  .tp-pill{padding:.3rem .6rem}
+  .tp-pill-val{font-size:.78rem}
+  .tp-xhair-row{flex-direction:column;align-items:flex-start;gap:.5rem}
+  .tp-xhair-player{min-width:auto}
+  .tp-xhair-code{width:100%}
+  .tp-related-card{min-width:160px}
+}
+</style>
+
+<script is:inline>
+(function(){
+  document.querySelectorAll('.tp-copy').forEach(function(btn){
+    btn.addEventListener('click', function(e){
+      e.preventDefault();
+      e.stopPropagation();
+      var code = btn.dataset.code;
+      navigator.clipboard.writeText(code).then(function(){
+        btn.textContent = 'Copied!';
+        btn.classList.add('copied');
+        setTimeout(function(){
+          btn.textContent = 'Copy';
+          btn.classList.remove('copied');
+        }, 1500);
+      });
+    });
+  });
+})();
+</script>

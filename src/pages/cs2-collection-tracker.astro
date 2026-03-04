@@ -1,0 +1,1087 @@
+---
+import Base from '../layouts/Base.astro';
+import ExploreMore from '../components/ExploreMore.astro';
+import { SKINS, getLowestPrice, RARITY_COLORS, getCollections } from '../lib/skins';
+import { breadcrumbSchema, faqSchema } from '../lib/weapons';
+
+const title = 'CS2 Collection Tracker — Track Your Skin Collection Progress | CSGOLuck Wiki';
+const description = 'Track your CS2 skin collection completion across every collection. Mark skins as owned, see completion percentages, and estimate your collection value. Free collection progress tracker.';
+
+const breadcrumbs = [
+  { name: 'Home', url: '/' },
+  { name: 'Skins', url: '/cs2-skins/' },
+  { name: 'Collection Tracker', url: '/cs2-collection-tracker/' },
+];
+
+const faqData = [
+  { q: 'How does the Collection Tracker work?', a: 'The tracker loads all CS2 skin collections and lets you click individual skins to mark them as owned. Your progress is saved locally in your browser using localStorage, so it persists between visits. No account or login is required.' },
+  { q: 'Is my collection data saved?', a: 'Yes. Your owned skins are stored in your browser\'s localStorage as a list of skin identifiers. The data never leaves your device and is not sent to any server. Clearing your browser data will reset your progress.' },
+  { q: 'How are collection values calculated?', a: 'The estimated value is based on the lowest available market price for each skin you\'ve marked as owned. Prices are sourced from PriceEmpire which aggregates data from 14+ marketplaces. Actual values may vary by wear condition and market fluctuations.' },
+  { q: 'Can I track StatTrak or Souvenir versions?', a: 'The tracker currently tracks base skins by collection. StatTrak and Souvenir variants share the same collection slot — marking a skin as owned covers all variants of that skin within the collection.' },
+  { q: 'How do I reset my collection progress?', a: 'Click the "Reset All" button at the top of the page to clear all owned skins and start fresh. This action cannot be undone, so make sure you want to reset before confirming.' },
+  { q: 'What collections are included?', a: 'Every collection available in CS2 is included, from map collections like the Dust 2 Collection to operation collections and special event collections. The tracker updates automatically as new collections are added to the game.' },
+  { q: 'Can I share my collection progress?', a: 'Currently, collection progress is stored locally in your browser. You can use the Inventory Lookup tool to show your actual Steam inventory, or the Loadout Builder to share a specific loadout with others.' },
+  { q: 'Why do some skins show $0.00 price?', a: 'Skins showing $0.00 either have no current market listings or their price data is temporarily unavailable. These skins are still tracked for completion percentage but won\'t count toward your estimated value.' },
+];
+
+// Build collection data at build time
+const collections = getCollections();
+const totalSkinsAll = collections.reduce((sum, c) => sum + c.skins.length, 0);
+
+// Build a JSON blob for client-side use
+const collectionsData = collections.map(col => ({
+  name: col.name,
+  slug: col.slug,
+  skins: col.skins.map(s => ({
+    slug: s.slug,
+    name: s.name,
+    weapon: s.weapon,
+    rarity: s.rarity,
+    lowestPrice: getLowestPrice(s),
+  })),
+}));
+
+const collectionsJson = JSON.stringify(collectionsData);
+const rarityColorsJson = JSON.stringify(RARITY_COLORS);
+---
+
+<Base title={title} description={description} currentNav="/cs2-skins/">
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema(breadcrumbs))} />
+    <script type="application/ld+json" set:html={JSON.stringify(faqSchema(faqData))} />
+  </Fragment>
+
+  <!-- Breadcrumb -->
+  <nav class="ct-crumb">
+    <a href="/">Home</a>
+    <span class="ct-crumb-sep">/</span>
+    <a href="/cs2-skins/">Skins</a>
+    <span class="ct-crumb-sep">/</span>
+    <span class="ct-crumb-cur">Collection Tracker</span>
+  </nav>
+
+  <!-- Hero -->
+  <section class="ct-hero">
+    <div class="ct-hero-text">
+      <h1 class="ct-hero-title">CS2 Collection Tracker</h1>
+      <p class="ct-hero-desc">Track your skin collection progress across every CS2 collection. Click skins to mark them as owned and watch your completion grow. Your progress is saved locally in your browser.</p>
+    </div>
+    <div class="ct-hero-stats">
+      <div class="ct-stat-pill">
+        <span class="ct-stat-val" id="ct-stat-owned">0</span>
+        <span class="ct-stat-label">Owned</span>
+      </div>
+      <div class="ct-stat-pill">
+        <span class="ct-stat-val" id="ct-stat-total">{totalSkinsAll}</span>
+        <span class="ct-stat-label">Total</span>
+      </div>
+      <div class="ct-stat-pill">
+        <span class="ct-stat-val" id="ct-stat-value">$0.00</span>
+        <span class="ct-stat-label">Value</span>
+      </div>
+      <div class="ct-stat-pill">
+        <span class="ct-stat-val" id="ct-stat-complete">0</span>
+        <span class="ct-stat-label">Complete</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Overall Progress Bar -->
+  <div class="ct-progress-wrap">
+    <div class="ct-progress-header">
+      <span class="ct-progress-text">Overall Completion</span>
+      <span class="ct-progress-pct" id="ct-overall-pct">0%</span>
+    </div>
+    <div class="ct-progress-track">
+      <div class="ct-progress-fill" id="ct-overall-fill" style="width:0%"></div>
+    </div>
+  </div>
+
+  <!-- Filter Tabs & Controls -->
+  <div class="ct-controls">
+    <div class="ct-tabs" id="ct-filter-tabs">
+      <button class="ct-tab ct-tab-active" data-sort="completion">By Completion</button>
+      <button class="ct-tab" data-sort="name">A-Z</button>
+      <button class="ct-tab" data-sort="size">By Size</button>
+      <button class="ct-tab" data-sort="value">By Value</button>
+    </div>
+    <div class="ct-controls-right">
+      <input type="text" id="ct-search" placeholder="Search collections..." class="ct-search" />
+      <button id="ct-reset-btn" class="ct-reset">Reset All</button>
+    </div>
+  </div>
+
+  <!-- Collection List -->
+  <div class="ct-list" id="ct-list">
+    <!-- Populated by JS -->
+  </div>
+
+  <!-- FAQ Accordion -->
+  <section class="ct-faq-section">
+    <h2 class="ct-faq-heading">Frequently Asked Questions</h2>
+    {faqData.map(f => (
+      <details class="ct-faq-item">
+        <summary class="ct-faq-q">{f.q}</summary>
+        <p class="ct-faq-a">{f.a}</p>
+      </details>
+    ))}
+  </section>
+
+  <!-- Internal Links -->
+  <div class="ct-links">
+    <a href="/cs2-skins/">All Skins</a>
+    <a href="/cs2-cases/">Cases & Collections</a>
+    <a href="/skin-compare/">Compare Skins</a>
+    <a href="/price-tracker/">Price Tracker</a>
+    <a href="/float-checker/">Float Checker</a>
+    <a href="/tradeup-calculator/">Trade-Up Calculator</a>
+    <a href="/inventory-lookup/">Inventory Lookup</a>
+    <a href="/loadout-builder/">Loadout Builder</a>
+    <a href="/market-trends/">Market Trends</a>
+  </div>
+
+  <ExploreMore context="skins" />
+
+  <style is:inline>
+    :root {
+      --accent: #2ecc71;
+      --bg2: #13141a;
+      --bg3: #1a1c24;
+      --border: #242630;
+    }
+
+    /* ---- BREADCRUMB ---- */
+    .ct-crumb {
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+      margin-bottom: 1.25rem;
+      font-size: 0.82rem;
+    }
+
+    .ct-crumb a {
+      color: var(--text2);
+      text-decoration: none;
+    }
+
+    .ct-crumb a:hover {
+      color: var(--accent);
+    }
+
+    .ct-crumb-sep {
+      color: var(--border);
+    }
+
+    .ct-crumb-cur {
+      color: var(--text);
+      font-weight: 600;
+    }
+
+    /* ---- HERO ---- */
+    .ct-hero {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 1.5rem;
+      margin-bottom: 1.5rem;
+      padding-bottom: 1.5rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .ct-hero-text {
+      flex: 1;
+    }
+
+    .ct-hero-title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--text);
+      margin: 0 0 0.4rem;
+      letter-spacing: -0.02em;
+    }
+
+    .ct-hero-desc {
+      font-size: 0.88rem;
+      color: var(--text2);
+      margin: 0;
+      line-height: 1.55;
+      max-width: 560px;
+    }
+
+    .ct-hero-stats {
+      display: flex;
+      gap: 0.5rem;
+      flex-shrink: 0;
+      flex-wrap: wrap;
+    }
+
+    .ct-stat-pill {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.15rem;
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 0.6rem 0.85rem;
+      min-width: 65px;
+    }
+
+    .ct-stat-val {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--accent);
+    }
+
+    .ct-stat-label {
+      font-size: 0.68rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--text2);
+    }
+
+    /* ---- PROGRESS BAR ---- */
+    .ct-progress-wrap {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 0.85rem 1.1rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .ct-progress-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.5rem;
+    }
+
+    .ct-progress-text {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .ct-progress-pct {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--accent);
+    }
+
+    .ct-progress-track {
+      height: 8px;
+      background: var(--bg3);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    .ct-progress-fill {
+      height: 100%;
+      background: var(--accent);
+      border-radius: 4px;
+      transition: width 0.4s ease;
+    }
+
+    /* ---- CONTROLS ---- */
+    .ct-controls {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+      margin-bottom: 1.25rem;
+    }
+
+    .ct-tabs {
+      display: flex;
+      gap: 0.3rem;
+      flex-wrap: wrap;
+    }
+
+    .ct-tab {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 0.35rem 0.7rem;
+      font-size: 0.78rem;
+      font-weight: 500;
+      color: var(--text2);
+      cursor: pointer;
+      font-family: inherit;
+      transition: color 0.15s, border-color 0.15s;
+    }
+
+    .ct-tab:hover {
+      color: var(--text);
+      border-color: var(--accent);
+    }
+
+    .ct-tab-active {
+      color: var(--accent);
+      border-color: var(--accent);
+      font-weight: 600;
+    }
+
+    .ct-controls-right {
+      display: flex;
+      gap: 0.5rem;
+      align-items: center;
+    }
+
+    .ct-search {
+      background: var(--bg2);
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 0.4rem 0.7rem;
+      font-size: 0.82rem;
+      font-family: inherit;
+      width: 180px;
+      transition: border-color 0.15s;
+    }
+
+    .ct-search:focus {
+      outline: none;
+      border-color: var(--accent);
+    }
+
+    .ct-reset {
+      background: var(--bg2);
+      color: #e07070;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 0.4rem 0.7rem;
+      font-size: 0.78rem;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: inherit;
+      transition: background 0.15s, border-color 0.15s;
+    }
+
+    .ct-reset:hover {
+      background: rgba(224, 112, 112, 0.12);
+      border-color: #e07070;
+    }
+
+    /* ---- COLLECTION LIST (COMPACT ROWS) ---- */
+    .ct-list {
+      display: flex;
+      flex-direction: column;
+      margin-bottom: 2rem;
+    }
+
+    .ct-row {
+      display: flex;
+      flex-direction: column;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .ct-row-header {
+      display: grid;
+      grid-template-columns: 1fr 80px 50px 28px;
+      gap: 0.75rem;
+      align-items: center;
+      padding: 0.65rem 0.75rem;
+      cursor: pointer;
+      user-select: none;
+      border-left: 3px solid transparent;
+      transition: background 0.15s, border-left-color 0.15s;
+    }
+
+    .ct-row-header:hover {
+      background: var(--bg3);
+      border-left-color: var(--accent);
+    }
+
+    .ct-row-name {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--text);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .ct-row-bar-wrap {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .ct-row-bar {
+      flex: 1;
+      height: 5px;
+      background: var(--bg3);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+
+    .ct-row-fill {
+      height: 100%;
+      background: var(--accent);
+      border-radius: 3px;
+      transition: width 0.3s ease;
+    }
+
+    .ct-row-fill.ct-complete-bar {
+      background: #5cb85c;
+    }
+
+    .ct-row-count {
+      font-size: 0.75rem;
+      color: var(--text2);
+      text-align: center;
+      white-space: nowrap;
+    }
+
+    .ct-row-pct {
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: var(--accent);
+      text-align: right;
+    }
+
+    .ct-row-pct.ct-complete-pct {
+      color: #5cb85c;
+    }
+
+    .ct-row-toggle {
+      font-size: 0.85rem;
+      color: var(--text2);
+      text-align: center;
+      transition: color 0.15s;
+    }
+
+    .ct-row-header:hover .ct-row-toggle {
+      color: var(--accent);
+    }
+
+    /* ---- EXPANDED BODY ---- */
+    .ct-row-body {
+      display: none;
+      padding: 0.5rem 0.75rem 0.75rem;
+      background: var(--bg2);
+      border-left: 3px solid var(--accent);
+    }
+
+    .ct-row.ct-expanded .ct-row-body {
+      display: block;
+    }
+
+    .ct-row-actions {
+      display: flex;
+      gap: 0.4rem;
+      margin-bottom: 0.6rem;
+    }
+
+    .ct-row-actions button {
+      background: var(--bg3);
+      color: var(--text2);
+      border: 1px solid var(--border);
+      padding: 0.2rem 0.5rem;
+      border-radius: 4px;
+      font-size: 0.7rem;
+      cursor: pointer;
+      font-family: inherit;
+      transition: color 0.15s, border-color 0.15s;
+    }
+
+    .ct-row-actions button:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    .ct-skin-items {
+      max-height: 350px;
+      overflow-y: auto;
+      scrollbar-width: thin;
+      scrollbar-color: var(--bg3) transparent;
+    }
+
+    .ct-skin-items::-webkit-scrollbar {
+      width: 5px;
+    }
+
+    .ct-skin-items::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    .ct-skin-items::-webkit-scrollbar-thumb {
+      background: var(--bg3);
+      border-radius: 3px;
+    }
+
+    .ct-skin-item {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      padding: 0.4rem 0.35rem;
+      cursor: pointer;
+      user-select: none;
+      border-radius: 4px;
+      transition: background 0.15s;
+    }
+
+    .ct-skin-item:hover {
+      background: var(--bg3);
+    }
+
+    .ct-skin-check {
+      width: 16px;
+      height: 16px;
+      border-radius: 4px;
+      border: 2px solid var(--border);
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+      font-size: 0.65rem;
+      color: transparent;
+    }
+
+    .ct-skin-item.ct-owned .ct-skin-check {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: var(--bg, #0d0e12);
+    }
+
+    .ct-skin-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .ct-skin-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .ct-skin-info-name {
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--text);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .ct-skin-item.ct-owned .ct-skin-info-name {
+      color: var(--accent);
+    }
+
+    .ct-skin-info-weapon {
+      font-size: 0.7rem;
+      color: var(--text2);
+    }
+
+    .ct-skin-price {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--text2);
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .ct-skin-view {
+      font-size: 0.7rem;
+      color: var(--accent);
+      text-decoration: none;
+      flex-shrink: 0;
+      opacity: 0;
+      transition: opacity 0.15s;
+    }
+
+    .ct-skin-item:hover .ct-skin-view {
+      opacity: 1;
+    }
+
+    .ct-skin-view:hover {
+      text-decoration: underline;
+    }
+
+    .ct-row-value {
+      display: flex;
+      justify-content: space-between;
+      padding: 0.45rem 0.35rem 0;
+      border-top: 1px solid var(--border);
+      margin-top: 0.5rem;
+      font-size: 0.75rem;
+    }
+
+    .ct-row-value-label {
+      color: var(--text2);
+    }
+
+    .ct-row-value-amount {
+      color: var(--accent);
+      font-weight: 700;
+    }
+
+    /* ---- FAQ ---- */
+    .ct-faq-section {
+      margin: 2rem 0;
+    }
+
+    .ct-faq-heading {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--text);
+      margin: 0 0 1rem;
+      padding-left: 0.85rem;
+      border-left: 3px solid var(--accent);
+    }
+
+    .ct-faq-item {
+      border-bottom: 1px solid var(--border);
+    }
+
+    .ct-faq-item[open] {
+      padding-bottom: 0.75rem;
+    }
+
+    .ct-faq-q {
+      font-size: 0.92rem;
+      font-weight: 600;
+      color: var(--text);
+      padding: 0.75rem 0;
+      cursor: pointer;
+      list-style: none;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: color 0.15s;
+    }
+
+    .ct-faq-q::-webkit-details-marker {
+      display: none;
+    }
+
+    .ct-faq-q::before {
+      content: '+';
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 20px;
+      height: 20px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--accent);
+      flex-shrink: 0;
+    }
+
+    .ct-faq-item[open] .ct-faq-q::before {
+      content: '-';
+    }
+
+    .ct-faq-q:hover {
+      color: var(--accent);
+    }
+
+    .ct-faq-a {
+      font-size: 0.88rem;
+      color: var(--text2);
+      line-height: 1.6;
+      margin: 0;
+      padding-left: 1.75rem;
+    }
+
+    /* ---- INTERNAL LINKS ---- */
+    .ct-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+      margin: 1.5rem 0;
+    }
+
+    .ct-links a {
+      font-size: 0.8rem;
+      color: var(--text2);
+      text-decoration: none;
+      padding: 0.3rem 0.6rem;
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      border-left: 3px solid transparent;
+      transition: border-left-color 0.15s, color 0.15s;
+    }
+
+    .ct-links a:hover {
+      border-left-color: var(--accent);
+      color: var(--accent);
+    }
+
+    /* ---- RESPONSIVE ---- */
+    @media (max-width: 768px) {
+      .ct-hero {
+        flex-direction: column;
+        gap: 1rem;
+      }
+
+      .ct-hero-stats {
+        flex-wrap: wrap;
+      }
+
+      .ct-controls {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .ct-controls-right {
+        flex-wrap: wrap;
+      }
+
+      .ct-search {
+        flex: 1;
+        min-width: 140px;
+      }
+
+      .ct-row-header {
+        grid-template-columns: 1fr 60px 40px;
+      }
+
+      .ct-row-toggle {
+        display: none;
+      }
+    }
+  </style>
+
+  <script is:inline define:vars={{ collectionsJson, rarityColorsJson }}>
+  (function() {
+    var STORAGE_KEY = 'csgoluck_collection_owned';
+    var collections = JSON.parse(collectionsJson);
+    var rarityColors = JSON.parse(rarityColorsJson);
+    var owned = loadOwned();
+    var expandedSlug = null;
+    var currentSort = 'completion';
+
+    function loadOwned() {
+      try {
+        var data = localStorage.getItem(STORAGE_KEY);
+        return data ? JSON.parse(data) : [];
+      } catch(e) {
+        return [];
+      }
+    }
+
+    function saveOwned() {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(owned));
+      } catch(e) {}
+    }
+
+    function isOwned(slug) {
+      return owned.indexOf(slug) !== -1;
+    }
+
+    function toggleOwned(slug) {
+      var idx = owned.indexOf(slug);
+      if (idx === -1) {
+        owned.push(slug);
+      } else {
+        owned.splice(idx, 1);
+      }
+      saveOwned();
+    }
+
+    function formatPrice(val) {
+      if (!val || val <= 0) return '$0.00';
+      return '$' + val.toFixed(2);
+    }
+
+    function getCollectionStats(col) {
+      var ownedCount = 0;
+      var ownedValue = 0;
+      var totalValue = 0;
+      for (var i = 0; i < col.skins.length; i++) {
+        var s = col.skins[i];
+        totalValue += s.lowestPrice || 0;
+        if (isOwned(s.slug)) {
+          ownedCount++;
+          ownedValue += s.lowestPrice || 0;
+        }
+      }
+      return {
+        ownedCount: ownedCount,
+        total: col.skins.length,
+        pct: col.skins.length > 0 ? Math.round((ownedCount / col.skins.length) * 100) : 0,
+        ownedValue: ownedValue,
+        totalValue: totalValue
+      };
+    }
+
+    function updateOverallStats() {
+      var totalOwned = 0;
+      var totalSkins = 0;
+      var totalValue = 0;
+      var started = 0;
+      var complete = 0;
+      for (var i = 0; i < collections.length; i++) {
+        var stats = getCollectionStats(collections[i]);
+        totalOwned += stats.ownedCount;
+        totalSkins += stats.total;
+        totalValue += stats.ownedValue;
+        if (stats.ownedCount > 0) started++;
+        if (stats.ownedCount === stats.total) complete++;
+      }
+      document.getElementById('ct-stat-owned').textContent = totalOwned;
+      document.getElementById('ct-stat-complete').textContent = complete;
+      document.getElementById('ct-stat-value').textContent = formatPrice(totalValue);
+      var overallPct = totalSkins > 0 ? Math.round((totalOwned / totalSkins) * 100) : 0;
+      document.getElementById('ct-overall-pct').textContent = overallPct + '%';
+      document.getElementById('ct-overall-fill').style.width = overallPct + '%';
+    }
+
+    function updateRowStats(colSlug) {
+      var col = collections.find(function(c) { return c.slug === colSlug; });
+      if (!col) return;
+      var stats = getCollectionStats(col);
+      var row = document.querySelector('[data-col="' + colSlug + '"]');
+      if (!row) return;
+
+      var countEl = row.querySelector('.ct-row-count');
+      if (countEl) countEl.textContent = stats.ownedCount + '/' + stats.total;
+
+      var fillEl = row.querySelector('.ct-row-fill');
+      if (fillEl) {
+        fillEl.style.width = stats.pct + '%';
+        if (stats.pct === 100) fillEl.classList.add('ct-complete-bar');
+        else fillEl.classList.remove('ct-complete-bar');
+      }
+
+      var pctEl = row.querySelector('.ct-row-pct');
+      if (pctEl) {
+        pctEl.textContent = stats.pct + '%';
+        if (stats.pct === 100) pctEl.classList.add('ct-complete-pct');
+        else pctEl.classList.remove('ct-complete-pct');
+      }
+
+      var valueEl = row.querySelector('.ct-row-value-amount');
+      if (valueEl) valueEl.textContent = formatPrice(stats.ownedValue);
+    }
+
+    function buildRow(col) {
+      var stats = getCollectionStats(col);
+      var row = document.createElement('div');
+      row.className = 'ct-row';
+      row.setAttribute('data-col', col.slug);
+
+      // Header
+      var header = document.createElement('div');
+      header.className = 'ct-row-header';
+      header.innerHTML =
+        '<span class="ct-row-name">' + escHtml(col.name) + '</span>' +
+        '<div class="ct-row-bar-wrap">' +
+          '<div class="ct-row-bar"><div class="ct-row-fill' + (stats.pct === 100 ? ' ct-complete-bar' : '') + '" style="width:' + stats.pct + '%"></div></div>' +
+        '</div>' +
+        '<span class="ct-row-count">' + stats.ownedCount + '/' + stats.total + '</span>' +
+        '<span class="ct-row-pct' + (stats.pct === 100 ? ' ct-complete-pct' : '') + '">' + stats.pct + '%</span>' +
+        '<span class="ct-row-toggle">+</span>';
+
+      header.addEventListener('click', function() {
+        var isExpanded = row.classList.contains('ct-expanded');
+        document.querySelectorAll('.ct-row.ct-expanded').forEach(function(r) {
+          if (r !== row) {
+            r.classList.remove('ct-expanded');
+            var t = r.querySelector('.ct-row-toggle');
+            if (t) t.textContent = '+';
+          }
+        });
+        row.classList.toggle('ct-expanded');
+        var toggle = row.querySelector('.ct-row-toggle');
+        if (toggle) toggle.textContent = row.classList.contains('ct-expanded') ? '-' : '+';
+        expandedSlug = isExpanded ? null : col.slug;
+      });
+
+      row.appendChild(header);
+
+      // Body
+      var body = document.createElement('div');
+      body.className = 'ct-row-body';
+
+      // Actions
+      var actions = document.createElement('div');
+      actions.className = 'ct-row-actions';
+
+      var selectAllBtn = document.createElement('button');
+      selectAllBtn.textContent = 'Select All';
+      selectAllBtn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        for (var i = 0; i < col.skins.length; i++) {
+          if (!isOwned(col.skins[i].slug)) owned.push(col.skins[i].slug);
+        }
+        saveOwned();
+        renderSkinItems(skinWrap, col);
+        updateRowStats(col.slug);
+        updateOverallStats();
+      });
+
+      var deselectAllBtn = document.createElement('button');
+      deselectAllBtn.textContent = 'Deselect All';
+      deselectAllBtn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        for (var i = 0; i < col.skins.length; i++) {
+          var idx = owned.indexOf(col.skins[i].slug);
+          if (idx !== -1) owned.splice(idx, 1);
+        }
+        saveOwned();
+        renderSkinItems(skinWrap, col);
+        updateRowStats(col.slug);
+        updateOverallStats();
+      });
+
+      actions.appendChild(selectAllBtn);
+      actions.appendChild(deselectAllBtn);
+      body.appendChild(actions);
+
+      // Skin items
+      var skinWrap = document.createElement('div');
+      skinWrap.className = 'ct-skin-items';
+      renderSkinItems(skinWrap, col);
+      body.appendChild(skinWrap);
+
+      // Value footer
+      var valueRow = document.createElement('div');
+      valueRow.className = 'ct-row-value';
+      valueRow.innerHTML =
+        '<span class="ct-row-value-label">Owned value</span>' +
+        '<span class="ct-row-value-amount">' + formatPrice(stats.ownedValue) + '</span>';
+      body.appendChild(valueRow);
+
+      row.appendChild(body);
+      return row;
+    }
+
+    function renderSkinItems(container, col) {
+      var existing = container.querySelectorAll('.ct-skin-item');
+      for (var i = 0; i < existing.length; i++) existing[i].remove();
+
+      for (var i = 0; i < col.skins.length; i++) {
+        var s = col.skins[i];
+        var item = document.createElement('div');
+        item.className = 'ct-skin-item' + (isOwned(s.slug) ? ' ct-owned' : '');
+        item.setAttribute('data-skin', s.slug);
+
+        var rarityColor = rarityColors[s.rarity] || '#ffffff';
+
+        item.innerHTML =
+          '<div class="ct-skin-check">&#10003;</div>' +
+          '<div class="ct-skin-dot" style="background:' + rarityColor + '"></div>' +
+          '<div class="ct-skin-info">' +
+            '<div class="ct-skin-info-name">' + escHtml(s.name) + '</div>' +
+            '<div class="ct-skin-info-weapon">' + escHtml(s.weapon) + ' &middot; ' + escHtml(s.rarity) + '</div>' +
+          '</div>' +
+          '<span class="ct-skin-price">' + formatPrice(s.lowestPrice) + '</span>' +
+          '<a href="/cs2-skin/' + s.slug + '/" class="ct-skin-view" onclick="event.stopPropagation()">View</a>';
+
+        (function(skinSlug, colSlug, el) {
+          el.addEventListener('click', function(e) {
+            e.stopPropagation();
+            toggleOwned(skinSlug);
+            el.classList.toggle('ct-owned');
+            updateRowStats(colSlug);
+            updateOverallStats();
+          });
+        })(s.slug, col.slug, item);
+
+        container.appendChild(item);
+      }
+    }
+
+    function getRarityBreakdown(col) {
+      var counts = {};
+      for (var i = 0; i < col.skins.length; i++) {
+        var r = col.skins[i].rarity;
+        counts[r] = (counts[r] || 0) + 1;
+      }
+      var parts = [];
+      var order = ['Covert', 'Classified', 'Restricted', 'Mil-Spec', 'Industrial', 'Consumer'];
+      for (var i = 0; i < order.length; i++) {
+        if (counts[order[i]]) parts.push(counts[order[i]] + ' ' + order[i]);
+      }
+      for (var r in counts) {
+        if (order.indexOf(r) === -1) parts.push(counts[r] + ' ' + r);
+      }
+      return parts.join(', ');
+    }
+
+    function escHtml(str) {
+      var d = document.createElement('span');
+      d.textContent = str;
+      return d.innerHTML;
+    }
+
+    function getSortedCollections(sortBy) {
+      var sorted = collections.slice();
+      if (sortBy === 'completion') {
+        sorted.sort(function(a, b) {
+          var sa = getCollectionStats(a);
+          var sb = getCollectionStats(b);
+          if (sb.pct !== sa.pct) return sb.pct - sa.pct;
+          if (sb.ownedCount !== sa.ownedCount) return sb.ownedCount - sa.ownedCount;
+          return a.name.localeCompare(b.name);
+        });
+      } else if (sortBy === 'name') {
+        sorted.sort(function(a, b) { return a.name.localeCompare(b.name); });
+      } else if (sortBy === 'size') {
+        sorted.sort(function(a, b) { return b.skins.length - a.skins.length; });
+      } else if (sortBy === 'value') {
+        sorted.sort(function(a, b) {
+          return getCollectionStats(b).ownedValue - getCollectionStats(a).ownedValue;
+        });
+      }
+      return sorted;
+    }
+
+    function renderList() {
+      var list = document.getElementById('ct-list');
+      var search = (document.getElementById('ct-search').value || '').toLowerCase();
+      var sorted = getSortedCollections(currentSort);
+
+      list.innerHTML = '';
+
+      for (var i = 0; i < sorted.length; i++) {
+        var col = sorted[i];
+        if (search && col.name.toLowerCase().indexOf(search) === -1) continue;
+        var row = buildRow(col);
+        if (expandedSlug === col.slug) {
+          row.classList.add('ct-expanded');
+          var toggle = row.querySelector('.ct-row-toggle');
+          if (toggle) toggle.textContent = '-';
+        }
+        list.appendChild(row);
+      }
+
+      updateOverallStats();
+    }
+
+    // Tab click handlers
+    var tabs = document.querySelectorAll('.ct-tab');
+    tabs.forEach(function(tab) {
+      tab.addEventListener('click', function() {
+        tabs.forEach(function(t) { t.classList.remove('ct-tab-active'); });
+        tab.classList.add('ct-tab-active');
+        currentSort = tab.getAttribute('data-sort');
+        renderList();
+      });
+    });
+
+    document.getElementById('ct-search').addEventListener('input', function() {
+      renderList();
+    });
+
+    document.getElementById('ct-reset-btn').addEventListener('click', function() {
+      if (confirm('Are you sure you want to reset all collection progress? This cannot be undone.')) {
+        owned = [];
+        saveOwned();
+        expandedSlug = null;
+        renderList();
+      }
+    });
+
+    // Initial render
+    renderList();
+  })();
+  </script>
+</Base>

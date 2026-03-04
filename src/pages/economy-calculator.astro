@@ -46,117 +46,120 @@ const toolSchema = JSON.stringify({
   "applicationCategory": "UtilityApplication",
   "operatingSystem": "Web",
   "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
-  "author": { "@type": "Organization", "name": "CSDB.gg", "url": "https://csdb.gg" }
+  "author": { "@type": "Organization", "name": "CSGOLuck Wiki", "url": "https://wiki.csgoluck.com" }
 });
 ---
 
 <Base title={title} description={description}>
-  <div class="calc-container">
-    <h1>CS2 Economy Calculator</h1>
-    <p class="subtitle">Plan your team's buy strategy round by round</p>
+  <script type="application/ld+json" set:html={toolSchema}></script>
+  <script type="application/ld+json" set:html={JSON.stringify(schemaData)} />
 
-    <div class="calc-section">
-      <div class="calc-row">
-        <div class="input-group">
-          <label for="roundNum">Current Round</label>
-          <input type="number" id="roundNum" min="1" max="30" value="1" class="input-field">
-        </div>
+  <nav class="breadcrumb"><a href="/">Home</a> <span>/</span> <a href="/cs2-tools/">Tools</a> <span>/</span> <span>Economy Calculator</span></nav>
 
-        <div class="input-group">
-          <label for="prevTeamMoney">Previous Round Money</label>
-          <input type="number" id="prevTeamMoney" min="0" value="0" class="input-field">
-        </div>
+  <div class="ecc-hero">
+    <h1 class="ecc-title">CS2 Economy Calculator</h1>
+    <p class="ecc-desc">Plan your team's buy strategy round by round with economy tracking. Read the <a href="/cs2-guides/economy-guide/" style="color:var(--accent)">economy guide</a> for deeper strategy and check <a href="/cs2-weapons/" style="color:var(--accent)">weapon stats</a> before buying.</p>
+  </div>
 
-        <div class="input-group">
-          <label for="roundResult">Round Result</label>
-          <select id="roundResult" class="input-field">
-            <option value="win">Round Won</option>
-            <option value="loss">Round Lost</option>
-            <option value="bomb">Bomb Plant</option>
-          </select>
-        </div>
+  <div class="ecc-panel">
+    <div class="ecc-grid">
+      <div class="ecc-field">
+        <label class="ecc-label" for="roundNum">Current Round</label>
+        <input type="number" id="roundNum" min="1" max="30" value="1" class="ecc-input">
       </div>
-
-      <div class="calc-row">
-        <div class="input-group">
-          <label for="teamKills">Team Kills</label>
-          <input type="number" id="teamKills" min="0" value="0" class="input-field">
-        </div>
-
-        <div class="input-group">
-          <label for="assistKills">Assist Kills</label>
-          <input type="number" id="assistKills" min="0" value="0" class="input-field">
-        </div>
-
-        <div class="input-group">
-          <label for="deaths">Deaths</label>
-          <input type="number" id="deaths" min="0" value="0" class="input-field">
-        </div>
+      <div class="ecc-field">
+        <label class="ecc-label" for="prevTeamMoney">Previous Round Money</label>
+        <input type="number" id="prevTeamMoney" min="0" value="0" class="ecc-input">
       </div>
-
-      <div class="result-section">
-        <div class="result-box">
-          <h3>Killed Bonus</h3>
-          <p class="money-value" id="killedBonus">$0</p>
-        </div>
-        <div class="result-box">
-          <h3>Round Win Bonus</h3>
-          <p class="money-value" id="winBonus">$0</p>
-        </div>
-        <div class="result-box">
-          <h3>Utility Cost</h3>
-          <p class="money-value" id="utilityCost">$0</p>
-          <input type="number" id="utilityInput" min="0" value="0" placeholder="Optional" style="margin-top: 0.5rem; padding: 0.3rem; font-size: 0.8rem;">
-        </div>
-        <div class="result-box highlight">
-          <h3>Total Economy</h3>
-          <p class="money-value" id="totalEconomy">$0</p>
-        </div>
-      </div>
-
-      <div class="economy-table">
-        <h3>Round Progression</h3>
-        <table id="economyTable">
-          <thead>
-            <tr>
-              <th>Round</th>
-              <th>Result</th>
-              <th>Bonus</th>
-              <th>Total</th>
-              <th>Buy Suggestion</th>
-            </tr>
-          </thead>
-          <tbody id="tableBody">
-          </tbody>
-        </table>
+      <div class="ecc-field">
+        <label class="ecc-label" for="roundResult">Round Result</label>
+        <select id="roundResult" class="ecc-input">
+          <option value="win">Round Won</option>
+          <option value="loss">Round Lost</option>
+          <option value="bomb">Bomb Plant</option>
+        </select>
       </div>
     </div>
 
-    <div class="buy-guide">
-      <h2>Buy Strategy Guide</h2>
-      <div class="buy-rows">
-        <div class="buy-item">
-          <h4>Full Buy ($16,000+)</h4>
-          <p>Rifles, armor, grenades, and utility for the entire team</p>
+    <div class="ecc-grid">
+      <div class="ecc-field">
+        <label class="ecc-label" for="teamKills">Team Kills</label>
+        <input type="number" id="teamKills" min="0" value="0" class="ecc-input">
+      </div>
+      <div class="ecc-field">
+        <label class="ecc-label" for="assistKills">Assist Kills</label>
+        <input type="number" id="assistKills" min="0" value="0" class="ecc-input">
+      </div>
+      <div class="ecc-field">
+        <label class="ecc-label" for="deaths">Deaths</label>
+        <input type="number" id="deaths" min="0" value="0" class="ecc-input">
+      </div>
+    </div>
+
+    <div class="ecc-results">
+      <div class="ecc-result-item">
+        <span class="ecc-result-label">Killed Bonus</span>
+        <span class="ecc-result-value" id="killedBonus">$0</span>
+      </div>
+      <div class="ecc-result-item">
+        <span class="ecc-result-label">Round Win Bonus</span>
+        <span class="ecc-result-value" id="winBonus">$0</span>
+      </div>
+      <div class="ecc-result-item">
+        <span class="ecc-result-label">Utility Cost</span>
+        <span class="ecc-result-value" id="utilityCost">$0</span>
+        <input type="number" id="utilityInput" min="0" value="0" placeholder="Optional" class="ecc-input ecc-small-input">
+      </div>
+      <div class="ecc-result-item ecc-result-highlight">
+        <span class="ecc-result-label">Total Economy</span>
+        <span class="ecc-result-value" id="totalEconomy">$0</span>
+      </div>
+    </div>
+
+    <div class="ecc-table-wrap">
+      <h3 class="ecc-table-title">Round Progression</h3>
+      <table class="ecc-table">
+        <thead>
+          <tr>
+            <th>Round</th>
+            <th>Result</th>
+            <th>Bonus</th>
+            <th>Total</th>
+            <th>Buy Suggestion</th>
+          </tr>
+        </thead>
+        <tbody id="tableBody">
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="ecc-two-col">
+    <div class="ecc-info-block">
+      <h2 class="ecc-section-title">Buy Strategy Guide</h2>
+      <div class="ecc-buy-list">
+        <div class="ecc-buy-item">
+          <h4 class="ecc-buy-name">Full Buy ($16,000+)</h4>
+          <p class="ecc-buy-desc">Rifles, armor, grenades, and utility for the entire team</p>
         </div>
-        <div class="buy-item">
-          <h4>Half Buy ($10,000-$15,999)</h4>
-          <p>Some rifles, armor for critical players, limited utility</p>
+        <div class="ecc-buy-item">
+          <h4 class="ecc-buy-name">Half Buy ($10,000-$15,999)</h4>
+          <p class="ecc-buy-desc">Some rifles, armor for critical players, limited utility</p>
         </div>
-        <div class="buy-item">
-          <h4>Eco Round ($2,000-$9,999)</h4>
-          <p>Save money with pistols and minimal utility. Anti-eco with upgrades is also possible</p>
+        <div class="ecc-buy-item">
+          <h4 class="ecc-buy-name">Eco Round ($2,000-$9,999)</h4>
+          <p class="ecc-buy-desc">Save money with pistols and minimal utility</p>
         </div>
-        <div class="buy-item">
-          <h4>Full Eco ($0-$1,999)</h4>
-          <p>Minimum purchases to preserve maximum money for next round</p>
+        <div class="ecc-buy-item">
+          <h4 class="ecc-buy-name">Full Eco ($0-$1,999)</h4>
+          <p class="ecc-buy-desc">Minimum purchases to preserve maximum money for next round</p>
         </div>
       </div>
     </div>
 
-    <div class="info-section">
-      <h2>Economy Rules</h2>
-      <ul>
+    <div class="ecc-info-block">
+      <h2 class="ecc-section-title">Economy Rules</h2>
+      <ul class="ecc-rules-list">
         <li><strong>Round Win:</strong> $3,250 base + $500 per consecutive win</li>
         <li><strong>Round Loss:</strong> $1,900 base + $500 per consecutive loss</li>
         <li><strong>Plant Bonus:</strong> +$800 if bomb is planted</li>
@@ -165,305 +168,99 @@ const toolSchema = JSON.stringify({
         <li><strong>Max Economy:</strong> $16,000 per player</li>
       </ul>
     </div>
-
-    <div class="faq-section">
-      <h2>Frequently Asked Questions</h2>
-      {faq.map(item => (
-        <div class="faq-item">
-          <h3>{item.question}</h3>
-          <p>{item.answer}</p>
-        </div>
-      ))}
-    </div>
-
-    <div class="links-section">
-      <h2>Related Tools</h2>
-      <ul>
-        <li><a href="/damage-calculator/">Damage Calculator</a></li>
-        <li><a href="/weapon-compare/">Weapon Compare</a></li>
-        <li><a href="/recoil-patterns/">Recoil Patterns</a></li>
-        <li><a href="/sensitivity-converter/">Sensitivity Converter</a></li>
-        <li><a href="/weapons/">Weapon Database</a></li>
-        <li><a href="/pro-players/">Pro Player Settings</a></li>
-        <li><a href="/tools/">All Tools</a></li>
-        <li><a href="/guides/economy-guide/">Economy Guide</a></li>
-        <li><a href="/guides/advanced-mechanics-guide/">Advanced Mechanics Guide</a></li>
-      </ul>
-    </div>
   </div>
 
-  <script type="application/ld+json" set:html={toolSchema}></script>
-  <script type="application/ld+json" set:html={JSON.stringify(schemaData)} />
+  <section class="ecc-faq">
+    <h2 class="ecc-section-title">Frequently Asked Questions</h2>
+    {faq.map(item => (
+      <details class="ecc-faq-item">
+        <summary class="ecc-faq-q">{item.question}</summary>
+        <p class="ecc-faq-a">{item.answer}</p>
+      </details>
+    ))}
+  </section>
+
+  <div class="ecc-info-block" style="margin-bottom:2rem">
+    <h2 class="ecc-section-title">Related Tools</h2>
+    <div class="ecc-link-list">
+      <a href="/damage-calculator/" class="ecc-link">Damage Calculator</a>
+      <a href="/weapon-compare/" class="ecc-link">Weapon Compare</a>
+      <a href="/recoil-patterns/" class="ecc-link">Recoil Patterns</a>
+      <a href="/sensitivity-converter/" class="ecc-link">Sensitivity Converter</a>
+      <a href="/cs2-weapons/" class="ecc-link">Weapon Database</a>
+      <a href="/pro-players/" class="ecc-link">Pro Player Settings</a>
+      <a href="/cs2-tools/" class="ecc-link">All Tools</a>
+      <a href="/cs2-guides/economy-guide/" class="ecc-link">Economy Guide</a>
+      <a href="/cs2-guides/advanced-mechanics-guide/" class="ecc-link">Advanced Mechanics Guide</a>
+      <a href="/loadout-builder/" class="ecc-link">Loadout Builder</a>
+      <a href="/cs2-maps/" class="ecc-link">Map Database</a>
+      <a href="/cs2-guides/beginners-guide/" class="ecc-link">Beginner's Guide</a>
+      <a href="/spray-trainer/" class="ecc-link">Spray Trainer</a>
+    </div>
+  </div>
 
   <ExploreMore context="tools" />
 </Base>
 
-<style is:inline>
-  .calc-container {
-    max-width: 900px;
-    margin: 0 auto;
-    padding: 2rem;
-    color: var(--text);
-  }
+<style>
+  .ecc-hero{padding:1.5rem 0;margin-bottom:1.5rem}
+  .ecc-title{font-size:2rem;font-weight:800;margin:0 0 .5rem;color:var(--text)}
+  .ecc-desc{color:var(--text2);font-size:.95rem;margin:0;max-width:600px;line-height:1.6}
 
-  h1 {
-    font-size: 2.5rem;
-    margin-bottom: 0.5rem;
-    color: var(--accent);
-  }
+  .ecc-panel{background:var(--bg2);border:1px solid var(--border);border-radius:4px;padding:1.5rem;margin-bottom:2rem}
+  .ecc-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.25rem;margin-bottom:1.25rem}
+  .ecc-field{display:flex;flex-direction:column;gap:.4rem}
+  .ecc-label{font-weight:600;color:var(--text2);font-size:.85rem;text-transform:uppercase;letter-spacing:.04em}
 
-  .subtitle {
-    color: var(--text2);
-    font-size: 1.1rem;
-    margin-bottom: 2rem;
-  }
+  .ecc-input{padding:.6rem;background:var(--bg3);border:1px solid var(--border);border-radius:4px;color:var(--text);font-size:.95rem;font-family:inherit}
+  .ecc-input:focus{outline:none;border-color:var(--accent)}
+  .ecc-small-input{margin-top:.4rem;padding:.35rem;font-size:.8rem}
 
-  .calc-section {
-    background: var(--bg2);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 2rem;
-    margin-bottom: 2rem;
-  }
+  .ecc-results{display:grid;grid-template-columns:repeat(4,1fr);gap:.75rem;margin-bottom:1.5rem}
+  .ecc-result-item{background:var(--bg);border:1px solid var(--border);border-radius:4px;padding:1rem;text-align:center}
+  .ecc-result-highlight{border-left:3px solid var(--accent);background:rgba(46,204,113,.06)}
+  .ecc-result-label{display:block;font-size:.75rem;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.04em;margin-bottom:.4rem}
+  .ecc-result-value{display:block;font-size:1.6rem;font-weight:800;color:var(--accent)}
 
-  .calc-row {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 2rem;
-    margin-bottom: 2rem;
-  }
+  .ecc-table-wrap{overflow-x:auto}
+  .ecc-table-title{font-size:1rem;font-weight:700;color:var(--text);margin:0 0 .75rem}
+  .ecc-table{width:100%;border-collapse:collapse;background:var(--bg);border-radius:4px;overflow:hidden}
+  .ecc-table th,.ecc-table td{padding:.75rem 1rem;text-align:left;border-bottom:1px solid var(--border)}
+  .ecc-table th{background:var(--bg3);color:var(--text2);font-weight:600;text-transform:uppercase;font-size:.8rem;letter-spacing:.04em}
+  .ecc-table td{color:var(--text2);font-size:.9rem}
+  .ecc-table tr:last-child td{border-bottom:none}
 
-  .input-group {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-  }
+  .ecc-two-col{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-bottom:2rem}
+  .ecc-info-block{background:var(--bg2);border:1px solid var(--border);border-radius:4px;padding:1.5rem}
+  .ecc-section-title{font-size:1.1rem;font-weight:700;color:var(--text);margin:0 0 1rem}
 
-  label {
-    font-weight: 600;
-    color: var(--text2);
-    font-size: 0.9rem;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-  }
+  .ecc-buy-list{display:flex;flex-direction:column;gap:.6rem}
+  .ecc-buy-item{background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:1rem}
+  .ecc-buy-name{color:var(--accent);font-size:.9rem;margin:0 0 .3rem}
+  .ecc-buy-desc{color:var(--text2);margin:0;font-size:.85rem;line-height:1.5}
 
-  .input-field, select {
-    padding: 0.75rem;
-    background: var(--bg3);
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    color: var(--text);
-    font-size: 1rem;
-  }
+  .ecc-rules-list{list-style:none;padding:0;margin:0}
+  .ecc-rules-list li{padding:.6rem 0;border-bottom:1px solid var(--border);color:var(--text2);font-size:.88rem;line-height:1.5}
+  .ecc-rules-list li:last-child{border-bottom:none}
+  .ecc-rules-list strong{color:var(--text)}
 
-  .input-field:hover, select:hover {
-    border-color: var(--accent);
-  }
+  .ecc-link-list{display:flex;flex-direction:column;gap:.4rem}
+  .ecc-link{display:block;padding:.5rem .75rem;background:var(--bg3);border:1px solid var(--border);border-left:3px solid transparent;border-radius:4px;color:var(--accent);text-decoration:none;font-size:.85rem;transition:border-left-color .15s}
+  .ecc-link:hover{border-left-color:var(--accent)}
 
-  .input-field:focus, select:focus {
-    outline: none;
-    border-color: var(--accent);
-    box-shadow: 0 0 0 3px rgba(212, 149, 110, 0.1);
-  }
+  .ecc-faq{margin-bottom:2rem}
+  .ecc-faq-item{background:var(--bg2);border:1px solid var(--border);border-radius:4px;margin-bottom:.5rem;overflow:hidden}
+  .ecc-faq-q{padding:.8rem 1rem;cursor:pointer;font-weight:600;font-size:.9rem;color:var(--text);list-style:none;display:flex;align-items:center;justify-content:space-between}
+  .ecc-faq-q::-webkit-details-marker{display:none}
+  .ecc-faq-q::after{content:'+';font-size:1.1rem;color:var(--accent);font-weight:700}
+  .ecc-faq-item[open] .ecc-faq-q::after{content:'-'}
+  .ecc-faq-item[open]{border-left:3px solid var(--accent)}
+  .ecc-faq-a{padding:0 1rem .8rem;margin:0;font-size:.88rem;color:var(--text2);line-height:1.6}
 
-  .result-section {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 1.5rem;
-    margin-top: 2rem;
-  }
-
-  .result-box {
-    background: var(--bg);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 1.5rem;
-    text-align: center;
-  }
-
-  .result-box.highlight {
-    border-color: var(--accent);
-    background: rgba(212, 149, 110, 0.1);
-  }
-
-  .result-box h3 {
-    color: var(--text2);
-    font-size: 0.9rem;
-    margin-bottom: 0.75rem;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-  }
-
-  .money-value {
-    font-size: 2rem;
-    font-weight: 700;
-    color: var(--green);
-    margin: 0;
-  }
-
-  .economy-table {
-    margin-top: 2rem;
-    overflow-x: auto;
-  }
-
-  .economy-table h3 {
-    color: var(--accent);
-    margin-bottom: 1rem;
-  }
-
-  table {
-    width: 100%;
-    border-collapse: collapse;
-    background: var(--bg);
-    border-radius: 8px;
-    overflow: hidden;
-  }
-
-  th, td {
-    padding: 1rem;
-    text-align: left;
-    border-bottom: 1px solid var(--border);
-  }
-
-  th {
-    background: var(--bg3);
-    color: var(--text2);
-    font-weight: 600;
-    text-transform: uppercase;
-    font-size: 0.85rem;
-    letter-spacing: 0.05em;
-  }
-
-  td {
-    color: var(--text2);
-  }
-
-  tr:last-child td {
-    border-bottom: none;
-  }
-
-  .buy-guide {
-    background: var(--bg2);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 2rem;
-    margin-bottom: 2rem;
-  }
-
-  .buy-guide h2 {
-    color: var(--accent);
-    font-size: 1.5rem;
-    margin-bottom: 1.5rem;
-  }
-
-  .buy-rows {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 1.5rem;
-  }
-
-  .buy-item {
-    background: var(--bg3);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 1.5rem;
-  }
-
-  .buy-item h4 {
-    color: var(--accent);
-    margin-bottom: 0.5rem;
-  }
-
-  .buy-item p {
-    color: var(--text2);
-    margin: 0;
-    line-height: 1.5;
-  }
-
-  .info-section, .faq-section {
-    background: var(--bg2);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 2rem;
-    margin-bottom: 2rem;
-  }
-
-  .info-section h2, .faq-section h2 {
-    color: var(--accent);
-    font-size: 1.5rem;
-    margin-bottom: 1.5rem;
-  }
-
-  .info-section ul {
-    list-style: none;
-    padding: 0;
-  }
-
-  .info-section li {
-    padding: 0.75rem 0;
-    border-bottom: 1px solid var(--border);
-    color: var(--text2);
-  }
-
-  .info-section li:last-child {
-    border-bottom: none;
-  }
-
-  .faq-item {
-    margin-bottom: 1.5rem;
-    padding-bottom: 1.5rem;
-    border-bottom: 1px solid var(--border);
-  }
-
-  .faq-item:last-child {
-    border-bottom: none;
-  }
-
-  .faq-item h3 {
-    color: var(--accent);
-    margin-bottom: 0.5rem;
-  }
-
-  .faq-item p {
-    color: var(--text2);
-    line-height: 1.6;
-  }
-
-  .links-section {
-    background: var(--bg2);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 2rem;
-  }
-
-  .links-section h2 {
-    color: var(--accent);
-    font-size: 1.5rem;
-    margin-bottom: 1.5rem;
-  }
-
-  .links-section ul {
-    list-style: none;
-    padding: 0;
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 1rem;
-  }
-
-  .links-section a {
-    display: block;
-    padding: 0.75rem 1rem;
-    background: var(--bg3);
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    color: var(--accent);
-    text-decoration: none;
-    transition: all 0.2s;
-  }
-
-  .links-section a:hover {
-    background: var(--accent);
-    color: white;
+  @media(max-width:768px){
+    .ecc-grid{grid-template-columns:1fr}
+    .ecc-results{grid-template-columns:1fr 1fr}
+    .ecc-two-col{grid-template-columns:1fr}
   }
 </style>
 

@@ -74,12 +74,12 @@ const proLoadouts = getPlayersWithLoadout(12).map(p => {
   return { name: p.name, team: p.team, slug: p.slug, flag: p.flag, slots };
 });
 
-const title = 'CS2 Loadout Builder — Build Your Dream Loadout | CSDB.gg';
+const title = 'CS2 Loadout Builder — Build Your Dream Loadout | CSGOLuck Wiki';
 const description = 'Build and share your perfect CS2 loadout. Browse skins for every weapon, calculate total cost, and generate shareable links with your selections. Filter by rarity, weapon type, and price.';
 
 const breadcrumbs = [
   { name: 'Home', url: '/' },
-  { name: 'Skins', url: '/skins/' },
+  { name: 'Skins', url: '/cs2-skins/' },
   { name: 'Loadout Builder', url: '/loadout-builder/' },
 ];
 
@@ -95,138 +95,138 @@ const faqData = [
 ];
 ---
 
-<Base title={title} description={description} currentNav="/skins/">
+<Base title={title} description={description} currentNav="/cs2-skins/">
   <Fragment slot="head">
     <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema(breadcrumbs))} />
     <script type="application/ld+json" set:html={JSON.stringify(faqSchema(faqData))} />
   </Fragment>
-<div class="loadout-builder-page">
-  <h1>CS2 Loadout Builder</h1>
-  <p>Design your perfect CS2 loadout. Select skins for each weapon slot, see the total cost, and share your loadout with friends using a generated URL.</p>
 
-  <div class="builder-controls">
-    <div class="team-selector">
+  <nav class="lb-breadcrumb">
+    <a href="/">Home</a> <span>/</span> <a href="/cs2-skins/">Skins</a> <span>/</span> <span>Loadout Builder</span>
+  </nav>
+
+  <section class="lb-hero">
+    <h1>CS2 Loadout Builder</h1>
+    <p class="lb-hero-desc">Design your perfect CS2 loadout. Select skins for each weapon slot, see the total cost, and share your loadout with friends using a generated URL.</p>
+    <div class="lb-hero-pills">
+      <span class="lb-pill">6 Weapon Slots</span>
+      <span class="lb-pill">Shareable URLs</span>
+      <span class="lb-pill">Live Pricing</span>
+    </div>
+  </section>
+
+  <div class="lb-controls">
+    <div class="lb-team-select">
       <label for="team-toggle">Side:</label>
-      <select id="team-toggle">
+      <select id="team-toggle" class="lb-select">
         <option value="ct">CT (Counter-Terrorists)</option>
         <option value="t">T (Terrorists)</option>
         <option value="any">Both Sides</option>
       </select>
     </div>
-    <button id="share-btn" class="btn-primary">Share Loadout</button>
+    <button id="share-btn" class="lb-btn-primary">Share Loadout</button>
   </div>
 
-  <div class="loadout-grid" id="loadout-grid">
+  <div class="lb-grid" id="loadout-grid">
     <!-- Dynamically populated -->
   </div>
 
-  <div class="loadout-summary">
-    <div class="summary-section">
+  <div class="lb-summary-wrap">
+    <div class="lb-summary-section">
       <h3>Loadout Summary</h3>
       <div id="summary-content">
-        <p class="text-muted">No skins selected yet</p>
+        <p class="lb-muted">No skins selected yet</p>
       </div>
     </div>
 
-    <div class="summary-section cost-section">
+    <div class="lb-summary-section lb-cost-section">
       <h3>Total Cost</h3>
-      <div class="cost-display">
-        <span class="currency">$</span>
-        <span class="amount" id="total-cost">0</span>
+      <div class="lb-cost-display">
+        <span class="lb-currency">$</span>
+        <span class="lb-amount" id="total-cost">0</span>
       </div>
-      <p class="cost-note">Based on lowest available price</p>
+      <p class="lb-cost-note">Based on lowest available price</p>
     </div>
+  </div>
+
+  <div class="csgoluck-cta" style="margin:2rem 0;background:linear-gradient(135deg,#1f222b 0%,#0d1a14 100%);border:1px solid rgba(46,204,113,0.2);border-radius:4px;overflow:hidden">
+  <div style="display:flex;align-items:center;gap:1rem;padding:1.25rem 1.5rem;flex-wrap:wrap">
+  <span style="font-size:1.5rem">🎰</span>
+  <div style="flex:1;min-width:200px"><strong style="display:block;color:#fff;font-size:.95rem">Win Your Dream Loadout</strong><span style="color:#909090;font-size:.82rem">Try your luck at CSGOLuck.com</span></div>
+  <a href="https://csgoluck.com" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:.5rem;padding:.55rem 1.25rem;background:#2ecc71;color:#fff;border-radius:4px;font-weight:700;font-size:.85rem;text-decoration:none;white-space:nowrap">Play Now →</a>
+  </div>
   </div>
 
   <!-- Pro Player Loadouts -->
   {proLoadouts.length > 0 && (
-  <section class="pro-loadouts">
+  <section class="lb-pro-section">
     <h2>Pro Player Loadouts</h2>
-    <p>See what the pros are using. Click a player to view their full settings and loadout details.</p>
-    <div class="pro-grid">
+    <p class="lb-pro-desc">See what the pros are using. Click a player to view their full settings and loadout details.</p>
+    <div class="lb-pro-list">
       {proLoadouts.map(p => (
-        <a href={`/player/${p.slug}/`} class="pro-card">
-          <div class="pro-header">
-            <span class="pro-flag">{p.flag}</span>
-            <span class="pro-name">{p.name}</span>
-            <span class="pro-team">{p.team}</span>
+        <a href={`/pro-players/${p.slug}/`} class="lb-pro-row">
+          <div class="lb-pro-ident">
+            <span class="lb-pro-flag">{p.flag}</span>
+            <span class="lb-pro-name">{p.name}</span>
+            <span class="lb-pro-team">{p.team}</span>
           </div>
-          <div class="pro-slots">
+          <div class="lb-pro-slots">
             {p.slots.slice(0, 3).map(s => (
-              <div class="pro-slot">
-                <span class="pro-slot-label">{s.label}</span>
-                <span class="pro-slot-skin">{s.skinName}</span>
+              <div class="lb-pro-slot">
+                <span class="lb-pro-slot-label">{s.label}</span>
+                <span class="lb-pro-slot-skin">{s.skinName}</span>
               </div>
             ))}
           </div>
         </a>
       ))}
     </div>
-    <div style="text-align:center;margin-top:1rem">
-      <a href="/pro-players/" class="btn-secondary">View All Pro Players →</a>
+    <div style="margin-top:.85rem">
+      <a href="/pro-players/" class="lb-btn-secondary">View All Pro Players →</a>
     </div>
   </section>
   )}
 
-  <section class="faq">
+  <section class="lb-faq">
     <h2>About Loadouts</h2>
-    <dl>
-      <dt>What's the difference between CT and T side weapons?</dt>
-      <dd>Counter-Terrorists and Terrorists have different starting weapons and some exclusive guns. CTs get M4A4/M4A1-S while Terrorists get the AK-47. Some weapons like the AWP are available to both sides.</dd>
-
-      <dt>How do I load a shared loadout?</dt>
-      <dd>If someone shares a loadout URL with you, simply visit that link. The page will automatically load and display the loadout they selected.</dd>
-
-      <dt>Where can I buy these skins?</dt>
-      <dd>CS2 skins can be purchased from the Steam Community Market, third-party marketplaces like CSGOFloat, Buff, or other trusted skin trading sites. Prices vary by platform and condition.</dd>
-
-      <dt>What if I want a skin that's not in the database?</dt>
-      <dd>Our database includes thousands of skins, but if a newly released skin is missing, it may not be indexed yet. New skins are added regularly as they're released.</dd>
-
-      <dt>Can I change my loadout after building it?</dt>
-      <dd>Yes! Simply select different skins from the dropdowns. Your loadout updates in real-time. Generate a new share link whenever you're happy with your selection.</dd>
-
-      <dt>What rarity levels are there?</dt>
-      <dd>Rarities range from Consumer (common) to Covert (rare). Higher rarities are generally more valuable and harder to find. Color coding helps identify rarity at a glance.</dd>
-
-      <dt>Does the builder save my loadout?</dt>
-      <dd>Your loadout is saved in the URL. Share the link to save and load it elsewhere. Closing the page without sharing will lose your selection.</dd>
-
-      <dt>Can I use factory new skins only?</dt>
-      <dd>The prices shown are for the lowest wear condition available. Use the skin database to see specific wear conditions and prices for each option.</dd>
-    </dl>
+    {faqData.map(f => (
+      <details class="lb-faq-item">
+        <summary class="lb-faq-q">{f.q}</summary>
+        <p class="lb-faq-a">{f.a}</p>
+      </details>
+    ))}
   </section>
 
-  <div class="internal-links">
-    <a href="/skins/">Skin Database</a>
+  <div class="lb-links">
+    <strong>Related:</strong>
+    <a href="/cs2-skins/">Skin Database</a>
     <a href="/skin-compare/">Compare Skins</a>
     <a href="/price-tracker/">Price Tracker</a>
     <a href="/market-trends/">Market Trends</a>
     <a href="/float-checker/">Float Checker</a>
     <a href="/tradeup-calculator/">Trade-Up Calculator</a>
     <a href="/case-simulator/">Case Simulator</a>
-    <a href="/cases/">Cases & Collections</a>
+    <a href="/cs2-cases/">Cases & Collections</a>
     <a href="/inventory-lookup/">Inventory Lookup</a>
-    <a href="/weapons/">Weapon Database</a>
+    <a href="/cs2-weapons/">Weapon Database</a>
     <a href="/pro-players/">Pro Player Loadouts</a>
-    <a href="/guides/skins-investing-guide/">Investing Guide</a>
-    <a href="/guides/trading-guide/">Trading Guide</a>
+    <a href="/cs2-guides/skins-investing-guide/">Investing Guide</a>
+    <a href="/cs2-guides/trading-guide/">Trading Guide</a>
   </div>
-</div>
 
-<div id="share-modal" class="modal hidden">
-  <div class="modal-content">
-    <div class="modal-header">
+<div id="share-modal" class="lb-modal lb-hidden">
+  <div class="lb-modal-content">
+    <div class="lb-modal-header">
       <h3>Share Your Loadout</h3>
-      <button class="modal-close" id="modal-close">&times;</button>
+      <button class="lb-modal-close" id="modal-close">&times;</button>
     </div>
-    <div class="modal-body">
+    <div class="lb-modal-body">
       <p>Copy this link to share your loadout:</p>
-      <div class="share-link-container">
-        <input type="text" id="share-link" class="share-link-input" readonly />
-        <button id="copy-btn" class="btn-small">Copy Link</button>
+      <div class="lb-share-container">
+        <input type="text" id="share-link" class="lb-share-input" readonly />
+        <button id="copy-btn" class="lb-btn-copy">Copy Link</button>
       </div>
-      <p class="share-note">Anyone with this link can view and edit your loadout.</p>
+      <p class="lb-share-note">Anyone with this link can view and edit your loadout.</p>
     </div>
   </div>
 </div>
@@ -288,7 +288,7 @@ const faqData = [
 
       for (const slot of this.weaponSlots) {
         const slotDiv = document.createElement('div');
-        slotDiv.className = 'loadout-slot';
+        slotDiv.className = 'lb-slot';
         const selectedSkinSlug = this.loadout[slot.id];
 
         // Find selected skin name for display
@@ -300,22 +300,22 @@ const faqData = [
         }
 
         slotDiv.innerHTML = `
-          <div class="slot-header">
+          <div class="lb-slot-header">
             <h3>${slot.name}</h3>
-            ${selectedSkinSlug ? '<button class="slot-clear" title="Clear">&times;</button>' : ''}
+            ${selectedSkinSlug ? '<button class="lb-slot-clear" title="Clear">&times;</button>' : ''}
           </div>
-          <div class="slot-search-wrap" data-slot="${slot.id}">
-            <input type="text" class="slot-search" placeholder="Search ${slot.name.toLowerCase()} skins..." value="${selectedLabel}" autocomplete="off" />
-            <div class="slot-dropdown"></div>
+          <div class="lb-slot-search-wrap" data-slot="${slot.id}">
+            <input type="text" class="lb-slot-search" placeholder="Search ${slot.name.toLowerCase()} skins..." value="${selectedLabel}" autocomplete="off" />
+            <div class="lb-slot-dropdown"></div>
           </div>
-          <div class="skin-preview" id="preview-${slot.id}">
-            <div class="preview-placeholder">Select a skin</div>
+          <div class="lb-skin-preview" id="preview-${slot.id}">
+            <div class="lb-preview-placeholder">Select a skin</div>
           </div>
         `;
 
-        const searchInput = slotDiv.querySelector('.slot-search');
-        const dropdown = slotDiv.querySelector('.slot-dropdown');
-        const clearBtn = slotDiv.querySelector('.slot-clear');
+        const searchInput = slotDiv.querySelector('.lb-slot-search');
+        const dropdown = slotDiv.querySelector('.lb-slot-dropdown');
+        const clearBtn = slotDiv.querySelector('.lb-slot-clear');
         const allSkins = this.getSlotSkins(slot);
 
         // Show dropdown on focus
@@ -331,7 +331,7 @@ const faqData = [
 
         // Hide dropdown on blur (delay for click)
         searchInput.addEventListener('blur', () => {
-          setTimeout(() => { dropdown.classList.remove('open'); }, 200);
+          setTimeout(() => { dropdown.classList.remove('lb-open'); }, 200);
         });
 
         // Clear button
@@ -361,30 +361,30 @@ const faqData = [
 
       dropdown.innerHTML = shown.map(skin => {
         const priceText = skin.price > 0 ? `$${skin.price.toFixed(2)}` : 'Market';
-        return `<div class="slot-option" data-slug="${skin.slug}">
-          <span class="so-name"><span class="so-weapon">${skin.weapon}</span> ${skin.name}</span>
-          <span class="so-price" style="color:${skin.color}">${priceText}</span>
+        return `<div class="lb-slot-option" data-slug="${skin.slug}">
+          <span class="lb-so-name"><span class="lb-so-weapon">${skin.weapon}</span> ${skin.name}</span>
+          <span class="lb-so-price" style="color:${skin.color}">${priceText}</span>
         </div>`;
       }).join('');
 
       if (shown.length === 0) {
-        dropdown.innerHTML = '<div class="slot-option slot-no-results">No skins found</div>';
+        dropdown.innerHTML = '<div class="lb-slot-option lb-slot-no-results">No skins found</div>';
       } else if (filtered.length > 50) {
-        dropdown.innerHTML += `<div class="slot-option slot-no-results">${filtered.length - 50} more — type to narrow</div>`;
+        dropdown.innerHTML += `<div class="lb-slot-option lb-slot-no-results">${filtered.length - 50} more — type to narrow</div>`;
       }
 
-      dropdown.classList.add('open');
+      dropdown.classList.add('lb-open');
 
       // Attach click handlers
-      dropdown.querySelectorAll('.slot-option[data-slug]').forEach(opt => {
+      dropdown.querySelectorAll('.lb-slot-option[data-slug]').forEach(opt => {
         opt.addEventListener('mousedown', (e) => {
           e.preventDefault();
           const slug = opt.dataset.slug;
           const skin = allSkins.find(s => s.slug === slug);
           if (skin) {
-            const input = dropdown.closest('.slot-search-wrap').querySelector('.slot-search');
+            const input = dropdown.closest('.lb-slot-search-wrap').querySelector('.lb-slot-search');
             input.value = `${skin.weapon} | ${skin.name}`;
-            dropdown.classList.remove('open');
+            dropdown.classList.remove('lb-open');
             this.selectSkin(slotId, slug);
             this.renderLoadoutGrid();
           }
@@ -408,7 +408,7 @@ const faqData = [
       if (!previewDiv) return;
 
       if (!skinSlug) {
-        previewDiv.innerHTML = '<div class="preview-placeholder">Select a skin</div>';
+        previewDiv.innerHTML = '<div class="lb-preview-placeholder">Select a skin</div>';
         return;
       }
 
@@ -425,15 +425,15 @@ const faqData = [
 
       const rarityColor = selectedSkin.color || '#ffffff';
       let previewHtml = `
-        <div class="skin-card">
-          <div class="skin-image" style="background-color: ${rarityColor}20">
-            ${selectedSkin.image ? `<img src="${selectedSkin.image}" alt="${selectedSkin.name}" />` : '<div class="no-image">No Image</div>'}
+        <div class="lb-skin-card">
+          <div class="lb-skin-image" style="background-color: ${rarityColor}20">
+            ${selectedSkin.image ? `<img src="${selectedSkin.image}" alt="${selectedSkin.name}" />` : '<div class="lb-no-image">No Image</div>'}
           </div>
-          <div class="skin-info">
-            <div class="skin-name">${selectedSkin.name}</div>
-            <div class="skin-weapon">${selectedSkin.weapon}</div>
-            <div class="skin-rarity" style="color: ${rarityColor}">${selectedSkin.rarity}</div>
-            <div class="skin-price">$${selectedSkin.price.toFixed(2)}</div>
+          <div class="lb-skin-info">
+            <div class="lb-skin-name">${selectedSkin.name}</div>
+            <div class="lb-skin-weapon">${selectedSkin.weapon}</div>
+            <div class="lb-skin-rarity" style="color: ${rarityColor}">${selectedSkin.rarity}</div>
+            <div class="lb-skin-price">$${selectedSkin.price.toFixed(2)}</div>
           </div>
         </div>
       `;
@@ -446,7 +446,7 @@ const faqData = [
       let totalCost = 0;
       let itemCount = 0;
 
-      let summaryHtml = '<div class="summary-items">';
+      let summaryHtml = '<div class="lb-summary-items">';
       for (const slot of this.weaponSlots) {
         const skinSlug = this.loadout[slot.id];
         if (skinSlug) {
@@ -461,9 +461,9 @@ const faqData = [
 
           if (skin) {
             summaryHtml += `
-              <div class="summary-item">
-                <div class="summary-item-name">${skin.name}</div>
-                <div class="summary-item-price">$${skin.price.toFixed(2)}</div>
+              <div class="lb-summary-item">
+                <div class="lb-summary-item-name">${skin.name}</div>
+                <div class="lb-summary-item-price">$${skin.price.toFixed(2)}</div>
               </div>
             `;
             totalCost += skin.price;
@@ -474,7 +474,7 @@ const faqData = [
       summaryHtml += '</div>';
 
       if (itemCount === 0) {
-        summaryDiv.innerHTML = '<p class="text-muted">No skins selected yet</p>';
+        summaryDiv.innerHTML = '<p class="lb-muted">No skins selected yet</p>';
       } else {
         summaryDiv.innerHTML = summaryHtml;
       }
@@ -499,11 +499,11 @@ const faqData = [
       const modal = document.getElementById('share-modal');
       const shareLink = document.getElementById('share-link');
       shareLink.value = this.generateShareUrl();
-      modal.classList.remove('hidden');
+      modal.classList.remove('lb-hidden');
     }
 
     hideShareModal() {
-      document.getElementById('share-modal').classList.add('hidden');
+      document.getElementById('share-modal').classList.add('lb-hidden');
     }
 
     copyShareLink() {
@@ -531,647 +531,151 @@ const faqData = [
 <ExploreMore context="skins" />
 
 <style is:global>
-  .loadout-builder-page {
-    display: flex;
-    flex-direction: column;
-    gap: 2rem;
-  }
-
-  .builder-controls {
-    display: flex;
-    gap: 1rem;
-    align-items: center;
-    flex-wrap: wrap;
-    background: var(--bg2);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 1.5rem;
-  }
-
-  .team-selector {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    flex: 1;
-    min-width: 200px;
-  }
-
-  .team-selector label {
-    font-weight: 600;
-    color: var(--text);
-    white-space: nowrap;
-  }
-
-  .team-selector select {
-    background: var(--bg3);
-    color: var(--text);
-    border: 1px solid var(--border);
-    padding: 0.5rem 0.75rem;
-    border-radius: 6px;
-    font-size: 0.9rem;
-    cursor: pointer;
-    transition: border-color 0.2s, box-shadow 0.2s;
-    flex: 1;
-  }
-
-  .team-selector select:focus {
-    outline: none;
-    border-color: var(--accent);
-    box-shadow: 0 0 0 3px rgba(245, 166, 35, 0.1);
-  }
-
-  .btn-primary {
-    padding: 0.75rem 1.5rem;
-    background: var(--accent);
-    color: #000;
-    border: none;
-    border-radius: 6px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.2s;
-    font-size: 0.95rem;
-    font-family: inherit;
-  }
-
-  .btn-primary:hover {
-    background: var(--accent2);
-    transform: translateY(-2px);
-  }
-
-  .btn-small {
-    padding: 0.5rem 1rem;
-    background: var(--accent);
-    color: #000;
-    border: none;
-    border-radius: 6px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.2s;
-    font-size: 0.85rem;
-    font-family: inherit;
-  }
-
-  .btn-small:hover {
-    background: var(--accent2);
-  }
-
-  .loadout-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-    gap: 1.5rem;
-    margin: 2rem 0;
-  }
-
-  .loadout-slot {
-    background: var(--bg2);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    overflow: hidden;
-    transition: border-color 0.2s, box-shadow 0.2s;
-  }
-
-  .loadout-slot:hover {
-    border-color: var(--accent);
-    box-shadow: 0 4px 12px rgba(245, 166, 35, 0.15);
-  }
-
-  .slot-header {
-    background: var(--bg3);
-    padding: 1rem;
-    border-bottom: 1px solid var(--border);
-  }
-
-  .slot-header h3 {
-    margin: 0;
-    font-size: 1rem;
-    color: var(--accent);
-  }
-
-  .slot-search-wrap {
-    position: relative;
-  }
-
-  .slot-search {
-    display: block;
-    width: 100%;
-    padding: 0.75rem;
-    background: var(--bg);
-    color: var(--text);
-    border: none;
-    border-bottom: 1px solid var(--border);
-    font-size: 0.85rem;
-    outline: none;
-    box-sizing: border-box;
-  }
-
-  .slot-search:focus {
-    background: var(--bg3);
-  }
-
-  .slot-search::placeholder {
-    color: var(--text2);
-  }
-
-  .slot-dropdown {
-    display: none;
-    position: absolute;
-    top: 100%;
-    left: 0;
-    right: 0;
-    background: var(--bg2);
-    border: 1px solid var(--border);
-    border-top: none;
-    border-radius: 0 0 8px 8px;
-    max-height: 280px;
-    overflow-y: auto;
-    z-index: 100;
-    box-shadow: 0 8px 24px rgba(0,0,0,0.4);
-  }
-
-  .slot-dropdown.open {
-    display: block;
-  }
-
-  .slot-option {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0.5rem 0.75rem;
-    cursor: pointer;
-    font-size: 0.82rem;
-    transition: background 0.1s;
-    gap: 0.5rem;
-  }
-
-  .slot-option:hover {
-    background: var(--bg3);
-  }
-
-  .slot-no-results {
-    color: var(--text2);
-    cursor: default;
-    font-style: italic;
-  }
-
-  .so-name {
-    flex: 1;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    color: var(--text);
-  }
-
-  .so-weapon {
-    color: var(--text2);
-    font-size: 0.75rem;
-    margin-right: 0.25rem;
-  }
-
-  .so-price {
-    white-space: nowrap;
-    font-weight: 600;
-    font-size: 0.8rem;
-  }
-
-  .slot-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-
-  .slot-clear {
-    background: none;
-    border: none;
-    color: var(--text2);
-    font-size: 1.2rem;
-    cursor: pointer;
-    padding: 0 0.5rem;
-    line-height: 1;
-    transition: color 0.15s;
-  }
-
-  .slot-clear:hover {
-    color: var(--text);
-  }
-
-  .skin-preview {
-    padding: 0.75rem;
-    min-height: 80px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .preview-placeholder {
-    text-align: center;
-    color: var(--text2);
-    font-size: 0.85rem;
-  }
-
-  .skin-card {
-    display: flex;
-    gap: 0.75rem;
-    align-items: center;
-    width: 100%;
-  }
-
-  .skin-image {
-    width: 80px;
-    height: 60px;
-    flex-shrink: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 6px;
-    border: 1px solid var(--border);
-    overflow: hidden;
-  }
-
-  .skin-image img {
-    max-width: 90%;
-    max-height: 90%;
-    object-fit: contain;
-  }
-
-  .no-image {
-    color: var(--text2);
-    font-size: 0.8rem;
-  }
-
-  .skin-info {
-    display: flex;
-    flex-direction: column;
-    gap: 0.1rem;
-    flex: 1;
-    min-width: 0;
-  }
-
-  .skin-name {
-    font-weight: 600;
-    color: var(--text);
-    font-size: 0.82rem;
-    line-height: 1.2;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  .skin-weapon {
-    font-size: 0.7rem;
-    color: var(--text2);
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-  }
-
-  .skin-rarity {
-    font-size: 0.72rem;
-    font-weight: 600;
-  }
-
-  .skin-price {
-    font-size: 0.82rem;
-    color: var(--green);
-    font-weight: 700;
-    margin-top: 0.25rem;
-  }
-
-  .loadout-summary {
-    display: grid;
-    grid-template-columns: 2fr 1fr;
-    gap: 1.5rem;
-    margin: 2rem 0;
-  }
-
-  .summary-section {
-    background: var(--bg2);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 1.5rem;
-  }
-
-  .summary-section h3 {
-    margin-top: 0;
-    color: var(--accent);
-  }
-
-  .summary-items {
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
-  }
-
-  .summary-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0.75rem;
-    background: var(--bg3);
-    border-radius: 6px;
-    border: 1px solid var(--border);
-  }
-
-  .summary-item-name {
-    flex: 1;
-    font-weight: 500;
-    color: var(--text);
-    font-size: 0.9rem;
-  }
-
-  .summary-item-price {
-    color: var(--green);
-    font-weight: 700;
-    white-space: nowrap;
-    margin-left: 1rem;
-  }
-
-  .text-muted {
-    color: var(--text2);
-  }
-
-  .cost-section {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .cost-display {
-    font-size: 2.5rem;
-    font-weight: 800;
-    color: var(--green);
-    display: flex;
-    align-items: baseline;
-    gap: 0.25rem;
-  }
-
-  .currency {
-    font-size: 1.5rem;
-  }
-
-  .cost-note {
-    font-size: 0.8rem;
-    color: var(--text2);
-    margin-top: 0.5rem;
-  }
-
-  .modal {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(0, 0, 0, 0.7);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 1000;
-  }
-
-  .modal.hidden {
-    display: none;
-  }
-
-  .modal-content {
-    background: var(--bg2);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    max-width: 500px;
-    width: 90%;
-    max-height: 80vh;
-    overflow-y: auto;
-  }
-
-  .modal-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 1.5rem;
-    border-bottom: 1px solid var(--border);
-  }
-
-  .modal-header h3 {
-    margin: 0;
-  }
-
-  .modal-close {
-    background: none;
-    border: none;
-    font-size: 1.5rem;
-    color: var(--text2);
-    cursor: pointer;
-    transition: color 0.2s;
-  }
-
-  .modal-close:hover {
-    color: var(--text);
-  }
-
-  .modal-body {
-    padding: 1.5rem;
-  }
-
-  .modal-body p {
-    margin: 0 0 1rem;
-  }
-
-  .share-link-container {
-    display: flex;
-    gap: 0.5rem;
-    margin-bottom: 1rem;
-  }
-
-  .share-link-input {
-    flex: 1;
-    padding: 0.75rem;
-    background: var(--bg3);
-    color: var(--text);
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    font-size: 0.85rem;
-    font-family: monospace;
-  }
-
-  .share-note {
-    font-size: 0.85rem;
-    color: var(--text2);
-  }
-
-  .faq {
-    margin: 2rem 0;
-  }
-
-  .faq dl {
-    display: grid;
-    gap: 1rem;
-  }
-
-  .faq dt {
-    font-weight: 700;
-    color: var(--accent);
-    padding: 0.75rem 0 0.25rem;
-    border-top: 1px solid var(--border);
-  }
-
-  .faq dd {
-    color: var(--text2);
-    padding-bottom: 0.75rem;
-    font-size: 0.92rem;
-    margin: 0;
-  }
-
-  .internal-links {
-    display: flex;
-    gap: 0.75rem;
-    flex-wrap: wrap;
-    margin: 2rem 0;
-    padding: 1rem;
-    background: var(--bg2);
-    border-radius: 10px;
-    border: 1px solid var(--border);
-  }
-
-  .internal-links a {
-    padding: 0.35rem 0.75rem;
-    background: var(--bg3);
-    border-radius: 6px;
-    font-size: 0.85rem;
-    color: var(--text2);
-    border: 1px solid var(--border);
-    transition: border-color 0.2s, color 0.2s, background-color 0.2s;
-  }
-
-  .internal-links a:hover {
-    border-color: var(--accent);
-    color: var(--accent);
-    background: var(--bg);
-  }
-
-  @media (max-width: 768px) {
-    .loadout-summary {
-      grid-template-columns: 1fr;
-    }
-
-    .loadout-grid {
-      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    }
-
-    .builder-controls {
-      flex-direction: column;
-      align-items: stretch;
-    }
-
-    .team-selector {
-      min-width: auto;
-    }
-
-    .cost-display {
-      font-size: 2rem;
-    }
-  }
-
-  /* Pro Loadouts */
-  .pro-loadouts {
-    margin: 3rem 0;
-    padding: 2rem;
-    background: var(--bg2);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-  }
-
-  .pro-loadouts h2 {
-    margin: 0 0 0.4rem;
-  }
-
-  .pro-loadouts > p {
-    color: var(--text2);
-    font-size: 0.9rem;
-    margin: 0 0 1.5rem;
-  }
-
-  .pro-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-    gap: 0.75rem;
-  }
-
-  .pro-card {
-    background: var(--bg3);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 0.85rem 1rem;
-    text-decoration: none;
-    color: inherit;
-    transition: border-color 0.2s, transform 0.15s;
-  }
-
-  .pro-card:hover {
-    border-color: var(--accent);
-    transform: translateY(-2px);
-  }
-
-  .pro-header {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    margin-bottom: 0.6rem;
-  }
-
-  .pro-flag {
-    font-size: 1.1rem;
-  }
-
-  .pro-name {
-    font-weight: 700;
-    font-size: 0.95rem;
-    color: var(--text);
-  }
-
-  .pro-team {
-    margin-left: auto;
-    font-size: 0.75rem;
-    color: var(--text2);
-  }
-
-  .pro-slots {
-    display: flex;
-    flex-direction: column;
-    gap: 0.3rem;
-  }
-
-  .pro-slot {
-    display: flex;
-    gap: 0.5rem;
-    font-size: 0.78rem;
-  }
-
-  .pro-slot-label {
-    color: var(--text2);
-    min-width: 45px;
-    font-weight: 600;
-  }
-
-  .pro-slot-skin {
-    color: var(--accent);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  .btn-secondary {
-    display: inline-block;
-    background: var(--bg3);
-    color: var(--accent);
-    border: 1px solid var(--accent);
-    padding: 0.6rem 1.5rem;
-    border-radius: 8px;
-    font-weight: 700;
-    text-decoration: none;
-    transition: all 0.2s;
-  }
-
-  .btn-secondary:hover {
-    background: var(--accent);
-    color: var(--bg);
+  /* ── Breadcrumb ── */
+  .lb-breadcrumb{font-size:.82rem;color:var(--text2);margin-bottom:1.25rem;display:flex;gap:.35rem;flex-wrap:wrap}
+  .lb-breadcrumb a{color:var(--accent);text-decoration:none}
+  .lb-breadcrumb a:hover{text-decoration:underline}
+
+  /* ── Hero ── */
+  .lb-hero{padding:1.5rem 0;margin-bottom:1.5rem}
+  .lb-hero h1{font-family:'Montserrat',sans-serif;font-size:2rem;font-weight:800;margin:0 0 .5rem;color:var(--text)}
+  .lb-hero-desc{color:var(--text2);font-size:.95rem;margin:0 0 1rem;max-width:600px;line-height:1.6}
+  .lb-hero-pills{display:flex;gap:.5rem;flex-wrap:wrap}
+  .lb-pill{background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:.25rem .65rem;font-size:.78rem;color:var(--accent);font-weight:600}
+
+  /* ── Controls ── */
+  .lb-controls{display:flex;gap:1rem;align-items:center;flex-wrap:wrap;background:var(--bg2);border:1px solid var(--border);border-radius:4px;padding:1.25rem}
+  .lb-team-select{display:flex;align-items:center;gap:.75rem;flex:1;min-width:200px}
+  .lb-team-select label{font-weight:600;color:var(--text);white-space:nowrap;font-size:.9rem}
+  .lb-select{background:var(--bg3);color:var(--text);border:1px solid var(--border);padding:.5rem .75rem;border-radius:4px;font-size:.9rem;cursor:pointer;font-family:inherit}
+  .lb-select:focus{outline:none;border-color:var(--accent)}
+  .lb-btn-primary{padding:.6rem 1.25rem;background:var(--accent);color:#000;border:none;border-radius:4px;font-weight:700;cursor:pointer;font-size:.9rem;font-family:'Montserrat',sans-serif}
+  .lb-btn-primary:hover{opacity:.85}
+
+  /* ── Loadout Grid ── */
+  .lb-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1rem;margin:1.5rem 0}
+
+  /* ── Slot Cards ── */
+  .lb-slot{background:var(--bg2);border:1px solid var(--border);border-left:3px solid transparent;border-radius:4px;overflow:hidden;transition:border-left-color .15s}
+  .lb-slot:hover{border-left-color:var(--accent)}
+
+  .lb-slot-header{display:flex;justify-content:space-between;align-items:center;background:var(--bg3);padding:.85rem 1rem;border-bottom:1px solid var(--border)}
+  .lb-slot-header h3{margin:0;font-size:.95rem;color:var(--accent);font-family:'Montserrat',sans-serif}
+
+  .lb-slot-clear{background:none;border:none;color:var(--text2);font-size:1.2rem;cursor:pointer;padding:0 .5rem;line-height:1;transition:color .15s}
+  .lb-slot-clear:hover{color:var(--text)}
+
+  /* ── Search & Dropdown ── */
+  .lb-slot-search-wrap{position:relative}
+  .lb-slot-search{display:block;width:100%;padding:.65rem .85rem;background:var(--bg);color:var(--text);border:none;border-bottom:1px solid var(--border);font-size:.85rem;outline:none;box-sizing:border-box;font-family:inherit}
+  .lb-slot-search:focus{background:var(--bg3)}
+  .lb-slot-search::placeholder{color:var(--text2)}
+
+  .lb-slot-dropdown{display:none;position:absolute;top:100%;left:0;right:0;background:var(--bg2);border:1px solid var(--border);border-top:none;border-radius:0 0 4px 4px;max-height:280px;overflow-y:auto;z-index:100}
+  .lb-slot-dropdown.lb-open{display:block}
+
+  .lb-slot-option{display:flex;justify-content:space-between;align-items:center;padding:.5rem .75rem;cursor:pointer;font-size:.82rem;transition:background .1s;gap:.5rem}
+  .lb-slot-option:hover{background:var(--bg3)}
+  .lb-slot-no-results{color:var(--text2);cursor:default;font-style:italic}
+
+  .lb-so-name{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--text)}
+  .lb-so-weapon{color:var(--text2);font-size:.75rem;margin-right:.25rem}
+  .lb-so-price{white-space:nowrap;font-weight:600;font-size:.8rem}
+
+  /* ── Skin Preview ── */
+  .lb-skin-preview{padding:.75rem;min-height:80px;display:flex;align-items:center;justify-content:center}
+  .lb-preview-placeholder{color:var(--text2);font-size:.85rem}
+
+  .lb-skin-card{display:flex;gap:.75rem;align-items:center;width:100%}
+  .lb-skin-image{width:80px;height:60px;flex-shrink:0;display:flex;align-items:center;justify-content:center;border-radius:4px;border:1px solid var(--border);overflow:hidden}
+  .lb-skin-image img{max-width:90%;max-height:90%;object-fit:contain}
+  .lb-no-image{color:var(--text2);font-size:.8rem}
+
+  .lb-skin-info{display:flex;flex-direction:column;gap:.1rem;flex:1;min-width:0}
+  .lb-skin-name{font-weight:600;color:var(--text);font-size:.82rem;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .lb-skin-weapon{font-size:.7rem;color:var(--text2);text-transform:uppercase;letter-spacing:.05em}
+  .lb-skin-rarity{font-size:.72rem;font-weight:600}
+  .lb-skin-price{font-size:.82rem;color:var(--accent);font-weight:700;margin-top:.25rem}
+
+  /* ── Summary ── */
+  .lb-summary-wrap{display:grid;grid-template-columns:2fr 1fr;gap:1rem;margin:1.5rem 0}
+  .lb-summary-section{background:var(--bg2);border:1px solid var(--border);border-radius:4px;padding:1.25rem}
+  .lb-summary-section h3{margin:0 0 .75rem;color:var(--accent);font-family:'Montserrat',sans-serif;font-size:1rem}
+
+  .lb-summary-items{display:flex;flex-direction:column;gap:2px}
+  .lb-summary-item{display:flex;justify-content:space-between;align-items:center;padding:.6rem .85rem;background:var(--bg3);border:1px solid var(--border);border-left:3px solid transparent;border-radius:4px;transition:border-left-color .15s}
+  .lb-summary-item:hover{border-left-color:var(--accent)}
+  .lb-summary-item-name{flex:1;font-weight:500;color:var(--text);font-size:.88rem}
+  .lb-summary-item-price{color:var(--accent);font-weight:700;white-space:nowrap;margin-left:1rem}
+  .lb-muted{color:var(--text2);font-size:.88rem}
+
+  .lb-cost-section{display:flex;flex-direction:column;align-items:center;justify-content:center}
+  .lb-cost-display{font-size:2.5rem;font-weight:800;color:var(--accent);display:flex;align-items:baseline;gap:.25rem}
+  .lb-currency{font-size:1.5rem}
+  .lb-cost-note{font-size:.8rem;color:var(--text2);margin-top:.5rem}
+
+  /* ── Modal ── */
+  .lb-modal{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.7);display:flex;align-items:center;justify-content:center;z-index:1000}
+  .lb-hidden{display:none}
+  .lb-modal-content{background:var(--bg2);border:1px solid var(--border);border-radius:4px;max-width:500px;width:90%;max-height:80vh;overflow-y:auto}
+  .lb-modal-header{display:flex;justify-content:space-between;align-items:center;padding:1.25rem;border-bottom:1px solid var(--border)}
+  .lb-modal-header h3{margin:0;font-family:'Montserrat',sans-serif}
+  .lb-modal-close{background:none;border:none;font-size:1.5rem;color:var(--text2);cursor:pointer;transition:color .15s}
+  .lb-modal-close:hover{color:var(--text)}
+  .lb-modal-body{padding:1.25rem}
+  .lb-modal-body p{margin:0 0 .85rem}
+
+  .lb-share-container{display:flex;gap:.5rem;margin-bottom:.85rem}
+  .lb-share-input{flex:1;padding:.6rem;background:var(--bg3);color:var(--text);border:1px solid var(--border);border-radius:4px;font-size:.85rem;font-family:monospace}
+  .lb-btn-copy{padding:.5rem 1rem;background:var(--accent);color:#000;border:none;border-radius:4px;font-weight:700;cursor:pointer;font-size:.85rem;font-family:'Montserrat',sans-serif}
+  .lb-btn-copy:hover{opacity:.85}
+  .lb-share-note{font-size:.85rem;color:var(--text2)}
+
+  /* ── Pro Loadouts ── */
+  .lb-pro-section{margin:2rem 0;background:var(--bg2);border:1px solid var(--border);border-radius:4px;padding:1.5rem}
+  .lb-pro-section h2{font-family:'Montserrat',sans-serif;font-size:1.15rem;font-weight:700;margin:0 0 .4rem;color:var(--text)}
+  .lb-pro-desc{color:var(--text2);font-size:.88rem;margin:0 0 1rem}
+  .lb-pro-list{display:flex;flex-direction:column;gap:2px}
+  .lb-pro-row{display:flex;flex-direction:column;gap:.5rem;background:var(--bg3);border:1px solid var(--border);border-left:3px solid transparent;border-radius:4px;padding:.85rem 1rem;text-decoration:none;color:inherit;transition:border-left-color .15s,background .15s}
+  .lb-pro-row:hover{border-left-color:var(--accent);background:var(--bg)}
+  .lb-pro-ident{display:flex;align-items:center;gap:.5rem}
+  .lb-pro-flag{font-size:1.1rem}
+  .lb-pro-name{font-weight:700;font-size:.92rem;color:var(--text)}
+  .lb-pro-team{margin-left:auto;font-size:.75rem;color:var(--text2)}
+  .lb-pro-slots{display:flex;flex-direction:column;gap:.25rem}
+  .lb-pro-slot{display:flex;gap:.5rem;font-size:.78rem}
+  .lb-pro-slot-label{color:var(--text2);min-width:45px;font-weight:600}
+  .lb-pro-slot-skin{color:var(--accent);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+  .lb-btn-secondary{display:inline-block;background:var(--bg3);color:var(--accent);border:1px solid var(--accent);padding:.5rem 1.25rem;border-radius:4px;font-weight:700;font-size:.85rem;text-decoration:none;transition:background .15s,color .15s}
+  .lb-btn-secondary:hover{background:var(--accent);color:var(--bg)}
+
+  /* ── FAQ ── */
+  .lb-faq{margin:2rem 0}
+  .lb-faq h2{font-family:'Montserrat',sans-serif;font-size:1.15rem;font-weight:700;color:var(--text);margin:0 0 .75rem}
+  .lb-faq-item{background:var(--bg2);border:1px solid var(--border);border-radius:4px;margin-bottom:.4rem;overflow:hidden}
+  .lb-faq-q{padding:.8rem 1rem;cursor:pointer;font-weight:600;font-size:.9rem;color:var(--text);list-style:none;display:flex;align-items:center;justify-content:space-between;transition:background .15s}
+  .lb-faq-q::-webkit-details-marker{display:none}
+  .lb-faq-q::after{content:'+';font-size:1.1rem;color:var(--accent);font-weight:700}
+  .lb-faq-item[open] .lb-faq-q::after{content:'-'}
+  .lb-faq-item[open]{border-left:3px solid var(--accent)}
+  .lb-faq-item .lb-faq-q:hover{background:var(--bg3)}
+  .lb-faq-a{padding:0 1rem .8rem;margin:0;font-size:.88rem;color:var(--text2);line-height:1.6}
+
+  /* ── Internal Links ── */
+  .lb-links{display:flex;flex-wrap:wrap;gap:.45rem;align-items:center;margin:2rem 0;font-size:.82rem}
+  .lb-links strong{color:var(--text);margin-right:.2rem}
+  .lb-links a{color:var(--accent);text-decoration:none;padding:.2rem .5rem;background:var(--bg2);border:1px solid var(--border);border-radius:4px;transition:border-color .15s}
+  .lb-links a:hover{border-color:var(--accent)}
+
+  /* ── Responsive ── */
+  @media(max-width:768px){
+    .lb-summary-wrap{grid-template-columns:1fr}
+    .lb-grid{grid-template-columns:repeat(auto-fill,minmax(220px,1fr))}
+    .lb-controls{flex-direction:column;align-items:stretch}
+    .lb-team-select{min-width:auto}
+    .lb-cost-display{font-size:2rem}
+    .lb-pro-list{gap:.5rem}
   }
 </style>
 </Base>

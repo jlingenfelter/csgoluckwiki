@@ -4,8 +4,8 @@ import AuthorBox from '../components/AuthorBox.astro';
 import ExploreMore from '../components/ExploreMore.astro';
 import { faqSchema, breadcrumbSchema } from '../lib/weapons';
 
-const title = 'CS2 FAQ & Knowledge Base — 100+ Answers to Common Questions | CSDB.gg';
-const description = 'The most comprehensive CS2 FAQ and knowledge base. Find answers to questions about ranking, performance, weapons, economy, skins, competitive play, and game mechanics.';
+const title = 'CS2 FAQ — Your Questions Answered by CSGOLuck Wiki';
+const description = 'Got a CS2 question? We probably answered it. 100+ detailed answers covering ranks, FPS, weapons, economy, skins, trading, and competitive play — curated by the CSGOLuck Wiki team.';
 
 const categories = [
   {
@@ -13,11 +13,11 @@ const categories = [
     icon: '🏆',
     slug: 'ranking',
     questions: [
-      { q: 'How does the CS2 ranking system work?', a: 'CS2 uses two ranking systems: Competitive Skill Groups (Silver to Global Elite) for map-specific play, and Premier Rating (a numeric Elo-based score starting around 5,000). Premier is the primary competitive mode where your rating goes up or down after each match based on performance and outcome.' },
-      { q: 'What are the CS2 rank tiers?', a: 'Competitive has 18 ranks: Silver I through Silver Elite Master (6 ranks), Gold Nova I through Gold Nova Master (4), Master Guardian I through Distinguished Master Guardian (4), Legendary Eagle through Legendary Eagle Master (2), Supreme Master First Class, and The Global Elite.' },
-      { q: 'How do I rank up faster in CS2?', a: 'Win consecutive matches, perform consistently well (high ADR, headshot percentage, and MVP stars), and play regularly. The system considers round wins, not just match wins. Avoid long breaks between sessions as rank decay can occur.' },
-      { q: 'What is Premier Rating in CS2?', a: 'Premier Rating is a numerical score (typically 0–30,000+) that represents your competitive skill level. Unlike the old rank system, Premier shows exact point gains and losses after each match, making progress more transparent.' },
-      { q: 'Can I lose my rank in CS2?', a: 'Yes. Extended periods of inactivity (2+ weeks) can cause your rank to become hidden. You will need to play a placement match to reveal it again. Your MMR (matchmaking rating) may also decay slightly during long breaks.' },
+      { q: 'How are players ranked in Counter-Strike 2?', a: 'CS2 offers two parallel ranking tracks. Competitive Skill Groups assign one of 18 emblem ranks (Silver through Global Elite) on a per-map basis. Premier Mode, the primary ranked queue, uses a visible numerical Elo-style score that adjusts after every match depending on the result and your individual impact.' },
+      { q: 'What ranks exist in the CS2 Competitive mode?', a: 'The Competitive ladder spans 18 tiers: six Silver ranks (Silver I up to Silver Elite Master), four Gold Nova tiers, four Master Guardian levels (MG1 through DMG), the Legendary Eagle pair (LE and LEM), Supreme Master First Class, and The Global Elite at the summit.' },
+      { q: 'What is the fastest way to climb ranks in CS2?', a: 'String together wins, maintain strong round-to-round stats like ADR and headshot rate, and earn MVP awards whenever possible. The system weighs individual round results, not just match outcomes. Staying active and avoiding extended breaks is also important because inactivity can erode your hidden MMR.' },
+      { q: 'How does the Premier Rating number work?', a: 'Premier Rating is a concrete numerical score — generally between 0 and 30,000-plus — that quantifies your competitive standing. After every Premier match, you see the exact number of points gained or lost, giving you far more visibility into your progress than the traditional emblem system ever did.' },
+      { q: 'Does my rank disappear if I stop playing?', a: 'It can. If you go without playing for roughly two weeks or longer, your visible rank may be hidden until you complete a recalibration match. Behind the scenes, your matchmaking rating can also drift downward during extended absences.' },
     ]
   },
   {
@@ -25,11 +25,11 @@ const categories = [
     icon: '⚡',
     slug: 'performance',
     questions: [
-      { q: 'How do I increase FPS in CS2?', a: 'Lower resolution, reduce shader quality, disable MSAA and FXAA, set shadows to Low, update GPU drivers, close background applications, use -high in launch options, and add fps_max 0 to your autoexec. CS2 is CPU-bound, so single-thread performance matters most.' },
-      { q: 'What are the best CS2 video settings for FPS?', a: 'For maximum FPS: Global Shadow Quality Low, Model/Texture Detail Low, Shader Detail Low, Multisampling Off, Texture Filtering Bilinear, FXAA Off, VSync Off. Keep resolution at your monitor native if possible for clarity.' },
-      { q: 'Why is my CS2 FPS lower than CS:GO?', a: 'CS2 uses the Source 2 engine which is more graphically demanding than Source 1. CS2 relies more heavily on the GPU and has higher minimum requirements. Performance optimization is ongoing — each major update typically improves framerates.' },
-      { q: 'Does RAM speed affect CS2 performance?', a: 'Yes, CS2 benefits from faster RAM. DDR4-3200 or DDR5-5600+ with low CAS latency can provide 5-15% FPS improvements over slower RAM, especially in CPU-limited scenarios.' },
-      { q: 'What CPU is best for CS2?', a: 'CS2 favors strong single-core performance. AMD Ryzen 7000 series and Intel 14th gen (or newer) processors offer the best CS2 framerates. A modern 6-core CPU with high clock speeds is ideal.' },
+      { q: 'What steps can I take to boost my frame rate in CS2?', a: 'Drop your render resolution, dial back shader complexity, turn off MSAA and FXAA, switch shadows to Low, ensure your GPU drivers are current, shut down background programs, add the -high flag to your launch options, and set fps_max 0 in your autoexec. Because CS2 leans heavily on single-threaded CPU performance, upgrading that component often yields the biggest gains.' },
+      { q: 'Which video settings should I use for maximum CS2 performance?', a: 'To push frame rates as high as possible: set Global Shadow Quality, Model/Texture Detail, and Shader Detail all to Low; disable Multisampling entirely; use Bilinear texture filtering; turn off FXAA and VSync. If you can, keep your resolution at the monitor\'s native setting to avoid sacrificing visual sharpness.' },
+      { q: 'Why does CS2 run at fewer frames than CS:GO did?', a: 'CS2 is built on the Source 2 engine, which demands more from both GPU and CPU than the original Source engine behind CS:GO. The baseline hardware requirements are higher as a result. Valve continues to ship performance improvements with major patches, so the gap narrows over time.' },
+      { q: 'Can faster RAM really improve CS2 frame rates?', a: 'It can. Memory clocked at DDR4-3200 or DDR5-5600 and above with tight CAS latency timings can deliver a noticeable 5-15% uplift in FPS, particularly in CPU-bottlenecked situations where every cycle counts.' },
+      { q: 'Which processor gives the best CS2 performance?', a: 'CS2 rewards high single-core clock speeds above all else. Current top performers include AMD\'s Ryzen 7000-series chips and Intel\'s 14th generation (and later) desktop CPUs. A modern six-core processor running at elevated boost frequencies is the sweet spot for competitive play.' },
     ]
   },
   {
@@ -37,11 +37,11 @@ const categories = [
     icon: '🔫',
     slug: 'weapons',
     questions: [
-      { q: 'What is the best weapon in CS2?', a: 'The AK-47 (T-side) and M4A4/M4A1-S (CT-side) are the most versatile rifles. The AK-47 is the only rifle that can one-shot headshot against helmeted opponents. The AWP is the strongest weapon overall but costs $4,750.' },
-      { q: 'How does recoil work in CS2?', a: 'Each weapon has a fixed spray pattern. The first 2-3 bullets are relatively accurate, then recoil follows a predictable pattern. Pull your crosshair down and to the left/right to compensate. The pattern is identical every time you spray.' },
-      { q: 'AK-47 vs M4A4 vs M4A1-S — which is better?', a: 'AK-47: highest damage (one-shot head kill), but harder recoil. M4A4: 30 rounds, moderate recoil, 2 headshots to kill. M4A1-S: 20 rounds, easiest recoil, silenced. Choice depends on your role and playstyle.' },
-      { q: 'What is the first-shot accuracy in CS2?', a: 'First-shot accuracy varies by weapon. AK-47: ~97% chance of hitting a head-sized target at medium range. M4A1-S has better first-shot accuracy than the AK-47. The SG553 and AUG have the best first-shot accuracy among rifles when scoped.' },
-      { q: 'How do armor and helmets work in CS2?', a: 'Kevlar vest ($650) reduces body damage by ~50%. Kevlar + Helmet ($1000) also blocks headshot bonus damage from most weapons. Note: AK-47, SG553, and AWP can still one-shot through helmets. Always buy helmet on T-side eco rounds.' },
+      { q: 'Which weapon is considered the strongest in CS2?', a: 'The AK-47 dominates on the T side and the M4A4 or M4A1-S rules the CT side — together they form the backbone of professional loadouts. The AK-47 stands alone as the only rifle capable of a single-headshot kill through a helmet. The AWP deals the most raw damage per shot in the game, but its $4,750 price tag makes it a significant economic commitment.' },
+      { q: 'How do spray patterns and recoil function in CS2?', a: 'Every weapon follows a predetermined recoil pattern that repeats identically on each spray. The initial two or three rounds land close to your crosshair, after which the grouping rises and drifts laterally in a fixed sequence. Mastering compensation means pulling your aim downward and side-to-side in the mirror image of that pattern.' },
+      { q: 'How do the AK-47, M4A4, and M4A1-S compare?', a: 'The AK-47 outputs the highest per-bullet damage and is the only rifle that one-taps helmeted heads, but its recoil kicks harder. The M4A4 balances a 30-round magazine with manageable spray, though it needs two headshots to secure a kill. The M4A1-S carries just 20 rounds but features the gentlest recoil of the three and comes suppressed. Your pick should align with your play style and role on the team.' },
+      { q: 'What determines first-shot accuracy in CS2?', a: 'Each weapon has a unique first-shot inaccuracy value. The AK-47, for example, lands roughly 97% of opening shots on a head-sized target at medium distance. The M4A1-S edges ahead of the AK-47 in standing first-shot precision. For the tightest possible spread, scoped rifles like the SG553 and AUG lead the category.' },
+      { q: 'What exactly do kevlar and helmets protect against?', a: 'A kevlar vest at $650 cuts incoming body damage by approximately half. Adding a helmet for a combined $1,000 also neutralises the bonus headshot multiplier from most guns. Key exceptions exist, though: the AK-47, SG553, and AWP all retain lethal headshot potential even through full armour. On T-side eco rounds, grabbing a helmet is almost always worth it.' },
     ]
   },
   {
@@ -49,11 +49,11 @@ const categories = [
     icon: '💰',
     slug: 'economy',
     questions: [
-      { q: 'How does the CS2 economy work?', a: 'Players earn money from round wins, kills, bomb plants/defuses, and round loss bonuses. Money carries between rounds up to $16,000 max. Teams coordinate buy rounds (full equipment) and eco rounds (saving money) strategically.' },
-      { q: 'What is the loss bonus in CS2?', a: 'After each consecutive loss, your round-start bonus increases: 1 loss = $1,400, 2 = $1,900, 3 = $2,400, 4 = $2,900, 5+ = $3,400. Winning a round resets the streak but not immediately — you keep one level of bonus after the first win.' },
-      { q: 'When should I force buy vs eco?', a: 'Force buy when: your team can afford armor + pistols/SMGs and a loss would lose the half anyway, or when you need to break the opponent economy. Eco when: saving for 1-2 rounds would allow a full rifle buy with utility.' },
-      { q: 'How much money do you get for kills in CS2?', a: 'Kill rewards vary by weapon: Knife $1,500, SMGs $600, Shotguns $900, Pistols $300, Rifles $300, AWP $100, Grenades $300. The lower AWP reward discourages eco AWPing.' },
-      { q: 'What is a full buy in CS2?', a: 'A full buy includes: Rifle ($2,700-$4,750) + Kevlar/Helmet ($1,000) + full utility (smoke $300, flash $200×2, molotov/HE $400-$300). This costs roughly $4,500-$6,000 per player.' },
+      { q: 'How is money earned and spent in CS2?', a: 'Income flows from winning rounds, securing kills, planting or defusing the bomb, and receiving loss-streak bonuses. Your bank rolls over from round to round with a $16,000 ceiling. Good teams coordinate when to invest in full equipment (buy rounds) versus when to save cash (eco rounds) to maintain a financial edge.' },
+      { q: 'How does the consecutive loss bonus scale?', a: 'Each successive round loss bumps your starting cash higher: one loss gives $1,400, two losses $1,900, three $2,400, four $2,900, and five or more maxes out at $3,400. After breaking the streak with a win, the bonus does not vanish instantly — you retain one tier of the bonus before it fully resets.' },
+      { q: 'How do I decide between a force buy and a full eco?', a: 'Force buy if your squad can at least afford armour plus upgraded pistols or SMGs and the round is do-or-die for the half, or if winning one round would cripple the opponent\'s economy. Save on a full eco when banking for just one or two more rounds would let everyone afford rifles and a complete utility set.' },
+      { q: 'What are the per-kill money rewards in CS2?', a: 'Reward amounts depend on the weapon class: knife kills pay $1,500, SMGs award $600, shotguns $900, pistols and rifles each give $300, the AWP only returns $100, and grenade kills grant $300. The deliberately low AWP payout is designed to discourage saving for a sniper on eco rounds.' },
+      { q: 'What does a complete buy round look like?', a: 'A standard full buy means a rifle ($2,700-$4,750), kevlar with helmet ($1,000), and a full utility belt — one smoke ($300), two flashes ($200 each), and a molotov or HE grenade ($300-$400). Budget per player runs roughly $4,500 to $6,000 depending on weapon choice.' },
     ]
   },
   {
@@ -61,11 +61,11 @@ const categories = [
     icon: '🎨',
     slug: 'skins',
     questions: [
-      { q: 'How do skin float values work?', a: 'Float value is a number between 0.00 and 1.00 that determines a skin wear condition: Factory New (0.00-0.07), Minimal Wear (0.07-0.15), Field-Tested (0.15-0.38), Well-Worn (0.38-0.45), Battle-Scarred (0.45-1.00). Lower float generally means better condition and higher price.' },
-      { q: 'What makes a skin valuable?', a: 'Rarity (Covert > Classified > Restricted), condition (Factory New > Battle-Scarred), special patterns (like Case Hardened blue gem), low float values, StatTrak technology, sticker combinations, and overall demand/supply on the market.' },
-      { q: 'Where can I buy CS2 skins?', a: 'Popular marketplaces include: Steam Community Market (official, 15% fee), Skinport, Buff163, DMarket, CS.Money, Tradeit.gg, and SkinBaron. Third-party sites typically offer lower fees (2-7%) than Steam.' },
-      { q: 'Are CS2 skins a good investment?', a: 'Some skins appreciate significantly over time, especially discontinued items, operation drops, and popular knife/glove skins. However, skin prices are volatile and affected by game updates, market manipulation, and player trends. Never invest more than you can afford to lose.' },
-      { q: 'How do trade-up contracts work?', a: 'Submit 10 skins of the same rarity to receive one random skin of the next-higher rarity from the same collections. The output float is based on the average float of inputs. Strategic collection mixing lets you target specific high-value outcomes.' },
+      { q: 'What does a skin\'s float value tell me?', a: 'The float is a decimal between 0.00 and 1.00 that dictates visual wear. The scale maps to five named conditions: Factory New (0.00-0.07), Minimal Wear (0.07-0.15), Field-Tested (0.15-0.38), Well-Worn (0.38-0.45), and Battle-Scarred (0.45-1.00). Skins closer to 0.00 look cleaner and typically carry higher price tags.' },
+      { q: 'What factors drive a skin\'s market price?', a: 'Value hinges on a combination of rarity tier (Covert being the most desirable), exterior condition (Factory New at the top), distinctive patterns such as Case Hardened blue gems, exceptionally low float numbers, the presence of StatTrak kill tracking, any applied stickers, and the broader supply-and-demand dynamics on the marketplace.' },
+      { q: 'Which marketplaces can I use to purchase CS2 skins?', a: 'Widely used platforms include the Steam Community Market (Valve\'s official venue with a 15% transaction fee), Skinport, Buff163, DMarket, CS.Money, Tradeit.gg, and SkinBaron. Independent marketplaces generally charge lower commissions — typically between 2% and 7% — compared to Steam.' },
+      { q: 'Can CS2 skins serve as a worthwhile investment?', a: 'Certain skins have seen impressive long-term appreciation, particularly discontinued drops, operation-exclusive items, and sought-after knife or glove finishes. That said, the skin market is inherently volatile — patch notes, speculative trading, and shifting player tastes all move prices. Treat any capital you put into skins as money you are comfortable losing.' },
+      { q: 'How does the trade-up contract system operate?', a: 'You feed 10 skins of identical rarity into a contract and receive a single random skin one rarity tier higher, drawn from the same collection pool. The resulting item\'s float is derived from the average float of your inputs. By carefully mixing skins from specific collections, you can tilt the odds toward landing a particular high-value output.' },
     ]
   },
   {
@@ -73,11 +73,11 @@ const categories = [
     icon: '🖥️',
     slug: 'technical',
     questions: [
-      { q: 'What are the minimum specs for CS2?', a: 'Minimum: Windows 10, 4-core CPU, 8GB RAM, DirectX 11 GPU with 1GB VRAM. Recommended: Windows 10/11, 6+ core CPU, 16GB RAM, DirectX 12 GPU with 4GB+ VRAM. SSD is strongly recommended for fast loading.' },
-      { q: 'How do I set up an autoexec.cfg?', a: 'Create a text file named autoexec.cfg in Steam/steamapps/common/Counter-Strike Global Offensive/game/csgo/cfg/. Add your console commands, one per line. End with host_writeconfig. The file executes automatically on every game launch.' },
-      { q: 'What monitor refresh rate do I need for CS2?', a: '144Hz is the practical minimum for competitive play. 240Hz provides a noticeable improvement in smoothness. 360Hz offers diminishing returns but is used by many professionals. Ensure your GPU can maintain framerates at or above your refresh rate.' },
-      { q: 'Should I use fullscreen or windowed mode?', a: 'Fullscreen (not borderless) provides the lowest input latency and best FPS. Borderless windowed allows faster alt-tabbing but adds 1-2ms of input lag. Most competitive players use exclusive fullscreen.' },
-      { q: 'How do I verify my CS2 game files?', a: 'Right-click CS2 in Steam Library → Properties → Installed Files tab → Verify integrity of game files. This checks for corrupted or missing files and re-downloads them. Useful after crashes or update failures.' },
+      { q: 'What hardware do I need to run Counter-Strike 2?', a: 'At the bare minimum you need Windows 10, a quad-core processor, 8 GB of RAM, and a DirectX 11 graphics card with at least 1 GB of VRAM. For a smooth competitive experience, aim for Windows 10 or 11, a six-core (or better) CPU, 16 GB of RAM, a DirectX 12 GPU with 4 GB+ VRAM, and an SSD for quick map loads.' },
+      { q: 'How do I create and configure an autoexec.cfg?', a: 'Make a plain text file called autoexec.cfg and drop it into your CS2 config directory at Steam/steamapps/common/Counter-Strike Global Offensive/game/csgo/cfg/. Write one command per line, and close the file with host_writeconfig. CS2 will process every instruction in this file automatically on startup.' },
+      { q: 'What refresh rate should my monitor be for competitive CS2?', a: '144 Hz is the practical floor for anyone playing competitively. Stepping up to 240 Hz delivers a clearly perceptible smoothness upgrade. 360 Hz panels exist and are common among pros, though the marginal gain over 240 Hz is smaller. Whatever your panel speed, make sure your GPU pushes frame rates that meet or exceed it.' },
+      { q: 'Is exclusive fullscreen better than borderless windowed?', a: 'For competitive play, exclusive fullscreen wins — it offers the lowest possible input latency and the best raw frame-rate performance. Borderless windowed mode lets you alt-tab instantly but introduces roughly 1-2 ms of extra input delay. The vast majority of serious competitors stick with exclusive fullscreen.' },
+      { q: 'How do I repair or verify my CS2 installation?', a: 'In your Steam Library, right-click Counter-Strike 2, choose Properties, open the Installed Files tab, and hit "Verify integrity of game files." Steam will scan for missing or corrupted data and re-download anything that does not match. This is a reliable fix after crashes, failed updates, or unexplained errors.' },
     ]
   },
   {
@@ -85,11 +85,23 @@ const categories = [
     icon: '⚔️',
     slug: 'competitive',
     questions: [
-      { q: 'What is the difference between Competitive and Premier?', a: 'Competitive lets you pick specific maps and uses the traditional rank system (Silver to Global Elite). Premier uses active duty map vetoing, has a numeric rating, and is considered the primary ranked mode in CS2.' },
-      { q: 'How many placement matches do I need?', a: 'You need to win 10 matches to receive your initial Premier Rating or Competitive rank. Placement matches have higher rating volatility, meaning your first wins/losses have a bigger impact on your starting rating.' },
-      { q: 'What is ADR and why does it matter?', a: 'ADR (Average Damage per Round) measures your combat contribution. Good ADR is 80-100+. High ADR (even without many kills) means you are consistently damaging enemies, which directly helps your team win rounds.' },
-      { q: 'How do I get better at CS2?', a: 'Focus on: crosshair placement (head level, pre-aiming common angles), utility usage (learn 3-5 smokes per map), economy management, positioning (avoid unnecessary peeks), and reviewing your demos to identify mistakes.' },
-      { q: 'What maps should beginners learn first?', a: 'Start with Mirage and Dust 2 — they have simple layouts and are the most played maps. Then learn Inferno for CT-sided fundamentals. Ancient and Anubis are good next steps as they reward utility usage.' },
+      { q: 'How do Competitive and Premier mode differ?', a: 'Competitive mode lets you queue for individual maps of your choosing and assigns one of 18 emblem ranks (Silver through Global Elite). Premier mode involves a map-veto process against your opponents, tracks your skill with a visible numerical rating, and is widely regarded as the flagship ranked experience in CS2.' },
+      { q: 'How many placement games are required?', a: 'You must accumulate 10 wins before the system issues your initial Premier Rating or Competitive rank. During this calibration period, each win or loss carries extra weight, so early match results have an outsized influence on where you initially land.' },
+      { q: 'What is ADR and why should I track it?', a: 'ADR stands for Average Damage per Round and serves as a measure of your consistent combat output. A solid benchmark is 80-100+ ADR. Even if you are not topping the kill column, high ADR means you are reliably softening up opponents, which directly translates into more rounds won for your team.' },
+      { q: 'What is the best way to improve at CS2?', a: 'Concentrate on keeping your crosshair at head height and pre-aimed on common peek angles, learn a handful of key smokes and flashes for each map you play, manage your economy wisely, avoid taking fights you do not need to take, and regularly review your own demo recordings to spot recurring errors.' },
+      { q: 'Which maps are most beginner-friendly?', a: 'Mirage and Dust 2 are the standard starting recommendations — both use a straightforward three-lane structure and see the most play time, so finding matches is effortless. Inferno is a logical next map to learn since it teaches CT-side discipline. After that, Ancient and Anubis offer good progression because they place a heavier emphasis on coordinated utility usage.' },
+    ]
+  },
+  {
+    name: 'About CSGOLuck Wiki',
+    icon: '📖',
+    slug: 'about',
+    questions: [
+      { q: 'What exactly is CSGOLuck Wiki?', a: 'CSGOLuck Wiki is a comprehensive CS2 reference hub maintained by the team at CSGOLuck.com. It houses live skin pricing, a full weapon database, verified pro player configurations, interactive calculators, strategy guides, and detailed map breakdowns — everything consolidated in one free-to-use destination.' },
+      { q: 'What is the relationship with CSGOLuck.com?', a: 'CSGOLuck.com is the parent brand behind this wiki. Beyond the knowledge base, csgoluck.com offers additional CS2-related entertainment options and community-driven features worth exploring.' },
+      { q: 'Does Valve have any involvement with CSGOLuck Wiki?', a: 'None at all. CSGOLuck Wiki operates independently as a community resource. All Counter-Strike 2 intellectual property — game assets, logos, and trademarks — remain the sole property of Valve Corporation. We are simply passionate players building helpful tools for other players.' },
+      { q: 'How frequently is the information on this site refreshed?', a: 'Skin market values are pulled on a regular cycle through PriceEmpire, which aggregates pricing data from over 14 separate platforms. Pro player configs are cross-checked and revised whenever a competitor updates their setup. Game-mechanics data like weapon stats are adjusted to match each new CS2 patch.' },
+      { q: 'Is there any cost to using the wiki\'s tools and content?', a: 'Everything on CSGOLuck Wiki is completely free — no account sign-up, no premium paywall, no hidden charges. Our philosophy is that high-quality CS2 resources should be openly accessible to the entire community.' },
     ]
   },
 ];
@@ -102,14 +114,14 @@ const articleSchema = JSON.stringify({
   "@type": "Article",
   "headline": title,
   "description": description,
-  "author": { "@type": "Person", "name": "Josh Lingenfelter", "url": "https://www.linkedin.com/in/josh-lingenfelter-8157274b/", "jobTitle": "Director", "worksFor": { "@type": "Organization", "name": "Bettor Media" } },
-  "publisher": { "@type": "Organization", "name": "CSDB.gg", "url": "https://csdb.gg" },
-  "mainEntityOfPage": "https://csdb.gg/faq/",
+  "author": { "@type": "Person", "name": "Josh Lingenfelter", "url": "https://www.linkedin.com/in/josh-lingenfelter-8157274b/", "jobTitle": "Director", "worksFor": { "@type": "Organization", "name": "CSGOLuck" } },
+  "publisher": { "@type": "Organization", "name": "CSGOLuck Wiki", "url": "https://wiki.csgoluck.com" },
+  "mainEntityOfPage": "https://wiki.csgoluck.com/faq/",
   "inLanguage": "en-US"
 });
 ---
 
-<Base title={title} description={description} currentNav="/guides/">
+<Base title={title} description={description} currentNav="/cs2-guides/">
   <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema([{name:'Home',url:'/'},{name:'FAQ',url:'/faq'}]))}></script>
   <script type="application/ld+json" set:html={JSON.stringify(faqSchemaData)}></script>
   <script type="application/ld+json" set:html={articleSchema}></script>
@@ -118,35 +130,37 @@ const articleSchema = JSON.stringify({
     <a href="/">Home</a> / <span>FAQ & Knowledge Base</span>
   </nav>
 
-  <h1>CS2 FAQ & Knowledge Base</h1>
-  <p>Everything you need to know about Counter-Strike 2, organized by topic. {allFaqs.length}+ questions answered covering gameplay, settings, skins, and competitive play.</p>
+  <section class="fq-hero">
+    <h1>CS2 Frequently Asked Questions</h1>
+    <p class="fq-hero-desc">The CSGOLuck Wiki knowledge base &mdash; {allFaqs.length}+ questions answered across every major CS2 topic. Whether you are stuck on rank-up strategies, chasing better FPS, or figuring out skin trading, we have got you covered.</p>
+  </section>
 
-  <div style="display:flex;gap:.5rem;flex-wrap:wrap;margin:1.5rem 0" id="catNav">
+  <nav class="fq-cat-nav" id="catNav">
     {categories.map(c => (
-      <a href={`#${c.slug}`} class="filter-btn">{c.icon} {c.name}</a>
+      <a href={`#${c.slug}`} class="fq-cat-link">{c.icon} {c.name}</a>
     ))}
-  </div>
+  </nav>
 
   {categories.map(cat => (
-    <section id={cat.slug} style="margin:3rem 0">
-      <h2>{cat.icon} {cat.name}</h2>
-      <dl class="faq">
+    <section id={cat.slug} class="fq-category">
+      <h2 class="fq-cat-heading">{cat.icon} {cat.name}</h2>
+      <div class="fq-questions">
         {cat.questions.map(q => (
-          <Fragment>
-            <dt>{q.q}</dt>
-            <dd>{q.a}</dd>
-          </Fragment>
+          <details class="fq-item">
+            <summary>{q.q}</summary>
+            <p>{q.a}</p>
+          </details>
         ))}
-      </dl>
+      </div>
     </section>
   ))}
 
   <div class="internal-links">
     <strong>Explore More:</strong>
-    <a href="/weapons/">All Weapons</a>
-    <a href="/maps/">All Maps</a>
-    <a href="/skins/">Skin Database</a>
-    <a href="/guides/">Guides</a>
+    <a href="/cs2-weapons/">All Weapons</a>
+    <a href="/cs2-maps/">All Maps</a>
+    <a href="/cs2-skins/">Skin Database</a>
+    <a href="/cs2-guides/">Guides</a>
     <a href="/damage-calculator/">Damage Calculator</a>
     <a href="/economy-calculator/">Economy Calculator</a>
     <a href="/sensitivity-converter/">Sensitivity Converter</a>
@@ -162,3 +176,47 @@ const articleSchema = JSON.stringify({
   <ExploreMore context="general" />
   <AuthorBox updated="2026-03-02" />
 </Base>
+
+<style>
+/* ── Hero ── */
+.fq-hero{background:var(--bg2);border:1px solid var(--border);border-radius:4px;padding:2rem;margin-bottom:1.5rem}
+.fq-hero h1{font-family:'Montserrat',sans-serif;font-size:2rem;font-weight:800;margin:0 0 .5rem;color:var(--text)}
+.fq-hero-desc{color:var(--text2);font-size:.95rem;line-height:1.6;margin:0}
+
+/* ── Category Nav ── */
+.fq-cat-nav{display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:2rem}
+.fq-cat-link{display:inline-flex;align-items:center;gap:.3rem;padding:.4rem .75rem;background:var(--bg2);border:1px solid var(--border);border-left:3px solid transparent;border-radius:4px;font-size:.82rem;font-weight:600;color:var(--text2);text-decoration:none;transition:border-color .15s,color .15s,background .15s}
+.fq-cat-link:hover{border-left-color:var(--accent);color:var(--text);background:var(--bg3)}
+
+/* ── Category Sections ── */
+.fq-category{margin-bottom:2.5rem}
+.fq-cat-heading{font-family:'Montserrat',sans-serif;font-size:1.2rem;font-weight:700;color:var(--text);margin:0 0 .75rem;padding-bottom:.5rem;border-bottom:2px solid var(--accent)}
+
+/* ── FAQ Accordion Items ── */
+.fq-questions{display:flex;flex-direction:column;gap:3px}
+.fq-item{background:var(--bg2);border:1px solid var(--border);border-radius:4px;overflow:hidden}
+.fq-item summary{padding:.85rem 1rem;font-weight:700;font-size:.92rem;color:var(--text);cursor:pointer;list-style:none;display:flex;align-items:center;gap:.5rem;transition:background .15s}
+.fq-item summary::before{content:'+';font-size:1.1rem;font-weight:700;color:var(--accent);flex-shrink:0;width:20px;text-align:center}
+.fq-item[open] summary::before{content:'\2212'}
+.fq-item summary:hover{background:var(--bg3)}
+.fq-item summary::-webkit-details-marker{display:none}
+.fq-item p{padding:0 1rem 1rem 2.5rem;margin:0;color:var(--text2);font-size:.9rem;line-height:1.65}
+
+/* ── Breadcrumb ── */
+.breadcrumb{font-size:.82rem;color:var(--text2);margin-bottom:1.25rem;display:flex;gap:.35rem;flex-wrap:wrap}
+.breadcrumb a{color:var(--accent);text-decoration:none}
+.breadcrumb a:hover{text-decoration:underline}
+
+/* ── Internal Links ── */
+.internal-links{display:flex;flex-wrap:wrap;gap:.45rem;align-items:center;margin:2rem 0;font-size:.82rem}
+.internal-links strong{color:var(--text);margin-right:.2rem}
+.internal-links a{color:var(--accent);text-decoration:none;padding:.2rem .5rem;background:var(--bg2);border:1px solid var(--border);border-radius:4px;transition:border-color .15s}
+.internal-links a:hover{border-color:var(--accent)}
+
+/* ── Responsive ── */
+@media(max-width:768px){
+  .fq-hero h1{font-size:1.5rem}
+  .fq-cat-nav{gap:.3rem}
+  .fq-cat-link{font-size:.78rem;padding:.35rem .6rem}
+}
+</style>

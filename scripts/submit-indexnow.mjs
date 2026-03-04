@@ -14,7 +14,7 @@ import { fileURLToPath } from 'url';
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const DIST = join(__dirname, '..', 'dist');
 
-const SITE = 'https://csdb.gg';
+const SITE = 'https://wiki.csgoluck.com';
 const INDEXNOW_KEY = '5fcd2860c752f714c5baaa6b8d97f8a3';
 
 // ── Extract URLs from sitemap ───────────────────────────────────────────────
@@ -42,7 +42,7 @@ async function submitIndexNow(urls) {
     for (let i = 0; i < urls.length; i += BATCH_SIZE) {
       const batch = urls.slice(i, i + BATCH_SIZE);
       const body = {
-        host: 'csdb.gg',
+        host: 'wiki.csgoluck.com',
         key: INDEXNOW_KEY,
         keyLocation: `${SITE}/${INDEXNOW_KEY}.txt`,
         urlList: batch,
@@ -88,7 +88,7 @@ async function pingSitemaps() {
 
 // ── Main ────────────────────────────────────────────────────────────────────
 async function main() {
-  console.log('🚀 Post-deploy indexing for csdb.gg\n');
+  console.log('🚀 Post-deploy indexing for wiki.csgoluck.com\n');
 
   const urls = extractUrlsFromSitemap();
   if (urls.length === 0) {

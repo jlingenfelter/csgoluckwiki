@@ -3,7 +3,7 @@ import Base from '../layouts/Base.astro';
 import ExploreMore from '../components/ExploreMore.astro';
 import { breadcrumbSchema, faqSchema } from '../lib/weapons';
 
-const title = 'CS2 Bind Generator — Buy Binds, Jump Throw & Utility | CSDB.gg';
+const title = 'CS2 Bind Generator — Buy Binds, Jump Throw & Utility | CSGOLuck Wiki';
 const description = 'Generate CS2 buy binds, jump throw binds, and utility binds instantly. Visual numpad builder, one-click copy, and downloadable .cfg files.';
 const crumbs = [{ name: 'Home', url: '/' }, { name: 'Bind Generator', url: '/bind-generator/' }];
 const faqs = [
@@ -73,14 +73,14 @@ const toolSchema = JSON.stringify({
   "applicationCategory": "UtilityApplication",
   "operatingSystem": "Web",
   "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
-  "author": { "@type": "Organization", "name": "CSDB.gg", "url": "https://csdb.gg" }
+  "author": { "@type": "Organization", "name": "CSGOLuck Wiki", "url": "https://wiki.csgoluck.com" }
 });
 
 const howToSchema = JSON.stringify({
   "@context": "https://schema.org",
   "@type": "HowTo",
   "name": "How to Create CS2 Buy Binds and Utility Binds",
-  "description": "Use the CSDB.gg Bind Generator to create buy binds, jump throw binds, and utility binds for Counter-Strike 2.",
+  "description": "Use the CSGOLuck Wiki Bind Generator to create buy binds, jump throw binds, and utility binds for Counter-Strike 2.",
   "step": [
     { "@type": "HowToStep", "name": "Select a key and weapon for buy binds", "text": "Click a numpad or function key in the visual keyboard, then choose a weapon from the dropdown. Repeat for each key you want to bind. You can also load a preset (Pro Standard, Economy Round, Full Buy CT/T) to auto-fill all keys." },
     { "@type": "HowToStep", "name": "Copy or download your buy binds", "text": "Once your keys are assigned, click 'Copy to Clipboard' to copy the generated bind commands, or 'Download .cfg File' to save them as a config file you can place in your CS2 cfg folder." },
@@ -97,29 +97,32 @@ const howToSchema = JSON.stringify({
   <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema(crumbs))}></script>
   <script type="application/ld+json" set:html={JSON.stringify(faqSchema(faqs))}></script>
 
-  <nav class="breadcrumb"><a href="/">Home</a> / <span>Bind Generator</span></nav>
-  <h1>CS2 Bind Generator</h1>
-  <p>Create buy binds, jump throw binds, and utility binds for CS2. Choose your keys, select weapons, and copy the commands directly to your config.</p>
+  <nav class="breadcrumb"><a href="/">Home</a> <span>/</span> <a href="/cs2-tools/">Tools</a> <span>/</span> <span>Bind Generator</span></nav>
+
+  <div class="bng-hero">
+    <h1 class="bng-title">CS2 Bind Generator</h1>
+    <p class="bng-desc">Create buy binds, jump throw binds, and utility binds for CS2. Choose your keys, select weapons, and copy the commands directly to your config.</p>
+  </div>
 
   <!-- Buy Bind Section -->
-  <section class="bg-section">
-    <h2>Buy Bind Generator</h2>
-    <p style="color:var(--text2);font-size:.9rem">Assign weapons to numpad and function keys. Click a key, then select a weapon from the dropdown.</p>
+  <section class="bng-section">
+    <h2 class="bng-section-title">Buy Bind Generator</h2>
+    <p class="bng-subtitle">Assign weapons to numpad and function keys. Click a key, then select a weapon from the dropdown.</p>
 
-    <div class="bg-presets">
-      <span style="font-size:.82rem;color:var(--text2);font-weight:700">Presets:</span>
+    <div class="bng-presets">
+      <span class="bng-presets-label">Presets:</span>
       {PRESETS.map((p, i) => (
-        <button class="filter-btn" data-preset={i}>{p.name}</button>
+        <button class="bng-preset-btn" data-preset={i}>{p.name}</button>
       ))}
-      <button class="filter-btn" id="clear-all-btn">Clear All</button>
+      <button class="bng-preset-btn" id="clear-all-btn">Clear All</button>
     </div>
 
-    <div class="bg-keyboard">
+    <div class="bng-keyboard">
       {NUMPAD_KEYS.map(k => (
-        <div class="bg-key" data-bind={k.bind}>
-          <div class="bg-key-label">{k.label}</div>
-          <select class="bg-key-select" data-bind={k.bind}>
-            <option value="">— None —</option>
+        <div class="bng-key" data-bind={k.bind}>
+          <div class="bng-key-label">{k.label}</div>
+          <select class="bng-key-select" data-bind={k.bind}>
+            <option value="">-- None --</option>
             {Object.entries(WEAPONS).map(([cat, items]) => (
               <optgroup label={cat}>
                 {items.map(w => (
@@ -128,37 +131,36 @@ const howToSchema = JSON.stringify({
               </optgroup>
             ))}
           </select>
-          <div class="bg-key-weapon" data-bind={k.bind}></div>
         </div>
       ))}
     </div>
 
-    <div class="bg-output-section">
-      <h3>Generated Commands</h3>
-      <pre class="bg-output" id="buy-output">// Select weapons above to generate buy binds</pre>
-      <div class="bg-actions">
-        <button class="filter-btn active" id="copy-buy-btn">Copy to Clipboard</button>
-        <button class="filter-btn" id="download-buy-btn">Download .cfg File</button>
+    <div class="bng-output-section">
+      <h3 class="bng-sub-title">Generated Commands</h3>
+      <pre class="bng-code" id="buy-output">// Select weapons above to generate buy binds</pre>
+      <div class="bng-actions">
+        <button class="bng-btn-primary" id="copy-buy-btn">Copy to Clipboard</button>
+        <button class="bng-btn-secondary" id="download-buy-btn">Download .cfg File</button>
       </div>
     </div>
   </section>
 
   <!-- Jump Throw Bind Section -->
-  <section class="bg-section">
-    <h2>Jump Throw Bind</h2>
-    <p style="color:var(--text2);font-size:.9rem;margin-bottom:1rem">A jump throw bind ensures consistent grenade throws by jumping and releasing the grenade simultaneously with a single key press.</p>
+  <section class="bng-section">
+    <h2 class="bng-section-title">Jump Throw Bind</h2>
+    <p class="bng-subtitle">A jump throw bind ensures consistent grenade throws by jumping and releasing the grenade simultaneously with a single key press.</p>
 
-    <div class="bg-jt-options">
-      <div class="calc-row">
-        <label>Method:</label>
-        <select id="jt-method">
+    <div class="bng-jt-options">
+      <div class="bng-field">
+        <label class="bng-label">Method:</label>
+        <select id="jt-method" class="bng-select">
           <option value="alias">Alias Method (Recommended)</option>
           <option value="simple">Simple Method</option>
         </select>
       </div>
-      <div class="calc-row">
-        <label>Key:</label>
-        <select id="jt-key">
+      <div class="bng-field">
+        <label class="bng-label">Key:</label>
+        <select id="jt-key" class="bng-select">
           {UTIL_KEYS.map(k => (
             <option value={k} selected={k === 'F8'}>{k}</option>
           ))}
@@ -166,120 +168,121 @@ const howToSchema = JSON.stringify({
       </div>
     </div>
 
-    <pre class="bg-output" id="jt-output"></pre>
-    <button class="filter-btn active" id="copy-jt-btn">Copy Jump Throw Bind</button>
+    <pre class="bng-code" id="jt-output"></pre>
+    <button class="bng-btn-primary" id="copy-jt-btn">Copy Jump Throw Bind</button>
 
-    <div style="margin-top:1rem;padding:1rem;background:var(--bg3);border-radius:8px;border:1px solid var(--border)">
-      <p style="margin:0;font-size:.88rem;color:var(--text2)"><strong style="color:var(--accent)">How to use:</strong> Hold your grenade, hold left click to pull the pin, then press your bound key. The bind will jump and release the grenade at the optimal time for a consistent throw arc.</p>
+    <div class="bng-tip">
+      <p><strong>How to use:</strong> Hold your grenade, hold left click to pull the pin, then press your bound key. The bind will jump and release the grenade at the optimal time for a consistent throw arc.</p>
     </div>
   </section>
 
   <!-- Utility Binds Section -->
-  <section class="bg-section">
-    <h2>Utility Binds</h2>
-    <p style="color:var(--text2);font-size:.9rem;margin-bottom:1rem">Essential quality-of-life binds that every CS2 player should have in their config.</p>
+  <section class="bng-section">
+    <h2 class="bng-section-title">Utility Binds</h2>
+    <p class="bng-subtitle">Essential quality-of-life binds that every CS2 player should have in their config.</p>
 
-    <div class="bg-util-grid">
-      <div class="bg-util-card">
-        <h3>Clear Decals</h3>
-        <p>Removes blood splatter and bullet holes for clearer visibility.</p>
-        <div class="calc-row"><label>Key:</label>
-          <select class="util-key-sel" data-util="decals">
+    <div class="bng-util-grid">
+      <div class="bng-util-card">
+        <h3 class="bng-util-name">Clear Decals</h3>
+        <p class="bng-util-desc">Removes blood splatter and bullet holes for clearer visibility.</p>
+        <div class="bng-field"><label class="bng-label">Key:</label>
+          <select class="bng-util-key" data-util="decals">
             {UTIL_KEYS.map(k => <option value={k} selected={k === 'F7'}>{k}</option>)}
           </select>
         </div>
-        <pre class="bg-util-output" data-util="decals"></pre>
-        <button class="filter-btn active bg-util-copy" data-util="decals">Copy</button>
+        <pre class="bng-util-output" data-util="decals"></pre>
+        <button class="bng-btn-primary bng-util-copy" data-util="decals">Copy</button>
       </div>
 
-      <div class="bg-util-card">
-        <h3>Voice Toggle</h3>
-        <p>Toggle teammate voice chat on/off with one key press.</p>
-        <div class="calc-row"><label>Key:</label>
-          <select class="util-key-sel" data-util="voice">
+      <div class="bng-util-card">
+        <h3 class="bng-util-name">Voice Toggle</h3>
+        <p class="bng-util-desc">Toggle teammate voice chat on/off with one key press.</p>
+        <div class="bng-field"><label class="bng-label">Key:</label>
+          <select class="bng-util-key" data-util="voice">
             {UTIL_KEYS.map(k => <option value={k} selected={k === 'F9'}>{k}</option>)}
           </select>
         </div>
-        <pre class="bg-util-output" data-util="voice"></pre>
-        <button class="filter-btn active bg-util-copy" data-util="voice">Copy</button>
+        <pre class="bng-util-output" data-util="voice"></pre>
+        <button class="bng-btn-primary bng-util-copy" data-util="voice">Copy</button>
       </div>
 
-      <div class="bg-util-card">
-        <h3>Display Damage</h3>
-        <p>Show damage dealt to enemies in the console after each round.</p>
-        <div class="calc-row"><label>Key:</label>
-          <select class="util-key-sel" data-util="damage">
+      <div class="bng-util-card">
+        <h3 class="bng-util-name">Display Damage</h3>
+        <p class="bng-util-desc">Show damage dealt to enemies in the console after each round.</p>
+        <div class="bng-field"><label class="bng-label">Key:</label>
+          <select class="bng-util-key" data-util="damage">
             {UTIL_KEYS.map(k => <option value={k} selected={k === 'F10'}>{k}</option>)}
           </select>
         </div>
-        <pre class="bg-util-output" data-util="damage"></pre>
-        <button class="filter-btn active bg-util-copy" data-util="damage">Copy</button>
+        <pre class="bng-util-output" data-util="damage"></pre>
+        <button class="bng-btn-primary bng-util-copy" data-util="damage">Copy</button>
       </div>
 
-      <div class="bg-util-card">
-        <h3>Volume Toggle</h3>
-        <p>Quickly toggle game volume between normal and muted.</p>
-        <div class="calc-row"><label>Key:</label>
-          <select class="util-key-sel" data-util="volume">
+      <div class="bng-util-card">
+        <h3 class="bng-util-name">Volume Toggle</h3>
+        <p class="bng-util-desc">Quickly toggle game volume between normal and muted.</p>
+        <div class="bng-field"><label class="bng-label">Key:</label>
+          <select class="bng-util-key" data-util="volume">
             {UTIL_KEYS.map(k => <option value={k} selected={k === 'F11'}>{k}</option>)}
           </select>
         </div>
-        <pre class="bg-util-output" data-util="volume"></pre>
-        <button class="filter-btn active bg-util-copy" data-util="volume">Copy</button>
+        <pre class="bng-util-output" data-util="volume"></pre>
+        <button class="bng-btn-primary bng-util-copy" data-util="volume">Copy</button>
       </div>
 
-      <div class="bg-util-card">
-        <h3>Crosshair Size Toggle</h3>
-        <p>Switch between two crosshair sizes for different situations.</p>
-        <div class="calc-row"><label>Key:</label>
-          <select class="util-key-sel" data-util="crosshair">
+      <div class="bng-util-card">
+        <h3 class="bng-util-name">Crosshair Size Toggle</h3>
+        <p class="bng-util-desc">Switch between two crosshair sizes for different situations.</p>
+        <div class="bng-field"><label class="bng-label">Key:</label>
+          <select class="bng-util-key" data-util="crosshair">
             {UTIL_KEYS.map(k => <option value={k} selected={k === 'F12'}>{k}</option>)}
           </select>
         </div>
-        <pre class="bg-util-output" data-util="crosshair"></pre>
-        <button class="filter-btn active bg-util-copy" data-util="crosshair">Copy</button>
+        <pre class="bng-util-output" data-util="crosshair"></pre>
+        <button class="bng-btn-primary bng-util-copy" data-util="crosshair">Copy</button>
       </div>
 
-      <div class="bg-util-card">
-        <h3>Netgraph Toggle</h3>
-        <p>Show/hide network stats (ping, FPS, loss) on screen.</p>
-        <div class="calc-row"><label>Key:</label>
-          <select class="util-key-sel" data-util="netgraph">
+      <div class="bng-util-card">
+        <h3 class="bng-util-name">Netgraph Toggle</h3>
+        <p class="bng-util-desc">Show/hide network stats (ping, FPS, loss) on screen.</p>
+        <div class="bng-field"><label class="bng-label">Key:</label>
+          <select class="bng-util-key" data-util="netgraph">
             {UTIL_KEYS.map(k => <option value={k} selected={k === 'INS'}>{k}</option>)}
           </select>
         </div>
-        <pre class="bg-util-output" data-util="netgraph"></pre>
-        <button class="filter-btn active bg-util-copy" data-util="netgraph">Copy</button>
+        <pre class="bng-util-output" data-util="netgraph"></pre>
+        <button class="bng-btn-primary bng-util-copy" data-util="netgraph">Copy</button>
       </div>
     </div>
   </section>
 
-  <div class="internal-links">
-    <strong>Related Tools:</strong>
+  <div class="bng-links">
+    <span class="bng-links-label">Related Tools:</span>
     <a href="/autoexec-generator/">Autoexec Generator</a>
     <a href="/launch-options/">Launch Options</a>
     <a href="/crosshair-generator/">Crosshair Generator</a>
     <a href="/crosshair-codes/">Crosshair Codes</a>
-    <a href="/practice-config/">Practice Config</a>
     <a href="/sensitivity-converter/">Sensitivity Converter</a>
     <a href="/resolution-calculator/">Resolution Calculator</a>
     <a href="/pro-players/">Pro Player Settings</a>
-    <a href="/tools/">All Tools</a>
-    <a href="/guides/economy-guide/">Economy Guide</a>
-    <a href="/guides/beginners-guide/">Beginner's Guide</a>
+    <a href="/cs2-tools/">All Tools</a>
   </div>
 
-  <h2>Frequently Asked Questions</h2>
-  <dl class="faq">{faqs.map(f => (<Fragment><dt>{f.question}</dt><dd>{f.answer}</dd></Fragment>))}</dl>
+  <section class="bng-section">
+    <h2 class="bng-section-title">Frequently Asked Questions</h2>
+    {faqs.map(f => (
+      <details class="bng-faq-item">
+        <summary class="bng-faq-q">{f.question}</summary>
+        <div class="bng-faq-a">{f.answer}</div>
+      </details>
+    ))}
+  </section>
 
   <ExploreMore context="tools" />
 </Base>
 
 <script is:inline>
 (function(){
-  var presetData = JSON.parse(document.querySelector('[data-presets]')?.textContent || '[]');
-
-  // Presets data embedded
   var PRESETS = [
     { binds: { KP_HOME:'weapon_ak47',KP_UPARROW:'weapon_m4a1',KP_PGUP:'weapon_awp',KP_LEFTARROW:'weapon_deagle',KP_5:'item_assaultsuit',KP_RIGHTARROW:'item_defuser',KP_END:'weapon_flashbang',KP_DOWNARROW:'weapon_smokegrenade',KP_PGDN:'weapon_hegrenade',KP_INS:'weapon_molotov',KP_DEL:'weapon_incgrenade' } },
     { binds: { KP_HOME:'weapon_galilar',KP_UPARROW:'weapon_famas',KP_PGUP:'weapon_ssg08',KP_LEFTARROW:'weapon_p250',KP_5:'weapon_deagle',KP_RIGHTARROW:'item_kevlar',KP_END:'weapon_flashbang',KP_DOWNARROW:'weapon_smokegrenade' } },
@@ -287,7 +290,7 @@ const howToSchema = JSON.stringify({
     { binds: { KP_HOME:'weapon_ak47',KP_UPARROW:'weapon_galilar',KP_PGUP:'weapon_awp',KP_LEFTARROW:'weapon_glock',KP_5:'item_assaultsuit',KP_END:'weapon_flashbang',KP_DOWNARROW:'weapon_smokegrenade',KP_PGDN:'weapon_hegrenade',KP_INS:'weapon_molotov' } },
   ];
 
-  var selects = document.querySelectorAll('.bg-key-select');
+  var selects = document.querySelectorAll('.bng-key-select');
 
   function updateBuyOutput(){
     var lines = [];
@@ -304,7 +307,6 @@ const howToSchema = JSON.stringify({
     sel.addEventListener('change', updateBuyOutput);
   });
 
-  // Presets
   document.querySelectorAll('[data-preset]').forEach(function(btn){
     btn.addEventListener('click', function(){
       var idx = parseInt(btn.dataset.preset);
@@ -312,7 +314,7 @@ const howToSchema = JSON.stringify({
       if(!preset) return;
       selects.forEach(function(sel){ sel.value = ''; });
       Object.keys(preset.binds).forEach(function(key){
-        var sel = document.querySelector('.bg-key-select[data-bind="'+key+'"]');
+        var sel = document.querySelector('.bng-key-select[data-bind="'+key+'"]');
         if(sel) sel.value = preset.binds[key];
       });
       updateBuyOutput();
@@ -324,7 +326,6 @@ const howToSchema = JSON.stringify({
     updateBuyOutput();
   });
 
-  // Copy buy binds
   document.getElementById('copy-buy-btn').addEventListener('click', function(){
     var text = document.getElementById('buy-output').textContent;
     navigator.clipboard.writeText(text).then(function(){
@@ -334,9 +335,8 @@ const howToSchema = JSON.stringify({
     });
   });
 
-  // Download
   document.getElementById('download-buy-btn').addEventListener('click', function(){
-    var text = '// CS2 Buy Binds - Generated by CSDB.gg\n' + document.getElementById('buy-output').textContent;
+    var text = '// CS2 Buy Binds - Generated by CSGOLuck Wiki\n' + document.getElementById('buy-output').textContent;
     var blob = new Blob([text], { type: 'text/plain' });
     var a = document.createElement('a');
     a.href = URL.createObjectURL(blob);
@@ -344,7 +344,6 @@ const howToSchema = JSON.stringify({
     a.click();
   });
 
-  // Jump Throw
   function updateJT(){
     var method = document.getElementById('jt-method').value;
     var key = document.getElementById('jt-key').value;
@@ -367,7 +366,6 @@ const howToSchema = JSON.stringify({
     });
   });
 
-  // Utility binds
   var utilCmds = {
     decals: function(k){ return 'bind "'+k+'" "r_cleardecals"'; },
     voice: function(k){ return 'bind "'+k+'" "toggle voice_enable 0 1"'; },
@@ -378,21 +376,21 @@ const howToSchema = JSON.stringify({
   };
 
   function updateUtil(name){
-    var sel = document.querySelector('.util-key-sel[data-util="'+name+'"]');
-    var out = document.querySelector('.bg-util-output[data-util="'+name+'"]');
+    var sel = document.querySelector('.bng-util-key[data-util="'+name+'"]');
+    var out = document.querySelector('.bng-util-output[data-util="'+name+'"]');
     if(sel && out && utilCmds[name]){
       out.textContent = utilCmds[name](sel.value);
     }
   }
 
-  document.querySelectorAll('.util-key-sel').forEach(function(sel){
+  document.querySelectorAll('.bng-util-key').forEach(function(sel){
     sel.addEventListener('change', function(){ updateUtil(sel.dataset.util); });
     updateUtil(sel.dataset.util);
   });
 
-  document.querySelectorAll('.bg-util-copy').forEach(function(btn){
+  document.querySelectorAll('.bng-util-copy').forEach(function(btn){
     btn.addEventListener('click', function(){
-      var out = document.querySelector('.bg-util-output[data-util="'+btn.dataset.util+'"]');
+      var out = document.querySelector('.bng-util-output[data-util="'+btn.dataset.util+'"]');
       if(out){
         navigator.clipboard.writeText(out.textContent).then(function(){
           btn.textContent = 'Copied!';
@@ -405,26 +403,79 @@ const howToSchema = JSON.stringify({
 </script>
 
 <style>
-  .bg-section{margin-bottom:3rem}
-  .bg-presets{display:flex;gap:.5rem;align-items:center;flex-wrap:wrap;margin-bottom:1.5rem}
-  .bg-keyboard{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:.6rem;margin-bottom:1.5rem}
-  .bg-key{background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:.75rem;transition:border-color .2s}
-  .bg-key:hover{border-color:var(--accent)}
-  .bg-key-label{font-size:.78rem;font-weight:700;color:var(--text2);margin-bottom:.4rem;text-transform:uppercase;letter-spacing:.04em}
-  .bg-key-select{width:100%;background:var(--bg3);color:var(--text);border:1px solid var(--border);border-radius:4px;padding:.35rem;font-size:.82rem;font-family:inherit}
-  .bg-output-section{margin-top:1.5rem}
-  .bg-output{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:1rem;font-family:'Courier New',monospace;font-size:.85rem;color:var(--accent);overflow-x:auto;white-space:pre;max-height:300px;overflow-y:auto;margin:.75rem 0}
-  .bg-actions{display:flex;gap:.75rem}
-  .bg-jt-options{display:flex;gap:2rem;flex-wrap:wrap;margin-bottom:1rem}
-  .bg-util-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:1rem}
-  .bg-util-card{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:1.25rem}
-  .bg-util-card h3{margin:0 0 .3rem;font-size:1rem}
-  .bg-util-card p{font-size:.85rem;margin:0 0 .75rem;color:var(--text2)}
-  .bg-util-output{background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:.5rem;font-family:'Courier New',monospace;font-size:.78rem;color:var(--accent);margin:.5rem 0;white-space:pre-wrap;word-break:break-all}
+  /* Hero */
+  .bng-hero{margin-bottom:1.5rem}
+  .bng-title{font-size:1.8rem;font-weight:800;margin:0 0 .5rem}
+  .bng-desc{color:var(--text2);font-size:.95rem;margin:0;line-height:1.6;max-width:700px}
+
+  /* Sections */
+  .bng-section{background:var(--bg2);border:1px solid var(--border);border-radius:4px;padding:1.5rem;margin-bottom:1.5rem}
+  .bng-section-title{font-size:1.15rem;font-weight:700;margin:0 0 .75rem}
+  .bng-sub-title{font-size:1rem;font-weight:700;margin:0 0 .5rem}
+  .bng-subtitle{color:var(--text2);font-size:.88rem;margin:0 0 1rem;line-height:1.5}
+
+  /* Presets */
+  .bng-presets{display:flex;gap:.5rem;align-items:center;flex-wrap:wrap;margin-bottom:1.5rem}
+  .bng-presets-label{font-size:.82rem;color:var(--text2);font-weight:700}
+  .bng-preset-btn{background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:.3rem .7rem;color:var(--text2);font-size:.82rem;cursor:pointer;transition:border-color .2s,color .2s}
+  .bng-preset-btn:hover{border-color:var(--accent);color:var(--accent)}
+
+  /* Keyboard grid */
+  .bng-keyboard{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:.6rem;margin-bottom:1.5rem}
+  .bng-key{background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:.75rem;transition:border-left .2s}
+  .bng-key:hover{border-left:3px solid var(--accent)}
+  .bng-key-label{font-size:.78rem;font-weight:700;color:var(--text2);margin-bottom:.4rem;text-transform:uppercase;letter-spacing:.04em}
+  .bng-key-select{width:100%;background:var(--bg2);color:var(--text);border:1px solid var(--border);border-radius:4px;padding:.35rem;font-size:.82rem;font-family:inherit}
+  .bng-key-select:focus{outline:none;border-color:var(--accent)}
+
+  /* Fields */
+  .bng-field{display:flex;align-items:center;gap:.6rem;margin-bottom:.5rem}
+  .bng-label{font-size:.85rem;color:var(--text2);font-weight:600;min-width:60px}
+  .bng-select{background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:.4rem .6rem;color:var(--text);font-size:.88rem}
+  .bng-select:focus{outline:none;border-color:var(--accent)}
+
+  /* Output */
+  .bng-output-section{margin-top:1.5rem}
+  .bng-code{background:var(--bg);border:1px solid var(--border);border-radius:4px;padding:1rem;font-family:'Courier New',monospace;font-size:.82rem;color:var(--accent);overflow-x:auto;white-space:pre;max-height:300px;overflow-y:auto;margin:.75rem 0}
+  .bng-actions{display:flex;gap:.75rem}
+  .bng-btn-primary{padding:.45rem 1.2rem;background:var(--accent);color:#000;border:none;border-radius:4px;cursor:pointer;font-weight:700;font-size:.85rem;transition:opacity .2s}
+  .bng-btn-primary:hover{opacity:.85}
+  .bng-btn-secondary{padding:.45rem 1.2rem;background:var(--bg3);color:var(--text);border:1px solid var(--border);border-radius:4px;cursor:pointer;font-weight:700;font-size:.85rem;transition:border-color .2s}
+  .bng-btn-secondary:hover{border-color:var(--accent)}
+
+  /* Tip */
+  .bng-tip{margin-top:1rem;padding:1rem;background:var(--bg3);border-radius:4px;border:1px solid var(--border);border-left:3px solid var(--accent)}
+  .bng-tip p{margin:0;font-size:.88rem;color:var(--text2);line-height:1.6}
+
+  /* JT options */
+  .bng-jt-options{display:flex;gap:2rem;flex-wrap:wrap;margin-bottom:1rem}
+
+  /* Utility grid */
+  .bng-util-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:1rem}
+  .bng-util-card{background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:1.25rem}
+  .bng-util-name{margin:0 0 .3rem;font-size:1rem;font-weight:700}
+  .bng-util-desc{font-size:.85rem;margin:0 0 .75rem;color:var(--text2);line-height:1.5}
+  .bng-util-output{background:var(--bg);border:1px solid var(--border);border-radius:4px;padding:.5rem;font-family:'Courier New',monospace;font-size:.78rem;color:var(--accent);margin:.5rem 0;white-space:pre-wrap;word-break:break-all}
+
+  /* Links */
+  .bng-links{display:flex;flex-wrap:wrap;gap:.5rem;align-items:center;margin-bottom:1.5rem;padding:1rem;background:var(--bg2);border:1px solid var(--border);border-radius:4px}
+  .bng-links-label{font-weight:700;font-size:.85rem;color:var(--text2);margin-right:.25rem}
+  .bng-links a{color:var(--accent);font-size:.85rem;text-decoration:none;padding:.25rem .5rem;border-radius:4px;border:1px solid var(--border);transition:border-color .2s}
+  .bng-links a:hover{border-color:var(--accent)}
+
+  /* FAQ */
+  .bng-faq-item{background:var(--bg3);border:1px solid var(--border);border-radius:4px;margin-bottom:.5rem;overflow:hidden}
+  .bng-faq-q{padding:.8rem 1rem;cursor:pointer;font-weight:600;font-size:.9rem;color:var(--text);list-style:none;display:flex;align-items:center;justify-content:space-between}
+  .bng-faq-q::-webkit-details-marker{display:none}
+  .bng-faq-q::after{content:'+';font-size:1.1rem;color:var(--accent);font-weight:700}
+  .bng-faq-item[open] .bng-faq-q::after{content:'-'}
+  .bng-faq-item[open]{border-left:3px solid var(--accent)}
+  .bng-faq-a{padding:0 1rem .8rem;font-size:.88rem;color:var(--text2);line-height:1.6}
 
   @media(max-width:768px){
-    .bg-keyboard{grid-template-columns:repeat(2,1fr)}
-    .bg-util-grid{grid-template-columns:1fr}
-    .bg-jt-options{flex-direction:column;gap:.75rem}
+    .bng-keyboard{grid-template-columns:repeat(2,1fr)}
+    .bng-util-grid{grid-template-columns:1fr}
+    .bng-jt-options{flex-direction:column;gap:.75rem}
+    .bng-title{font-size:1.4rem}
   }
 </style>

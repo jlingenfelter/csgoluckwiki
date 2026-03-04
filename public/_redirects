@@ -1,4 +1,4 @@
-# CSDB.gg — Cloudflare Pages 301 Redirects
+# CSGOLuck Wiki — Cloudflare Pages 301 Redirects
 # Format: /old-path /new-path 301
 # Cloudflare Pages: first match wins, max 2000 static + 100 dynamic rules
 
@@ -6,33 +6,33 @@
 # 1. DUPLICATE / RENAMED ROUTES
 # ──────────────────────────────────────────────
 
-# Old /map/ singular → /maps/ plural
-/map/:slug /maps/:slug/ 301
+# Old /map/ singular → /cs2-maps/ plural
+/map/:slug /cs2-maps/:slug/ 301
 
-# Old /players/ plural → /player/ singular (new site uses singular)
+# Old /players/ plural → /pro-players/ singular (new site uses singular)
 /players/ /pro-players/ 301
-/players/:slug /player/:slug/ 301
+/players/:slug /pro-players/:slug/ 301
 
-# Old /ranks/ → /rank/ (new site uses singular)
-/ranks/ /rank-distribution/ 301
-/ranks/:slug /rank/:slug/ 301
+# Old /ranks/ → /cs2-ranks/ (new site uses singular)
+/ranks/ /cs2-rank-distribution/ 301
+/ranks/:slug /cs2-ranks/:slug/ 301
 
-# Old /callouts/ → /maps/ (callouts now live on map pages)
-/callouts/ /maps/ 301
-/callouts/dust-2/ /maps/dust2/ 301
-/callouts/mirage/ /maps/mirage/ 301
-/callouts/inferno/ /maps/inferno/ 301
-/callouts/nuke/ /maps/nuke/ 301
-/callouts/nuke /maps/nuke/ 301
-/callouts/overpass/ /maps/overpass/ 301
-/callouts/anubis/ /maps/anubis/ 301
-/callouts/ancient/ /maps/ancient/ 301
-/callouts/vertigo/ /maps/vertigo/ 301
-/callouts/cache/ /maps/ 301
-/callouts/cobblestone/ /maps/ 301
-/callouts/train/ /maps/ 301
-/callouts/italy/ /maps/ 301
-/callouts/office/ /maps/ 301
+# Old /callouts/ → /cs2-maps/ (callouts now live on map pages)
+/callouts/ /cs2-maps/ 301
+/callouts/dust-2/ /cs2-maps/dust2/ 301
+/callouts/mirage/ /cs2-maps/mirage/ 301
+/callouts/inferno/ /cs2-maps/inferno/ 301
+/callouts/nuke/ /cs2-maps/nuke/ 301
+/callouts/nuke /cs2-maps/nuke/ 301
+/callouts/overpass/ /cs2-maps/overpass/ 301
+/callouts/anubis/ /cs2-maps/anubis/ 301
+/callouts/ancient/ /cs2-maps/ancient/ 301
+/callouts/vertigo/ /cs2-maps/vertigo/ 301
+/callouts/cache/ /cs2-maps/ 301
+/callouts/cobblestone/ /cs2-maps/ 301
+/callouts/train/ /cs2-maps/ 301
+/callouts/italy/ /cs2-maps/ 301
+/callouts/office/ /cs2-maps/ 301
 
 # ──────────────────────────────────────────────
 # 2. COMMANDS — old individual command pages → unified commands page
@@ -42,213 +42,63 @@
 /command-category/* /cs2-commands/ 301
 
 # ──────────────────────────────────────────────
-# 3. TRADING SITE REVIEWS — /sitename/review/ → /trading-site/slug/
+# 3. BLOG POSTS — /blog/ paths → relevant new pages
 # ──────────────────────────────────────────────
 
-# Sites that exist on the new site (exact slug matches)
-/buff-163/review/ /trading-site/buff163/ 301
-/buff-163/review /trading-site/buff163/ 301
-/buff-market/review/ /trading-site/buff163/ 301
-/buff-market/review /trading-site/buff163/ 301
-/skinport/review/ /trading-site/skinport/ 301
-/skinport/review /trading-site/skinport/ 301
-/csfloat/review/ /trading-site/csfloat/ 301
-/csfloat/review /trading-site/csfloat/ 301
-/cs-money/review/ /trading-site/csmoney/ 301
-/cs-money/review /trading-site/csmoney/ 301
-/tradeit-gg/review/ /trading-site/tradeit-gg/ 301
-/tradeit-gg/review /trading-site/tradeit-gg/ 301
-/dmarket/review/ /trading-site/dmarket/ 301
-/dmarket/review /trading-site/dmarket/ 301
-/skinsmonkey/review/ /trading-site/skinsmonkey/ 301
-/skinsmonkey/review /trading-site/skinsmonkey/ 301
-/bitskins/review/ /trading-site/bitskins/ 301
-/bitskins/review /trading-site/bitskins/ 301
-/skinbaron/review/ /trading-site/skinbaron/ 301
-/skinbaron/review /trading-site/skinbaron/ 301
-/skinswap/review/ /trading-site/skinswap/ 301
-/skinswap/review /trading-site/skinswap/ 301
-/waxpeer/review/ /trading-site/waxpeer/ 301
-/waxpeer/review /trading-site/waxpeer/ 301
-/gamerpay/review/ /trading-site/gamerpay/ 301
-/gamerpay/review /trading-site/gamerpay/ 301
-/shadowpay/review/ /trading-site/shadowpay/ 301
-/shadowpay/review /trading-site/shadowpay/ 301
-/loot-farm/review/ /trading-site/loot-farm/ 301
-/loot-farm/review /trading-site/loot-farm/ 301
-
-# Sites NOT on new site → trading sites hub
-/avan-market/review/ /trading-sites/ 301
-/avan-market/review /trading-sites/ 301
-/bloodycase/review/ /trading-sites/ 301
-/bounty-stars/review/ /trading-sites/ 301
-/casehug/review/ /trading-sites/ 301
-/casesgg/review/ /trading-sites/ 301
-/chicken-gg/review/ /trading-sites/ 301
-/clash-gg/review/ /trading-sites/ 301
-/cs-trade/review/ /trading-sites/ 301
-/csdeals/review/ /trading-sites/ 301
-/csfail/review/ /trading-sites/ 301
-/csgo500/review/ /trading-sites/ 301
-/csgobig/review/ /trading-sites/ 301
-/csgocasinogg/review/ /trading-sites/ 301
-/csgofast/review/ /trading-sites/ 301
-/csgogem/review/ /trading-sites/ 301
-/csgogem/review /trading-sites/ 301
-/csgoluck/review/ /trading-sites/ 301
-/csgonet/review/ /trading-sites/ 301
-/csgopolygon/review/ /trading-sites/ 301
-/csgoroll/review/ /trading-sites/ 301
-/csgostake/review/ /trading-sites/ 301
-/daddy-skins/review/ /trading-sites/ 301
-/datdrop/review/ /trading-sites/ 301
-/duelbits/review/ /trading-sites/ 301
-/farmskins/review/ /trading-sites/ 301
-/g4skins/review/ /trading-sites/ 301
-/gamdom/review/ /trading-sites/ 301
-/ggdrop/review/ /trading-sites/ 301
-/ggdrop/review /trading-sites/ 301
-/ggskins/review/ /trading-sites/ 301
-/hellcase/review/ /trading-sites/ 301
-/hellstore-me/review/ /trading-sites/ 301
-/hotpizza-gg/review/ /trading-sites/ 301
-/howl-gg/review/ /trading-sites/ 301
-/insane-gg/review/ /trading-sites/ 301
-/key-drop/review/ /trading-sites/ 301
-/knifex/review/ /trading-sites/ 301
-/knifex/review /trading-sites/ 301
-/lootbear/review/ /trading-sites/ 301
-/lootbox/review/ /trading-sites/ 301
-/pirateswap/review/ /trading-sites/ 301
-/r1-skins/review/ /trading-sites/ 301
-/rain-gg/review/ /trading-sites/ 301
-/rapidskins/review/ /trading-sites/ 301
-/rollbit/review/ /trading-sites/ 301
-/roobet/review/ /trading-sites/ 301
-/sellyourskins/review/ /trading-sites/ 301
-/skinbid/review/ /trading-sites/ 301
-/skincade/review/ /trading-sites/ 301
-/skincantor/review/ /trading-sites/ 301
-/skincashier/review/ /trading-sites/ 301
-/skinclub/review/ /trading-sites/ 301
-/skinclub/review /trading-sites/ 301
-/skinfans/review/ /trading-sites/ 301
-/skinflow/review/ /trading-sites/ 301
-/skinrave-gg/review/ /trading-sites/ 301
-/skins-cash/review/ /trading-sites/ 301
-/steamlevels/review/ /trading-sites/ 301
-/swap-gg/review/ /trading-sites/ 301
-/x-fun/review/ /trading-sites/ 301
-
-# Old /reviews/ and /review/ paths
-/reviews/* /trading-sites/ 301
-/reviews /trading-sites/ 301
-/review/* /trading-sites/ 301
-
-# ──────────────────────────────────────────────
-# 4. PROMO CODES — /promo-codes/site/ → /trading-site/slug/promo-code/
-# ──────────────────────────────────────────────
-
-# Sites with promo pages on new site
-/promo-codes/buff-163/ /trading-site/buff163/promo-code/ 301
-/promo-codes/buff-163 /trading-site/buff163/promo-code/ 301
-/promo-codes/buff-market/ /trading-site/buff163/promo-code/ 301
-/promo-codes/bitskins/ /trading-site/bitskins/promo-code/ 301
-/promo-codes/csfloat/ /trading-site/csfloat/promo-code/ 301
-/promo-codes/dmarket/ /trading-site/dmarket/promo-code/ 301
-/promo-codes/skinport/ /trading-site/skinport/promo-code/ 301
-/promo-codes/tradeit-gg/ /trading-site/tradeit-gg/promo-code/ 301
-/promo-codes/skinbaron/ /trading-site/skinbaron/promo-code/ 301
-/promo-codes/waxpeer/ /trading-site/waxpeer/promo-code/ 301
-/promo-codes/gamerpay/ /trading-site/gamerpay/promo-code/ 301
-/promo-codes/shadowpay/ /trading-site/shadowpay/promo-code/ 301
-/promo-codes/cs-money/ /trading-site/csmoney/promo-code/ 301
-/promo-codes/skinsmonkey/ /trading-site/skinsmonkey/promo-code/ 301
-
-# All other promo codes → trading sites hub
-/promo-codes/ /trading-sites/ 301
-/promo-codes/* /trading-sites/ 301
-
-# ──────────────────────────────────────────────
-# 5. GAMBLING / CASINO SITE TYPES → trading sites hub
-# ──────────────────────────────────────────────
-
-/roulette-sites/ /trading-sites/ 301
-/jackpot-sites/ /trading-sites/ 301
-/crash-sites/ /trading-sites/ 301
-/coinflip-sites/ /trading-sites/ 301
-/blackjack-sites/ /trading-sites/ 301
-/case-battle-sites/ /trading-sites/ 301
-/case-opening-sites/ /trading-sites/ 301
-/upgrade-sites/ /trading-sites/ 301
-
-# Whitemarket standalone page
-/whitemarket/ /trading-site/whitemarket/ 301
-
-# ──────────────────────────────────────────────
-# 6. BLOG POSTS — /blog/ paths → relevant new pages
-# ──────────────────────────────────────────────
-
-/blog/guides/* /guides/ 301
-/blog/insights/* /guides/ 301
-/blog/patterns/* /guides/float-guide/ 301
+/blog/guides/* /cs2-guides/ 301
+/blog/insights/* /cs2-guides/ 301
+/blog/patterns/* /cs2-guides/float-guide/ 301
 /blog/esports/* / 301
-/blog/errors/* /guides/ 301
+/blog/errors/* /cs2-guides/ 301
 /blog/binds/* /bind-generator/ 301
-/blog/ /guides/ 301
+/blog/ /cs2-guides/ 301
 
 # ──────────────────────────────────────────────
-# 7. OLD ROOT-LEVEL BLOG POSTS → best matching new page
+# 4. OLD ROOT-LEVEL BLOG POSTS → best matching new page
 # ──────────────────────────────────────────────
 
 # Economy guides
-/economy-guide/ /guides/economy-guide/ 301
-/a-beginners-guide-to-the-csgo-economy/ /guides/economy-guide/ 301
-/csgo-economy-guide/ /guides/economy-guide/ 301
+/economy-guide/ /cs2-guides/economy-guide/ 301
+/a-beginners-guide-to-the-csgo-economy/ /cs2-guides/economy-guide/ 301
+/csgo-economy-guide/ /cs2-guides/economy-guide/ 301
 
 # Skin float / pattern guides → new case-hardened guide (specific) or float-guide (general)
-/ak-47-case-hardened-blue-gem-seed-patterns/ /guides/case-hardened-guide/ 301
-/butterfly-case-hardened-blue-gem-patterns/ /guides/case-hardened-guide/ 301
-/best-cs2-case-hardened-patterns/ /guides/case-hardened-guide/ 301
-/case-hardened-skins-blue-gems/ /guides/case-hardened-guide/ 301
-/classic-knife-case-hardened-blue-gem-patterns/ /guides/case-hardened-guide/ 301
-/all-cs2-rare-skin-patterns-full-list/ /guides/case-hardened-guide/ 301
-/awp-paw-rare-seed-patterns/ /guides/case-hardened-guide/ 301
-/best-gold-gem-patterns-for-every-knife-in-cs2/ /guides/case-hardened-guide/ 301
-/glock-18-grinder-pattern-guide/ /guides/case-hardened-guide/ 301
-/guide-for-all-marble-fade-skins/ /guides/case-hardened-guide/ 301
-/what-are-skin-floats-in-csgo/ /guides/float-guide/ 301
+/ak-47-case-hardened-blue-gem-seed-patterns/ /cs2-guides/case-hardened-guide/ 301
+/butterfly-case-hardened-blue-gem-patterns/ /cs2-guides/case-hardened-guide/ 301
+/best-cs2-case-hardened-patterns/ /cs2-guides/case-hardened-guide/ 301
+/case-hardened-skins-blue-gems/ /cs2-guides/case-hardened-guide/ 301
+/classic-knife-case-hardened-blue-gem-patterns/ /cs2-guides/case-hardened-guide/ 301
+/all-cs2-rare-skin-patterns-full-list/ /cs2-guides/case-hardened-guide/ 301
+/awp-paw-rare-seed-patterns/ /cs2-guides/case-hardened-guide/ 301
+/best-gold-gem-patterns-for-every-knife-in-cs2/ /cs2-guides/case-hardened-guide/ 301
+/glock-18-grinder-pattern-guide/ /cs2-guides/case-hardened-guide/ 301
+/guide-for-all-marble-fade-skins/ /cs2-guides/case-hardened-guide/ 301
+/what-are-skin-floats-in-csgo/ /cs2-guides/float-guide/ 301
 
 # Crosshair
 /best-pro-cs2-crosshairs/ /crosshair-codes/ 301
 
 # Settings / FPS optimization
-/best-viewmodel-settings-in-cs2/ /guides/fps-optimization-guide/ 301
-/best-cs2-nvidia-settings-max-performance/ /guides/fps-optimization-guide/ 301
+/best-viewmodel-settings-in-cs2/ /cs2-guides/fps-optimization-guide/ 301
+/best-cs2-nvidia-settings-max-performance/ /cs2-guides/fps-optimization-guide/ 301
 /best-cs2-console-commands-for-fps/ /cs2-commands/ 301
 
-# Trading / market articles
-/best-places-to-sell-cs2-csgo-skins-for-paypal/ /trading-sites/ 301
-/the-best-cs2-skin-trading-tools/ /trading-sites/ 301
-/cashout-csmoney/ /trading-sites/ 301
-/what-is-the-steam-market-should-i-use-it-to-buy-cs2-csgo-skins/ /trading-sites/ 301
-
 # Cheap skins articles → skins page
-/10-best-cheap-awp-skins-under-10/ /skins/ 301
-/10-cheap-ak-47-skins-under-10/ /skins/ 301
-/10-cheap-desert-eagle-skins-under-10/ /skins/ 301
-/10-cheap-desert-eagle-skins-under-10 /skins/ 301
-/10-cheap-dual-berettas-skins-under-10/ /skins/ 301
-/10-cheap-five-seven-skins-under-10/ /skins/ 301
-/10-cheap-m4a1-s-skins-under-10/ /skins/ 301
-/10-cheap-negev-skins-under-10/ /skins/ 301
-/10-cheap-r8-revolver-skins-under-10/ /skins/ 301
-/10-cheap-sawed-off-skins-under-10/ /skins/ 301
-/10-cheap-usp-s-skins-under-10/ /skins/ 301
-/10-cheap-xm1014-skins-under-10/ /skins/ 301
-/best-cheap-cs2-skins-you-can-buy-under-5/ /skins/ 301
-/best-cs2-skins-with-fire/ /skins/ 301
-/best-cs2-terrorist-skins/ /skins/ 301
+/10-best-cheap-awp-skins-under-10/ /cs2-skins/ 301
+/10-cheap-ak-47-skins-under-10/ /cs2-skins/ 301
+/10-cheap-desert-eagle-skins-under-10/ /cs2-skins/ 301
+/10-cheap-desert-eagle-skins-under-10 /cs2-skins/ 301
+/10-cheap-dual-berettas-skins-under-10/ /cs2-skins/ 301
+/10-cheap-five-seven-skins-under-10/ /cs2-skins/ 301
+/10-cheap-m4a1-s-skins-under-10/ /cs2-skins/ 301
+/10-cheap-negev-skins-under-10/ /cs2-skins/ 301
+/10-cheap-r8-revolver-skins-under-10/ /cs2-skins/ 301
+/10-cheap-sawed-off-skins-under-10/ /cs2-skins/ 301
+/10-cheap-usp-s-skins-under-10/ /cs2-skins/ 301
+/10-cheap-xm1014-skins-under-10/ /cs2-skins/ 301
+/best-cheap-cs2-skins-you-can-buy-under-5/ /cs2-skins/ 301
+/best-cs2-skins-with-fire/ /cs2-skins/ 301
+/best-cs2-terrorist-skins/ /cs2-skins/ 301
 
 # Sticker articles → stickers page
 /best-anime-stickers-in-csgo/ /stickers/ 301
@@ -257,14 +107,14 @@
 /the-best-cs2-sticker-crafts/ /stickers/ 301
 
 # Case articles → cases page
-/all-cs2-skins-inside-the-prisma-case/ /cases/ 301
-/are-cs2-csgo-cases-predetermined/ /cases/ 301
-/best-cs2-cases-to-open/ /cases/ 301
-/best-csgoroll-cases-to-open/ /cases/ 301
+/all-cs2-skins-inside-the-prisma-case/ /cs2-cases/ 301
+/are-cs2-csgo-cases-predetermined/ /cs2-cases/ 301
+/best-cs2-cases-to-open/ /cs2-cases/ 301
+/best-csgoroll-cases-to-open/ /cs2-cases/ 301
 
 # Knife articles → skins
-/all-csgo-knife-types-listed/ /skins/ 301
-/the-most-expensive-csgo-knives-ever-sold/ /skins/ 301
+/all-csgo-knife-types-listed/ /cs2-skins/ 301
+/the-most-expensive-csgo-knives-ever-sold/ /cs2-skins/ 301
 
 # Workshop / maps
 /best-cs2-workshop-maps/ /workshop-maps/ 301
@@ -281,48 +131,45 @@
 /how-to-make-a-drop-bomb-bind-in-cs2 /bind-generator/ 301
 
 # Rank related
-/csgo-wingman-ranks-explained/ /rank-distribution/ 301
-/competitive-vs-premier/ /guides/ranks-guide/ 301
+/csgo-wingman-ranks-explained/ /cs2-rank-distribution/ 301
+/competitive-vs-premier/ /cs2-guides/ranks-guide/ 301
 
 # Pro players / esports
 /all-cs2-player-roles-explained/ /pro-players/ 301
 /who-are-the-best-csgo-players-of-all-time/ /pro-players/ 301
 /counter-strike-events-tournaments-calendar/ /pro-players/ 301
 /best-cs-stats-trackers/ /pro-players/ 301
-/best-csgo-glitches-that-will-help-you-win/ /guides/ 301
+/best-csgo-glitches-that-will-help-you-win/ /cs2-guides/ 301
 
 # Movement / gameplay guides
-/how-to-bhop-in-cs2-the-ultimate-guide/ /guides/movement-guide/ 301
-/cs2-surf-servers-how-to-master-surfing-in-cs2/ /guides/movement-guide/ 301
+/how-to-bhop-in-cs2-the-ultimate-guide/ /cs2-guides/movement-guide/ 301
+/cs2-surf-servers-how-to-master-surfing-in-cs2/ /cs2-guides/movement-guide/ 301
 
 # Grenade / utility guides
-/complete-guide-on-grenade-binds-in-cs2/ /guides/grenade-guide/ 301
+/complete-guide-on-grenade-binds-in-cs2/ /cs2-guides/grenade-guide/ 301
 
 # Audio / sound guides
-/guide-on-sound-and-audio-settings-in-cs2/ /guides/audio-guide/ 301
+/guide-on-sound-and-audio-settings-in-cs2/ /cs2-guides/audio-guide/ 301
 
 # Config / settings guides
-/how-to-find-csgo-config-files/ /guides/config-guide/ 301
+/how-to-find-csgo-config-files/ /cs2-guides/config-guide/ 301
 
 # Demo guides
-/how-to-download-and-watch-a-cs2-demo/ /guides/demo-guide/ 301
-/csgo-demo-controls/ /guides/demo-guide/ 301
+/how-to-download-and-watch-a-cs2-demo/ /cs2-guides/demo-guide/ 301
+/csgo-demo-controls/ /cs2-guides/demo-guide/ 301
 
 # General CS2 info → guides
-/1v1-in-cs2/ /guides/ 301
-/can-you-play-cs2-csgo-on-a-mac/ /guides/ 301
-/can-you-play-cs2-csgo-with-a-controller/ /guides/ 301
-/can-you-play-cs2-on-console/ /guides/ 301
-/can-you-play-csgo-without-internet/ /guides/ 301
-/can-i-get-banned-for-playing-with-a-hacker-in-csgo-cs2/ /guides/ 301
-/a-complete-guide-to-cs2-demo-controls/ /guides/demo-guide/ 301
-/armory-battle-pass-full-guide-whats-new/ /guides/ 301
+/1v1-in-cs2/ /cs2-guides/ 301
+/can-you-play-cs2-csgo-on-a-mac/ /cs2-guides/ 301
+/can-you-play-cs2-csgo-with-a-controller/ /cs2-guides/ 301
+/can-you-play-cs2-on-console/ /cs2-guides/ 301
+/can-you-play-csgo-without-internet/ /cs2-guides/ 301
+/can-i-get-banned-for-playing-with-a-hacker-in-csgo-cs2/ /cs2-guides/ 301
+/a-complete-guide-to-cs2-demo-controls/ /cs2-guides/demo-guide/ 301
+/armory-battle-pass-full-guide-whats-new/ /cs2-guides/ 301
 
 # 3D viewer / float checker
 /3d-skin-viewer/ /float-checker/ 301
-
-# Trading / VAC
-/can-you-trade-cs2-skins-if-vac-banned/ /trading-sites/ 301
 
 # Betting / gambling guides → homepage
 /a-guide-to-cs2-betting/ / 301
@@ -330,7 +177,7 @@
 /the-best-csgo-desktop-wallpapers/ / 301
 
 # ──────────────────────────────────────────────
-# 8. AUTHORS / MISC
+# 5. AUTHORS / MISC
 # ──────────────────────────────────────────────
 
 /authors/* / 301

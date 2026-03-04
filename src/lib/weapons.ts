@@ -23,13 +23,13 @@ export interface Weapon {
 }
 
 export const WEAPON_CATEGORIES = [
-  { slug: 'rifle', name: 'Rifles', icon: '🔫', description: 'Primary rifles including assault rifles and sniper rifles. The backbone of any CS2 loadout.' },
-  { slug: 'smg', name: 'SMGs', icon: '🔧', description: 'Submachine guns — affordable, high fire rate weapons ideal for anti-eco rounds and close-range combat.' },
-  { slug: 'pistol', name: 'Pistols', icon: '🔫', description: 'Sidearms ranging from the starting Glock/USP-S to the powerful Desert Eagle.' },
-  { slug: 'heavy', name: 'Heavy', icon: '🛡️', description: 'Shotguns and machine guns for specialized situations and close-quarter defense.' },
-  { slug: 'grenade', name: 'Grenades', icon: '💥', description: 'Utility grenades — smokes, flashbangs, molotovs, and HE grenades. Essential for tactics.' },
-  { slug: 'knife', name: 'Knives', icon: '🔪', description: 'Cosmetic knife skins in CS2. All knives share the same gameplay stats — these are purely visual upgrades.' },
-  { slug: 'glove', name: 'Gloves', icon: '🧤', description: 'Cosmetic glove skins in CS2. Gloves are purely visual items that change the appearance of your hands.' },
+  { slug: 'rifle', name: 'Rifles', icon: '🔫', description: 'Assault rifles and scoped marksman weapons that form the core of every competitive loadout.' },
+  { slug: 'smg', name: 'SMGs', icon: '🔧', description: 'Budget-friendly automatic firearms with rapid fire rates, perfect for anti-eco setups and tight quarters.' },
+  { slug: 'pistol', name: 'Pistols', icon: '🔫', description: 'Secondary weapons from the default Glock-18 and USP-S up to the hard-hitting Desert Eagle.' },
+  { slug: 'heavy', name: 'Heavy', icon: '🛡️', description: 'Shotguns and light machine guns built for niche roles and short-range defensive holds.' },
+  { slug: 'grenade', name: 'Grenades', icon: '💥', description: 'Tactical throwables — smokes, flashbangs, incendiaries, and HE rounds. The foundation of coordinated play.' },
+  { slug: 'knife', name: 'Knives', icon: '🔪', description: 'Collectible knife finishes available in CS2. Every knife performs identically — these are purely aesthetic items.' },
+  { slug: 'glove', name: 'Gloves', icon: '🧤', description: 'Wearable glove skins in CS2. Gloves are cosmetic-only accessories that alter your in-game hand model.' },
 ];
 
 export const WEAPONS: Weapon[] = [
@@ -473,7 +473,7 @@ export function faqSchema(faqs: ({ q: string; a: string } | { question: string; 
 }
 
 export function breadcrumbSchema(crumbs: { name?: string; label?: string; url?: string }[]) {
-  const BASE = 'https://csdb.gg';
+  const BASE = 'https://wiki.csgoluck.com';
   return {
     '@context': 'https://schema.org',
     '@type': 'BreadcrumbList',

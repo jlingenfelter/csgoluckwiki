@@ -1,0 +1,300 @@
+---
+import Base from '../../layouts/Base.astro';
+import ExploreMore from '../../components/ExploreMore.astro';
+import { breadcrumbSchema, faqSchema } from '../../lib/weapons';
+import { allRanks } from '../../lib/ranks';
+
+export function getStaticPaths() {
+  return allRanks.map(r => ({
+    params: { slug: r.slug },
+    props: { rankData: r },
+  }));
+}
+
+const { rankData } = Astro.props;
+const rank = rankData;
+const ranks = allRanks;
+
+const title = `${rank.rank} (${rank.abbr}) — CS2 Rank Stats & Tips | CSGOLuck Wiki`;
+const description = `Everything about ${rank.rank} in CS2. ${rank.percentile} of players, Premier rating ${rank.premierRange}, average stats, tips to rank up, and detailed breakdown.`;
+
+const faqs = [
+  { question: `What percentile is ${rank.rank} in CS2?`, answer: `${rank.rank} (${rank.abbr}) represents approximately ${rank.percentile} of the CS2 player base, with about ${rank.percentage}% of players at this exact rank.` },
+  { question: `What Premier rating is ${rank.rank}?`, answer: `${rank.rank} roughly corresponds to a Premier rating of ${rank.premierRange}. The exact mapping varies as Valve adjusts rating boundaries.` },
+  { question: `How do I rank up from ${rank.rank}?`, answer: `To rank up from ${rank.rank}, focus on winning consecutive matches, improving your K/D ratio and ADR, and playing consistently. The tips section on this page provides specific advice for your skill level.` },
+  { question: `What are typical stats for ${rank.rank}?`, answer: `Typical stats at ${rank.rank}: K/D ratio of ${rank.avgKD}, Average Damage per Round (ADR) of ${rank.avgADR}, and headshot percentage of ${rank.avgHS}.` },
+];
+
+const breadcrumbs = [
+  { name: 'Home', url: '/' },
+  { name: 'Rank Distribution', url: '/cs2-rank-distribution/' },
+  { name: rank.rank, url: `/cs2-ranks/${rank.slug}/` },
+];
+
+// Calculate cumulative percentile
+let cumulativeBelow = 0;
+for (const r of ranks) {
+  if (r.slug === rank.slug) break;
+  cumulativeBelow += r.percentage;
+}
+const cumulativePercentile = cumulativeBelow + rank.percentage;
+---
+
+<Base title={title} description={description} currentNav="/cs2-ranks/">
+  <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema(breadcrumbs))}></script>
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema(faqs))}></script>
+
+  <nav class="breadcrumb">
+    <a href="/">Home</a> / <a href="/cs2-rank-distribution/">Rank Distribution</a> / <span>{rank.rank}</span>
+  </nav>
+
+  <!-- Hero: Two-Column Layout -->
+  <div class="rp-hero" style={`--rank-color:${rank.color}`}>
+    <div class="rp-hero-left">
+      <img src={'/images/ranks/' + rank.slug + '.png'} alt={rank.rank} class="rp-badge-img" width="100" height="100" />
+      <div class="rp-badge" style={`background:${rank.color};color:#0d0e12`}>{rank.abbr}</div>
+      <div class="rp-tier-label">{rank.tier} Tier</div>
+      <div class="rp-hero-nav">
+        {rank.prevRank && (
+          <a href={`/cs2-ranks/${rank.prevRank}/`} class="rp-hero-nav-link">&larr; Prev</a>
+        )}
+        {rank.nextRank && (
+          <a href={`/cs2-ranks/${rank.nextRank}/`} class="rp-hero-nav-link">Next &rarr;</a>
+        )}
+      </div>
+    </div>
+    <div class="rp-hero-right">
+      <h1 class="rp-title">{rank.rank}</h1>
+      <p class="rp-subtitle">{rank.tier} Tier &middot; {rank.percentile} &middot; Premier {rank.premierRange}</p>
+      <div class="rp-pills">
+        <span class="rp-pill"><strong>{rank.percentage}%</strong> Players</span>
+        <span class="rp-pill">Top <strong>{cumulativePercentile}%</strong></span>
+        <span class="rp-pill"><strong>{rank.premierRange}</strong> Premier</span>
+        <span class="rp-pill"><strong>{rank.avgKD}</strong> K/D</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- About Section: Two-Column -->
+  <section class="rp-about">
+    <h2 class="rp-section-title">About {rank.rank}</h2>
+    <div class="rp-about-grid">
+      <div class="rp-about-desc">
+        <p>{rank.description} See where this rank sits in the <a href="/cs2-rank-distribution/">full rank distribution</a>. Improve your aim with the <a href="/crosshair-generator/">Crosshair Generator</a> and <a href="/sensitivity-converter/">Sensitivity Converter</a>, or study <a href="/pro-players/">pro player settings</a> for optimized configs.</p>
+      </div>
+      <div class="rp-about-table-wrap">
+        <table class="rp-stats-table">
+          <thead>
+            <tr><th>Metric</th><th>Value</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>K/D Ratio</td><td>{rank.avgKD}</td></tr>
+            <tr><td>ADR</td><td>{rank.avgADR}</td></tr>
+            <tr><td>Headshot %</td><td>{rank.avgHS}</td></tr>
+            <tr><td>Premier Rating</td><td>{rank.premierRange}</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- Distribution: Vertical Bar Chart -->
+  <section class="rp-section">
+    <h2 class="rp-section-title">Rank Distribution</h2>
+    <div class="rp-chart-wrap">
+      <div class="rp-chart">
+        {ranks.map(r => {
+          const isActive = r.slug === rank.slug;
+          const barHeight = Math.max(r.percentage * 6, 8);
+          return (
+            <div class={`rp-chart-col ${isActive ? 'rp-chart-col--active' : ''}`}>
+              <span class="rp-chart-val">{r.percentage}%</span>
+              <div
+                class="rp-chart-bar"
+                style={`height:${barHeight}px;background:${isActive ? r.color : 'var(--bg3)'}`}
+              />
+              <span class="rp-chart-label">{r.abbr}</span>
+            </div>
+          );
+        })}
+      </div>
+      <p class="rp-chart-caption">
+        <span style={`color:${rank.color};font-weight:700`}>{rank.abbr}</span> &mdash; {rank.percentage}% of players ({rank.percentile})
+      </p>
+    </div>
+  </section>
+
+  <!-- Tips: 2-Column Grid of Cards -->
+  <section class="rp-section">
+    <h2 class="rp-section-title">{rank.nextRank ? `How to Rank Up from ${rank.rank}` : `Maintaining ${rank.rank}`}</h2>
+    <div class="rp-tips-grid">
+      {rank.tips.map((tip, i) => (
+        <div class="rp-tip-card">
+          <span class="rp-tip-num" style={`color:${rank.color}`}>{i + 1}</span>
+          <p class="rp-tip-text">{tip}</p>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <!-- All Ranks: Horizontal Scrolling Strip -->
+  <section class="rp-section">
+    <h2 class="rp-section-title">All CS2 Ranks</h2>
+    <div class="rp-ranks-strip-wrap">
+      <div class="rp-ranks-strip">
+        {ranks.map(r => (
+          <a
+            href={`/cs2-ranks/${r.slug}/`}
+            class={`rp-rank-chip ${r.slug === rank.slug ? 'rp-rank-chip--active' : ''}`}
+            style={`--rc:${r.color}`}
+          >
+            {r.abbr}
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Fixed-position Prev/Next Navigation Arrows -->
+  <div class="rp-edge-nav">
+    {rank.prevRank && (
+      <a href={`/cs2-ranks/${rank.prevRank}/`} class="rp-edge-nav-btn rp-edge-prev" aria-label="Previous rank">&larr;</a>
+    )}
+    {rank.nextRank && (
+      <a href={`/cs2-ranks/${rank.nextRank}/`} class="rp-edge-nav-btn rp-edge-next" aria-label="Next rank">&rarr;</a>
+    )}
+  </div>
+
+  <!-- FAQ: Accordion -->
+  <section class="rp-section">
+    <h2 class="rp-section-title">Frequently Asked Questions</h2>
+    <div class="rp-faq-list">
+      {faqs.map(f => (
+        <details class="rp-faq-item">
+          <summary class="rp-faq-q">{f.question}</summary>
+          <p class="rp-faq-a">{f.answer}</p>
+        </details>
+      ))}
+    </div>
+  </section>
+
+  <!-- Internal Links -->
+  <div class="internal-links">
+    <strong>Related Resources:</strong>
+    <a href="/cs2-rank-distribution/">Rank Distribution</a>
+    <a href="/cs2-guides/ranks-guide/">Ranking System Guide</a>
+    <a href="/cs2-guides/economy-guide/">Economy Guide</a>
+    <a href="/cs2-guides/beginners-guide/">Beginner's Guide</a>
+    <a href="/cs2-guides/advanced-mechanics-guide/">Advanced Mechanics</a>
+    <a href="/spray-trainer/">Spray Trainer</a>
+    <a href="/recoil-patterns/">Recoil Patterns</a>
+    <a href="/crosshair-generator/">Crosshair Generator</a>
+    <a href="/crosshair-codes/">Crosshair Codes</a>
+    <a href="/sensitivity-converter/">Sensitivity Converter</a>
+    <a href="/edpi-calculator/">eDPI Calculator</a>
+    <a href="/pro-players/">Pro Player Settings</a>
+    <a href="/pro-gaming-gear/">Pro Gaming Gear</a>
+    <a href="/practice-config/">Practice Config</a>
+    <a href="/workshop-maps/">Workshop Maps</a>
+    <a href="/cs2-commands/">Console Commands</a>
+    <a href="/damage-calculator/">Damage Calculator</a>
+    <a href="/cs2-maps/">Map Callouts</a>
+    <a href="/cs2-weapons/">Weapon Database</a>
+    <a href="/cs2-tools/">All Tools</a>
+  </div>
+
+  <ExploreMore context="guides" />
+</Base>
+
+<style is:inline>
+/* ===== Hero: Two-Column ===== */
+.rp-hero{display:grid;grid-template-columns:280px 1fr;gap:2rem;background:var(--bg2);border:1px solid var(--border);border-radius:4px;padding:2rem;margin-bottom:2rem}
+.rp-hero-left{display:flex;flex-direction:column;align-items:center;gap:.75rem;border-right:1px solid var(--border);padding-right:2rem}
+.rp-badge-img{width:100px;height:100px;object-fit:contain}
+.rp-badge{width:100px;height:100px;border-radius:4px;display:none;align-items:center;justify-content:center;font-size:2.2rem;font-weight:900;line-height:1}
+.rp-badge-img[src=""] ~ .rp-badge,.rp-badge-img:not([src]) ~ .rp-badge{display:flex}
+.rp-tier-label{font-size:.85rem;color:var(--text2);font-weight:600;text-transform:uppercase;letter-spacing:.08em}
+.rp-hero-nav{display:flex;gap:.75rem;margin-top:.25rem}
+.rp-hero-nav-link{font-size:.8rem;color:var(--accent);text-decoration:none;font-weight:600;padding:.25rem .5rem;border:1px solid var(--border);border-radius:4px;transition:border-color .2s}
+.rp-hero-nav-link:hover{border-left:2px solid var(--accent)}
+
+.rp-hero-right{display:flex;flex-direction:column;justify-content:center}
+.rp-title{margin:0;font-size:2rem;line-height:1.2}
+.rp-subtitle{margin:.4rem 0 1.25rem;color:var(--text2);font-size:.9rem}
+.rp-pills{display:flex;flex-wrap:wrap;gap:.5rem}
+.rp-pill{display:inline-flex;align-items:center;gap:.3rem;background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:.35rem .75rem;font-size:.8rem;color:var(--text2);white-space:nowrap}
+.rp-pill strong{color:var(--text);font-weight:700}
+
+/* ===== Section Titles ===== */
+.rp-section{margin-bottom:2rem}
+.rp-section-title{font-size:1.2rem;margin:0 0 1rem;padding-bottom:.5rem;border-bottom:1px solid var(--border)}
+
+/* ===== About: Two-Column ===== */
+.rp-about{margin-bottom:2rem}
+.rp-about-grid{display:grid;grid-template-columns:1fr 1fr;gap:2rem;margin-top:1rem}
+.rp-about-desc p{margin:0;color:var(--text2);font-size:.92rem;line-height:1.7}
+.rp-about-table-wrap{overflow-x:auto}
+.rp-stats-table{width:100%;border-collapse:collapse;font-size:.88rem}
+.rp-stats-table thead tr{background:var(--accent)}
+.rp-stats-table th{padding:.5rem .75rem;text-align:left;font-weight:700;color:#0d0e12;font-size:.82rem;text-transform:uppercase;letter-spacing:.04em}
+.rp-stats-table td{padding:.5rem .75rem;border-bottom:1px solid var(--border)}
+.rp-stats-table tbody tr:last-child td{border-bottom:none}
+.rp-stats-table tbody tr{background:var(--bg3)}
+
+/* ===== Distribution: Vertical Bar Chart ===== */
+.rp-chart-wrap{background:var(--bg2);border:1px solid var(--border);border-radius:4px;padding:1.5rem}
+.rp-chart{display:flex;align-items:flex-end;justify-content:center;gap:4px;height:auto;min-height:100px;padding-bottom:.5rem}
+.rp-chart-col{display:flex;flex-direction:column;align-items:center;gap:3px;flex:1;min-width:0}
+.rp-chart-val{font-size:.55rem;color:var(--text2);opacity:0;transition:opacity .2s}
+.rp-chart-col:hover .rp-chart-val,.rp-chart-col--active .rp-chart-val{opacity:1}
+.rp-chart-col--active .rp-chart-val{font-weight:700;color:var(--text)}
+.rp-chart-bar{width:100%;max-width:40px;min-width:8px;border-radius:3px 3px 0 0;transition:background .2s}
+.rp-chart-col:hover .rp-chart-bar{opacity:.85}
+.rp-chart-label{font-size:.55rem;color:var(--text2);font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+.rp-chart-col--active .rp-chart-label{color:var(--text);font-weight:800}
+.rp-chart-caption{text-align:center;font-size:.85rem;color:var(--text2);margin:.75rem 0 0}
+
+/* ===== Tips: 2-Column Grid ===== */
+.rp-tips-grid{display:grid;grid-template-columns:1fr 1fr;gap:.75rem}
+.rp-tip-card{background:var(--bg2);border:1px solid var(--border);border-left:3px solid var(--accent);border-radius:4px;padding:1rem 1rem 1rem 1.1rem;position:relative}
+.rp-tip-num{position:absolute;top:.6rem;left:.6rem;font-size:1.3rem;font-weight:900;opacity:.35;line-height:1}
+.rp-tip-text{margin:0;font-size:.88rem;color:var(--text2);line-height:1.6;padding-left:1.5rem}
+
+/* ===== All Ranks: Horizontal Scrolling Strip ===== */
+.rp-ranks-strip-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:thin;scrollbar-color:var(--border) transparent;padding-bottom:.25rem}
+.rp-ranks-strip-wrap::-webkit-scrollbar{height:4px}
+.rp-ranks-strip-wrap::-webkit-scrollbar-thumb{background:var(--border);border-radius:4px}
+.rp-ranks-strip{display:flex;gap:.4rem;min-width:max-content;padding:.25rem 0}
+.rp-rank-chip{display:inline-flex;align-items:center;justify-content:center;padding:.4rem .85rem;background:var(--bg3);border:1px solid var(--border);border-radius:4px;font-size:.78rem;font-weight:700;color:var(--text2);text-decoration:none;white-space:nowrap;transition:border-color .2s}
+.rp-rank-chip:hover{border-left:2px solid var(--rc)}
+.rp-rank-chip--active{background:var(--rc);color:#0d0e12;border-color:var(--rc);font-weight:800}
+
+/* ===== Fixed Edge Navigation ===== */
+.rp-edge-nav{position:fixed;top:50%;left:0;right:0;pointer-events:none;z-index:50;display:flex;justify-content:space-between;transform:translateY(-50%);padding:0 .5rem;max-width:100vw}
+.rp-edge-nav-btn{pointer-events:auto;display:flex;align-items:center;justify-content:center;width:36px;height:36px;background:var(--bg2);border:1px solid var(--border);border-radius:4px;color:var(--text);text-decoration:none;font-size:1.1rem;font-weight:700;transition:border-color .2s}
+.rp-edge-nav-btn:hover{border-left:2px solid var(--accent)}
+.rp-edge-prev{margin-right:auto}
+.rp-edge-next{margin-left:auto}
+
+/* ===== FAQ: Accordion ===== */
+.rp-faq-list{display:flex;flex-direction:column;gap:.5rem}
+.rp-faq-item{background:var(--bg2);border:1px solid var(--border);border-radius:4px;overflow:hidden}
+.rp-faq-item[open]{border-left:3px solid var(--accent)}
+.rp-faq-q{padding:.85rem 1rem;font-weight:700;font-size:.92rem;cursor:pointer;list-style:none;display:flex;align-items:center;gap:.5rem}
+.rp-faq-q::-webkit-details-marker{display:none}
+.rp-faq-q::before{content:'+';font-size:1.1rem;font-weight:700;color:var(--accent);flex-shrink:0;width:1.2rem;text-align:center}
+.rp-faq-item[open] .rp-faq-q::before{content:'\2212'}
+.rp-faq-a{margin:0;padding:0 1rem 1rem 2.7rem;font-size:.88rem;color:var(--text2);line-height:1.6}
+
+/* ===== Responsive ===== */
+@media(max-width:768px){
+  .rp-hero{grid-template-columns:1fr;text-align:center}
+  .rp-hero-left{border-right:none;border-bottom:1px solid var(--border);padding-right:0;padding-bottom:1.25rem}
+  .rp-hero-right{align-items:center}
+  .rp-pills{justify-content:center}
+  .rp-about-grid{grid-template-columns:1fr}
+  .rp-tips-grid{grid-template-columns:1fr}
+  .rp-edge-nav{display:none}
+  .rp-title{font-size:1.5rem}
+}
+</style>

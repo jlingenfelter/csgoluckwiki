@@ -1,0 +1,687 @@
+---
+import Base from '../../layouts/Base.astro';
+import ExploreMore from '../../components/ExploreMore.astro';
+import { getCollections, getLowestPrice, RARITY_COLORS, RARITY_BG, type CollectionInfo } from '../../lib/skins';
+import { breadcrumbSchema, faqSchema } from '../../lib/weapons';
+import { getCollectionImage } from '../../lib/collection-images';
+
+export function getStaticPaths() {
+  return getCollections().map((col) => ({
+    params: { slug: col.slug },
+    props: { collection: col },
+  }));
+}
+
+const { collection } = Astro.props as { collection: CollectionInfo };
+
+if (!collection) {
+  return Astro.redirect('/cs2-skins/');
+}
+
+const title = `${collection.name} CS2 Skins — All Skins & Prices | CSGOLuck Wiki`;
+const description = `Browse all ${collection.skins.length} skins in the ${collection.name} collection. See prices, float ranges, and rarity breakdown. Find the best deals on ${collection.name} skins.`;
+
+// Rarity tier ordering — highest to lowest
+const rarityOrder = ['Covert', 'Classified', 'Restricted', 'Mil-Spec', 'Industrial', 'Consumer'];
+
+// Group skins by rarity
+const skinsByRarity: Record<string, typeof collection.skins> = {};
+for (const rarity of rarityOrder) {
+  const skinsInRarity = collection.skins.filter(s => s.rarity === rarity);
+  if (skinsInRarity.length > 0) {
+    skinsByRarity[rarity] = skinsInRarity;
+  }
+}
+
+// Collection stats
+const allPrices = collection.skins.map(s => getLowestPrice(s)).filter(p => p > 0);
+const avgPrice = allPrices.length > 0 ? allPrices.reduce((a, b) => a + b, 0) / allPrices.length : 0;
+const minPrice = allPrices.length > 0 ? Math.min(...allPrices) : 0;
+const maxPrice = allPrices.length > 0 ? Math.max(...allPrices) : 0;
+const statTrakCount = collection.skins.filter(s => s.statTrak).length;
+const souvenirCount = collection.skins.filter(s => s.souvenir).length;
+
+// Collection emblem image
+const collectionImage = getCollectionImage(collection.name);
+
+// Breadcrumbs
+const breadcrumbs = [
+  { name: 'Home', url: '/' },
+  { name: 'Skins', url: '/cs2-skins/' },
+  { name: 'Collections', url: '/cs2-cases/' },
+  { name: collection.name, url: `/cs2-collections/${collection.slug}/` },
+];
+
+// FAQ
+const faqs = [
+  {
+    q: `How many skins are in the ${collection.name} collection?`,
+    a: `The ${collection.name} collection contains ${collection.skins.length} skins across ${Object.keys(skinsByRarity).length} rarity tiers: ${Object.entries(collection.rarities).map(([r, c]) => `${c} ${r}`).join(', ')}.`,
+  },
+  {
+    q: `What is the cheapest skin in the ${collection.name} collection?`,
+    a: minPrice > 0
+      ? `The most affordable skin in the ${collection.name} collection starts at $${minPrice.toFixed(2)}. Prices vary by wear condition and whether the skin is StatTrak or Souvenir.`
+      : `Price data for ${collection.name} skins is currently being updated. Check back soon for the latest prices.`,
+  },
+  {
+    q: `Can you get ${collection.name} skins as drops?`,
+    a: `${collection.name} skins can be obtained through in-game drops, trade-ups, or purchased from the Steam Community Market and third-party marketplaces. Availability depends on whether the collection is currently in the active drop pool.`,
+  },
+];
+
+// Related collections
+const allCollections = getCollections();
+const relatedCollections = allCollections.filter(c => c.slug !== collection.slug).slice(0, 10);
+---
+
+<Base {title} {description} currentNav="/cs2-skins/">
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema(breadcrumbs))} />
+    <script type="application/ld+json" set:html={JSON.stringify(faqSchema(faqs))} />
+  </Fragment>
+
+  <!-- Breadcrumb -->
+  <nav class="cl-crumb" aria-label="Breadcrumb">
+    <a href="/">Home</a>
+    <span class="cl-crumb-sep">/</span>
+    <a href="/cs2-skins/">Skins</a>
+    <span class="cl-crumb-sep">/</span>
+    <a href="/cs2-cases/">Collections</a>
+    <span class="cl-crumb-sep">/</span>
+    <span class="cl-crumb-cur">{collection.name}</span>
+  </nav>
+
+  <!-- Hero -->
+  <section class="cl-hero">
+    <div class="cl-hero-left">
+      {collectionImage && (
+        <img src={collectionImage} alt={collection.name} class="cl-hero-emblem" width="56" height="56" loading="eager" />
+      )}
+      <div class="cl-hero-text">
+        <h1 class="cl-hero-title">{collection.name}</h1>
+        <p class="cl-hero-meta">
+          {collection.skins.length} skins
+          {minPrice > 0 && <span class="cl-hero-range"> &middot; ${minPrice.toFixed(2)} &ndash; ${maxPrice.toFixed(2)}</span>}
+          {statTrakCount > 0 && <span class="cl-badge cl-badge-st">ST</span>}
+          {souvenirCount > 0 && <span class="cl-badge cl-badge-sv">SV</span>}
+        </p>
+      </div>
+    </div>
+    <div class="cl-hero-pills">
+      {rarityOrder
+        .filter(r => collection.rarities[r])
+        .map(r => (
+          <span class="cl-rarity-pill" style={`border-left:3px solid ${RARITY_COLORS[r]};color:${RARITY_COLORS[r]}`}>
+            {r} ({collection.rarities[r]})
+          </span>
+        ))
+      }
+    </div>
+  </section>
+
+  <!-- Contents Table -->
+  <section class="cl-section">
+    <h2 class="cl-heading">All Skins</h2>
+
+    {rarityOrder
+      .filter(r => skinsByRarity[r])
+      .map(rarity => (
+        <div class="cl-rarity-block">
+          <h3 class="cl-rarity-title">
+            <span class="cl-rarity-dot" style={`background:${RARITY_COLORS[rarity]}`}></span>
+            {rarity}
+            <span class="cl-rarity-count">{skinsByRarity[rarity].length}</span>
+          </h3>
+          <table class="cl-table">
+            <thead>
+              <tr>
+                <th class="cl-th-bar"></th>
+                <th class="cl-th-thumb"></th>
+                <th class="cl-th-name">Skin</th>
+                <th class="cl-th-float">Float</th>
+                <th class="cl-th-price">Price</th>
+                <th class="cl-th-action"></th>
+              </tr>
+            </thead>
+            <tbody>
+              {skinsByRarity[rarity].map(skin => {
+                const price = getLowestPrice(skin);
+                const rarityColor = RARITY_COLORS[skin.rarity] || '#fff';
+                return (
+                  <tr class="cl-skin-tr">
+                    <td class="cl-td-bar">
+                      <span class="cl-color-bar" style={`background:${rarityColor}`}></span>
+                    </td>
+                    <td class="cl-td-thumb">
+                      {skin.image ? (
+                        <img src={skin.image} alt={`${skin.weapon} | ${skin.name}`} loading="lazy" width="48" height="36" />
+                      ) : (
+                        <span class="cl-no-thumb">--</span>
+                      )}
+                    </td>
+                    <td class="cl-td-name">
+                      <a href={`/cs2-skin/${skin.slug}/`} class="cl-skin-link">
+                        <span class="cl-skin-weapon">{skin.weapon}</span>
+                        <span class="cl-skin-name">{skin.name}</span>
+                      </a>
+                      {skin.statTrak && <span class="cl-tag-st">ST</span>}
+                    </td>
+                    <td class="cl-td-float">{skin.minFloat.toFixed(2)} - {skin.maxFloat.toFixed(2)}</td>
+                    <td class="cl-td-price">{price > 0 ? `$${price.toFixed(2)}` : '--'}</td>
+                    <td class="cl-td-action">
+                      <a href={`/cs2-skin/${skin.slug}/`} class="cl-skin-arrow">&rarr;</a>
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+      ))
+    }
+  </section>
+
+  <!-- Weapons list -->
+  <p class="cl-weapons-line">
+    <strong>Weapons:</strong> {collection.weapons.join(', ')}
+  </p>
+  <p class="cl-weapons-line" style="margin-top:.5rem">
+    Use the <a href="/float-checker/" style="color:var(--accent)">Float Checker</a> to inspect skin values from this collection, or the <a href="/tradeup-calculator/" style="color:var(--accent)">Trade-Up Calculator</a> to find profitable trade-up contracts. Compare prices across marketplaces with the <a href="/price-tracker/" style="color:var(--accent)">Price Tracker</a>.
+  </p>
+
+  <!-- Related Collections: Pill Tags -->
+  {relatedCollections.length > 0 && (
+    <section class="cl-section">
+      <h2 class="cl-heading">Other Collections</h2>
+      <div class="cl-related-pills">
+        {relatedCollections.map(c => (
+          <a href={`/cs2-collections/${c.slug}/`} class="cl-related-pill">{c.name}</a>
+        ))}
+      </div>
+    </section>
+  )}
+
+  <!-- FAQ Accordion -->
+  <section class="cl-section">
+    <h2 class="cl-heading">Common Questions</h2>
+    {faqs.map(faq => (
+      <details class="cl-faq-item">
+        <summary class="cl-faq-q">{faq.q}</summary>
+        <p class="cl-faq-a">{faq.a}</p>
+      </details>
+    ))}
+  </section>
+
+  <!-- Related Links -->
+  <nav class="cl-links" aria-label="Related pages">
+    <a href="/cs2-skins/">All Skins</a>
+    <a href="/cs2-cases/">Cases & Collections</a>
+    <a href="/skin-compare/">Compare Skins</a>
+    <a href="/price-tracker/">Price Tracker</a>
+    <a href="/float-checker/">Float Checker</a>
+    <a href="/tradeup-calculator/">Trade-Up Calculator</a>
+    <a href="/case-simulator/">Case Simulator</a>
+    <a href="/case-odds-calculator/">Case Odds Calculator</a>
+    <a href="/market-trends/">Market Trends</a>
+    <a href="/inventory-lookup/">Inventory Lookup</a>
+    <a href="/loadout-builder/">Loadout Builder</a>
+    <a href="/cs2-weapons/">Weapon Database</a>
+    <a href="/cs2-stickers/">Stickers</a>
+    <a href="/cs2-agents/">Agents</a>
+    <a href="/cs2-guides/skins-investing-guide/">Investing Guide</a>
+    <a href="/cs2-guides/trading-guide/">Trading Guide</a>
+    <a href="/cs2-guides/float-guide/">Float Guide</a>
+    <a href="/cs2-tools/">All Tools</a>
+  </nav>
+
+  <ExploreMore context="skins" />
+
+  <style is:inline>
+    :root {
+      --accent: #2ecc71;
+      --bg2: #13141a;
+      --bg3: #1a1c24;
+      --border: #242630;
+    }
+
+    /* ---- BREADCRUMB ---- */
+    .cl-crumb {
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+      margin-bottom: 1.25rem;
+      font-size: 0.82rem;
+    }
+
+    .cl-crumb a {
+      color: var(--text2);
+      text-decoration: none;
+    }
+
+    .cl-crumb a:hover {
+      color: var(--accent);
+    }
+
+    .cl-crumb-sep {
+      color: var(--border);
+    }
+
+    .cl-crumb-cur {
+      color: var(--text);
+      font-weight: 600;
+    }
+
+    /* ---- HERO ---- */
+    .cl-hero {
+      margin-bottom: 2rem;
+      padding-bottom: 1.5rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .cl-hero-left {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .cl-hero-emblem {
+      width: 56px;
+      height: 56px;
+      object-fit: contain;
+      flex-shrink: 0;
+    }
+
+    .cl-hero-text {
+      min-width: 0;
+    }
+
+    .cl-hero-title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--text);
+      margin: 0 0 0.3rem;
+      letter-spacing: -0.02em;
+    }
+
+    .cl-hero-meta {
+      font-size: 0.85rem;
+      color: var(--text2);
+      margin: 0;
+    }
+
+    .cl-hero-range {
+      color: var(--accent);
+    }
+
+    .cl-badge {
+      display: inline-block;
+      font-size: 0.68rem;
+      font-weight: 700;
+      padding: 0.1rem 0.3rem;
+      border-radius: 4px;
+      vertical-align: middle;
+      margin-left: 0.35rem;
+      letter-spacing: 0.03em;
+    }
+
+    .cl-badge-st {
+      background: rgba(207, 106, 50, 0.2);
+      color: #cf6a32;
+    }
+
+    .cl-badge-sv {
+      background: rgba(228, 174, 57, 0.2);
+      color: #e4ae39;
+    }
+
+    .cl-hero-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+    }
+
+    .cl-rarity-pill {
+      display: inline-block;
+      font-size: 0.72rem;
+      font-weight: 600;
+      padding: 0.25rem 0.6rem;
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+    }
+
+    /* ---- SECTIONS ---- */
+    .cl-section {
+      margin-bottom: 2rem;
+    }
+
+    .cl-heading {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--text);
+      margin: 0 0 1rem;
+      padding-left: 0.85rem;
+      border-left: 3px solid var(--accent);
+    }
+
+    /* ---- SKINS TABLE ---- */
+    .cl-rarity-block {
+      margin-bottom: 1.5rem;
+    }
+
+    .cl-rarity-title {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: var(--text);
+      margin: 0 0 0.5rem;
+    }
+
+    .cl-rarity-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .cl-rarity-count {
+      font-weight: 400;
+      font-size: 0.75rem;
+      color: var(--text2);
+    }
+
+    .cl-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .cl-table thead th {
+      text-align: left;
+      font-size: 0.68rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--text2);
+      padding: 0.4rem 0.6rem;
+      border-bottom: 1px solid var(--border);
+      font-weight: 500;
+    }
+
+    .cl-th-bar {
+      width: 6px;
+      padding: 0 !important;
+    }
+
+    .cl-th-thumb {
+      width: 56px;
+    }
+
+    .cl-th-float {
+      width: 90px;
+    }
+
+    .cl-th-price {
+      width: 70px;
+    }
+
+    .cl-th-action {
+      width: 28px;
+    }
+
+    .cl-skin-tr {
+      border-bottom: 1px solid var(--border);
+      border-left: 3px solid transparent;
+      transition: background 0.15s, border-left-color 0.15s;
+    }
+
+    .cl-skin-tr:hover {
+      background: var(--bg3);
+      border-left-color: var(--accent);
+    }
+
+    .cl-skin-tr td {
+      padding: 0.45rem 0.6rem;
+      vertical-align: middle;
+    }
+
+    .cl-color-bar {
+      display: block;
+      width: 4px;
+      height: 22px;
+      border-radius: 2px;
+    }
+
+    .cl-td-thumb img {
+      display: block;
+      width: 48px;
+      height: auto;
+      object-fit: contain;
+      border-radius: 4px;
+    }
+
+    .cl-no-thumb {
+      font-size: 0.7rem;
+      color: var(--text2);
+      opacity: 0.4;
+    }
+
+    .cl-skin-link {
+      text-decoration: none;
+      color: inherit;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .cl-skin-weapon {
+      font-size: 0.75rem;
+      color: var(--text2);
+      white-space: nowrap;
+      min-width: 60px;
+    }
+
+    .cl-skin-name {
+      font-size: 0.88rem;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .cl-skin-link:hover .cl-skin-name {
+      color: var(--accent);
+    }
+
+    .cl-tag-st {
+      display: inline-block;
+      font-size: 0.6rem;
+      font-weight: 700;
+      padding: 0.1rem 0.25rem;
+      border-radius: 4px;
+      background: rgba(207, 106, 50, 0.2);
+      color: #cf6a32;
+      margin-left: 0.4rem;
+      vertical-align: middle;
+    }
+
+    .cl-td-float {
+      font-size: 0.75rem;
+      color: var(--text2);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .cl-td-price {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .cl-skin-arrow {
+      color: var(--text2);
+      text-decoration: none;
+      font-size: 0.9rem;
+      opacity: 0;
+      transition: opacity 0.15s;
+    }
+
+    .cl-skin-tr:hover .cl-skin-arrow {
+      opacity: 1;
+      color: var(--accent);
+    }
+
+    /* ---- WEAPONS LINE ---- */
+    .cl-weapons-line {
+      font-size: 0.88rem;
+      color: var(--text2);
+      margin: 0 0 2rem;
+      line-height: 1.6;
+    }
+
+    .cl-weapons-line strong {
+      color: var(--text);
+    }
+
+    /* ---- RELATED COLLECTIONS (PILL TAGS) ---- */
+    .cl-related-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+    }
+
+    .cl-related-pill {
+      display: inline-block;
+      font-size: 0.8rem;
+      color: var(--text2);
+      padding: 0.35rem 0.7rem;
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      text-decoration: none;
+      border-left: 3px solid transparent;
+      transition: border-left-color 0.15s, color 0.15s;
+    }
+
+    .cl-related-pill:hover {
+      border-left-color: var(--accent);
+      color: var(--accent);
+    }
+
+    /* ---- FAQ ACCORDION ---- */
+    .cl-faq-item {
+      border-bottom: 1px solid var(--border);
+    }
+
+    .cl-faq-item[open] {
+      padding-bottom: 0.75rem;
+    }
+
+    .cl-faq-q {
+      font-size: 0.92rem;
+      font-weight: 600;
+      color: var(--text);
+      padding: 0.75rem 0;
+      cursor: pointer;
+      list-style: none;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: color 0.15s;
+    }
+
+    .cl-faq-q::-webkit-details-marker {
+      display: none;
+    }
+
+    .cl-faq-q::before {
+      content: '+';
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 20px;
+      height: 20px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--accent);
+      flex-shrink: 0;
+    }
+
+    .cl-faq-item[open] .cl-faq-q::before {
+      content: '-';
+    }
+
+    .cl-faq-q:hover {
+      color: var(--accent);
+    }
+
+    .cl-faq-a {
+      font-size: 0.88rem;
+      color: var(--text2);
+      line-height: 1.6;
+      margin: 0;
+      padding-left: 1.75rem;
+    }
+
+    /* ---- RELATED LINKS ---- */
+    .cl-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+      margin: 0 0 2rem;
+    }
+
+    .cl-links a {
+      display: inline-block;
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 0.3rem 0.65rem;
+      font-size: 0.78rem;
+      color: var(--text2);
+      text-decoration: none;
+      border-left: 3px solid transparent;
+      transition: border-left-color 0.15s, color 0.15s;
+    }
+
+    .cl-links a:hover {
+      border-left-color: var(--accent);
+      color: var(--accent);
+    }
+
+    /* ---- RESPONSIVE ---- */
+    @media (max-width: 768px) {
+      .cl-hero-title {
+        font-size: 1.2rem;
+      }
+
+      .cl-hero-emblem {
+        width: 44px;
+        height: 44px;
+      }
+
+      .cl-td-float,
+      .cl-th-float {
+        display: none;
+      }
+
+      .cl-skin-weapon {
+        display: none;
+      }
+
+      .cl-skin-arrow {
+        opacity: 0.5;
+      }
+
+      .cl-td-price {
+        font-size: 0.78rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .cl-td-thumb,
+      .cl-th-thumb {
+        display: none;
+      }
+    }
+  </style>
+</Base>

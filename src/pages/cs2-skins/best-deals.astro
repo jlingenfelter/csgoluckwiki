@@ -1,0 +1,277 @@
+---
+import Base from '../../layouts/Base.astro';
+import ExploreMore from '../../components/ExploreMore.astro';
+import { SKINS, RARITY_COLORS, MARKETPLACES, getUniqueCategories, getWeaponsInCategory } from '../../lib/skins';
+import { breadcrumbSchema, faqSchema } from '../../lib/weapons';
+import { skinCardImage } from '../../lib/imageOptimize';
+
+const title = 'CS2 Skin Best Deals — Find Discounted Skins | CSGOLuck Wiki';
+const description = 'Find the best CS2 skin deals across 14+ marketplaces. Compare prices to find skins selling below market value. Updated daily with live price data.';
+
+const weaponGroups = [
+  { cat: 'rifle', label: 'Rifles', weapons: getWeaponsInCategory('rifle') },
+  { cat: 'pistol', label: 'Pistols', weapons: getWeaponsInCategory('pistol') },
+  { cat: 'smg', label: 'SMGs', weapons: getWeaponsInCategory('smg') },
+  { cat: 'heavy', label: 'Heavy', weapons: getWeaponsInCategory('heavy') },
+  { cat: 'knife', label: 'Knives', weapons: getWeaponsInCategory('knife') },
+  { cat: 'glove', label: 'Gloves', weapons: getWeaponsInCategory('glove') },
+].filter(g => g.weapons.length > 0);
+
+// Build deal data: for each skin + wear, find the best deal vs steam
+type Deal = {
+  s: string; // slug
+  n: string; // name
+  w: string; // weaponSlug
+  c: string; // category
+  r: string; // rarity
+  rc: string; // rarityColor
+  i: string; // image
+  wear: string; // wear condition
+  steam: number; // steam price
+  best: number; // best third-party price
+  bestMarket: string; // marketplace name
+  discount: number; // discount percentage
+};
+
+const deals: Deal[] = [];
+for (const skin of SKINS) {
+  if (skin.phase) continue;
+  for (const wp of skin.prices) {
+    if (!wp.providers) continue;
+    const steam = wp.providers['steam'];
+    if (!steam || steam <= 0) continue;
+
+    let bestPrice = Infinity;
+    let bestKey = '';
+    for (const [key, price] of Object.entries(wp.providers)) {
+      if (key === 'steam' || key.includes('_buy') || !price || price <= 0) continue;
+      if (price < bestPrice) {
+        bestPrice = price;
+        bestKey = key;
+      }
+    }
+
+    if (bestPrice < steam && bestPrice < Infinity) {
+      const discount = Math.round(((steam - bestPrice) / steam) * 100);
+      if (discount >= 5) { // Only show deals with 5%+ discount
+        deals.push({
+          s: skin.slug,
+          n: `${skin.weapon} | ${skin.name}`,
+          w: skin.weaponSlug,
+          c: skin.category,
+          r: skin.rarity,
+          rc: RARITY_COLORS[skin.rarity] || '#444',
+          i: skin.image ? skinCardImage(skin.image) : '',
+          wear: wp.wear,
+          steam: steam,
+          best: bestPrice,
+          bestMarket: MARKETPLACES[bestKey]?.name || bestKey,
+          discount: discount,
+        });
+      }
+    }
+  }
+}
+
+// Sort by discount descending and take top 500
+const topDeals = deals.sort((a, b) => b.discount - a.discount).slice(0, 500);
+
+const breadcrumbs = [
+  { name: 'Home', url: '/' },
+  { name: 'Skins', url: '/cs2-skins/' },
+  { name: 'Best Deals', url: '/cs2-skins/best-deals/' },
+];
+
+const faqs = [
+  { question: 'How are CS2 skin deals calculated?', answer: 'We compare the Steam Community Market price against prices from 14+ third-party marketplaces including Skinport, CSFloat, Buff163, and more. The discount percentage shows how much cheaper the skin is on the best marketplace vs Steam.' },
+  { question: 'How often are skin deals updated?', answer: 'Skin prices are fetched daily from PriceEmpire, which aggregates live pricing data from all major CS2 skin marketplaces. Deals may change as prices fluctuate.' },
+  { question: 'Are these deals safe to buy?', answer: 'We only show prices from established, reputable CS2 skin marketplaces. However, always verify prices directly on the marketplace before purchasing. CSGOLuck Wiki is an information resource and does not facilitate transactions.' },
+];
+---
+
+<Base title={title} description={description} currentNav="/cs2-skins/">
+<script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema(breadcrumbs))} />
+<script type="application/ld+json" set:html={JSON.stringify(faqSchema(faqs))} />
+
+<nav class="breadcrumb">
+  <a href="/">Home</a> / <a href="/cs2-skins/">Skins</a> / <span>Best Deals</span>
+</nav>
+
+<!-- Hero -->
+<section class="sd-hero">
+  <h1 class="sd-hero-title">CS2 Skin Best Deals</h1>
+  <p class="sd-hero-desc">Find skins selling below Steam Market price on third-party marketplaces. {topDeals.length} deals found across {Object.keys(MARKETPLACES).length}+ marketplaces.</p>
+  <div class="sd-hero-pills">
+    <span class="sd-pill">{topDeals.length} Deals</span>
+    <span class="sd-pill">{Object.keys(MARKETPLACES).length}+ Marketplaces</span>
+    <span class="sd-pill">5%+ Discount</span>
+  </div>
+</section>
+
+<!-- Filter Controls (Inline) -->
+<div class="sd-controls">
+  <select id="sd-category" class="sd-select">
+    <option value="">All Categories</option>
+    {weaponGroups.map(g => (
+      <option value={g.cat}>{g.label}</option>
+    ))}
+  </select>
+  <select id="sd-budget" class="sd-select">
+    <option value="">Any Budget</option>
+    <option value="5">Under $5</option>
+    <option value="10">Under $10</option>
+    <option value="25">Under $25</option>
+    <option value="50">Under $50</option>
+    <option value="100">Under $100</option>
+    <option value="250">Under $250</option>
+  </select>
+  <select id="sd-sort" class="sd-select">
+    <option value="discount">Biggest Discount</option>
+    <option value="price-asc">Price: Low to High</option>
+    <option value="price-desc">Price: High to Low</option>
+    <option value="savings">Biggest Savings ($)</option>
+  </select>
+</div>
+
+<!-- Results count -->
+<div class="sd-results-bar">
+  <span id="sd-count">{topDeals.length}</span> deals found
+</div>
+
+<!-- Deal Rows -->
+<div id="sd-grid" class="sd-list">
+  {topDeals.map(d => (
+    <a href={`/cs2-skin/${d.s}/`} class="sd-row" data-cat={d.c} data-best={d.best} data-discount={d.discount} data-savings={(d.steam - d.best).toFixed(2)}>
+      <div class="sd-row-img">
+        {d.i && <img src={d.i} alt={d.n} width="72" height="52" loading="lazy" />}
+      </div>
+      <div class="sd-row-info">
+        <span class="sd-row-name">{d.n}</span>
+        <span class="sd-row-wear">{d.wear}</span>
+      </div>
+      <div class="sd-row-prices">
+        <span class="sd-price-steam">${d.steam.toFixed(2)}</span>
+        <span class="sd-price-best">${d.best.toFixed(2)}</span>
+      </div>
+      <div class="sd-row-deal">
+        <span class="sd-discount-badge">-{d.discount}%</span>
+        <span class="sd-marketplace">{d.bestMarket}</span>
+      </div>
+    </a>
+  ))}
+</div>
+
+<!-- FAQ -->
+<h2>Frequently Asked Questions</h2>
+<div class="sd-faq">
+  {faqs.map(f => (
+    <details class="sd-faq-item">
+      <summary class="sd-faq-q">{f.question}</summary>
+      <p class="sd-faq-a">{f.answer}</p>
+    </details>
+  ))}
+</div>
+
+<ExploreMore context="skins" />
+</Base>
+
+<script>
+const cards = document.querySelectorAll('.sd-row');
+const catSelect = document.getElementById('sd-category') as HTMLSelectElement;
+const budgetSelect = document.getElementById('sd-budget') as HTMLSelectElement;
+const sortSelect = document.getElementById('sd-sort') as HTMLSelectElement;
+const countEl = document.getElementById('sd-count');
+const grid = document.getElementById('sd-grid');
+
+function applyFilters() {
+  const cat = catSelect.value;
+  const budget = parseFloat(budgetSelect.value) || Infinity;
+  const sort = sortSelect.value;
+
+  const arr = [...cards];
+  let visible = 0;
+
+  arr.forEach(card => {
+    const el = card as HTMLElement;
+    const cCat = el.dataset.cat;
+    const cBest = parseFloat(el.dataset.best || '0');
+    const show = (!cat || cCat === cat) && cBest <= budget;
+    el.style.display = show ? '' : 'none';
+    if (show) visible++;
+  });
+
+  // Sort visible cards
+  const sorted = arr.filter(c => (c as HTMLElement).style.display !== 'none');
+  sorted.sort((a, b) => {
+    const ae = a as HTMLElement, be = b as HTMLElement;
+    if (sort === 'discount') return parseFloat(be.dataset.discount||'0') - parseFloat(ae.dataset.discount||'0');
+    if (sort === 'price-asc') return parseFloat(ae.dataset.best||'0') - parseFloat(be.dataset.best||'0');
+    if (sort === 'price-desc') return parseFloat(be.dataset.best||'0') - parseFloat(ae.dataset.best||'0');
+    if (sort === 'savings') return parseFloat(be.dataset.savings||'0') - parseFloat(ae.dataset.savings||'0');
+    return 0;
+  });
+
+  sorted.forEach(c => grid?.appendChild(c));
+  if (countEl) countEl.textContent = String(visible);
+}
+
+[catSelect, budgetSelect, sortSelect].forEach(el => el.addEventListener('change', applyFilters));
+</script>
+
+<style>
+  /* ===== SD HERO ===== */
+  .sd-hero{margin-bottom:1.5rem;padding-bottom:1.5rem;border-bottom:1px solid var(--border)}
+  .sd-hero-title{margin:0 0 .4rem;font-size:1.9rem;font-weight:800}
+  .sd-hero-desc{color:var(--text2);margin:0 0 .75rem;font-size:.88rem;max-width:620px}
+  .sd-hero-pills{display:flex;gap:.5rem;flex-wrap:wrap}
+  .sd-pill{background:var(--bg2);border:1px solid var(--border);border-radius:4px;padding:.3rem .65rem;font-size:.78rem;font-weight:600;color:var(--accent)}
+
+  /* ===== SD CONTROLS ===== */
+  .sd-controls{display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:1rem;padding:.6rem .75rem;background:var(--bg2);border:1px solid var(--border);border-radius:4px}
+  .sd-select{background:var(--bg3);color:var(--text);border:1px solid var(--border);padding:.4rem .65rem;border-radius:4px;font-size:.82rem;font-family:inherit;cursor:pointer}
+  .sd-select:focus{outline:none;border-color:var(--accent)}
+
+  /* ===== SD RESULTS ===== */
+  .sd-results-bar{font-size:.88rem;color:var(--text2);margin-bottom:.75rem}
+  .sd-results-bar span{font-weight:700;color:var(--accent)}
+
+  .sd-list{display:flex;flex-direction:column;gap:.3rem;margin-bottom:2rem}
+
+  .sd-row{display:grid;grid-template-columns:72px 1fr auto auto;align-items:center;gap:.75rem;background:var(--bg2);border:1px solid var(--border);border-left:3px solid transparent;border-radius:4px;padding:.5rem .65rem;text-decoration:none;color:inherit;transition:border-color .15s,background .15s}
+  .sd-row:hover{border-left-color:var(--accent);background:var(--bg3)}
+
+  .sd-row-img{width:72px;height:52px;display:flex;align-items:center;justify-content:center;overflow:hidden;border-radius:4px}
+  .sd-row-img img{max-width:100%;max-height:100%;object-fit:contain}
+
+  .sd-row-info{display:flex;flex-direction:column;gap:.1rem;min-width:0}
+  .sd-row-name{font-size:.88rem;font-weight:700;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .sd-row-wear{font-size:.7rem;color:var(--text2)}
+
+  .sd-row-prices{display:flex;flex-direction:column;align-items:flex-end;gap:.05rem;flex-shrink:0}
+  .sd-price-steam{text-decoration:line-through;color:var(--text2);font-size:.75rem}
+  .sd-price-best{color:var(--accent);font-weight:700;font-size:.92rem}
+
+  .sd-row-deal{display:flex;flex-direction:column;align-items:center;gap:.1rem;flex-shrink:0;min-width:70px}
+  .sd-discount-badge{background:rgba(46,204,113,.15);color:var(--accent);font-weight:700;font-size:.8rem;padding:.15rem .45rem;border-radius:4px}
+  .sd-marketplace{font-size:.65rem;color:var(--text2);white-space:nowrap}
+
+  /* ===== SD FAQ ===== */
+  .sd-faq{display:flex;flex-direction:column;gap:.35rem;margin-bottom:2rem}
+  .sd-faq-item{background:var(--bg2);border:1px solid var(--border);border-radius:4px;overflow:hidden}
+  .sd-faq-item[open]{border-left:3px solid var(--accent)}
+  .sd-faq-q{padding:.65rem .85rem;font-size:.88rem;font-weight:600;color:var(--text);cursor:pointer;list-style:none;display:flex;align-items:center;justify-content:space-between}
+  .sd-faq-q::after{content:'+';color:var(--accent);font-weight:700;font-size:1rem;flex-shrink:0;margin-left:.5rem}
+  .sd-faq-item[open] .sd-faq-q::after{content:'-'}
+  .sd-faq-q::-webkit-details-marker{display:none}
+  .sd-faq-a{margin:0;padding:0 .85rem .75rem;font-size:.84rem;color:var(--text2);line-height:1.6}
+
+  /* ===== SD RESPONSIVE ===== */
+  @media(max-width:768px){
+    .sd-controls{flex-direction:column}
+    .sd-select{width:100%}
+    .sd-row{grid-template-columns:56px 1fr;gap:.35rem}
+    .sd-row-img{width:56px;height:40px}
+    .sd-row-prices{grid-column:1/-1;flex-direction:row;justify-content:flex-start;gap:.75rem;padding-top:.2rem;border-top:1px solid var(--border)}
+    .sd-row-deal{grid-column:1/-1;flex-direction:row;justify-content:flex-start;gap:.5rem}
+  }
+</style>

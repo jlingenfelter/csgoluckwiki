@@ -14,21 +14,21 @@ const searchData = SKINS.map(skin => ({
   price: getLowestPrice(skin),
 }));
 
-const title = 'Search | CSDB.gg';
-const description = 'Search for CS2 skins and weapons. Find the latest weapon stats, skin prices, and more.';
+const title = 'Search CSGOLuck Wiki — Find Skins, Weapons & More';
+const description = 'Search the CSGOLuck Wiki database for CS2 skins, weapons, and market data. Instant results with pricing, rarity filters, and direct links to full details.';
 
 const faq = [
   {
-    question: 'How do I find a specific skin?',
-    answer: 'Use the search bar and type the weapon name or skin name. Results include pricing info from multiple markets.'
+    question: 'How do I find a specific skin on CSGOLuck Wiki?',
+    answer: 'Type the weapon name or skin name into the search bar above. Results show pricing from multiple markets and you can filter by category or rarity to narrow things down.'
   },
   {
-    question: 'What does rarity mean?',
-    answer: 'Rarity determines how common a skin is. Covert (red) is rarest, followed by Classified (pink), Restricted (purple), Mil-Spec (blue), Industrial (light blue), and Consumer (white).'
+    question: 'What do the rarity colors mean?',
+    answer: 'Rarity indicates how rare a skin is. Covert (red) is the rarest drop tier, followed by Classified (pink), Restricted (purple), Mil-Spec (blue), Industrial (light blue), and Consumer (white). Higher rarity generally means higher value.'
   },
   {
-    question: 'Are prices up to date?',
-    answer: 'Prices are updated regularly from major skin markets. Check individual market listings for real-time pricing.'
+    question: 'How current are the prices shown?',
+    answer: 'CSGOLuck Wiki pulls pricing data from 14+ marketplaces through PriceEmpire and refreshes regularly. For exact real-time prices, click through to the individual skin page for full market breakdowns.'
   }
 ];
 
@@ -51,528 +51,172 @@ const rarities = ['All', 'Covert', 'Classified', 'Restricted', 'Mil-Spec', 'Indu
 ---
 
 <Base title={title} description={description}>
-  <div class="search-container">
-    <h1>Search CSDB</h1>
-    <p class="subtitle">Find CS2 skins and weapons</p>
+  <section class="sr-hero">
+    <h1>Search the Wiki</h1>
+    <p class="sr-hero-desc">Find any CS2 skin, weapon, or item in our database</p>
+  </section>
 
-    <div class="search-box-section">
-      <input
-        type="text"
-        placeholder="Search skins, weapons..."
-        class="search-input"
-        id="searchInput"
-        autofocus
-      />
-      <button type="button" class="search-btn" id="clearBtn">Clear</button>
-    </div>
+  <div class="sr-search-bar">
+    <input
+      type="text"
+      placeholder="Try 'Dragon Lore', 'AK-47', 'Butterfly Knife'..."
+      class="sr-input"
+      id="searchInput"
+      autofocus
+    />
+    <button type="button" class="sr-clear-btn" id="clearBtn">Clear</button>
+  </div>
 
-    <!-- Filter Chips -->
-    <div class="filters-section">
-      <div class="filter-group">
-        <h3>Category</h3>
-        <div class="filter-chips">
-          {categories.map(cat => (
-            <button
-              class="filter-chip"
-              data-filter="category"
-              data-value={cat === 'All' ? '' : cat}
-              data-active={cat === 'All' ? 'true' : 'false'}
-            >
-              {cat}
-            </button>
-          ))}
-        </div>
-      </div>
-
-      <div class="filter-group">
-        <h3>Rarity</h3>
-        <div class="filter-chips">
-          {rarities.map(rarity => (
-            <button
-              class="filter-chip"
-              data-filter="rarity"
-              data-value={rarity === 'All' ? '' : rarity}
-              data-active={rarity === 'All' ? 'true' : 'false'}
-            >
-              {rarity}
-            </button>
-          ))}
-        </div>
+  <!-- Filter Chips -->
+  <div class="sr-filters">
+    <div class="sr-filter-group">
+      <h3 class="sr-filter-label">Category</h3>
+      <div class="sr-chips">
+        {categories.map(cat => (
+          <button
+            class="sr-chip"
+            data-filter="category"
+            data-value={cat === 'All' ? '' : cat}
+            data-active={cat === 'All' ? 'true' : 'false'}
+          >
+            {cat}
+          </button>
+        ))}
       </div>
     </div>
 
-    <!-- Results or Empty State -->
-    <div id="resultsContainer" class="results-container hidden">
-      <div class="results-header">
-        <h2 id="resultsTitle">Results</h2>
-        <p id="resultsCount" class="results-count"></p>
+    <div class="sr-filter-group">
+      <h3 class="sr-filter-label">Rarity</h3>
+      <div class="sr-chips">
+        {rarities.map(rarity => (
+          <button
+            class="sr-chip"
+            data-filter="rarity"
+            data-value={rarity === 'All' ? '' : rarity}
+            data-active={rarity === 'All' ? 'true' : 'false'}
+          >
+            {rarity}
+          </button>
+        ))}
       </div>
-      <div id="resultsGrid" class="skins-grid"></div>
-    </div>
-
-    <div id="emptyState" class="empty-state">
-      <div class="empty-content">
-        <h2>Start Searching</h2>
-        <p>Search for your favorite CS2 skins or weapons above.</p>
-
-        <div class="quick-links">
-          <h3>Popular Searches</h3>
-          <div class="links-grid">
-            <a href="javascript:void(0)" class="quick-link" data-search="Dragon Lore">Dragon Lore</a>
-            <a href="javascript:void(0)" class="quick-link" data-search="AK-47">AK-47</a>
-            <a href="javascript:void(0)" class="quick-link" data-search="M4A4">M4A4</a>
-            <a href="javascript:void(0)" class="quick-link" data-search="AWP">AWP</a>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="faq-section">
-      <h2>Frequently Asked Questions</h2>
-      {faq.map(item => (
-        <div class="faq-item">
-          <h3>{item.question}</h3>
-          <p>{item.answer}</p>
-        </div>
-      ))}
-    </div>
-
-    <div class="links-section">
-      <h2>Related Tools</h2>
-      <ul>
-        <li><a href="/damage-calculator">Damage Calculator</a></li>
-        <li><a href="/weapon-compare">Weapon Compare</a></li>
-        <li><a href="/recoil-patterns">Recoil Patterns</a></li>
-        <li><a href="/economy-calculator">Economy Calculator</a></li>
-      </ul>
     </div>
   </div>
+
+  <!-- Results or Empty State -->
+  <div id="resultsContainer" class="sr-results sr-hidden">
+    <div class="sr-results-header">
+      <h2 id="resultsTitle" class="sr-results-title">Results</h2>
+      <p id="resultsCount" class="sr-results-count"></p>
+    </div>
+    <div id="resultsGrid" class="sr-results-grid"></div>
+  </div>
+
+  <div id="emptyState" class="sr-empty">
+    <div class="sr-empty-inner">
+      <h2>What Are You Looking For?</h2>
+      <p>Type a skin name, weapon, or keyword above to search the CSGOLuck Wiki database.</p>
+
+      <div class="sr-quick">
+        <h3 class="sr-quick-heading">Popular Searches</h3>
+        <div class="sr-quick-list">
+          <a href="javascript:void(0)" class="sr-quick-link" data-search="Dragon Lore">Dragon Lore</a>
+          <a href="javascript:void(0)" class="sr-quick-link" data-search="AK-47">AK-47</a>
+          <a href="javascript:void(0)" class="sr-quick-link" data-search="M4A4">M4A4</a>
+          <a href="javascript:void(0)" class="sr-quick-link" data-search="AWP">AWP</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <section class="sr-faq">
+    <h2>Frequently Asked Questions</h2>
+    {faq.map(item => (
+      <details class="sr-faq-item">
+        <summary>{item.question}</summary>
+        <p>{item.answer}</p>
+      </details>
+    ))}
+  </section>
+
+  <section class="sr-links">
+    <h2>Related Tools</h2>
+    <div class="sr-links-list">
+      <a href="/damage-calculator/" class="sr-links-row">Damage Calculator</a>
+      <a href="/weapon-compare/" class="sr-links-row">Weapon Compare</a>
+      <a href="/recoil-patterns/" class="sr-links-row">Recoil Patterns</a>
+      <a href="/economy-calculator/" class="sr-links-row">Economy Calculator</a>
+    </div>
+  </section>
 
   <script type="application/ld+json" set:html={JSON.stringify(schemaData)} />
 </Base>
 
-<style is:inline>
-  * {
-    box-sizing: border-box;
-  }
-
-  :root {
-    --bg: #121218;
-    --bg2: #1a1a24;
-    --bg3: #232330;
-    --text: #dcdce6;
-    --text2: #8e8ea3;
-    --accent: #d4956e;
-    --border: #2d2d3c;
-  }
-
-  .search-container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 2rem;
-    color: var(--text);
-  }
-
-  h1 {
-    font-size: 2.5rem;
-    margin-bottom: 0.5rem;
-    color: var(--text);
-  }
-
-  .subtitle {
-    color: var(--text2);
-    font-size: 1.1rem;
-    margin-bottom: 2rem;
-  }
-
-  .search-box-section {
-    display: flex;
-    gap: 0.75rem;
-    margin-bottom: 2rem;
-    background: var(--bg2);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 1.5rem;
-  }
-
-  .search-input {
-    flex: 1;
-    padding: 0.75rem 1rem;
-    background: var(--bg3);
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    color: var(--text);
-    font-size: 1rem;
-    min-width: 0;
-    transition: border-color 0.2s;
-  }
-
-  .search-input:hover {
-    border-color: var(--accent);
-  }
-
-  .search-input:focus {
-    outline: none;
-    border-color: var(--accent);
-  }
-
-  .search-input::placeholder {
-    color: var(--text2);
-  }
-
-  .search-btn {
-    padding: 0.75rem 2rem;
-    background: #4ade80;
-    border: none;
-    border-radius: 6px;
-    color: #000;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.2s;
-  }
-
-  .search-btn:hover {
-    background: #22c55e;
-    transform: translateY(-2px);
-  }
-
-  .search-btn:active {
-    transform: translateY(0);
-  }
-
-  .filters-section {
-    margin-bottom: 2rem;
-    padding: 1.5rem;
-    background: var(--bg2);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-  }
-
-  .filter-group {
-    margin-bottom: 1.5rem;
-  }
-
-  .filter-group:last-child {
-    margin-bottom: 0;
-  }
-
-  .filter-group h3 {
-    font-size: 0.95rem;
-    color: var(--text2);
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    margin-bottom: 0.75rem;
-  }
-
-  .filter-chips {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.75rem;
-  }
-
-  .filter-chip {
-    padding: 0.5rem 1rem;
-    background: var(--bg3);
-    border: 1px solid var(--border);
-    border-radius: 20px;
-    color: var(--text2);
-    cursor: pointer;
-    font-size: 0.9rem;
-    transition: all 0.2s;
-  }
-
-  .filter-chip:hover {
-    border-color: var(--accent);
-    color: var(--text);
-  }
-
-  .filter-chip[data-active="true"] {
-    background: var(--accent);
-    color: #000;
-    border-color: var(--accent);
-  }
-
-  .results-container {
-    margin-bottom: 3rem;
-  }
-
-  .results-container.hidden {
-    display: none;
-  }
-
-  .results-header {
-    margin-bottom: 1.5rem;
-  }
-
-  #resultsTitle {
-    font-size: 1.5rem;
-    color: var(--text);
-    margin-bottom: 0.5rem;
-  }
-
-  .results-count {
-    color: var(--text2);
-    font-size: 0.95rem;
-  }
-
-  .skins-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 1.5rem;
-  }
-
-  .skin-card {
-    display: flex;
-    flex-direction: column;
-    background: var(--bg2);
-    border: 2px solid var(--border);
-    border-radius: 8px;
-    overflow: hidden;
-    transition: all 0.3s;
-    text-decoration: none;
-    color: inherit;
-  }
-
-  .skin-card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
-  }
-
-  .skin-card[data-rarity="Covert"] {
-    border-color: #eb4b4b;
-  }
-
-  .skin-card[data-rarity="Covert"]:hover {
-    border-color: #eb4b4b;
-    box-shadow: 0 0 16px rgba(235, 75, 75, 0.3);
-  }
-
-  .skin-card[data-rarity="Classified"] {
-    border-color: #d32ce6;
-  }
-
-  .skin-card[data-rarity="Classified"]:hover {
-    border-color: #d32ce6;
-    box-shadow: 0 0 16px rgba(211, 44, 230, 0.3);
-  }
-
-  .skin-card[data-rarity="Restricted"] {
-    border-color: #8847ff;
-  }
-
-  .skin-card[data-rarity="Restricted"]:hover {
-    border-color: #8847ff;
-    box-shadow: 0 0 16px rgba(136, 71, 255, 0.3);
-  }
-
-  .skin-card[data-rarity="Mil-Spec"] {
-    border-color: #4b69ff;
-  }
-
-  .skin-card[data-rarity="Mil-Spec"]:hover {
-    border-color: #4b69ff;
-    box-shadow: 0 0 16px rgba(75, 105, 255, 0.3);
-  }
-
-  .skin-card[data-rarity="Industrial"] {
-    border-color: #5e98d9;
-  }
-
-  .skin-card[data-rarity="Industrial"]:hover {
-    border-color: #5e98d9;
-    box-shadow: 0 0 16px rgba(94, 152, 217, 0.3);
-  }
-
-  .skin-card[data-rarity="Consumer"] {
-    border-color: #b0c3d9;
-  }
-
-  .skin-card[data-rarity="Consumer"]:hover {
-    border-color: #b0c3d9;
-    box-shadow: 0 0 16px rgba(176, 195, 217, 0.3);
-  }
-
-  .skin-image {
-    width: 100%;
-    height: 150px;
-    background: linear-gradient(135deg, var(--bg3), var(--bg));
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: var(--text2);
-    font-size: 0.85rem;
-  }
-
-  .skin-image img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
-
-  .skin-info {
-    padding: 1rem;
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-  }
-
-  .skin-name {
-    color: var(--text);
-    margin: 0 0 0.25rem 0;
-    font-size: 0.95rem;
-    font-weight: 600;
-  }
-
-  .weapon-name {
-    color: var(--text2);
-    font-size: 0.85rem;
-    margin: 0 0 0.75rem 0;
-  }
-
-  .rarity-badge {
-    display: inline-block;
-    padding: 0.25rem 0.75rem;
-    border-radius: 4px;
-    font-size: 0.75rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    margin-bottom: 0.75rem;
-    align-self: flex-start;
-  }
-
-  .price-info {
-    margin-top: auto;
-    color: #4ade80;
-    font-weight: 600;
-    font-size: 1rem;
-  }
-
-  .empty-state {
-    background: var(--bg2);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 3rem;
-    text-align: center;
-  }
-
-  .empty-content h2 {
-    color: var(--text);
-    font-size: 1.8rem;
-    margin-bottom: 0.5rem;
-  }
-
-  .empty-content > p {
-    color: var(--text2);
-    font-size: 1.1rem;
-    margin-bottom: 2rem;
-  }
-
-  .quick-links {
-    margin-top: 2rem;
-  }
-
-  .quick-links h3 {
-    color: var(--text2);
-    font-size: 0.95rem;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    margin-bottom: 1rem;
-  }
-
-  .links-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-    gap: 1rem;
-  }
-
-  .quick-link {
-    display: block;
-    padding: 0.75rem 1rem;
-    background: var(--bg3);
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    color: var(--accent);
-    text-decoration: none;
-    transition: all 0.2s;
-    cursor: pointer;
-  }
-
-  .quick-link:hover {
-    background: var(--accent);
-    color: #000;
-  }
-
-  .faq-section {
-    background: var(--bg2);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 2rem;
-    margin-bottom: 2rem;
-  }
-
-  .faq-section h2 {
-    color: var(--text);
-    font-size: 1.5rem;
-    margin-bottom: 1.5rem;
-  }
-
-  .faq-item {
-    margin-bottom: 1.5rem;
-    padding-bottom: 1.5rem;
-    border-bottom: 1px solid var(--border);
-  }
-
-  .faq-item:last-child {
-    border-bottom: none;
-  }
-
-  .faq-item h3 {
-    color: var(--text);
-    margin-bottom: 0.5rem;
-  }
-
-  .faq-item p {
-    color: var(--text2);
-    line-height: 1.6;
-  }
-
-  .links-section {
-    background: var(--bg2);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 2rem;
-  }
-
-  .links-section h2 {
-    color: var(--text);
-    font-size: 1.5rem;
-    margin-bottom: 1.5rem;
-  }
-
-  .links-section ul {
-    list-style: none;
-    padding: 0;
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 1rem;
-  }
-
-  .links-section a {
-    display: block;
-    padding: 0.75rem 1rem;
-    background: var(--bg3);
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    color: var(--accent);
-    text-decoration: none;
-    transition: all 0.2s;
-  }
-
-  .links-section a:hover {
-    background: var(--accent);
-    color: #000;
-  }
+<style>
+/* ── Hero ── */
+.sr-hero{background:var(--bg2);border:1px solid var(--border);border-radius:4px;padding:2rem;margin-bottom:1.5rem}
+.sr-hero h1{font-family:'Montserrat',sans-serif;font-size:2rem;font-weight:800;margin:0 0 .4rem;color:var(--text)}
+.sr-hero-desc{color:var(--text2);font-size:.95rem;margin:0}
+
+/* ── Search Bar ── */
+.sr-search-bar{display:flex;gap:.65rem;background:var(--bg2);border:1px solid var(--border);border-radius:4px;padding:1rem 1.25rem;margin-bottom:1.25rem}
+.sr-input{flex:1;padding:.6rem .85rem;background:var(--bg3);border:1px solid var(--border);border-radius:4px;color:var(--text);font-size:.95rem;font-family:'Montserrat',sans-serif;min-width:0;transition:border-color .15s}
+.sr-input:hover,.sr-input:focus{border-color:var(--accent);outline:none}
+.sr-input::placeholder{color:var(--text2)}
+.sr-clear-btn{padding:.6rem 1.5rem;background:var(--accent);border:none;border-radius:4px;color:#000;font-weight:700;cursor:pointer;font-family:'Montserrat',sans-serif;transition:opacity .15s}
+.sr-clear-btn:hover{opacity:.85}
+
+/* ── Filters ── */
+.sr-filters{background:var(--bg2);border:1px solid var(--border);border-radius:4px;padding:1.25rem;margin-bottom:1.5rem}
+.sr-filter-group{margin-bottom:1rem}
+.sr-filter-group:last-child{margin-bottom:0}
+.sr-filter-label{font-size:.8rem;color:var(--text2);text-transform:uppercase;letter-spacing:.05em;font-weight:600;margin:0 0 .5rem}
+.sr-chips{display:flex;flex-wrap:wrap;gap:.4rem}
+.sr-chip{padding:.4rem .75rem;background:var(--bg3);border:1px solid var(--border);border-radius:4px;color:var(--text2);cursor:pointer;font-size:.82rem;font-weight:600;font-family:'Montserrat',sans-serif;transition:border-color .15s,color .15s}
+.sr-chip:hover{border-color:var(--accent);color:var(--text)}
+.sr-chip[data-active="true"]{background:var(--accent);color:#000;border-color:var(--accent)}
+
+/* ── Results ── */
+.sr-results{margin-bottom:2rem}
+.sr-hidden{display:none}
+.sr-results-header{margin-bottom:1rem}
+.sr-results-title{font-family:'Montserrat',sans-serif;font-size:1.2rem;font-weight:700;color:var(--text);margin:0 0 .3rem}
+.sr-results-count{color:var(--text2);font-size:.85rem;margin:0}
+.sr-results-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:1rem}
+
+/* ── Empty State ── */
+.sr-empty{background:var(--bg2);border:1px solid var(--border);border-radius:4px;padding:2.5rem 2rem}
+.sr-empty-inner h2{font-family:'Montserrat',sans-serif;color:var(--text);font-size:1.4rem;margin:0 0 .4rem}
+.sr-empty-inner>p{color:var(--text2);font-size:1rem;margin:0 0 1.5rem}
+.sr-quick{margin-top:1.5rem}
+.sr-quick-heading{font-size:.82rem;color:var(--text2);text-transform:uppercase;letter-spacing:.05em;font-weight:600;margin:0 0 .65rem}
+.sr-quick-list{display:flex;gap:.5rem;flex-wrap:wrap}
+.sr-quick-link{display:inline-block;padding:.5rem .85rem;background:var(--bg3);border:1px solid var(--border);border-left:3px solid transparent;border-radius:4px;color:var(--accent);text-decoration:none;font-size:.88rem;font-weight:600;cursor:pointer;transition:border-color .15s,background .15s}
+.sr-quick-link:hover{border-left-color:var(--accent);background:var(--bg)}
+
+/* ── FAQ ── */
+.sr-faq{margin-bottom:1.5rem}
+.sr-faq h2{font-family:'Montserrat',sans-serif;font-size:1.15rem;font-weight:700;color:var(--text);margin:0 0 .75rem}
+.sr-faq-item{background:var(--bg2);border:1px solid var(--border);border-radius:4px;margin-bottom:.35rem;overflow:hidden}
+.sr-faq-item summary{padding:.75rem 1rem;font-weight:700;font-size:.9rem;color:var(--text);cursor:pointer;list-style:none;display:flex;align-items:center;gap:.5rem;transition:background .15s}
+.sr-faq-item summary::before{content:'+';font-size:1.05rem;font-weight:700;color:var(--accent);flex-shrink:0;width:18px;text-align:center}
+.sr-faq-item[open] summary::before{content:'\2212'}
+.sr-faq-item summary:hover{background:var(--bg3)}
+.sr-faq-item summary::-webkit-details-marker{display:none}
+.sr-faq-item p{padding:0 1rem .85rem 2.25rem;margin:0;color:var(--text2);font-size:.88rem;line-height:1.6}
+
+/* ── Related Links ── */
+.sr-links{margin-bottom:2rem}
+.sr-links h2{font-family:'Montserrat',sans-serif;font-size:1.15rem;font-weight:700;color:var(--text);margin:0 0 .65rem}
+.sr-links-list{display:flex;flex-direction:column;gap:2px}
+.sr-links-row{display:block;padding:.55rem .85rem;background:var(--bg2);border:1px solid var(--border);border-left:3px solid transparent;border-radius:4px;color:var(--accent);text-decoration:none;font-size:.88rem;font-weight:600;transition:border-color .15s,background .15s}
+.sr-links-row:hover{border-left-color:var(--accent);background:var(--bg3)}
+
+/* ── Responsive ── */
+@media(max-width:768px){
+  .sr-hero h1{font-size:1.5rem}
+  .sr-search-bar{flex-direction:column}
+  .sr-results-grid{grid-template-columns:repeat(auto-fill,minmax(160px,1fr))}
+}
 </style>
 
 <script define:vars={{ searchData, RARITY_COLORS, RARITY_BG }}>
@@ -586,13 +230,13 @@ const rarities = ['All', 'Covert', 'Classified', 'Restricted', 'Mil-Spec', 'Indu
 
   const searchInput = document.getElementById('searchInput');
   const clearBtn = document.getElementById('clearBtn');
-  const filterChips = document.querySelectorAll('.filter-chip');
+  const filterChips = document.querySelectorAll('.sr-chip');
   const resultsContainer = document.getElementById('resultsContainer');
   const emptyState = document.getElementById('emptyState');
   const resultsGrid = document.getElementById('resultsGrid');
   const resultsTitle = document.getElementById('resultsTitle');
   const resultsCount = document.getElementById('resultsCount');
-  const quickLinks = document.querySelectorAll('.quick-link[data-search]');
+  const quickLinks = document.querySelectorAll('.sr-quick-link[data-search]');
 
   function filterSkins() {
     const filtered = searchData.filter(skin => {
@@ -613,13 +257,13 @@ const rarities = ['All', 'Covert', 'Classified', 'Restricted', 'Mil-Spec', 'Indu
     const results = filterSkins();
 
     if (results.length === 0 && !currentFilters.query && !currentFilters.category && !currentFilters.rarity) {
-      resultsContainer.classList.add('hidden');
+      resultsContainer.classList.add('sr-hidden');
       emptyState.style.display = 'block';
       return;
     }
 
     emptyState.style.display = 'none';
-    resultsContainer.classList.remove('hidden');
+    resultsContainer.classList.remove('sr-hidden');
 
     let title = 'Results';
     if (currentFilters.query) {
@@ -629,17 +273,17 @@ const rarities = ['All', 'Covert', 'Classified', 'Restricted', 'Mil-Spec', 'Indu
     resultsCount.textContent = `${results.length} ${results.length === 1 ? 'skin' : 'skins'} found`;
 
     resultsGrid.innerHTML = results.map(skin => `
-      <a href="/skin/${skin.slug}/" class="skin-card" data-rarity="${skin.rarity}">
-        <div class="skin-image">
+      <a href="/cs2-skin/${skin.slug}/" class="sr-skin-card" data-rarity="${skin.rarity}">
+        <div class="sr-skin-img">
           ${skin.image ? `<img src="${skin.image}" alt="${skin.name}">` : 'No image'}
         </div>
-        <div class="skin-info">
-          <div class="skin-name">${skin.name}</div>
-          <div class="weapon-name">${skin.weapon}</div>
-          <div class="rarity-badge" style="background-color: ${RARITY_BG[skin.rarity]}; color: ${RARITY_COLORS[skin.rarity]};">
+        <div class="sr-skin-info">
+          <div class="sr-skin-name">${skin.name}</div>
+          <div class="sr-skin-weapon">${skin.weapon}</div>
+          <div class="sr-skin-rarity" style="background-color: ${RARITY_BG[skin.rarity]}; color: ${RARITY_COLORS[skin.rarity]};">
             ${skin.rarity}
           </div>
-          <div class="price-info">
+          <div class="sr-skin-price">
             ${skin.price > 0 ? `$${skin.price.toFixed(2)}` : 'N/A'}
           </div>
         </div>
@@ -697,3 +341,22 @@ const rarities = ['All', 'Covert', 'Classified', 'Restricted', 'Mil-Spec', 'Indu
 
   renderResults();
 </script>
+
+<style is:inline>
+/* Skin card styles need to be global since they're rendered via JS innerHTML */
+.sr-skin-card{display:flex;flex-direction:column;background:var(--bg2);border:1px solid var(--border);border-left:3px solid transparent;border-radius:4px;overflow:hidden;transition:border-color .15s,background .15s;text-decoration:none;color:inherit}
+.sr-skin-card:hover{border-left-color:var(--accent);background:var(--bg3)}
+.sr-skin-card[data-rarity="Covert"]{border-color:var(--border);border-left-color:transparent}.sr-skin-card[data-rarity="Covert"]:hover{border-left-color:#2ecc71}
+.sr-skin-card[data-rarity="Classified"]{border-color:var(--border);border-left-color:transparent}.sr-skin-card[data-rarity="Classified"]:hover{border-left-color:#d32ce6}
+.sr-skin-card[data-rarity="Restricted"]{border-color:var(--border);border-left-color:transparent}.sr-skin-card[data-rarity="Restricted"]:hover{border-left-color:#8847ff}
+.sr-skin-card[data-rarity="Mil-Spec"]{border-color:var(--border);border-left-color:transparent}.sr-skin-card[data-rarity="Mil-Spec"]:hover{border-left-color:#4b69ff}
+.sr-skin-card[data-rarity="Industrial"]{border-color:var(--border);border-left-color:transparent}.sr-skin-card[data-rarity="Industrial"]:hover{border-left-color:#5e98d9}
+.sr-skin-card[data-rarity="Consumer"]{border-color:var(--border);border-left-color:transparent}.sr-skin-card[data-rarity="Consumer"]:hover{border-left-color:#b0c3d9}
+.sr-skin-img{width:100%;height:140px;background:var(--bg3);display:flex;align-items:center;justify-content:center;color:var(--text2);font-size:.82rem}
+.sr-skin-img img{width:100%;height:100%;object-fit:cover}
+.sr-skin-info{padding:.85rem;flex:1;display:flex;flex-direction:column}
+.sr-skin-name{color:var(--text);margin:0 0 .15rem;font-size:.9rem;font-weight:700}
+.sr-skin-weapon{color:var(--text2);font-size:.8rem;margin:0 0 .5rem}
+.sr-skin-rarity{display:inline-block;padding:.15rem .5rem;border-radius:4px;font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.04em;margin-bottom:.5rem;align-self:flex-start}
+.sr-skin-price{margin-top:auto;color:var(--accent);font-weight:700;font-size:.95rem}
+</style>

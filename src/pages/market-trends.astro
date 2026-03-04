@@ -4,7 +4,7 @@ import ExploreMore from '../components/ExploreMore.astro';
 import { SKINS, getLowestPrice, getHighestPrice, RARITY_COLORS, RARITY_BG, getTopByVolume, getTopByLiquidity, getMostTraded, getMostListings, getVolumeLabel, getLiquidityColor, getLiquidityLabel } from '../lib/skins';
 import { faqSchema, breadcrumbSchema } from '../lib/weapons';
 
-const title = 'CS2 Skin Market Trends — Price Movers & Analysis | CSDB.gg';
+const title = 'CS2 Skin Market Trends — Price Movers & Analysis | CSGOLuck Wiki';
 const description = 'Analyze CS2 skin market trends. Discover most expensive skins, best value deals, price distribution, and rarity breakdown. Investment tips for CS2 skins.';
 
 // Build-time computed sections
@@ -103,45 +103,40 @@ const faqs = [
 
 const crumbs = [
   { name: 'Home', url: '/' },
-  { name: 'Skins', url: '/skins/' },
+  { name: 'Skins', url: '/cs2-skins/' },
   { name: 'Market Trends', url: '/market-trends/' }
 ];
 ---
 
-<Base title={title} description={description} currentNav="/skins/">
+<Base title={title} description={description} currentNav="/cs2-skins/">
 <script type="application/ld+json" set:html={JSON.stringify(faqSchema(faqs))}></script>
 <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema(crumbs))}></script>
 
-<nav class="breadcrumb"><a href="/">Home</a> / <a href="/skins/">Skins</a> / <span>Market Trends</span></nav>
+<nav class="mt-breadcrumb"><a href="/">Home</a> / <a href="/cs2-skins/">Skins</a> / <span>Market Trends</span></nav>
 
-<div class="hero">
+<section class="mt-hero">
   <h1>CS2 Skin Market Trends</h1>
   <p>Analyze pricing patterns, discover valuable skins, and understand market dynamics. Real-time insights for skin traders and collectors.</p>
-</div>
+</section>
 
 <!-- Most Expensive Skins -->
-<section class="trend-section">
+<section class="mt-section">
   <h2>Most Expensive Skins</h2>
   <p>Top 10 skins by highest price across all wear conditions.</p>
-  <div class="trend-grid">
+  <div class="mt-list">
     {mostExpensiveSkins.map((skin, idx) => {
       const high = getHighestPrice(skin);
       const low = getLowestPrice(skin);
       const rarityColor = RARITY_COLORS[skin.rarity] || '#fff';
-      const rarityBg = RARITY_BG[skin.rarity] || 'rgba(255,255,255,0.05)';
       return (
-        <a href={`/skin/${skin.slug}/`} class="trend-card rank-{idx + 1}" style={`--rarity-color:${rarityColor};--rarity-bg:${rarityBg}`}>
-          <div class="rank-badge">#{idx + 1}</div>
-          <div class="trend-card-content">
-            <div class="trend-weapon">{skin.weapon}</div>
-            <div class="trend-name">{skin.name}</div>
-            <div class="trend-rarity" style={`color:${rarityColor}`}>{skin.rarity}</div>
-          </div>
-          <div class="trend-price">
-            <div class="price-label">Up to</div>
-            <div class="price-value">${high.toFixed(2)}</div>
-            {low !== high && <div class="price-range">from ${low.toFixed(2)}</div>}
-          </div>
+        <a href={`/cs2-skin/${skin.slug}/`} class="mt-skin-row">
+          <span class="mt-rank">#{idx + 1}</span>
+          <span class="mt-skin-info">
+            <span class="mt-skin-weapon">{skin.weapon}</span>
+            <span class="mt-skin-name">{skin.name}</span>
+          </span>
+          <span class="mt-skin-rarity" style={`color:${rarityColor}`}>{skin.rarity}</span>
+          <span class="mt-skin-price">${high.toFixed(2)}</span>
         </a>
       );
     })}
@@ -149,26 +144,23 @@ const crumbs = [
 </section>
 
 <!-- Best Value Skins -->
-<section class="trend-section">
+<section class="mt-section">
   <h2>Best Value Skins</h2>
   <p>High-rarity skins (Classified/Covert) under $20 — great deals for collectors.</p>
-  <div class="trend-grid">
+  <div class="mt-list">
     {bestValueSkins.map(skin => {
       const low = getLowestPrice(skin);
       const high = getHighestPrice(skin);
       const rarityColor = RARITY_COLORS[skin.rarity] || '#fff';
-      const rarityBg = RARITY_BG[skin.rarity] || 'rgba(255,255,255,0.05)';
       return (
-        <a href={`/skin/${skin.slug}/`} class="value-card" style={`--rarity-color:${rarityColor};--rarity-bg:${rarityBg}`}>
-          <div class="value-badge">Value Pick</div>
-          <div class="trend-card-content">
-            <div class="trend-weapon">{skin.weapon}</div>
-            <div class="trend-name">{skin.name}</div>
-            <div class="trend-rarity" style={`color:${rarityColor}`}>{skin.rarity}</div>
-          </div>
-          <div class="trend-price">
-            <div class="price-range">${low.toFixed(2)} – ${high.toFixed(2)}</div>
-          </div>
+        <a href={`/cs2-skin/${skin.slug}/`} class="mt-skin-row">
+          <span class="mt-value-badge">Value</span>
+          <span class="mt-skin-info">
+            <span class="mt-skin-weapon">{skin.weapon}</span>
+            <span class="mt-skin-name">{skin.name}</span>
+          </span>
+          <span class="mt-skin-rarity" style={`color:${rarityColor}`}>{skin.rarity}</span>
+          <span class="mt-skin-price">${low.toFixed(2)} – ${high.toFixed(2)}</span>
         </a>
       );
     })}
@@ -176,28 +168,23 @@ const crumbs = [
 </section>
 
 <!-- Knife & Glove Market -->
-<section class="trend-section">
+<section class="mt-section">
   <h2>Knife & Glove Market</h2>
   <p>Premium items with the highest market values. Top knives and gloves trending now.</p>
-  <div class="trend-grid knife-grid">
+  <div class="mt-list">
     {knifeGloveSkins.map(skin => {
       const high = getHighestPrice(skin);
-      const low = getLowestPrice(skin);
       const rarityColor = RARITY_COLORS[skin.rarity] || '#fff';
-      const rarityBg = RARITY_BG[skin.rarity] || 'rgba(255,255,255,0.05)';
       const isKnife = skin.category === 'knife';
       return (
-        <a href={`/skin/${skin.slug}/`} class="premium-card" style={`--rarity-color:${rarityColor};--rarity-bg:${rarityBg}`}>
-          <div class="premium-badge">{isKnife ? '🔪 Knife' : '🧤 Glove'}</div>
-          <div class="trend-card-content">
-            <div class="trend-weapon">{skin.weapon}</div>
-            <div class="trend-name">{skin.name}</div>
-            <div class="trend-rarity" style={`color:${rarityColor}`}>{skin.rarity}</div>
-          </div>
-          <div class="trend-price">
-            <div class="price-label">Market Value</div>
-            <div class="price-value">${high.toFixed(2)}</div>
-          </div>
+        <a href={`/cs2-skin/${skin.slug}/`} class="mt-skin-row">
+          <span class="mt-premium-badge">{isKnife ? 'Knife' : 'Glove'}</span>
+          <span class="mt-skin-info">
+            <span class="mt-skin-weapon">{skin.weapon}</span>
+            <span class="mt-skin-name">{skin.name}</span>
+          </span>
+          <span class="mt-skin-rarity" style={`color:${rarityColor}`}>{skin.rarity}</span>
+          <span class="mt-skin-price">${high.toFixed(2)}</span>
         </a>
       );
     })}
@@ -208,28 +195,27 @@ const crumbs = [
 <>
 <!-- Most Traded Skins -->
 {mostTradedSkins.length > 0 && (
-<section class="trend-section">
+<section class="mt-section">
   <h2>Most Traded Skins (7 Days)</h2>
   <p>Skins with the highest number of trades in the past 7 days — the most actively bought and sold items.</p>
-  <div class="trend-grid movers-grid">
+  <div class="mt-list">
     {mostTradedSkins.map((skin, idx) => {
       const low = getLowestPrice(skin);
       const rarityColor = RARITY_COLORS[skin.rarity] || '#fff';
-      const rarityBg = RARITY_BG[skin.rarity] || 'rgba(255,255,255,0.05)';
       return (
-        <a href={`/skin/${skin.slug}/`} class="mover-card" style={`--rarity-color:${rarityColor};--rarity-bg:${rarityBg}`}>
-          <div class="mover-rank">#{idx + 1}</div>
-          <div class="mover-img-wrap">
-            {skin.image && <img src={skin.image} alt={`${skin.weapon} | ${skin.name}`} loading="lazy" width="120" height="90" />}
-          </div>
-          <div class="mover-info">
-            <div class="trend-weapon">{skin.weapon}</div>
-            <div class="trend-name">{skin.name}</div>
-            <div class="mover-stats">
-              <span class="mover-stat trades">{getVolumeLabel(skin.trades7d || 0)} trades</span>
-              {low > 0 && <span class="mover-stat price">from ${low.toFixed(2)}</span>}
-            </div>
-          </div>
+        <a href={`/cs2-skin/${skin.slug}/`} class="mt-mover-row">
+          <span class="mt-mover-rank">#{idx + 1}</span>
+          <span class="mt-mover-img">
+            {skin.image && <img src={skin.image} alt={`${skin.weapon} | ${skin.name}`} loading="lazy" width="60" height="45" />}
+          </span>
+          <span class="mt-mover-info">
+            <span class="mt-skin-weapon">{skin.weapon}</span>
+            <span class="mt-skin-name">{skin.name}</span>
+            <span class="mt-mover-stats">
+              <span class="mt-mover-stat mt-trades">{getVolumeLabel(skin.trades7d || 0)} trades</span>
+              {low > 0 && <span class="mt-mover-stat mt-price">from ${low.toFixed(2)}</span>}
+            </span>
+          </span>
         </a>
       );
     })}
@@ -239,28 +225,27 @@ const crumbs = [
 
 <!-- Highest Volume Skins -->
 {highestVolumeSkins.length > 0 && (
-<section class="trend-section">
+<section class="mt-section">
   <h2>Highest Volume Skins (7 Days)</h2>
   <p>Skins with the highest Steam market volume over the past week — strong indicators of market demand.</p>
-  <div class="trend-grid movers-grid">
+  <div class="mt-list">
     {highestVolumeSkins.map((skin, idx) => {
       const low = getLowestPrice(skin);
       const rarityColor = RARITY_COLORS[skin.rarity] || '#fff';
-      const rarityBg = RARITY_BG[skin.rarity] || 'rgba(255,255,255,0.05)';
       return (
-        <a href={`/skin/${skin.slug}/`} class="mover-card" style={`--rarity-color:${rarityColor};--rarity-bg:${rarityBg}`}>
-          <div class="mover-rank">#{idx + 1}</div>
-          <div class="mover-img-wrap">
-            {skin.image && <img src={skin.image} alt={`${skin.weapon} | ${skin.name}`} loading="lazy" width="120" height="90" />}
-          </div>
-          <div class="mover-info">
-            <div class="trend-weapon">{skin.weapon}</div>
-            <div class="trend-name">{skin.name}</div>
-            <div class="mover-stats">
-              <span class="mover-stat volume">{getVolumeLabel(skin.volume7d || 0)} volume</span>
-              {low > 0 && <span class="mover-stat price">from ${low.toFixed(2)}</span>}
-            </div>
-          </div>
+        <a href={`/cs2-skin/${skin.slug}/`} class="mt-mover-row">
+          <span class="mt-mover-rank">#{idx + 1}</span>
+          <span class="mt-mover-img">
+            {skin.image && <img src={skin.image} alt={`${skin.weapon} | ${skin.name}`} loading="lazy" width="60" height="45" />}
+          </span>
+          <span class="mt-mover-info">
+            <span class="mt-skin-weapon">{skin.weapon}</span>
+            <span class="mt-skin-name">{skin.name}</span>
+            <span class="mt-mover-stats">
+              <span class="mt-mover-stat mt-volume">{getVolumeLabel(skin.volume7d || 0)} volume</span>
+              {low > 0 && <span class="mt-mover-stat mt-price">from ${low.toFixed(2)}</span>}
+            </span>
+          </span>
         </a>
       );
     })}
@@ -270,30 +255,28 @@ const crumbs = [
 
 <!-- Most Liquid Skins -->
 {mostLiquidSkins.length > 0 && (
-<section class="trend-section">
+<section class="mt-section">
   <h2>Most Liquid Skins</h2>
   <p>Skins with the highest liquidity scores — easy to buy and sell quickly at fair market value.</p>
-  <div class="trend-grid movers-grid">
+  <div class="mt-list">
     {mostLiquidSkins.map((skin, idx) => {
       const low = getLowestPrice(skin);
-      const rarityColor = RARITY_COLORS[skin.rarity] || '#fff';
-      const rarityBg = RARITY_BG[skin.rarity] || 'rgba(255,255,255,0.05)';
       const liqColor = getLiquidityColor(skin.liquidity || 0);
       const liqLabel = getLiquidityLabel(skin.liquidity || 0);
       return (
-        <a href={`/skin/${skin.slug}/`} class="mover-card" style={`--rarity-color:${rarityColor};--rarity-bg:${rarityBg}`}>
-          <div class="mover-rank">#{idx + 1}</div>
-          <div class="mover-img-wrap">
-            {skin.image && <img src={skin.image} alt={`${skin.weapon} | ${skin.name}`} loading="lazy" width="120" height="90" />}
-          </div>
-          <div class="mover-info">
-            <div class="trend-weapon">{skin.weapon}</div>
-            <div class="trend-name">{skin.name}</div>
-            <div class="mover-stats">
-              <span class="mover-stat liquidity" style={`color:${liqColor}`}>{liqLabel} ({skin.liquidity}%)</span>
-              {low > 0 && <span class="mover-stat price">from ${low.toFixed(2)}</span>}
-            </div>
-          </div>
+        <a href={`/cs2-skin/${skin.slug}/`} class="mt-mover-row">
+          <span class="mt-mover-rank">#{idx + 1}</span>
+          <span class="mt-mover-img">
+            {skin.image && <img src={skin.image} alt={`${skin.weapon} | ${skin.name}`} loading="lazy" width="60" height="45" />}
+          </span>
+          <span class="mt-mover-info">
+            <span class="mt-skin-weapon">{skin.weapon}</span>
+            <span class="mt-skin-name">{skin.name}</span>
+            <span class="mt-mover-stats">
+              <span class="mt-mover-stat" style={`color:${liqColor}`}>{liqLabel} ({skin.liquidity}%)</span>
+              {low > 0 && <span class="mt-mover-stat mt-price">from ${low.toFixed(2)}</span>}
+            </span>
+          </span>
         </a>
       );
     })}
@@ -303,28 +286,26 @@ const crumbs = [
 
 <!-- Most Listed Skins -->
 {mostListedSkins.length > 0 && (
-<section class="trend-section">
+<section class="mt-section">
   <h2>Most Listed Skins</h2>
   <p>Skins with the highest number of active marketplace listings — reflects current market supply.</p>
-  <div class="trend-grid movers-grid">
+  <div class="mt-list">
     {mostListedSkins.map((skin, idx) => {
       const low = getLowestPrice(skin);
-      const rarityColor = RARITY_COLORS[skin.rarity] || '#fff';
-      const rarityBg = RARITY_BG[skin.rarity] || 'rgba(255,255,255,0.05)';
       return (
-        <a href={`/skin/${skin.slug}/`} class="mover-card" style={`--rarity-color:${rarityColor};--rarity-bg:${rarityBg}`}>
-          <div class="mover-rank">#{idx + 1}</div>
-          <div class="mover-img-wrap">
-            {skin.image && <img src={skin.image} alt={`${skin.weapon} | ${skin.name}`} loading="lazy" width="120" height="90" />}
-          </div>
-          <div class="mover-info">
-            <div class="trend-weapon">{skin.weapon}</div>
-            <div class="trend-name">{skin.name}</div>
-            <div class="mover-stats">
-              <span class="mover-stat listings">{getVolumeLabel(skin.listingCount || 0)} listings</span>
-              {low > 0 && <span class="mover-stat price">from ${low.toFixed(2)}</span>}
-            </div>
-          </div>
+        <a href={`/cs2-skin/${skin.slug}/`} class="mt-mover-row">
+          <span class="mt-mover-rank">#{idx + 1}</span>
+          <span class="mt-mover-img">
+            {skin.image && <img src={skin.image} alt={`${skin.weapon} | ${skin.name}`} loading="lazy" width="60" height="45" />}
+          </span>
+          <span class="mt-mover-info">
+            <span class="mt-skin-weapon">{skin.weapon}</span>
+            <span class="mt-skin-name">{skin.name}</span>
+            <span class="mt-mover-stats">
+              <span class="mt-mover-stat mt-listings">{getVolumeLabel(skin.listingCount || 0)} listings</span>
+              {low > 0 && <span class="mt-mover-stat mt-price">from ${low.toFixed(2)}</span>}
+            </span>
+          </span>
         </a>
       );
     })}
@@ -335,23 +316,21 @@ const crumbs = [
 )}
 
 <!-- Price Distribution -->
-<section class="trend-section">
+<section class="mt-section">
   <h2>Price Distribution</h2>
   <p>How CS2 skins are distributed across price brackets.</p>
-  <div class="distribution-container">
+  <div class="mt-dist">
     {priceDistribution.map(bracket => {
       const percentage = (bracket.count / SKINS.length) * 100;
       const barWidth = (bracket.count / maxCount) * 100;
       return (
-        <div class="distribution-row">
-          <div class="dist-label">
-            <span class="bracket-label">{bracket.label}</span>
-            <span class="dist-count">{bracket.count} skins</span>
+        <div class="mt-dist-row">
+          <span class="mt-dist-label">{bracket.label}</span>
+          <span class="mt-dist-count">{bracket.count} skins</span>
+          <div class="mt-dist-bar-wrap">
+            <div class="mt-dist-bar" style={`width:${barWidth}%`}></div>
           </div>
-          <div class="dist-bar-wrapper">
-            <div class="dist-bar" style={`width:${barWidth}%`}></div>
-          </div>
-          <div class="dist-percentage">{percentage.toFixed(1)}%</div>
+          <span class="mt-dist-pct">{percentage.toFixed(1)}%</span>
         </div>
       );
     })}
@@ -359,18 +338,18 @@ const crumbs = [
 </section>
 
 <!-- Rarity Breakdown -->
-<section class="trend-section">
+<section class="mt-section">
   <h2>Rarity Breakdown</h2>
   <p>Total skins available per rarity tier.</p>
-  <div class="rarity-stats">
+  <div class="mt-rarity-list">
     {rarityCounts.map(item => {
       const percentage = (item.count / SKINS.length) * 100;
       const color = RARITY_COLORS[item.rarity] || '#fff';
       return (
-        <div class="stat-card" style={`--stat-color:${color}`}>
-          <div class="stat-value">{item.count}</div>
-          <div class="stat-label">{item.rarity}</div>
-          <div class="stat-percent">{percentage.toFixed(1)}% of all skins</div>
+        <div class="mt-rarity-row" style={`--rarity-color:${color}`}>
+          <span class="mt-rarity-name">{item.rarity}</span>
+          <span class="mt-rarity-count">{item.count} skins</span>
+          <span class="mt-rarity-pct">{percentage.toFixed(1)}%</span>
         </div>
       );
     })}
@@ -378,482 +357,141 @@ const crumbs = [
 </section>
 
 <!-- Quick Links -->
-<div class="quick-nav">
+<section class="mt-quick">
   <h3>Explore More</h3>
-  <div class="quick-links">
-    <a href="/skins/">Browse All Skins</a>
-    <a href="/price-tracker/">Price Tracker</a>
-    <a href="/cases/">View Cases</a>
-    <a href="/inventory-lookup/">Inventory Lookup</a>
+  <div class="mt-quick-links">
+    <a href="/cs2-skins/" class="mt-quick-link">Browse All Skins</a>
+    <a href="/price-tracker/" class="mt-quick-link">Price Tracker</a>
+    <a href="/cs2-cases/" class="mt-quick-link">View Cases</a>
+    <a href="/inventory-lookup/" class="mt-quick-link">Inventory Lookup</a>
   </div>
-</div>
+</section>
 
 <!-- FAQ -->
-<h2>Frequently Asked Questions</h2>
-<dl class="faq">
+<section class="mt-faq">
+  <h2>Frequently Asked Questions</h2>
   {faqs.map(f => (
-    <>
-      <dt>{f.question}</dt>
-      <dd>{f.answer}</dd>
-    </>
+    <details class="mt-faq-item">
+      <summary>{f.question}</summary>
+      <p>{f.answer}</p>
+    </details>
   ))}
-</dl>
+</section>
 
-<div class="internal-links">
-  <strong>Related Resources:</strong>
-  <a href="/skins/">Skin Database</a>
-  <a href="/skin-compare/">Compare Skins</a>
-  <a href="/price-tracker/">Price Tracker</a>
-  <a href="/float-checker/">Float Checker</a>
-  <a href="/tradeup-calculator/">Trade-Up Calculator</a>
-  <a href="/case-odds-calculator/">Case Odds Calculator</a>
-  <a href="/case-simulator/">Case Simulator</a>
-  <a href="/cases/">Cases & Collections</a>
-  <a href="/inventory-lookup/">Inventory Lookup</a>
-  <a href="/loadout-builder/">Loadout Builder</a>
-  <a href="/weapons/">Weapon Database</a>
-  <a href="/guides/skins-investing-guide/">Investing Guide</a>
-  <a href="/guides/trading-guide/">Trading Guide</a>
-  <a href="/guides/float-guide/">Float Guide</a>
-</div>
+<section class="mt-related">
+  <h2>Related Resources</h2>
+  <div class="mt-related-list">
+    <a href="/cs2-skins/" class="mt-related-row">Skin Database</a>
+    <a href="/skin-compare/" class="mt-related-row">Compare Skins</a>
+    <a href="/price-tracker/" class="mt-related-row">Price Tracker</a>
+    <a href="/float-checker/" class="mt-related-row">Float Checker</a>
+    <a href="/tradeup-calculator/" class="mt-related-row">Trade-Up Calculator</a>
+    <a href="/case-odds-calculator/" class="mt-related-row">Case Odds Calculator</a>
+    <a href="/case-simulator/" class="mt-related-row">Case Simulator</a>
+    <a href="/cs2-cases/" class="mt-related-row">Cases & Collections</a>
+    <a href="/inventory-lookup/" class="mt-related-row">Inventory Lookup</a>
+    <a href="/loadout-builder/" class="mt-related-row">Loadout Builder</a>
+    <a href="/cs2-weapons/" class="mt-related-row">Weapon Database</a>
+    <a href="/cs2-guides/skins-investing-guide/" class="mt-related-row">Investing Guide</a>
+    <a href="/cs2-guides/trading-guide/" class="mt-related-row">Trading Guide</a>
+    <a href="/cs2-guides/float-guide/" class="mt-related-row">Float Guide</a>
+  </div>
+</section>
 
 <ExploreMore context="skins" />
 
 <style is:inline>
-.hero {
-  text-align: center;
-  padding: 2rem 0;
-  margin-bottom: 2rem;
-  border-bottom: 1px solid var(--border);
-}
-
-.hero h1 {
-  background: linear-gradient(135deg, var(--accent), var(--accent2));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  margin-bottom: 0.5rem;
-  font-size: 2.5rem;
-}
-
-.hero p {
-  max-width: 600px;
-  margin: 0 auto;
-  color: var(--text2);
-  font-size: 1.05rem;
-}
-
-.trend-section {
-  margin: 3rem 0;
-}
-
-.trend-section h2 {
-  margin-bottom: 0.5rem;
-}
-
-.trend-section > p {
-  color: var(--text2);
-  margin-bottom: 1.5rem;
-  font-size: 0.95rem;
-}
-
-.trend-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-  gap: 1rem;
-  margin: 1.5rem 0;
-}
-
-.knife-grid {
-  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-}
-
-.trend-card,
-.value-card,
-.premium-card {
-  display: flex;
-  flex-direction: column;
-  background: var(--bg2);
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  padding: 1.25rem;
-  text-decoration: none;
-  color: inherit;
-  transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
-  position: relative;
-  overflow: hidden;
-}
-
-.trend-card:hover,
-.value-card:hover,
-.premium-card:hover {
-  border-color: var(--rarity-color);
-  transform: translateY(-3px);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3), inset 0 1px 0 var(--rarity-color);
-}
-
-.rank-badge,
-.value-badge,
-.premium-badge {
-  position: absolute;
-  top: 0.75rem;
-  right: 0.75rem;
-  background: var(--rarity-color);
-  color: #000;
-  padding: 0.35rem 0.6rem;
-  border-radius: 6px;
-  font-size: 0.75rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.03em;
-}
-
-.premium-badge {
-  font-size: 0.85rem;
-  font-weight: 600;
-  text-transform: none;
-}
-
-.trend-card-content {
-  margin-bottom: 1rem;
-}
-
-.trend-weapon {
-  font-size: 0.78rem;
-  color: var(--text2);
-  letter-spacing: 0.03em;
-  text-transform: uppercase;
-}
-
-.trend-name {
-  font-size: 1.15rem;
-  font-weight: 800;
-  color: var(--text);
-  margin: 0.35rem 0;
-}
-
-.trend-rarity {
-  font-size: 0.82rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.03em;
-}
-
-.trend-price {
-  margin-top: auto;
-  padding-top: 1rem;
-  border-top: 1px solid var(--border);
-}
-
-.price-label {
-  font-size: 0.75rem;
-  color: var(--text2);
-  margin-bottom: 0.25rem;
-}
-
-.price-value {
-  font-size: 1.4rem;
-  font-weight: 800;
-  color: var(--accent);
-}
-
-.price-range {
-  font-size: 0.85rem;
-  color: var(--text2);
-  margin-top: 0.25rem;
-}
-
-/* Distribution Section */
-.distribution-container {
-  background: var(--bg2);
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  padding: 1.5rem;
-  margin: 1.5rem 0;
-}
-
-.distribution-row {
-  display: grid;
-  grid-template-columns: 120px 1fr 80px;
-  gap: 1rem;
-  align-items: center;
-  margin-bottom: 1.25rem;
-}
-
-.distribution-row:last-child {
-  margin-bottom: 0;
-}
-
-.dist-label {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-}
-
-.bracket-label {
-  font-weight: 700;
-  color: var(--text);
-  font-size: 0.9rem;
-}
-
-.dist-count {
-  font-size: 0.75rem;
-  color: var(--text2);
-  margin-top: 0.25rem;
-}
-
-.dist-bar-wrapper {
-  height: 28px;
-  background: var(--bg3);
-  border-radius: 6px;
-  overflow: hidden;
-  border: 1px solid var(--border);
-}
-
-.dist-bar {
-  height: 100%;
-  background: linear-gradient(90deg, var(--accent), var(--accent2));
-  border-radius: 6px;
-  transition: width 0.3s ease;
-}
-
-.dist-percentage {
-  font-weight: 700;
-  color: var(--accent);
-  font-size: 0.9rem;
-  text-align: right;
-}
-
-/* Rarity Stats Grid */
-.rarity-stats {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-  gap: 1rem;
-  margin: 1.5rem 0;
-}
-
-.stat-card {
-  background: var(--bg2);
-  border: 2px solid var(--border);
-  border-radius: 10px;
-  padding: 1.25rem;
-  text-align: center;
-  transition: border-color 0.2s, box-shadow 0.2s;
-}
-
-.stat-card:hover {
-  border-color: var(--stat-color);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2), inset 0 1px 0 var(--stat-color);
-}
-
-.stat-value {
-  font-size: 2rem;
-  font-weight: 800;
-  color: var(--stat-color);
-  margin-bottom: 0.5rem;
-}
-
-.stat-label {
-  font-size: 0.95rem;
-  font-weight: 700;
-  color: var(--text);
-  margin-bottom: 0.5rem;
-}
-
-.stat-percent {
-  font-size: 0.78rem;
-  color: var(--text2);
-}
-
-/* Quick Nav */
-.quick-nav {
-  background: var(--bg2);
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  padding: 1.5rem;
-  margin: 2rem 0;
-}
-
-.quick-nav h3 {
-  margin: 0 0 1rem;
-}
-
-.quick-links {
-  display: flex;
-  gap: 0.75rem;
-  flex-wrap: wrap;
-}
-
-.quick-links a {
-  background: var(--bg3);
-  border: 1px solid var(--border);
-  padding: 0.5rem 1rem;
-  border-radius: 6px;
-  font-size: 0.9rem;
-  transition: border-color 0.2s, color 0.2s;
-}
-
-.quick-links a:hover {
-  border-color: var(--accent);
-  color: var(--accent);
-}
-
-@media (max-width: 1000px) {
-  .trend-grid {
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  }
-
-  .knife-grid {
-    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-  }
-
-  .distribution-row {
-    grid-template-columns: 100px 1fr 70px;
-  }
-
-  .rarity-stats {
-    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-  }
-}
-
-@media (max-width: 700px) {
-  .hero h1 {
-    font-size: 1.8rem;
-  }
-
-  .trend-grid,
-  .knife-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
-  .rarity-stats {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
-  .distribution-row {
-    grid-template-columns: 1fr;
-    gap: 0.5rem;
-  }
-
-  .dist-label {
-    flex-direction: row;
-    justify-content: space-between;
-  }
-
-  .quick-links {
-    flex-direction: column;
-    gap: 0.5rem;
-  }
-
-  .quick-links a {
-    display: block;
-    text-align: center;
-  }
-}
-
-/* Market Movers Grid */
-.movers-grid {
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-}
-
-.mover-card {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  background: var(--bg2);
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  padding: 0.75rem 1rem;
-  text-decoration: none;
-  color: inherit;
-  transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
-  position: relative;
-}
-
-.mover-card:hover {
-  border-color: var(--rarity-color);
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3), inset 0 1px 0 var(--rarity-color);
-}
-
-.mover-rank {
-  position: absolute;
-  top: 0.5rem;
-  right: 0.5rem;
-  background: var(--bg3);
-  color: var(--text2);
-  padding: 0.15rem 0.4rem;
-  border-radius: 4px;
-  font-size: 0.7rem;
-  font-weight: 700;
-}
-
-.mover-img-wrap {
-  flex-shrink: 0;
-  width: 80px;
-  height: 60px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: var(--bg3);
-  border-radius: 6px;
-  overflow: hidden;
-}
-
-.mover-img-wrap img {
-  max-width: 100%;
-  max-height: 100%;
-  object-fit: contain;
-}
-
-.mover-info {
-  flex: 1;
-  min-width: 0;
-}
-
-.mover-info .trend-weapon {
-  font-size: 0.7rem;
-}
-
-.mover-info .trend-name {
-  font-size: 0.95rem;
-  margin: 0.15rem 0;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.mover-stats {
-  display: flex;
-  gap: 0.75rem;
-  flex-wrap: wrap;
-  margin-top: 0.25rem;
-}
-
-.mover-stat {
-  font-size: 0.78rem;
-  font-weight: 600;
-}
-
-.mover-stat.trades { color: #4fc3f7; }
-.mover-stat.volume { color: #81c784; }
-.mover-stat.listings { color: #ffb74d; }
-.mover-stat.price { color: var(--text2); font-weight: 400; }
-
-@media (max-width: 480px) {
-  .trend-grid,
-  .knife-grid,
-  .rarity-stats {
-    grid-template-columns: 1fr;
-  }
-
-  .movers-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .hero h1 {
-    font-size: 1.5rem;
-  }
+/* ── Breadcrumb ── */
+.mt-breadcrumb{font-size:.82rem;color:var(--text2);margin-bottom:1.25rem;display:flex;gap:.35rem;flex-wrap:wrap}
+.mt-breadcrumb a{color:var(--accent);text-decoration:none}
+.mt-breadcrumb a:hover{text-decoration:underline}
+
+/* ── Hero ── */
+.mt-hero{background:var(--bg2);border:1px solid var(--border);border-radius:4px;padding:2rem;margin-bottom:1.5rem}
+.mt-hero h1{font-family:'Montserrat',sans-serif;font-size:2rem;font-weight:800;margin:0 0 .5rem;color:var(--text)}
+.mt-hero p{color:var(--text2);font-size:.95rem;line-height:1.6;margin:0}
+
+/* ── Sections ── */
+.mt-section{margin-bottom:2rem}
+.mt-section h2{font-family:'Montserrat',sans-serif;font-size:1.15rem;font-weight:700;color:var(--text);margin:0 0 .5rem}
+.mt-section>p{color:var(--text2);margin-bottom:1rem;font-size:.95rem}
+
+/* ── Skin Row Lists ── */
+.mt-list{display:flex;flex-direction:column;gap:2px}
+.mt-skin-row{display:flex;align-items:center;gap:.75rem;text-decoration:none;color:inherit;background:var(--bg2);border:1px solid var(--border);border-left:3px solid transparent;border-radius:4px;padding:.7rem 1rem;transition:border-color .15s,background .15s}
+.mt-skin-row:hover{border-left-color:var(--accent);background:var(--bg3)}
+.mt-rank{font-weight:800;font-size:.85rem;color:var(--accent);min-width:30px}
+.mt-value-badge{font-size:.7rem;font-weight:700;text-transform:uppercase;color:var(--accent);background:rgba(46,204,113,0.15);border:1px solid rgba(46,204,113,0.3);padding:.15rem .5rem;border-radius:4px;white-space:nowrap}
+.mt-premium-badge{font-size:.7rem;font-weight:700;text-transform:uppercase;color:var(--text2);background:var(--bg3);border:1px solid var(--border);padding:.15rem .5rem;border-radius:4px;white-space:nowrap}
+.mt-skin-info{flex:1;min-width:0;display:flex;flex-direction:column}
+.mt-skin-weapon{font-size:.72rem;color:var(--text2);text-transform:uppercase;letter-spacing:.03em}
+.mt-skin-name{font-size:.95rem;font-weight:700;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mt-skin-rarity{font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.03em;white-space:nowrap}
+.mt-skin-price{font-weight:800;color:var(--accent);font-size:.95rem;white-space:nowrap;margin-left:auto}
+
+/* ── Mover Rows ── */
+.mt-mover-row{display:flex;align-items:center;gap:.75rem;text-decoration:none;color:inherit;background:var(--bg2);border:1px solid var(--border);border-left:3px solid transparent;border-radius:4px;padding:.7rem 1rem;transition:border-color .15s,background .15s}
+.mt-mover-row:hover{border-left-color:var(--accent);background:var(--bg3)}
+.mt-mover-rank{font-weight:700;font-size:.78rem;color:var(--text2);min-width:30px}
+.mt-mover-img{flex-shrink:0;width:60px;height:45px;display:flex;align-items:center;justify-content:center;background:var(--bg3);border-radius:4px;overflow:hidden}
+.mt-mover-img img{max-width:100%;max-height:100%;object-fit:contain}
+.mt-mover-info{flex:1;min-width:0;display:flex;flex-direction:column}
+.mt-mover-stats{display:flex;gap:.75rem;flex-wrap:wrap;margin-top:.15rem}
+.mt-mover-stat{font-size:.78rem;font-weight:600}
+.mt-trades{color:#4fc3f7}
+.mt-volume{color:#81c784}
+.mt-listings{color:#ffb74d}
+.mt-price{color:var(--text2);font-weight:400}
+
+/* ── Distribution ── */
+.mt-dist{background:var(--bg2);border:1px solid var(--border);border-radius:4px;padding:1.5rem;display:flex;flex-direction:column;gap:1rem}
+.mt-dist-row{display:grid;grid-template-columns:90px 80px 1fr 60px;gap:.75rem;align-items:center}
+.mt-dist-label{font-weight:700;color:var(--text);font-size:.9rem}
+.mt-dist-count{font-size:.75rem;color:var(--text2)}
+.mt-dist-bar-wrap{height:24px;background:var(--bg3);border-radius:4px;overflow:hidden}
+.mt-dist-bar{height:100%;background:var(--accent);border-radius:4px;transition:width .3s ease}
+.mt-dist-pct{font-weight:700;color:var(--accent);font-size:.9rem;text-align:right}
+
+/* ── Rarity List ── */
+.mt-rarity-list{display:flex;flex-direction:column;gap:2px}
+.mt-rarity-row{display:flex;align-items:center;gap:1rem;background:var(--bg2);border:1px solid var(--border);border-left:3px solid var(--rarity-color);border-radius:4px;padding:.75rem 1rem;transition:background .15s}
+.mt-rarity-row:hover{background:var(--bg3)}
+.mt-rarity-name{font-weight:700;color:var(--rarity-color);min-width:100px;font-size:.95rem}
+.mt-rarity-count{font-size:.85rem;color:var(--text2);flex:1}
+.mt-rarity-pct{font-weight:700;color:var(--text);font-size:.9rem}
+
+/* ── Quick Nav ── */
+.mt-quick{background:var(--bg2);border:1px solid var(--border);border-radius:4px;padding:1.5rem;margin-bottom:2rem}
+.mt-quick h3{font-family:'Montserrat',sans-serif;margin:0 0 1rem;font-size:1.05rem;font-weight:700;color:var(--text)}
+.mt-quick-links{display:flex;flex-direction:column;gap:2px}
+.mt-quick-link{display:flex;align-items:center;text-decoration:none;color:var(--text);background:var(--bg3);border:1px solid var(--border);border-left:3px solid transparent;border-radius:4px;padding:.55rem 1rem;font-size:.9rem;font-weight:600;transition:border-color .15s,background .15s,color .15s}
+.mt-quick-link:hover{border-left-color:var(--accent);color:var(--accent)}
+
+/* ── FAQ ── */
+.mt-faq{margin-bottom:2rem}
+.mt-faq h2{font-family:'Montserrat',sans-serif;font-size:1.15rem;font-weight:700;color:var(--text);margin:0 0 .75rem}
+.mt-faq-item{background:var(--bg2);border:1px solid var(--border);border-radius:4px;margin-bottom:.35rem;overflow:hidden}
+.mt-faq-item summary{padding:.75rem 1rem;font-weight:700;font-size:.9rem;color:var(--text);cursor:pointer;list-style:none;display:flex;align-items:center;gap:.5rem;transition:background .15s}
+.mt-faq-item summary::before{content:'+';font-size:1.05rem;font-weight:700;color:var(--accent);flex-shrink:0;width:18px;text-align:center}
+.mt-faq-item[open] summary::before{content:'\2212'}
+.mt-faq-item summary:hover{background:var(--bg3)}
+.mt-faq-item summary::-webkit-details-marker{display:none}
+.mt-faq-item p{padding:0 1rem .85rem 2.25rem;margin:0;color:var(--text2);font-size:.88rem;line-height:1.6}
+
+/* ── Related ── */
+.mt-related{margin-bottom:2rem}
+.mt-related h2{font-family:'Montserrat',sans-serif;font-size:1.15rem;font-weight:700;color:var(--text);margin:0 0 .75rem}
+.mt-related-list{display:flex;flex-direction:column;gap:2px}
+.mt-related-row{display:flex;align-items:center;text-decoration:none;color:var(--text);background:var(--bg2);border:1px solid var(--border);border-left:3px solid transparent;border-radius:4px;padding:.6rem 1rem;font-size:.9rem;font-weight:600;transition:border-color .15s,background .15s}
+.mt-related-row:hover{border-left-color:var(--accent);background:var(--bg3)}
+
+/* ── Responsive ── */
+@media(max-width:768px){
+  .mt-hero h1{font-size:1.5rem}
+  .mt-skin-row{flex-wrap:wrap;gap:.4rem}
+  .mt-mover-row{flex-wrap:wrap;gap:.4rem}
+  .mt-dist-row{grid-template-columns:1fr;gap:.5rem}
+  .mt-dist-label{text-align:left}
 }
 </style>
 

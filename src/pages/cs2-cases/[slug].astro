@@ -1,0 +1,858 @@
+---
+import Base from '../../layouts/Base.astro';
+import ExploreMore from '../../components/ExploreMore.astro';
+import { caseDatabase } from '../../lib/cases';
+import { breadcrumbSchema } from '../../lib/weapons';
+
+export function getStaticPaths() {
+  return Object.keys(caseDatabase).map((slug) => ({
+    params: { slug },
+  }));
+}
+
+const { slug } = Astro.params;
+const caseData = caseDatabase[slug];
+
+if (!caseData) {
+  return Astro.redirect('/cs2-cases/');
+}
+
+const rarityColors: Record<string, string> = {
+  'mil-spec': '#4b7cf5',
+  'restricted': '#8847ff',
+  'classified': '#d32ce6',
+  'covert': '#2ecc71',
+  'special': '#d4956e',
+};
+
+const rarityLabels: Record<string, string> = {
+  'mil-spec': 'Mil-Spec',
+  'restricted': 'Restricted',
+  'classified': 'Classified',
+  'covert': 'Covert',
+  'special': 'Special',
+};
+
+// Group skins by rarity
+const skinsByRarity = caseData.skins.reduce(
+  (acc, skin) => {
+    if (!acc[skin.rarity]) {
+      acc[skin.rarity] = [];
+    }
+    acc[skin.rarity].push(skin);
+    return acc;
+  },
+  {} as Record<string, typeof caseData.skins>,
+);
+
+const caseROI = caseData.keyPrice * (100 / 79.92) * -1;
+const expectedValue = (caseData.keyPrice * 2) / 100;
+
+const breadcrumbs = [
+  { name: 'Home', url: '/' },
+  { name: 'Cases', url: '/cs2-cases/' },
+  { name: caseData.name, url: `/cs2-cases/${slug}/` },
+];
+
+const oddsData = [
+  { tier: 'Mil-Spec', probability: '79.92%', pct: 79.92, color: '#4b7cf5' },
+  { tier: 'Restricted', probability: '15.98%', pct: 15.98, color: '#8847ff' },
+  { tier: 'Classified', probability: '3.20%', pct: 3.20, color: '#d32ce6' },
+  { tier: 'Covert', probability: '0.64%', pct: 0.64, color: '#2ecc71' },
+  { tier: 'Special', probability: '0.26%', pct: 0.26, color: '#d4956e' },
+];
+
+// Get related cases (same type, excluding current)
+const allCases = Object.values(caseDatabase);
+const relatedCases = allCases
+  .filter(c => c.id !== slug)
+  .sort((a, b) => Math.abs(a.year - caseData.year) - Math.abs(b.year - caseData.year))
+  .slice(0, 8);
+---
+
+<Base
+  title={`${caseData.name} | CS2 Case | CSGOLuck Wiki`}
+  description={`${caseData.name} details: drop odds, notable skins, key price, and ROI analysis. Released ${caseData.releaseDate}.`}
+  currentNav="/cs2-skins/"
+>
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema(breadcrumbs))} />
+    <script type="application/ld+json" set:html={JSON.stringify({
+      '@context': 'https://schema.org',
+      '@type': 'Product',
+      name: caseData.name,
+      description: caseData.description,
+      image: caseData.image,
+      brand: { '@type': 'Brand', name: 'Valve' },
+      category: 'Video Game Item',
+      offers: {
+        '@type': 'Offer',
+        priceCurrency: 'USD',
+        price: caseData.keyPrice.toFixed(2),
+        availability: 'https://schema.org/InStock',
+        url: `https://wiki.csgoluck.com/cs2-cases/${slug}/`,
+      },
+    })} />
+  </Fragment>
+
+  <!-- Breadcrumb -->
+  <nav class="cp-crumb">
+    <a href="/">Home</a>
+    <span class="cp-crumb-sep">/</span>
+    <a href="/cs2-cases/">Cases</a>
+    <span class="cp-crumb-sep">/</span>
+    <span class="cp-crumb-cur">{caseData.name}</span>
+  </nav>
+
+  <!-- Two-column Hero -->
+  <section class="cp-hero">
+    <div class="cp-hero-img">
+      {caseData.image && (
+        <img src={caseData.image} alt={caseData.name} width="256" height="198" loading="eager" />
+      )}
+    </div>
+    <div class="cp-hero-info">
+      <h1 class="cp-hero-title">{caseData.name}</h1>
+      {caseData.description && (
+        <p class="cp-hero-desc">{caseData.description} Try your luck risk-free in the <a href="/case-simulator/" style="color:var(--accent)">Case Simulator</a>, or calculate your odds with the <a href="/case-odds-calculator/" style="color:var(--accent)">Case Odds Calculator</a>.</p>
+      )}
+      <div class="cp-hero-stats">
+        <div class="cp-stat">
+          <span class="cp-stat-val">${caseData.keyPrice}</span>
+          <span class="cp-stat-label">Key Price</span>
+        </div>
+        <div class="cp-stat">
+          <span class="cp-stat-val">{caseData.skins.length}</span>
+          <span class="cp-stat-label">Skins</span>
+        </div>
+        <div class="cp-stat">
+          <span class="cp-stat-val">{caseData.releaseDate}</span>
+          <span class="cp-stat-label">Released</span>
+        </div>
+        <div class="cp-stat">
+          <span class="cp-stat-val">{caseData.type === 'weapon' ? 'Weapon' : 'Special'}</span>
+          <span class="cp-stat-label">Type</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Drop Odds: Horizontal Bar Chart -->
+  <section class="cp-section">
+    <h2 class="cp-heading">Drop Rates</h2>
+    <p class="cp-note">
+      See how these odds play out in the <a href="/case-simulator/">Case Simulator</a> or calculate costs with the <a href="/case-odds-calculator/">Case Odds Calculator</a>.
+    </p>
+    <div class="cp-odds">
+      {oddsData.map((odd) => (
+        <div class="cp-odds-row">
+          <span class="cp-odds-tier">
+            <span class="cp-odds-dot" style={`background:${odd.color}`}></span>
+            {odd.tier}
+          </span>
+          <div class="cp-odds-bar-wrap">
+            <div class="cp-odds-bar" style={`width:${Math.max(odd.pct, 0.5)}%;background:${odd.color}`}></div>
+          </div>
+          <span class="cp-odds-pct">{odd.probability}</span>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <!-- Expected Value -->
+  <section class="cp-section">
+    <h2 class="cp-heading">Expected Value</h2>
+    <div class="cp-ev-box">
+      <div class="cp-ev-item">
+        <span class="cp-ev-label">Avg. Loss Per Opening</span>
+        <span class="cp-ev-val cp-ev-neg">${caseROI.toFixed(2)}</span>
+      </div>
+      <div class="cp-ev-item">
+        <span class="cp-ev-label">Break-Even Item Value</span>
+        <span class="cp-ev-val">${(caseData.keyPrice * 2).toFixed(2)}</span>
+      </div>
+      <p class="cp-ev-tip">For better returns, try the <a href="/tradeup-calculator/">Trade-Up Calculator</a>.</p>
+    </div>
+  </section>
+
+  <!-- Contents Table -->
+  <section class="cp-section">
+    <h2 class="cp-heading">Contains ({caseData.skins.length} skins)</h2>
+
+    <table class="cp-skins-table">
+      <thead>
+        <tr>
+          <th class="cp-skt-rarity"></th>
+          <th class="cp-skt-weapon">Weapon</th>
+          <th class="cp-skt-name">Skin</th>
+          <th class="cp-skt-tier">Rarity</th>
+          <th class="cp-skt-action"></th>
+        </tr>
+      </thead>
+      <tbody>
+        {Object.keys(skinsByRarity)
+          .sort((a, b) => {
+            const order = ['covert', 'classified', 'restricted', 'mil-spec', 'special'];
+            return order.indexOf(a) - order.indexOf(b);
+          })
+          .flatMap((rarity) =>
+            skinsByRarity[rarity].map((skin) => (
+              <tr class="cp-skin-tr">
+                <td class="cp-skt-rarity">
+                  <span class="cp-rarity-bar" style={`background:${rarityColors[rarity]}`}></span>
+                </td>
+                <td class="cp-skt-weapon">{skin.weapon}</td>
+                <td class="cp-skt-name">
+                  <a href={`/cs2-skin/${skin.name.toLowerCase().replace(/ /g, '-')}/`} class="cp-skin-link">
+                    {skin.name}
+                  </a>
+                </td>
+                <td class="cp-skt-tier">
+                  <span class="cp-tier-badge" style={`color:${rarityColors[rarity]}`}>{rarityLabels[rarity]}</span>
+                </td>
+                <td class="cp-skt-action">
+                  <a href={`/cs2-skin/${skin.name.toLowerCase().replace(/ /g, '-')}/`} class="cp-skin-arrow">&rarr;</a>
+                </td>
+              </tr>
+            ))
+          )}
+      </tbody>
+    </table>
+  </section>
+
+  <!-- Notes -->
+  <section class="cp-section">
+    <h2 class="cp-heading">Notes</h2>
+    <ol class="cp-notes">
+      <li>Case opening has negative expected value on average -- try the <a href="/case-simulator/">Case Simulator</a> risk-free first.</li>
+      <li>Invest in skins you enjoy rather than opening for profit.</li>
+      <li>Consider float quality and condition when valuing items. Use the <a href="/float-checker/">Float Checker</a> to analyse wear values.</li>
+      <li>StatTrak and Souvenir variants are rarer and more valuable.</li>
+      <li>Check live prices with the <a href="/price-tracker/">Price Tracker</a> and <a href="/market-trends/">Market Trends</a> before buying.</li>
+      <li>Keep keys on secure accounts and enable Steam Guard.</li>
+      <li>Use the <a href="/skin-compare/">Skin Compare</a> tool to compare similar skins before choosing.</li>
+      <li>Use the <a href="/tradeup-calculator/">Trade-Up Calculator</a> for better ROI than opening cases.</li>
+      <li>Check your current inventory value with the <a href="/inventory-lookup/">Inventory Lookup</a>.</li>
+    </ol>
+  </section>
+
+  <!-- Related Cases: Horizontal Scroll -->
+  {relatedCases.length > 0 && (
+    <section class="cp-section">
+      <h2 class="cp-heading">Related Cases</h2>
+      <div class="cp-related-strip">
+        {relatedCases.map((rc) => (
+          <a href={`/cs2-cases/${rc.id}/`} class="cp-related-item">
+            {rc.image && (
+              <img src={rc.image} alt={rc.name} loading="lazy" width="80" height="62" />
+            )}
+            <span class="cp-related-name">{rc.name}</span>
+            <span class="cp-related-year">{rc.year}</span>
+          </a>
+        ))}
+      </div>
+    </section>
+  )}
+
+  <!-- FAQ Accordion -->
+  <section class="cp-section">
+    <h2 class="cp-heading">FAQ</h2>
+    <details class="cp-faq-item">
+      <summary class="cp-faq-q">Is opening the {caseData.name} profitable?</summary>
+      <p class="cp-faq-a">Statistically, opening this case loses about ${Math.abs(caseROI).toFixed(2)} per opening on average. Try the <a href="/case-simulator/">Case Simulator</a> to see outcomes risk-free.</p>
+    </details>
+    <details class="cp-faq-item">
+      <summary class="cp-faq-q">What is the rarest skin in the {caseData.name}?</summary>
+      <p class="cp-faq-a">Covert-tier skins have a 0.64% drop rate. Special (knife/glove) items are even rarer at 0.26%. Check each skin's details for current market prices.</p>
+    </details>
+    <details class="cp-faq-item">
+      <summary class="cp-faq-q">Where can I buy the {caseData.name}?</summary>
+      <p class="cp-faq-a">This case can be purchased from the Steam Community Market or obtained as an in-game drop. Third-party marketplaces may also list it. Use the <a href="/price-tracker/">Price Tracker</a> for live prices.</p>
+    </details>
+  </section>
+
+  <!-- Internal Links -->
+  <div class="cp-links">
+    <a href="/cs2-cases/">All Cases</a>
+    <a href="/case-simulator/">Case Simulator</a>
+    <a href="/case-odds-calculator/">Case Odds Calculator</a>
+    <a href="/cs2-skins/">Skin Database</a>
+    <a href="/cs2-collections/">Collections</a>
+    <a href="/skin-compare/">Skin Compare</a>
+    <a href="/price-tracker/">Price Tracker</a>
+    <a href="/market-trends/">Market Trends</a>
+    <a href="/float-checker/">Float Checker</a>
+    <a href="/tradeup-calculator/">Trade-Up Calculator</a>
+    <a href="/inventory-lookup/">Inventory Lookup</a>
+    <a href="/loadout-builder/">Loadout Builder</a>
+    <a href="/cs2-weapons/">Weapon Database</a>
+    <a href="/cs2-stickers/">Stickers</a>
+    <a href="/cs2-agents/">Agents</a>
+    <a href="/cs2-guides/skins-investing-guide/">Investing Guide</a>
+    <a href="/cs2-guides/trading-guide/">Trading Guide</a>
+    <a href="/cs2-guides/float-guide/">Float Guide</a>
+    <a href="/cs2-tools/">All Tools</a>
+  </div>
+
+  <ExploreMore context="skins" />
+
+  <style is:inline>
+    :root {
+      --accent: #2ecc71;
+      --bg2: #13141a;
+      --bg3: #1a1c24;
+      --border: #242630;
+    }
+
+    /* ---- BREADCRUMB ---- */
+    .cp-crumb {
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+      margin-bottom: 1.25rem;
+      font-size: 0.82rem;
+    }
+
+    .cp-crumb a {
+      color: var(--text2);
+      text-decoration: none;
+    }
+
+    .cp-crumb a:hover {
+      color: var(--accent);
+    }
+
+    .cp-crumb-sep {
+      color: var(--border);
+    }
+
+    .cp-crumb-cur {
+      color: var(--text);
+      font-weight: 600;
+    }
+
+    /* ---- TWO-COLUMN HERO ---- */
+    .cp-hero {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 2rem;
+      align-items: start;
+      margin-bottom: 2.5rem;
+      padding: 1.25rem;
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+    }
+
+    .cp-hero-img {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .cp-hero-img img {
+      max-height: 160px;
+      width: auto;
+      object-fit: contain;
+      display: block;
+    }
+
+    .cp-hero-info {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .cp-hero-title {
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: var(--text);
+      margin: 0;
+      letter-spacing: -0.02em;
+    }
+
+    .cp-hero-desc {
+      font-size: 0.9rem;
+      color: var(--text2);
+      margin: 0;
+      line-height: 1.55;
+    }
+
+    .cp-hero-stats {
+      display: flex;
+      gap: 1.25rem;
+      flex-wrap: wrap;
+      margin-top: 0.5rem;
+    }
+
+    .cp-stat {
+      display: flex;
+      flex-direction: column;
+      gap: 0.15rem;
+    }
+
+    .cp-stat-val {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--accent);
+    }
+
+    .cp-stat-label {
+      font-size: 0.7rem;
+      color: var(--text2);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    /* ---- SECTIONS ---- */
+    .cp-section {
+      margin-bottom: 2.25rem;
+    }
+
+    .cp-heading {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--text);
+      margin: 0 0 0.75rem;
+      padding-left: 0.85rem;
+      border-left: 3px solid var(--accent);
+    }
+
+    .cp-note {
+      font-size: 0.85rem;
+      color: var(--text2);
+      margin: 0 0 1rem;
+      line-height: 1.55;
+    }
+
+    .cp-note a {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    .cp-note a:hover {
+      text-decoration: underline;
+    }
+
+    /* ---- ODDS BAR CHART ---- */
+    .cp-odds {
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+    }
+
+    .cp-odds-row {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .cp-odds-tier {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      width: 100px;
+      flex-shrink: 0;
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: var(--text);
+    }
+
+    .cp-odds-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 2px;
+      flex-shrink: 0;
+    }
+
+    .cp-odds-bar-wrap {
+      flex: 1;
+      height: 18px;
+      background: var(--bg3);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    .cp-odds-bar {
+      height: 100%;
+      border-radius: 4px;
+      min-width: 2px;
+      transition: width 0.3s;
+    }
+
+    .cp-odds-pct {
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--text2);
+      width: 55px;
+      text-align: right;
+      flex-shrink: 0;
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* ---- EXPECTED VALUE ---- */
+    .cp-ev-box {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 1rem 1.25rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+      align-items: flex-start;
+    }
+
+    .cp-ev-item {
+      display: flex;
+      flex-direction: column;
+      gap: 0.2rem;
+    }
+
+    .cp-ev-label {
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--text2);
+    }
+
+    .cp-ev-val {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .cp-ev-neg {
+      color: #ef5350;
+    }
+
+    .cp-ev-tip {
+      font-size: 0.85rem;
+      color: var(--text2);
+      margin: 0;
+      flex-basis: 100%;
+      line-height: 1.5;
+    }
+
+    .cp-ev-tip a {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    .cp-ev-tip a:hover {
+      text-decoration: underline;
+    }
+
+    /* ---- SKINS TABLE ---- */
+    .cp-skins-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .cp-skins-table thead th {
+      text-align: left;
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--text2);
+      padding: 0.5rem 0.75rem;
+      border-bottom: 1px solid var(--border);
+      font-weight: 500;
+    }
+
+    .cp-skt-rarity {
+      width: 6px;
+      padding-right: 0 !important;
+    }
+
+    .cp-skt-action {
+      width: 32px;
+    }
+
+    .cp-skin-tr {
+      border-bottom: 1px solid var(--border);
+      border-left: 3px solid transparent;
+      transition: background 0.15s, border-left-color 0.15s;
+    }
+
+    .cp-skin-tr:hover {
+      background: var(--bg3);
+      border-left-color: var(--accent);
+    }
+
+    .cp-skin-tr td {
+      padding: 0.5rem 0.75rem;
+      vertical-align: middle;
+    }
+
+    .cp-rarity-bar {
+      display: block;
+      width: 4px;
+      height: 24px;
+      border-radius: 2px;
+    }
+
+    .cp-skt-weapon {
+      font-size: 0.78rem;
+      color: var(--text2);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      white-space: nowrap;
+    }
+
+    .cp-skin-link {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--text);
+      text-decoration: none;
+    }
+
+    .cp-skin-link:hover {
+      color: var(--accent);
+    }
+
+    .cp-tier-badge {
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+
+    .cp-skin-arrow {
+      color: var(--text2);
+      text-decoration: none;
+      font-size: 0.9rem;
+      opacity: 0;
+      transition: opacity 0.15s;
+    }
+
+    .cp-skin-tr:hover .cp-skin-arrow {
+      opacity: 1;
+      color: var(--accent);
+    }
+
+    /* ---- NOTES ---- */
+    .cp-notes {
+      margin: 0;
+      padding-left: 1.25rem;
+      list-style: decimal;
+    }
+
+    .cp-notes li {
+      font-size: 0.88rem;
+      color: var(--text2);
+      line-height: 1.55;
+      padding: 0.3rem 0;
+    }
+
+    .cp-notes a {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    .cp-notes a:hover {
+      text-decoration: underline;
+    }
+
+    /* ---- RELATED CASES STRIP ---- */
+    .cp-related-strip {
+      display: flex;
+      gap: 0.75rem;
+      overflow-x: auto;
+      padding-bottom: 0.5rem;
+      scrollbar-width: thin;
+      scrollbar-color: var(--bg3) transparent;
+    }
+
+    .cp-related-strip::-webkit-scrollbar {
+      height: 5px;
+    }
+
+    .cp-related-strip::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    .cp-related-strip::-webkit-scrollbar-thumb {
+      background: var(--bg3);
+      border-radius: 3px;
+    }
+
+    .cp-related-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.35rem;
+      min-width: 110px;
+      padding: 0.75rem;
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      text-decoration: none;
+      color: inherit;
+      flex-shrink: 0;
+      border-left: 3px solid transparent;
+      transition: background 0.15s, border-left-color 0.15s;
+    }
+
+    .cp-related-item:hover {
+      background: var(--bg3);
+      border-left-color: var(--accent);
+    }
+
+    .cp-related-item img {
+      width: 80px;
+      height: auto;
+      object-fit: contain;
+    }
+
+    .cp-related-name {
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--text);
+      text-align: center;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 100%;
+    }
+
+    .cp-related-year {
+      font-size: 0.68rem;
+      color: var(--text2);
+    }
+
+    /* ---- FAQ ACCORDION ---- */
+    .cp-faq-item {
+      border-bottom: 1px solid var(--border);
+    }
+
+    .cp-faq-item[open] {
+      padding-bottom: 0.75rem;
+    }
+
+    .cp-faq-q {
+      font-size: 0.92rem;
+      font-weight: 600;
+      color: var(--text);
+      padding: 0.75rem 0;
+      cursor: pointer;
+      list-style: none;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: color 0.15s;
+    }
+
+    .cp-faq-q::-webkit-details-marker {
+      display: none;
+    }
+
+    .cp-faq-q::before {
+      content: '+';
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 20px;
+      height: 20px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--accent);
+      flex-shrink: 0;
+    }
+
+    .cp-faq-item[open] .cp-faq-q::before {
+      content: '-';
+    }
+
+    .cp-faq-q:hover {
+      color: var(--accent);
+    }
+
+    .cp-faq-a {
+      font-size: 0.88rem;
+      color: var(--text2);
+      line-height: 1.6;
+      margin: 0;
+      padding-left: 1.75rem;
+    }
+
+    .cp-faq-a a {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    .cp-faq-a a:hover {
+      text-decoration: underline;
+    }
+
+    /* ---- INTERNAL LINKS ---- */
+    .cp-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+      margin: 1.5rem 0;
+    }
+
+    .cp-links a {
+      font-size: 0.8rem;
+      color: var(--text2);
+      text-decoration: none;
+      padding: 0.3rem 0.6rem;
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      border-left: 3px solid transparent;
+      transition: border-left-color 0.15s, color 0.15s;
+    }
+
+    .cp-links a:hover {
+      border-left-color: var(--accent);
+      color: var(--accent);
+    }
+
+    /* ---- RESPONSIVE ---- */
+    @media (max-width: 768px) {
+      .cp-hero {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+      }
+
+      .cp-hero-img {
+        justify-content: flex-start;
+      }
+
+      .cp-hero-title {
+        font-size: 1.3rem;
+      }
+
+      .cp-hero-stats {
+        gap: 0.75rem;
+      }
+
+      .cp-odds-tier {
+        width: 80px;
+        font-size: 0.78rem;
+      }
+
+      .cp-odds-pct {
+        width: 50px;
+        font-size: 0.78rem;
+      }
+
+      .cp-skt-tier {
+        display: none;
+      }
+
+      .cp-skin-arrow {
+        opacity: 0.5;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .cp-skt-weapon {
+        display: none;
+      }
+    }
+  </style>
+</Base>

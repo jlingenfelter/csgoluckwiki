@@ -2,171 +2,73 @@
 import Base from '../layouts/Base.astro';
 ---
 
-<Base title="Page Not Found — CSDB.gg" description="The page you're looking for doesn't exist. Browse CS2 skins, weapons, tools, and guides on CSDB.gg.">
+<Base title="Page Not Found — CSGOLuck Wiki" description="The page you're looking for doesn't exist. Browse CS2 skins, weapons, tools, and guides on CSGOLuck Wiki.">
 
-<div class="not-found">
-  <h1>404</h1>
-  <p class="nf-sub">Page not found</p>
-  <p>The page you're looking for doesn't exist or has been moved.</p>
+<section class="e4-hero">
+  <h1 class="e4-code">404</h1>
+  <p class="e4-sub">Page not found</p>
+  <p class="e4-desc">The page you're looking for doesn't exist or has been moved.</p>
 
-  <div class="nf-links">
-    <a href="/" class="nf-btn nf-primary">Back to Home</a>
-    <a href="/skins/" class="nf-btn">Browse Skins</a>
-    <a href="/weapons/" class="nf-btn">Weapons</a>
-    <a href="/tools/" class="nf-btn">Tools</a>
+  <div class="e4-actions">
+    <a href="/" class="e4-btn e4-btn-primary">Back to Home</a>
+    <a href="/cs2-skins/" class="e4-btn">Browse Skins</a>
+    <a href="/cs2-weapons/" class="e4-btn">Weapons</a>
+    <a href="/cs2-tools/" class="e4-btn">Tools</a>
   </div>
+</section>
 
-  <div class="nf-search">
-    <p>Or try searching:</p>
-    <form action="/search/" method="get">
-      <input type="search" name="q" placeholder="Search skins, weapons, tools..." autocomplete="off" />
-      <button type="submit">Search</button>
-    </form>
-  </div>
-
-  <div class="nf-popular">
-    <h2>Popular Pages</h2>
-    <div class="nf-grid">
-      <a href="/skins/">All Skins</a>
-      <a href="/pro-players/">Pro Settings</a>
-      <a href="/damage-calculator/">Damage Calculator</a>
-      <a href="/sensitivity-converter/">Sensitivity Converter</a>
-      <a href="/crosshair-generator/">Crosshair Generator</a>
-      <a href="/maps/">Maps & Callouts</a>
-      <a href="/cases/">Cases</a>
-      <a href="/guides/">Guides</a>
-    </div>
-  </div>
+<div class="e4-search">
+  <p class="e4-search-label">Or try searching:</p>
+  <form action="/search/" method="get" class="e4-search-form">
+    <input type="search" name="q" placeholder="Search skins, weapons, tools..." autocomplete="off" class="e4-search-input" />
+    <button type="submit" class="e4-search-btn">Search</button>
+  </form>
 </div>
 
+<section class="e4-popular">
+  <h2 class="e4-popular-heading">Popular Pages</h2>
+  <div class="e4-popular-list">
+    <a href="/cs2-skins/" class="e4-popular-row">All Skins</a>
+    <a href="/pro-players/" class="e4-popular-row">Pro Settings</a>
+    <a href="/damage-calculator/" class="e4-popular-row">Damage Calculator</a>
+    <a href="/sensitivity-converter/" class="e4-popular-row">Sensitivity Converter</a>
+    <a href="/crosshair-generator/" class="e4-popular-row">Crosshair Generator</a>
+    <a href="/cs2-maps/" class="e4-popular-row">Maps & Callouts</a>
+    <a href="/cs2-cases/" class="e4-popular-row">Cases</a>
+    <a href="/cs2-guides/" class="e4-popular-row">Guides</a>
+  </div>
+</section>
+
 <style>
-.not-found {
-  text-align: center;
-  padding: 3rem 1rem;
-  max-width: 600px;
-  margin: 0 auto;
-}
+.e4-hero{background:var(--bg2);border:1px solid var(--border);border-radius:4px;padding:2.5rem 2rem;margin-bottom:1.5rem}
+.e4-code{font-family:'Montserrat',sans-serif;font-size:5rem;font-weight:900;color:var(--accent);margin:0 0 .25rem;line-height:1}
+.e4-sub{font-family:'Montserrat',sans-serif;font-size:1.3rem;font-weight:700;color:var(--text);margin:0 0 .5rem}
+.e4-desc{color:var(--text2);font-size:.95rem;margin:0 0 1.5rem}
+.e4-actions{display:flex;gap:.65rem;flex-wrap:wrap}
+.e4-btn{padding:.55rem 1.1rem;border-radius:4px;font-weight:700;font-size:.88rem;text-decoration:none;border:1px solid var(--border);color:var(--text2);transition:border-color .15s,color .15s}
+.e4-btn:hover{border-color:var(--accent);color:var(--accent)}
+.e4-btn-primary{background:var(--accent);color:#000;border-color:var(--accent)}
+.e4-btn-primary:hover{opacity:.85;color:#000}
 
-.not-found h1 {
-  font-size: 6rem;
-  font-weight: 900;
-  background: linear-gradient(135deg, var(--accent), #00d4ff);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  margin-bottom: 0;
-  line-height: 1;
-}
+.e4-search{margin-bottom:1.5rem}
+.e4-search-label{font-size:.9rem;color:var(--text2);margin:0 0 .5rem}
+.e4-search-form{display:flex;max-width:420px}
+.e4-search-input{flex:1;background:var(--bg2);border:1px solid var(--border);border-right:none;border-radius:4px 0 0 4px;padding:.55rem .85rem;color:var(--text);font-size:.88rem;font-family:'Montserrat',sans-serif;outline:none}
+.e4-search-input:focus{border-color:var(--accent)}
+.e4-search-btn{background:var(--accent);color:#000;border:none;padding:.55rem 1.1rem;border-radius:0 4px 4px 0;font-weight:700;cursor:pointer;font-size:.88rem;font-family:'Montserrat',sans-serif}
+.e4-search-btn:hover{opacity:.85}
 
-.nf-sub {
-  font-size: 1.4rem;
-  font-weight: 700;
-  color: var(--text);
-  margin-bottom: 0.5rem;
-}
+.e4-popular{margin-bottom:2rem}
+.e4-popular-heading{font-family:'Montserrat',sans-serif;font-size:1.1rem;font-weight:700;color:var(--text);margin:0 0 .65rem}
+.e4-popular-list{display:flex;flex-direction:column;gap:2px}
+.e4-popular-row{display:block;padding:.5rem .85rem;background:var(--bg2);border:1px solid var(--border);border-left:3px solid transparent;border-radius:4px;font-size:.88rem;color:var(--text2);text-decoration:none;font-weight:600;transition:border-color .15s,background .15s,color .15s}
+.e4-popular-row:hover{border-left-color:var(--accent);background:var(--bg3);color:var(--text)}
 
-.nf-links {
-  display: flex;
-  gap: 0.75rem;
-  justify-content: center;
-  flex-wrap: wrap;
-  margin: 2rem 0;
-}
-
-.nf-btn {
-  padding: 0.6rem 1.2rem;
-  border-radius: 8px;
-  font-weight: 700;
-  font-size: 0.9rem;
-  text-decoration: none;
-  border: 2px solid var(--border);
-  color: var(--text2);
-  transition: all 0.2s;
-}
-
-.nf-btn:hover {
-  border-color: var(--accent);
-  color: var(--accent);
-}
-
-.nf-primary {
-  background: var(--accent);
-  color: #000;
-  border-color: var(--accent);
-}
-
-.nf-primary:hover {
-  opacity: 0.9;
-  color: #000;
-}
-
-.nf-search {
-  margin: 2rem 0;
-}
-
-.nf-search form {
-  display: flex;
-  max-width: 400px;
-  margin: 0.75rem auto 0;
-}
-
-.nf-search input {
-  flex: 1;
-  background: var(--bg2);
-  border: 1px solid var(--border);
-  border-right: none;
-  border-radius: 8px 0 0 8px;
-  padding: 0.6rem 1rem;
-  color: var(--text);
-  font-size: 0.9rem;
-  outline: none;
-}
-
-.nf-search input:focus {
-  border-color: var(--accent);
-}
-
-.nf-search button {
-  background: var(--accent);
-  color: #000;
-  border: none;
-  padding: 0.6rem 1.2rem;
-  border-radius: 0 8px 8px 0;
-  font-weight: 700;
-  cursor: pointer;
-  font-size: 0.9rem;
-}
-
-.nf-popular {
-  margin-top: 3rem;
-}
-
-.nf-popular h2 {
-  font-size: 1.1rem;
-  margin-bottom: 1rem;
-}
-
-.nf-grid {
-  display: flex;
-  gap: 0.5rem;
-  flex-wrap: wrap;
-  justify-content: center;
-}
-
-.nf-grid a {
-  padding: 0.4rem 0.8rem;
-  background: var(--bg2);
-  border: 1px solid var(--border);
-  border-radius: 6px;
-  font-size: 0.85rem;
-  color: var(--text2);
-  text-decoration: none;
-  transition: all 0.2s;
-}
-
-.nf-grid a:hover {
-  border-color: var(--accent);
-  color: var(--accent);
+@media(max-width:768px){
+  .e4-code{font-size:3.5rem}
+  .e4-sub{font-size:1.1rem}
+  .e4-actions{flex-direction:column}
+  .e4-btn{text-align:center}
 }
 </style>
 </Base>
