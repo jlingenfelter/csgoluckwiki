@@ -653,9 +653,11 @@ const listingDesc = (skin.listingCount ?? 0) > 10000 ? 'widely available with hi
         </div>
         {skin.prices.map((wearData, wearIdx) => {
           const cl = csgoluckPrices[wearIdx];
-          const providers = wearData.providers
-            ? Object.entries(wearData.providers).filter(([k, v]) => v > 0 && !BLOCKED_PROVIDERS.has(k)).sort((a, b) => a[1] - b[1])
-            : [];
+          const steamPrice = wearData.providers?.steam;
+          const savingsPct = (cl?.price !== null && steamPrice && steamPrice > 0 && cl.price < steamPrice)
+            ? Math.round(((steamPrice - cl.price) / steamPrice) * 100)
+            : null;
+          const steamMp = getMarketplace('steam');
           return (
             <div class={`wi-market-group ${wearIdx === 0 ? '' : 'hidden'}`} data-mp-row={wearIdx}>
               {/* CSGOLuck — always first */}
@@ -676,6 +678,9 @@ const listingDesc = (skin.listingCount ?? 0) > 10000 ? 'widely available with hi
                 <div class="wi-market-right">
                   {cl?.price !== null ? (
                     <>
+                      {savingsPct !== null && savingsPct > 0 && (
+                        <span class="wi-savings-badge">-{savingsPct}%</span>
+                      )}
                       <span class="wi-market-amount wi-csgoluck-price">${cl.price.toFixed(2)}</span>
                       <a href="/go/" rel="nofollow" class="wi-csgoluck-buy">Buy</a>
                     </>
@@ -684,25 +689,22 @@ const listingDesc = (skin.listingCount ?? 0) > 10000 ? 'widely available with hi
                   )}
                 </div>
               </div>
-              {/* All other marketplaces sorted by price */}
-              {providers.map(([key, price]) => {
-                const mp = getMarketplace(key);
-                return (
-                  <div class="wi-market-row">
-                    <div class="wi-market-left">
-                      <span class="wi-market-icon" style={`background:${mp.color}`}>
-                        {mp.domain ? <img src={`https://www.google.com/s2/favicons?domain=${mp.domain}&sz=64`} alt={mp.name} loading="lazy" /> : mp.icon}
-                      </span>
-                      <span class="wi-market-name">{mp.name}</span>
-                    </div>
-                    <div class="wi-market-right">
-                      <span class="wi-market-amount">${price.toFixed(2)}</span>
-                    </div>
+              {/* Steam Market — reference price */}
+              {steamPrice && steamPrice > 0 && (
+                <div class="wi-market-row wi-steam-ref">
+                  <div class="wi-market-left">
+                    <span class="wi-market-icon" style={`background:${steamMp.color}`}>
+                      <img src={`https://www.google.com/s2/favicons?domain=${steamMp.domain}&sz=64`} alt="Steam" loading="lazy" />
+                    </span>
+                    <span class="wi-market-name">Steam Market</span>
                   </div>
-                );
-              })}
-              {providers.length === 0 && (
-                <p class="wi-nodata">No third-party price data for this condition</p>
+                  <div class="wi-market-right">
+                    <span class="wi-market-amount wi-steam-price">${steamPrice.toFixed(2)}</span>
+                  </div>
+                </div>
+              )}
+              {!cl?.price && (!steamPrice || steamPrice <= 0) && (
+                <p class="wi-nodata">No pricing data for this condition</p>
               )}
             </div>
           );
@@ -1406,6 +1408,13 @@ document.addEventListener('DOMContentLoaded', () => {
 .wi-csgoluck-price{font-size:1rem;font-weight:900;color:#2ecc71}
 .wi-csgoluck-buy{display:inline-block;padding:.35rem .85rem;background:#2ecc71;color:#fff;border-radius:4px;font-size:.75rem;font-weight:700;text-decoration:none;white-space:nowrap;transition:background .15s}
 .wi-csgoluck-buy:hover{background:#27ae60;color:#fff}
+
+/* ── Savings badge ─────────────────────────────────────── */
+.wi-savings-badge{display:inline-block;padding:.15rem .45rem;background:#2ecc71;color:#fff;font-size:.7rem;font-weight:800;border-radius:3px;white-space:nowrap;letter-spacing:.02em}
+
+/* ── Steam reference row ───────────────────────────────── */
+.wi-steam-ref{background:rgba(255,255,255,.02);border-bottom:1px solid rgba(255,255,255,.04)}
+.wi-steam-price{color:var(--text2) !important;font-weight:600 !important;text-decoration:line-through;font-size:.85rem !important}
 
 .wi-nodata{color:var(--text2);font-size:.85rem;padding:1rem;text-align:center;margin:0}
 
