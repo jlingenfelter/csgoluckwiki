@@ -1,0 +1,516 @@
+---
+import Base from '../../layouts/Base.astro';
+import ExploreMore from '../../components/ExploreMore.astro';
+import { ALL_AGENTS, getTierColor } from '../../lib/agents';
+import { breadcrumbSchema, faqSchema } from '../../lib/weapons';
+
+export async function getStaticPaths() {
+  return ALL_AGENTS.map(agent => ({
+    params: { slug: agent.slug },
+  }));
+}
+
+const { slug } = Astro.params;
+const agent = ALL_AGENTS.find(a => a.slug === slug);
+
+if (!agent) {
+  return Astro.redirect('/cs2-agents/');
+}
+
+const sideLabel = agent.side === 'CT' ? 'Counter-Terrorist' : 'Terrorist';
+const sideBadgeColor = agent.side === 'CT' ? '#4a8db7' : '#c44';
+const tierColor = getTierColor(agent.tier);
+const marketHashName = `${agent.name} | ${agent.faction}`;
+
+// Related agents from the same faction
+const relatedAgents = ALL_AGENTS
+  .filter(a => a.faction === agent.faction && a.slug !== agent.slug)
+  .slice(0, 8);
+
+// SEO
+const pageTitle = `${agent.name} (${agent.faction}) — CS2 Agent Details | CSGOLuck Wiki`;
+const pageDesc = `${agent.name} is a ${agent.tier}-tier ${sideLabel} agent from the ${agent.faction} faction, introduced in Operation ${agent.operation}. View details, related agents, and more.`;
+
+const breadcrumbs = [
+  { name: 'Home', url: '/' },
+  { name: 'Agents', url: '/cs2-agents/' },
+  { name: agent.name, url: `/cs2-agent/${agent.slug}/` },
+];
+
+const faqs = [
+  {
+    question: `What tier is the ${agent.name} agent in CS2?`,
+    answer: `${agent.name} is classified as an ${agent.tier}-tier agent. ${agent.tier === 'Elite' ? 'Elite agents are the rarest and most sought-after operatives in CS2, featuring unique character designs and commanding higher market prices.' : agent.tier === 'Superior' ? 'Superior agents are high-ranking operatives with premium visual designs, sitting just below Elite tier in rarity.' : agent.tier === 'Exceptional' ? 'Exceptional agents are battle-tested specialists with distinctive visual flair, representing a mid-range rarity tier.' : 'Distinguished agents are entry-level operatives that can be obtained through regular operations.'}`,
+  },
+  {
+    question: `Which side does ${agent.name} belong to in CS2?`,
+    answer: `${agent.name} is a ${sideLabel} agent. This means you can only equip this operative when playing on the ${agent.side === 'CT' ? 'Counter-Terrorist' : 'Terrorist'} side. You can set different agents for each faction from the Agents section in the CS2 main menu.`,
+  },
+  {
+    question: `How do you get the ${agent.name} agent?`,
+    answer: `The ${agent.name} agent was originally available through Operation ${agent.operation}. Since the operation has ended, this agent can now be acquired through the Steam Community Market or third-party marketplaces like Buff163 and Skinport. Prices vary based on supply and demand.`,
+  },
+  {
+    question: `What faction is ${agent.name} from?`,
+    answer: `${agent.name} belongs to the ${agent.faction} faction. ${agent.side === 'CT' ? 'This is a Counter-Terrorist faction featuring specialized military and law enforcement operatives.' : 'This is a Terrorist faction consisting of various insurgent and criminal operatives.'} Other agents from the same faction may be available at different tier levels.`,
+  },
+];
+---
+
+<Base title={pageTitle} description={pageDesc} currentNav="/cs2-skins/">
+  <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema(breadcrumbs))}></script>
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema(faqs))}></script>
+
+  <nav class="ad-crumbs">
+    <a href="/">Home</a><span class="ad-sep">/</span><a href="/cs2-agents/">Agents</a><span class="ad-sep">/</span><span>{agent.name}</span>
+  </nav>
+
+  <!-- Hero: two-column layout -->
+  <div class="ad-hero">
+    <div class="ad-hero-left">
+      <div class="ad-hero-img-wrap" style={`background:linear-gradient(135deg, ${tierColor}22, ${tierColor}08)`}>
+        {agent.image ? (
+          <img src={agent.image} alt={agent.name} class="ad-hero-agent-img" loading="eager" />
+        ) : (
+          <span class="ad-hero-placeholder">{agent.side}</span>
+        )}
+      </div>
+    </div>
+    <div class="ad-hero-right">
+      <h1 class="ad-hero-title">{agent.name}</h1>
+      <div class="ad-hero-meta">
+        <span class="ad-badge ad-badge-faction">{agent.faction}</span>
+        <span class="ad-badge ad-badge-op">{agent.operation}</span>
+        <span class="ad-badge" style={`background:${tierColor};color:#000`}>{agent.tier}</span>
+        <span class="ad-badge" style={`background:${sideBadgeColor};color:#fff`}>{agent.side === 'CT' ? 'Counter-Terrorist' : 'Terrorist'}</span>
+      </div>
+      <p class="ad-hero-desc">{agent.name} is a {agent.tier.toLowerCase()}-tier {sideLabel.toLowerCase()} operative from the {agent.faction} faction, introduced during Operation {agent.operation}. Browse matching <a href="/cs2-skins/" style="color:var(--accent)">weapon skins</a> or explore the full <a href="/cs2-agents/" style="color:var(--accent)">agents roster</a> to find your ideal loadout.</p>
+      <div class="ad-hero-quick">
+        <span class="ad-qstat"><strong>{agent.side}</strong> side</span>
+        <span class="ad-qstat"><strong>{agent.tier}</strong> tier</span>
+        <span class="ad-qstat"><strong>{agent.operation}</strong> op</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Agent Details -->
+  <section class="ad-details">
+    <h2 class="ad-section-title">Agent Details</h2>
+    <div class="ad-details-table">
+      <div class="ad-details-head">
+        <span>Property</span>
+        <span>Value</span>
+      </div>
+      <div class="ad-details-row">
+        <span class="ad-details-key">Side</span>
+        <span class="ad-details-val">{sideLabel}</span>
+      </div>
+      <div class="ad-details-row ad-details-alt">
+        <span class="ad-details-key">Faction</span>
+        <span class="ad-details-val">{agent.faction}</span>
+      </div>
+      <div class="ad-details-row">
+        <span class="ad-details-key">Operation</span>
+        <span class="ad-details-val">{agent.operation}</span>
+      </div>
+      <div class="ad-details-row ad-details-alt">
+        <span class="ad-details-key">Tier</span>
+        <span class="ad-details-val" style={`color:${tierColor}`}>{agent.tier}</span>
+      </div>
+      <div class="ad-details-row">
+        <span class="ad-details-key">Market Hash Name</span>
+        <span class="ad-details-val">{marketHashName}</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Related Agents from same faction -->
+  {relatedAgents.length > 0 && (
+    <section class="ad-related-agents">
+      <h2 class="ad-section-title">More {agent.faction} Agents</h2>
+      <div class="ad-agent-grid">
+        {relatedAgents.map(ra => {
+          const raTierColor = getTierColor(ra.tier);
+          return (
+            <a href={`/cs2-agent/${ra.slug}/`} class="ad-agent-card">
+              <div class="ad-agent-card-img" style={`background:linear-gradient(135deg, ${raTierColor}22, ${raTierColor}08)`}>
+                <span class="ad-agent-card-tier" style={`background:${raTierColor}`}>{ra.tier}</span>
+                {ra.image ? (
+                  <img src={ra.image} alt={ra.name} class="ad-agent-card-avatar" loading="lazy" />
+                ) : (
+                  <span class="ad-agent-card-icon">{ra.side}</span>
+                )}
+              </div>
+              <div class="ad-agent-card-body">
+                <span class="ad-agent-card-name">{ra.name}</span>
+                <span class="ad-agent-card-faction">{ra.faction}</span>
+                <span class="ad-agent-card-op">{ra.operation}</span>
+              </div>
+            </a>
+          );
+        })}
+      </div>
+    </section>
+  )}
+
+  <!-- FAQ -->
+  <section class="ad-faq">
+    <h2 class="ad-section-title">Common Questions</h2>
+    {faqs.map(f => (
+      <details class="ad-faq-item">
+        <summary class="ad-faq-q">{f.question}</summary>
+        <p class="ad-faq-a">{f.answer}</p>
+      </details>
+    ))}
+  </section>
+
+  <!-- Related Links -->
+  <nav class="ad-nav">
+    <h2 class="ad-section-title">Related</h2>
+    <div class="ad-nav-links">
+      <a href="/cs2-agents/">All Agents</a>
+      <a href="/cs2-skins/">Skin Database</a>
+      <a href="/cs2-cases/">Cases & Collections</a>
+      <a href="/price-tracker/">Price Tracker</a>
+      <a href="/cs2-guides/trading-guide/">Trading Guide</a>
+      <a href="/inventory-lookup/">Inventory Lookup</a>
+      <a href="/loadout-builder/">Loadout Builder</a>
+      <a href="/float-checker/">Float Checker</a>
+      <a href="/cs2-stickers/">Sticker Database</a>
+      <a href="/market-trends/">Market Trends</a>
+    </div>
+  </nav>
+
+  <ExploreMore context="skins" />
+</Base>
+
+<style>
+  /* === Agent Detail Page (ad-) === */
+
+  /* Breadcrumbs */
+  .ad-crumbs { font-size: .8rem; color: var(--text2); margin-bottom: 1.25rem; }
+  .ad-crumbs a { color: var(--text2); text-decoration: none; }
+  .ad-crumbs a:hover { color: var(--accent); }
+  .ad-sep { margin: 0 .35rem; opacity: .4; }
+
+  /* Section titles */
+  .ad-section-title {
+    margin: 0 0 .75rem;
+    font-size: 1.05rem;
+    font-weight: 700;
+    padding-bottom: .4rem;
+    border-bottom: 2px solid var(--border);
+  }
+
+  /* Hero: two-column */
+  .ad-hero {
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    gap: 2rem;
+    margin-bottom: 2rem;
+    padding: 1.5rem;
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+  }
+  .ad-hero-left {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .ad-hero-img-wrap {
+    width: 100%;
+    aspect-ratio: 3/4;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+  .ad-hero-agent-img {
+    width: 90%;
+    height: 90%;
+    object-fit: contain;
+    filter: drop-shadow(0 4px 12px rgba(0,0,0,.4));
+  }
+  .ad-hero-placeholder {
+    font-size: 2.5rem;
+    font-weight: 900;
+    color: var(--text2);
+    opacity: .15;
+    text-transform: uppercase;
+  }
+  .ad-hero-right {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: .5rem;
+  }
+  .ad-hero-title {
+    margin: 0;
+    font-size: 1.8rem;
+    font-weight: 800;
+    line-height: 1.1;
+  }
+  .ad-hero-meta {
+    display: flex;
+    gap: .4rem;
+    flex-wrap: wrap;
+  }
+  .ad-badge {
+    display: inline-block;
+    padding: .15rem .5rem;
+    border-radius: 4px;
+    font-size: .72rem;
+    font-weight: 600;
+  }
+  .ad-badge-faction { background: var(--bg3); border: 1px solid var(--border); color: var(--accent); }
+  .ad-badge-op { background: var(--bg3); border: 1px solid var(--border); color: var(--text2); }
+  .ad-hero-desc {
+    margin: 0;
+    color: var(--text2);
+    font-size: .86rem;
+    line-height: 1.6;
+  }
+  .ad-hero-quick {
+    display: flex;
+    gap: .6rem;
+    flex-wrap: wrap;
+    margin-top: .25rem;
+  }
+  .ad-qstat {
+    font-size: .78rem;
+    color: var(--text2);
+    background: var(--bg3);
+    padding: .2rem .55rem;
+    border-radius: 4px;
+    border: 1px solid var(--border);
+  }
+  .ad-qstat strong {
+    color: var(--accent);
+    font-weight: 700;
+    margin-right: .15rem;
+  }
+
+  /* Details table */
+  .ad-details { margin-bottom: 2rem; }
+  .ad-details-table {
+    border: 1px solid var(--border);
+    border-radius: 4px;
+  }
+  .ad-details-head {
+    display: grid;
+    grid-template-columns: 180px 1fr;
+    gap: .5rem;
+    padding: .5rem 1rem;
+    background: var(--accent);
+    color: #000;
+    font-size: .72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .04em;
+    border-radius: 4px 4px 0 0;
+  }
+  .ad-details-row {
+    display: grid;
+    grid-template-columns: 180px 1fr;
+    gap: .5rem;
+    padding: .5rem 1rem;
+    align-items: center;
+    border-bottom: 1px solid var(--border);
+  }
+  .ad-details-row:last-child { border-bottom: none; }
+  .ad-details-alt { background: var(--bg2); }
+  .ad-details-key {
+    font-size: .82rem;
+    color: var(--text2);
+    font-weight: 500;
+  }
+  .ad-details-val {
+    font-size: .86rem;
+    font-weight: 700;
+    color: var(--text);
+  }
+
+  /* Related agents card grid */
+  .ad-related-agents { margin-bottom: 2rem; }
+  .ad-agent-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: .75rem;
+  }
+  .ad-agent-card {
+    display: flex;
+    flex-direction: column;
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+    text-decoration: none;
+    color: inherit;
+    transition: transform .2s, border-color .2s, box-shadow .2s;
+  }
+  .ad-agent-card:hover {
+    transform: translateY(-3px);
+    border-color: var(--accent);
+    box-shadow: 0 8px 24px rgba(0,0,0,.3);
+  }
+  .ad-agent-card-img {
+    position: relative;
+    height: 120px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+  .ad-agent-card-icon {
+    font-size: 2rem;
+    font-weight: 900;
+    color: var(--text2);
+    opacity: .12;
+  }
+  .ad-agent-card-avatar {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    padding: .25rem;
+  }
+  .ad-agent-card-tier {
+    position: absolute;
+    top: .4rem;
+    left: .4rem;
+    font-size: .55rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .04em;
+    padding: .12rem .4rem;
+    border-radius: 3px;
+    color: #000;
+    z-index: 1;
+  }
+  .ad-agent-card-body {
+    padding: .55rem .65rem;
+    display: flex;
+    flex-direction: column;
+    gap: .08rem;
+    flex: 1;
+  }
+  .ad-agent-card-name {
+    font-size: .82rem;
+    font-weight: 700;
+    color: var(--text);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .ad-agent-card-faction {
+    font-size: .65rem;
+    color: var(--accent);
+    font-weight: 600;
+  }
+  .ad-agent-card-op {
+    font-size: .6rem;
+    color: var(--text2);
+  }
+
+  /* FAQ: collapsible details */
+  .ad-faq { margin-bottom: 2rem; }
+  .ad-faq-item {
+    border-bottom: 1px solid var(--border);
+  }
+  .ad-faq-item:last-child { border-bottom: none; }
+  .ad-faq-q {
+    display: block;
+    padding: .65rem 0;
+    font-weight: 700;
+    font-size: .88rem;
+    cursor: pointer;
+    border-left: 3px solid transparent;
+    padding-left: .75rem;
+    transition: border-left-color .15s;
+    list-style: none;
+  }
+  .ad-faq-q::-webkit-details-marker { display: none; }
+  .ad-faq-q::before {
+    content: '+';
+    display: inline-block;
+    width: 1rem;
+    font-weight: 700;
+    color: var(--accent);
+    margin-right: .35rem;
+  }
+  .ad-faq-item[open] .ad-faq-q {
+    border-left-color: var(--accent);
+  }
+  .ad-faq-item[open] .ad-faq-q::before {
+    content: '\2212';
+  }
+  .ad-faq-a {
+    margin: 0 0 .75rem;
+    padding-left: calc(.75rem + 3px + 1rem + .35rem);
+    font-size: .84rem;
+    color: var(--text2);
+    line-height: 1.6;
+  }
+
+  /* Related nav links */
+  .ad-nav { margin-bottom: 2rem; }
+  .ad-nav-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .3rem;
+  }
+  .ad-nav-links a {
+    padding: .25rem .55rem;
+    font-size: .78rem;
+    color: var(--text2);
+    text-decoration: none;
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    transition: color .15s, border-color .15s;
+  }
+  .ad-nav-links a:hover {
+    color: var(--accent);
+    border-color: var(--accent);
+  }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .ad-hero {
+      grid-template-columns: 1fr;
+      gap: 1rem;
+    }
+    .ad-hero-img-wrap {
+      max-width: 200px;
+      margin: 0 auto;
+    }
+    .ad-hero-title { font-size: 1.4rem; }
+    .ad-details-head,
+    .ad-details-row {
+      grid-template-columns: 130px 1fr;
+    }
+  }
+  @media (max-width: 640px) {
+    .ad-agent-grid {
+      grid-template-columns: repeat(2, 1fr);
+      gap: .5rem;
+    }
+    .ad-agent-card-img {
+      height: 90px;
+    }
+    .ad-agent-card-body {
+      padding: .4rem .5rem;
+    }
+    .ad-agent-card-name {
+      font-size: .75rem;
+    }
+  }
+  @media (max-width: 480px) {
+    .ad-details-head,
+    .ad-details-row {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+</style>
