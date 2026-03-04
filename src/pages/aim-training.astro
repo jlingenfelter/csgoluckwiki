@@ -315,6 +315,60 @@ const faqSchemaData = faqs.map(f => ({ q: f.question, a: f.answer }));
     <p>Consistent aim training is the foundation of CS2 mastery. Whether you are just starting out or competing at the professional level, these structured routines will help you develop precision, speed, and muscle memory. Dedicate 30-90 minutes daily and you will see measurable improvement within weeks.</p>
   </section>
 
+  <!-- Build Your Routine Generator -->
+  <section class="at-builder" id="routineBuilder">
+    <h2 class="at-section-title">Build Your Routine</h2>
+    <p class="at-builder-desc">Select your skill level and available time to get a customized training routine. Optionally pick a focus area to specialize your practice.</p>
+
+    <div class="at-builder-controls">
+      <div class="at-builder-group">
+        <label class="at-builder-label">Skill Level</label>
+        <div class="at-builder-pills" id="levelPills">
+          <button class="at-pill active" data-level="beginner">Beginner</button>
+          <button class="at-pill" data-level="intermediate">Intermediate</button>
+          <button class="at-pill" data-level="advanced">Advanced</button>
+        </div>
+      </div>
+
+      <div class="at-builder-group">
+        <label class="at-builder-label">Time Available</label>
+        <div class="at-builder-pills" id="timePills">
+          <button class="at-pill" data-time="15">15 min</button>
+          <button class="at-pill active" data-time="30">30 min</button>
+          <button class="at-pill" data-time="45">45 min</button>
+          <button class="at-pill" data-time="60">60 min</button>
+        </div>
+      </div>
+
+      <div class="at-builder-group">
+        <label class="at-builder-label">Focus Area <span class="at-optional">(optional)</span></label>
+        <div class="at-builder-pills" id="focusPills">
+          <button class="at-pill" data-focus="">Any</button>
+          <button class="at-pill" data-focus="flicking">Flicking</button>
+          <button class="at-pill" data-focus="tracking">Tracking</button>
+          <button class="at-pill" data-focus="spray">Spray Control</button>
+          <button class="at-pill" data-focus="crosshair">Crosshair Placement</button>
+        </div>
+      </div>
+    </div>
+
+    <button class="at-generate-btn" id="generateBtn">Generate Routine</button>
+
+    <div class="at-routine-result" id="routineResult" style="display:none">
+      <div class="at-result-header">
+        <div class="at-result-meta">
+          <span class="at-result-total" id="resultTotal">Total: 0 min</span>
+          <span class="at-result-level" id="resultLevel">Beginner</span>
+        </div>
+        <button class="at-regenerate-btn" id="regenerateBtn">Generate New Routine</button>
+      </div>
+      <div class="at-result-timeline" id="resultTimeline">
+        <!-- Populated by JS -->
+      </div>
+      <p class="at-result-note">Find the workshop maps mentioned above on our <a href="/workshop-maps/">Workshop Maps</a> page.</p>
+    </div>
+  </section>
+
   <div class="at-routines">
     {trainingRoutines.map((routine) => (
       <section class="at-routine">
@@ -480,9 +534,217 @@ const faqSchemaData = faqs.map(f => ({ q: f.question, a: f.answer }));
   .at-faq-item[open]{border-left:3px solid var(--accent)}
   .at-faq-a{padding:0 1rem .8rem;font-size:.88rem;color:var(--text2);line-height:1.6}
 
+  /* Routine Builder */
+  .at-builder{background:var(--bg2);border:1px solid var(--border);border-radius:4px;padding:1.5rem;margin-bottom:1.5rem}
+  .at-builder-desc{color:var(--text2);font-size:.9rem;margin:0 0 1.25rem;line-height:1.6}
+  .at-builder-controls{display:flex;flex-direction:column;gap:1rem;margin-bottom:1.25rem}
+  .at-builder-group{display:flex;flex-direction:column;gap:.5rem}
+  .at-builder-label{font-weight:700;font-size:.85rem;color:var(--text);text-transform:uppercase;letter-spacing:.04em}
+  .at-optional{font-weight:400;color:var(--text2);text-transform:none;letter-spacing:0;font-size:.8rem}
+  .at-builder-pills{display:flex;gap:.4rem;flex-wrap:wrap}
+  .at-pill{background:var(--bg3);border:1px solid var(--border);color:var(--text2);padding:.4rem .8rem;border-radius:4px;font-size:.82rem;cursor:pointer;transition:all .2s;font-family:inherit;font-weight:500}
+  .at-pill:hover{border-color:var(--accent);color:var(--accent)}
+  .at-pill.active{background:var(--accent);color:#0d0e12;border-color:var(--accent);font-weight:700}
+
+  .at-generate-btn,.at-regenerate-btn{background:var(--accent);color:#0d0e12;border:none;padding:.6rem 1.5rem;border-radius:4px;font-size:.88rem;font-weight:700;cursor:pointer;font-family:inherit;transition:opacity .2s}
+  .at-generate-btn:hover,.at-regenerate-btn:hover{opacity:.85}
+  .at-regenerate-btn{background:var(--bg3);color:var(--accent);border:1px solid var(--accent);padding:.4rem 1rem;font-size:.8rem}
+
+  .at-routine-result{margin-top:1.25rem}
+  .at-result-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;flex-wrap:wrap;gap:.75rem}
+  .at-result-meta{display:flex;align-items:center;gap:.75rem}
+  .at-result-total{font-weight:800;font-size:1rem;color:var(--accent)}
+  .at-result-level{font-size:.75rem;color:var(--text2);background:var(--bg3);padding:.25rem .6rem;border-radius:4px;font-weight:600;text-transform:uppercase;letter-spacing:.04em}
+
+  .at-result-timeline{display:flex;flex-direction:column;gap:.5rem}
+  .at-timeline-item{display:flex;align-items:flex-start;gap:.75rem;padding:.75rem 1rem;background:var(--bg3);border:1px solid var(--border);border-radius:4px;transition:border-left .2s}
+  .at-timeline-item:hover{border-left:3px solid var(--accent)}
+  .at-timeline-check{flex-shrink:0;margin-top:.15rem}
+  .at-timeline-check input[type="checkbox"]{width:16px;height:16px;accent-color:var(--accent);cursor:pointer}
+  .at-timeline-body{flex:1;min-width:0}
+  .at-timeline-top{display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;margin-bottom:.25rem}
+  .at-timeline-name{font-weight:700;font-size:.92rem;color:var(--text)}
+  .at-timeline-dur{background:var(--accent);color:#0d0e12;padding:.15rem .5rem;border-radius:4px;font-size:.7rem;font-weight:700;white-space:nowrap}
+  .at-timeline-map{font-size:.78rem;color:var(--accent);font-weight:600}
+  .at-timeline-desc{font-size:.82rem;color:var(--text2);line-height:1.5;margin:0}
+  .at-timeline-item.checked .at-timeline-name,.at-timeline-item.checked .at-timeline-desc{opacity:.5;text-decoration:line-through}
+
+  .at-result-note{margin-top:1rem;font-size:.82rem;color:var(--text2);line-height:1.5}
+  .at-result-note a{color:var(--accent);font-weight:600}
+
   @media(max-width:768px){
     .at-title{font-size:1.4rem}
     .at-maps-grid{grid-template-columns:1fr}
     .at-opt-grid{grid-template-columns:1fr}
+    .at-result-header{flex-direction:column;align-items:flex-start}
   }
 </style>
+
+<script>
+(function() {
+  const exercises = [
+    { name: 'Aim_Botz Warmup', map: 'aim_botz', duration: 5, level: 'all', focus: 'warmup', desc: 'Kill 100 bots focusing on headshots' },
+    { name: 'Spray Transfer', map: 'Recoil Master', duration: 10, level: 'intermediate', focus: 'spray', desc: 'Practice AK-47 and M4 spray patterns' },
+    { name: 'Fast Aim/Reflex', map: 'Fast Aim / Reflex Training', duration: 10, level: 'all', focus: 'flicking', desc: 'Flick to targets appearing randomly' },
+    { name: 'Prefire Practice', map: 'Prefire maps', duration: 10, level: 'advanced', focus: 'crosshair', desc: 'Clear common angles on competitive maps' },
+    { name: 'DM FFA Headshot Only', map: 'Community DM', duration: 15, level: 'intermediate', focus: 'flicking', desc: 'Free-for-all deathmatch, headshots only' },
+    { name: 'Retake Servers', map: 'Community Retake', duration: 15, level: 'advanced', focus: 'crosshair', desc: 'Practice site retakes and post-plant' },
+    { name: 'Tracking Practice', map: 'aim_botz', duration: 10, level: 'all', focus: 'tracking', desc: 'Track moving bots smoothly without flicking' },
+    { name: 'Movement Practice', map: 'KZ/Surf maps', duration: 10, level: 'beginner', focus: 'warmup', desc: 'Improve counter-strafing and movement' },
+    { name: 'YPrac Utility', map: 'YPrac maps', duration: 10, level: 'intermediate', focus: 'crosshair', desc: 'Learn smoke and flash lineups' },
+    { name: 'Clutch Practice', map: '1v1 Arena', duration: 10, level: 'advanced', focus: 'flicking', desc: 'Practice 1v1 aim duels' },
+  ];
+
+  let selectedLevel = 'beginner';
+  let selectedTime = 30;
+  let selectedFocus = '';
+
+  // Pill selection helpers
+  function setupPillGroup(containerId, callback) {
+    const container = document.getElementById(containerId);
+    if (!container) return;
+    container.querySelectorAll('.at-pill').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        container.querySelectorAll('.at-pill').forEach(function(b) { b.classList.remove('active'); });
+        btn.classList.add('active');
+        callback(btn);
+      });
+    });
+  }
+
+  setupPillGroup('levelPills', function(btn) { selectedLevel = btn.dataset.level; });
+  setupPillGroup('timePills', function(btn) { selectedTime = parseInt(btn.dataset.time, 10); });
+  setupPillGroup('focusPills', function(btn) { selectedFocus = btn.dataset.focus; });
+
+  function shuffleArray(arr) {
+    var a = arr.slice();
+    for (var i = a.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var temp = a[i];
+      a[i] = a[j];
+      a[j] = temp;
+    }
+    return a;
+  }
+
+  function generateRoutine() {
+    // Filter exercises by level
+    var eligible = exercises.filter(function(ex) {
+      return ex.level === 'all' || ex.level === selectedLevel;
+    });
+
+    // Filter by focus if selected
+    if (selectedFocus) {
+      var focused = eligible.filter(function(ex) { return ex.focus === selectedFocus; });
+      // If we have focused exercises, prioritize them but keep warmups available
+      if (focused.length > 0) {
+        var warmups = eligible.filter(function(ex) { return ex.focus === 'warmup'; });
+        eligible = focused.concat(warmups);
+        // Remove duplicates
+        var seen = {};
+        eligible = eligible.filter(function(ex) {
+          if (seen[ex.name]) return false;
+          seen[ex.name] = true;
+          return true;
+        });
+      }
+    }
+
+    // Shuffle and fill time budget
+    eligible = shuffleArray(eligible);
+    var routine = [];
+    var timeUsed = 0;
+
+    for (var i = 0; i < eligible.length; i++) {
+      if (timeUsed + eligible[i].duration <= selectedTime) {
+        routine.push(eligible[i]);
+        timeUsed += eligible[i].duration;
+      }
+      if (timeUsed >= selectedTime) break;
+    }
+
+    // If we still have time and haven't used all exercises, try filling remaining
+    if (timeUsed < selectedTime) {
+      var remaining = exercises.filter(function(ex) {
+        return (ex.level === 'all' || ex.level === selectedLevel) &&
+          !routine.some(function(r) { return r.name === ex.name; });
+      });
+      remaining = shuffleArray(remaining);
+      for (var j = 0; j < remaining.length; j++) {
+        if (timeUsed + remaining[j].duration <= selectedTime) {
+          routine.push(remaining[j]);
+          timeUsed += remaining[j].duration;
+        }
+        if (timeUsed >= selectedTime) break;
+      }
+    }
+
+    return { routine: routine, totalTime: timeUsed };
+  }
+
+  function renderRoutine(result) {
+    var resultEl = document.getElementById('routineResult');
+    var timelineEl = document.getElementById('resultTimeline');
+    var totalEl = document.getElementById('resultTotal');
+    var levelEl = document.getElementById('resultLevel');
+
+    if (result.routine.length === 0) {
+      timelineEl.innerHTML = '<p style="color:var(--text2);font-size:.9rem;text-align:center;padding:1rem">No exercises match your criteria. Try adjusting the filters.</p>';
+      resultEl.style.display = 'block';
+      totalEl.textContent = 'Total: 0 min';
+      levelEl.textContent = selectedLevel.charAt(0).toUpperCase() + selectedLevel.slice(1);
+      return;
+    }
+
+    totalEl.textContent = 'Total: ' + result.totalTime + ' min';
+    levelEl.textContent = selectedLevel.charAt(0).toUpperCase() + selectedLevel.slice(1);
+
+    var html = '';
+    for (var i = 0; i < result.routine.length; i++) {
+      var ex = result.routine[i];
+      html += '<div class="at-timeline-item" data-idx="' + i + '">' +
+        '<div class="at-timeline-check"><input type="checkbox" aria-label="Mark ' + ex.name + ' as complete"></div>' +
+        '<div class="at-timeline-body">' +
+          '<div class="at-timeline-top">' +
+            '<span class="at-timeline-name">' + ex.name + '</span>' +
+            '<span class="at-timeline-dur">' + ex.duration + ' min</span>' +
+            '<span class="at-timeline-map">' + ex.map + '</span>' +
+          '</div>' +
+          '<p class="at-timeline-desc">' + ex.desc + '</p>' +
+        '</div>' +
+      '</div>';
+    }
+    timelineEl.innerHTML = html;
+    resultEl.style.display = 'block';
+
+    // Add checkbox handlers
+    timelineEl.querySelectorAll('input[type="checkbox"]').forEach(function(cb) {
+      cb.addEventListener('change', function() {
+        var item = cb.closest('.at-timeline-item');
+        if (cb.checked) {
+          item.classList.add('checked');
+        } else {
+          item.classList.remove('checked');
+        }
+      });
+    });
+  }
+
+  // Generate and Regenerate buttons
+  var generateBtn = document.getElementById('generateBtn');
+  var regenerateBtn = document.getElementById('regenerateBtn');
+
+  if (generateBtn) {
+    generateBtn.addEventListener('click', function() {
+      var result = generateRoutine();
+      renderRoutine(result);
+    });
+  }
+  if (regenerateBtn) {
+    regenerateBtn.addEventListener('click', function() {
+      var result = generateRoutine();
+      renderRoutine(result);
+    });
+  }
+})();
+</script>

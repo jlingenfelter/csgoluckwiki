@@ -56,6 +56,14 @@ const rarities = ['All', 'Covert', 'Classified', 'Restricted', 'Mil-Spec', 'Indu
     <p class="sr-hero-desc">Find any CS2 skin, weapon, or item in our database</p>
   </section>
 
+  <!-- Watchlist (populated via JS from localStorage) -->
+  <section class="sr-watchlist" id="watchlistSection" style="display:none">
+    <div class="sr-watchlist-header">
+      <h2 class="sr-watchlist-title">Your Watchlist</h2>
+    </div>
+    <div class="sr-watchlist-grid" id="watchlistGrid"></div>
+  </section>
+
   <div class="sr-search-bar">
     <input
       type="text"
@@ -211,11 +219,29 @@ const rarities = ['All', 'Covert', 'Classified', 'Restricted', 'Mil-Spec', 'Indu
 .sr-links-row{display:block;padding:.55rem .85rem;background:var(--bg2);border:1px solid var(--border);border-left:3px solid transparent;border-radius:4px;color:var(--accent);text-decoration:none;font-size:.88rem;font-weight:600;transition:border-color .15s,background .15s}
 .sr-links-row:hover{border-left-color:var(--accent);background:var(--bg3)}
 
+/* ── Watchlist ── */
+.sr-watchlist{background:var(--bg2);border:1px solid var(--border);border-radius:4px;padding:1.25rem;margin-bottom:1.25rem}
+.sr-watchlist-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:.85rem}
+.sr-watchlist-title{font-family:'Montserrat',sans-serif;font-size:1.05rem;font-weight:700;color:var(--text);margin:0}
+.sr-watchlist-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:.75rem}
+.sr-wl-card{position:relative;display:flex;flex-direction:column;background:var(--bg3);border:1px solid var(--border);border-radius:4px;overflow:hidden;text-decoration:none;color:inherit;transition:border-color .15s,background .15s}
+.sr-wl-card:hover{border-color:var(--accent)}
+.sr-wl-card-img{width:100%;height:100px;display:flex;align-items:center;justify-content:center;background:var(--bg);overflow:hidden}
+.sr-wl-card-img img{max-width:90%;max-height:80px;object-fit:contain}
+.sr-wl-card-info{padding:.55rem .65rem;flex:1;display:flex;flex-direction:column;gap:.1rem}
+.sr-wl-card-weapon{font-size:.7rem;color:var(--text2)}
+.sr-wl-card-name{font-size:.82rem;font-weight:700;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sr-wl-card-price{font-size:.85rem;font-weight:700;color:var(--accent);margin-top:.2rem}
+.sr-wl-remove{position:absolute;top:4px;right:4px;width:22px;height:22px;border-radius:50%;background:rgba(0,0,0,.6);border:none;color:#fff;font-size:.75rem;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity .15s,background .15s;line-height:1}
+.sr-wl-card:hover .sr-wl-remove{opacity:1}
+.sr-wl-remove:hover{background:rgba(231,76,60,.8)}
+
 /* ── Responsive ── */
 @media(max-width:768px){
   .sr-hero h1{font-size:1.5rem}
   .sr-search-bar{flex-direction:column}
   .sr-results-grid{grid-template-columns:repeat(auto-fill,minmax(160px,1fr))}
+  .sr-watchlist-grid{grid-template-columns:repeat(auto-fill,minmax(150px,1fr))}
 }
 </style>
 
@@ -340,6 +366,64 @@ const rarities = ['All', 'Covert', 'Classified', 'Restricted', 'Mil-Spec', 'Indu
   });
 
   renderResults();
+</script>
+
+<script>
+// ── Watchlist on Search Page ─────────────────────────────
+document.addEventListener('DOMContentLoaded', () => {
+  const STORAGE_KEY = 'csgoluck_favorites';
+  const section = document.getElementById('watchlistSection');
+  const grid = document.getElementById('watchlistGrid');
+  if (!section || !grid) return;
+
+  function getFavorites() {
+    try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || []; }
+    catch { return []; }
+  }
+
+  function saveFavorites(favs) {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(favs));
+  }
+
+  function renderWatchlist() {
+    const favs = getFavorites();
+    if (favs.length === 0) {
+      section.style.display = 'none';
+      return;
+    }
+    section.style.display = '';
+    grid.innerHTML = favs.map(f => `
+      <div class="sr-wl-card">
+        <button class="sr-wl-remove" data-slug="${f.slug}" title="Remove from watchlist">&times;</button>
+        <a href="/cs2-skin/${f.slug}/" style="text-decoration:none;color:inherit;display:flex;flex-direction:column;flex:1">
+          <div class="sr-wl-card-img">
+            ${f.image ? `<img src="${f.image}" alt="${f.weapon} | ${f.name}" loading="lazy" />` : ''}
+          </div>
+          <div class="sr-wl-card-info">
+            <div class="sr-wl-card-weapon">${f.weapon}</div>
+            <div class="sr-wl-card-name">${f.name}</div>
+            ${f.price > 0 ? `<div class="sr-wl-card-price">$${parseFloat(f.price).toFixed(2)}</div>` : ''}
+          </div>
+        </a>
+      </div>
+    `).join('');
+
+    // Attach remove handlers
+    grid.querySelectorAll('.sr-wl-remove').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        const slug = btn.dataset.slug;
+        let favs = getFavorites();
+        favs = favs.filter(f => f.slug !== slug);
+        saveFavorites(favs);
+        renderWatchlist();
+      });
+    });
+  }
+
+  renderWatchlist();
+});
 </script>
 
 <style is:inline>

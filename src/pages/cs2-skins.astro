@@ -279,14 +279,14 @@ const topComparisons = getWeaponComparisons().slice(0, 8);
 .sh-sort-select:focus{outline:none;border-color:var(--accent)}
 
 /* ===== SH GRID (Card Layout) ===== */
-.sh-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:.75rem;margin:1rem 0}
+.sh-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:.85rem;margin:1rem 0}
 .sh-hidden{display:none!important}
 
 .sh-card{display:flex;flex-direction:column;background:var(--bg2);border:1px solid var(--border);border-radius:8px;overflow:hidden;text-decoration:none;color:inherit;transition:transform .2s,border-color .2s,box-shadow .2s}
-.sh-card:hover{transform:translateY(-3px);border-color:var(--accent);box-shadow:0 8px 24px rgba(0,0,0,.3)}
+.sh-card:hover{transform:translateY(-4px);border-color:var(--accent);box-shadow:0 8px 24px rgba(0,0,0,.35)}
 
-.sh-card-img{position:relative;height:140px;display:flex;align-items:center;justify-content:center;overflow:hidden}
-.sh-card-img img{max-width:85%;max-height:120px;object-fit:contain;transition:transform .25s}
+.sh-card-img{position:relative;aspect-ratio:4/3;display:flex;align-items:center;justify-content:center;overflow:hidden;background:var(--bg3)}
+.sh-card-img img{max-width:85%;max-height:80%;object-fit:contain;transition:transform .25s}
 .sh-card:hover .sh-card-img img{transform:scale(1.06)}
 .sh-card-placeholder{font-size:1.5rem;font-weight:900;color:var(--text2);opacity:.15}
 
@@ -341,8 +341,7 @@ const topComparisons = getWeaponComparisons().slice(0, 8);
 @media(max-width:640px){
   .sh-weapon-grid{grid-template-columns:1fr}
   .sh-grid{grid-template-columns:repeat(2,1fr);gap:.5rem}
-  .sh-card-img{height:100px}
-  .sh-card-img img{max-height:85px}
+  .sh-card-img{aspect-ratio:4/3}
   .sh-card-body{padding:.45rem .5rem}
   .sh-card-name{font-size:.78rem}
   .sh-controls{flex-direction:column;align-items:stretch}

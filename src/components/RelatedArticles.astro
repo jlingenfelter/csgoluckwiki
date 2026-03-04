@@ -1,0 +1,104 @@
+---
+/**
+ * RelatedArticles — tag-based internal linking component
+ *
+ * Displays related articles based on shared tags, sorted by relevance.
+ * Usage: <RelatedArticles tags={['skins', 'economy']} currentUrl="/economy-guide/" />
+ */
+
+interface Props {
+  tags: string[];
+  currentUrl: string;
+  maxItems?: number;
+}
+
+const { tags, currentUrl, maxItems = 4 } = Astro.props;
+
+const ARTICLES = [
+  { title: 'All Skins', url: '/cs2-skins/', tags: ['skins', 'market'] },
+  { title: 'Market Trends', url: '/market-trends/', tags: ['skins', 'market', 'economy'] },
+  { title: 'Price Tracker', url: '/price-tracker/', tags: ['skins', 'market'] },
+  { title: 'Float Checker', url: '/float-checker/', tags: ['skins'] },
+  { title: 'Trade-Up Calculator', url: '/tradeup-calculator/', tags: ['skins', 'economy'] },
+  { title: 'Economy Guide', url: '/economy-guide/', tags: ['economy', 'beginner'] },
+  { title: 'Damage Calculator', url: '/damage-calculator/', tags: ['weapons', 'combat'] },
+  { title: 'All Weapons', url: '/cs2-weapons/', tags: ['weapons'] },
+  { title: 'Pro Players', url: '/pro-players/', tags: ['pro', 'settings'] },
+  { title: 'Crosshair Codes', url: '/crosshair-codes/', tags: ['pro', 'settings', 'crosshair'] },
+  { title: 'All Maps', url: '/cs2-maps/', tags: ['maps'] },
+  { title: 'Rank Distribution', url: '/cs2-rank-distribution/', tags: ['ranks', 'beginner'] },
+  { title: 'Sensitivity Converter', url: '/sensitivity-converter/', tags: ['settings'] },
+  { title: "Beginner's Guide", url: '/cs2-guides/beginners-guide/', tags: ['beginner', 'guide'] },
+  { title: 'Crosshair Generator', url: '/crosshair-generator/', tags: ['crosshair', 'settings'] },
+  { title: 'Cases & Collections', url: '/cs2-cases/', tags: ['skins', 'cases'] },
+  { title: 'Stickers', url: '/cs2-stickers/', tags: ['skins'] },
+  { title: 'Patch Notes', url: '/patch-notes/', tags: ['updates'] },
+  { title: 'Glossary', url: '/glossary/', tags: ['beginner', 'guide'] },
+];
+
+// Tag-to-hint mapping for auto-generated descriptions
+const TAG_HINTS: Record<string, string> = {
+  skins: 'Skins & cosmetics',
+  market: 'Market data',
+  economy: 'Economy & money',
+  weapons: 'Weapons & stats',
+  combat: 'Combat mechanics',
+  pro: 'Pro scene',
+  settings: 'Settings & config',
+  crosshair: 'Crosshair tools',
+  maps: 'Maps & callouts',
+  ranks: 'Ranks & matchmaking',
+  beginner: 'Beginner friendly',
+  guide: 'In-depth guide',
+  cases: 'Cases & unboxing',
+  updates: 'Game updates',
+};
+
+// Normalise currentUrl for comparison (strip trailing slash differences)
+const normUrl = (u: string) => u.replace(/\/+$/, '');
+const currentNorm = normUrl(currentUrl);
+
+// Filter, score, sort, and take top N
+const scored = ARTICLES
+  .filter(a => normUrl(a.url) !== currentNorm)
+  .map(a => {
+    const matchCount = a.tags.filter(t => tags.includes(t)).length;
+    return { ...a, matchCount };
+  })
+  .filter(a => a.matchCount > 0)
+  .sort((a, b) => b.matchCount - a.matchCount)
+  .slice(0, maxItems);
+
+// Build a short hint from the article's first matching tag
+function hintFor(article: typeof ARTICLES[number]): string {
+  for (const t of article.tags) {
+    if (TAG_HINTS[t]) return TAG_HINTS[t];
+  }
+  return 'CS2 resource';
+}
+---
+
+{scored.length > 0 && (
+  <div class="ra-wrap">
+    <h2 class="ra-heading">Related Articles</h2>
+    <div class="ra-list">
+      {scored.map(article => (
+        <a href={article.url} class="ra-card">
+          <span class="ra-title">{article.title}</span>
+          <span class="ra-hint">{hintFor(article)}</span>
+        </a>
+      ))}
+    </div>
+  </div>
+)}
+
+<style is:inline>
+.ra-wrap{background:var(--bg2);border:1px solid var(--border);border-radius:4px;padding:1.2rem;margin:2rem 0}
+.ra-heading{margin:0 0 .75rem;font-size:1rem;font-weight:700;color:var(--text)}
+.ra-list{display:flex;flex-direction:column;gap:.35rem}
+.ra-card{display:flex;justify-content:space-between;align-items:center;padding:.5rem .75rem;background:var(--bg3);border:1px solid var(--border);border-left:3px solid transparent;border-radius:4px;text-decoration:none;transition:border-left-color .15s,background .15s;gap:.75rem}
+.ra-card:hover{border-left-color:var(--accent);background:rgba(46,204,113,.04)}
+.ra-title{font-size:.85rem;font-weight:600;color:var(--text);transition:color .15s}
+.ra-card:hover .ra-title{color:var(--accent)}
+.ra-hint{font-size:.72rem;color:var(--text2);white-space:nowrap;opacity:.7}
+</style>

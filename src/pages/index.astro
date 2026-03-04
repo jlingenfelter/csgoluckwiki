@@ -13,6 +13,24 @@ const topSkins = SKINS
   .sort((a, b) => b.maxPrice - a.maxPrice)
   .slice(0, 12);
 
+// Skin of the Day — deterministic daily pick from skins with images and prices
+const eligibleSkins = SKINS.filter(s => !s.phase && s.image && s.prices.length > 0 && getLowestPrice(s) > 0);
+const dayIndex = Math.floor(Date.now() / 86400000) % eligibleSkins.length;
+const skinOfTheDay = eligibleSkins[dayIndex];
+const sotdLow = skinOfTheDay ? getLowestPrice(skinOfTheDay) : 0;
+const sotdHigh = skinOfTheDay ? getHighestPrice(skinOfTheDay) : 0;
+const sotdRc = skinOfTheDay ? (RARITY_COLORS[skinOfTheDay.rarity] || '#fff') : '#fff';
+const sotdBg = skinOfTheDay ? (RARITY_BG[skinOfTheDay.rarity] || 'rgba(255,255,255,0.05)') : 'rgba(255,255,255,0.05)';
+
+// Fun facts to rotate through
+const funFacts = [
+  `This skin has a float range of ${skinOfTheDay?.minFloat.toFixed(2)} \u2013 ${skinOfTheDay?.maxFloat.toFixed(2)}.`,
+  `Available in ${skinOfTheDay?.prices.length} wear condition${(skinOfTheDay?.prices.length || 0) !== 1 ? 's' : ''}.`,
+  skinOfTheDay?.statTrak ? 'StatTrak\u2122 variant available.' : `Part of the ${skinOfTheDay?.collection || skinOfTheDay?.category} collection.`,
+  skinOfTheDay?.flavorText || `${skinOfTheDay?.weapon} skins are among the most traded in CS2.`,
+];
+const todayFact = funFacts[dayIndex % funFacts.length];
+
 const skinCount = SKINS_TOTAL || SKINS.length;
 const weaponCount = WEAPONS.length;
 const collectionCount = getCollections().length;
@@ -107,6 +125,29 @@ const faqs = [
   <a href="/cs2-tools/" class="hp-nav-item"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 01-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z" fill="none" stroke="currentColor" stroke-width="1.5"/></svg><span>Tools</span></a>
   <a href="/cs2-guides/" class="hp-nav-item"><svg viewBox="0 0 24 24"><path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2z" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z" fill="none" stroke="currentColor" stroke-width="1.5"/></svg><span>Guides</span></a>
 </nav>
+
+<!-- ===== SKIN OF THE DAY ===== -->
+{skinOfTheDay && (
+<section class="hp-sotd">
+  <div class="hp-section-head">
+    <h2>Skin of the Day</h2>
+    <span class="hp-sotd-date">{new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</span>
+  </div>
+  <a href={`/cs2-skin/${skinOfTheDay.slug}/`} class="hp-sotd-card" style={`--rc:${sotdRc}`}>
+    <div class="hp-sotd-img" style={`background:${sotdBg}`}>
+      <img src={homeSkinCardImage(skinOfTheDay.image!)} alt={`${skinOfTheDay.weapon} | ${skinOfTheDay.name}`} width="400" height="300" loading="eager" />
+    </div>
+    <div class="hp-sotd-info">
+      <span class="hp-sotd-weapon">{skinOfTheDay.weapon}</span>
+      <strong class="hp-sotd-name">{skinOfTheDay.name}</strong>
+      <span class="hp-sotd-rarity" style={`background:${sotdRc}`}>{skinOfTheDay.rarity}</span>
+      <div class="hp-sotd-price">${sotdLow.toFixed(2)}{sotdLow !== sotdHigh ? ` \u2013 $${sotdHigh.toFixed(2)}` : ''}</div>
+      <p class="hp-sotd-fact">{todayFact}</p>
+      <span class="hp-sotd-cta">View Details &rarr;</span>
+    </div>
+  </a>
+</section>
+)}
 
 <!-- ===== POPULAR SKINS ===== -->
 <section class="hp-section">
@@ -340,6 +381,7 @@ const faqs = [
 .hp-hero-inner{max-width:900px;margin:0 auto;text-align:left}
 
 .hp-title{font-size:2.8rem;font-weight:900;margin:0 0 .75rem;color:#fff;line-height:1.1;letter-spacing:-.02em}
+html.light-mode .hp-title{color:#000}
 .hp-title em{font-style:normal;color:#2ecc71}
 .hp-subtitle{font-size:1.05rem;color:var(--text2);margin:0 0 1.5rem;max-width:640px;line-height:1.65}
 
@@ -375,6 +417,29 @@ const faqs = [
 .hp-section-desc{margin:0 0 1rem;font-size:.88rem;color:var(--text2);line-height:1.6}
 
 .hp-grid-2{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+
+/* ── Skin of the Day ─────────────────────── */
+.hp-sotd{margin-bottom:2rem;background:var(--bg2);border:1px solid var(--border);border-radius:4px;padding:1.25rem}
+.hp-sotd .hp-section-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem}
+.hp-sotd .hp-section-head h2{margin:0;font-size:1.15rem}
+.hp-sotd-date{font-size:.82rem;color:var(--text2);font-weight:500}
+.hp-sotd-card{display:flex;gap:1.5rem;background:var(--bg3);border:1px solid var(--border);border-radius:4px;overflow:hidden;text-decoration:none;color:inherit;transition:border-color .15s}
+.hp-sotd-card:hover{border-left:3px solid var(--rc,#2ecc71)}
+.hp-sotd-img{display:flex;align-items:center;justify-content:center;min-width:280px;max-width:360px;padding:1.5rem;flex-shrink:0}
+.hp-sotd-img img{max-width:100%;max-height:220px;object-fit:contain}
+.hp-sotd-info{display:flex;flex-direction:column;justify-content:center;padding:1.25rem 1.25rem 1.25rem 0;gap:.35rem}
+.hp-sotd-weapon{font-size:.78rem;color:var(--text2);text-transform:uppercase;letter-spacing:.04em}
+.hp-sotd-name{font-size:1.5rem;font-weight:800;color:#fff;line-height:1.2}
+.hp-sotd-rarity{display:inline-block;width:fit-content;padding:.2rem .7rem;border-radius:4px;font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:#000;margin:.25rem 0}
+.hp-sotd-price{font-size:1.3rem;font-weight:700;color:#2ecc71;margin:.25rem 0}
+.hp-sotd-fact{font-size:.85rem;color:var(--text2);line-height:1.6;margin:0}
+.hp-sotd-cta{font-size:.85rem;font-weight:700;color:#2ecc71;margin-top:.5rem}
+
+@media(max-width:768px){
+  .hp-sotd-card{flex-direction:column}
+  .hp-sotd-img{min-width:100%;max-width:100%;padding:1rem}
+  .hp-sotd-info{padding:0 1rem 1rem}
+}
 
 /* ── Skin Grid ────────────────────────────── */
 .hp-skin-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:.75rem;margin-bottom:1rem}

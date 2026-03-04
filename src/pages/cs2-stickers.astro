@@ -157,7 +157,7 @@ const variantFilters = ALL_VARIANTS.map(v => ({
         : s.name;
       return (
         <a href={`/cs2-stickers/${s.slug}/`} class="sth-card">
-          <div class="sth-card-img" style={`background:${vBg}`}>
+          <div class="sth-card-img">
             <span class="sth-card-variant" style={`color:${vColor};background:${vBg};border:1px solid ${vColor}`}>{s.variant}</span>
             {s.image && <img src={s.image} alt={s.name} loading="lazy" width="120" height="120" />}
           </div>
@@ -440,7 +440,7 @@ const variantFilters = ALL_VARIANTS.map(v => ({
     transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
   }
   .sth-card:hover {
-    transform: translateY(-3px);
+    transform: translateY(-4px);
     border-color: var(--accent);
     box-shadow: 0 8px 24px rgba(0,0,0,0.3);
   }
@@ -451,6 +451,7 @@ const variantFilters = ALL_VARIANTS.map(v => ({
     align-items: center;
     justify-content: center;
     overflow: hidden;
+    background: var(--bg3);
   }
   .sth-card-img img {
     max-width: 80%;
@@ -834,7 +835,7 @@ const variantFilters = ALL_VARIANTS.map(v => ({
         var priceStr = s.p > 0 ? '$' + s.p.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2}) : '';
 
         html += '<a href="/cs2-stickers/' + s.s + '/" class="sth-card">';
-        html += '<div class="sth-card-img" style="background:' + vBg + '">';
+        html += '<div class="sth-card-img">';
         html += '<span class="sth-card-variant" style="color:' + vColor + ';background:' + vBg + ';border:1px solid ' + vColor + '">' + escapeHtml(s.v) + '</span>';
         if (s.i) {
           html += '<img src="' + s.i + '" alt="' + s.n.replace(/"/g, '&quot;') + '" loading="lazy" width="120" height="120" />';

@@ -1,0 +1,487 @@
+---
+import Base from '../layouts/Base.astro';
+import ExploreMore from '../components/ExploreMore.astro';
+import AuthorBox from '../components/AuthorBox.astro';
+import { faqSchema, breadcrumbSchema } from '../lib/weapons';
+
+const title = 'CS2 Weapon Meta & Tier List — Competitive Rankings | CSGOLuck Wiki';
+const description = 'CS2 weapon tier list ranking every firearm by competitive viability. See which guns are must-buys, strong picks, situational choices, and niche options in the current CS2 meta.';
+
+const tiers = [
+  { tier: 'S', label: 'Must-Buy', color: '#e8c96e', weapons: [
+    { name: 'AK-47', slug: 'ak-47', role: 'T-side rifle', note: 'One-tap headshot potential, best value rifle' },
+    { name: 'M4A1-S', slug: 'm4a1-s', role: 'CT-side rifle', note: 'Silenced, accurate, low recoil' },
+    { name: 'AWP', slug: 'awp', role: 'Sniper', note: 'One-shot kill body/head, defines the meta' },
+  ]},
+  { tier: 'A', label: 'Strong Pick', color: '#2ecc71', weapons: [
+    { name: 'M4A4', slug: 'm4a4', role: 'CT-side rifle', note: 'Higher fire rate, 30-round magazine' },
+    { name: 'Desert Eagle', slug: 'desert-eagle', role: 'Eco pistol', note: 'One-tap headshot, armor penetration' },
+    { name: 'USP-S', slug: 'usp-s', role: 'CT pistol round', note: 'Silenced, accurate first shot' },
+    { name: 'Glock-18', slug: 'glock-18', role: 'T pistol round', note: 'Burst fire, high mag capacity' },
+  ]},
+  { tier: 'B', label: 'Situational', color: '#6db3e8', weapons: [
+    { name: 'MAC-10', slug: 'mac-10', role: 'T-side SMG', note: 'Cheap, good for anti-eco rounds' },
+    { name: 'MP9', slug: 'mp9', role: 'CT-side SMG', note: 'Fast fire rate, run-and-gun' },
+    { name: 'FAMAS', slug: 'famas', role: 'Budget CT rifle', note: 'Burst mode, budget alternative' },
+    { name: 'Galil AR', slug: 'galil-ar', role: 'Budget T rifle', note: 'Affordable T-side rifle option' },
+    { name: 'SSG 08', slug: 'ssg-08', role: 'Scout sniper', note: 'Budget sniper, mobile, jump shots' },
+  ]},
+  { tier: 'C', label: 'Niche', color: '#b07cc6', weapons: [
+    { name: 'P250', slug: 'p250', role: 'Eco pistol', note: 'Cheap upgrade, armor pen' },
+    { name: 'Five-SeveN', slug: 'five-seven', role: 'CT eco', note: '20-round mag, close range' },
+    { name: 'Tec-9', slug: 'tec-9', role: 'T eco', note: 'Run and gun, high damage' },
+    { name: 'XM1014', slug: 'xm1014', role: 'Shotgun', note: 'Auto-shotgun, close quarters' },
+    { name: 'Nova', slug: 'nova', role: 'Shotgun', note: 'High kill reward, eco weapon' },
+  ]},
+  { tier: 'D', label: 'Rarely Used', color: '#e07070', weapons: [
+    { name: 'Negev', slug: 'negev', role: 'LMG', note: 'Wall of bullets, very niche' },
+    { name: 'M249', slug: 'm249', role: 'LMG', note: 'Expensive, outclassed by rifles' },
+    { name: 'Sawed-Off', slug: 'sawed-off', role: 'T shotgun', note: 'Very short range' },
+    { name: 'PP-Bizon', slug: 'pp-bizon', role: 'SMG', note: 'Large mag, low damage' },
+  ]},
+];
+
+const totalWeapons = tiers.reduce((sum, t) => sum + t.weapons.length, 0);
+const tierCounts = tiers.map(t => ({ tier: t.tier, label: t.label, count: t.weapons.length, color: t.color }));
+
+const faqs = [
+  {
+    question: 'What is the current weapon meta in CS2?',
+    answer: 'The CS2 meta revolves around a small core of must-buy weapons. The AK-47 and M4A1-S remain the dominant rifles on their respective sides, while the AWP continues to be the defining sniper. Eco rounds lean heavily on the Desert Eagle for armor-penetrating headshots and the USP-S or Glock-18 as default pistols. SMGs like the MAC-10 and MP9 are reserved for anti-eco or force-buy situations, making them strong picks only in specific economic contexts.',
+  },
+  {
+    question: 'Should I use the M4A1-S or M4A4 in CS2?',
+    answer: 'The M4A1-S is generally the more popular choice due to its silencer, tighter spray pattern, and lower noise signature. It excels at holding long angles and tap-firing at distance. The M4A4 trades those advantages for a faster fire rate and a larger 30-round magazine, making it stronger in close-range spray-downs and situations where multiple enemies push simultaneously. Many professional players switch between the two depending on the map and position they play.',
+  },
+  {
+    question: 'Why are some weapons rated so low on the tier list?',
+    answer: 'Weapons in the C and D tiers are not necessarily bad but are outclassed by alternatives at similar price points. The Negev and M249, for instance, cost as much as or more than rifles but lack the precision needed for competitive play. Shotguns like the Sawed-Off have extremely short effective range, limiting their usefulness to very specific angles. The PP-Bizon offers a large magazine but deals less damage per bullet than comparable SMGs, making it a suboptimal pick in almost every scenario.',
+  },
+  {
+    question: 'How often does the CS2 weapon meta change?',
+    answer: 'Valve occasionally adjusts weapon stats through game updates, which can shift the meta. Major changes like the AK-47 or M4 recoil tweaks, price adjustments, or damage modifications can promote or demote weapons in the tier list. However, the core S-tier weapons (AK-47, M4A1-S, AWP) have remained dominant throughout Counter-Strike history and are unlikely to fall out of the meta entirely.',
+  },
+];
+
+const breadcrumbs = [
+  { name: 'Home', url: '/' },
+  { name: 'Weapons', url: '/cs2-weapons/' },
+  { name: 'Meta & Tier List' },
+];
+---
+
+<Base title={title} description={description} currentNav="/cs2-weapons/">
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema(breadcrumbs))} />
+    <script type="application/ld+json" set:html={JSON.stringify(faqSchema(faqs))} />
+  </Fragment>
+
+  <nav class="breadcrumb">
+    <a href="/">Home</a> <span>/</span>
+    <a href="/cs2-weapons/">Weapons</a> <span>/</span>
+    <span>Meta & Tier List</span>
+  </nav>
+
+  <!-- Hero -->
+  <section class="wm-hero">
+    <h1 class="wm-hero-title">CS2 Weapon Meta & Tier List</h1>
+    <p class="wm-hero-desc">A competitive tier ranking of every CS2 weapon based on professional usage, damage output, price efficiency, and situational versatility. Updated for the current meta.</p>
+    <div class="wm-hero-pills">
+      <span class="wm-pill"><strong>{totalWeapons}</strong> Weapons Ranked</span>
+      <span class="wm-pill"><strong>{tiers.length}</strong> Tiers</span>
+      {tierCounts.map(t => (
+        <span class="wm-pill" style={`border-color: ${t.color}40;`}>
+          <strong style={`color: ${t.color};`}>{t.tier}</strong> {t.count} weapons
+        </span>
+      ))}
+    </div>
+  </section>
+
+  <!-- Tier Overview Strip -->
+  <nav class="wm-tier-nav">
+    {tiers.map(t => (
+      <a href={`#tier-${t.tier.toLowerCase()}`} class="wm-tier-nav-item" style={`border-bottom-color: ${t.color};`}>
+        <span class="wm-tier-nav-badge" style={`background: ${t.color}; color: #000;`}>{t.tier}</span>
+        <span class="wm-tier-nav-label">{t.label}</span>
+      </a>
+    ))}
+  </nav>
+
+  <!-- Tier Sections -->
+  {tiers.map(t => (
+    <section class="wm-tier-section" id={`tier-${t.tier.toLowerCase()}`}>
+      <div class="wm-tier-header">
+        <span class="wm-tier-badge" style={`background: ${t.color}; color: #000;`}>{t.tier}</span>
+        <div class="wm-tier-info">
+          <h2 class="wm-tier-title">{t.label}</h2>
+          <span class="wm-tier-count">{t.weapons.length} weapon{t.weapons.length > 1 ? 's' : ''}</span>
+        </div>
+      </div>
+      <div class="wm-weapons-list">
+        {t.weapons.map((w, i) => (
+          <a href={`/cs2-weapon/${w.slug}/`} class:list={['wm-weapon-row', { 'wm-weapon-alt': i % 2 === 1 }]}>
+            <div class="wm-weapon-main">
+              <span class="wm-weapon-name">{w.name}</span>
+              <span class="wm-weapon-role" style={`border-color: ${t.color}40; color: ${t.color};`}>{w.role}</span>
+            </div>
+            <span class="wm-weapon-note">{w.note}</span>
+            <span class="wm-weapon-arrow">&rarr;</span>
+          </a>
+        ))}
+      </div>
+    </section>
+  ))}
+
+  <!-- Key Takeaways -->
+  <section class="wm-section">
+    <h2 class="wm-heading">Meta Takeaways</h2>
+    <div class="wm-takeaways">
+      <div class="wm-takeaway">
+        <h3>Rifles Dominate</h3>
+        <p>The AK-47 and M4A1-S continue to be the backbone of competitive CS2. Their damage, accuracy, and cost efficiency make them the default buy-round choice on every map.</p>
+      </div>
+      <div class="wm-takeaway">
+        <h3>Eco Rounds Matter</h3>
+        <p>The Desert Eagle, USP-S, and Glock-18 make eco rounds competitive. A well-placed Deagle headshot can swing an entire match economy.</p>
+      </div>
+      <div class="wm-takeaway">
+        <h3>SMGs for Anti-Eco</h3>
+        <p>MAC-10 and MP9 offer high kill rewards ($600 per kill) and are the go-to choices after winning pistol round to maximize economy advantage.</p>
+      </div>
+      <div class="wm-takeaway">
+        <h3>AWP Is a Game-Changer</h3>
+        <p>At $4,750 the AWP is the most expensive weapon but its one-shot potential at any range makes it the single most impactful gun in CS2.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="wm-section">
+    <h2 class="wm-heading">Frequently Asked Questions</h2>
+    <div class="wm-faq-list">
+      {faqs.map((faq, index) => (
+        <details class="wm-faq-item" data-index={index}>
+          <summary class="wm-faq-q">{faq.question}</summary>
+          <div class="wm-faq-a">{faq.answer}</div>
+        </details>
+      ))}
+    </div>
+  </section>
+
+  <!-- Related Links -->
+  <div class="internal-links">
+    <a href="/cs2-weapons/">Full Weapon Database</a>
+    <a href="/damage-calculator/">Damage Calculator</a>
+    <a href="/weapon-compare/">Weapon Compare</a>
+    <a href="/recoil-patterns/">Recoil Patterns</a>
+    <a href="/spray-trainer/">Spray Trainer</a>
+    <a href="/loadout-builder/">Loadout Builder</a>
+    <a href="/economy-calculator/">Economy Planner</a>
+    <a href="/cs2-guides/economy-guide/">Economy Guide</a>
+  </div>
+
+  <AuthorBox updated="2026-03-04" />
+  <ExploreMore context="weapons" />
+</Base>
+
+<style>
+  /* ===== Hero ===== */
+  .wm-hero {
+    padding: 2rem 0 1.5rem;
+    margin-bottom: 2rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .wm-hero-title {
+    font-size: 2.25rem;
+    font-weight: 800;
+    margin: 0 0 .5rem;
+    line-height: 1.15;
+    color: var(--text);
+  }
+  .wm-hero-desc {
+    color: var(--text2);
+    font-size: .95rem;
+    line-height: 1.65;
+    margin: 0 0 1.25rem;
+    max-width: 600px;
+  }
+  .wm-hero-pills {
+    display: flex;
+    gap: .5rem;
+    flex-wrap: wrap;
+  }
+  .wm-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: .3rem;
+    padding: .3rem .7rem;
+    background: rgba(46,204,113,.08);
+    border: 1px solid rgba(46,204,113,.2);
+    border-radius: 4px;
+    font-size: .78rem;
+    color: var(--text2);
+  }
+  .wm-pill strong {
+    color: var(--accent);
+    font-weight: 700;
+  }
+
+  /* ===== Section Headings ===== */
+  .wm-section {
+    margin-bottom: 3rem;
+  }
+  .wm-heading {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--text);
+    margin: 0 0 1rem;
+    padding-left: .75rem;
+    border-left: 3px solid var(--accent);
+  }
+
+  /* ===== Tier Navigation ===== */
+  .wm-tier-nav {
+    display: flex;
+    gap: 0;
+    border-bottom: 2px solid var(--border);
+    margin-bottom: 2rem;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  .wm-tier-nav-item {
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+    padding: .65rem 1.25rem;
+    text-decoration: none;
+    color: var(--text2);
+    border-bottom: 2px solid transparent;
+    margin-bottom: -2px;
+    white-space: nowrap;
+    transition: color .15s, border-color .15s;
+  }
+  .wm-tier-nav-item:hover {
+    color: var(--text);
+  }
+  .wm-tier-nav-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 26px;
+    height: 26px;
+    border-radius: 4px;
+    font-weight: 800;
+    font-size: .85rem;
+  }
+  .wm-tier-nav-label {
+    font-size: .82rem;
+    font-weight: 600;
+  }
+
+  /* ===== Tier Sections ===== */
+  .wm-tier-section {
+    margin-bottom: 2rem;
+  }
+  .wm-tier-header {
+    display: flex;
+    align-items: center;
+    gap: .75rem;
+    margin-bottom: .75rem;
+  }
+  .wm-tier-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 4px;
+    font-weight: 800;
+    font-size: 1.5rem;
+    flex-shrink: 0;
+  }
+  .wm-tier-info {
+    display: flex;
+    align-items: baseline;
+    gap: .6rem;
+  }
+  .wm-tier-title {
+    margin: 0;
+    font-size: 1.2rem;
+    font-weight: 800;
+    color: var(--text);
+  }
+  .wm-tier-count {
+    font-size: .72rem;
+    font-weight: 700;
+    color: var(--text2);
+    background: var(--bg3);
+    padding: .12rem .45rem;
+    border-radius: 4px;
+  }
+
+  /* ===== Weapon List ===== */
+  .wm-weapons-list {
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  .wm-weapon-row {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: .75rem 1rem;
+    text-decoration: none;
+    color: inherit;
+    border-left: 3px solid transparent;
+    transition: border-left-color .15s, background-color .15s;
+  }
+  .wm-weapon-row:not(:last-child) {
+    border-bottom: 1px solid var(--border);
+  }
+  .wm-weapon-row:hover {
+    border-left-color: var(--accent);
+    background: var(--bg3);
+  }
+  .wm-weapon-alt {
+    background: var(--bg2);
+  }
+  .wm-weapon-main {
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+    min-width: 200px;
+    flex-shrink: 0;
+  }
+  .wm-weapon-name {
+    font-size: .95rem;
+    font-weight: 700;
+    color: var(--text);
+  }
+  .wm-weapon-role {
+    font-size: .68rem;
+    font-weight: 600;
+    padding: .12rem .4rem;
+    border: 1px solid;
+    border-radius: 4px;
+    white-space: nowrap;
+    text-transform: uppercase;
+    letter-spacing: .03em;
+  }
+  .wm-weapon-note {
+    flex: 1;
+    font-size: .85rem;
+    color: var(--text2);
+    line-height: 1.4;
+  }
+  .wm-weapon-arrow {
+    font-size: 1rem;
+    color: var(--text2);
+    flex-shrink: 0;
+    opacity: 0;
+    transition: opacity .15s;
+  }
+  .wm-weapon-row:hover .wm-weapon-arrow {
+    opacity: 1;
+    color: var(--accent);
+  }
+
+  /* ===== Takeaways ===== */
+  .wm-takeaways {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+  }
+  .wm-takeaway {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 1.25rem;
+    border-left: 3px solid var(--accent);
+  }
+  .wm-takeaway h3 {
+    margin: 0 0 .4rem;
+    font-size: .95rem;
+    font-weight: 700;
+    color: var(--text);
+  }
+  .wm-takeaway p {
+    margin: 0;
+    font-size: .85rem;
+    color: var(--text2);
+    line-height: 1.55;
+  }
+
+  /* ===== FAQ ===== */
+  .wm-faq-list {
+    display: flex;
+    flex-direction: column;
+    gap: .5rem;
+  }
+  .wm-faq-item {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+  }
+  .wm-faq-item[open] {
+    border-color: var(--accent);
+  }
+  .wm-faq-q {
+    padding: 1rem 1.25rem;
+    cursor: pointer;
+    font-weight: 600;
+    color: var(--text);
+    font-size: .95rem;
+    list-style: none;
+  }
+  .wm-faq-q::-webkit-details-marker {
+    display: none;
+  }
+  .wm-faq-q::after {
+    content: '+';
+    float: right;
+    color: var(--accent);
+    font-size: 1.1rem;
+    font-weight: 700;
+  }
+  .wm-faq-item[open] > .wm-faq-q::after {
+    content: '\2212';
+  }
+  .wm-faq-a {
+    padding: 0 1.25rem 1rem 1.25rem;
+    color: var(--text2);
+    font-size: .92rem;
+    line-height: 1.6;
+  }
+
+  /* ===== Responsive ===== */
+  @media (max-width: 768px) {
+    .wm-hero-title {
+      font-size: 1.6rem;
+    }
+    .wm-weapon-main {
+      min-width: 140px;
+    }
+    .wm-weapon-note {
+      display: none;
+    }
+    .wm-weapon-arrow {
+      display: none;
+    }
+    .wm-takeaways {
+      grid-template-columns: 1fr;
+    }
+    .wm-tier-badge {
+      width: 36px;
+      height: 36px;
+      font-size: 1.2rem;
+    }
+  }
+  @media (max-width: 520px) {
+    .wm-weapon-main {
+      min-width: 0;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: .25rem;
+    }
+  }
+</style>

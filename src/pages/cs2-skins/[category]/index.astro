@@ -201,14 +201,14 @@ const wearMap: Record<string, string> = {
 .sc-sort-select:focus{outline:none;border-color:var(--accent)}
 
 /* ===== SC GRID (Card Layout) ===== */
-.sc-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:.75rem;margin-bottom:1.5rem}
+.sc-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:.75rem;margin-bottom:1.5rem}
 .sc-hidden{display:none!important}
 .sc-hidden.sc-revealed{display:flex!important}
 
 .sc-card{display:flex;flex-direction:column;background:var(--bg2);border:1px solid var(--border);border-radius:8px;overflow:hidden;text-decoration:none;color:inherit;transition:transform .2s,border-color .2s,box-shadow .2s}
-.sc-card:hover{transform:translateY(-3px);border-color:var(--accent);box-shadow:0 8px 24px rgba(0,0,0,.3)}
+.sc-card:hover{transform:translateY(-4px);border-color:var(--accent);box-shadow:0 8px 24px rgba(0,0,0,.3)}
 
-.sc-card-img{position:relative;height:140px;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.sc-card-img{position:relative;height:140px;display:flex;align-items:center;justify-content:center;overflow:hidden;background:var(--bg3)}
 .sc-card-img img{max-width:85%;max-height:120px;object-fit:contain;transition:transform .25s}
 .sc-card:hover .sc-card-img img{transform:scale(1.06)}
 .sc-card-placeholder{font-size:1.5rem;font-weight:900;color:var(--text2);opacity:.15}

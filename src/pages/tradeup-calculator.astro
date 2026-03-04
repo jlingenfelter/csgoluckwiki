@@ -115,12 +115,42 @@ const toolSchema = JSON.stringify({
 
   <!-- Stats -->
   <div class="tuc-stats" id="tuStats" style="display:none">
+    <!-- EV Summary Banner -->
+    <div class="tuc-ev-banner" id="evBanner">
+      <div class="tuc-ev-banner-left">
+        <div class="tuc-ev-verdict-label">Trade-Up Verdict</div>
+        <div class="tuc-ev-verdict-text" id="verdictBanner">---</div>
+      </div>
+      <div class="tuc-ev-banner-right">
+        <div class="tuc-ev-profit" id="evProfit">$0.00</div>
+        <div class="tuc-ev-profit-label" id="evProfitLabel">Expected Profit/Loss</div>
+      </div>
+    </div>
+
+    <!-- EV Comparison Bar -->
+    <div class="tuc-ev-compare" id="evCompare">
+      <div class="tuc-ev-compare-row">
+        <span class="tuc-ev-compare-label">Input Cost</span>
+        <div class="tuc-ev-bar-track">
+          <div class="tuc-ev-bar input-bar" id="inputBar" style="width:50%"></div>
+        </div>
+        <span class="tuc-ev-compare-val" id="inputCostDisplay">$0.00</span>
+      </div>
+      <div class="tuc-ev-compare-row">
+        <span class="tuc-ev-compare-label">Expected Output</span>
+        <div class="tuc-ev-bar-track">
+          <div class="tuc-ev-bar output-bar" id="outputBar" style="width:50%"></div>
+        </div>
+        <span class="tuc-ev-compare-val" id="outputEvDisplay">$0.00</span>
+      </div>
+    </div>
+
     <div class="tuc-stats-grid">
-      <div class="tuc-stat-card">
+      <div class="tuc-stat-card" id="evCard">
         <div class="tuc-stat-val" id="evResult">$0.00</div>
         <div class="tuc-stat-label">Expected Value</div>
       </div>
-      <div class="tuc-stat-card">
+      <div class="tuc-stat-card" id="roiCard">
         <div class="tuc-stat-val" id="roiResult">0%</div>
         <div class="tuc-stat-label">Expected ROI</div>
       </div>
@@ -128,9 +158,17 @@ const toolSchema = JSON.stringify({
         <div class="tuc-stat-val" id="profitChance">0%</div>
         <div class="tuc-stat-label">Profit Probability</div>
       </div>
-      <div class="tuc-stat-card">
+      <div class="tuc-stat-card" id="verdictCard">
         <div class="tuc-stat-val" id="verdict">---</div>
         <div class="tuc-stat-label">Verdict</div>
+      </div>
+    </div>
+
+    <!-- EV Formula Explanation -->
+    <div class="tuc-ev-formula" id="evFormula">
+      <div class="tuc-ev-formula-title">EV Breakdown</div>
+      <div class="tuc-ev-formula-text" id="evFormulaText">
+        EV = sum of (output price x probability) for all possible outcomes
       </div>
     </div>
   </div>
@@ -295,10 +333,43 @@ const toolSchema = JSON.stringify({
 .tu-outcome-ev.loss{color:#ef4444}
 
 .tuc-stats{margin:1.5rem 0}
+
+/* EV Banner */
+.tuc-ev-banner{display:flex;justify-content:space-between;align-items:center;padding:1.25rem 1.5rem;border-radius:4px;margin-bottom:.75rem;border:1px solid var(--border);background:var(--bg2);transition:border-color .3s,background .3s}
+.tuc-ev-banner.profitable{border-color:#4caf50;background:rgba(76,175,80,.06)}
+.tuc-ev-banner.unprofitable{border-color:#ef5350;background:rgba(239,83,80,.06)}
+.tuc-ev-banner-left{display:flex;flex-direction:column;gap:.2rem}
+.tuc-ev-verdict-label{font-size:.7rem;color:var(--text2);text-transform:uppercase;letter-spacing:.06em;font-weight:600}
+.tuc-ev-verdict-text{font-size:1.3rem;font-weight:800;color:var(--text);transition:color .3s}
+.tuc-ev-banner.profitable .tuc-ev-verdict-text{color:#4caf50}
+.tuc-ev-banner.unprofitable .tuc-ev-verdict-text{color:#ef5350}
+.tuc-ev-banner-right{text-align:right}
+.tuc-ev-profit{font-size:1.6rem;font-weight:800;transition:color .3s}
+.tuc-ev-profit.profit{color:#4caf50}
+.tuc-ev-profit.loss{color:#ef5350}
+.tuc-ev-profit-label{font-size:.7rem;color:var(--text2);text-transform:uppercase;letter-spacing:.04em;margin-top:.15rem}
+
+/* EV Comparison Bars */
+.tuc-ev-compare{background:var(--bg2);border:1px solid var(--border);border-radius:4px;padding:1rem 1.25rem;margin-bottom:.75rem;display:flex;flex-direction:column;gap:.6rem}
+.tuc-ev-compare-row{display:flex;align-items:center;gap:.75rem}
+.tuc-ev-compare-label{width:110px;flex-shrink:0;font-size:.78rem;color:var(--text2);font-weight:600;text-transform:uppercase;letter-spacing:.03em}
+.tuc-ev-bar-track{flex:1;height:22px;background:var(--bg3);border-radius:4px;overflow:hidden;position:relative}
+.tuc-ev-bar{height:100%;border-radius:4px;transition:width .4s ease}
+.tuc-ev-bar.input-bar{background:#ef5350}
+.tuc-ev-bar.output-bar{background:#4caf50}
+.tuc-ev-compare-val{width:80px;flex-shrink:0;font-size:.85rem;font-weight:700;color:var(--text);text-align:right}
+
 .tuc-stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:.75rem}
-.tuc-stat-card{background:var(--bg2);border:1px solid var(--border);border-radius:4px;padding:1rem;text-align:center}
+.tuc-stat-card{background:var(--bg2);border:1px solid var(--border);border-radius:4px;padding:1rem;text-align:center;transition:border-color .3s}
+.tuc-stat-card.stat-profit{border-color:#4caf50}
+.tuc-stat-card.stat-loss{border-color:#ef5350}
 .tuc-stat-val{font-size:1.5rem;font-weight:800;color:var(--accent)}
 .tuc-stat-label{font-size:.75rem;color:var(--text2);text-transform:uppercase;letter-spacing:.04em;margin-top:.25rem}
+
+/* EV Formula */
+.tuc-ev-formula{background:var(--bg2);border:1px solid var(--border);border-left:3px solid var(--accent);border-radius:4px;padding:.75rem 1rem;margin-top:.75rem}
+.tuc-ev-formula-title{font-size:.75rem;color:var(--text2);text-transform:uppercase;letter-spacing:.05em;font-weight:700;margin-bottom:.35rem}
+.tuc-ev-formula-text{font-size:.8rem;color:var(--text2);line-height:1.6;font-family:'Courier New',monospace}
 
 .tuc-float-panel{background:var(--bg2);border:1px solid var(--border);border-radius:4px;padding:1.5rem;margin-top:2rem}
 .tuc-section-title{font-size:1.1rem;font-weight:700;color:var(--text);margin:0 0 .75rem}
@@ -365,6 +436,10 @@ const toolSchema = JSON.stringify({
   .tu-modal-grid{grid-template-columns:repeat(2,1fr)}
   .tuc-stats-grid{grid-template-columns:1fr 1fr}
   .tuc-float-fields{grid-template-columns:1fr}
+  .tuc-ev-banner{flex-direction:column;gap:.75rem;text-align:center}
+  .tuc-ev-banner-right{text-align:center}
+  .tuc-ev-compare-label{width:80px;font-size:.7rem}
+  .tuc-ev-compare-val{width:65px;font-size:.78rem}
 }
 </style>
 
@@ -608,17 +683,61 @@ const toolSchema = JSON.stringify({
 
     // Update stats
     statsEl.style.display = 'block';
-    document.getElementById('evResult').textContent = `$${ev.toFixed(2)}`;
+    const profit = ev - totalCost;
     const roi = totalCost > 0 ? ((ev - totalCost) / totalCost * 100) : 0;
+    const isProfitable = roi >= 0;
+
+    // EV Banner
+    const bannerEl = document.getElementById('evBanner');
+    bannerEl.className = 'tuc-ev-banner ' + (isProfitable ? 'profitable' : 'unprofitable');
+    const profitEl = document.getElementById('evProfit');
+    profitEl.textContent = `${profit >= 0 ? '+' : ''}$${profit.toFixed(2)}`;
+    profitEl.className = 'tuc-ev-profit ' + (isProfitable ? 'profit' : 'loss');
+    const verdictBannerEl = document.getElementById('verdictBanner');
+    if (roi > 20) { verdictBannerEl.textContent = 'Highly Profitable'; }
+    else if (roi > 10) { verdictBannerEl.textContent = 'Strong Buy'; }
+    else if (roi > 0) { verdictBannerEl.textContent = 'Marginal Profit'; }
+    else if (roi > -10) { verdictBannerEl.textContent = 'Break Even'; }
+    else if (roi > -25) { verdictBannerEl.textContent = 'Expected Loss'; }
+    else { verdictBannerEl.textContent = 'Avoid This Trade-Up'; }
+
+    // EV Comparison Bars
+    const maxVal = Math.max(totalCost, ev, 0.01);
+    document.getElementById('inputBar').style.width = `${(totalCost / maxVal * 100).toFixed(1)}%`;
+    document.getElementById('outputBar').style.width = `${(ev / maxVal * 100).toFixed(1)}%`;
+    document.getElementById('inputCostDisplay').textContent = `$${totalCost.toFixed(2)}`;
+    document.getElementById('outputEvDisplay').textContent = `$${ev.toFixed(2)}`;
+
+    // Stat cards
+    document.getElementById('evResult').textContent = `$${ev.toFixed(2)}`;
+    const evCard = document.getElementById('evCard');
+    evCard.className = 'tuc-stat-card ' + (isProfitable ? 'stat-profit' : 'stat-loss');
+    document.getElementById('evResult').style.color = isProfitable ? '#4caf50' : '#ef5350';
+
     const roiEl = document.getElementById('roiResult');
     roiEl.textContent = `${roi >= 0 ? '+' : ''}${roi.toFixed(1)}%`;
     roiEl.style.color = roi >= 0 ? '#4caf50' : '#ef5350';
+    const roiCard = document.getElementById('roiCard');
+    roiCard.className = 'tuc-stat-card ' + (isProfitable ? 'stat-profit' : 'stat-loss');
+
     document.getElementById('profitChance').textContent = `${(profitProb * 100).toFixed(1)}%`;
+
     const vEl = document.getElementById('verdict');
-    if (roi > 10) { vEl.textContent = 'Strong Buy'; vEl.style.color = '#4caf50'; }
-    else if (roi > 0) { vEl.textContent = 'Marginal Profit'; vEl.style.color = '#d4956e'; }
-    else if (roi > -10) { vEl.textContent = 'Break Even'; vEl.style.color = '#d4956e'; }
-    else { vEl.textContent = 'Expected Loss'; vEl.style.color = '#ef5350'; }
+    const verdictCard = document.getElementById('verdictCard');
+    if (roi > 20) { vEl.textContent = 'Highly Profitable'; vEl.style.color = '#4caf50'; verdictCard.className = 'tuc-stat-card stat-profit'; }
+    else if (roi > 10) { vEl.textContent = 'Strong Buy'; vEl.style.color = '#4caf50'; verdictCard.className = 'tuc-stat-card stat-profit'; }
+    else if (roi > 0) { vEl.textContent = 'Marginal Profit'; vEl.style.color = '#d4956e'; verdictCard.className = 'tuc-stat-card'; }
+    else if (roi > -10) { vEl.textContent = 'Break Even'; vEl.style.color = '#d4956e'; verdictCard.className = 'tuc-stat-card'; }
+    else { vEl.textContent = 'Expected Loss'; vEl.style.color = '#ef5350'; verdictCard.className = 'tuc-stat-card stat-loss'; }
+
+    // EV Formula breakdown
+    const formulaParts = outcomes.map(o => {
+      const price = o.price ? (o.price / 100).toFixed(2) : '0.00';
+      return `$${price} x ${(o.chance * 100).toFixed(1)}%`;
+    });
+    const formulaText = `EV = ${formulaParts.join(' + ')} = $${ev.toFixed(2)}`;
+    const profitFormula = `Profit = $${ev.toFixed(2)} (EV) - $${totalCost.toFixed(2)} (cost) = ${profit >= 0 ? '+' : ''}$${profit.toFixed(2)} (${roi >= 0 ? '+' : ''}${roi.toFixed(1)}%)`;
+    document.getElementById('evFormulaText').innerHTML = formulaText + '<br>' + profitFormula;
   }
 
   // Float calculator

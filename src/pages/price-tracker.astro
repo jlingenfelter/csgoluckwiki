@@ -16,6 +16,17 @@ const breadcrumbs = [
 // Compute market stats from SKINS data
 const allSkins = [...SKINS];
 const skinsWithPrices = allSkins.filter(s => s.prices.length > 0);
+
+// Build compact skin list for client-side investment autocomplete
+const skinList = skinsWithPrices.map(s => ({
+  slug: s.slug,
+  name: `${s.weapon} | ${s.name}`,
+  price: getLowestPrice(s),
+  image: s.image || null,
+  rarity: s.rarity,
+})).sort((a, b) => a.name.localeCompare(b.name));
+const skinListJson = JSON.stringify(skinList);
+
 const totalValue = skinsWithPrices.reduce((sum, s) => sum + getHighestPrice(s), 0);
 const avgPrice = skinsWithPrices.length > 0 ? totalValue / skinsWithPrices.length : 0;
 const mostExpensive = [...skinsWithPrices].sort((a, b) => getHighestPrice(b) - getHighestPrice(a)).slice(0, 20);
@@ -93,6 +104,266 @@ const faqs = [
     <h1>CS2 Skin Price Tracker</h1>
     <p>Explore live pricing data for all CS2 weapon skins, knives, and gloves. Track market trends, find the best deals, and analyze price distributions by rarity and weapon category.</p>
   </section>
+
+  <!-- Investment ROI Tracker -->
+  <section class="inv-section" id="inv-section" style="display:none">
+    <div class="inv-header">
+      <h2>Your Investments</h2>
+      <div class="inv-totals" id="inv-totals"></div>
+    </div>
+    <div class="inv-table-wrap" id="inv-table-wrap">
+      <table class="inv-table" id="inv-table">
+        <thead>
+          <tr>
+            <th>Skin</th>
+            <th>Qty</th>
+            <th>Bought At</th>
+            <th>Current Price</th>
+            <th>ROI %</th>
+            <th>P&L</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody id="inv-tbody"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- Add Investment Form -->
+  <section class="inv-form-section">
+    <details class="inv-form-toggle" id="inv-form-toggle">
+      <summary>Add Investment</summary>
+      <form class="inv-form" id="inv-form" autocomplete="off">
+        <div class="inv-form-row">
+          <div class="inv-form-field inv-form-field-skin">
+            <label for="inv-skin">Skin</label>
+            <div class="inv-ac-wrap">
+              <input type="text" id="inv-skin" class="inv-input" placeholder="Search for a skin..." />
+              <input type="hidden" id="inv-skin-slug" />
+              <div class="inv-ac-dropdown" id="inv-ac-dropdown"></div>
+            </div>
+          </div>
+          <div class="inv-form-field">
+            <label for="inv-price">Bought At ($)</label>
+            <input type="number" id="inv-price" class="inv-input" placeholder="12.50" step="0.01" min="0" required />
+          </div>
+          <div class="inv-form-field">
+            <label for="inv-date">Date Bought</label>
+            <input type="date" id="inv-date" class="inv-input" required />
+          </div>
+          <div class="inv-form-field">
+            <label for="inv-qty">Quantity</label>
+            <input type="number" id="inv-qty" class="inv-input" value="1" min="1" step="1" required />
+          </div>
+          <div class="inv-form-field inv-form-field-btn">
+            <button type="submit" class="inv-btn-add">Add</button>
+          </div>
+        </div>
+      </form>
+    </details>
+  </section>
+
+  <script define:vars={{ skinListData: skinListJson }}>
+    (function() {
+      const STORAGE_KEY = 'csgoluck_investments';
+      const skinList = JSON.parse(skinListData);
+
+      // Build slug -> current price map
+      const priceMap = {};
+      const nameMap = {};
+      for (const s of skinList) {
+        priceMap[s.slug] = s.price;
+        nameMap[s.slug] = s.name;
+      }
+
+      function loadInvestments() {
+        try {
+          return JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+        } catch { return []; }
+      }
+
+      function saveInvestments(investments) {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(investments));
+      }
+
+      function renderInvestments() {
+        const investments = loadInvestments();
+        const section = document.getElementById('inv-section');
+        const tbody = document.getElementById('inv-tbody');
+        const totalsDiv = document.getElementById('inv-totals');
+
+        if (investments.length === 0) {
+          section.style.display = 'none';
+          return;
+        }
+
+        section.style.display = '';
+
+        let totalCost = 0;
+        let totalCurrent = 0;
+        let rows = '';
+
+        for (let i = 0; i < investments.length; i++) {
+          const inv = investments[i];
+          const currentPrice = priceMap[inv.slug] || 0;
+          const cost = inv.boughtAt * inv.quantity;
+          const current = currentPrice * inv.quantity;
+          const pl = current - cost;
+          const roi = inv.boughtAt > 0 ? ((currentPrice - inv.boughtAt) / inv.boughtAt * 100) : 0;
+
+          totalCost += cost;
+          totalCurrent += current;
+
+          const roiClass = roi >= 0 ? 'inv-positive' : 'inv-negative';
+          const roiSign = roi >= 0 ? '+' : '';
+          const plSign = pl >= 0 ? '+' : '';
+
+          rows += '<tr>' +
+            '<td class="inv-col-name">' + (nameMap[inv.slug] || inv.name || inv.slug) + '</td>' +
+            '<td class="inv-col-qty">' + inv.quantity + '</td>' +
+            '<td class="inv-col-bought">$' + inv.boughtAt.toFixed(2) + '</td>' +
+            '<td class="inv-col-current">$' + currentPrice.toFixed(2) + '</td>' +
+            '<td class="inv-col-roi ' + roiClass + '">' + roiSign + roi.toFixed(1) + '%</td>' +
+            '<td class="inv-col-pl ' + roiClass + '">' + plSign + '$' + pl.toFixed(2) + '</td>' +
+            '<td class="inv-col-action"><button class="inv-remove-btn" data-idx="' + i + '" title="Remove">&#x2715;</button></td>' +
+          '</tr>';
+        }
+
+        tbody.innerHTML = rows;
+
+        const totalPL = totalCurrent - totalCost;
+        const totalROI = totalCost > 0 ? ((totalCurrent - totalCost) / totalCost * 100) : 0;
+        const totalClass = totalPL >= 0 ? 'inv-positive' : 'inv-negative';
+        const totalPLSign = totalPL >= 0 ? '+' : '';
+        const totalROISign = totalROI >= 0 ? '+' : '';
+
+        totalsDiv.innerHTML =
+          '<div class="inv-total-item"><span class="inv-total-label">Portfolio Value</span><span class="inv-total-val">$' + totalCurrent.toFixed(2) + '</span></div>' +
+          '<div class="inv-total-item"><span class="inv-total-label">Total Invested</span><span class="inv-total-val">$' + totalCost.toFixed(2) + '</span></div>' +
+          '<div class="inv-total-item"><span class="inv-total-label">Total P&L</span><span class="inv-total-val ' + totalClass + '">' + totalPLSign + '$' + totalPL.toFixed(2) + '</span></div>' +
+          '<div class="inv-total-item"><span class="inv-total-label">Overall ROI</span><span class="inv-total-val ' + totalClass + '">' + totalROISign + totalROI.toFixed(1) + '%</span></div>';
+
+        // Attach remove handlers
+        tbody.querySelectorAll('.inv-remove-btn').forEach(function(btn) {
+          btn.addEventListener('click', function() {
+            const idx = parseInt(this.dataset.idx);
+            const inv = loadInvestments();
+            inv.splice(idx, 1);
+            saveInvestments(inv);
+            renderInvestments();
+          });
+        });
+      }
+
+      // Autocomplete
+      function setupAutocomplete() {
+        const input = document.getElementById('inv-skin');
+        const hiddenInput = document.getElementById('inv-skin-slug');
+        const dropdown = document.getElementById('inv-ac-dropdown');
+
+        input.addEventListener('focus', function() {
+          showAcDropdown(input.value);
+        });
+
+        input.addEventListener('input', function() {
+          hiddenInput.value = '';
+          showAcDropdown(input.value);
+        });
+
+        input.addEventListener('blur', function() {
+          setTimeout(function() { dropdown.classList.remove('inv-ac-open'); }, 200);
+        });
+
+        function showAcDropdown(query) {
+          const q = query.toLowerCase().trim();
+          const filtered = q
+            ? skinList.filter(function(s) { return s.name.toLowerCase().includes(q); })
+            : skinList.slice(0, 30);
+          const shown = filtered.slice(0, 40);
+
+          dropdown.innerHTML = shown.map(function(s) {
+            return '<div class="inv-ac-option" data-slug="' + s.slug + '" data-name="' + s.name.replace(/"/g, '&quot;') + '">' +
+              '<span class="inv-ac-name">' + s.name + '</span>' +
+              '<span class="inv-ac-price">$' + s.price.toFixed(2) + '</span>' +
+            '</div>';
+          }).join('');
+
+          if (shown.length === 0) {
+            dropdown.innerHTML = '<div class="inv-ac-option inv-ac-none">No skins found</div>';
+          } else if (filtered.length > 40) {
+            dropdown.innerHTML += '<div class="inv-ac-option inv-ac-none">' + (filtered.length - 40) + ' more — keep typing</div>';
+          }
+
+          dropdown.classList.add('inv-ac-open');
+
+          dropdown.querySelectorAll('.inv-ac-option[data-slug]').forEach(function(opt) {
+            opt.addEventListener('mousedown', function(e) {
+              e.preventDefault();
+              input.value = opt.dataset.name;
+              hiddenInput.value = opt.dataset.slug;
+              dropdown.classList.remove('inv-ac-open');
+            });
+          });
+        }
+      }
+
+      // Form submission
+      function setupForm() {
+        const form = document.getElementById('inv-form');
+        form.addEventListener('submit', function(e) {
+          e.preventDefault();
+          const slug = document.getElementById('inv-skin-slug').value;
+          const nameInput = document.getElementById('inv-skin').value;
+          const price = parseFloat(document.getElementById('inv-price').value);
+          const date = document.getElementById('inv-date').value;
+          const qty = parseInt(document.getElementById('inv-qty').value) || 1;
+
+          if (!slug || !price || !date) {
+            if (!slug && nameInput) {
+              // Try to match by name
+              var match = skinList.find(function(s) { return s.name.toLowerCase() === nameInput.toLowerCase(); });
+              if (!match) return;
+              document.getElementById('inv-skin-slug').value = match.slug;
+              addInvestment(match.slug, match.name, price, date, qty);
+            }
+            return;
+          }
+
+          addInvestment(slug, nameInput, price, date, qty);
+        });
+      }
+
+      function addInvestment(slug, name, price, date, qty) {
+        const investments = loadInvestments();
+        investments.push({
+          slug: slug,
+          name: name,
+          boughtAt: price,
+          boughtDate: date,
+          quantity: qty,
+        });
+        saveInvestments(investments);
+        renderInvestments();
+
+        // Reset form
+        document.getElementById('inv-skin').value = '';
+        document.getElementById('inv-skin-slug').value = '';
+        document.getElementById('inv-price').value = '';
+        document.getElementById('inv-date').value = '';
+        document.getElementById('inv-qty').value = '1';
+
+        // Open the section if it was hidden
+        var toggle = document.getElementById('inv-form-toggle');
+        if (toggle) toggle.removeAttribute('open');
+      }
+
+      document.addEventListener('DOMContentLoaded', function() {
+        renderInvestments();
+        setupAutocomplete();
+        setupForm();
+      });
+    })();
+  </script>
 
   <!-- Market Overview Stats -->
   <section class="pt-overview">
@@ -415,6 +686,62 @@ const faqs = [
 .pt-related-row{display:flex;align-items:center;text-decoration:none;color:var(--text);background:var(--bg2);border:1px solid var(--border);border-left:3px solid transparent;border-radius:4px;padding:.6rem 1rem;font-size:.9rem;font-weight:600;transition:border-color .15s,background .15s}
 .pt-related-row:hover{border-left-color:var(--accent);background:var(--bg3)}
 
+/* ── Investment Tracker ── */
+.inv-section{background:var(--bg2);border:1px solid var(--border);border-radius:4px;padding:1.5rem;margin-bottom:1.5rem}
+.inv-header{display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:1rem;margin-bottom:1rem}
+.inv-header h2{font-family:'Montserrat',sans-serif;font-size:1.15rem;font-weight:700;color:var(--text);margin:0}
+.inv-totals{display:flex;gap:1.25rem;flex-wrap:wrap}
+.inv-total-item{display:flex;flex-direction:column;align-items:center;gap:.15rem;min-width:100px}
+.inv-total-label{font-size:.72rem;color:var(--text2);text-transform:uppercase;letter-spacing:.04em;font-weight:600}
+.inv-total-val{font-family:'Montserrat',sans-serif;font-size:1rem;font-weight:800;color:var(--accent)}
+.inv-positive{color:#2ecc71 !important}
+.inv-negative{color:#e74c3c !important}
+
+.inv-table-wrap{overflow-x:auto;border-radius:4px;border:1px solid var(--border)}
+.inv-table{width:100%;border-collapse:collapse;background:var(--bg);font-size:.9rem}
+.inv-table thead{background:var(--bg3);border-bottom:2px solid var(--border)}
+.inv-table th{color:var(--text);padding:.6rem .75rem;text-align:left;font-weight:700;font-size:.82rem;white-space:nowrap}
+.inv-table td{padding:.6rem .75rem;border-bottom:1px solid var(--border);color:var(--text)}
+.inv-table tbody tr:hover{background:var(--bg3)}
+.inv-col-name{font-weight:600;min-width:160px}
+.inv-col-qty{text-align:center;width:50px}
+.inv-col-bought{white-space:nowrap}
+.inv-col-current{white-space:nowrap}
+.inv-col-roi{font-weight:700;white-space:nowrap}
+.inv-col-pl{font-weight:700;white-space:nowrap}
+.inv-col-action{width:40px;text-align:center}
+.inv-remove-btn{background:none;border:none;color:var(--text2);font-size:1rem;cursor:pointer;padding:.2rem .4rem;transition:color .15s}
+.inv-remove-btn:hover{color:#e74c3c}
+
+/* ── Add Investment Form ── */
+.inv-form-section{margin-bottom:1.5rem}
+.inv-form-toggle{background:var(--bg2);border:1px solid var(--border);border-radius:4px;overflow:hidden}
+.inv-form-toggle summary{padding:.75rem 1rem;font-weight:700;font-size:.9rem;color:var(--accent);cursor:pointer;list-style:none;display:flex;align-items:center;gap:.5rem;transition:background .15s}
+.inv-form-toggle summary::-webkit-details-marker{display:none}
+.inv-form-toggle summary::before{content:'+';font-size:1.1rem;font-weight:700;color:var(--accent)}
+.inv-form-toggle[open] summary::before{content:'\2212'}
+.inv-form-toggle summary:hover{background:var(--bg3)}
+.inv-form{padding:1rem}
+.inv-form-row{display:flex;gap:.75rem;flex-wrap:wrap;align-items:flex-end}
+.inv-form-field{display:flex;flex-direction:column;gap:.3rem}
+.inv-form-field label{font-size:.78rem;color:var(--text2);font-weight:600;text-transform:uppercase;letter-spacing:.04em}
+.inv-form-field-skin{flex:2;min-width:200px}
+.inv-form-field-btn{align-self:flex-end}
+.inv-input{background:var(--bg3);color:var(--text);border:1px solid var(--border);padding:.55rem .75rem;border-radius:4px;font-size:.88rem;font-family:inherit;width:100%;box-sizing:border-box;min-width:100px}
+.inv-input:focus{outline:none;border-color:var(--accent)}
+.inv-btn-add{padding:.55rem 1.25rem;background:var(--accent);color:#000;border:none;border-radius:4px;font-weight:700;cursor:pointer;font-size:.88rem;font-family:'Montserrat',sans-serif;white-space:nowrap}
+.inv-btn-add:hover{opacity:.85}
+
+/* ── Autocomplete Dropdown ── */
+.inv-ac-wrap{position:relative}
+.inv-ac-dropdown{display:none;position:absolute;top:100%;left:0;right:0;background:var(--bg2);border:1px solid var(--border);border-top:none;border-radius:0 0 4px 4px;max-height:240px;overflow-y:auto;z-index:100}
+.inv-ac-dropdown.inv-ac-open{display:block}
+.inv-ac-option{display:flex;justify-content:space-between;align-items:center;padding:.45rem .75rem;cursor:pointer;font-size:.82rem;transition:background .1s;gap:.5rem}
+.inv-ac-option:hover{background:var(--bg3)}
+.inv-ac-none{color:var(--text2);cursor:default;font-style:italic}
+.inv-ac-name{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--text)}
+.inv-ac-price{white-space:nowrap;font-weight:600;color:var(--accent);font-size:.8rem}
+
 /* ── Responsive ── */
 @media(max-width:768px){
   .pt-hero h1{font-size:1.5rem}
@@ -424,5 +751,11 @@ const faqs = [
   .pt-chart-count{text-align:left}
   .pt-table{font-size:.85rem}
   .pt-table th,.pt-table td{padding:.5rem}
+  .inv-form-row{flex-direction:column}
+  .inv-form-field-skin{min-width:auto}
+  .inv-totals{flex-direction:column;gap:.5rem}
+  .inv-header{flex-direction:column}
+  .inv-table{font-size:.82rem}
+  .inv-table th,.inv-table td{padding:.4rem .5rem}
 }
 </style>

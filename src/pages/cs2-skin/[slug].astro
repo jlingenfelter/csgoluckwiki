@@ -429,10 +429,10 @@ const productSchema = JSON.stringify({
   "@context": "https://schema.org",
   "@type": "Product",
   "name": `${skin.weapon} | ${skin.name}`,
-  "description": `${skin.weapon} | ${skin.name} is a ${skin.rarity} grade ${catLabel.toLowerCase()} skin in Counter-Strike 2${skin.collection ? ` from the ${skin.collection}` : ''}. Available in ${skin.prices.length} wear condition${skin.prices.length !== 1 ? 's' : ''} with float range ${skin.minFloat.toFixed(2)} to ${skin.maxFloat.toFixed(2)}.`,
   "image": skin.image || undefined,
-  "brand": { "@type": "Brand", "name": "Counter-Strike 2" },
-  "category": `CS2 ${catLabel} Skins`,
+  "description": `${skin.weapon} | ${skin.name} CS2 skin — ${skin.rarity} rarity. View prices across ${allProviders.size}+ marketplaces.`,
+  "brand": { "@type": "Brand", "name": "Valve" },
+  "category": "CS2 Skin",
   "sku": skin.slug,
   ...(lowPrice > 0 ? {
     "offers": {
@@ -511,6 +511,50 @@ const priceSimilar = SKINS
   .slice(0, 4)
   .map(s => s.skin);
 
+// ── Similar Skins (blended recommendations) ──────────────────────────────
+const currentLow = getLowestPrice(skin);
+const similarSkins: typeof SKINS = (() => {
+  const seen = new Set<string>([skin.slug]);
+  const results: typeof SKINS = [];
+
+  // 1. Same weapon, different skin — prioritize same rarity
+  const sameWeaponSameRarity = SKINS.filter(s =>
+    s.weaponSlug === skin.weaponSlug && s.slug !== skin.slug && !s.phase &&
+    s.rarity === skin.rarity
+  );
+  for (const s of sameWeaponSameRarity) {
+    if (results.length >= 6) break;
+    if (!seen.has(s.slug)) { seen.add(s.slug); results.push(s); }
+  }
+
+  // 2. Same rarity, different weapon — for variety
+  const sameRarityDiffWeapon = SKINS.filter(s =>
+    s.rarity === skin.rarity && s.weaponSlug !== skin.weaponSlug &&
+    !s.phase && !seen.has(s.slug)
+  );
+  for (const s of sameRarityDiffWeapon) {
+    if (results.length >= 6) break;
+    if (!seen.has(s.slug)) { seen.add(s.slug); results.push(s); }
+  }
+
+  // 3. Similar price range (within 50% of current skin's price)
+  if (results.length < 6 && currentLow > 0) {
+    const priceLo = currentLow * 0.5;
+    const priceHi = currentLow * 1.5;
+    const byPrice = SKINS.filter(s => {
+      if (s.phase || seen.has(s.slug)) return false;
+      const sLow = getLowestPrice(s);
+      return sLow >= priceLo && sLow <= priceHi;
+    });
+    for (const s of byPrice) {
+      if (results.length >= 6) break;
+      if (!seen.has(s.slug)) { seen.add(s.slug); results.push(s); }
+    }
+  }
+
+  return results.slice(0, 6);
+})();
+
 // ── Containers (which cases contain this skin) ───────────────────────────
 const skinCases = getCasesForSkin(skin.weapon, skin.name);
 
@@ -548,7 +592,24 @@ const listingDesc = (skin.listingCount ?? 0) > 10000 ? 'widely available with hi
 
 <!-- Title Strip -->
 <div class="wi-head">
-  <h1 class="wi-title">{skin.weapon} | {skin.name} <span class="wi-wear-tag" id="active-wear-label">{defaultWear ? defaultWear.wear : ''}</span></h1>
+  <h1 class="wi-title">
+    {skin.weapon} | {skin.name}
+    <span class="wi-wear-tag" id="active-wear-label">{defaultWear ? defaultWear.wear : ''}</span>
+    <button
+      class="wi-fav-btn"
+      id="favBtn"
+      data-slug={skin.slug}
+      data-name={skin.name}
+      data-weapon={skin.weapon}
+      data-image={skin.image || ''}
+      data-price={lowPrice > 0 ? lowPrice.toFixed(2) : '0'}
+      aria-label="Add to favorites"
+      title="Add to watchlist"
+    >
+      <svg class="wi-fav-icon wi-fav-outline" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+      <svg class="wi-fav-icon wi-fav-filled" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+    </button>
+  </h1>
   <div class="wi-title-accent" style={`background:${rarityColor}`}></div>
 </div>
 
@@ -605,6 +666,62 @@ const listingDesc = (skin.listingCount ?? 0) > 10000 ? 'widely available with hi
       <div class="wi-grade-bar">
         <div class="wi-grade-bar-fill" style={`background:${rarityColor};width:${skin.rarity === 'Consumer' ? '15%' : skin.rarity === 'Industrial' ? '28%' : skin.rarity === 'Mil-Spec' ? '42%' : skin.rarity === 'Restricted' ? '56%' : skin.rarity === 'Classified' ? '70%' : skin.rarity === 'Covert' ? '85%' : '100%'}`}></div>
       </div>
+    </div>
+
+    <!-- Float Range Chart -->
+    <div class="wi-float-chart">
+      <h2>Float Range</h2>
+      <div class="wi-float-bar-wrap">
+        <div class="wi-float-bar">
+          {/* FN segment */}
+          <div class="wi-float-seg wi-float-fn" style={`width:7%;${skin.minFloat < 0.07 && skin.maxFloat > 0 ? '' : 'opacity:0.25;'}`}>
+            <div class="wi-float-seg-inner" style={skin.minFloat < 0.07 && skin.maxFloat > 0 ? `background:rgba(76,175,80,0.55);position:absolute;top:0;bottom:0;left:${Math.max(0, ((skin.minFloat - 0) / 0.07) * 100)}%;right:${Math.max(0, ((0.07 - Math.min(skin.maxFloat, 0.07)) / 0.07) * 100)}%` : 'display:none'}></div>
+          </div>
+          {/* MW segment */}
+          <div class="wi-float-seg wi-float-mw" style={`width:8%;${skin.minFloat < 0.15 && skin.maxFloat > 0.07 ? '' : 'opacity:0.25;'}`}>
+            <div class="wi-float-seg-inner" style={skin.minFloat < 0.15 && skin.maxFloat > 0.07 ? `background:rgba(33,150,243,0.55);position:absolute;top:0;bottom:0;left:${Math.max(0, ((Math.max(skin.minFloat, 0.07) - 0.07) / 0.08) * 100)}%;right:${Math.max(0, ((0.15 - Math.min(skin.maxFloat, 0.15)) / 0.08) * 100)}%` : 'display:none'}></div>
+          </div>
+          {/* FT segment */}
+          <div class="wi-float-seg wi-float-ft" style={`width:23%;${skin.minFloat < 0.38 && skin.maxFloat > 0.15 ? '' : 'opacity:0.25;'}`}>
+            <div class="wi-float-seg-inner" style={skin.minFloat < 0.38 && skin.maxFloat > 0.15 ? `background:rgba(255,235,59,0.45);position:absolute;top:0;bottom:0;left:${Math.max(0, ((Math.max(skin.minFloat, 0.15) - 0.15) / 0.23) * 100)}%;right:${Math.max(0, ((0.38 - Math.min(skin.maxFloat, 0.38)) / 0.23) * 100)}%` : 'display:none'}></div>
+          </div>
+          {/* WW segment */}
+          <div class="wi-float-seg wi-float-ww" style={`width:7%;${skin.minFloat < 0.45 && skin.maxFloat > 0.38 ? '' : 'opacity:0.25;'}`}>
+            <div class="wi-float-seg-inner" style={skin.minFloat < 0.45 && skin.maxFloat > 0.38 ? `background:rgba(255,152,0,0.55);position:absolute;top:0;bottom:0;left:${Math.max(0, ((Math.max(skin.minFloat, 0.38) - 0.38) / 0.07) * 100)}%;right:${Math.max(0, ((0.45 - Math.min(skin.maxFloat, 0.45)) / 0.07) * 100)}%` : 'display:none'}></div>
+          </div>
+          {/* BS segment */}
+          <div class="wi-float-seg wi-float-bs" style={`width:55%;${skin.minFloat < 1.00 && skin.maxFloat > 0.45 ? '' : 'opacity:0.25;'}`}>
+            <div class="wi-float-seg-inner" style={skin.minFloat < 1.00 && skin.maxFloat > 0.45 ? `background:rgba(244,67,54,0.45);position:absolute;top:0;bottom:0;left:${Math.max(0, ((Math.max(skin.minFloat, 0.45) - 0.45) / 0.55) * 100)}%;right:${Math.max(0, ((1.00 - Math.min(skin.maxFloat, 1.00)) / 0.55) * 100)}%` : 'display:none'}></div>
+          </div>
+        </div>
+        {/* Skin's actual min/max markers */}
+        <div class="wi-float-markers">
+          <div class="wi-float-marker wi-float-marker-min" style={`left:${skin.minFloat * 100}%`}>
+            <span class="wi-float-marker-line"></span>
+            <span class="wi-float-marker-val">{skin.minFloat.toFixed(2)}</span>
+          </div>
+          <div class="wi-float-marker wi-float-marker-max" style={`left:${skin.maxFloat * 100}%`}>
+            <span class="wi-float-marker-line"></span>
+            <span class="wi-float-marker-val">{skin.maxFloat.toFixed(2)}</span>
+          </div>
+        </div>
+        <div class="wi-float-labels">
+          <span class="wi-float-label" style="width:7%">FN</span>
+          <span class="wi-float-label" style="width:8%">MW</span>
+          <span class="wi-float-label" style="width:23%">FT</span>
+          <span class="wi-float-label" style="width:7%">WW</span>
+          <span class="wi-float-label" style="width:55%">BS</span>
+        </div>
+        <div class="wi-float-scale">
+          <span>0.00</span>
+          <span>0.07</span>
+          <span>0.15</span>
+          <span>0.38</span>
+          <span>0.45</span>
+          <span>1.00</span>
+        </div>
+      </div>
+      <p class="wi-float-desc">This skin drops with float values between <strong>{skin.minFloat.toFixed(2)}</strong> and <strong>{skin.maxFloat.toFixed(2)}</strong>, available in {possibleWears.join(', ')} condition{possibleWears.length !== 1 ? 's' : ''}.</p>
     </div>
 
     <!-- Containers / Cases -->
@@ -672,6 +789,17 @@ const listingDesc = (skin.listingCount ?? 0) > 10000 ? 'widely available with hi
         <p class="wi-nodata">No pricing data at this time</p>
       )}
     </div>
+
+    <!-- Price Trend Sparkline -->
+    {lowPrice > 0 && (
+      <div class="wi-sparkline-wrap" id="wi-sparkline" data-slug={skin.slug} data-price={lowPrice.toFixed(2)} title="Simulated price trend">
+        <div class="wi-sparkline-label">
+          <span class="wi-sparkline-title">Price Trend</span>
+          <span class="wi-sparkline-hint">14-day simulated</span>
+        </div>
+        <div class="wi-sparkline-chart" id="wi-sparkline-svg"></div>
+      </div>
+    )}
 
     <!-- Marketplace Prices -->
     {skin.prices.length > 0 ? (
@@ -1268,6 +1396,42 @@ const listingDesc = (skin.listingCount ?? 0) > 10000 ? 'widely available with hi
   </div>
 )}
 
+<!-- Similar Skins -->
+{similarSkins.length > 0 && (
+  <div class="wi-similar">
+    <h2>Similar Skins</h2>
+    <div class="wi-similar-strip">
+      {similarSkins.map(rs => {
+        const rsColor = rs.rarityColor || RARITY_COLORS[rs.rarity] || '#fff';
+        const rsBg = RARITY_BG[rs.rarity] || 'rgba(255,255,255,0.05)';
+        const rsLow = getLowestPrice(rs);
+        return (
+          <a href={`/cs2-skin/${rs.slug}/`} class="wi-similar-card">
+            <div class="wi-similar-thumb" style={`background:${rsBg}`}>
+              {rs.image
+                ? <img src={skinRelatedImage(rs.image)} alt={`${rs.weapon} | ${rs.name}`} loading="lazy" width="280" height="210" />
+                : <div style={`font-size:1.2rem;font-weight:900;color:${rsColor};opacity:.3`}>{rs.weapon.substring(0, 2)}</div>
+              }
+            </div>
+            <div class="wi-similar-info">
+              <span class="wi-similar-weapon">{rs.weapon}</span>
+              <span class="wi-similar-name">{rs.name}</span>
+              {rsLow > 0 && <span class="wi-similar-price">${fmtPrice(rsLow)}</span>}
+              <span class="wi-similar-rarity" style={`background:${rsColor}`}>{rs.rarity}</span>
+            </div>
+          </a>
+        );
+      })}
+    </div>
+  </div>
+)}
+
+<!-- Recently Viewed -->
+<section class="wi-recent" id="recentlyViewed" style="display:none">
+  <h2>Recently Viewed</h2>
+  <div class="wi-recent-strip" id="recentStrip"></div>
+</section>
+
 <!-- FAQ -->
 <h2>Frequently Asked Questions</h2>
 <dl class="faq">{faqs.map(f => (<><dt>{f.q}</dt><dd>{f.a}</dd></>))}</dl>
@@ -1493,6 +1657,166 @@ document.addEventListener('DOMContentLoaded', () => {
 })();
 </script>
 
+<!-- Favorites & Recently Viewed -->
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  // ── Favorites ──────────────────────────────────────────
+  const favBtn = document.getElementById('favBtn');
+  if (favBtn) {
+    const STORAGE_KEY = 'csgoluck_favorites';
+    const skinData = {
+      slug: favBtn.dataset.slug,
+      name: favBtn.dataset.name,
+      weapon: favBtn.dataset.weapon,
+      image: favBtn.dataset.image,
+      price: parseFloat(favBtn.dataset.price) || 0,
+    };
+
+    function getFavorites() {
+      try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || []; }
+      catch { return []; }
+    }
+
+    function saveFavorites(favs) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(favs));
+    }
+
+    function isFavorited() {
+      return getFavorites().some(f => f.slug === skinData.slug);
+    }
+
+    function updateBtn() {
+      favBtn.classList.toggle('is-fav', isFavorited());
+      favBtn.setAttribute('aria-label', isFavorited() ? 'Remove from favorites' : 'Add to favorites');
+      favBtn.title = isFavorited() ? 'Remove from watchlist' : 'Add to watchlist';
+    }
+
+    favBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      let favs = getFavorites();
+      const idx = favs.findIndex(f => f.slug === skinData.slug);
+      if (idx > -1) {
+        favs.splice(idx, 1);
+      } else {
+        favs.push({ ...skinData, addedAt: new Date().toISOString() });
+      }
+      saveFavorites(favs);
+      updateBtn();
+      // Trigger pop animation
+      favBtn.classList.remove('wi-fav-pop');
+      void favBtn.offsetWidth;
+      favBtn.classList.add('wi-fav-pop');
+    });
+
+    updateBtn();
+  }
+
+  // ── Recently Viewed ────────────────────────────────────
+  const RECENT_KEY = 'csgoluck_recent';
+  const MAX_RECENT = 12;
+  const currentSlug = favBtn ? favBtn.dataset.slug : '';
+
+  function getRecent() {
+    try { return JSON.parse(localStorage.getItem(RECENT_KEY)) || []; }
+    catch { return []; }
+  }
+
+  function saveRecent(items) {
+    localStorage.setItem(RECENT_KEY, JSON.stringify(items));
+  }
+
+  // Track this page view
+  if (currentSlug) {
+    let recent = getRecent();
+    recent = recent.filter(r => r.slug !== currentSlug);
+    recent.unshift({
+      slug: currentSlug,
+      name: favBtn.dataset.name,
+      weapon: favBtn.dataset.weapon,
+      image: favBtn.dataset.image,
+      viewedAt: new Date().toISOString(),
+    });
+    if (recent.length > MAX_RECENT) recent = recent.slice(0, MAX_RECENT);
+    saveRecent(recent);
+  }
+
+  // Render recently viewed strip
+  const section = document.getElementById('recentlyViewed');
+  const strip = document.getElementById('recentStrip');
+  if (section && strip) {
+    const recent = getRecent().filter(r => r.slug !== currentSlug);
+    if (recent.length > 0) {
+      section.style.display = '';
+      strip.innerHTML = recent.map(r => `
+        <a href="/cs2-skin/${r.slug}/" class="wi-recent-card">
+          <div class="wi-recent-card-img">
+            ${r.image ? `<img src="${r.image}" alt="${r.weapon} | ${r.name}" loading="lazy" />` : ''}
+          </div>
+          <div class="wi-recent-card-info">
+            <div class="wi-recent-card-weapon">${r.weapon}</div>
+            <div class="wi-recent-card-name">${r.name}</div>
+          </div>
+        </a>
+      `).join('');
+    }
+  }
+});
+</script>
+
+<!-- Sparkline Generator -->
+<script is:inline>
+(function() {
+  var el = document.getElementById('wi-sparkline');
+  if (!el) return;
+  var slug = el.getAttribute('data-slug') || '';
+  var currentPrice = parseFloat(el.getAttribute('data-price')) || 0;
+  if (!slug || currentPrice <= 0) return;
+
+  var width = 80;
+  var height = 24;
+  var points = 14;
+  var data = [];
+  var seed = 0;
+  for (var i = 0; i < slug.length; i++) {
+    seed = ((seed << 5) - seed) + slug.charCodeAt(i);
+    seed = seed | 0;
+  }
+
+  var price = currentPrice;
+  for (var i = 0; i < points; i++) {
+    seed = (seed * 16807) % 2147483647;
+    if (seed < 0) seed += 2147483647;
+    var change = ((seed % 100) - 50) / 500;
+    price = price * (1 + change);
+    data.unshift(price);
+  }
+  data.push(currentPrice);
+
+  var min = data[0], max = data[0];
+  for (var i = 1; i < data.length; i++) {
+    if (data[i] < min) min = data[i];
+    if (data[i] > max) max = data[i];
+  }
+  var range = max - min || 1;
+  var pad = 2;
+  var innerH = height - pad * 2;
+  var pathParts = [];
+  for (var i = 0; i < data.length; i++) {
+    var x = (i / (data.length - 1)) * width;
+    var y = pad + innerH - ((data[i] - min) / range) * innerH;
+    pathParts.push(x.toFixed(1) + ',' + y.toFixed(1));
+  }
+
+  var isUp = currentPrice >= data[0];
+  var color = isUp ? '#2ecc71' : '#e07070';
+
+  var svgContainer = document.getElementById('wi-sparkline-svg');
+  if (svgContainer) {
+    svgContainer.innerHTML = '<svg width="' + width + '" height="' + height + '" viewBox="0 0 ' + width + ' ' + height + '"><polyline points="' + pathParts.join(' ') + '" fill="none" stroke="' + color + '" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+  }
+})();
+</script>
+
 <style is:inline>
 /* ── Breadcrumb ─────────────────────────────────────────── */
 .wi-crumbs{display:flex;align-items:center;flex-wrap:wrap;gap:.3rem;font-size:.78rem;color:var(--text2);margin-bottom:1rem}
@@ -1569,6 +1893,14 @@ document.addEventListener('DOMContentLoaded', () => {
 .wi-market-name{font-size:.82rem;font-weight:600;color:var(--text)}
 .wi-market-right{display:flex;align-items:center;gap:.8rem}
 .wi-market-amount{font-size:.92rem;font-weight:700;color:var(--text)}
+
+/* ── Price Sparkline ───────────────────────────────────── */
+.wi-sparkline-wrap{display:flex;align-items:center;justify-content:space-between;gap:.6rem;background:var(--bg2);border:1px solid var(--border);border-radius:4px;padding:.55rem .8rem;margin-bottom:0}
+.wi-sparkline-label{display:flex;flex-direction:column;gap:.1rem;flex-shrink:0}
+.wi-sparkline-title{font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--text2)}
+.wi-sparkline-hint{font-size:.62rem;color:var(--text2);opacity:.65}
+.wi-sparkline-chart{flex:1;display:flex;align-items:center;justify-content:flex-end}
+.wi-sparkline-chart svg{display:block}
 
 /* ── CTA ────────────────────────────────────────────────── */
 .wi-cta{border:1px solid rgba(46,204,113,.25);border-radius:4px;background:var(--bg2)}
@@ -1781,5 +2113,72 @@ document.addEventListener('DOMContentLoaded', () => {
 
 /* ── About description ─────────────────────────────────── */
 .wi-about-desc{color:var(--text2);font-style:italic;border-left:3px solid var(--border);padding-left:.75rem;margin:.5rem 0}
+
+/* ── Similar Skins ─────────────────────────────────────── */
+.wi-similar{margin:1.5rem 0}
+.wi-similar h2{margin:0 0 .75rem;font-size:1.05rem;font-weight:700;border-bottom:2px solid var(--border);padding-bottom:.4rem}
+.wi-similar-strip{display:grid;grid-template-columns:repeat(6,1fr);gap:.6rem}
+.wi-similar-card{border-radius:8px;overflow:hidden;text-decoration:none;color:inherit;border:1px solid var(--border);background:var(--bg2);transition:border-color .15s,transform .15s}
+.wi-similar-card:hover{border-color:#2ecc71;transform:translateY(-2px)}
+.wi-similar-thumb{display:flex;align-items:center;justify-content:center;height:90px;padding:.4rem}
+.wi-similar-thumb img{max-width:90%;max-height:75px;object-fit:contain}
+.wi-similar-info{padding:.45rem .55rem .55rem;border-top:1px solid var(--border);display:flex;flex-direction:column;gap:.15rem}
+.wi-similar-weapon{font-size:.65rem;color:var(--text2);letter-spacing:.02em}
+.wi-similar-name{font-weight:700;font-size:.78rem;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.wi-similar-price{font-size:.8rem;font-weight:700;color:#2ecc71}
+.wi-similar-rarity{display:inline-block;font-size:.6rem;font-weight:700;color:#fff;padding:.1rem .35rem;border-radius:3px;margin-top:.15rem;width:fit-content;letter-spacing:.02em}
+@media(max-width:900px){.wi-similar-strip{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:600px){.wi-similar-strip{display:flex;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:thin;padding-bottom:.5rem}.wi-similar-card{flex:0 0 130px}}
+
+/* ── Favorite Button ──────────────────────────────────── */
+.wi-fav-btn{background:none;border:none;cursor:pointer;padding:0;margin-left:.5rem;color:var(--text2);vertical-align:middle;position:relative;top:-1px;transition:transform .2s ease}
+.wi-fav-btn:hover{transform:scale(1.15)}
+.wi-fav-btn:active{transform:scale(.9)}
+.wi-fav-icon{width:22px;height:22px;display:none}
+.wi-fav-btn .wi-fav-outline{display:inline-block}
+.wi-fav-btn .wi-fav-filled{display:none}
+.wi-fav-btn.is-fav{color:#e74c3c}
+.wi-fav-btn.is-fav .wi-fav-outline{display:none}
+.wi-fav-btn.is-fav .wi-fav-filled{display:inline-block}
+.wi-fav-btn.wi-fav-pop{animation:favPop .35s ease}
+@keyframes favPop{0%{transform:scale(1)}30%{transform:scale(1.35)}60%{transform:scale(.9)}100%{transform:scale(1)}}
+
+/* ── Recently Viewed Strip ────────────────────────────── */
+.wi-recent{margin-bottom:2rem}
+.wi-recent h2{margin:0 0 .75rem;font-size:1.05rem;font-weight:700;border-bottom:2px solid var(--border);padding-bottom:.4rem}
+.wi-recent-strip{display:flex;gap:.65rem;overflow-x:auto;padding-bottom:.5rem;scrollbar-width:thin;scrollbar-color:var(--border) transparent}
+.wi-recent-strip::-webkit-scrollbar{height:6px}
+.wi-recent-strip::-webkit-scrollbar-track{background:transparent}
+.wi-recent-strip::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+.wi-recent-card{flex:0 0 140px;background:var(--bg2);border:1px solid var(--border);border-radius:4px;overflow:hidden;text-decoration:none;color:inherit;transition:border-color .15s,background .15s}
+.wi-recent-card:hover{border-color:var(--accent);background:var(--bg3)}
+.wi-recent-card-img{width:100%;height:85px;background:var(--bg3);display:flex;align-items:center;justify-content:center;overflow:hidden}
+.wi-recent-card-img img{width:100%;height:100%;object-fit:contain;padding:4px}
+.wi-recent-card-info{padding:.45rem .55rem}
+.wi-recent-card-weapon{font-size:.65rem;color:var(--text2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.wi-recent-card-name{font-size:.75rem;font-weight:700;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+/* ── Float Range Chart ─────────────────────────────────── */
+.wi-float-chart{background:var(--bg2);border:1px solid var(--border);border-radius:4px;padding:1rem;margin-bottom:0}
+.wi-float-chart h2{margin:0 0 .75rem;font-size:.95rem;font-weight:700}
+.wi-float-bar-wrap{position:relative;max-width:100%}
+.wi-float-bar{display:flex;height:28px;border-radius:4px;overflow:hidden;border:1px solid var(--border);position:relative}
+.wi-float-seg{position:relative;height:100%;transition:opacity .2s}
+.wi-float-fn{background:rgba(76,175,80,0.2)}
+.wi-float-mw{background:rgba(33,150,243,0.2)}
+.wi-float-ft{background:rgba(255,235,59,0.15)}
+.wi-float-ww{background:rgba(255,152,0,0.2)}
+.wi-float-bs{background:rgba(244,67,54,0.18)}
+.wi-float-seg-inner{border-radius:2px}
+.wi-float-markers{position:relative;height:18px;margin-top:2px}
+.wi-float-marker{position:absolute;top:0;transform:translateX(-50%)}
+.wi-float-marker-line{display:block;width:2px;height:8px;background:var(--accent);margin:0 auto;border-radius:1px}
+.wi-float-marker-val{display:block;font-size:.65rem;font-weight:700;color:var(--accent);text-align:center;white-space:nowrap;margin-top:1px}
+.wi-float-labels{display:flex;margin-top:.2rem}
+.wi-float-label{text-align:center;font-size:.68rem;font-weight:700;color:var(--text2);padding:0 2px}
+.wi-float-scale{display:flex;justify-content:space-between;font-size:.6rem;color:var(--text2);margin-top:.15rem;opacity:.7}
+.wi-float-desc{font-size:.8rem;color:var(--text2);margin:.6rem 0 0;line-height:1.5}
+.wi-float-desc strong{color:var(--text);font-weight:700}
+@media(max-width:600px){.wi-float-bar{height:22px}.wi-float-label{font-size:.6rem}.wi-float-scale{font-size:.55rem}}
 </style>
 </Base>

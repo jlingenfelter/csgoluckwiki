@@ -1,0 +1,223 @@
+---
+import Base from '../layouts/Base.astro';
+import AuthorBox from '../components/AuthorBox.astro';
+import RelatedArticles from '../components/RelatedArticles.astro';
+import { faqSchema, breadcrumbSchema } from '../lib/weapons';
+
+const title = 'CS2 Glossary — Counter-Strike 2 Terms & Definitions | CSGOLuck Wiki';
+const description = 'A comprehensive glossary of Counter-Strike 2 terminology. Learn the meaning of 45+ CS2 terms from ADR to Wallbang, covering gameplay mechanics, economy, skins, and competitive callouts.';
+
+const breadcrumbs = [
+  { name: 'Home', url: '/' },
+  { name: 'Learn', url: '/cs2-guides' },
+  { name: 'Glossary', url: '/glossary' },
+];
+
+const faqs = [
+  {
+    question: 'What are the most important CS2 terms for beginners?',
+    answer: 'Start with fundamental terms like Eco Round (saving money), Buy Round (full purchasing), CT/T (the two sides), Utility (grenades), Rotate (switching bombsite), and Callout (named map positions). Mastering these core terms will help you communicate with your team right away.',
+  },
+  {
+    question: 'What is the difference between a force buy and an eco round?',
+    answer: 'An eco round means spending as little as possible to save money for future rounds. A force buy is the opposite — your team spends nearly everything despite having limited funds, gambling on winning the round to reset the economy. Force buys typically involve cheaper rifles like the Galil or FAMAS with limited utility.',
+  },
+  {
+    question: 'How do skin-related terms like Float Value and StatTrak work?',
+    answer: 'Float Value is a decimal between 0.00 and 1.00 that determines a skin\'s wear condition — lower floats mean less visible wear. StatTrak is a special skin variant that counts your confirmed kills with that weapon, displayed on an LCD counter attached to the gun model. Both factors significantly affect a skin\'s market value.',
+  },
+];
+
+const breadcrumbSchema_ = breadcrumbSchema(breadcrumbs);
+const faqSchema_ = faqSchema(faqs);
+
+const articleSchema = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": title,
+  "description": description,
+  "author": { "@type": "Person", "name": "Josh Lingenfelter", "url": "https://www.linkedin.com/in/josh-lingenfelter-8157274b/", "jobTitle": "Director", "worksFor": { "@type": "Organization", "name": "CSGOLuck" } },
+  "publisher": { "@type": "Organization", "name": "CSGOLuck Wiki", "url": "https://wiki.csgoluck.com" },
+  "mainEntityOfPage": "https://wiki.csgoluck.com/glossary/",
+  "inLanguage": "en-US"
+});
+
+const terms = [
+  { term: 'ACE', definition: 'A single player eliminating all five opponents in a round. Aces are highlight-reel moments that can swing round momentum and are often celebrated in competitive play.' },
+  { term: 'ADR', definition: 'Average Damage per Round — a key performance statistic that measures how much damage a player deals on average each round. Higher ADR indicates greater individual impact, with pro-level players typically averaging 75-90+ ADR.' },
+  { term: 'Anti-Eco', definition: 'A round where one team has a full buy while the opposing team is on an eco round. The favoured team should purchase SMGs or shotguns for the bonus kill reward while maintaining a safe distance from pistols.' },
+  { term: 'AWP', definition: 'Arctic Warfare Police — the most iconic sniper rifle in Counter-Strike. Capable of one-shot kills to the body, the AWP costs $4,750 and is typically wielded by a dedicated player known as the AWPer. Its power comes with a slow fire rate and heavy movement penalty.' },
+  { term: 'Baiting', definition: 'Intentionally letting a teammate engage first while you wait behind them for the trade kill. While it can be a valid tactic in specific situations, excessive baiting is generally considered poor teamplay.' },
+  { term: 'Bombsite', definition: 'One of two designated areas on a map (A site and B site) where Terrorists can plant the C4 explosive. Counter-Terrorists must defend both sites and defuse the bomb within 40 seconds if it is planted.' },
+  { term: 'Boost', definition: 'A technique where one player crouches so a teammate can jump on top of them, reaching elevated positions not accessible by jumping alone. Boosts can provide unexpected off-angles and surprise opponents.' },
+  { term: 'Buy Round', definition: 'A round where the team has enough money for a full loadout — primary weapon, full armor with helmet, and a complete set of grenades. Teams typically need $4,000-$5,500 per player for a proper buy round.' },
+  { term: 'Callout', definition: 'A named position or area on a map used for quick communication. Every map has dozens of community-established callouts (e.g., "Short", "Banana", "Connector") that let teammates relay enemy positions instantly.' },
+  { term: 'Clutch', definition: 'Winning a round when outnumbered by the opposing team. A 1v3 clutch, for instance, means one player defeats three remaining opponents. Clutch rounds are high-pressure moments that often determine match outcomes.' },
+  { term: 'Counter-Strafe', definition: 'The technique of tapping the opposite movement key to come to an instant stop before firing. Because weapon accuracy is heavily penalised while moving, counter-strafing is essential for landing precise shots in duels.' },
+  { term: 'Crossfire', definition: 'A defensive setup where two players hold angles that overlap, so an enemy peeking one player is simultaneously exposed to fire from the other. Crossfires make it extremely difficult for attackers to trade kills.' },
+  { term: 'CT', definition: 'Counter-Terrorist — one of the two sides in a CS2 match. CTs are tasked with defending the bombsites and preventing the Terrorist team from planting or detonating the C4 explosive.' },
+  { term: 'Eco Round', definition: 'An economic round where the team buys minimal or no equipment to save money for a full buy in subsequent rounds. Players may purchase only a pistol, a few grenades, or nothing at all during an eco.' },
+  { term: 'eDPI', definition: 'Effective Dots Per Inch — calculated by multiplying your mouse DPI by your in-game sensitivity. eDPI provides a standardised way to compare sensitivity settings between players regardless of their hardware configuration.' },
+  { term: 'Entry Frag', definition: 'The first kill secured at the start of a round or a site take. The entry fragger is a designated role responsible for being the first player to peek and create an opening for the team, sacrificing safety for information and kills.' },
+  { term: 'Fake', definition: 'A strategic deception where the Terrorist side uses utility (smokes, flashes, molotovs) at one bombsite to draw defenders away, then executes the actual attack on the other site.' },
+  { term: 'Flash', definition: 'A flashbang grenade that temporarily blinds and deafens players caught in its blast radius. Proper flash usage involves popping flashes over walls or around corners to blind enemies without exposing yourself.' },
+  { term: 'Float Value', definition: 'A decimal number between 0.00 and 1.00 that determines a skin\'s wear condition. Lower float values mean cleaner, less-scratched appearances. The five wear tiers are Factory New (0.00-0.07), Minimal Wear (0.07-0.15), Field-Tested (0.15-0.38), Well-Worn (0.38-0.45), and Battle-Scarred (0.45-1.00).' },
+  { term: 'Force Buy', definition: 'Spending all or nearly all available money on weapons and equipment even when the team cannot afford a full buy. Force buys are a calculated gamble — winning resets the economy, but losing can leave the team broke for multiple rounds.' },
+  { term: 'Frag', definition: 'A kill. The term originates from the word "fragging" in early FPS games. A player\'s frag count is their total number of kills in a match or series.' },
+  { term: 'Glock Train', definition: 'A Terrorist-side rush where all five players push together with Glocks (the default T-side pistol) during a pistol or eco round. The strategy relies on overwhelming a single site with sheer numbers.' },
+  { term: 'Headshot', definition: 'A shot that connects with the enemy\'s head hitbox, dealing significantly increased damage. Most rifles can kill in a single headshot against armored opponents, making crosshair placement at head height a fundamental skill.' },
+  { term: 'IGL', definition: 'In-Game Leader — the player responsible for calling strategies, reading the opponent, and making mid-round decisions. The IGL coordinates utility usage, executes, and rotations for the entire team.' },
+  { term: 'Jiggle Peek', definition: 'Quickly strafing in and out of an angle to bait an opponent into shooting or to gather visual information without fully committing to the peek. The rapid movement makes you difficult to hit.' },
+  { term: 'Lineup', definition: 'A precise position and aim point used to throw grenades (particularly smokes and molotovs) so they land at a specific location. Lineups are practiced and memorized to ensure consistent utility placement during rounds.' },
+  { term: 'Lurker', definition: 'A player who operates away from the main group, typically on the opposite side of the map. The lurker gathers information, catches rotating defenders off guard, and applies pressure to keep the enemy guessing.' },
+  { term: 'Molotov', definition: 'An incendiary grenade (Molotov for Terrorists, Incendiary Grenade for Counter-Terrorists) that creates a patch of fire on the ground, dealing damage over time. Molotovs are used to deny areas, flush out entrenched positions, and delay pushes.' },
+  { term: 'Ninja Defuse', definition: 'Defusing the bomb while hidden by a smoke grenade without the Terrorists noticing. A ninja defuse is a high-risk, high-reward play that requires perfect smoke placement and timing.' },
+  { term: 'One-Tap', definition: 'Killing an enemy with a single headshot, typically with an AK-47 or Deagle. One-tapping requires precise crosshair placement and is considered a hallmark of skilled aiming.' },
+  { term: 'Peek', definition: 'Briefly exposing yourself around a corner or angle to gather information or take a shot. Variants include wide peeks (swinging out far), shoulder peeks (showing just enough to bait a shot), and jiggle peeks.' },
+  { term: 'Popflash', definition: 'A flashbang that detonates almost immediately after appearing in the enemy\'s line of sight, giving them no time to look away. Popflashes are thrown off walls, through gaps, or over objects to achieve instant effect.' },
+  { term: 'Prefire', definition: 'Shooting at a known or common position before visually confirming an enemy is there. Prefiring exploits the peeker\'s advantage and common positioning tendencies to secure kills before the opponent can react.' },
+  { term: 'Rating 2.0', definition: 'HLTV\'s comprehensive performance metric for professional CS2 players. It factors in kills, deaths, rounds survived, impact frags, and damage to produce a single number where 1.00 is average.' },
+  { term: 'Retake', definition: 'The Counter-Terrorist strategy of reclaiming a bombsite after the bomb has been planted. Successful retakes require coordinated utility usage and quick eliminations before the bomb timer expires.' },
+  { term: 'Rotate', definition: 'Moving from one bombsite to another, typically in response to information about where the enemy is attacking. Fast, well-timed rotations are critical for Counter-Terrorist defence.' },
+  { term: 'Save Round', definition: 'A round where a player or team retreats to preserve expensive weapons (particularly the AWP) for the next round rather than risking them in an unfavourable fight. Also called a "save".' },
+  { term: 'Skin', definition: 'A cosmetic weapon finish that changes the visual appearance of a weapon without affecting gameplay. Skins vary in rarity, wear condition, and pattern, with some rare items commanding prices in the tens of thousands of dollars.' },
+  { term: 'Smoke', definition: 'A smoke grenade that creates a large opaque cloud blocking line of sight for approximately 18 seconds. Smokes are essential utility for taking sites, cutting off angles, and creating safe passage across open areas.' },
+  { term: 'Spray Pattern', definition: 'The predictable recoil path that a weapon\'s bullets follow during sustained fire. Every weapon has a unique spray pattern that players can learn and compensate for by moving their mouse in the opposite direction.' },
+  { term: 'Stack', definition: 'Placing multiple players on a single bombsite instead of distributing them evenly. Stacking is a gamble — it strengthens one site\'s defence significantly but leaves the other site vulnerable.' },
+  { term: 'StatTrak', definition: 'A special skin variant that includes an LCD kill counter on the weapon model, tracking the number of confirmed kills. StatTrak skins are rarer than their standard counterparts and typically carry a price premium.' },
+  { term: 'T', definition: 'Terrorist — one of the two sides in a CS2 match. Ts are tasked with planting the C4 bomb at one of the designated bombsites or eliminating all Counter-Terrorists to win the round.' },
+  { term: 'Trade Kill', definition: 'Eliminating an enemy who just killed your teammate. Successful trade kills prevent the opposing team from gaining a numbers advantage and are a cornerstone of coordinated team play.' },
+  { term: 'Utility', definition: 'The collective term for grenades — smoke grenades, flashbangs, HE grenades, and molotovs/incendiary grenades. Proper utility usage is what separates average players from skilled ones, enabling site takes, area denial, and information gathering.' },
+  { term: 'Wallbang', definition: 'Shooting through a penetrable surface (wall, door, box) to damage or kill an enemy on the other side. Different weapons have different penetration values, and map surfaces vary in how much damage they allow through.' },
+];
+
+// Group terms by first letter
+const letters = [...new Set(terms.map(t => t.term[0].toUpperCase()))].sort();
+const grouped = letters.map(letter => ({
+  letter,
+  items: terms.filter(t => t.term[0].toUpperCase() === letter),
+}));
+---
+
+<Base title={title} description={description} currentNav="/cs2-guides/">
+  <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema_)}></script>
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema_)}></script>
+  <script type="application/ld+json" set:html={articleSchema}></script>
+
+  <div class="gl-wrap">
+    <nav class="gl-breadcrumb">
+      <a href="/">Home</a>
+      <span class="gl-sep">/</span>
+      <a href="/cs2-guides">Learn</a>
+      <span class="gl-sep">/</span>
+      <span>Glossary</span>
+    </nav>
+
+    <header class="gl-header">
+      <h1>CS2 Glossary</h1>
+      <p class="gl-subtitle">Every Counter-Strike 2 term you need to know — from gameplay mechanics and economy to skins and competitive callouts</p>
+    </header>
+
+    <!-- Letter navigation bar -->
+    <nav class="gl-letter-nav" aria-label="Jump to letter">
+      {letters.map(letter => (
+        <a href={`#letter-${letter}`} class="gl-letter-btn">{letter}</a>
+      ))}
+    </nav>
+
+    <!-- Terms grouped by letter -->
+    <div class="gl-terms">
+      {grouped.map(group => (
+        <section id={`letter-${group.letter}`} class="gl-section">
+          <h2 class="gl-letter-heading">{group.letter}</h2>
+          <dl class="gl-list">
+            {group.items.map(item => (
+              <div class="gl-term-row">
+                <dt class="gl-term">{item.term}</dt>
+                <dd class="gl-def">{item.definition}</dd>
+              </div>
+            ))}
+          </dl>
+        </section>
+      ))}
+    </div>
+
+    <!-- FAQ Section -->
+    <section class="gl-faq-section">
+      <div class="gl-section-header"><h2>Frequently Asked Questions</h2></div>
+      <div class="gl-faq-list">
+        {faqs.map(faq => (
+          <details class="gl-faq-item">
+            <summary class="gl-faq-question">{faq.question}</summary>
+            <p class="gl-faq-answer">{faq.answer}</p>
+          </details>
+        ))}
+      </div>
+    </section>
+
+    <!-- Related Articles -->
+    <RelatedArticles tags={['beginner', 'guide']} currentUrl="/glossary/" />
+  </div>
+
+  <style>
+    .gl-wrap{max-width:900px;margin:0 auto;padding:0 1.5rem 2rem}
+    .gl-breadcrumb{display:flex;align-items:center;gap:.5rem;padding:1.25rem 0;font-size:.85rem;color:var(--text2)}
+    .gl-breadcrumb a{color:var(--accent);text-decoration:none}
+    .gl-breadcrumb a:hover{color:var(--accent2)}
+    .gl-sep{color:var(--border)}
+    .gl-header{padding:1.5rem 0 1.25rem;border-bottom:2px solid var(--accent);margin-bottom:1.5rem}
+    .gl-header h1{margin:0 0 .35rem;font-size:2.2rem;font-weight:800;color:var(--text);letter-spacing:-.02em;line-height:1.2}
+    .gl-subtitle{margin:0;font-size:1.05rem;color:var(--text2);font-weight:400}
+
+    /* Letter navigation */
+    .gl-letter-nav{display:flex;gap:.3rem;overflow-x:auto;padding:.5rem 0 1.25rem;-webkit-overflow-scrolling:touch;scrollbar-width:none;flex-wrap:wrap}
+    .gl-letter-nav::-webkit-scrollbar{display:none}
+    .gl-letter-btn{display:inline-flex;align-items:center;justify-content:center;min-width:2rem;height:2rem;padding:0 .5rem;font-size:.82rem;font-weight:700;color:var(--text2);background:var(--bg2);border:1px solid var(--border);border-radius:4px;text-decoration:none;white-space:nowrap;transition:color .2s,border-color .2s,background .2s}
+    .gl-letter-btn:hover{color:var(--accent);border-color:var(--accent);background:rgba(46,204,113,.06)}
+
+    /* Term sections */
+    .gl-terms{scroll-margin-top:80px}
+    .gl-section{margin-bottom:2rem;scroll-margin-top:80px}
+    .gl-letter-heading{font-size:1.6rem;font-weight:800;color:var(--accent);margin:0 0 .75rem;padding-bottom:.5rem;border-bottom:1px solid var(--border)}
+    .gl-list{margin:0;padding:0}
+    .gl-term-row{padding:.75rem 0;border-bottom:1px solid rgba(36,38,48,.5)}
+    .gl-term-row:last-child{border-bottom:none}
+    .gl-term{font-size:.95rem;font-weight:700;color:var(--text);margin:0 0 .25rem;display:inline}
+    .gl-def{font-size:.9rem;color:var(--text2);line-height:1.7;margin:0;display:inline}
+    .gl-term::after{content:' — '}
+
+    /* FAQ */
+    .gl-faq-section{margin-top:2.5rem}
+    .gl-section-header{background:rgba(46,204,113,.05);margin:0 -1.25rem 1.25rem;padding:.75rem 1.25rem;border-radius:4px}
+    .gl-section-header h2{margin:0;padding:0;font-size:1.5rem;font-weight:700;color:var(--text);border:none;letter-spacing:-.01em}
+    .gl-faq-list{display:flex;flex-direction:column;gap:.5rem}
+    .gl-faq-item{background:var(--bg2);border:1px solid var(--border);border-radius:4px;overflow:hidden}
+    .gl-faq-question{display:block;padding:1rem 1.25rem;font-size:.95rem;font-weight:600;color:var(--text);cursor:pointer;list-style:none;position:relative;padding-right:2.5rem;transition:background .2s}
+    .gl-faq-question::-webkit-details-marker{display:none}
+    .gl-faq-question::after{content:'+';position:absolute;right:1.25rem;top:50%;transform:translateY(-50%);font-size:1.2rem;color:var(--accent);font-weight:700}
+    .gl-faq-item[open] .gl-faq-question::after{content:'\2212'}
+    .gl-faq-item[open] .gl-faq-question{border-bottom:1px solid var(--border);background:rgba(46,204,113,.03)}
+    .gl-faq-question:hover{background:rgba(46,204,113,.03)}
+    .gl-faq-answer{padding:1rem 1.25rem;margin:0;font-size:.9rem;color:var(--text2);line-height:1.7}
+
+    @media(max-width:600px){
+      .gl-wrap{padding:0 1rem 1.5rem}
+      .gl-header h1{font-size:1.5rem}
+      .gl-letter-heading{font-size:1.3rem}
+      .gl-section-header{margin:0 -1rem 1rem;padding:.6rem 1rem}
+    }
+  </style>
+
+  <script is:inline>
+    // Smooth scroll for letter navigation
+    document.querySelectorAll('.gl-letter-btn').forEach(btn => {
+      btn.addEventListener('click', e => {
+        e.preventDefault();
+        const target = document.querySelector(btn.getAttribute('href'));
+        if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
+    });
+  </script>
+
+  <AuthorBox updated="2026-03-04" />
+</Base>

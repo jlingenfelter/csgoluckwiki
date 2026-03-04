@@ -149,6 +149,15 @@ const crumbs = [
   </div>
 </section>
 
+<!-- Recent Comparisons History -->
+<section class="skc-history" id="comparisonHistory" style="display:none;">
+  <div class="skc-history-header">
+    <h2 class="skc-section-title">Recent Comparisons</h2>
+    <button class="skc-clear-btn" id="clearHistoryBtn">Clear History</button>
+  </div>
+  <div class="skc-history-list" id="historyList"></div>
+</section>
+
 <div class="skc-links">
   <span class="skc-links-label">Related Resources:</span>
   <a href="/cs2-skins/">Skin Database</a>
@@ -269,11 +278,27 @@ const crumbs = [
   .skc-faq-item[open]{border-left:3px solid var(--accent)}
   .skc-faq-a{padding:0 1rem .8rem;font-size:.88rem;color:var(--text2);line-height:1.6}
 
+  /* History */
+  .skc-history{background:var(--bg2);border:1px solid var(--border);border-radius:4px;padding:1.5rem;margin-bottom:1.5rem}
+  .skc-history-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem}
+  .skc-history-header .skc-section-title{margin:0}
+  .skc-clear-btn{background:var(--bg3);border:1px solid var(--border);color:var(--text2);padding:.35rem .8rem;border-radius:4px;font-size:.78rem;font-weight:600;cursor:pointer;font-family:inherit;transition:all .15s}
+  .skc-clear-btn:hover{color:var(--red);border-color:var(--red)}
+  .skc-history-list{display:flex;flex-direction:column;gap:4px}
+  .skc-history-row{display:flex;align-items:center;gap:.75rem;padding:.65rem 1rem;background:var(--bg3);border:1px solid var(--border);border-left:3px solid transparent;border-radius:4px;transition:border-left-color .15s,background .15s;text-decoration:none;color:inherit;cursor:pointer}
+  .skc-history-row:hover{border-left-color:var(--accent);background:var(--bg)}
+  .skc-history-skins{font-weight:700;font-size:.9rem;color:var(--text);flex:1}
+  .skc-history-vs{color:var(--accent);font-weight:800;font-size:.78rem;margin:0 .3rem}
+  .skc-history-date{font-size:.75rem;color:var(--text2);white-space:nowrap}
+  .skc-history-arrow{color:var(--text2);font-size:.82rem;margin-left:auto}
+
   @media(max-width:768px){
     .skc-selector-grid{grid-template-columns:1fr;gap:.5rem}
     .skc-vs{padding:0}
     .skc-info-grid{grid-template-columns:1fr}
     .skc-title{font-size:1.4rem}
+    .skc-history-row{flex-wrap:wrap;gap:.4rem}
+    .skc-history-arrow{display:none}
   }
 </style>
 
@@ -508,6 +533,109 @@ const crumbs = [
       document.getElementById('skinBDropdown').style.display = 'none';
     }
   });
+
+  // --- Comparison History ---
+  const HISTORY_KEY = 'csgoluck_comparisons';
+  const MAX_HISTORY = 10;
+
+  function getHistory() {
+    try {
+      const raw = localStorage.getItem(HISTORY_KEY);
+      return raw ? JSON.parse(raw) : [];
+    } catch (e) {
+      return [];
+    }
+  }
+
+  function saveComparison(skinA, skinB) {
+    if (!skinA || !skinB) return;
+    var history = getHistory();
+    // Remove duplicate if exists (same pair in either order)
+    history = history.filter(function(entry) {
+      return !(
+        (entry.skin1Slug === skinA.slug && entry.skin2Slug === skinB.slug) ||
+        (entry.skin1Slug === skinB.slug && entry.skin2Slug === skinA.slug)
+      );
+    });
+    // Add new entry at the start
+    history.unshift({
+      skin1Slug: skinA.slug,
+      skin1Name: skinA.weapon + ' | ' + skinA.name,
+      skin2Slug: skinB.slug,
+      skin2Name: skinB.weapon + ' | ' + skinB.name,
+      date: new Date().toISOString().split('T')[0]
+    });
+    // Keep only max entries
+    if (history.length > MAX_HISTORY) {
+      history = history.slice(0, MAX_HISTORY);
+    }
+    try {
+      localStorage.setItem(HISTORY_KEY, JSON.stringify(history));
+    } catch (e) {}
+    renderHistory();
+  }
+
+  function renderHistory() {
+    var history = getHistory();
+    var section = document.getElementById('comparisonHistory');
+    var list = document.getElementById('historyList');
+
+    if (!history.length) {
+      section.style.display = 'none';
+      return;
+    }
+    section.style.display = 'block';
+    list.innerHTML = history.map(function(entry) {
+      return '<div class="skc-history-row" data-skin1="' + entry.skin1Slug + '" data-skin2="' + entry.skin2Slug + '">' +
+        '<span class="skc-history-skins">' + entry.skin1Name + '<span class="skc-history-vs"> vs </span>' + entry.skin2Name + '</span>' +
+        '<span class="skc-history-date">' + entry.date + '</span>' +
+        '<span class="skc-history-arrow">&rarr;</span>' +
+        '</div>';
+    }).join('');
+
+    // Click handlers for re-comparing
+    var rows = list.querySelectorAll('.skc-history-row');
+    rows.forEach(function(row) {
+      row.addEventListener('click', function() {
+        var s1 = row.getAttribute('data-skin1');
+        var s2 = row.getAttribute('data-skin2');
+        var skinA = getSkinBySlug(s1);
+        var skinB = getSkinBySlug(s2);
+        if (skinA) {
+          selectedSkinA = skinA;
+          document.getElementById('skinASearch').value = skinA.weapon + ' | ' + skinA.name;
+        }
+        if (skinB) {
+          selectedSkinB = skinB;
+          document.getElementById('skinBSearch').value = skinB.weapon + ' | ' + skinB.name;
+        }
+        updateComparison();
+        // Scroll to top of comparison panel
+        document.querySelector('.skc-panel').scrollIntoView({ behavior: 'smooth' });
+      });
+    });
+  }
+
+  function clearHistory() {
+    try {
+      localStorage.removeItem(HISTORY_KEY);
+    } catch (e) {}
+    renderHistory();
+  }
+
+  document.getElementById('clearHistoryBtn').addEventListener('click', clearHistory);
+
+  // Patch updateComparison to save history when both skins selected
+  var _origUpdateComparison = updateComparison;
+  updateComparison = function() {
+    _origUpdateComparison();
+    if (selectedSkinA && selectedSkinB) {
+      saveComparison(selectedSkinA, selectedSkinB);
+    }
+  };
+
+  // Initial render of history
+  renderHistory();
 
   updateComparison();
 </script>

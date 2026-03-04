@@ -1,0 +1,14 @@
+{
+  "name": "CSGOLuck Wiki",
+  "short_name": "CSGOLuck",
+  "description": "CS2 Wiki — skins, weapons, tools, calculators, guides",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0d0e12",
+  "theme_color": "#2ecc71",
+  "icons": [
+    {"src": "/favicon.svg", "sizes": "any", "type": "image/svg+xml"},
+    {"src": "/icon-192.png", "sizes": "192x192", "type": "image/png"},
+    {"src": "/icon-512.png", "sizes": "512x512", "type": "image/png"}
+  ]
+}

@@ -127,6 +127,9 @@ const uniqueYears = [...new Set(cases.map(c => c.year))].sort((a, b) => b - a);
         <div class="ch-card-body">
           <span class="ch-card-name">{caseItem.name}</span>
           <span class="ch-card-year">{caseItem.year}</span>
+          {caseItem.notableSkins.length > 0 && (
+            <span class="ch-card-rare">{caseItem.notableSkins[0]}</span>
+          )}
           {caseItem.keyPrice && <span class="ch-card-price">Key: ${caseItem.keyPrice}</span>}
         </div>
       </a>
@@ -317,7 +320,7 @@ const uniqueYears = [...new Set(cases.map(c => c.year))].sort((a, b) => b - a);
     /* ---- CARD GRID ---- */
     .ch-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
       gap: 0.75rem;
       margin-bottom: 2rem;
     }
@@ -335,7 +338,7 @@ const uniqueYears = [...new Set(cases.map(c => c.year))].sort((a, b) => b - a);
     }
 
     .ch-card:hover {
-      transform: translateY(-3px);
+      transform: translateY(-4px);
       border-color: var(--accent);
       box-shadow: 0 8px 24px rgba(0,0,0,0.3);
     }
@@ -399,6 +402,16 @@ const uniqueYears = [...new Set(cases.map(c => c.year))].sort((a, b) => b - a);
     .ch-card-year {
       font-size: 0.68rem;
       color: var(--text2);
+    }
+
+    .ch-card-rare {
+      font-size: 0.72rem;
+      color: var(--text2);
+      opacity: 0.75;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      margin-top: 0.15rem;
     }
 
     .ch-card-price {

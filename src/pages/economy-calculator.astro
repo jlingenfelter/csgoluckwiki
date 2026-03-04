@@ -134,6 +134,83 @@ const toolSchema = JSON.stringify({
     </div>
   </div>
 
+  <!-- Round Simulator Section -->
+  <div class="rs-panel">
+    <h2 class="rs-heading">Round Simulator</h2>
+    <p class="rs-desc">Simulate a full CS2 match round by round. Click Win or Loss to advance and track both teams' economy with automatic buy recommendations.</p>
+
+    <div class="rs-controls-bar">
+      <div class="rs-side-picker">
+        <label class="rs-label">Your Side</label>
+        <div class="rs-side-btns">
+          <button class="rs-side-btn rs-side-active" id="rsPickCT" data-side="ct">CT</button>
+          <button class="rs-side-btn" id="rsPickT" data-side="t">T</button>
+        </div>
+      </div>
+      <div class="rs-kill-input">
+        <label class="rs-label" for="rsKillType">Kill Reward Type</label>
+        <select id="rsKillType" class="ecc-input">
+          <option value="300">Rifle ($300)</option>
+          <option value="600">SMG ($600)</option>
+          <option value="900">Shotgun ($900)</option>
+          <option value="300">LMG ($300)</option>
+          <option value="100">AWP ($100)</option>
+          <option value="1500">Knife ($1500)</option>
+        </select>
+      </div>
+      <div class="rs-kill-input">
+        <label class="rs-label" for="rsKillCount">Kills This Round</label>
+        <input type="number" id="rsKillCount" min="0" max="5" value="0" class="ecc-input">
+      </div>
+      <div class="rs-kill-input">
+        <label class="rs-label">Bomb Planted?</label>
+        <label class="rs-checkbox-label">
+          <input type="checkbox" id="rsBombPlanted">
+          <span>+$800 T side</span>
+        </label>
+      </div>
+    </div>
+
+    <div class="rs-action-row">
+      <span class="rs-round-label">Round <strong id="rsCurrentRound">1</strong> of 30</span>
+      <div class="rs-action-btns">
+        <button class="rs-btn rs-btn-win" id="rsWinBtn">Win</button>
+        <button class="rs-btn rs-btn-loss" id="rsLossBtn">Loss</button>
+      </div>
+      <button class="rs-btn rs-btn-undo" id="rsUndoBtn" disabled>Undo</button>
+      <button class="rs-btn rs-btn-reset" id="rsResetBtn">Reset</button>
+    </div>
+
+    <!-- Timeline -->
+    <div class="rs-timeline-wrap">
+      <div class="rs-timeline" id="rsTimeline">
+        <!-- round boxes injected by JS -->
+      </div>
+    </div>
+
+    <!-- Team Money Display -->
+    <div class="rs-money-grid">
+      <div class="rs-money-box rs-money-ct">
+        <span class="rs-money-side">CT Side</span>
+        <span class="rs-money-amount" id="rsCtMoney">$800</span>
+        <span class="rs-money-streak" id="rsCtStreak">-</span>
+        <span class="rs-buy-badge" id="rsCtBuy">Full Eco</span>
+      </div>
+      <div class="rs-money-box rs-money-t">
+        <span class="rs-money-side">T Side</span>
+        <span class="rs-money-amount" id="rsTMoney">$800</span>
+        <span class="rs-money-streak" id="rsTStreak">-</span>
+        <span class="rs-buy-badge" id="rsTBuy">Full Eco</span>
+      </div>
+    </div>
+
+    <!-- Economy Breakdown -->
+    <div class="rs-breakdown" id="rsBreakdown" style="display:none;">
+      <h3 class="rs-breakdown-title">Last Round Breakdown</h3>
+      <div class="rs-breakdown-grid" id="rsBreakdownGrid"></div>
+    </div>
+  </div>
+
   <div class="ecc-two-col">
     <div class="ecc-info-block">
       <h2 class="ecc-section-title">Buy Strategy Guide</h2>
@@ -257,10 +334,86 @@ const toolSchema = JSON.stringify({
   .ecc-faq-item[open]{border-left:3px solid var(--accent)}
   .ecc-faq-a{padding:0 1rem .8rem;margin:0;font-size:.88rem;color:var(--text2);line-height:1.6}
 
+  /* Round Simulator */
+  .rs-panel{background:var(--bg2);border:1px solid var(--border);border-radius:4px;padding:1.5rem;margin-bottom:2rem}
+  .rs-heading{font-size:1.25rem;font-weight:800;color:var(--text);margin:0 0 .4rem}
+  .rs-desc{color:var(--text2);font-size:.88rem;margin:0 0 1.25rem;line-height:1.5}
+
+  .rs-controls-bar{display:grid;grid-template-columns:auto 1fr 1fr auto;gap:1rem;align-items:end;margin-bottom:1.25rem}
+  .rs-label{display:block;font-weight:600;color:var(--text2);font-size:.78rem;text-transform:uppercase;letter-spacing:.04em;margin-bottom:.4rem}
+  .rs-side-btns{display:flex;gap:0}
+  .rs-side-btn{padding:.5rem 1.2rem;background:var(--bg3);border:1px solid var(--border);color:var(--text2);font-size:.85rem;font-weight:700;cursor:pointer;font-family:inherit;transition:all .15s}
+  .rs-side-btn:first-child{border-radius:4px 0 0 4px}
+  .rs-side-btn:last-child{border-radius:0 4px 4px 0;border-left:0}
+  .rs-side-active{background:var(--accent);color:#fff;border-color:var(--accent)}
+  .rs-side-active+.rs-side-btn{border-left:0}
+  .rs-kill-input{display:flex;flex-direction:column}
+  .rs-checkbox-label{display:flex;align-items:center;gap:.5rem;color:var(--text2);font-size:.85rem;padding:.5rem 0;cursor:pointer}
+  .rs-checkbox-label input[type="checkbox"]{accent-color:var(--accent);width:16px;height:16px}
+
+  .rs-action-row{display:flex;align-items:center;gap:1rem;margin-bottom:1.25rem;flex-wrap:wrap}
+  .rs-round-label{color:var(--text2);font-size:.9rem}
+  .rs-round-label strong{color:var(--accent);font-size:1.1rem}
+  .rs-action-btns{display:flex;gap:.5rem}
+  .rs-btn{padding:.55rem 1.4rem;border-radius:4px;border:1px solid var(--border);font-size:.88rem;font-weight:700;cursor:pointer;font-family:inherit;transition:all .15s}
+  .rs-btn-win{background:var(--accent);color:#fff;border-color:var(--accent)}
+  .rs-btn-win:hover{background:#27ae60;border-color:#27ae60}
+  .rs-btn-loss{background:var(--red);color:#fff;border-color:var(--red)}
+  .rs-btn-loss:hover{background:#c0392b;border-color:#c0392b}
+  .rs-btn-undo{background:var(--bg3);color:var(--text2)}
+  .rs-btn-undo:hover:not(:disabled){background:var(--bg);color:var(--text)}
+  .rs-btn-undo:disabled{opacity:.4;cursor:not-allowed}
+  .rs-btn-reset{background:var(--bg3);color:var(--text2)}
+  .rs-btn-reset:hover{background:var(--bg);color:var(--text)}
+
+  /* Timeline */
+  .rs-timeline-wrap{overflow-x:auto;padding-bottom:.5rem;margin-bottom:1.25rem}
+  .rs-timeline{display:flex;gap:4px;min-width:min-content}
+  .rs-round-box{display:flex;flex-direction:column;align-items:center;min-width:52px;padding:.4rem .25rem;border-radius:4px;background:var(--bg3);border:1px solid var(--border);transition:border-color .15s}
+  .rs-round-box.rs-current{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent)}
+  .rs-round-num{font-size:.65rem;font-weight:700;color:var(--text2);margin-bottom:.2rem}
+  .rs-round-result{width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.65rem;font-weight:800;margin-bottom:.2rem}
+  .rs-round-result.rs-win{background:rgba(46,204,113,.15);color:var(--accent)}
+  .rs-round-result.rs-loss{background:rgba(224,112,112,.15);color:var(--red)}
+  .rs-round-result.rs-pending{background:var(--bg);color:var(--text2);font-size:.55rem}
+  .rs-round-money{font-size:.62rem;font-weight:600;color:var(--text2)}
+  .rs-half-marker{position:relative;display:flex;align-items:center;justify-content:center;min-width:24px}
+  .rs-half-marker::after{content:'H';font-size:.6rem;font-weight:800;color:var(--accent);background:var(--bg2);border:1px solid var(--accent);border-radius:50%;width:20px;height:20px;display:flex;align-items:center;justify-content:center}
+
+  /* Money Display */
+  .rs-money-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.25rem}
+  .rs-money-box{background:var(--bg);border:1px solid var(--border);border-radius:4px;padding:1.25rem;text-align:center;display:flex;flex-direction:column;align-items:center;gap:.3rem}
+  .rs-money-ct{border-top:3px solid var(--ct)}
+  .rs-money-t{border-top:3px solid var(--t)}
+  .rs-money-side{font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--text2)}
+  .rs-money-amount{font-size:2rem;font-weight:800;color:var(--text)}
+  .rs-money-streak{font-size:.78rem;color:var(--text2)}
+  .rs-buy-badge{display:inline-block;padding:.25rem .8rem;border-radius:4px;font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.03em}
+  .rs-buy-full{background:rgba(46,204,113,.15);color:var(--accent)}
+  .rs-buy-half{background:rgba(108,178,232,.15);color:var(--ct)}
+  .rs-buy-force{background:rgba(224,201,110,.15);color:var(--gold)}
+  .rs-buy-eco{background:rgba(224,112,112,.15);color:var(--red)}
+
+  /* Breakdown */
+  .rs-breakdown{background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:1.25rem;margin-bottom:.5rem}
+  .rs-breakdown-title{font-size:.95rem;font-weight:700;color:var(--text);margin:0 0 .75rem}
+  .rs-breakdown-grid{display:grid;grid-template-columns:1fr 1fr;gap:.75rem}
+  .rs-bd-item{display:flex;justify-content:space-between;padding:.35rem 0;border-bottom:1px solid var(--border);font-size:.85rem}
+  .rs-bd-item:last-child{border-bottom:none}
+  .rs-bd-label{color:var(--text2)}
+  .rs-bd-value{font-weight:700;color:var(--text)}
+  .rs-bd-positive{color:var(--accent)}
+  .rs-bd-negative{color:var(--red)}
+
   @media(max-width:768px){
     .ecc-grid{grid-template-columns:1fr}
     .ecc-results{grid-template-columns:1fr 1fr}
     .ecc-two-col{grid-template-columns:1fr}
+    .rs-controls-bar{grid-template-columns:1fr 1fr}
+    .rs-action-row{flex-direction:column;align-items:stretch}
+    .rs-action-btns{justify-content:center}
+    .rs-money-grid{grid-template-columns:1fr}
+    .rs-breakdown-grid{grid-template-columns:1fr}
   }
 </style>
 
@@ -335,4 +488,327 @@ const toolSchema = JSON.stringify({
 
   calculateRoundEconomy();
   updateTable();
+</script>
+
+<script>
+  // Round Simulator
+  (function() {
+    const MAX_ROUNDS = 30;
+    const MAX_MONEY = 16000;
+    const PISTOL_ROUND_MONEY = 800;
+    const LOSS_BONUSES = [1400, 1900, 2400, 2900, 3400];
+    const WIN_REWARD_DEFUSE = 3250;
+    const WIN_REWARD_ELIM = 3500;
+    const BOMB_PLANT_BONUS = 800;
+
+    // State
+    let rounds = [];
+    let playerSide = 'ct'; // 'ct' or 't'
+
+    // DOM refs
+    const pickCT = document.getElementById('rsPickCT');
+    const pickT = document.getElementById('rsPickT');
+    const killType = document.getElementById('rsKillType');
+    const killCount = document.getElementById('rsKillCount');
+    const bombPlanted = document.getElementById('rsBombPlanted');
+    const currentRoundEl = document.getElementById('rsCurrentRound');
+    const winBtn = document.getElementById('rsWinBtn');
+    const lossBtn = document.getElementById('rsLossBtn');
+    const undoBtn = document.getElementById('rsUndoBtn');
+    const resetBtn = document.getElementById('rsResetBtn');
+    const timelineEl = document.getElementById('rsTimeline');
+    const ctMoneyEl = document.getElementById('rsCtMoney');
+    const tMoneyEl = document.getElementById('rsTMoney');
+    const ctStreakEl = document.getElementById('rsCtStreak');
+    const tStreakEl = document.getElementById('rsTStreak');
+    const ctBuyEl = document.getElementById('rsCtBuy');
+    const tBuyEl = document.getElementById('rsTBuy');
+    const breakdownEl = document.getElementById('rsBreakdown');
+    const breakdownGrid = document.getElementById('rsBreakdownGrid');
+
+    function getLossBonus(consecutiveLosses) {
+      const idx = Math.min(consecutiveLosses, LOSS_BONUSES.length) - 1;
+      return idx >= 0 ? LOSS_BONUSES[idx] : LOSS_BONUSES[0];
+    }
+
+    function getBuyRec(money) {
+      if (money >= 5000) return { label: 'Full Buy', cls: 'rs-buy-full' };
+      if (money >= 3500) return { label: 'Half Buy', cls: 'rs-buy-half' };
+      if (money >= 2000) return { label: 'Force Buy', cls: 'rs-buy-force' };
+      return { label: 'Eco', cls: 'rs-buy-eco' };
+    }
+
+    function computeState() {
+      let ctMoney = PISTOL_ROUND_MONEY;
+      let tMoney = PISTOL_ROUND_MONEY;
+      let ctLossStreak = 0;
+      let tLossStreak = 0;
+
+      for (let i = 0; i < rounds.length; i++) {
+        const r = rounds[i];
+        const isFirstRound = i === 0;
+        const isSecondHalf = i === 15;
+        const killReward = r.kills * r.killRewardAmount;
+
+        // Reset money on half (round 16 = index 15)
+        if (isSecondHalf) {
+          ctMoney = PISTOL_ROUND_MONEY;
+          tMoney = PISTOL_ROUND_MONEY;
+          ctLossStreak = 0;
+          tLossStreak = 0;
+        }
+
+        // Determine which side the player is on, and who won
+        // r.result is from player perspective: 'win' or 'loss'
+        const playerWon = r.result === 'win';
+        const ctWon = (r.side === 'ct' && playerWon) || (r.side === 't' && !playerWon);
+
+        if (ctWon) {
+          // CT wins
+          const ctWinReward = r.bombPlanted ? WIN_REWARD_DEFUSE : WIN_REWARD_ELIM;
+          const tLossBonus = getLossBonus(tLossStreak + 1);
+
+          // CT: win reward + kill bonus (player kills only on their side)
+          let ctKillBonus = r.side === 'ct' ? killReward : 0;
+          let tKillBonus = r.side === 't' ? killReward : 0;
+
+          ctMoney = Math.min(MAX_MONEY, ctMoney + ctWinReward + ctKillBonus);
+          // T loses: loss bonus + bomb plant bonus if planted
+          tLossStreak++;
+          tMoney = Math.min(MAX_MONEY, tMoney + tLossBonus + tKillBonus + (r.bombPlanted ? BOMB_PLANT_BONUS : 0));
+
+          ctLossStreak = 0;
+        } else {
+          // T wins
+          const tWinReward = WIN_REWARD_ELIM;
+          const ctLossBonus = getLossBonus(ctLossStreak + 1);
+
+          let tKillBonus = r.side === 't' ? killReward : 0;
+          let ctKillBonus = r.side === 'ct' ? killReward : 0;
+
+          tMoney = Math.min(MAX_MONEY, tMoney + tWinReward + tKillBonus + (r.bombPlanted ? BOMB_PLANT_BONUS : 0));
+          // CT loses
+          ctLossStreak++;
+          ctMoney = Math.min(MAX_MONEY, ctMoney + ctLossBonus + ctKillBonus);
+
+          tLossStreak = 0;
+        }
+
+        // Store computed values on the round
+        r.ctMoney = ctMoney;
+        r.tMoney = tMoney;
+        r.ctLossStreak = ctLossStreak;
+        r.tLossStreak = tLossStreak;
+      }
+
+      return { ctMoney, tMoney, ctLossStreak, tLossStreak };
+    }
+
+    function render() {
+      const state = computeState();
+      const currentRound = rounds.length + 1;
+      currentRoundEl.textContent = currentRound;
+
+      // Money displays
+      ctMoneyEl.textContent = '$' + state.ctMoney.toLocaleString();
+      tMoneyEl.textContent = '$' + state.tMoney.toLocaleString();
+
+      // Streaks
+      if (state.ctLossStreak > 0) {
+        ctStreakEl.textContent = 'Loss streak: ' + state.ctLossStreak + ' (bonus: $' + getLossBonus(state.ctLossStreak).toLocaleString() + ')';
+      } else {
+        ctStreakEl.textContent = state.tLossStreak > 0 ? 'Winning' : '-';
+      }
+      if (state.tLossStreak > 0) {
+        tStreakEl.textContent = 'Loss streak: ' + state.tLossStreak + ' (bonus: $' + getLossBonus(state.tLossStreak).toLocaleString() + ')';
+      } else {
+        tStreakEl.textContent = state.ctLossStreak > 0 ? 'Winning' : '-';
+      }
+
+      // Buy recommendations
+      const ctBuy = getBuyRec(state.ctMoney);
+      const tBuy = getBuyRec(state.tMoney);
+      ctBuyEl.textContent = ctBuy.label;
+      ctBuyEl.className = 'rs-buy-badge ' + ctBuy.cls;
+      tBuyEl.textContent = tBuy.label;
+      tBuyEl.className = 'rs-buy-badge ' + tBuy.cls;
+
+      // Buttons
+      undoBtn.disabled = rounds.length === 0;
+      const matchOver = currentRound > MAX_ROUNDS;
+      winBtn.disabled = matchOver;
+      lossBtn.disabled = matchOver;
+
+      // Timeline
+      renderTimeline(currentRound);
+
+      // Breakdown
+      renderBreakdown();
+    }
+
+    function renderTimeline(currentRound) {
+      let html = '';
+      for (let i = 1; i <= MAX_ROUNDS; i++) {
+        // Half-time marker after round 15
+        if (i === 16) {
+          html += '<div class="rs-half-marker"></div>';
+        }
+
+        const r = rounds[i - 1];
+        const isCurrent = i === currentRound;
+        const boxClass = 'rs-round-box' + (isCurrent ? ' rs-current' : '');
+
+        if (r) {
+          const resultClass = r.result === 'win' ? 'rs-win' : 'rs-loss';
+          const resultText = r.result === 'win' ? 'W' : 'L';
+          const money = r.side === playerSide ? (playerSide === 'ct' ? r.ctMoney : r.tMoney) : (playerSide === 'ct' ? r.ctMoney : r.tMoney);
+          html += '<div class="' + boxClass + '">' +
+            '<span class="rs-round-num">R' + i + '</span>' +
+            '<span class="rs-round-result ' + resultClass + '">' + resultText + '</span>' +
+            '<span class="rs-round-money">$' + (playerSide === 'ct' ? r.ctMoney : r.tMoney).toLocaleString() + '</span>' +
+            '</div>';
+        } else {
+          html += '<div class="' + boxClass + '">' +
+            '<span class="rs-round-num">R' + i + '</span>' +
+            '<span class="rs-round-result rs-pending">-</span>' +
+            '<span class="rs-round-money">-</span>' +
+            '</div>';
+        }
+      }
+      timelineEl.innerHTML = html;
+
+      // Auto-scroll to current round
+      const currentBox = timelineEl.querySelector('.rs-current');
+      if (currentBox) {
+        currentBox.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+      }
+    }
+
+    function renderBreakdown() {
+      if (rounds.length === 0) {
+        breakdownEl.style.display = 'none';
+        return;
+      }
+      breakdownEl.style.display = 'block';
+      const lastRound = rounds[rounds.length - 1];
+      const idx = rounds.length - 1;
+      const isHalfReset = idx === 15;
+
+      // Calculate what happened in the last round
+      const playerWon = lastRound.result === 'win';
+      const ctWon = (lastRound.side === 'ct' && playerWon) || (lastRound.side === 't' && !playerWon);
+      const killReward = lastRound.kills * lastRound.killRewardAmount;
+
+      let ctItems = [];
+      let tItems = [];
+
+      if (ctWon) {
+        const winReward = lastRound.bombPlanted ? WIN_REWARD_DEFUSE : WIN_REWARD_ELIM;
+        ctItems.push({ label: 'Win Reward', value: '+$' + winReward.toLocaleString(), cls: 'rs-bd-positive' });
+        if (lastRound.side === 'ct' && killReward > 0) {
+          ctItems.push({ label: 'Kill Rewards (' + lastRound.kills + ' kills)', value: '+$' + killReward.toLocaleString(), cls: 'rs-bd-positive' });
+        }
+        const tLossBonus = getLossBonus(lastRound.tLossStreak);
+        tItems.push({ label: 'Loss Bonus (streak ' + lastRound.tLossStreak + ')', value: '+$' + tLossBonus.toLocaleString(), cls: 'rs-bd-negative' });
+        if (lastRound.bombPlanted) {
+          tItems.push({ label: 'Bomb Plant Bonus', value: '+$' + BOMB_PLANT_BONUS.toLocaleString(), cls: 'rs-bd-positive' });
+        }
+        if (lastRound.side === 't' && killReward > 0) {
+          tItems.push({ label: 'Kill Rewards (' + lastRound.kills + ' kills)', value: '+$' + killReward.toLocaleString(), cls: 'rs-bd-positive' });
+        }
+      } else {
+        const tWinReward = WIN_REWARD_ELIM;
+        tItems.push({ label: 'Win Reward', value: '+$' + tWinReward.toLocaleString(), cls: 'rs-bd-positive' });
+        if (lastRound.bombPlanted) {
+          tItems.push({ label: 'Bomb Plant Bonus', value: '+$' + BOMB_PLANT_BONUS.toLocaleString(), cls: 'rs-bd-positive' });
+        }
+        if (lastRound.side === 't' && killReward > 0) {
+          tItems.push({ label: 'Kill Rewards (' + lastRound.kills + ' kills)', value: '+$' + killReward.toLocaleString(), cls: 'rs-bd-positive' });
+        }
+        const ctLossBonus = getLossBonus(lastRound.ctLossStreak);
+        ctItems.push({ label: 'Loss Bonus (streak ' + lastRound.ctLossStreak + ')', value: '+$' + ctLossBonus.toLocaleString(), cls: 'rs-bd-negative' });
+        if (lastRound.side === 'ct' && killReward > 0) {
+          ctItems.push({ label: 'Kill Rewards (' + lastRound.kills + ' kills)', value: '+$' + killReward.toLocaleString(), cls: 'rs-bd-positive' });
+        }
+      }
+
+      ctItems.push({ label: 'CT Total', value: '$' + lastRound.ctMoney.toLocaleString(), cls: '' });
+      tItems.push({ label: 'T Total', value: '$' + lastRound.tMoney.toLocaleString(), cls: '' });
+
+      function renderCol(title, items) {
+        let h = '<div><h4 style="margin:0 0 .5rem;font-size:.85rem;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.04em">' + title + '</h4>';
+        items.forEach(function(item) {
+          h += '<div class="rs-bd-item"><span class="rs-bd-label">' + item.label + '</span><span class="rs-bd-value ' + item.cls + '">' + item.value + '</span></div>';
+        });
+        h += '</div>';
+        return h;
+      }
+
+      breakdownGrid.innerHTML = renderCol('CT Side', ctItems) + renderCol('T Side', tItems);
+    }
+
+    function advanceRound(result) {
+      if (rounds.length >= MAX_ROUNDS) return;
+
+      const currentRound = rounds.length + 1;
+      // Sides swap at half: player starts as their pick, swaps at round 16
+      const activeSide = currentRound <= 15 ? playerSide : (playerSide === 'ct' ? 't' : 'ct');
+
+      rounds.push({
+        round: currentRound,
+        result: result,
+        side: activeSide,
+        kills: parseInt(killCount.value) || 0,
+        killRewardAmount: parseInt(killType.value) || 300,
+        bombPlanted: bombPlanted.checked,
+        ctMoney: 0,
+        tMoney: 0,
+        ctLossStreak: 0,
+        tLossStreak: 0,
+      });
+
+      // Reset inputs for next round
+      killCount.value = '0';
+      bombPlanted.checked = false;
+
+      render();
+    }
+
+    function undo() {
+      if (rounds.length === 0) return;
+      rounds.pop();
+      render();
+    }
+
+    function resetSim() {
+      rounds = [];
+      killCount.value = '0';
+      bombPlanted.checked = false;
+      render();
+    }
+
+    // Side picker
+    pickCT.addEventListener('click', function() {
+      playerSide = 'ct';
+      pickCT.classList.add('rs-side-active');
+      pickT.classList.remove('rs-side-active');
+      // Recompute with new side perspective
+      render();
+    });
+
+    pickT.addEventListener('click', function() {
+      playerSide = 't';
+      pickT.classList.add('rs-side-active');
+      pickCT.classList.remove('rs-side-active');
+      render();
+    });
+
+    winBtn.addEventListener('click', function() { advanceRound('win'); });
+    lossBtn.addEventListener('click', function() { advanceRound('loss'); });
+    undoBtn.addEventListener('click', undo);
+    resetBtn.addEventListener('click', resetSim);
+
+    // Initial render
+    render();
+  })();
 </script>

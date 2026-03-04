@@ -109,14 +109,6 @@ const breadcrumbJson = breadcrumbSchema(breadcrumbs);
 const faqJson = faqSchema(faqItems);
 
 const roles = ['All', 'Rifler', 'AWPer', 'IGL', 'Entry', 'Support'] as const;
-
-const colorMap: Record<string, string> = {
-  'Green': '#4caf50',
-  'Cyan': '#26a69a',
-  'Yellow': '#d4956e',
-  'White': '#e4e4ec',
-  'Custom': '#ab47bc',
-};
 ---
 
 <Base title={title} description={description} currentNav="/pro-crosshair-codes/">
@@ -143,23 +135,11 @@ const colorMap: Record<string, string> = {
 
   <div class="xc-grid" id="crosshairGrid">
     {CROSSHAIRS.map(ch => (
-      <div class="xc-card" data-role={ch.role} data-player={ch.player.toLowerCase()}>
+      <div class="xc-card" data-role={ch.role} data-player={ch.player.toLowerCase()}
+        data-ch-size={ch.size} data-ch-gap={ch.gap} data-ch-thickness={ch.thickness}
+        data-ch-dot={ch.dot} data-ch-outline={ch.outline} data-ch-color={ch.color} data-ch-style={ch.style}>
         <div class="xc-card-preview">
-          <div class="xc-ch-container">
-            <div style={`background-color: ${colorMap[ch.color] || ch.color}; width: ${ch.thickness}px; height: ${ch.size * 4}px; position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);`}></div>
-            <div style={`background-color: ${colorMap[ch.color] || ch.color}; width: ${ch.size * 4}px; height: ${ch.thickness}px; position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);`}></div>
-            {ch.gap > 0 && (
-              <>
-                <div style={`background-color: ${colorMap[ch.color] || ch.color}; width: ${ch.thickness}px; height: ${ch.size * 2}px; position: absolute; left: 50%; top: ${50 - ch.gap - ch.size}%; transform: translate(-50%, -50%);`}></div>
-                <div style={`background-color: ${colorMap[ch.color] || ch.color}; width: ${ch.thickness}px; height: ${ch.size * 2}px; position: absolute; left: 50%; top: ${50 + ch.gap + ch.size}%; transform: translate(-50%, -50%);`}></div>
-                <div style={`background-color: ${colorMap[ch.color] || ch.color}; width: ${ch.size * 2}px; height: ${ch.thickness}px; position: absolute; left: ${50 - ch.gap - ch.size}%; top: 50%; transform: translate(-50%, -50%);`}></div>
-                <div style={`background-color: ${colorMap[ch.color] || ch.color}; width: ${ch.size * 2}px; height: ${ch.thickness}px; position: absolute; left: ${50 + ch.gap + ch.size}%; top: 50%; transform: translate(-50%, -50%);`}></div>
-              </>
-            )}
-            {ch.dot && (
-              <div style={`background-color: ${colorMap[ch.color] || ch.color}; width: ${ch.thickness * 2}px; height: ${ch.thickness * 2}px; border-radius: 50%; position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);`}></div>
-            )}
-          </div>
+          <canvas class="xc-ch-canvas" width="80" height="80"></canvas>
         </div>
         <div class="xc-card-body">
           <div class="xc-card-top">
@@ -228,7 +208,7 @@ const colorMap: Record<string, string> = {
   .xc-card.xc-hidden{display:none}
 
   .xc-card-preview{background:linear-gradient(135deg,#0a0a0e 0%,#131318 100%);border-bottom:1px solid var(--border);padding:1.25rem;display:flex;align-items:center;justify-content:center;min-height:100px}
-  .xc-ch-container{position:relative;width:80px;height:80px;border:1px solid var(--border);border-radius:4px;background:rgba(0,0,0,.5)}
+  .xc-ch-canvas{width:80px;height:80px;border:1px solid var(--border);border-radius:4px;background:rgba(0,0,0,.5)}
 
   .xc-card-body{padding:1rem;display:flex;flex-direction:column;gap:.6rem;flex:1}
   .xc-card-top{display:flex;justify-content:space-between;align-items:flex-start;gap:.5rem}
@@ -312,6 +292,88 @@ const colorMap: Record<string, string> = {
     searchInput.addEventListener('input', function() {
       searchTerm = this.value;
       filterCards();
+    });
+
+    // --- Crosshair canvas rendering ---
+    var CH_COLORS = {
+      'Green': '#00ff00', 'Red': '#ff0000', 'Blue': '#0000ff',
+      'Yellow': '#ffff00', 'Cyan': '#00ffff', 'White': '#ffffff',
+      'Pink': '#ff00ff', 'Orange': '#ff8000', 'Custom': '#00ff00'
+    };
+
+    function drawCrosshair(canvas, opts) {
+      var ctx = canvas.getContext('2d');
+      var w = canvas.width;
+      var h = canvas.height;
+      var cx = Math.floor(w / 2);
+      var cy = Math.floor(h / 2);
+
+      // Scale factor so small values are visible on the 80px canvas
+      var scale = 2.5;
+      var armLen = Math.max(Math.round(opts.size * scale), 1);
+      var thick = Math.max(Math.round(opts.thickness * scale), 1);
+      var gap = Math.round(opts.gap * scale);
+      var color = CH_COLORS[opts.color] || opts.color || '#00ff00';
+
+      ctx.clearRect(0, 0, w, h);
+
+      // Half-thickness offset to keep arms centered
+      var ht = Math.floor(thick / 2);
+
+      // Outline pass: draw same shapes 1px larger in black
+      if (opts.outline) {
+        ctx.fillStyle = '#000000';
+        var ol = 1; // outline width in pixels
+        // Top arm
+        ctx.fillRect(cx - ht - ol, cy - gap - armLen - ol, thick + ol * 2, armLen + ol * 2);
+        // Bottom arm
+        ctx.fillRect(cx - ht - ol, cy + gap - ol, thick + ol * 2, armLen + ol * 2);
+        // Left arm
+        ctx.fillRect(cx - gap - armLen - ol, cy - ht - ol, armLen + ol * 2, thick + ol * 2);
+        // Right arm
+        ctx.fillRect(cx + gap - ol, cy - ht - ol, armLen + ol * 2, thick + ol * 2);
+        // Dot outline
+        if (opts.dot) {
+          var dotSize = Math.max(thick, 2);
+          var dht = Math.floor(dotSize / 2);
+          ctx.fillRect(cx - dht - ol, cy - dht - ol, dotSize + ol * 2, dotSize + ol * 2);
+        }
+      }
+
+      // Main crosshair color
+      ctx.fillStyle = color;
+
+      // Top arm
+      ctx.fillRect(cx - ht, cy - gap - armLen, thick, armLen);
+      // Bottom arm
+      ctx.fillRect(cx - ht, cy + gap, thick, armLen);
+      // Left arm
+      ctx.fillRect(cx - gap - armLen, cy - ht, armLen, thick);
+      // Right arm
+      ctx.fillRect(cx + gap, cy - ht, armLen, thick);
+
+      // Center dot
+      if (opts.dot) {
+        var dotSize = Math.max(thick, 2);
+        var dht = Math.floor(dotSize / 2);
+        ctx.fillRect(cx - dht, cy - dht, dotSize, dotSize);
+      }
+    }
+
+    // Render all crosshair canvases
+    var cards = grid.querySelectorAll('.xc-card');
+    cards.forEach(function(card) {
+      var canvas = card.querySelector('.xc-ch-canvas');
+      if (!canvas) return;
+      drawCrosshair(canvas, {
+        size: parseFloat(card.dataset.chSize) || 2,
+        gap: parseFloat(card.dataset.chGap) || 0,
+        thickness: parseFloat(card.dataset.chThickness) || 1,
+        dot: card.dataset.chDot === 'true',
+        outline: card.dataset.chOutline === 'true',
+        color: card.dataset.chColor || 'Green',
+        style: parseInt(card.dataset.chStyle) || 4
+      });
     });
 
     const copyBtns = document.querySelectorAll('.xc-copy-btn');

@@ -41,7 +41,11 @@ const eliteRanks = allRanks.filter(r => ['Distinguished', 'Legendary', 'Supreme'
 <meta name="description" content={description} />
 <link rel="canonical" href={canonical} />
 <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+<link rel="manifest" href="/manifest.json" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 <meta name="theme-color" content="#2ecc71" />
+<link rel="alternate" type="application/rss+xml" title="CSGOLuck Wiki" href="/rss.xml" />
 <meta property="og:title" content={title} />
 <meta property="og:description" content={description} />
 <meta property="og:url" content={canonical} />
@@ -86,6 +90,8 @@ const eliteRanks = allRanks.filter(r => ['Distinguished', 'Legendary', 'Supreme'
     }
   ]
 }</script>
+<!-- Ahrefs Analytics -->
+<script src="https://analytics.ahrefs.com/analytics.js" data-key="c/4AgO1fvTkelU2moW2x0g" async></script>
 <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-CMJW2XHT8D"></script>
 <script is:inline>
@@ -95,11 +101,15 @@ const eliteRanks = allRanks.filter(r => ['Distinguished', 'Legendary', 'Supreme'
   gtag('config', 'G-CMJW2XHT8D');
 </script>
 <slot name="head" />
+<script is:inline>
+// Theme: restore from localStorage before paint
+(function(){var t=localStorage.getItem('theme');if(t==='light'){document.documentElement.classList.add('light-mode')}})();
+</script>
 </head>
 <body style="background:#0d0e12;color:#ffffff">
 <header>
 <nav>
-<a href="/" class="logo"><img src="/images/csgoluck-logo.png" alt="CSGOLuck" class="logo-img" width="141" height="25" /></a>
+<a href="/" class="logo"><img src="/images/csgoluck-logo.png" alt="CSGOLuck" class="logo-img logo-dark" width="141" height="25" /><img src="/images/csgoluck-logo-light.png" alt="CSGOLuck" class="logo-img logo-light" width="141" height="25" /></a>
 <button class="hamburger" id="hamburgerBtn" aria-label="Toggle menu" aria-expanded="false"><span></span><span></span><span></span></button>
 <div class="nav-links">
 <a href="/" class:list={[{ active: currentNav === '/' }]}>Home</a>
@@ -279,6 +289,10 @@ const eliteRanks = allRanks.filter(r => ['Distinguished', 'Legendary', 'Supreme'
 </div>
 </div>
 <CurrencySelector />
+<button class="theme-toggle" id="themeToggle" aria-label="Toggle theme" title="Toggle light/dark mode">
+<svg class="theme-icon-dark" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+<svg class="theme-icon-light" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
+</button>
 <div class="nav-search">
 <form action="/search/" method="get" role="search">
 <input type="search" name="q" placeholder="Search weapons..." aria-label="Search" autocomplete="off" />
@@ -288,7 +302,7 @@ const eliteRanks = allRanks.filter(r => ['Distinguished', 'Legendary', 'Supreme'
 <!-- Mobile Drawer Menu -->
 <div class="mobile-drawer" id="mobileDrawer">
 <div class="mobile-drawer-header">
-<a href="/" class="logo"><img src="/images/csgoluck-logo.png" alt="CSGOLuck" class="logo-img" width="141" height="25" /></a>
+<a href="/" class="logo"><img src="/images/csgoluck-logo.png" alt="CSGOLuck" class="logo-img logo-dark" width="141" height="25" /><img src="/images/csgoluck-logo-light.png" alt="CSGOLuck" class="logo-img logo-light" width="141" height="25" /></a>
 <button class="mobile-close" id="mobileClose" aria-label="Close menu">&times;</button>
 </div>
 <div class="mobile-drawer-search">
@@ -381,6 +395,22 @@ const eliteRanks = allRanks.filter(r => ['Distinguished', 'Legendary', 'Supreme'
 </div>
 <div class="mobile-overlay" id="mobileOverlay"></div>
 </header>
+<!-- Cmd+K Search Modal -->
+<div class="qk-overlay" id="qkOverlay">
+<div class="qk-modal">
+<div class="qk-header">
+<svg class="qk-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+<input type="text" class="qk-input" id="qkInput" placeholder="Search pages, tools, skins..." autocomplete="off" />
+<kbd class="qk-kbd">ESC</kbd>
+</div>
+<div class="qk-results" id="qkResults"></div>
+<div class="qk-footer">
+<span><kbd>↑↓</kbd> Navigate</span>
+<span><kbd>↵</kbd> Open</span>
+<span><kbd>esc</kbd> Close</span>
+</div>
+</div>
+</div>
 <main>
 <slot />
 </main>
@@ -580,7 +610,7 @@ tr:hover td:first-child{border-left:2px solid var(--accent)}
 .mobile-overlay.open{display:block}
 @media(max-width:768px){
   nav{padding:.5rem 1rem;flex-wrap:nowrap}
-  .nav-links,.nav-search{display:none}
+  .nav-links,.nav-search,.theme-toggle{display:none}
   .hamburger{display:flex}
   main{padding:1.5rem 1rem}
   h1{font-size:1.6rem}
@@ -588,6 +618,41 @@ tr:hover td:first-child{border-left:2px solid var(--accent)}
   .stats-grid{grid-template-columns:repeat(2,1fr)}
   .footer-grid{grid-template-columns:repeat(2,1fr)!important}
 }
+/* Theme Toggle */
+.theme-toggle{background:none;border:1px solid var(--border);border-radius:6px;padding:4px 6px;cursor:pointer;color:var(--text2);display:flex;align-items:center;transition:color .2s,border-color .2s}
+.theme-toggle:hover{color:var(--accent);border-color:var(--accent)}
+.theme-icon-light{display:none}
+.logo-light{display:none}
+html.light-mode .theme-icon-dark{display:none}
+html.light-mode .theme-icon-light{display:block}
+html.light-mode .logo-dark{display:none}
+html.light-mode .logo-light{display:inline}
+/* Light Mode */
+html.light-mode{--bg:#f5f5f7;--bg2:#ffffff;--bg3:#ebedf0;--text:#1a1a2e;--text2:#555570;--accent:#1a9f4a;--accent2:#15803d;--border:#d4d6dc}
+html.light-mode body{background:var(--bg)!important;color:var(--text)!important}
+html.light-mode header{background:rgba(255,255,255,.92);border-bottom-color:var(--border)}
+html.light-mode ::selection{background:rgba(26,159,74,.2)}
+html.light-mode ::-webkit-scrollbar-track{background:var(--bg)}
+html.light-mode ::-webkit-scrollbar-thumb{background:var(--border)}
+/* Cmd+K Modal */
+.qk-overlay{display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.55);backdrop-filter:blur(4px);align-items:flex-start;justify-content:center;padding-top:min(20vh,160px)}
+.qk-overlay.open{display:flex}
+.qk-modal{background:var(--bg2);border:1px solid var(--border);border-radius:12px;width:560px;max-width:92vw;max-height:70vh;display:flex;flex-direction:column;box-shadow:0 20px 60px rgba(0,0,0,.5);overflow:hidden}
+.qk-header{display:flex;align-items:center;gap:.6rem;padding:.75rem 1rem;border-bottom:1px solid var(--border)}
+.qk-icon{color:var(--text2);flex-shrink:0}
+.qk-input{flex:1;background:none;border:none;color:var(--text);font-size:1rem;font-family:inherit;outline:none}
+.qk-input::placeholder{color:var(--text2);opacity:.6}
+.qk-kbd{background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:2px 6px;font-size:.7rem;color:var(--text2);font-family:inherit}
+.qk-results{flex:1;overflow-y:auto;padding:.5rem}
+.qk-group-label{font-size:.7rem;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.06em;padding:.4rem .75rem .2rem}
+.qk-item{display:flex;align-items:center;gap:.6rem;padding:.55rem .75rem;border-radius:6px;color:var(--text);text-decoration:none;cursor:pointer;font-size:.88rem;transition:background .1s}
+.qk-item:hover,.qk-item.qk-active{background:var(--bg3);color:var(--accent)}
+.qk-item-icon{font-size:1rem;width:24px;text-align:center;flex-shrink:0;opacity:.6}
+.qk-item-text{flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.qk-item-hint{font-size:.72rem;color:var(--text2);flex-shrink:0}
+.qk-empty{text-align:center;padding:2rem 1rem;color:var(--text2);font-size:.88rem}
+.qk-footer{display:flex;gap:1.5rem;padding:.5rem 1rem;border-top:1px solid var(--border);font-size:.72rem;color:var(--text2)}
+.qk-footer kbd{background:var(--bg3);border:1px solid var(--border);border-radius:3px;padding:1px 4px;font-family:inherit;font-size:.68rem}
 </style>
 <script is:inline>
 document.addEventListener('DOMContentLoaded',function(){
@@ -615,6 +680,88 @@ document.addEventListener('DOMContentLoaded',function(){
   if(hamburger){hamburger.addEventListener('click',function(e){e.stopPropagation();drawer.classList.contains('open')?closeDrawer():openDrawer();});}
   if(closeBtn)closeBtn.addEventListener('click',closeDrawer);
   if(overlay)overlay.addEventListener('click',closeDrawer);
+
+  // Theme Toggle
+  var themeBtn=document.getElementById('themeToggle');
+  if(themeBtn){themeBtn.addEventListener('click',function(){
+    document.documentElement.classList.toggle('light-mode');
+    localStorage.setItem('theme',document.documentElement.classList.contains('light-mode')?'light':'dark');
+  });}
+
+  // Cmd+K Quick Search
+  var QK_PAGES=[
+    {g:'Tools',icon:'wrench',items:[
+      {t:'Crosshair Generator',u:'/crosshair-generator/'},{t:'Damage Calculator',u:'/damage-calculator/'},{t:'Economy Calculator',u:'/economy-calculator/'},
+      {t:'eDPI Calculator',u:'/edpi-calculator/'},{t:'Sensitivity Converter',u:'/sensitivity-converter/'},{t:'cm/360 Calculator',u:'/cm360-calculator/'},
+      {t:'Resolution Calculator',u:'/resolution-calculator/'},{t:'Bind Generator',u:'/bind-generator/'},{t:'Autoexec Generator',u:'/autoexec-generator/'},
+      {t:'Spray Trainer',u:'/spray-trainer/'},{t:'Float Checker',u:'/float-checker/'},{t:'Trade-Up Calculator',u:'/tradeup-calculator/'},
+      {t:'Case Simulator',u:'/case-simulator/'},{t:'Loadout Builder',u:'/loadout-builder/'},{t:'Inventory Lookup',u:'/inventory-lookup/'},
+      {t:'Case Odds Calculator',u:'/case-odds-calculator/'},{t:'Weapon Compare',u:'/weapon-compare/'},{t:'Skin Compare',u:'/skin-compare/'},
+      {t:'Console Commands',u:'/cs2-commands/'},{t:'Launch Options',u:'/launch-options/'},{t:'Practice Config',u:'/practice-config/'}
+    ]},
+    {g:'Database',icon:'database',items:[
+      {t:'All Skins',u:'/cs2-skins/'},{t:'All Weapons',u:'/cs2-weapons/'},{t:'Cases & Collections',u:'/cs2-cases/'},
+      {t:'Stickers',u:'/cs2-stickers/'},{t:'Agents',u:'/cs2-agents/'},{t:'Market Trends',u:'/market-trends/'},
+      {t:'Price Tracker',u:'/price-tracker/'},{t:'Best Deals',u:'/cs2-skins/best-deals/'},{t:'Pattern Database',u:'/pattern-database/'},
+      {t:'Rifle Skins',u:'/cs2-skins/rifles/'},{t:'Pistol Skins',u:'/cs2-skins/pistols/'},{t:'Knife Skins',u:'/cs2-skins/knives/'},
+      {t:'Glove Skins',u:'/cs2-skins/gloves/'},{t:'SMG Skins',u:'/cs2-skins/smgs/'},{t:'Heavy Skins',u:'/cs2-skins/heavy/'}
+    ]},
+    {g:'Maps',icon:'map',items:[
+      {t:'All Maps',u:'/cs2-maps/'},{t:'Mirage',u:'/cs2-maps/mirage/'},{t:'Inferno',u:'/cs2-maps/inferno/'},
+      {t:'Dust 2',u:'/cs2-maps/dust2/'},{t:'Nuke',u:'/cs2-maps/nuke/'},{t:'Ancient',u:'/cs2-maps/ancient/'},
+      {t:'Anubis',u:'/cs2-maps/anubis/'},{t:'Vertigo',u:'/cs2-maps/vertigo/'},{t:'Overpass',u:'/cs2-maps/overpass/'},
+      {t:'Workshop Maps',u:'/workshop-maps/'}
+    ]},
+    {g:'Pro Scene',icon:'trophy',items:[
+      {t:'All Pro Players',u:'/pro-players/'},{t:'Teams',u:'/pro-teams/'},{t:'Pro Gaming Gear',u:'/pro-gaming-gear/'},
+      {t:'Crosshair Codes',u:'/crosshair-codes/'},{t:'Rank Distribution',u:'/cs2-rank-distribution/'}
+    ]},
+    {g:'Learn',icon:'book',items:[
+      {t:'All Guides',u:'/cs2-guides/'},{t:"Beginner's Guide",u:'/cs2-guides/beginners-guide/'},{t:'Aim Guide',u:'/cs2-guides/aim-guide/'},
+      {t:'Economy Guide',u:'/economy-guide/'},{t:'Patch Notes',u:'/patch-notes/'},{t:'FAQ',u:'/faq/'},
+      {t:'Search (Full)',u:'/search/'}
+    ]}
+  ];
+  var ICONS={wrench:'\u{1F527}',database:'\u{1F4BE}',map:'\u{1F5FA}',trophy:'\u{1F3C6}',book:'\u{1F4DA}'};
+  var qkOv=document.getElementById('qkOverlay'),qkIn=document.getElementById('qkInput'),qkRes=document.getElementById('qkResults');
+  var qkIdx=-1,qkItems=[];
+  function qkOpen(){qkOv.classList.add('open');qkIn.value='';qkRender('');qkIn.focus();}
+  function qkClose(){qkOv.classList.remove('open');qkIdx=-1;}
+  function qkRender(q){
+    q=q.toLowerCase().trim();
+    var html='',count=0;
+    QK_PAGES.forEach(function(g){
+      var matches=g.items.filter(function(i){return !q||i.t.toLowerCase().includes(q);});
+      if(!matches.length)return;
+      html+='<div class="qk-group-label">'+g.g+'</div>';
+      matches.forEach(function(i){
+        html+='<a class="qk-item" href="'+i.u+'" data-qk="'+count+'"><span class="qk-item-icon">'+ICONS[g.icon]+'</span><span class="qk-item-text">'+i.t+'</span></a>';
+        count++;
+      });
+    });
+    if(!count&&q){html='<div class="qk-empty">No results for "'+q+'"<br><a href="/search/?q='+encodeURIComponent(q)+'" style="color:var(--accent);font-weight:600">Search all skins →</a></div>';}
+    qkRes.innerHTML=html;
+    qkItems=qkRes.querySelectorAll('.qk-item');
+    qkIdx=-1;
+    if(qkItems.length>0){qkIdx=0;qkItems[0].classList.add('qk-active');}
+  }
+  function qkHighlight(n){
+    if(!qkItems.length)return;
+    if(qkItems[qkIdx])qkItems[qkIdx].classList.remove('qk-active');
+    qkIdx=((n%qkItems.length)+qkItems.length)%qkItems.length;
+    qkItems[qkIdx].classList.add('qk-active');
+    qkItems[qkIdx].scrollIntoView({block:'nearest'});
+  }
+  document.addEventListener('keydown',function(e){
+    if((e.metaKey||e.ctrlKey)&&e.key==='k'){e.preventDefault();qkOv.classList.contains('open')?qkClose():qkOpen();}
+    if(!qkOv.classList.contains('open'))return;
+    if(e.key==='Escape'){e.preventDefault();qkClose();}
+    if(e.key==='ArrowDown'){e.preventDefault();qkHighlight(qkIdx+1);}
+    if(e.key==='ArrowUp'){e.preventDefault();qkHighlight(qkIdx-1);}
+    if(e.key==='Enter'&&qkItems[qkIdx]){e.preventDefault();window.location.href=qkItems[qkIdx].getAttribute('href');}
+  });
+  if(qkIn)qkIn.addEventListener('input',function(){qkRender(this.value);});
+  if(qkOv)qkOv.addEventListener('click',function(e){if(e.target===qkOv)qkClose();});
 });
 </script>
 </body>

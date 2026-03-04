@@ -1,0 +1,374 @@
+---
+import Base from '../../layouts/Base.astro';
+import ExploreMore from '../../components/ExploreMore.astro';
+import { SKINS, RARITY_COLORS, RARITY_BG, getLowestPrice, fmtPrice, getWeaponsInCategory } from '../../lib/skins';
+import { breadcrumbSchema, faqSchema } from '../../lib/weapons';
+import { skinCardImage } from '../../lib/imageOptimize';
+
+export function getStaticPaths() {
+  return [5, 10, 25, 50, 100].map(price => ({
+    params: { price: String(price) },
+    props: { budget: price },
+  }));
+}
+
+const { budget } = Astro.props;
+const { price: priceParam } = Astro.params;
+
+// All price tiers for cross-linking
+const PRICE_TIERS = [5, 10, 25, 50, 100];
+
+// Rarity sort order — coverts first (most desirable), consumer last
+const RARITY_ORDER: Record<string, number> = {
+  'Contraband': 0,
+  'Extraordinary': 1,
+  'Covert': 2,
+  'Classified': 3,
+  'Restricted': 4,
+  'Mil-Spec': 5,
+  'Industrial': 6,
+  'Consumer': 7,
+};
+
+// Category labels
+const CATEGORY_META: Record<string, { label: string; plural: string }> = {
+  rifle: { label: 'Rifles', plural: 'Rifles' },
+  pistol: { label: 'Pistols', plural: 'Pistols' },
+  smg: { label: 'SMGs', plural: 'SMGs' },
+  heavy: { label: 'Heavy', plural: 'Heavy' },
+  knife: { label: 'Knives', plural: 'Knives' },
+  glove: { label: 'Gloves', plural: 'Gloves' },
+  other: { label: 'Other', plural: 'Other' },
+};
+
+// Filter skins: must have a lowest price > 0 and < budget, skip phase variants
+const budgetSkins = SKINS
+  .filter(s => !s.phase)
+  .map(s => ({ ...s, low: getLowestPrice(s) }))
+  .filter(s => s.low > 0 && s.low < budget)
+  .sort((a, b) => {
+    // Sort by rarity (covert first), then by price descending within each rarity
+    const rarityDiff = (RARITY_ORDER[a.rarity] ?? 99) - (RARITY_ORDER[b.rarity] ?? 99);
+    if (rarityDiff !== 0) return rarityDiff;
+    return b.low - a.low;
+  });
+
+// Group by category
+const categoryOrder = ['rifle', 'pistol', 'smg', 'heavy', 'knife', 'glove', 'other'];
+const grouped = categoryOrder
+  .map(cat => ({
+    cat,
+    label: CATEGORY_META[cat]?.label || cat,
+    skins: budgetSkins.filter(s => s.category === cat),
+  }))
+  .filter(g => g.skins.length > 0);
+
+// Stats
+const totalCount = budgetSkins.length;
+const minPrice = totalCount > 0 ? Math.min(...budgetSkins.map(s => s.low)) : 0;
+const maxPrice = totalCount > 0 ? Math.max(...budgetSkins.map(s => s.low)) : budget;
+const rarityBreakdown = budgetSkins.reduce((acc, s) => {
+  acc[s.rarity] = (acc[s.rarity] || 0) + 1;
+  return acc;
+}, {} as Record<string, number>);
+const topRarity = Object.entries(rarityBreakdown).sort((a, b) => (RARITY_ORDER[a[0]] ?? 99) - (RARITY_ORDER[b[0]] ?? 99))[0]?.[0] || 'Mil-Spec';
+
+// SEO
+const title = `Best CS2 Skins Under $${budget} — Top Budget Picks in 2026 | CSGOLuck Wiki`;
+const description = `Discover the best CS2 skins under $${budget}. Browse ${totalCount}+ affordable skins sorted by rarity and value across all weapon categories.`;
+
+const breadcrumbs = [
+  { name: 'Home', url: '/' },
+  { name: 'Skins', url: '/cs2-skins/' },
+  { name: `Best Under $${budget}`, url: `/cs2-skins/best-under-${budget}/` },
+];
+
+const faqs = [
+  {
+    question: `What are the best CS2 skins under $${budget}?`,
+    answer: `There are ${totalCount} CS2 skins available under $${budget}, spanning rarities from ${topRarity} down to Consumer grade. Top picks include skins from popular weapons like the AK-47, M4A1-S, and AWP that offer great visual appeal without a hefty price tag.`,
+  },
+  {
+    question: `Are cheap CS2 skins under $${budget} worth buying?`,
+    answer: `Absolutely. Many highly-rated CS2 skins fall under the $${budget} price point. Skins like the AK-47 Redline, USP-S Blueprint, and AWP Atheris are community favorites that look fantastic in-game. Condition (float value) matters more than price for visual quality.`,
+  },
+  {
+    question: `Where is the cheapest place to buy CS2 skins under $${budget}?`,
+    answer: `Third-party marketplaces like Skinport, CSFloat, and Buff163 typically offer 10-30% lower prices than the Steam Community Market. Use our Best Deals page to compare prices across 14+ marketplaces and find the biggest discounts.`,
+  },
+];
+---
+
+<Base title={title} description={description} currentNav="/cs2-skins/">
+<script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema(breadcrumbs))} />
+<script type="application/ld+json" set:html={JSON.stringify(faqSchema(faqs))} />
+
+<nav class="breadcrumb">
+  <a href="/">Home</a> / <a href="/cs2-skins/">Skins</a> / <span>Best Under ${budget}</span>
+</nav>
+
+<!-- Hero -->
+<section class="bu-hero">
+  <h1 class="bu-hero-title">Best CS2 Skins Under ${budget}</h1>
+  <p class="bu-hero-desc">Browse the top CS2 skins under ${budget}, sorted by rarity and value. Find great-looking skins for every weapon category without breaking the bank.</p>
+  <div class="bu-hero-pills">
+    <span class="bu-pill">{totalCount} Skins</span>
+    <span class="bu-pill">${fmtPrice(minPrice)} – ${fmtPrice(maxPrice)}</span>
+    <span class="bu-pill">{grouped.length} Categories</span>
+  </div>
+</section>
+
+<!-- Price Tier Navigation -->
+<nav class="bu-tiers" aria-label="Price tiers">
+  <span class="bu-tiers-label">Also check:</span>
+  {PRICE_TIERS.map(tier => (
+    tier === budget
+      ? <span class="bu-tier bu-tier-active">Under ${tier}</span>
+      : <a href={`/cs2-skins/best-under-${tier}/`} class="bu-tier">Under ${tier}</a>
+  ))}
+</nav>
+
+<!-- Category Filter Tabs -->
+<nav class="bu-tabs" aria-label="Category filter">
+  <button class="bu-tab bu-tab-active" data-cat="all">All <span class="bu-tab-ct">{totalCount}</span></button>
+  {grouped.map(g => (
+    <button class="bu-tab" data-cat={g.cat}>{g.label} <span class="bu-tab-ct">{g.skins.length}</span></button>
+  ))}
+</nav>
+
+<!-- Sort + Results bar -->
+<div class="bu-toolbar">
+  <span class="bu-result-count" id="bu-count">{totalCount} skins</span>
+  <div class="bu-sort-wrap">
+    <label for="bu-sort">Sort</label>
+    <select id="bu-sort" class="bu-sort-select">
+      <option value="rarity">Rarity (Best First)</option>
+      <option value="price-desc">Price: High to Low</option>
+      <option value="price-asc">Price: Low to High</option>
+      <option value="name-asc">Name: A-Z</option>
+    </select>
+  </div>
+</div>
+
+<!-- Card Grid -->
+<div class="bu-grid" id="bu-grid">
+  {budgetSkins.map((skin, i) => {
+    const rarityColor = RARITY_COLORS[skin.rarity] || '#fff';
+    const rarityBg = RARITY_BG[skin.rarity] || 'rgba(255,255,255,0.08)';
+    return (
+      <a href={`/cs2-skin/${skin.slug}/`}
+         class={`bu-card${i >= 60 ? ' bu-hidden' : ''}`}
+         data-cat={skin.category}
+         data-rarity={RARITY_ORDER[skin.rarity] ?? 99}
+         data-price={skin.low}
+         data-name={skin.name}>
+        <div class="bu-card-img" style={`background:${rarityBg}`}>
+          <span class="bu-card-rarity" style={`background:${rarityColor}`}>{skin.rarity}</span>
+          {skin.image
+            ? <img src={skinCardImage(skin.image)} alt={`${skin.weapon} | ${skin.name}`} loading="lazy" width="200" height="150" />
+            : <span class="bu-card-placeholder">{skin.weapon.substring(0, 2)}</span>
+          }
+          {skin.statTrak && <span class="bu-card-badge bu-badge-st">ST</span>}
+          {skin.souvenir && <span class="bu-card-badge bu-badge-sv">SV</span>}
+        </div>
+        <div class="bu-card-body">
+          <span class="bu-card-weapon">{skin.weapon}</span>
+          <span class="bu-card-name">{skin.name}</span>
+          <span class="bu-card-price">${fmtPrice(skin.low)}</span>
+        </div>
+      </a>
+    );
+  })}
+</div>
+
+{totalCount > 60 && (
+  <div class="bu-loadmore">
+    <button class="bu-loadmore-btn" id="bu-load-more">Show More Skins</button>
+  </div>
+)}
+
+<!-- FAQ -->
+<h2>Frequently Asked Questions</h2>
+<div class="bu-faq">
+  {faqs.map(f => (
+    <details class="bu-faq-item">
+      <summary class="bu-faq-q">{f.question}</summary>
+      <p class="bu-faq-a">{f.answer}</p>
+    </details>
+  ))}
+</div>
+
+<!-- Internal Links -->
+<div class="internal-links">
+  <strong>Related Pages:</strong>
+  <a href="/cs2-skins/">All Skins</a>
+  <a href="/cs2-skins/best-deals/">Best Deals</a>
+  <a href="/cs2-skins/finder/">Skin Finder</a>
+  <a href="/skin-compare/">Compare Skins</a>
+  <a href="/price-tracker/">Price Tracker</a>
+  <a href="/market-trends/">Market Trends</a>
+  <a href="/cs2-cases/">Cases & Collections</a>
+</div>
+
+<ExploreMore context="skins" />
+</Base>
+
+<script is:inline>
+(function(){
+  var tabs = document.querySelectorAll('.bu-tab[data-cat]');
+  var cards = document.querySelectorAll('.bu-card[data-cat]');
+  var countEl = document.getElementById('bu-count');
+  var sortSelect = document.getElementById('bu-sort');
+  var grid = document.getElementById('bu-grid');
+  var loadBtn = document.getElementById('bu-load-more');
+  var activeCat = 'all';
+  var isFiltering = false;
+
+  function updateDisplay() {
+    var visible = 0;
+    cards.forEach(function(c) {
+      var catMatch = activeCat === 'all' || c.dataset.cat === activeCat;
+      if (catMatch) {
+        visible++;
+        if (isFiltering) {
+          c.style.display = '';
+          c.classList.add('bu-revealed');
+        } else {
+          c.style.display = '';
+        }
+      } else {
+        c.style.display = 'none';
+      }
+    });
+    if (countEl) countEl.textContent = visible + ' skin' + (visible !== 1 ? 's' : '');
+    if (loadBtn) {
+      loadBtn.style.display = isFiltering ? 'none' : '';
+      var hidden = document.querySelectorAll('.bu-hidden:not(.bu-revealed)');
+      if (hidden.length === 0 && loadBtn) loadBtn.style.display = 'none';
+    }
+  }
+
+  tabs.forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      tabs.forEach(function(b) { b.classList.remove('bu-tab-active'); });
+      btn.classList.add('bu-tab-active');
+      activeCat = btn.dataset.cat;
+      isFiltering = activeCat !== 'all';
+      updateDisplay();
+    });
+  });
+
+  if (loadBtn) {
+    loadBtn.addEventListener('click', function() {
+      var hidden = document.querySelectorAll('.bu-hidden:not(.bu-revealed)');
+      var count = 0;
+      hidden.forEach(function(c) {
+        if (count < 60) { c.classList.add('bu-revealed'); count++; }
+      });
+      var remaining = document.querySelectorAll('.bu-hidden:not(.bu-revealed)');
+      if (remaining.length === 0) loadBtn.style.display = 'none';
+      updateDisplay();
+    });
+  }
+
+  if (sortSelect) {
+    sortSelect.addEventListener('change', function() {
+      var cardsArr = Array.from(cards);
+      var val = sortSelect.value;
+      cardsArr.sort(function(a, b) {
+        if (val === 'rarity') {
+          var rd = (parseInt(a.dataset.rarity) || 99) - (parseInt(b.dataset.rarity) || 99);
+          if (rd !== 0) return rd;
+          return (parseFloat(b.dataset.price) || 0) - (parseFloat(a.dataset.price) || 0);
+        }
+        if (val === 'price-desc') return (parseFloat(b.dataset.price) || 0) - (parseFloat(a.dataset.price) || 0);
+        if (val === 'price-asc') return (parseFloat(a.dataset.price) || 0) - (parseFloat(b.dataset.price) || 0);
+        if (val === 'name-asc') return (a.dataset.name || '').localeCompare(b.dataset.name || '');
+        return 0;
+      });
+      cardsArr.forEach(function(c) { grid.appendChild(c); });
+    });
+  }
+})();
+</script>
+
+<style is:inline>
+/* ===== BU HERO ===== */
+.bu-hero{margin-bottom:1.5rem;padding-bottom:1.5rem;border-bottom:1px solid var(--border)}
+.bu-hero-title{margin:0 0 .4rem;font-size:1.9rem;font-weight:800}
+.bu-hero-desc{color:var(--text2);margin:0 0 .75rem;font-size:.88rem;max-width:620px;line-height:1.55}
+.bu-hero-pills{display:flex;gap:.5rem;flex-wrap:wrap}
+.bu-pill{background:var(--bg2);border:1px solid var(--border);border-radius:4px;padding:.3rem .65rem;font-size:.78rem;font-weight:600;color:var(--accent)}
+
+/* ===== BU PRICE TIERS NAV ===== */
+.bu-tiers{display:flex;align-items:center;gap:.4rem;flex-wrap:wrap;margin-bottom:1.25rem;padding:.55rem .75rem;background:var(--bg2);border:1px solid var(--border);border-radius:4px}
+.bu-tiers-label{font-size:.8rem;color:var(--text2);font-weight:600;margin-right:.25rem}
+.bu-tier{font-size:.8rem;font-weight:600;padding:.25rem .6rem;border-radius:4px;text-decoration:none;color:var(--text2);background:var(--bg3);border:1px solid var(--border);transition:color .15s,border-color .15s}
+.bu-tier:hover{color:var(--accent);border-color:var(--accent)}
+.bu-tier-active{color:var(--accent);border-color:var(--accent);pointer-events:none}
+
+/* ===== BU TABS ===== */
+.bu-tabs{display:flex;gap:0;border-bottom:2px solid var(--border);margin-bottom:1.25rem;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+.bu-tabs::-webkit-scrollbar{display:none}
+.bu-tab{flex-shrink:0;background:none;border:none;border-bottom:2px solid transparent;color:var(--text2);padding:.5rem .9rem;font-size:.8rem;font-weight:600;font-family:inherit;cursor:pointer;white-space:nowrap;transition:color .15s,border-color .15s;margin-bottom:-2px}
+.bu-tab:hover{color:var(--text);border-bottom-color:var(--accent)}
+.bu-tab-active{color:var(--accent);border-bottom-color:var(--accent)}
+.bu-tab-ct{font-size:.68rem;opacity:.6;margin-left:.2rem}
+.bu-tab-active .bu-tab-ct{opacity:.85}
+
+/* ===== BU TOOLBAR ===== */
+.bu-toolbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:.75rem;flex-wrap:wrap;gap:.5rem}
+.bu-result-count{font-size:.84rem;color:var(--text2);font-weight:600}
+.bu-sort-wrap{display:flex;align-items:center;gap:.4rem}
+.bu-sort-wrap label{font-size:.8rem;color:var(--text2);font-weight:600}
+.bu-sort-select{background:var(--bg3);color:var(--text);border:1px solid var(--border);padding:.35rem .6rem;border-radius:4px;font-size:.82rem;font-family:inherit;cursor:pointer}
+.bu-sort-select:focus{outline:none;border-color:var(--accent)}
+
+/* ===== BU GRID (Card Layout) ===== */
+.bu-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:.75rem;margin-bottom:1.5rem}
+.bu-hidden{display:none!important}
+.bu-hidden.bu-revealed{display:flex!important}
+
+.bu-card{display:flex;flex-direction:column;background:var(--bg2);border:1px solid var(--border);border-radius:8px;overflow:hidden;text-decoration:none;color:inherit;transition:transform .2s,border-color .2s,box-shadow .2s}
+.bu-card:hover{transform:translateY(-4px);border-color:var(--accent);box-shadow:0 8px 24px rgba(0,0,0,.3)}
+
+.bu-card-img{position:relative;height:140px;display:flex;align-items:center;justify-content:center;overflow:hidden;background:var(--bg3)}
+.bu-card-img img{max-width:85%;max-height:120px;object-fit:contain;transition:transform .25s}
+.bu-card:hover .bu-card-img img{transform:scale(1.06)}
+.bu-card-placeholder{font-size:1.5rem;font-weight:900;color:var(--text2);opacity:.15}
+
+.bu-card-rarity{position:absolute;top:.45rem;left:.45rem;font-size:.58rem;font-weight:700;text-transform:uppercase;letter-spacing:.04em;padding:.15rem .45rem;border-radius:3px;color:#000;z-index:1}
+.bu-card-badge{position:absolute;top:.45rem;right:.45rem;font-size:.55rem;font-weight:700;padding:.12rem .35rem;border-radius:3px;z-index:1}
+.bu-badge-st{background:#cf6d1e;color:#000}
+.bu-badge-sv{background:#ffd740;color:#000}
+
+.bu-card-body{padding:.6rem .7rem;display:flex;flex-direction:column;gap:.15rem;flex:1}
+.bu-card-weapon{font-size:.68rem;color:var(--text2);font-weight:600;text-transform:uppercase;letter-spacing:.03em}
+.bu-card-name{font-size:.88rem;font-weight:700;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bu-card-price{font-size:.82rem;font-weight:700;color:var(--accent);margin-top:auto;padding-top:.25rem}
+
+/* ===== BU LOADMORE ===== */
+.bu-loadmore{text-align:center;margin:1.25rem 0}
+.bu-loadmore-btn{background:transparent;color:var(--accent);border:1px solid var(--accent);padding:.55rem 2rem;border-radius:4px;font-weight:700;font-size:.88rem;cursor:pointer;font-family:inherit;transition:background .15s,color .15s}
+.bu-loadmore-btn:hover{background:var(--accent);color:#000}
+
+/* ===== BU FAQ ===== */
+.bu-faq{display:flex;flex-direction:column;gap:.35rem;margin-bottom:2rem}
+.bu-faq-item{background:var(--bg2);border:1px solid var(--border);border-radius:4px;overflow:hidden}
+.bu-faq-item[open]{border-left:3px solid var(--accent)}
+.bu-faq-q{padding:.65rem .85rem;font-size:.88rem;font-weight:600;color:var(--text);cursor:pointer;list-style:none;display:flex;align-items:center;justify-content:space-between}
+.bu-faq-q::after{content:'+';color:var(--accent);font-weight:700;font-size:1rem;flex-shrink:0;margin-left:.5rem}
+.bu-faq-item[open] .bu-faq-q::after{content:'-'}
+.bu-faq-q::-webkit-details-marker{display:none}
+.bu-faq-a{margin:0;padding:0 .85rem .75rem;font-size:.84rem;color:var(--text2);line-height:1.6}
+
+/* ===== BU RESPONSIVE ===== */
+@media(max-width:640px){
+  .bu-grid{grid-template-columns:repeat(2,1fr);gap:.5rem}
+  .bu-card-img{height:100px}
+  .bu-card-img img{max-height:85px}
+  .bu-card-body{padding:.45rem .5rem}
+  .bu-card-name{font-size:.78rem}
+  .bu-tiers{flex-wrap:wrap}
+}
+</style>

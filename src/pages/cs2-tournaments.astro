@@ -1,0 +1,548 @@
+---
+import Base from '../layouts/Base.astro';
+import ExploreMore from '../components/ExploreMore.astro';
+import AuthorBox from '../components/AuthorBox.astro';
+import { faqSchema, breadcrumbSchema } from '../lib/weapons';
+
+const title = 'CS2 Tournament Results & Schedule — Majors, S-Tier Events | CSGOLuck Wiki';
+const description = 'Complete CS2 tournament results and upcoming schedule. Browse Major championships, S-Tier events, prize pools, winners, and runner-ups from 2024-2025.';
+
+const tournaments = [
+  { name: 'PGL Major Copenhagen 2024', date: 'March 2024', winner: 'Natus Vincere', runnerUp: 'FaZe Clan', prizePool: '$1,250,000', location: 'Copenhagen, Denmark', type: 'Major', status: 'completed' as const },
+  { name: 'IEM Chengdu 2024', date: 'April 2024', winner: 'Team Spirit', runnerUp: 'FaZe Clan', prizePool: '$250,000', location: 'Chengdu, China', type: 'S-Tier', status: 'completed' as const },
+  { name: 'IEM Dallas 2024', date: 'May 2024', winner: 'Team Vitality', runnerUp: 'G2 Esports', prizePool: '$250,000', location: 'Dallas, USA', type: 'S-Tier', status: 'completed' as const },
+  { name: 'BLAST Premier Spring Final 2024', date: 'June 2024', winner: 'Natus Vincere', runnerUp: 'Team Spirit', prizePool: '$425,000', location: 'London, UK', type: 'S-Tier', status: 'completed' as const },
+  { name: 'IEM Cologne 2024', date: 'August 2024', winner: 'G2 Esports', runnerUp: 'Natus Vincere', prizePool: '$1,000,000', location: 'Cologne, Germany', type: 'S-Tier', status: 'completed' as const },
+  { name: 'BLAST Premier Fall Final 2024', date: 'October 2024', winner: 'Team Spirit', runnerUp: 'MOUZ', prizePool: '$425,000', location: 'Copenhagen, Denmark', type: 'S-Tier', status: 'completed' as const },
+  { name: 'Perfect World Shanghai Major 2024', date: 'November-December 2024', winner: 'Team Spirit', runnerUp: 'FaZe Clan', prizePool: '$1,250,000', location: 'Shanghai, China', type: 'Major', status: 'completed' as const },
+  { name: 'BLAST Premier World Final 2024', date: 'December 2024', winner: 'Team Spirit', runnerUp: 'Natus Vincere', prizePool: '$1,000,000', location: 'Abu Dhabi, UAE', type: 'S-Tier', status: 'completed' as const },
+  { name: 'IEM Katowice 2025', date: 'February 2025', winner: 'Team Spirit', runnerUp: 'Falcons Esports', prizePool: '$1,000,000', location: 'Katowice, Poland', type: 'S-Tier', status: 'completed' as const },
+  { name: 'PGL Major Austin 2025', date: 'June-July 2025', winner: 'TBD', runnerUp: 'TBD', prizePool: '$1,250,000', location: 'Austin, USA', type: 'Major', status: 'upcoming' as const },
+  { name: 'IEM Cologne 2025', date: 'August 2025', winner: 'TBD', runnerUp: 'TBD', prizePool: '$1,000,000', location: 'Cologne, Germany', type: 'S-Tier', status: 'upcoming' as const },
+  { name: 'BLAST Premier World Final 2025', date: 'December 2025', winner: 'TBD', runnerUp: 'TBD', prizePool: '$1,000,000', location: 'TBD', type: 'S-Tier', status: 'upcoming' as const },
+];
+
+const upcoming = tournaments.filter(t => t.status === 'upcoming');
+const completed = tournaments.filter(t => t.status === 'completed').reverse();
+
+const totalPrizePool = tournaments.reduce((sum, t) => sum + parseInt(t.prizePool.replace(/[$,]/g, '')), 0);
+const majorCount = tournaments.filter(t => t.type === 'Major').length;
+
+// Winner frequency
+const winnerCounts: Record<string, number> = {};
+completed.forEach(t => { winnerCounts[t.winner] = (winnerCounts[t.winner] || 0) + 1; });
+const topWinner = Object.entries(winnerCounts).sort((a, b) => b[1] - a[1])[0];
+
+// Team slugs for internal linking
+const teamSlugs: Record<string, string> = {
+  'Natus Vincere': 'natus-vincere',
+  'FaZe Clan': 'faze-clan',
+  'Team Spirit': 'team-spirit',
+  'Team Vitality': 'team-vitality',
+  'G2 Esports': 'g2-esports',
+  'MOUZ': 'mouz',
+  'Falcons Esports': 'falcons-esports',
+};
+
+const faqs = [
+  {
+    question: 'How many CS2 Major championships are held each year?',
+    answer: 'Valve typically schedules two Major championships per year, one in the first half and one in the second half. Majors carry the largest prize pools of any Counter-Strike tournament (typically $1,250,000) and award in-game stickers for participating teams. Qualifying for a Major is the primary competitive goal for most professional CS2 teams.',
+  },
+  {
+    question: 'What is the difference between a Major and an S-Tier event?',
+    answer: 'Majors are Valve-sponsored championships with official status, sticker revenue sharing, and structured qualification pathways through Regional Major Rankings (RMR) events. S-Tier events like IEM Katowice or BLAST Premier are organized by third-party tournament operators with comparable prize pools but without Valve co-branding or in-game sticker integration. Both feature the top teams in the world.',
+  },
+  {
+    question: 'Which team has been the most dominant in CS2 tournaments?',
+    answer: 'Team Spirit has established itself as one of the most successful teams in the CS2 era, winning multiple S-Tier events and the Perfect World Shanghai Major 2024. Natus Vincere and G2 Esports have also been consistent top contenders, frequently appearing in grand finals across both Majors and premier-level tournaments throughout 2024 and 2025.',
+  },
+];
+
+const breadcrumbs = [
+  { name: 'Home', url: '/' },
+  { name: 'Pro Scene', url: '/pro-teams/' },
+  { name: 'Tournaments' },
+];
+---
+
+<Base title={title} description={description} currentNav="/pro-teams/">
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema(breadcrumbs))} />
+    <script type="application/ld+json" set:html={JSON.stringify(faqSchema(faqs))} />
+  </Fragment>
+
+  <nav class="breadcrumb">
+    <a href="/">Home</a> <span>/</span>
+    <a href="/pro-teams/">Pro Scene</a> <span>/</span>
+    <span>Tournaments</span>
+  </nav>
+
+  <!-- Hero -->
+  <section class="tr-hero">
+    <h1 class="tr-hero-title">CS2 Tournament Results & Schedule</h1>
+    <p class="tr-hero-desc">Track the biggest CS2 tournaments from Majors to S-Tier championships. Browse past results, upcoming events, prize pools, and winners across the competitive Counter-Strike 2 circuit.</p>
+    <div class="tr-hero-pills">
+      <span class="tr-pill"><strong>{tournaments.length}</strong> Events</span>
+      <span class="tr-pill"><strong>{majorCount}</strong> Majors</span>
+      <span class="tr-pill"><strong>${(totalPrizePool / 1000000).toFixed(1)}M</strong> Total Prize Pool</span>
+      {topWinner && <span class="tr-pill"><strong>{topWinner[0]}</strong> {topWinner[1]} Wins</span>}
+    </div>
+  </section>
+
+  <!-- Upcoming Tournaments -->
+  {upcoming.length > 0 && (
+    <section class="tr-section">
+      <h2 class="tr-heading">Upcoming Events</h2>
+      <div class="tr-upcoming-grid">
+        {upcoming.map(t => (
+          <div class="tr-upcoming-card">
+            <div class="tr-upcoming-badge">{t.type}</div>
+            <h3 class="tr-upcoming-name">{t.name}</h3>
+            <div class="tr-upcoming-details">
+              <div class="tr-upcoming-detail">
+                <span class="tr-detail-label">Date</span>
+                <span class="tr-detail-value">{t.date}</span>
+              </div>
+              <div class="tr-upcoming-detail">
+                <span class="tr-detail-label">Location</span>
+                <span class="tr-detail-value">{t.location}</span>
+              </div>
+              <div class="tr-upcoming-detail">
+                <span class="tr-detail-label">Prize Pool</span>
+                <span class="tr-detail-value tr-prize">{t.prizePool}</span>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </section>
+  )}
+
+  <!-- Past Results -->
+  <section class="tr-section">
+    <h2 class="tr-heading">Past Results</h2>
+    <div class="tr-results-grid">
+      {completed.map((t, i) => (
+        <div class:list={['tr-result-card', { 'tr-result-major': t.type === 'Major' }]}>
+          <div class="tr-result-header">
+            <span class="tr-result-type">{t.type}</span>
+            <span class="tr-result-date">{t.date}</span>
+          </div>
+          <h3 class="tr-result-name">{t.name}</h3>
+          <p class="tr-result-location">{t.location}</p>
+          <div class="tr-result-body">
+            <div class="tr-result-team">
+              <span class="tr-result-label">Winner</span>
+              {teamSlugs[t.winner] ? (
+                <a href={`/pro-teams/${teamSlugs[t.winner]}/`} class="tr-result-winner">{t.winner}</a>
+              ) : (
+                <span class="tr-result-winner">{t.winner}</span>
+              )}
+            </div>
+            <div class="tr-result-team">
+              <span class="tr-result-label">Runner-Up</span>
+              {teamSlugs[t.runnerUp] ? (
+                <a href={`/pro-teams/${teamSlugs[t.runnerUp]}/`} class="tr-result-runner">{t.runnerUp}</a>
+              ) : (
+                <span class="tr-result-runner">{t.runnerUp}</span>
+              )}
+            </div>
+          </div>
+          <div class="tr-result-prize">
+            <span class="tr-result-label">Prize Pool</span>
+            <span class="tr-result-prize-val">{t.prizePool}</span>
+          </div>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <!-- Quick Stats -->
+  <section class="tr-section">
+    <h2 class="tr-heading">Tournament Winners</h2>
+    <div class="tr-winners-list">
+      {Object.entries(winnerCounts).sort((a, b) => b[1] - a[1]).map(([team, count]) => (
+        <div class="tr-winner-row">
+          <div class="tr-winner-info">
+            {teamSlugs[team] ? (
+              <a href={`/pro-teams/${teamSlugs[team]}/`} class="tr-winner-name">{team}</a>
+            ) : (
+              <span class="tr-winner-name">{team}</span>
+            )}
+            <span class="tr-winner-count">{count} title{count > 1 ? 's' : ''}</span>
+          </div>
+          <div class="tr-winner-bar-track">
+            <div class="tr-winner-bar-fill" style={`width:${Math.round((count / completed.length) * 100)}%`}></div>
+          </div>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="tr-section">
+    <h2 class="tr-heading">Frequently Asked Questions</h2>
+    <div class="tr-faq-list">
+      {faqs.map((faq, index) => (
+        <details class="tr-faq-item" data-index={index}>
+          <summary class="tr-faq-q">{faq.question}</summary>
+          <div class="tr-faq-a">{faq.answer}</div>
+        </details>
+      ))}
+    </div>
+  </section>
+
+  <!-- Related Links -->
+  <div class="internal-links">
+    <a href="/pro-teams/">Pro Teams</a>
+    <a href="/pro-players/">Pro Player Settings</a>
+    <a href="/where-to-watch-cs2/">Where to Watch CS2</a>
+    <a href="/cs2-esports-pro-scene-faq/">Esports FAQ</a>
+    <a href="/cs2-map-pool/">Map Pool</a>
+    <a href="/cs2-weapons/">Weapon Database</a>
+  </div>
+
+  <AuthorBox updated="2026-03-04" />
+  <ExploreMore context="general" />
+</Base>
+
+<style>
+  /* ===== Hero ===== */
+  .tr-hero {
+    padding: 2rem 0 1.5rem;
+    margin-bottom: 2rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .tr-hero-title {
+    font-size: 2.25rem;
+    font-weight: 800;
+    margin: 0 0 .5rem;
+    line-height: 1.15;
+    color: var(--text);
+  }
+  .tr-hero-desc {
+    color: var(--text2);
+    font-size: .95rem;
+    line-height: 1.65;
+    margin: 0 0 1.25rem;
+    max-width: 600px;
+  }
+  .tr-hero-pills {
+    display: flex;
+    gap: .5rem;
+    flex-wrap: wrap;
+  }
+  .tr-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: .3rem;
+    padding: .3rem .7rem;
+    background: rgba(46,204,113,.08);
+    border: 1px solid rgba(46,204,113,.2);
+    border-radius: 4px;
+    font-size: .78rem;
+    color: var(--text2);
+  }
+  .tr-pill strong {
+    color: var(--accent);
+    font-weight: 700;
+  }
+
+  /* ===== Section Headings ===== */
+  .tr-section {
+    margin-bottom: 3rem;
+  }
+  .tr-heading {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--text);
+    margin: 0 0 1rem;
+    padding-left: .75rem;
+    border-left: 3px solid var(--accent);
+  }
+
+  /* ===== Upcoming Events ===== */
+  .tr-upcoming-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1rem;
+  }
+  .tr-upcoming-card {
+    background: var(--bg2);
+    border: 2px solid var(--accent);
+    border-radius: 4px;
+    padding: 1.5rem;
+    position: relative;
+    box-shadow: 0 0 20px rgba(46,204,113,.08);
+  }
+  .tr-upcoming-badge {
+    display: inline-block;
+    font-size: .68rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .06em;
+    padding: .2rem .6rem;
+    border-radius: 4px;
+    background: var(--accent);
+    color: #000;
+    margin-bottom: .75rem;
+  }
+  .tr-upcoming-name {
+    margin: 0 0 1rem;
+    font-size: 1.15rem;
+    font-weight: 800;
+    color: var(--text);
+    line-height: 1.3;
+  }
+  .tr-upcoming-details {
+    display: flex;
+    flex-direction: column;
+    gap: .5rem;
+  }
+  .tr-upcoming-detail {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: .4rem 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .tr-upcoming-detail:last-child {
+    border-bottom: none;
+  }
+  .tr-detail-label {
+    font-size: .78rem;
+    color: var(--text2);
+    text-transform: uppercase;
+    font-weight: 600;
+    letter-spacing: .03em;
+  }
+  .tr-detail-value {
+    font-size: .9rem;
+    color: var(--text);
+    font-weight: 600;
+  }
+  .tr-prize {
+    color: var(--accent) !important;
+  }
+
+  /* ===== Past Results Grid ===== */
+  .tr-results-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 1rem;
+  }
+  .tr-result-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 1.25rem;
+    transition: border-left-color .15s;
+    border-left: 3px solid transparent;
+  }
+  .tr-result-card:hover {
+    border-left-color: var(--accent);
+  }
+  .tr-result-major {
+    border-left-color: #e8c96e;
+  }
+  .tr-result-major:hover {
+    border-left-color: #e8c96e;
+  }
+  .tr-result-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: .5rem;
+  }
+  .tr-result-type {
+    font-size: .68rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .06em;
+    padding: .15rem .5rem;
+    border-radius: 4px;
+    background: var(--bg3);
+    color: var(--text2);
+  }
+  .tr-result-major .tr-result-type {
+    background: rgba(232,201,110,.15);
+    color: #e8c96e;
+  }
+  .tr-result-date {
+    font-size: .78rem;
+    color: var(--text2);
+  }
+  .tr-result-name {
+    margin: 0 0 .25rem;
+    font-size: 1.05rem;
+    font-weight: 800;
+    color: var(--text);
+    line-height: 1.3;
+  }
+  .tr-result-location {
+    font-size: .82rem;
+    color: var(--text2);
+    margin: 0 0 1rem;
+  }
+  .tr-result-body {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: .75rem;
+  }
+  .tr-result-team {
+    flex: 1;
+  }
+  .tr-result-label {
+    display: block;
+    font-size: .68rem;
+    color: var(--text2);
+    text-transform: uppercase;
+    letter-spacing: .04em;
+    font-weight: 600;
+    margin-bottom: .2rem;
+  }
+  .tr-result-winner {
+    font-size: .92rem;
+    font-weight: 700;
+    color: var(--accent);
+    text-decoration: none;
+  }
+  a.tr-result-winner:hover {
+    text-decoration: underline;
+  }
+  .tr-result-runner {
+    font-size: .88rem;
+    color: var(--text);
+    text-decoration: none;
+  }
+  a.tr-result-runner:hover {
+    color: var(--accent);
+    text-decoration: underline;
+  }
+  .tr-result-prize {
+    padding-top: .75rem;
+    border-top: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .tr-result-prize-val {
+    font-size: 1rem;
+    font-weight: 800;
+    color: var(--accent);
+  }
+
+  /* ===== Winners Chart ===== */
+  .tr-winners-list {
+    display: flex;
+    flex-direction: column;
+    gap: .65rem;
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 1.25rem;
+  }
+  .tr-winner-row {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+  .tr-winner-info {
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+    min-width: 180px;
+    flex-shrink: 0;
+  }
+  .tr-winner-name {
+    font-size: .92rem;
+    font-weight: 700;
+    color: var(--text);
+    text-decoration: none;
+  }
+  a.tr-winner-name:hover {
+    color: var(--accent);
+  }
+  .tr-winner-count {
+    font-size: .72rem;
+    color: var(--accent);
+    background: rgba(46,204,113,.1);
+    padding: .12rem .4rem;
+    border-radius: 4px;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+  .tr-winner-bar-track {
+    flex: 1;
+    height: 18px;
+    background: var(--bg);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  .tr-winner-bar-fill {
+    height: 100%;
+    background: var(--accent);
+    border-radius: 4px;
+    opacity: .5;
+    transition: width .3s;
+  }
+
+  /* ===== FAQ ===== */
+  .tr-faq-list {
+    display: flex;
+    flex-direction: column;
+    gap: .5rem;
+  }
+  .tr-faq-item {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+  }
+  .tr-faq-item[open] {
+    border-color: var(--accent);
+  }
+  .tr-faq-q {
+    padding: 1rem 1.25rem;
+    cursor: pointer;
+    font-weight: 600;
+    color: var(--text);
+    font-size: .95rem;
+    list-style: none;
+  }
+  .tr-faq-q::-webkit-details-marker {
+    display: none;
+  }
+  .tr-faq-q::after {
+    content: '+';
+    float: right;
+    color: var(--accent);
+    font-size: 1.1rem;
+    font-weight: 700;
+  }
+  .tr-faq-item[open] > .tr-faq-q::after {
+    content: '\2212';
+  }
+  .tr-faq-a {
+    padding: 0 1.25rem 1rem 1.25rem;
+    color: var(--text2);
+    font-size: .92rem;
+    line-height: 1.6;
+  }
+
+  /* ===== Responsive ===== */
+  @media (max-width: 768px) {
+    .tr-hero-title {
+      font-size: 1.6rem;
+    }
+    .tr-upcoming-grid {
+      grid-template-columns: 1fr;
+    }
+    .tr-results-grid {
+      grid-template-columns: 1fr;
+    }
+    .tr-winner-info {
+      min-width: 140px;
+    }
+  }
+</style>
