@@ -628,6 +628,14 @@ html.light-mode .hp-title{color:#000}
 .hp-reel-result-price{font-size:1.1rem;font-weight:700;color:#2ecc71}
 .hp-reel-cta{display:inline-flex;align-items:center;gap:6px;padding:10px 24px;background:linear-gradient(135deg,#e4ae39,#d4941c);color:#000;border-radius:6px;font-size:.9rem;font-weight:700;text-decoration:none;box-shadow:0 4px 15px rgba(255,215,0,.3);transition:all .2s ease}
 .hp-reel-cta:hover{background:linear-gradient(135deg,#d4941c,#c4841c);transform:translateY(-2px);box-shadow:0 6px 20px rgba(255,215,0,.45)}
+.hp-reel-gold-win{display:flex;align-items:center;gap:16px;justify-content:center}
+.hp-reel-gold-win-logo{width:60px;height:auto;filter:drop-shadow(0 2px 12px rgba(255,215,0,.6));animation:hp-gold-pulse 1.5s ease-in-out infinite}
+.hp-reel-gold-win-info{text-align:left}
+.hp-reel-gold-win-title{font-size:1.1rem;font-weight:800;color:#ffd700;text-transform:uppercase;letter-spacing:.05em;text-shadow:0 0 12px rgba(255,215,0,.4)}
+.hp-reel-gold-win-desc{font-size:.95rem;font-weight:600;color:#fff;margin-top:4px}
+@keyframes hp-gold-pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}
+.hp-confetti{position:absolute;top:-5px;width:8px;height:8px;border-radius:50%;opacity:0;animation:hp-confetti-fall linear forwards;pointer-events:none;z-index:20}
+@keyframes hp-confetti-fall{0%{opacity:1;transform:translateY(0) rotate(0deg)}100%{opacity:0;transform:translateY(350px) rotate(720deg)}}
 @media(max-width:600px){
   .hp-reel-item{width:80px;height:105px}
   .hp-reel-item-img{width:60px;height:45px}
@@ -841,6 +849,22 @@ html.light-mode .hp-title{color:#000}
 
   buildStrip();
 
+  function popConfetti(container) {
+    var colors = ['#ffd700','#ffaa00','#2ecc71','#fff','#e4ae39'];
+    for (var i = 0; i < 60; i++) {
+      var c = document.createElement('div');
+      c.className = 'hp-confetti';
+      c.style.left = Math.random() * 100 + '%';
+      c.style.background = colors[Math.floor(Math.random() * colors.length)];
+      c.style.animationDelay = (Math.random() * 0.5) + 's';
+      c.style.animationDuration = (1.5 + Math.random() * 1.5) + 's';
+      container.appendChild(c);
+    }
+    setTimeout(function() {
+      container.querySelectorAll('.hp-confetti').forEach(function(el) { el.remove(); });
+    }, 3500);
+  }
+
   function spin() {
     if (isSpinning) return;
     isSpinning = true;
@@ -848,16 +872,23 @@ html.light-mode .hp-title{color:#000}
     spinBtn.textContent = 'Opening...';
     resultDiv.style.display = 'none';
 
+    // 1 in 5 chance of hitting the gold symbol
+    var isGoldWin = Math.random() < 0.2;
+
     // Rebuild strip for fresh randomness
     buildStrip();
 
     // Pick winning index
     var winIdx = 40 + Math.floor(Math.random() * 10);
-    var winSkin = skins[Math.floor(Math.random() * skins.length)];
+    var winSkin = isGoldWin ? null : skins[Math.floor(Math.random() * skins.length)];
 
     // Replace the winning item
     if (strip.children[winIdx]) {
-      strip.replaceChild(buildReelItem(winSkin), strip.children[winIdx]);
+      if (isGoldWin) {
+        strip.replaceChild(buildGoldItem(), strip.children[winIdx]);
+      } else {
+        strip.replaceChild(buildReelItem(winSkin), strip.children[winIdx]);
+      }
     }
 
     // Calculate offset to center the winning item in viewport
@@ -876,18 +907,33 @@ html.light-mode .hp-title{color:#000}
       spinBtn.disabled = false;
       spinBtn.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/></svg> Spin Again';
 
-      // Show result with price
-      var priceHtml = winSkin.price > 0 ? '<span class="hp-reel-result-price">' + fmtPriceReel(winSkin.price) + '</span>' : '';
-      resultInner.innerHTML =
-        '<img src="' + winSkin.image + '" alt="' + winSkin.weapon + ' | ' + winSkin.name + '" class="hp-reel-result-img" />' +
-        '<div class="hp-reel-result-info">' +
-          '<div class="hp-reel-result-weapon">' + winSkin.weapon + '</div>' +
-          '<div class="hp-reel-result-name">' + winSkin.name + '</div>' +
-          '<div class="hp-reel-result-meta">' +
-            '<span class="hp-reel-result-rarity" style="background:' + winSkin.color + '">' + winSkin.rarity + '</span>' +
-            priceHtml +
-          '</div>' +
-        '</div>';
+      if (isGoldWin) {
+        // Gold win — confetti + bonus offer
+        popConfetti(document.querySelector('.hp-reel-section'));
+        resultInner.innerHTML =
+          '<div class="hp-reel-gold-win">' +
+            '<img src="/images/csgoluck-logo.png" alt="CSGOLuck" class="hp-reel-gold-win-logo" />' +
+            '<div class="hp-reel-gold-win-info">' +
+              '<div class="hp-reel-gold-win-title">BONUS UNLOCKED!</div>' +
+              '<div class="hp-reel-gold-win-desc">100% up to 100 Coins + 5 Free Cases</div>' +
+            '</div>' +
+          '</div>';
+        document.getElementById('hpReelCta').textContent = 'Claim Your Bonus at CSGOLuck \u2192';
+      } else {
+        // Normal skin win
+        var priceHtml = winSkin.price > 0 ? '<span class="hp-reel-result-price">' + fmtPriceReel(winSkin.price) + '</span>' : '';
+        resultInner.innerHTML =
+          '<img src="' + winSkin.image + '" alt="' + winSkin.weapon + ' | ' + winSkin.name + '" class="hp-reel-result-img" />' +
+          '<div class="hp-reel-result-info">' +
+            '<div class="hp-reel-result-weapon">' + winSkin.weapon + '</div>' +
+            '<div class="hp-reel-result-name">' + winSkin.name + '</div>' +
+            '<div class="hp-reel-result-meta">' +
+              '<span class="hp-reel-result-rarity" style="background:' + winSkin.color + '">' + winSkin.rarity + '</span>' +
+              priceHtml +
+            '</div>' +
+          '</div>';
+        document.getElementById('hpReelCta').textContent = 'Open Real Cases at CSGOLuck \u2192';
+      }
       resultDiv.style.display = 'block';
     }, 4200);
   }
