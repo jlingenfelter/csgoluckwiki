@@ -243,9 +243,9 @@ const topComparisons = getWeaponComparisons().slice(0, 8);
 /* ===== SH TABS (Horizontal Tab Bar) ===== */
 .sh-tabs{display:flex;gap:0;border-bottom:2px solid var(--border);margin-bottom:1.25rem;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none}
 .sh-tabs::-webkit-scrollbar{display:none}
-.sh-tab{flex-shrink:0;background:none;border:none;border-bottom:2px solid transparent;color:var(--text2);padding:.55rem 1rem;font-size:.82rem;font-weight:600;font-family:inherit;cursor:pointer;white-space:nowrap;transition:color .15s,border-color .15s;margin-bottom:-2px}
-.sh-tab:hover{color:var(--text);border-bottom-color:var(--accent)}
-.sh-tab-active{color:var(--accent);border-bottom-color:var(--accent)}
+.sh-tab{flex-shrink:0;background:none;border:none;border-bottom:2px solid transparent;color:var(--text2);padding:.55rem 1rem;font-size:.82rem;font-weight:600;font-family:inherit;cursor:pointer;white-space:nowrap;transition:all .2s ease;margin-bottom:-2px}
+.sh-tab:hover{color:var(--text);border-bottom-color:var(--accent);text-shadow:0 0 8px rgba(46,204,113,.3)}
+.sh-tab-active{color:var(--accent);border-bottom-color:var(--accent);text-shadow:0 0 8px rgba(46,204,113,.4)}
 .sh-tab-count{font-size:.68rem;opacity:.6;margin-left:.25rem}
 .sh-tab-active .sh-tab-count{opacity:.85}
 

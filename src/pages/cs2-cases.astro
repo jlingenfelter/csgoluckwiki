@@ -445,18 +445,21 @@ const totalContainers = cases.length + souvenirPackages.length + stickerCapsules
       color: var(--text2);
       cursor: pointer;
       font-family: inherit;
-      transition: color 0.15s, border-color 0.15s;
+      transition: all .2s ease;
     }
 
     .ch-tab:hover {
       color: var(--text);
-      border-color: var(--accent);
+      border-color: #2ecc71;
+      box-shadow: 0 0 8px rgba(46,204,113,.15);
     }
 
     .ch-tab-active {
-      color: var(--accent);
-      border-color: var(--accent);
+      color: #2ecc71;
+      border-color: #2ecc71;
       font-weight: 600;
+      box-shadow: 0 2px 8px rgba(46,204,113,.15);
+      text-shadow: 0 0 8px rgba(46,204,113,.4);
     }
 
     /* ---- CARD GRID ---- */

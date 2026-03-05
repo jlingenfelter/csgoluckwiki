@@ -417,8 +417,8 @@ const howToSchema = JSON.stringify({
   /* Presets */
   .bng-presets{display:flex;gap:.5rem;align-items:center;flex-wrap:wrap;margin-bottom:1.5rem}
   .bng-presets-label{font-size:.82rem;color:var(--text2);font-weight:700}
-  .bng-preset-btn{background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:.3rem .7rem;color:var(--text2);font-size:.82rem;cursor:pointer;transition:border-color .2s,color .2s}
-  .bng-preset-btn:hover{border-color:var(--accent);color:var(--accent)}
+  .bng-preset-btn{background:var(--bg3);border:1px solid rgba(46,204,113,.4);border-radius:20px;padding:.3rem .7rem;color:var(--text2);font-size:.82rem;cursor:pointer;box-shadow:0 0 8px rgba(46,204,113,.1);transition:all .2s ease}
+  .bng-preset-btn:hover{border-color:#2ecc71;color:#2ecc71;background:rgba(46,204,113,.08);box-shadow:0 0 12px rgba(46,204,113,.2)}
 
   /* Keyboard grid */
   .bng-keyboard{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:.6rem;margin-bottom:1.5rem}
@@ -438,10 +438,10 @@ const howToSchema = JSON.stringify({
   .bng-output-section{margin-top:1.5rem}
   .bng-code{background:var(--bg);border:1px solid var(--border);border-radius:4px;padding:1rem;font-family:'Courier New',monospace;font-size:.82rem;color:var(--accent);overflow-x:auto;white-space:pre;max-height:300px;overflow-y:auto;margin:.75rem 0}
   .bng-actions{display:flex;gap:.75rem}
-  .bng-btn-primary{padding:.45rem 1.2rem;background:var(--accent);color:#000;border:none;border-radius:4px;cursor:pointer;font-weight:700;font-size:.85rem;transition:opacity .2s}
-  .bng-btn-primary:hover{opacity:.85}
-  .bng-btn-secondary{padding:.45rem 1.2rem;background:var(--bg3);color:var(--text);border:1px solid var(--border);border-radius:4px;cursor:pointer;font-weight:700;font-size:.85rem;transition:border-color .2s}
-  .bng-btn-secondary:hover{border-color:var(--accent)}
+  .bng-btn-primary{padding:.45rem 1.2rem;background:linear-gradient(135deg,#2ecc71,#27ae60);color:#fff;border:none;border-radius:4px;cursor:pointer;font-weight:700;font-size:.85rem;box-shadow:0 4px 15px rgba(46,204,113,.3);transition:all .2s ease}
+  .bng-btn-primary:hover{background:linear-gradient(135deg,#27ae60,#219a52);transform:translateY(-2px);box-shadow:0 6px 20px rgba(46,204,113,.45)}
+  .bng-btn-secondary{padding:.45rem 1.2rem;background:var(--bg3);color:var(--text);border:1px solid rgba(46,204,113,.4);border-radius:4px;cursor:pointer;font-weight:700;font-size:.85rem;box-shadow:0 0 8px rgba(46,204,113,.1);transition:all .2s ease}
+  .bng-btn-secondary:hover{border-color:#2ecc71;background:rgba(46,204,113,.08);box-shadow:0 0 12px rgba(46,204,113,.2)}
 
   /* Tip */
   .bng-tip{margin-top:1rem;padding:1rem;background:var(--bg3);border-radius:4px;border:1px solid var(--border);border-left:3px solid var(--accent)}

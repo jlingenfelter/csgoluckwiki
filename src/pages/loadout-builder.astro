@@ -600,12 +600,12 @@ const faqData = [
   .lb-select{background:var(--bg3);color:var(--text);border:1px solid var(--border);padding:.5rem .75rem;border-radius:4px;font-size:.9rem;cursor:pointer;font-family:inherit}
   .lb-select:focus{outline:none;border-color:var(--accent)}
   .lb-btn-group{display:flex;gap:.5rem;flex-wrap:wrap}
-  .lb-btn-primary{padding:.6rem 1.25rem;background:var(--accent);color:#000;border:none;border-radius:4px;font-weight:700;cursor:pointer;font-size:.9rem;font-family:'Montserrat',sans-serif}
-  .lb-btn-primary:hover{opacity:.85}
-  .lb-btn-save{padding:.6rem 1.25rem;background:var(--bg3);color:var(--accent);border:1px solid var(--accent);border-radius:4px;font-weight:700;cursor:pointer;font-size:.9rem;font-family:'Montserrat',sans-serif;transition:background .15s,color .15s}
-  .lb-btn-save:hover{background:var(--accent);color:#000}
-  .lb-btn-clear{padding:.6rem 1.25rem;background:var(--bg3);color:var(--text2);border:1px solid var(--border);border-radius:4px;font-weight:700;cursor:pointer;font-size:.9rem;font-family:'Montserrat',sans-serif;transition:border-color .15s,color .15s}
-  .lb-btn-clear:hover{border-color:var(--text2);color:var(--text)}
+  .lb-btn-primary{padding:.6rem 1.25rem;background:linear-gradient(135deg,#2ecc71,#27ae60);color:#fff;border:none;border-radius:4px;font-weight:700;cursor:pointer;font-size:.9rem;font-family:'Montserrat',sans-serif;box-shadow:0 2px 8px rgba(46,204,113,.2);transition:all .2s ease}
+  .lb-btn-primary:hover{transform:translateY(-1px);box-shadow:0 3px 12px rgba(46,204,113,.35)}
+  .lb-btn-save{padding:.6rem 1.25rem;background:var(--bg3);color:var(--accent);border:1px solid rgba(46,204,113,.4);border-radius:4px;font-weight:700;cursor:pointer;font-size:.9rem;font-family:'Montserrat',sans-serif;box-shadow:0 0 6px rgba(46,204,113,.08);transition:all .2s ease}
+  .lb-btn-save:hover{border-color:#2ecc71;color:#2ecc71;box-shadow:0 0 10px rgba(46,204,113,.15)}
+  .lb-btn-clear{padding:.6rem 1.25rem;background:var(--bg3);color:var(--text2);border:1px solid var(--border);border-radius:4px;font-weight:700;cursor:pointer;font-size:.9rem;font-family:'Montserrat',sans-serif;box-shadow:0 0 6px rgba(46,204,113,.08);transition:all .2s ease}
+  .lb-btn-clear:hover{border-color:var(--text2);color:var(--text);box-shadow:0 0 10px rgba(46,204,113,.15)}
 
   /* ── Loadout Grid ── */
   .lb-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1rem;margin:1.5rem 0}
@@ -682,8 +682,8 @@ const faqData = [
 
   .lb-share-container{display:flex;gap:.5rem;margin-bottom:.85rem}
   .lb-share-input{flex:1;padding:.6rem;background:var(--bg3);color:var(--text);border:1px solid var(--border);border-radius:4px;font-size:.85rem;font-family:monospace}
-  .lb-btn-copy{padding:.5rem 1rem;background:var(--accent);color:#000;border:none;border-radius:4px;font-weight:700;cursor:pointer;font-size:.85rem;font-family:'Montserrat',sans-serif}
-  .lb-btn-copy:hover{opacity:.85}
+  .lb-btn-copy{padding:.5rem 1rem;background:linear-gradient(135deg,#2ecc71,#27ae60);color:#fff;border:none;border-radius:4px;font-weight:700;cursor:pointer;font-size:.85rem;font-family:'Montserrat',sans-serif;box-shadow:0 2px 8px rgba(46,204,113,.2);transition:all .2s ease}
+  .lb-btn-copy:hover{transform:translateY(-1px);box-shadow:0 3px 12px rgba(46,204,113,.35)}
   .lb-share-note{font-size:.85rem;color:var(--text2)}
 
   /* ── Pro Loadouts ── */
@@ -702,8 +702,8 @@ const faqData = [
   .lb-pro-slot-label{color:var(--text2);min-width:45px;font-weight:600}
   .lb-pro-slot-skin{color:var(--accent);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 
-  .lb-btn-secondary{display:inline-block;background:var(--bg3);color:var(--accent);border:1px solid var(--accent);padding:.5rem 1.25rem;border-radius:4px;font-weight:700;font-size:.85rem;text-decoration:none;transition:background .15s,color .15s}
-  .lb-btn-secondary:hover{background:var(--accent);color:var(--bg)}
+  .lb-btn-secondary{display:inline-block;background:var(--bg3);color:var(--accent);border:1px solid rgba(46,204,113,.4);padding:.5rem 1.25rem;border-radius:4px;font-weight:700;font-size:.85rem;text-decoration:none;box-shadow:0 0 6px rgba(46,204,113,.08);transition:all .2s ease}
+  .lb-btn-secondary:hover{border-color:#2ecc71;color:#2ecc71;box-shadow:0 0 10px rgba(46,204,113,.15)}
 
   /* ── FAQ ── */
   .lb-faq{margin:2rem 0}

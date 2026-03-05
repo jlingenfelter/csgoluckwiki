@@ -621,9 +621,9 @@ const faqs = [
 /* ── Code Box ────────────────────────────────────────────────────────────── */
 .pp-code-box{display:flex;gap:.6rem;align-items:center;background:var(--bg);border:2px solid var(--accent);border-radius:4px;padding:.55rem .75rem;margin-bottom:1rem;font-family:monospace}
 .pp-code-box code{flex:1;font-size:.8rem;color:var(--accent);word-break:break-all}
-.pp-copy-btn{background:var(--accent);color:#000;border:none;padding:.4rem .85rem;border-radius:4px;font-weight:700;font-size:.8rem;cursor:pointer;white-space:nowrap;font-family:inherit;transition:opacity .15s}
-.pp-copy-btn:hover{opacity:.85}
-.pp-copy-btn.copied{background:var(--green);color:#fff}
+.pp-copy-btn{background:linear-gradient(135deg,#2ecc71,#27ae60);color:#fff;border:none;padding:.4rem .85rem;border-radius:4px;font-weight:700;font-size:.8rem;cursor:pointer;white-space:nowrap;font-family:inherit;box-shadow:0 2px 8px rgba(46,204,113,.2);transition:all .2s ease}
+.pp-copy-btn:hover{transform:translateY(-1px);box-shadow:0 3px 12px rgba(46,204,113,.35)}
+.pp-copy-btn.copied{background:linear-gradient(135deg,#4caf50,#388e3c);color:#fff;box-shadow:0 2px 8px rgba(76,175,80,.3)}
 .pp-copy-sm{padding:.28rem .6rem;font-size:.75rem}
 
 /* ── Command Row ─────────────────────────────────────────────────────────── */

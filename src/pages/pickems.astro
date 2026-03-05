@@ -1,0 +1,1504 @@
+---
+import Base from '../layouts/Base.astro';
+import { TOURNAMENTS, CHALLENGES, getTournament, getTeamById } from '../lib/pickem-data';
+import type { PickemTeam, PickemStage, PickemTournament } from '../lib/pickem-data';
+import { optimizeImage } from '../lib/imageOptimize';
+import { breadcrumbSchema } from '../lib/weapons';
+
+const tournament = TOURNAMENTS[0]; // Budapest 2025
+
+// Serialize for client-side
+const tournamentJson = JSON.stringify(tournament);
+const challengesJson = JSON.stringify(CHALLENGES.map(c => ({ id: c.id, description: c.description })));
+
+// Breadcrumbs
+const breadcrumbs = [
+  { name: 'Home', href: '/' },
+  { name: 'Tools', href: '/tools/' },
+  { name: "Pick'em Predictions", href: '/pickems/' },
+];
+const bcSchema = breadcrumbSchema(breadcrumbs);
+
+const title = `CS2 Pick'em Predictions – ${tournament.name}`;
+const description = `Make your CS2 Major Pick'em predictions for ${tournament.name}. Predict Swiss stage results and playoff bracket winners. Share your picks and earn coins!`;
+---
+
+<Base title={title} description={description} currentNav="/pickems/">
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(bcSchema)} />
+  </Fragment>
+
+  <!-- Breadcrumb -->
+  <nav class="pk-breadcrumb">
+    {breadcrumbs.map((b, i) => (
+      <Fragment>
+        {i > 0 && <span class="pk-bc-sep">›</span>}
+        {i < breadcrumbs.length - 1
+          ? <a href={b.href}>{b.name}</a>
+          : <span class="pk-bc-current">{b.name}</span>}
+      </Fragment>
+    ))}
+  </nav>
+
+  <!-- Hero -->
+  <section class="pk-hero">
+    <h1>CS2 Major Pick'Ems</h1>
+    <p class="pk-hero-sub">{tournament.name} · {tournament.location}</p>
+    <p class="pk-hero-dates">{tournament.dates.start} — {tournament.dates.end}</p>
+  </section>
+
+  <!-- Stage Tabs -->
+  <div class="pk-tabs-wrap">
+    <div class="pk-tabs" id="stageTabs">
+      {tournament.stages.map((stage, i) => (
+        <button
+          class={`pk-tab ${i === 0 ? 'pk-tab--active' : ''}`}
+          data-stage={stage.id}
+        >
+          {stage.name}
+        </button>
+      ))}
+    </div>
+  </div>
+
+  <!-- Main Content Area -->
+  <div class="pk-layout">
+    <!-- Main Panel (Swiss / Bracket) -->
+    <div class="pk-main" id="pkMain">
+      <!-- Swiss Stage Views (Opening, Elimination, Advancement) -->
+      {tournament.stages.filter(s => s.type === 'swiss').map((stage, i) => (
+        <div
+          class={`pk-stage ${i === 0 ? '' : 'pk-stage--hidden'}`}
+          id={`stage-${stage.id}`}
+          data-stage-type="swiss"
+          data-stage-id={stage.id}
+        >
+          <!-- Team chip bar -->
+          <div class="pk-team-bar">
+            <h3 class="pk-section-title">Select Teams</h3>
+            <div class="pk-team-chips" id={`chips-${stage.id}`}>
+              {stage.teamIds.map(tid => {
+                const team = getTeamById(tournament.id, tid);
+                if (!team) return null;
+                return (
+                  <button
+                    class="pk-chip"
+                    data-team-id={team.id}
+                    title={team.name}
+                  >
+                    {team.logo ? (
+                      <img
+                        src={optimizeImage(team.logo, { width: 80, quality: 75 })}
+                        alt={team.name}
+                        class="pk-chip-logo"
+                        loading="lazy"
+                      />
+                    ) : (
+                      <span class="pk-chip-letter">{team.shortName.charAt(0)}</span>
+                    )}
+                    <span class="pk-chip-name">{team.shortName}</span>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          <!-- Pick zones -->
+          <div class="pk-zones">
+            <!-- 3:0 Zone -->
+            <div class="pk-zone pk-zone--30">
+              <div class="pk-zone-header">
+                <span class="pk-zone-label">3 : 0</span>
+                <span class="pk-zone-desc">Advance undefeated</span>
+              </div>
+              <div class="pk-slots" data-zone="3-0" data-stage={stage.id}>
+                <div class="pk-slot" data-slot-idx="0"></div>
+                <div class="pk-slot" data-slot-idx="1"></div>
+              </div>
+            </div>
+
+            <!-- 0:3 Zone -->
+            <div class="pk-zone pk-zone--03">
+              <div class="pk-zone-header">
+                <span class="pk-zone-label">0 : 3</span>
+                <span class="pk-zone-desc">Eliminated without a win</span>
+              </div>
+              <div class="pk-slots" data-zone="0-3" data-stage={stage.id}>
+                <div class="pk-slot" data-slot-idx="0"></div>
+                <div class="pk-slot" data-slot-idx="1"></div>
+              </div>
+            </div>
+
+            <!-- Advance Zone (3:1 / 3:2) -->
+            <div class="pk-zone pk-zone--advance">
+              <div class="pk-zone-header">
+                <span class="pk-zone-label">Advance</span>
+                <span class="pk-zone-desc">Advance 3-1 or 3-2</span>
+              </div>
+              <div class="pk-slots pk-slots--wide" data-zone="advance" data-stage={stage.id}>
+                <div class="pk-slot" data-slot-idx="0"></div>
+                <div class="pk-slot" data-slot-idx="1"></div>
+                <div class="pk-slot" data-slot-idx="2"></div>
+                <div class="pk-slot" data-slot-idx="3"></div>
+                <div class="pk-slot" data-slot-idx="4"></div>
+                <div class="pk-slot" data-slot-idx="5"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Actions -->
+          <div class="pk-actions">
+            <span class="pk-pick-count" id={`count-${stage.id}`}>0 / 10 picks</span>
+            <button class="pk-btn pk-btn--lock" id={`lock-${stage.id}`} disabled>Lock Picks</button>
+            <button class="pk-btn pk-btn--reset" data-reset-stage={stage.id}>Reset</button>
+          </div>
+        </div>
+      ))}
+
+      <!-- Playoffs Bracket View -->
+      <div class="pk-stage pk-stage--hidden" id="stage-playoffs" data-stage-type="bracket" data-stage-id="playoffs">
+        <h3 class="pk-section-title">Playoff Bracket</h3>
+        <p class="pk-bracket-note">Teams will be seeded from the Advancement Stage. Click a team to predict the winner of each match.</p>
+        <div class="pk-bracket" id="pkBracket">
+          <!-- Quarter-finals -->
+          <div class="pk-bracket-round pk-bracket-qf">
+            <h4 class="pk-round-title">Quarter-Finals</h4>
+            <div class="pk-match" data-match="qf1">
+              <div class="pk-match-team" data-match-slot="team1"></div>
+              <div class="pk-match-vs">vs</div>
+              <div class="pk-match-team" data-match-slot="team2"></div>
+            </div>
+            <div class="pk-match" data-match="qf2">
+              <div class="pk-match-team" data-match-slot="team1"></div>
+              <div class="pk-match-vs">vs</div>
+              <div class="pk-match-team" data-match-slot="team2"></div>
+            </div>
+            <div class="pk-match" data-match="qf3">
+              <div class="pk-match-team" data-match-slot="team1"></div>
+              <div class="pk-match-vs">vs</div>
+              <div class="pk-match-team" data-match-slot="team2"></div>
+            </div>
+            <div class="pk-match" data-match="qf4">
+              <div class="pk-match-team" data-match-slot="team1"></div>
+              <div class="pk-match-vs">vs</div>
+              <div class="pk-match-team" data-match-slot="team2"></div>
+            </div>
+          </div>
+
+          <!-- Semi-finals -->
+          <div class="pk-bracket-round pk-bracket-sf">
+            <h4 class="pk-round-title">Semi-Finals</h4>
+            <div class="pk-match" data-match="sf1">
+              <div class="pk-match-team" data-match-slot="team1"></div>
+              <div class="pk-match-vs">vs</div>
+              <div class="pk-match-team" data-match-slot="team2"></div>
+            </div>
+            <div class="pk-match" data-match="sf2">
+              <div class="pk-match-team" data-match-slot="team1"></div>
+              <div class="pk-match-vs">vs</div>
+              <div class="pk-match-team" data-match-slot="team2"></div>
+            </div>
+          </div>
+
+          <!-- Grand Final -->
+          <div class="pk-bracket-round pk-bracket-final">
+            <h4 class="pk-round-title">Grand Final</h4>
+            <div class="pk-match" data-match="final">
+              <div class="pk-match-team" data-match-slot="team1"></div>
+              <div class="pk-match-vs">vs</div>
+              <div class="pk-match-team" data-match-slot="team2"></div>
+            </div>
+          </div>
+
+          <!-- Champion -->
+          <div class="pk-bracket-round pk-bracket-champ">
+            <h4 class="pk-round-title">Champion</h4>
+            <div class="pk-champ-slot" id="pkChampion"></div>
+          </div>
+        </div>
+
+        <div class="pk-actions">
+          <button class="pk-btn pk-btn--lock" id="lock-playoffs" disabled>Lock Picks</button>
+          <button class="pk-btn pk-btn--reset" data-reset-stage="playoffs">Reset</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Sidebar: Challenges + Coin -->
+    <aside class="pk-sidebar" id="pkSidebar">
+      <!-- Coin Display -->
+      <div class="pk-coin-wrap">
+        <div class="pk-coin pk-coin--none" id="pkCoin">
+          <span class="pk-coin-icon">?</span>
+        </div>
+        <span class="pk-coin-label" id="pkCoinLabel">No Coin</span>
+        <span class="pk-coin-progress" id="pkCoinProgress">0 / 10</span>
+      </div>
+
+      <!-- Challenges -->
+      <div class="pk-challenges">
+        <h3 class="pk-sidebar-title">Challenges</h3>
+        <ul class="pk-challenge-list" id="pkChallengeList">
+          <!-- populated by JS -->
+        </ul>
+      </div>
+
+      <!-- Share / URL -->
+      <div class="pk-share">
+        <button class="pk-btn pk-btn--share" id="pkShare">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>
+          Share Picks
+        </button>
+        <button class="pk-btn pk-btn--reset-all" id="pkResetAll">Reset All</button>
+      </div>
+    </aside>
+  </div>
+
+  <!-- FAQ -->
+  <section class="pk-faq">
+    <h2>How Do Pick'Ems Work?</h2>
+    <div class="pk-faq-grid">
+      <div class="pk-faq-item">
+        <h3>Swiss Stages</h3>
+        <p>In each Swiss stage, 16 teams compete. Pick 2 teams you think will go 3-0 (undefeated), 2 teams that will go 0-3 (eliminated), and 6 teams that will advance with a 3-1 or 3-2 record. Get 5+ correct per stage to earn challenge points.</p>
+      </div>
+      <div class="pk-faq-item">
+        <h3>Playoffs</h3>
+        <p>The top 8 teams from the Advancement Stage enter a single-elimination bracket. Predict the winner of each Quarter-Final, Semi-Final, and the Grand Final to earn challenge points.</p>
+      </div>
+      <div class="pk-faq-item">
+        <h3>Coins & Rewards</h3>
+        <p>Earn challenge points by making correct predictions. Reach different coin tiers: Bronze (3 pts), Silver (5 pts), Gold (8 pts), and Diamond (10 pts — perfect Pick'em!).</p>
+      </div>
+      <div class="pk-faq-item">
+        <h3>Sharing</h3>
+        <p>Click "Share Picks" to generate a URL with your predictions encoded. Anyone with the link can see your picks in read-only mode. Your picks are saved locally in your browser.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Styles -->
+  <style is:inline>
+    /* ── Layout ─────────────────────────────────────────────────── */
+    .pk-breadcrumb {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 16px 20px 0;
+      font-size: 0.85rem;
+      color: var(--text-muted, #888);
+    }
+    .pk-breadcrumb a { color: var(--text-muted, #888); text-decoration: none; }
+    .pk-breadcrumb a:hover { color: #2ecc71; }
+    .pk-bc-sep { margin: 0 6px; }
+    .pk-bc-current { color: var(--text, #eee); }
+
+    .pk-hero {
+      text-align: center;
+      padding: 40px 20px 20px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .pk-hero h1 {
+      font-size: 2.2rem;
+      margin: 0;
+      background: linear-gradient(135deg, #2ecc71, #27ae60);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .pk-hero-sub {
+      font-size: 1.1rem;
+      color: var(--text, #eee);
+      margin: 8px 0 4px;
+    }
+    .pk-hero-dates {
+      font-size: 0.9rem;
+      color: var(--text-muted, #888);
+      margin: 0;
+    }
+
+    /* ── Tabs ───────────────────────────────────────────────────── */
+    .pk-tabs-wrap {
+      max-width: 1200px;
+      margin: 20px auto 0;
+      padding: 0 20px;
+    }
+    .pk-tabs {
+      display: flex;
+      gap: 4px;
+      background: var(--bg2, #13141a);
+      border-radius: 8px;
+      padding: 4px;
+      overflow-x: auto;
+    }
+    .pk-tab {
+      flex: 1;
+      padding: 10px 16px;
+      border: none;
+      background: transparent;
+      color: var(--text-muted, #888);
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      border-radius: 6px;
+      transition: all .2s ease;
+      white-space: nowrap;
+      font-family: inherit;
+    }
+    .pk-tab:hover { color: var(--text, #eee); background: rgba(255,255,255,0.05); box-shadow: 0 0 8px rgba(46,204,113,.15); }
+    .pk-tab--active {
+      background: linear-gradient(135deg, #2ecc71, #27ae60);
+      color: #fff;
+      box-shadow: 0 4px 15px rgba(46,204,113,.3);
+    }
+    .pk-tab--active:hover { background: #27ae60; color: #000; }
+
+    /* ── Main Layout ───────────────────────────────────────────── */
+    .pk-layout {
+      max-width: 1200px;
+      margin: 20px auto 0;
+      padding: 0 20px 60px;
+      display: grid;
+      grid-template-columns: 1fr 280px;
+      gap: 24px;
+      align-items: start;
+    }
+
+    .pk-main {
+      min-width: 0;
+    }
+
+    .pk-stage { }
+    .pk-stage--hidden { display: none; }
+
+    .pk-section-title {
+      font-size: 1rem;
+      color: var(--text, #eee);
+      margin: 0 0 12px;
+      font-weight: 600;
+    }
+
+    /* ── Team Chips ────────────────────────────────────────────── */
+    .pk-team-bar {
+      margin-bottom: 24px;
+    }
+    .pk-team-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .pk-chip {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      padding: 8px 6px;
+      background: var(--bg2, #13141a);
+      border: 2px solid var(--border, #222);
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.15s;
+      width: 72px;
+      font-family: inherit;
+      color: var(--text, #eee);
+    }
+    .pk-chip:hover {
+      border-color: #2ecc71;
+      background: rgba(46,204,113,0.08);
+    }
+    .pk-chip--selected {
+      border-color: #2ecc71;
+      background: rgba(46,204,113,0.15);
+      box-shadow: 0 0 12px rgba(46,204,113,0.25);
+    }
+    .pk-chip--placed {
+      opacity: 0.3;
+      pointer-events: none;
+    }
+    .pk-chip--correct {
+      border-color: #2ecc71;
+      opacity: 1;
+    }
+    .pk-chip--incorrect {
+      border-color: #e74c3c;
+      opacity: 1;
+    }
+    .pk-chip-logo {
+      width: 40px;
+      height: 40px;
+      object-fit: contain;
+    }
+    .pk-chip-letter {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      background: rgba(46,204,113,0.15);
+      border-radius: 50%;
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #2ecc71;
+    }
+    .pk-chip-name {
+      font-size: 0.7rem;
+      text-align: center;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 64px;
+    }
+
+    /* ── Pick Zones ────────────────────────────────────────────── */
+    .pk-zones {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .pk-zone {
+      background: var(--bg2, #13141a);
+      border-radius: 10px;
+      padding: 16px;
+      border: 1px solid var(--border, #222);
+    }
+    .pk-zone--30 { border-left: 3px solid #2ecc71; }
+    .pk-zone--03 { border-left: 3px solid #e74c3c; }
+    .pk-zone--advance { border-left: 3px solid #3498db; }
+    .pk-zone-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+    .pk-zone-label {
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: var(--text, #eee);
+      font-variant-numeric: tabular-nums;
+    }
+    .pk-zone--30 .pk-zone-label { color: #2ecc71; }
+    .pk-zone--03 .pk-zone-label { color: #e74c3c; }
+    .pk-zone--advance .pk-zone-label { color: #3498db; }
+    .pk-zone-desc {
+      font-size: 0.8rem;
+      color: var(--text-muted, #888);
+    }
+
+    /* ── Slots ──────────────────────────────────────────────────── */
+    .pk-slots {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .pk-slot {
+      width: 80px;
+      height: 90px;
+      border: 2px dashed rgba(255,255,255,0.15);
+      border-radius: 8px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.15s;
+      position: relative;
+      background: rgba(255,255,255,0.02);
+    }
+    .pk-slot:hover {
+      border-color: rgba(255,255,255,0.3);
+      background: rgba(255,255,255,0.04);
+    }
+    .pk-slot--filled {
+      border-style: solid;
+      border-color: rgba(255,255,255,0.2);
+      background: rgba(255,255,255,0.05);
+      cursor: pointer;
+    }
+    .pk-slot--filled:hover {
+      border-color: #e74c3c;
+    }
+    .pk-slot--correct {
+      border-color: #2ecc71 !important;
+      background: rgba(46,204,113,0.1);
+    }
+    .pk-slot--incorrect {
+      border-color: #e74c3c !important;
+      background: rgba(231,76,60,0.1);
+    }
+    .pk-slot-logo {
+      width: 36px;
+      height: 36px;
+      object-fit: contain;
+    }
+    .pk-slot-name {
+      font-size: 0.65rem;
+      color: var(--text, #eee);
+      margin-top: 4px;
+      text-align: center;
+      max-width: 70px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .pk-slot-result {
+      position: absolute;
+      top: 4px;
+      right: 4px;
+      font-size: 0.7rem;
+      font-weight: 700;
+    }
+    .pk-slot-result--correct { color: #2ecc71; }
+    .pk-slot-result--incorrect { color: #e74c3c; }
+
+    .pk-slot-placeholder {
+      color: rgba(255,255,255,0.15);
+      font-size: 1.5rem;
+    }
+
+    /* ── Actions ────────────────────────────────────────────────── */
+    .pk-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-top: 20px;
+      flex-wrap: wrap;
+    }
+    .pk-pick-count {
+      font-size: 0.9rem;
+      color: var(--text-muted, #888);
+      font-variant-numeric: tabular-nums;
+    }
+    .pk-btn {
+      padding: 8px 20px;
+      border: none;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s;
+      font-family: inherit;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .pk-btn--lock {
+      background: linear-gradient(135deg, #2ecc71, #27ae60);
+      color: #fff;
+      box-shadow: 0 4px 15px rgba(46,204,113,.3);
+    }
+    .pk-btn--lock:hover { background: linear-gradient(135deg, #27ae60, #219a52); transform: translateY(-2px); box-shadow: 0 6px 20px rgba(46,204,113,.45); }
+    .pk-btn--lock:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+    .pk-btn--reset {
+      background: rgba(255,255,255,0.08);
+      color: var(--text, #eee);
+      border: 1px solid rgba(46,204,113,.4);
+      box-shadow: 0 0 8px rgba(46,204,113,.1);
+    }
+    .pk-btn--reset:hover { background: rgba(46,204,113,.08); box-shadow: 0 0 12px rgba(46,204,113,.2); }
+    .pk-btn--share {
+      background: linear-gradient(135deg, #3498db, #2980b9);
+      color: #fff;
+      width: 100%;
+      justify-content: center;
+      box-shadow: 0 4px 15px rgba(52,152,219,.3);
+    }
+    .pk-btn--share:hover { background: linear-gradient(135deg, #2980b9, #2471a3); transform: translateY(-2px); box-shadow: 0 6px 20px rgba(52,152,219,.45); }
+    .pk-btn--reset-all {
+      background: rgba(231,76,60,0.15);
+      color: #e74c3c;
+      width: 100%;
+      justify-content: center;
+      padding: 8px 20px;
+      border: 1px solid rgba(231,76,60,.4);
+      border-radius: 6px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: inherit;
+      box-shadow: 0 0 8px rgba(231,76,60,.1);
+    }
+    .pk-btn--reset-all:hover { background: rgba(231,76,60,0.25); box-shadow: 0 0 12px rgba(231,76,60,.2); }
+
+    /* ── Bracket ────────────────────────────────────────────────── */
+    .pk-bracket-note {
+      font-size: 0.85rem;
+      color: var(--text-muted, #888);
+      margin: 0 0 20px;
+    }
+    .pk-bracket {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr 1fr;
+      gap: 20px;
+      align-items: center;
+    }
+    .pk-bracket-round {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .pk-bracket-qf { gap: 12px; }
+    .pk-bracket-sf {
+      gap: 60px;
+      padding: 30px 0;
+    }
+    .pk-bracket-final {
+      padding: 60px 0;
+    }
+    .pk-bracket-champ {
+      align-items: center;
+      justify-content: center;
+    }
+    .pk-round-title {
+      font-size: 0.8rem;
+      color: var(--text-muted, #888);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin: 0;
+    }
+    .pk-match {
+      background: var(--bg2, #13141a);
+      border: 1px solid var(--border, #222);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    .pk-match-team {
+      padding: 10px 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      transition: background 0.15s;
+      min-height: 44px;
+      font-size: 0.85rem;
+      color: var(--text-muted, #888);
+    }
+    .pk-match-team:hover { background: rgba(255,255,255,0.05); }
+    .pk-match-team--picked {
+      background: rgba(46,204,113,0.1);
+      color: #2ecc71;
+      font-weight: 600;
+    }
+    .pk-match-team--correct {
+      background: rgba(46,204,113,0.15);
+      color: #2ecc71;
+    }
+    .pk-match-team--incorrect {
+      background: rgba(231,76,60,0.1);
+      color: #e74c3c;
+      text-decoration: line-through;
+    }
+    .pk-match-team-logo {
+      width: 24px;
+      height: 24px;
+      object-fit: contain;
+    }
+    .pk-match-vs {
+      text-align: center;
+      font-size: 0.7rem;
+      color: var(--text-muted, #888);
+      padding: 2px 0;
+      background: rgba(255,255,255,0.02);
+      border-top: 1px solid var(--border, #222);
+      border-bottom: 1px solid var(--border, #222);
+    }
+    .pk-champ-slot {
+      width: 100px;
+      height: 110px;
+      border: 2px dashed rgba(228,174,57,0.4);
+      border-radius: 10px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: rgba(228,174,57,0.05);
+      margin: 0 auto;
+    }
+    .pk-champ-slot--filled {
+      border-style: solid;
+      border-color: #e4ae39;
+      background: rgba(228,174,57,0.1);
+    }
+    .pk-champ-logo {
+      width: 48px;
+      height: 48px;
+      object-fit: contain;
+    }
+    .pk-champ-name {
+      font-size: 0.8rem;
+      color: #e4ae39;
+      font-weight: 700;
+      margin-top: 6px;
+    }
+
+    /* ── Sidebar ────────────────────────────────────────────────── */
+    .pk-sidebar {
+      position: sticky;
+      top: 80px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    /* Coin */
+    .pk-coin-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      padding: 20px;
+      background: var(--bg2, #13141a);
+      border-radius: 10px;
+      border: 1px solid var(--border, #222);
+    }
+    .pk-coin {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      transition: all 0.3s;
+    }
+    .pk-coin--none {
+      background: linear-gradient(135deg, #2a2a2a, #1a1a1a);
+      border: 3px solid #333;
+      color: #555;
+    }
+    .pk-coin--bronze {
+      background: linear-gradient(135deg, #cd7f32, #8b4513);
+      border: 3px solid #cd7f32;
+      color: #fff;
+      box-shadow: 0 0 20px rgba(205,127,50,0.3);
+    }
+    .pk-coin--silver {
+      background: linear-gradient(135deg, #c0c0c0, #808080);
+      border: 3px solid #c0c0c0;
+      color: #fff;
+      box-shadow: 0 0 20px rgba(192,192,192,0.3);
+    }
+    .pk-coin--gold {
+      background: linear-gradient(135deg, #ffd700, #daa520);
+      border: 3px solid #ffd700;
+      color: #fff;
+      box-shadow: 0 0 20px rgba(255,215,0,0.3);
+    }
+    .pk-coin--diamond {
+      background: linear-gradient(135deg, #b9f2ff, #00bcd4, #e0f7fa);
+      border: 3px solid #00bcd4;
+      color: #fff;
+      box-shadow: 0 0 25px rgba(0,188,212,0.4);
+      animation: pk-diamond-glow 2s ease-in-out infinite;
+    }
+    @keyframes pk-diamond-glow {
+      0%, 100% { box-shadow: 0 0 20px rgba(0,188,212,0.3); }
+      50% { box-shadow: 0 0 35px rgba(0,188,212,0.6); }
+    }
+    .pk-coin-label {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--text, #eee);
+    }
+    .pk-coin-progress {
+      font-size: 0.8rem;
+      color: var(--text-muted, #888);
+    }
+
+    /* Challenges */
+    .pk-challenges {
+      background: var(--bg2, #13141a);
+      border-radius: 10px;
+      border: 1px solid var(--border, #222);
+      padding: 16px;
+    }
+    .pk-sidebar-title {
+      font-size: 0.9rem;
+      margin: 0 0 12px;
+      color: var(--text, #eee);
+      font-weight: 600;
+    }
+    .pk-challenge-list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .pk-challenge-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      font-size: 0.8rem;
+      color: var(--text-muted, #888);
+      line-height: 1.4;
+    }
+    .pk-challenge-check {
+      flex-shrink: 0;
+      width: 18px;
+      height: 18px;
+      border: 2px solid #333;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 1px;
+      font-size: 0.7rem;
+    }
+    .pk-challenge-item--done .pk-challenge-check {
+      background: #2ecc71;
+      border-color: #2ecc71;
+      color: #000;
+    }
+    .pk-challenge-item--done {
+      color: var(--text, #eee);
+    }
+
+    /* Share */
+    .pk-share {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    /* ── Read-only banner ──────────────────────────────────────── */
+    .pk-readonly-banner {
+      max-width: 1200px;
+      margin: 12px auto 0;
+      padding: 10px 20px;
+      background: rgba(52,152,219,0.12);
+      border: 1px solid rgba(52,152,219,0.3);
+      border-radius: 8px;
+      color: #3498db;
+      font-size: 0.85rem;
+      text-align: center;
+      display: none;
+    }
+    .pk-readonly-banner--visible { display: block; }
+
+    /* ── Toast notification ─────────────────────────────────────── */
+    .pk-toast {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%) translateY(100px);
+      background: #2ecc71;
+      color: #000;
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      z-index: 1000;
+      opacity: 0;
+      transition: all 0.3s;
+      pointer-events: none;
+    }
+    .pk-toast--show {
+      transform: translateX(-50%) translateY(0);
+      opacity: 1;
+    }
+
+    /* ── FAQ ────────────────────────────────────────────────────── */
+    .pk-faq {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 40px 20px 60px;
+    }
+    .pk-faq h2 {
+      font-size: 1.4rem;
+      margin: 0 0 20px;
+      color: var(--text, #eee);
+    }
+    .pk-faq-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 16px;
+    }
+    .pk-faq-item {
+      background: var(--bg2, #13141a);
+      border-radius: 10px;
+      padding: 20px;
+      border: 1px solid var(--border, #222);
+    }
+    .pk-faq-item h3 {
+      font-size: 0.95rem;
+      color: #2ecc71;
+      margin: 0 0 8px;
+    }
+    .pk-faq-item p {
+      font-size: 0.85rem;
+      color: var(--text-muted, #888);
+      margin: 0;
+      line-height: 1.5;
+    }
+
+    /* ── Responsive ─────────────────────────────────────────────── */
+    @media (max-width: 900px) {
+      .pk-layout {
+        grid-template-columns: 1fr;
+      }
+      .pk-sidebar {
+        position: static;
+        order: -1;
+      }
+      .pk-coin-wrap {
+        flex-direction: row;
+        justify-content: center;
+      }
+      .pk-coin { width: 50px; height: 50px; font-size: 1.4rem; }
+      .pk-bracket {
+        grid-template-columns: 1fr;
+        gap: 16px;
+      }
+      .pk-bracket-sf { gap: 12px; padding: 0; }
+      .pk-bracket-final { padding: 0; }
+    }
+    @media (max-width: 600px) {
+      .pk-hero h1 { font-size: 1.6rem; }
+      .pk-chip { width: 60px; padding: 6px 4px; }
+      .pk-chip-logo { width: 32px; height: 32px; }
+      .pk-chip-name { font-size: 0.6rem; max-width: 52px; }
+      .pk-slot { width: 68px; height: 78px; }
+      .pk-slot-logo { width: 30px; height: 30px; }
+      .pk-tabs { gap: 2px; padding: 3px; }
+      .pk-tab { padding: 8px 10px; font-size: 0.8rem; }
+    }
+  </style>
+
+  <!-- Read-only banner (shown when viewing shared picks) -->
+  <div class="pk-readonly-banner" id="pkReadonly">
+    You are viewing someone else's picks (read-only). <a href="/pickems/" style="color:#3498db;text-decoration:underline;">Make your own picks</a>
+  </div>
+
+  <!-- Toast -->
+  <div class="pk-toast" id="pkToast"></div>
+
+  <!-- Client-side logic -->
+  <script define:vars={{ tournamentJson, challengesJson }}>
+    // ── Parse server data ──────────────────────────────────────
+    const tournament = JSON.parse(tournamentJson);
+    const challengeDescs = JSON.parse(challengesJson);
+
+    // ── State ──────────────────────────────────────────────────
+    const STORAGE_KEY = `pickem_${tournament.id}`;
+    let state = {
+      picks: {},    // { 'opening-stage': { '3-0': ['team1','team2'], '0-3': [...], 'advance': [...] } }
+      bracket: {},  // { qf1: 'team-id', sf1: 'team-id', final: 'team-id' }
+      locked: {},   // { 'opening-stage': true }
+    };
+    let selectedTeam = null;   // currently highlighted chip team ID
+    let activeStage = tournament.stages[0].id;
+    let readOnly = false;
+
+    // Team lookup
+    const teamMap = {};
+    for (const t of tournament.teams) teamMap[t.id] = t;
+
+    // ── Persistence ────────────────────────────────────────────
+    function saveState() {
+      if (readOnly) return;
+      try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch {}
+    }
+
+    function loadState() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          state = { picks: parsed.picks || {}, bracket: parsed.bracket || {}, locked: parsed.locked || {} };
+        }
+      } catch {}
+    }
+
+    // ── URL Sharing ────────────────────────────────────────────
+    function encodeShareUrl() {
+      const data = JSON.stringify({ picks: state.picks, bracket: state.bracket });
+      return window.location.origin + '/pickems/?picks=' + btoa(unescape(encodeURIComponent(data)));
+    }
+
+    function decodeShareUrl() {
+      const params = new URLSearchParams(window.location.search);
+      const encoded = params.get('picks');
+      if (!encoded) return null;
+      try {
+        const json = decodeURIComponent(escape(atob(encoded)));
+        return JSON.parse(json);
+      } catch { return null; }
+    }
+
+    // ── Toast ──────────────────────────────────────────────────
+    const toastEl = document.getElementById('pkToast');
+    let toastTimer = null;
+    function showToast(msg) {
+      toastEl.textContent = msg;
+      toastEl.classList.add('pk-toast--show');
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => toastEl.classList.remove('pk-toast--show'), 2500);
+    }
+
+    // ── Initialize ─────────────────────────────────────────────
+    const shared = decodeShareUrl();
+    if (shared) {
+      state.picks = shared.picks || {};
+      state.bracket = shared.bracket || {};
+      state.locked = {};
+      // Mark all as locked in read-only mode
+      for (const key of Object.keys(state.picks)) state.locked[key] = true;
+      readOnly = true;
+      document.getElementById('pkReadonly').classList.add('pk-readonly-banner--visible');
+    } else {
+      loadState();
+    }
+
+    // ── Stage tabs ─────────────────────────────────────────────
+    const tabBtns = document.querySelectorAll('.pk-tab');
+    tabBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const stageId = btn.dataset.stage;
+        activeStage = stageId;
+        selectedTeam = null;
+        // Update tab styles
+        tabBtns.forEach(b => b.classList.remove('pk-tab--active'));
+        btn.classList.add('pk-tab--active');
+        // Show/hide stages
+        document.querySelectorAll('.pk-stage').forEach(el => {
+          el.classList.toggle('pk-stage--hidden', el.id !== `stage-${stageId}`);
+        });
+        renderStage(stageId);
+      });
+    });
+
+    // ── Get picks for a stage ──────────────────────────────────
+    function getStagePicks(stageId) {
+      if (!state.picks[stageId]) {
+        state.picks[stageId] = { '3-0': [], '0-3': [], 'advance': [] };
+      }
+      return state.picks[stageId];
+    }
+
+    function allPickedTeams(stageId) {
+      const p = getStagePicks(stageId);
+      return [...(p['3-0'] || []), ...(p['0-3'] || []), ...(p['advance'] || [])];
+    }
+
+    // ── Render Swiss stage ─────────────────────────────────────
+    function renderStage(stageId) {
+      const stageEl = document.getElementById(`stage-${stageId}`);
+      if (!stageEl) return;
+      const stageType = stageEl.dataset.stageType;
+
+      if (stageType === 'bracket') {
+        renderBracket();
+        return;
+      }
+
+      const picks = getStagePicks(stageId);
+      const placed = allPickedTeams(stageId);
+      const isLocked = state.locked[stageId];
+
+      // Update chips
+      const chipsContainer = document.getElementById(`chips-${stageId}`);
+      if (chipsContainer) {
+        chipsContainer.querySelectorAll('.pk-chip').forEach(chip => {
+          const tid = chip.dataset.teamId;
+          chip.classList.toggle('pk-chip--placed', placed.includes(tid));
+          chip.classList.toggle('pk-chip--selected', tid === selectedTeam);
+        });
+      }
+
+      // Update slots
+      const zones = stageEl.querySelectorAll('.pk-slots');
+      zones.forEach(zone => {
+        const zoneName = zone.dataset.zone;
+        const slots = zone.querySelectorAll('.pk-slot');
+        const zoneTeams = picks[zoneName] || [];
+
+        slots.forEach((slot, idx) => {
+          const teamId = zoneTeams[idx] || null;
+          slot.innerHTML = '';
+          slot.classList.remove('pk-slot--filled', 'pk-slot--correct', 'pk-slot--incorrect');
+
+          if (teamId && teamMap[teamId]) {
+            const team = teamMap[teamId];
+            slot.classList.add('pk-slot--filled');
+            if (team.logo) {
+              const img = document.createElement('img');
+              img.src = team.logo;
+              img.alt = team.name;
+              img.className = 'pk-slot-logo';
+              slot.appendChild(img);
+            } else {
+              const letter = document.createElement('span');
+              letter.className = 'pk-chip-letter';
+              letter.style.width = '36px';
+              letter.style.height = '36px';
+              letter.textContent = team.shortName.charAt(0);
+              slot.appendChild(letter);
+            }
+            const name = document.createElement('span');
+            name.className = 'pk-slot-name';
+            name.textContent = team.shortName;
+            slot.appendChild(name);
+          } else {
+            const ph = document.createElement('span');
+            ph.className = 'pk-slot-placeholder';
+            ph.textContent = '+';
+            slot.appendChild(ph);
+          }
+        });
+      });
+
+      // Update pick count
+      const countEl = document.getElementById(`count-${stageId}`);
+      if (countEl) countEl.textContent = `${placed.length} / 10 picks`;
+
+      // Update lock button
+      const lockBtn = document.getElementById(`lock-${stageId}`);
+      if (lockBtn) {
+        lockBtn.disabled = placed.length < 10 || isLocked || readOnly;
+        if (isLocked) {
+          lockBtn.textContent = 'Picks Locked';
+          lockBtn.disabled = true;
+        }
+      }
+
+      // Disable interactions if locked or read-only
+      if (isLocked || readOnly) {
+        if (chipsContainer) {
+          chipsContainer.querySelectorAll('.pk-chip').forEach(chip => {
+            chip.style.pointerEvents = 'none';
+            chip.style.opacity = '0.5';
+          });
+        }
+      }
+    }
+
+    // ── Render Bracket ─────────────────────────────────────────
+    function renderBracket() {
+      const bracket = state.bracket || {};
+      const matches = document.querySelectorAll('#pkBracket .pk-match');
+
+      // Get advancement stage teams (if any are set)
+      const advStage = tournament.stages.find(s => s.id === 'advancement-stage');
+      const playoffStage = tournament.stages.find(s => s.id === 'playoffs');
+      const bracketTeamIds = playoffStage?.teamIds?.length > 0
+        ? playoffStage.teamIds
+        : (advStage?.teamIds?.length > 0 ? advStage.teamIds.slice(0, 8) : []);
+
+      // Seed matchups for QFs
+      const qfMatchups = [
+        { match: 'qf1', teams: bracketTeamIds.length >= 2 ? [bracketTeamIds[0], bracketTeamIds[7]] : [] },
+        { match: 'qf2', teams: bracketTeamIds.length >= 4 ? [bracketTeamIds[3], bracketTeamIds[4]] : [] },
+        { match: 'qf3', teams: bracketTeamIds.length >= 6 ? [bracketTeamIds[1], bracketTeamIds[6]] : [] },
+        { match: 'qf4', teams: bracketTeamIds.length >= 8 ? [bracketTeamIds[2], bracketTeamIds[5]] : [] },
+      ];
+
+      // Render each match
+      matches.forEach(matchEl => {
+        const matchId = matchEl.dataset.match;
+        const team1Slot = matchEl.querySelector('[data-match-slot="team1"]');
+        const team2Slot = matchEl.querySelector('[data-match-slot="team2"]');
+        if (!team1Slot || !team2Slot) return;
+
+        let t1 = null, t2 = null;
+
+        if (matchId.startsWith('qf')) {
+          const qf = qfMatchups.find(q => q.match === matchId);
+          if (qf && qf.teams.length === 2) {
+            t1 = teamMap[qf.teams[0]] || null;
+            t2 = teamMap[qf.teams[1]] || null;
+          }
+        } else if (matchId === 'sf1') {
+          const w1 = bracket['qf1'] ? teamMap[bracket['qf1']] : null;
+          const w2 = bracket['qf2'] ? teamMap[bracket['qf2']] : null;
+          t1 = w1; t2 = w2;
+        } else if (matchId === 'sf2') {
+          const w3 = bracket['qf3'] ? teamMap[bracket['qf3']] : null;
+          const w4 = bracket['qf4'] ? teamMap[bracket['qf4']] : null;
+          t1 = w3; t2 = w4;
+        } else if (matchId === 'final') {
+          const w1 = bracket['sf1'] ? teamMap[bracket['sf1']] : null;
+          const w2 = bracket['sf2'] ? teamMap[bracket['sf2']] : null;
+          t1 = w1; t2 = w2;
+        }
+
+        renderMatchSlot(team1Slot, t1, matchId, 'team1');
+        renderMatchSlot(team2Slot, t2, matchId, 'team2');
+
+        // Highlight picked team
+        const picked = bracket[matchId];
+        team1Slot.classList.toggle('pk-match-team--picked', picked && t1 && picked === t1.id);
+        team2Slot.classList.toggle('pk-match-team--picked', picked && t2 && picked === t2.id);
+      });
+
+      // Champion
+      const champEl = document.getElementById('pkChampion');
+      const champId = bracket['final'];
+      champEl.innerHTML = '';
+      champEl.classList.remove('pk-champ-slot--filled');
+      if (champId && teamMap[champId]) {
+        const team = teamMap[champId];
+        champEl.classList.add('pk-champ-slot--filled');
+        if (team.logo) {
+          const img = document.createElement('img');
+          img.src = team.logo;
+          img.alt = team.name;
+          img.className = 'pk-champ-logo';
+          champEl.appendChild(img);
+        }
+        const name = document.createElement('span');
+        name.className = 'pk-champ-name';
+        name.textContent = team.shortName;
+        champEl.appendChild(name);
+      } else {
+        const ph = document.createElement('span');
+        ph.className = 'pk-slot-placeholder';
+        ph.textContent = '?';
+        ph.style.fontSize = '2rem';
+        ph.style.color = 'rgba(228,174,57,0.4)';
+        champEl.appendChild(ph);
+      }
+
+      // Lock button for playoffs
+      const lockBtn = document.getElementById('lock-playoffs');
+      if (lockBtn) {
+        const hasAllPicks = bracket['qf1'] && bracket['qf2'] && bracket['qf3'] && bracket['qf4'] &&
+                            bracket['sf1'] && bracket['sf2'] && bracket['final'];
+        lockBtn.disabled = !hasAllPicks || state.locked['playoffs'] || readOnly;
+        if (state.locked['playoffs']) {
+          lockBtn.textContent = 'Picks Locked';
+          lockBtn.disabled = true;
+        }
+      }
+    }
+
+    function renderMatchSlot(slotEl, team, matchId, slotName) {
+      slotEl.innerHTML = '';
+      slotEl.dataset.teamId = team ? team.id : '';
+      slotEl.dataset.matchId = matchId;
+      slotEl.dataset.matchSlot = slotName;
+
+      if (team) {
+        if (team.logo) {
+          const img = document.createElement('img');
+          img.src = team.logo;
+          img.alt = team.name;
+          img.className = 'pk-match-team-logo';
+          slotEl.appendChild(img);
+        }
+        const name = document.createElement('span');
+        name.textContent = team.shortName;
+        slotEl.appendChild(name);
+      } else {
+        slotEl.textContent = 'TBD';
+      }
+    }
+
+    // ── Challenges & Coin ──────────────────────────────────────
+    const COIN_TIERS = [
+      { min: 0, name: 'No Coin', cls: 'pk-coin--none', icon: '?' },
+      { min: 3, name: 'Bronze', cls: 'pk-coin--bronze', icon: '🥉' },
+      { min: 5, name: 'Silver', cls: 'pk-coin--silver', icon: '🥈' },
+      { min: 8, name: 'Gold', cls: 'pk-coin--gold', icon: '🥇' },
+      { min: 10, name: 'Diamond', cls: 'pk-coin--diamond', icon: '💎' },
+    ];
+
+    function countChallenges() {
+      // For now, count based on picks placed (simplified — real scoring needs results)
+      let score = 0;
+      const picks = state.picks;
+      const bracket = state.bracket;
+
+      // Check each swiss stage: did user place all 10 picks?
+      for (const stageId of ['opening-stage', 'elimination-stage', 'advancement-stage']) {
+        const p = picks[stageId];
+        if (p) {
+          const total = (p['3-0']?.length || 0) + (p['0-3']?.length || 0) + (p['advance']?.length || 0);
+          if (total >= 10) score++;
+        }
+      }
+
+      // Bracket picks placed
+      if (bracket['qf1'] && bracket['qf2'] && bracket['qf3'] && bracket['qf4']) score++;
+      if (bracket['sf1'] && bracket['sf2']) score++;
+      if (bracket['final']) score++;
+
+      return Math.min(score, 10);
+    }
+
+    function renderChallenges() {
+      const score = countChallenges();
+
+      // Update coin
+      const coinEl = document.getElementById('pkCoin');
+      const labelEl = document.getElementById('pkCoinLabel');
+      const progressEl = document.getElementById('pkCoinProgress');
+
+      let tier = COIN_TIERS[0];
+      for (const t of COIN_TIERS) {
+        if (score >= t.min) tier = t;
+      }
+
+      coinEl.className = 'pk-coin ' + tier.cls;
+      coinEl.querySelector('.pk-coin-icon').textContent = tier.icon;
+      labelEl.textContent = tier.name;
+      progressEl.textContent = `${score} / 10 points`;
+
+      // Update challenge list
+      const listEl = document.getElementById('pkChallengeList');
+      listEl.innerHTML = '';
+      challengeDescs.forEach((ch, i) => {
+        const li = document.createElement('li');
+        li.className = 'pk-challenge-item';
+        // Simplified: mark first N challenges as done
+        if (i < score) li.classList.add('pk-challenge-item--done');
+        const check = document.createElement('span');
+        check.className = 'pk-challenge-check';
+        check.textContent = i < score ? '✓' : '';
+        const desc = document.createElement('span');
+        desc.textContent = ch.description;
+        li.appendChild(check);
+        li.appendChild(desc);
+        listEl.appendChild(li);
+      });
+    }
+
+    // ── Event Handlers ─────────────────────────────────────────
+
+    // Click on team chip (select)
+    document.addEventListener('click', e => {
+      const chip = e.target.closest('.pk-chip');
+      if (chip && !readOnly) {
+        const stageId = chip.closest('.pk-stage')?.dataset?.stageId;
+        if (!stageId || state.locked[stageId]) return;
+        const tid = chip.dataset.teamId;
+        const placed = allPickedTeams(stageId);
+        if (placed.includes(tid)) return; // already placed
+
+        if (selectedTeam === tid) {
+          selectedTeam = null; // deselect
+        } else {
+          selectedTeam = tid;
+        }
+        renderStage(stageId);
+      }
+    });
+
+    // Click on slot (place or remove)
+    document.addEventListener('click', e => {
+      const slot = e.target.closest('.pk-slot');
+      if (!slot || readOnly) return;
+
+      const slotsContainer = slot.closest('.pk-slots');
+      if (!slotsContainer) return;
+      const zone = slotsContainer.dataset.zone;
+      const stageId = slotsContainer.dataset.stage;
+      if (!stageId || state.locked[stageId]) return;
+
+      const idx = parseInt(slot.dataset.slotIdx);
+      const picks = getStagePicks(stageId);
+
+      // If slot is filled, remove
+      if (picks[zone] && picks[zone][idx]) {
+        picks[zone].splice(idx, 1);
+        selectedTeam = null;
+        saveState();
+        renderStage(stageId);
+        renderChallenges();
+        return;
+      }
+
+      // If a team is selected, place it
+      if (selectedTeam) {
+        if (!picks[zone]) picks[zone] = [];
+        // Check zone capacity
+        const maxSlots = zone === 'advance' ? 6 : 2;
+        if (picks[zone].length >= maxSlots) return;
+
+        picks[zone].push(selectedTeam);
+        selectedTeam = null;
+        saveState();
+        renderStage(stageId);
+        renderChallenges();
+      }
+    });
+
+    // Click on bracket match team (pick winner)
+    document.addEventListener('click', e => {
+      const teamSlot = e.target.closest('.pk-match-team');
+      if (!teamSlot || readOnly || state.locked['playoffs']) return;
+      const teamId = teamSlot.dataset.teamId;
+      const matchId = teamSlot.dataset.matchId;
+      if (!teamId || !matchId) return;
+
+      state.bracket[matchId] = teamId;
+      saveState();
+      renderBracket();
+      renderChallenges();
+    });
+
+    // Lock picks button
+    document.querySelectorAll('.pk-btn--lock').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const stageId = btn.id.replace('lock-', '');
+        state.locked[stageId] = true;
+        saveState();
+        renderStage(stageId);
+        renderChallenges();
+        showToast('Picks locked!');
+      });
+    });
+
+    // Reset stage button
+    document.querySelectorAll('[data-reset-stage]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        if (readOnly) return;
+        const stageId = btn.dataset.resetStage;
+        if (state.locked[stageId]) {
+          if (!confirm('Your picks are locked. Are you sure you want to reset?')) return;
+        }
+        if (stageId === 'playoffs') {
+          state.bracket = {};
+        } else {
+          state.picks[stageId] = { '3-0': [], '0-3': [], 'advance': [] };
+        }
+        state.locked[stageId] = false;
+        selectedTeam = null;
+        saveState();
+        renderStage(stageId);
+        renderChallenges();
+        showToast('Picks reset');
+      });
+    });
+
+    // Share button
+    document.getElementById('pkShare')?.addEventListener('click', () => {
+      const url = encodeShareUrl();
+      navigator.clipboard.writeText(url).then(() => {
+        showToast('Share URL copied to clipboard!');
+      }).catch(() => {
+        // Fallback
+        prompt('Copy this URL to share your picks:', url);
+      });
+    });
+
+    // Reset all button
+    document.getElementById('pkResetAll')?.addEventListener('click', () => {
+      if (readOnly) return;
+      if (!confirm('Reset ALL picks across all stages? This cannot be undone.')) return;
+      state = { picks: {}, bracket: {}, locked: {} };
+      selectedTeam = null;
+      saveState();
+      renderStage(activeStage);
+      renderChallenges();
+      showToast('All picks reset');
+    });
+
+    // ── Initial render ─────────────────────────────────────────
+    renderStage(activeStage);
+    renderChallenges();
+  </script>
+</Base>

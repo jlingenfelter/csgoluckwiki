@@ -45,10 +45,10 @@ import Base from '../layouts/Base.astro';
 .e4-sub{font-family:'Montserrat',sans-serif;font-size:1.3rem;font-weight:700;color:var(--text);margin:0 0 .5rem}
 .e4-desc{color:var(--text2);font-size:.95rem;margin:0 0 1.5rem}
 .e4-actions{display:flex;gap:.65rem;flex-wrap:wrap}
-.e4-btn{padding:.55rem 1.1rem;border-radius:4px;font-weight:700;font-size:.88rem;text-decoration:none;border:1px solid var(--border);color:var(--text2);transition:border-color .15s,color .15s}
-.e4-btn:hover{border-color:var(--accent);color:var(--accent)}
-.e4-btn-primary{background:var(--accent);color:#000;border-color:var(--accent)}
-.e4-btn-primary:hover{opacity:.85;color:#000}
+.e4-btn{padding:.55rem 1.1rem;border-radius:4px;font-weight:700;font-size:.88rem;text-decoration:none;border:1px solid rgba(46,204,113,.4);color:var(--text2);box-shadow:0 0 8px rgba(46,204,113,.1);transition:all .2s ease}
+.e4-btn:hover{border-color:#2ecc71;color:#2ecc71;background:rgba(46,204,113,.08);box-shadow:0 0 12px rgba(46,204,113,.2)}
+.e4-btn-primary{background:linear-gradient(135deg,#2ecc71,#27ae60);color:#fff;border-color:transparent;box-shadow:0 4px 15px rgba(46,204,113,.3)}
+.e4-btn-primary:hover{background:linear-gradient(135deg,#27ae60,#219a52);color:#fff;transform:translateY(-2px);box-shadow:0 6px 20px rgba(46,204,113,.45)}
 
 .e4-search{margin-bottom:1.5rem}
 .e4-search-label{font-size:.9rem;color:var(--text2);margin:0 0 .5rem}

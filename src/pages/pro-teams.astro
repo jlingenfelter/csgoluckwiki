@@ -405,9 +405,9 @@ const spotlightTeams = [...teamCardsWithRegion]
 /* Region Filter Pills */
 .th-region-bar{padding:1.25rem 0;border-bottom:1px solid var(--border);margin-bottom:1rem}
 .th-region-pills{display:flex;gap:.5rem;flex-wrap:wrap}
-.th-region-pill{background:var(--bg3);color:var(--text2);border:1px solid var(--border);border-radius:4px;padding:.4rem 1rem;font-size:.82rem;font-weight:600;cursor:pointer;font-family:inherit;transition:all .15s}
-.th-region-pill:hover{border-color:var(--accent);color:var(--text)}
-.th-region-active{background:var(--accent);color:#000;border-color:var(--accent)}
+.th-region-pill{background:var(--bg3);color:var(--text2);border:1px solid rgba(46,204,113,.4);border-radius:20px;padding:.4rem 1rem;font-size:.82rem;font-weight:600;cursor:pointer;font-family:inherit;box-shadow:0 0 8px rgba(46,204,113,.1);transition:all .2s ease}
+.th-region-pill:hover{border-color:#2ecc71;color:var(--text);background:rgba(46,204,113,.08);box-shadow:0 0 12px rgba(46,204,113,.2)}
+.th-region-active{background:linear-gradient(135deg,#2ecc71,#27ae60);color:#fff;border-color:transparent;box-shadow:0 4px 15px rgba(46,204,113,.3)}
 
 /* Alphabetical Jump Links */
 .th-alpha-bar{display:flex;align-items:center;gap:.75rem;padding:.75rem 0;margin-bottom:1rem;flex-wrap:wrap}
