@@ -1,5 +1,958 @@
 {
-  "fetchedAt": "2026-03-05T01:49:32.452Z",
-  "source": "error",
-  "cases": {}
+  "fetchedAt": "2026-03-05T04:07:44.404Z",
+  "source": "pricempire",
+  "cases": {
+    "kilowatt": {
+      "price": 0.16,
+      "source": "buff163"
+    },
+    "gallery": {
+      "price": 0.98,
+      "source": "buff163"
+    },
+    "revolution": {
+      "price": 0.23,
+      "source": "buff163"
+    },
+    "recoil": {
+      "price": 0.23,
+      "source": "buff163"
+    },
+    "dreams-nightmares": {
+      "price": 1.2,
+      "source": "buff163"
+    },
+    "snakebite": {
+      "price": 0.61,
+      "source": "buff163"
+    },
+    "fracture": {
+      "price": 0.54,
+      "source": "buff163"
+    },
+    "prisma2": {
+      "price": 1.42,
+      "source": "buff163"
+    },
+    "prisma": {
+      "price": 1.32,
+      "source": "buff163"
+    },
+    "clutch": {
+      "price": 0.74,
+      "source": "buff163"
+    },
+    "spectrum2": {
+      "price": 3.07,
+      "source": "buff163"
+    },
+    "danger-zone": {
+      "price": 1.52,
+      "source": "buff163"
+    },
+    "cs20": {
+      "price": 1.17,
+      "source": "buff163"
+    },
+    "operation-bravo": {
+      "price": 72.5,
+      "source": "buff163"
+    },
+    "chroma": {
+      "price": 4.9,
+      "source": "buff163"
+    },
+    "gamma": {
+      "price": 3.47,
+      "source": "buff163"
+    },
+    "fever": {
+      "price": 0.72,
+      "source": "buff163"
+    },
+    "horizon": {
+      "price": 1.73,
+      "source": "buff163"
+    },
+    "spectrum": {
+      "price": 4.06,
+      "source": "buff163"
+    },
+    "glove": {
+      "price": 17.9,
+      "source": "buff163"
+    },
+    "gamma2": {
+      "price": 3.45,
+      "source": "buff163"
+    },
+    "chroma3": {
+      "price": 3.43,
+      "source": "buff163"
+    },
+    "chroma2": {
+      "price": 3.92,
+      "source": "buff163"
+    },
+    "revolver": {
+      "price": 2.81,
+      "source": "buff163"
+    },
+    "falchion": {
+      "price": 1.71,
+      "source": "buff163"
+    },
+    "shadow": {
+      "price": 1.71,
+      "source": "buff163"
+    },
+    "operation-wildfire": {
+      "price": 4.07,
+      "source": "buff163"
+    },
+    "operation-hydra": {
+      "price": 46.26,
+      "source": "buff163"
+    },
+    "operation-riptide": {
+      "price": 12.17,
+      "source": "buff163"
+    },
+    "operation-broken-fang": {
+      "price": 7.9,
+      "source": "buff163"
+    },
+    "shattered-web": {
+      "price": 6.09,
+      "source": "buff163"
+    },
+    "operation-breakout": {
+      "price": 8.99,
+      "source": "buff163"
+    },
+    "operation-vanguard": {
+      "price": 4.96,
+      "source": "buff163"
+    },
+    "operation-phoenix": {
+      "price": 4.41,
+      "source": "buff163"
+    },
+    "huntsman": {
+      "price": 8.99,
+      "source": "buff163"
+    },
+    "winter-offensive": {
+      "price": 13.49,
+      "source": "buff163"
+    },
+    "csgo-weapon-case": {
+      "price": 162.91,
+      "source": "buff163"
+    },
+    "csgo-weapon-case-2": {
+      "price": 24.14,
+      "source": "buff163"
+    },
+    "csgo-weapon-case-3": {
+      "price": 16.97,
+      "source": "buff163"
+    },
+    "esports-2013": {
+      "price": 69.1,
+      "source": "buff163"
+    },
+    "esports-2013-winter": {
+      "price": 13.77,
+      "source": "buff163"
+    },
+    "esports-2014-summer": {
+      "price": 15.59,
+      "source": "buff163"
+    },
+    "budapest-2025-train-souvenir-package": {
+      "price": 2.39,
+      "source": "buff163"
+    },
+    "budapest-2025-nuke-souvenir-package": {
+      "price": 2.17,
+      "source": "buff163"
+    },
+    "budapest-2025-ancient-souvenir-package": {
+      "price": 2.39,
+      "source": "buff163"
+    },
+    "budapest-2025-dust-ii-souvenir-package": {
+      "price": 2.46,
+      "source": "buff163"
+    },
+    "budapest-2025-overpass-souvenir-package": {
+      "price": 2.39,
+      "source": "buff163"
+    },
+    "budapest-2025-mirage-souvenir-package": {
+      "price": 2.37,
+      "source": "buff163"
+    },
+    "budapest-2025-inferno-souvenir-package": {
+      "price": 2.23,
+      "source": "buff163"
+    },
+    "austin-2025-train-souvenir-package": {
+      "price": 3.31,
+      "source": "buff163"
+    },
+    "austin-2025-nuke-souvenir-package": {
+      "price": 2.53,
+      "source": "buff163"
+    },
+    "austin-2025-ancient-souvenir-package": {
+      "price": 2.67,
+      "source": "buff163"
+    },
+    "austin-2025-dust-ii-souvenir-package": {
+      "price": 2.45,
+      "source": "buff163"
+    },
+    "austin-2025-anubis-souvenir-package": {
+      "price": 2.89,
+      "source": "buff163"
+    },
+    "austin-2025-mirage-souvenir-package": {
+      "price": 2.45,
+      "source": "buff163"
+    },
+    "austin-2025-inferno-souvenir-package": {
+      "price": 2.4,
+      "source": "buff163"
+    },
+    "shanghai-2024-vertigo-souvenir-package": {
+      "price": 2.18,
+      "source": "buff163"
+    },
+    "shanghai-2024-nuke-souvenir-package": {
+      "price": 2.38,
+      "source": "buff163"
+    },
+    "shanghai-2024-ancient-souvenir-package": {
+      "price": 3,
+      "source": "buff163"
+    },
+    "shanghai-2024-dust-ii-souvenir-package": {
+      "price": 2.84,
+      "source": "buff163"
+    },
+    "shanghai-2024-anubis-souvenir-package": {
+      "price": 4.21,
+      "source": "buff163"
+    },
+    "shanghai-2024-mirage-souvenir-package": {
+      "price": 2.89,
+      "source": "buff163"
+    },
+    "shanghai-2024-inferno-souvenir-package": {
+      "price": 2.87,
+      "source": "buff163"
+    },
+    "copenhagen-2024-vertigo-souvenir-package": {
+      "price": 3.2,
+      "source": "buff163"
+    },
+    "copenhagen-2024-nuke-souvenir-package": {
+      "price": 3.05,
+      "source": "buff163"
+    },
+    "copenhagen-2024-ancient-souvenir-package": {
+      "price": 3.19,
+      "source": "buff163"
+    },
+    "copenhagen-2024-overpass-souvenir-package": {
+      "price": 1.88,
+      "source": "buff163"
+    },
+    "copenhagen-2024-anubis-souvenir-package": {
+      "price": 3.48,
+      "source": "buff163"
+    },
+    "copenhagen-2024-mirage-souvenir-package": {
+      "price": 2.81,
+      "source": "buff163"
+    },
+    "copenhagen-2024-inferno-souvenir-package": {
+      "price": 2.48,
+      "source": "buff163"
+    },
+    "paris-2023-vertigo-souvenir-package": {
+      "price": 1.93,
+      "source": "buff163"
+    },
+    "paris-2023-nuke-souvenir-package": {
+      "price": 2.16,
+      "source": "buff163"
+    },
+    "paris-2023-ancient-souvenir-package": {
+      "price": 2.38,
+      "source": "buff163"
+    },
+    "paris-2023-overpass-souvenir-package": {
+      "price": 1.86,
+      "source": "buff163"
+    },
+    "paris-2023-anubis-souvenir-package": {
+      "price": 1.94,
+      "source": "buff163"
+    },
+    "paris-2023-mirage-souvenir-package": {
+      "price": 2.25,
+      "source": "buff163"
+    },
+    "paris-2023-inferno-souvenir-package": {
+      "price": 1.89,
+      "source": "buff163"
+    },
+    "rio-2022-vertigo-souvenir-package": {
+      "price": 5.66,
+      "source": "buff163"
+    },
+    "rio-2022-nuke-souvenir-package": {
+      "price": 5.79,
+      "source": "buff163"
+    },
+    "rio-2022-ancient-souvenir-package": {
+      "price": 3.55,
+      "source": "buff163"
+    },
+    "rio-2022-overpass-souvenir-package": {
+      "price": 3.56,
+      "source": "buff163"
+    },
+    "rio-2022-dust-ii-souvenir-package": {
+      "price": 2.31,
+      "source": "buff163"
+    },
+    "rio-2022-mirage-souvenir-package": {
+      "price": 3.1,
+      "source": "buff163"
+    },
+    "rio-2022-inferno-souvenir-package": {
+      "price": 5,
+      "source": "buff163"
+    },
+    "antwerp-2022-vertigo-souvenir-package": {
+      "price": 4.23,
+      "source": "buff163"
+    },
+    "antwerp-2022-nuke-souvenir-package": {
+      "price": 2.76,
+      "source": "buff163"
+    },
+    "antwerp-2022-ancient-souvenir-package": {
+      "price": 4.13,
+      "source": "buff163"
+    },
+    "antwerp-2022-overpass-souvenir-package": {
+      "price": 3.48,
+      "source": "buff163"
+    },
+    "antwerp-2022-dust-ii-souvenir-package": {
+      "price": 4.73,
+      "source": "buff163"
+    },
+    "antwerp-2022-mirage-souvenir-package": {
+      "price": 3.18,
+      "source": "buff163"
+    },
+    "antwerp-2022-inferno-souvenir-package": {
+      "price": 2.9,
+      "source": "buff163"
+    },
+    "stockholm-2021-vertigo-souvenir-package": {
+      "price": 3.9,
+      "source": "buff163"
+    },
+    "stockholm-2021-nuke-souvenir-package": {
+      "price": 3.75,
+      "source": "buff163"
+    },
+    "stockholm-2021-ancient-souvenir-package": {
+      "price": 3.32,
+      "source": "buff163"
+    },
+    "stockholm-2021-overpass-souvenir-package": {
+      "price": 4.84,
+      "source": "buff163"
+    },
+    "stockholm-2021-dust-ii-souvenir-package": {
+      "price": 3.52,
+      "source": "buff163"
+    },
+    "stockholm-2021-mirage-souvenir-package": {
+      "price": 3.09,
+      "source": "buff163"
+    },
+    "stockholm-2021-inferno-souvenir-package": {
+      "price": 3.41,
+      "source": "buff163"
+    },
+    "berlin-2019-vertigo-souvenir-package": {
+      "price": 11.77,
+      "source": "buff163"
+    },
+    "berlin-2019-nuke-souvenir-package": {
+      "price": 10.85,
+      "source": "buff163"
+    },
+    "berlin-2019-train-souvenir-package": {
+      "price": 40.96,
+      "source": "buff163"
+    },
+    "berlin-2019-overpass-souvenir-package": {
+      "price": 9.5,
+      "source": "buff163"
+    },
+    "berlin-2019-dust-ii-souvenir-package": {
+      "price": 18.05,
+      "source": "buff163"
+    },
+    "berlin-2019-mirage-souvenir-package": {
+      "price": 20.3,
+      "source": "buff163"
+    },
+    "berlin-2019-inferno-souvenir-package": {
+      "price": 7.95,
+      "source": "buff163"
+    },
+    "katowice-2019-nuke-souvenir-package": {
+      "price": 11.86,
+      "source": "buff163"
+    },
+    "katowice-2019-train-souvenir-package": {
+      "price": 14.38,
+      "source": "buff163"
+    },
+    "katowice-2019-cache-souvenir-package": {
+      "price": 34.8,
+      "source": "buff163"
+    },
+    "katowice-2019-overpass-souvenir-package": {
+      "price": 15.66,
+      "source": "buff163"
+    },
+    "katowice-2019-dust-ii-souvenir-package": {
+      "price": 43.5,
+      "source": "buff163"
+    },
+    "katowice-2019-mirage-souvenir-package": {
+      "price": 72.5,
+      "source": "buff163"
+    },
+    "katowice-2019-inferno-souvenir-package": {
+      "price": 11.28,
+      "source": "buff163"
+    },
+    "london-2018-nuke-souvenir-package": {
+      "price": 19.99,
+      "source": "buff163"
+    },
+    "london-2018-train-souvenir-package": {
+      "price": 12.87,
+      "source": "buff163"
+    },
+    "london-2018-cache-souvenir-package": {
+      "price": 26.03,
+      "source": "buff163"
+    },
+    "london-2018-overpass-souvenir-package": {
+      "price": 24,
+      "source": "buff163"
+    },
+    "london-2018-dust-ii-souvenir-package": {
+      "price": 12.14,
+      "source": "buff163"
+    },
+    "london-2018-mirage-souvenir-package": {
+      "price": 14.86,
+      "source": "buff163"
+    },
+    "london-2018-inferno-souvenir-package": {
+      "price": 11.54,
+      "source": "buff163"
+    },
+    "boston-2018-nuke-souvenir-package": {
+      "price": 93.52,
+      "source": "buff163"
+    },
+    "boston-2018-train-souvenir-package": {
+      "price": 23.2,
+      "source": "buff163"
+    },
+    "boston-2018-cache-souvenir-package": {
+      "price": 48.29,
+      "source": "buff163"
+    },
+    "boston-2018-overpass-souvenir-package": {
+      "price": 50.75,
+      "source": "buff163"
+    },
+    "boston-2018-cobblestone-souvenir-package": {
+      "price": 1072.88,
+      "source": "buff163"
+    },
+    "boston-2018-mirage-souvenir-package": {
+      "price": 28.71,
+      "source": "buff163"
+    },
+    "boston-2018-inferno-souvenir-package": {
+      "price": 18.56,
+      "source": "buff163"
+    },
+    "krakow-2017-nuke-souvenir-package": {
+      "price": 79.75,
+      "source": "buff163"
+    },
+    "krakow-2017-train-souvenir-package": {
+      "price": 54.96,
+      "source": "buff163"
+    },
+    "krakow-2017-cache-souvenir-package": {
+      "price": 145,
+      "source": "buff163"
+    },
+    "krakow-2017-overpass-souvenir-package": {
+      "price": 95.63,
+      "source": "buff163"
+    },
+    "krakow-2017-cobblestone-souvenir-package": {
+      "price": 1348.38,
+      "source": "buff163"
+    },
+    "krakow-2017-mirage-souvenir-package": {
+      "price": 114.48,
+      "source": "buff163"
+    },
+    "krakow-2017-inferno-souvenir-package": {
+      "price": 29,
+      "source": "buff163"
+    },
+    "atlanta-2017-nuke-souvenir-package": {
+      "price": 57.75,
+      "source": "buff163"
+    },
+    "atlanta-2017-train-souvenir-package": {
+      "price": 95.56,
+      "source": "buff163"
+    },
+    "atlanta-2017-cache-souvenir-package": {
+      "price": 57.71,
+      "source": "buff163"
+    },
+    "atlanta-2017-overpass-souvenir-package": {
+      "price": 40.75,
+      "source": "buff163"
+    },
+    "atlanta-2017-cobblestone-souvenir-package": {
+      "price": 1268.78,
+      "source": "buff163"
+    },
+    "atlanta-2017-mirage-souvenir-package": {
+      "price": 58,
+      "source": "buff163"
+    },
+    "atlanta-2017-dust-ii-souvenir-package": {
+      "price": 41.33,
+      "source": "buff163"
+    },
+    "cologne-2016-nuke-souvenir-package": {
+      "price": 82.62,
+      "source": "buff163"
+    },
+    "cologne-2016-train-souvenir-package": {
+      "price": 38.5,
+      "source": "buff163"
+    },
+    "cologne-2016-cache-souvenir-package": {
+      "price": 116,
+      "source": "buff163"
+    },
+    "cologne-2016-overpass-souvenir-package": {
+      "price": 260.93,
+      "source": "buff163"
+    },
+    "cologne-2016-cobblestone-souvenir-package": {
+      "price": 1387.1,
+      "source": "buff163"
+    },
+    "cologne-2016-mirage-souvenir-package": {
+      "price": 145,
+      "source": "buff163"
+    },
+    "cologne-2016-dust-ii-souvenir-package": {
+      "price": 289.86,
+      "source": "buff163"
+    },
+    "mlg-columbus-2016-nuke-souvenir-package": {
+      "price": 362.51,
+      "source": "buff163"
+    },
+    "mlg-columbus-2016-train-souvenir-package": {
+      "price": 127.49,
+      "source": "steam"
+    },
+    "mlg-columbus-2016-cache-souvenir-package": {
+      "price": 57.86,
+      "source": "buff163"
+    },
+    "mlg-columbus-2016-overpass-souvenir-package": {
+      "price": 289.86,
+      "source": "buff163"
+    },
+    "mlg-columbus-2016-cobblestone-souvenir-package": {
+      "price": 1335.64,
+      "source": "buff163"
+    },
+    "mlg-columbus-2016-inferno-souvenir-package": {
+      "price": 40.37,
+      "source": "buff163"
+    },
+    "mlg-columbus-2016-mirage-souvenir-package": {
+      "price": 125.21,
+      "source": "buff163"
+    },
+    "mlg-columbus-2016-dust-ii-souvenir-package": {
+      "price": 71.5,
+      "source": "buff163"
+    },
+    "dreamhack-cluj-napoca-2015-train-souvenir-package": {
+      "price": 144.71,
+      "source": "buff163"
+    },
+    "dreamhack-cluj-napoca-2015-cache-souvenir-package": {
+      "price": 76.71,
+      "source": "buff163"
+    },
+    "dreamhack-cluj-napoca-2015-overpass-souvenir-package": {
+      "price": 145.68,
+      "source": "buff163"
+    },
+    "dreamhack-cluj-napoca-2015-cobblestone-souvenir-package": {
+      "price": 1428.14,
+      "source": "buff163"
+    },
+    "dreamhack-cluj-napoca-2015-inferno-souvenir-package": {
+      "price": 71.2,
+      "source": "buff163"
+    },
+    "dreamhack-cluj-napoca-2015-mirage-souvenir-package": {
+      "price": 89.9,
+      "source": "buff163"
+    },
+    "dreamhack-cluj-napoca-2015-dust-ii-souvenir-package": {
+      "price": 197.13,
+      "source": "buff163"
+    },
+    "esl-one-cologne-2015-train-souvenir-package": {
+      "price": 116,
+      "source": "buff163"
+    },
+    "esl-one-cologne-2015-cache-souvenir-package": {
+      "price": 145,
+      "source": "buff163"
+    },
+    "esl-one-cologne-2015-overpass-souvenir-package": {
+      "price": 289.86,
+      "source": "buff163"
+    },
+    "esl-one-cologne-2015-cobblestone-souvenir-package": {
+      "price": 1304.59,
+      "source": "buff163"
+    },
+    "esl-one-cologne-2015-inferno-souvenir-package": {
+      "price": 50.68,
+      "source": "buff163"
+    },
+    "esl-one-cologne-2015-mirage-souvenir-package": {
+      "price": 55.1,
+      "source": "buff163"
+    },
+    "esl-one-cologne-2015-dust-ii-souvenir-package": {
+      "price": 37.7,
+      "source": "buff163"
+    },
+    "esl-one-katowice-2015-overpass-souvenir-package": {
+      "price": 724.94,
+      "source": "buff163"
+    },
+    "esl-one-katowice-2015-cobblestone-souvenir-package": {
+      "price": 1332.72,
+      "source": "buff163"
+    },
+    "esl-one-katowice-2015-cache-souvenir-package": {
+      "price": 702.03,
+      "source": "buff163"
+    },
+    "esl-one-katowice-2015-nuke-souvenir-package": {
+      "price": 183.44,
+      "source": "buff163"
+    },
+    "esl-one-katowice-2015-mirage-souvenir-package": {
+      "price": 224.86,
+      "source": "buff163"
+    },
+    "esl-one-katowice-2015-inferno-souvenir-package": {
+      "price": 74.24,
+      "source": "buff163"
+    },
+    "esl-one-katowice-2015-dust-ii-souvenir-package": {
+      "price": 143.41,
+      "source": "buff163"
+    },
+    "dreamhack-2014-overpass-souvenir-package": {
+      "price": 2131.76,
+      "source": "steam"
+    },
+    "dreamhack-2014-cobblestone-souvenir-package": {
+      "price": 6508.8,
+      "source": "skinport"
+    },
+    "dreamhack-2014-cache-souvenir-package": {
+      "price": 1145.13,
+      "source": "steam"
+    },
+    "dreamhack-2014-nuke-souvenir-package": {
+      "price": 797.37,
+      "source": "buff163"
+    },
+    "dreamhack-2014-mirage-souvenir-package": {
+      "price": 2899.92,
+      "source": "buff163"
+    },
+    "dreamhack-2014-inferno-souvenir-package": {
+      "price": 1031.26,
+      "source": "steam"
+    },
+    "dreamhack-2014-dust-ii-souvenir-package": {
+      "price": 841.23,
+      "source": "steam"
+    },
+    "esl-one-cologne-2014-overpass-souvenir-package": {
+      "price": 729.6,
+      "source": "steam"
+    },
+    "esl-one-cologne-2014-cobblestone-souvenir-package": {
+      "price": 7248.85,
+      "source": "buff163"
+    },
+    "esl-one-cologne-2014-cache-souvenir-package": {
+      "price": 4350.09,
+      "source": "buff163"
+    },
+    "esl-one-cologne-2014-nuke-souvenir-package": {
+      "price": 4350.09,
+      "source": "buff163"
+    },
+    "esl-one-cologne-2014-mirage-souvenir-package": {
+      "price": 2899.99,
+      "source": "buff163"
+    },
+    "esl-one-cologne-2014-inferno-souvenir-package": {
+      "price": 853.91,
+      "source": "buff163"
+    },
+    "esl-one-cologne-2014-dust-ii-souvenir-package": {
+      "price": 2175.05,
+      "source": "buff163"
+    },
+    "warhammer-40-000-sticker-capsule": {
+      "price": 0.86,
+      "source": "buff163"
+    },
+    "feral-predators-capsule": {
+      "price": 0.83,
+      "source": "buff163"
+    },
+    "ambush-sticker-capsule": {
+      "price": 0.63,
+      "source": "buff163"
+    },
+    "10-year-birthday-sticker-capsule": {
+      "price": 0.64,
+      "source": "buff163"
+    },
+    "slid3-capsule": {
+      "price": 0.72,
+      "source": "buff163"
+    },
+    "pinups-capsule": {
+      "price": 0.71,
+      "source": "buff163"
+    },
+    "poorly-drawn-capsule": {
+      "price": 0.71,
+      "source": "buff163"
+    },
+    "skill-groups-capsule": {
+      "price": 0.78,
+      "source": "buff163"
+    },
+    "halo-capsule": {
+      "price": 0.75,
+      "source": "buff163"
+    },
+    "half-life-alyx-sticker-capsule": {
+      "price": 0.74,
+      "source": "buff163"
+    },
+    "x-ray-p250-package": {
+      "price": 1.57,
+      "source": "buff163"
+    },
+    "cs20-sticker-capsule": {
+      "price": 0.68,
+      "source": "buff163"
+    },
+    "bestiary-capsule": {
+      "price": 0.77,
+      "source": "buff163"
+    },
+    "chicken-capsule": {
+      "price": 0.76,
+      "source": "buff163"
+    },
+    "perfect-world-sticker-capsule-1": {
+      "price": 0.78,
+      "source": "buff163"
+    },
+    "perfect-world-sticker-capsule-2": {
+      "price": 0.86,
+      "source": "buff163"
+    },
+    "enfu-sticker-capsule": {
+      "price": 0.84,
+      "source": "buff163"
+    },
+    "sugarface-capsule": {
+      "price": 0.79,
+      "source": "buff163"
+    },
+    "team-roles-capsule": {
+      "price": 0.72,
+      "source": "buff163"
+    },
+    "community-sticker-capsule-1": {
+      "price": 3.03,
+      "source": "buff163"
+    },
+    "sticker-capsule-2": {
+      "price": 11.56,
+      "source": "buff163"
+    },
+    "budapest-2025-contenders-sticker-capsule": {
+      "price": 0.2,
+      "source": "buff163"
+    },
+    "budapest-2025-challengers-sticker-capsule": {
+      "price": 0.21,
+      "source": "buff163"
+    },
+    "budapest-2025-legends-sticker-capsule": {
+      "price": 0.21,
+      "source": "buff163"
+    },
+    "austin-2025-contenders-sticker-capsule": {
+      "price": 0.35,
+      "source": "buff163"
+    },
+    "austin-2025-challengers-sticker-capsule": {
+      "price": 0.26,
+      "source": "buff163"
+    },
+    "austin-2025-legends-sticker-capsule": {
+      "price": 0.22,
+      "source": "buff163"
+    },
+    "shanghai-2024-contenders-sticker-capsule": {
+      "price": 1,
+      "source": "buff163"
+    },
+    "shanghai-2024-challengers-sticker-capsule": {
+      "price": 0.56,
+      "source": "buff163"
+    },
+    "shanghai-2024-legends-sticker-capsule": {
+      "price": 0.93,
+      "source": "buff163"
+    },
+    "copenhagen-2024-contenders-sticker-capsule": {
+      "price": 0.52,
+      "source": "buff163"
+    },
+    "copenhagen-2024-challengers-sticker-capsule": {
+      "price": 0.68,
+      "source": "buff163"
+    },
+    "copenhagen-2024-legends-sticker-capsule": {
+      "price": 0.44,
+      "source": "buff163"
+    },
+    "paris-2023-contenders-sticker-capsule": {
+      "price": 0.08,
+      "source": "buff163"
+    },
+    "paris-2023-challengers-sticker-capsule": {
+      "price": 0.08,
+      "source": "buff163"
+    },
+    "paris-2023-legends-sticker-capsule": {
+      "price": 0.09,
+      "source": "buff163"
+    },
+    "rio-2022-contenders-sticker-capsule": {
+      "price": 0.2,
+      "source": "buff163"
+    },
+    "rio-2022-challengers-sticker-capsule": {
+      "price": 0.2,
+      "source": "buff163"
+    },
+    "rio-2022-legends-sticker-capsule": {
+      "price": 0.2,
+      "source": "buff163"
+    },
+    "antwerp-2022-contenders-sticker-capsule": {
+      "price": 0.54,
+      "source": "buff163"
+    },
+    "antwerp-2022-challengers-sticker-capsule": {
+      "price": 0.3,
+      "source": "buff163"
+    },
+    "antwerp-2022-legends-sticker-capsule": {
+      "price": 0.48,
+      "source": "buff163"
+    },
+    "masterminds-2-music-kit-box": {
+      "price": 3.76,
+      "source": "buff163"
+    },
+    "masterminds-music-kit-box": {
+      "price": 3.99,
+      "source": "buff163"
+    },
+    "initiators-music-kit-box": {
+      "price": 4.35,
+      "source": "buff163"
+    },
+    "nightmode-music-kit-box": {
+      "price": 4.32,
+      "source": "buff163"
+    },
+    "tacticians-music-kit-box": {
+      "price": 3.91,
+      "source": "buff163"
+    },
+    "deluge-music-kit-box": {
+      "price": 4,
+      "source": "buff163"
+    }
+  }
 }
