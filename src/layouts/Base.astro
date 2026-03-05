@@ -437,8 +437,9 @@ const eliteRanks = allRanks.filter(r => ['Distinguished', 'Legendary', 'Supreme'
 </div>
 <button class="sw-spin-btn" id="swSpinBtn">Spin</button>
 <div class="sw-result" id="swResult"></div>
-<a href="https://csgoluck.com/r/WIKIPEDIA" class="sw-cta" target="_blank" rel="noopener nofollow" id="swCta">Claim Bonus &rarr;</a>
+<a href="https://csgoluck.com/r/WIKIPEDIA" class="sw-cta sw-cta-hidden" target="_blank" rel="noopener nofollow" id="swCta">Claim Bonus &rarr;</a>
 </div>
+<div class="sw-confetti-overlay" id="swConfettiOverlay"></div>
 
 <main>
 <slot />
@@ -718,8 +719,10 @@ html.light-mode ::-webkit-scrollbar-thumb{background:var(--border)}
 .sw-spin-btn:disabled{opacity:.5;cursor:default;transform:none}
 .sw-result{text-align:center;font-size:.78rem;font-weight:700;color:#ffd700;min-height:0;overflow:hidden;transition:all .3s;line-height:1.3;position:relative}
 .sw-result:empty{min-height:0;padding:0}
-.sw-confetti{position:absolute;width:6px;height:6px;border-radius:50%;opacity:0;animation:sw-fall linear forwards;pointer-events:none;z-index:5}
-@keyframes sw-fall{0%{opacity:1;transform:translateY(0) rotate(0)}100%{opacity:0;transform:translateY(200px) rotate(720deg)}}
+.sw-cta-hidden{display:none}
+.sw-confetti-overlay{position:fixed;inset:0;pointer-events:none;z-index:9999;overflow:hidden}
+.sw-confetti{position:absolute;width:10px;height:10px;border-radius:2px;opacity:0;animation:sw-fall linear forwards;pointer-events:none}
+@keyframes sw-fall{0%{opacity:1;transform:translateY(0) rotate(0) scale(1)}60%{opacity:1}100%{opacity:0;transform:translateY(100vh) rotate(1080deg) scale(.5)}}
 .sw-bonus{background:linear-gradient(135deg,rgba(255,215,0,.1),rgba(255,170,0,.05));border:1px solid rgba(255,215,0,.3);border-radius:6px;padding:.6rem;text-align:center}
 .sw-bonus-title{font-size:.82rem;font-weight:800;color:#ffd700;text-transform:uppercase;letter-spacing:.03em;margin-bottom:.2rem}
 .sw-bonus-desc{font-size:.68rem;color:var(--text2);margin-bottom:0}
@@ -912,22 +915,27 @@ document.addEventListener('DOMContentLoaded',function(){
   // Easing — steep deceleration at end
   function easeOutQuint(t) { return 1 - Math.pow(1 - t, 5); }
 
-  // Confetti
-  function popConfetti(container) {
-    var colors = ['#ffd700','#ffaa00','#2ecc71','#fff','#e4ae39','#eb4b4b','#4b69ff'];
-    for (var i = 0; i < 40; i++) {
+  // Full-page confetti
+  var confettiOverlay = document.getElementById('swConfettiOverlay');
+  function popConfetti() {
+    if (!confettiOverlay) return;
+    var colors = ['#ffd700','#ffaa00','#2ecc71','#fff','#e4ae39','#eb4b4b','#4b69ff','#d32ce6','#ff6b6b'];
+    for (var i = 0; i < 80; i++) {
       var c = document.createElement('div');
       c.className = 'sw-confetti';
       c.style.left = Math.random() * 100 + '%';
-      c.style.top = '0';
+      c.style.top = '-10px';
+      c.style.width = (6 + Math.random() * 8) + 'px';
+      c.style.height = (4 + Math.random() * 6) + 'px';
+      c.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
       c.style.background = colors[Math.floor(Math.random() * colors.length)];
-      c.style.animationDelay = (Math.random() * 0.4) + 's';
-      c.style.animationDuration = (1.2 + Math.random() * 1) + 's';
-      container.appendChild(c);
+      c.style.animationDelay = (Math.random() * 0.8) + 's';
+      c.style.animationDuration = (2 + Math.random() * 2) + 's';
+      confettiOverlay.appendChild(c);
     }
     setTimeout(function() {
-      container.querySelectorAll('.sw-confetti').forEach(function(el) { el.remove(); });
-    }, 3000);
+      confettiOverlay.innerHTML = '';
+    }, 5000);
   }
 
   // Spin — always lands on gold
@@ -960,8 +968,8 @@ document.addEventListener('DOMContentLoaded',function(){
     spinning = false;
     swSpinBtn.style.display = 'none';
 
-    // Confetti
-    popConfetti(widget);
+    // Full-page confetti
+    popConfetti();
 
     // Show bonus result
     swResult.innerHTML =
@@ -970,7 +978,8 @@ document.addEventListener('DOMContentLoaded',function(){
         '<div class="sw-bonus-desc">100% up to 100 Coins + 5 Free Cases</div>' +
       '</div>';
 
-    // Update CTA
+    // Reveal the CTA button
+    swCta.classList.remove('sw-cta-hidden');
     swCta.textContent = 'Claim Your Bonus \u2192';
     swCta.style.background = 'linear-gradient(135deg,#ffd700,#ffaa00)';
     swCta.style.color = '#000';

@@ -3,12 +3,12 @@ import Base from '../layouts/Base.astro';
 import ExploreMore from '../components/ExploreMore.astro';
 import { faqSchema, breadcrumbSchema } from '../lib/weapons';
 
-const title = 'CSGOLuck Promo Code 2026: WIKIPEDIA — Free Bonus | CSGOLuck Wiki';
-const description = 'Use CSGOLuck promo code WIKIPEDIA in 2026 for a 100% deposit bonus up to 100 coins plus 5 free cases. Verified & working March 2026.';
+const title = 'CSGOLuck Promo Code: WIKIPEDIA — Free Bonus | CSGOLuck Wiki';
+const description = 'Use CSGOLuck promo code WIKIPEDIA for a 100% deposit bonus up to 100 coins plus 5 free cases. Verified & working March 2026.';
 
 const breadcrumbs = [
   { name: 'Home', url: '/' },
-  { name: 'CSGOLuck Promo Code 2026' },
+  { name: 'CSGOLuck Promo Code' },
 ];
 
 const faqs = [
@@ -76,11 +76,11 @@ const articleSchema = JSON.stringify({
     <nav class="cpc-breadcrumb">
       <a href="/">Home</a>
       <span class="cpc-sep">/</span>
-      <span>CSGOLuck Promo Code 2026</span>
+      <span>CSGOLuck Promo Code</span>
     </nav>
 
     <header class="cpc-header">
-      <h1>CSGOLuck Promo Code 2026</h1>
+      <h1>CSGOLuck Promo Code</h1>
       <p class="cpc-subtitle">Verified working code for March 2026 — claim your free bonus today</p>
     </header>
 
@@ -89,8 +89,11 @@ const articleSchema = JSON.stringify({
       <div class="cpc-promo-badge">Active & Verified — March 2026</div>
       <div class="cpc-promo-code-row">
         <span class="cpc-promo-label">Promo Code:</span>
-        <span class="cpc-promo-code" id="promoCode">WIKIPEDIA</span>
-        <button class="cpc-copy-btn" id="copyBtn" title="Copy code">Copy</button>
+        <div class="cpc-reveal-wrap" id="revealWrap">
+          <span class="cpc-promo-code cpc-code-hidden" id="promoCode">WIKIPEDIA</span>
+          <button class="cpc-reveal-btn" id="revealBtn">Click to Reveal Code</button>
+        </div>
+        <button class="cpc-copy-btn cpc-copy-hidden" id="copyBtn" title="Copy code">Copy</button>
       </div>
       <div class="cpc-promo-reward">
         <div class="cpc-reward-item">
@@ -228,9 +231,15 @@ const articleSchema = JSON.stringify({
 .cpc-promo-badge{display:inline-block;font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#fff;background:var(--accent);padding:.3rem .8rem;border-radius:4px;margin-bottom:1.25rem}
 .cpc-promo-code-row{display:flex;align-items:center;justify-content:center;gap:.75rem;margin-bottom:1.5rem;flex-wrap:wrap}
 .cpc-promo-label{font-size:.9rem;font-weight:600;color:var(--text2)}
-.cpc-promo-code{font-size:2rem;font-weight:900;color:var(--accent);letter-spacing:.08em;font-family:'Montserrat',sans-serif;background:var(--bg);border:2px dashed var(--accent);padding:.5rem 1.5rem;border-radius:6px;user-select:all}
+.cpc-reveal-wrap{position:relative;display:inline-block}
+.cpc-promo-code{font-size:2rem;font-weight:900;color:var(--accent);letter-spacing:.08em;font-family:'Montserrat',sans-serif;background:var(--bg);border:2px dashed var(--accent);padding:.5rem 1.5rem;border-radius:6px;user-select:all;transition:filter .4s,opacity .4s}
+.cpc-code-hidden{filter:blur(12px);user-select:none;pointer-events:none}
+.cpc-reveal-btn{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,rgba(46,204,113,.9),rgba(39,174,96,.95));color:#fff;font-size:.95rem;font-weight:800;text-transform:uppercase;letter-spacing:.06em;border:2px dashed rgba(255,255,255,.35);border-radius:6px;cursor:pointer;font-family:inherit;transition:all .2s;z-index:2;box-shadow:0 4px 20px rgba(46,204,113,.4)}
+.cpc-reveal-btn:hover{transform:scale(1.03);box-shadow:0 6px 25px rgba(46,204,113,.55)}
+.cpc-reveal-btn.cpc-revealed{display:none}
 .cpc-copy-btn{background:linear-gradient(135deg,#2ecc71,#27ae60);color:#fff;border:none;padding:.5rem 1.25rem;border-radius:4px;font-size:.82rem;font-weight:700;cursor:pointer;font-family:inherit;transition:all .2s;box-shadow:0 4px 15px rgba(46,204,113,.3)}
 .cpc-copy-btn:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(46,204,113,.4)}
+.cpc-copy-hidden{opacity:0;pointer-events:none;transition:opacity .3s}
 .cpc-promo-reward{display:flex;align-items:center;justify-content:center;gap:1.5rem;margin-bottom:1.5rem;flex-wrap:wrap}
 .cpc-reward-item{text-align:center}
 .cpc-reward-val{display:block;font-size:1.8rem;font-weight:800;color:var(--accent);line-height:1.2}
@@ -302,6 +311,7 @@ strong{color:var(--text)}
 @media(max-width:600px){
   .cpc-header h1{font-size:1.6rem}
   .cpc-promo-code{font-size:1.4rem;padding:.4rem 1rem}
+  .cpc-reveal-btn{font-size:.78rem}
   .cpc-promo-box{padding:1.25rem}
   .cpc-reward-val{font-size:1.4rem}
   .cpc-claim-btn{font-size:.88rem;padding:.7rem 1.8rem}
@@ -313,15 +323,27 @@ strong{color:var(--text)}
 
 <script is:inline>
 (function(){
-  var btn = document.getElementById('copyBtn');
+  var revealBtn = document.getElementById('revealBtn');
+  var copyBtn = document.getElementById('copyBtn');
   var code = document.getElementById('promoCode');
-  if (!btn || !code) return;
-  btn.addEventListener('click', function() {
+  if (!revealBtn || !copyBtn || !code) return;
+
+  /* Reveal the code on click */
+  revealBtn.addEventListener('click', function() {
+    code.classList.remove('cpc-code-hidden');
+    revealBtn.classList.add('cpc-revealed');
+    copyBtn.classList.remove('cpc-copy-hidden');
+    copyBtn.style.opacity = '1';
+    copyBtn.style.pointerEvents = 'auto';
+  });
+
+  /* Copy to clipboard */
+  copyBtn.addEventListener('click', function() {
     var text = code.textContent.trim();
     if (navigator.clipboard && navigator.clipboard.writeText) {
       navigator.clipboard.writeText(text).then(function() {
-        btn.textContent = 'Copied!';
-        setTimeout(function() { btn.textContent = 'Copy'; }, 2000);
+        copyBtn.textContent = 'Copied!';
+        setTimeout(function() { copyBtn.textContent = 'Copy'; }, 2000);
       });
     } else {
       var range = document.createRange();
@@ -331,8 +353,8 @@ strong{color:var(--text)}
       sel.addRange(range);
       try {
         document.execCommand('copy');
-        btn.textContent = 'Copied!';
-        setTimeout(function() { btn.textContent = 'Copy'; }, 2000);
+        copyBtn.textContent = 'Copied!';
+        setTimeout(function() { copyBtn.textContent = 'Copy'; }, 2000);
       } catch(e) {}
       sel.removeAllRanges();
     }
