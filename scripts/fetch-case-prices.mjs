@@ -113,7 +113,11 @@ for (const { t, maps } of SOUVENIR_TOURNAMENTS) {
 
 // ── Sticker capsule market names ──────────────────────────────────────────────
 const STICKER_CAPSULE_NAMES = [
-  'Warhammer 40,000 Sticker Capsule', 'Warhammer 40,000 Sticker Capsule 2',
+  'Warhammer 40,000 Sticker Capsule',
+  'Warhammer 40,000 Traitor Astartes Sticker Capsule',
+  'Warhammer 40,000 Adeptus Astartes Sticker Capsule',
+  'Warhammer 40,000 Imperium Sticker Capsule',
+  'Warhammer 40,000 Xenos Sticker Capsule',
   'Craft Sticker Capsule', 'Elemental Craft Sticker Capsule',
   'Feral Predators Capsule', 'Boardroom Sticker Capsule',
   'High Noon Capsule', 'Sans Titre Capsule', 'Ambush Sticker Capsule',
@@ -153,6 +157,49 @@ for (const { t, tiers } of STICKER_TOURNAMENT_TIERS) {
     const name = `${t} ${tier} Sticker Capsule`;
     CASE_NAMES[toSlug(name)] = name;
   }
+}
+
+// ── Autograph capsule market names ────────────────────────────────────────────
+const AUTOGRAPH_TOURNAMENT_TIERS = [
+  { t: 'Budapest 2025',   tiers: ['Contenders','Challengers','Legends','Champions'] },
+  { t: 'Austin 2025',     tiers: ['Contenders','Challengers','Legends','Champions'] },
+  { t: 'Shanghai 2024',   tiers: ['Contenders','Challengers','Legends','Champions'] },
+  { t: 'Copenhagen 2024', tiers: ['Contenders','Challengers','Legends','Champions'] },
+  { t: 'Paris 2023',      tiers: ['Contenders','Challengers','Legends','Champions'] },
+  { t: 'Rio 2022',        tiers: ['Contenders','Challengers','Legends','Champions'] },
+  { t: 'Antwerp 2022',    tiers: ['Contenders','Challengers','Legends','Champions'] },
+  { t: 'Stockholm 2021',  tiers: ['Finalists','Champions'] },
+  { t: 'Berlin 2019',     tiers: ['Returning Challengers','Minor Challengers','Legends'] },
+  { t: 'Katowice 2019',   tiers: ['Returning Challengers','Minor Challengers','Legends'] },
+  { t: 'London 2018',     tiers: ['Returning Challengers','Minor Challengers','Legends'] },
+];
+
+for (const { t, tiers } of AUTOGRAPH_TOURNAMENT_TIERS) {
+  for (const tier of tiers) {
+    const name = `${t} ${tier} Autograph Capsule`;
+    CASE_NAMES[toSlug(name)] = name;
+  }
+}
+
+// Team-specific autograph capsules (Boston 2018, Krakow 2017, Atlanta 2017)
+const TEAM_AUTOGRAPH_CAPSULES = [
+  // Boston 2018
+  ...['Astralis','Cloud9','FaZe','fnatic','G2','Gambit','mousesports',
+     "Na'Vi",'NiP','North','QBF','SK','Space Soldiers','TyLoo','Vega','Virtus.pro']
+    .map(team => `Boston 2018 ${team} Autograph Capsule`),
+  // Krakow 2017
+  ...['Astralis','BIG','FaZe','fnatic','G2','Gambit','Immortals','mousesports',
+     "Na'Vi",'NiP','North','SK','Space Soldiers','TyLoo','Virtus.pro','Vega Squadron']
+    .map(team => `Krakow 2017 ${team} Autograph Capsule`),
+  // Atlanta 2017
+  ...['Astralis','Cloud9','FaZe','fnatic','G2','Gambit','Immortals',
+     "Na'Vi",'NiP','SK','TyLoo','Virtus.pro','North','mousesports',
+     'OpTic Gaming','Team Liquid']
+    .map(team => `Atlanta 2017 ${team} Autograph Capsule`),
+];
+
+for (const name of TEAM_AUTOGRAPH_CAPSULES) {
+  CASE_NAMES[toSlug(name)] = name;
 }
 
 // ── Music Kit Box market names ────────────────────────────────────────────────
@@ -261,6 +308,16 @@ function extractPrice(item) {
   return { price: Math.round(bestPrice * 100) / 100, source: bestSource, providers };
 }
 
+// ── Image helpers ────────────────────────────────────────────────────────────
+const STEAM_CDN = 'https://community.steamstatic.com/economy/image';
+
+function resolveImageUrl(imgPath) {
+  if (!imgPath) return null;
+  if (typeof imgPath === 'string' && imgPath.startsWith('http')) return imgPath;
+  if (typeof imgPath === 'string' && imgPath.startsWith('-')) return `${STEAM_CDN}/${imgPath}`;
+  return null;
+}
+
 // ── Main ─────────────────────────────────────────────────────────────────────
 async function main() {
   console.log('📦 Fetching case container prices from PriceEmpire...\n');
@@ -320,26 +377,118 @@ async function main() {
   }
   console.log(`📊 Normalized ${priceMap.size} items in price map`);
 
-  // Extract prices for our cases
+  // ── Fetch images ──────────────────────────────────────────────────────────
+  console.log('\n🖼️  Fetching container images from PriceEmpire...');
+  const imageMap = new Map();
+  try {
+    const imgUrl = `https://api.pricempire.com/v4/paid/items/images?app_id=730&api_key=${API_KEY}`;
+    const imgRes = await fetchWithRetry(imgUrl);
+    if (imgRes && imgRes.ok) {
+      const imgData = await imgRes.json();
+      const imgSource = imgData?.images || imgData;
+      if (imgSource && typeof imgSource === 'object') {
+        for (const [name, imgVal] of Object.entries(imgSource)) {
+          let imgUrlResolved = null;
+          if (typeof imgVal === 'string' && imgVal.length > 5) {
+            imgUrlResolved = resolveImageUrl(imgVal);
+          } else if (imgVal && typeof imgVal === 'object') {
+            const cdnPath = imgVal.steam || imgVal.cdn || null;
+            if (cdnPath) imgUrlResolved = resolveImageUrl(cdnPath);
+          }
+          if (imgUrlResolved) imageMap.set(name, imgUrlResolved);
+        }
+        console.log(`✅ Got ${imageMap.size} image entries`);
+      }
+    } else {
+      console.log(`   ⚠️ Image fetch failed (${imgRes?.status}), continuing without images`);
+    }
+  } catch (err) {
+    console.log(`   ⚠️ Image fetch error: ${err.message}, continuing without images`);
+  }
+
+  // ── Build normalized lookup for fuzzy matching ────────────────────────────
+  function normalize(name) {
+    return name.toLowerCase()
+      .replace(/[™®:;,.'\-–—]/g, '')
+      .replace(/\s+/g, ' ')
+      .trim();
+  }
+
+  const normalizedPriceMap = new Map();
+  const normalizedImageMap = new Map();
+  for (const [name, item] of priceMap.entries()) {
+    normalizedPriceMap.set(normalize(name), { name, item });
+  }
+  for (const [name, url] of imageMap.entries()) {
+    normalizedImageMap.set(normalize(name), url);
+  }
+
+  // ── Extract prices & images for our cases ────────────────────────────────
   const cases = {};
   let found = 0;
   let missing = 0;
+  let imagesFound = 0;
 
   for (const [id, marketName] of Object.entries(CASE_NAMES)) {
-    const item = priceMap.get(marketName);
+    // Try exact match first, then normalized/fuzzy match
+    let item = priceMap.get(marketName);
+    let image = imageMap.get(marketName) || null;
+
+    if (!item || !image) {
+      const normName = normalize(marketName);
+      if (!item) {
+        const fuzzy = normalizedPriceMap.get(normName);
+        if (fuzzy) {
+          item = fuzzy.item;
+          console.log(`   🔍 Fuzzy matched "${marketName}" → "${fuzzy.name}"`);
+        }
+      }
+      if (!image) {
+        const fuzzyImg = normalizedImageMap.get(normName);
+        if (fuzzyImg) image = fuzzyImg;
+      }
+    }
+
     if (item) {
       const { price, source, providers } = extractPrice(item);
       if (price > 0) {
         cases[id] = { price, source };
+        if (image) { cases[id].image = image; imagesFound++; }
         found++;
-        console.log(`   ✅ ${marketName}: $${price.toFixed(2)} (${source})`);
+        console.log(`   ✅ ${marketName}: $${price.toFixed(2)} (${source})${image ? ' 🖼️' : ''}`);
       } else {
+        if (image) { cases[id] = { price: 0, source: 'none', image }; imagesFound++; }
         missing++;
-        console.log(`   ⚠️ ${marketName}: no price data`);
+        console.log(`   ⚠️ ${marketName}: no price data${image ? ' (has image)' : ''}`);
       }
     } else {
+      if (image) { cases[id] = { price: 0, source: 'none', image }; imagesFound++; }
       missing++;
-      console.log(`   ❌ ${marketName}: not found in API response`);
+      console.log(`   ❌ ${marketName}: not found in API response${image ? ' (has image)' : ''}`);
+    }
+  }
+
+  // ── Search for unmatched capsules in API data ────────────────────────────
+  const missingNames = Object.entries(CASE_NAMES)
+    .filter(([id]) => !cases[id] || !cases[id].price)
+    .map(([, name]) => name);
+
+  if (missingNames.length > 0) {
+    console.log(`\n🔍 Searching API data for ${missingNames.length} unmatched items...`);
+    const capsuleKeywords = ['capsule', 'music kit', 'sticker', 'autograph', 'souvenir', 'package'];
+    const apiCapsules = [...priceMap.keys()].filter(name =>
+      capsuleKeywords.some(kw => name.toLowerCase().includes(kw))
+    );
+
+    for (const missingName of missingNames.slice(0, 10)) {
+      const words = missingName.toLowerCase().split(/\s+/).filter(w => w.length > 2);
+      const candidates = apiCapsules.filter(apiName => {
+        const lower = apiName.toLowerCase();
+        return words.filter(w => lower.includes(w)).length >= Math.ceil(words.length * 0.6);
+      });
+      if (candidates.length > 0 && candidates.length <= 5) {
+        console.log(`   "${missingName}" → possible matches: ${candidates.join(', ')}`);
+      }
     }
   }
 
@@ -350,7 +499,7 @@ async function main() {
   };
 
   writeFileSync(OUTPUT_PATH, JSON.stringify(output, null, 2));
-  console.log(`\n✅ Done! ${found} cases with prices, ${missing} missing → ${OUTPUT_PATH}`);
+  console.log(`\n✅ Done! ${found} priced, ${imagesFound} with images, ${missing} missing → ${OUTPUT_PATH}`);
 }
 
 main().catch(err => {

@@ -9,6 +9,19 @@ import { getSouvenirPackages, getSouvenirTournaments, STICKER_CAPSULES, AUTOGRAP
 
 const casePrices = (casePricesData as any).cases || {};
 
+// Slug helper — must match the toSlug() in fetch-case-prices.mjs
+function toSlug(name: string): string {
+  return name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+}
+
+// Look up container price/image by name (slugified market name) or by id
+function getContainerData(id: string, name: string): { price: number; image: string | null } {
+  const byId = casePrices[id];
+  const byName = casePrices[toSlug(name)];
+  const data = byId || byName;
+  return { price: data?.price || 0, image: data?.image || null };
+}
+
 interface CaseItem {
   id: string;
   name: string;
@@ -167,17 +180,26 @@ const totalContainers = cases.length + souvenirPackages.length + stickerCapsules
         <div class="ch-tournament-group">
           <h3 class="ch-tournament-title">{tournament}</h3>
           <div class="ch-grid">
-            {pkgs.map((pkg) => (
-              <div class="ch-card ch-card-souvenir">
-                <div class="ch-card-img ch-card-img-souvenir">
-                  <span class="ch-card-map-label">{pkg.map}</span>
+            {pkgs.map((pkg) => {
+              const priceData = getContainerData(pkg.id, pkg.name);
+              const { price, image } = priceData;
+              return (
+                <div class="ch-card ch-card-souvenir">
+                  <div class={`ch-card-img ch-card-img-souvenir${image ? ' ch-has-img' : ''}`}>
+                    {image ? (
+                      <img src={image} alt={pkg.name} loading="lazy" class="ch-card-container-img" />
+                    ) : (
+                      <span class="ch-card-map-label">{pkg.map}</span>
+                    )}
+                  </div>
+                  <div class="ch-card-body">
+                    <span class="ch-card-name">{pkg.name}</span>
+                    <span class="ch-card-year">{pkg.year} &middot; {pkg.collection}</span>
+                    {price > 0 && <span class="ch-card-price">${price.toFixed(2)}</span>}
+                  </div>
                 </div>
-                <div class="ch-card-body">
-                  <span class="ch-card-name">{pkg.name}</span>
-                  <span class="ch-card-year">{pkg.year} &middot; {pkg.collection}</span>
-                </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       );
@@ -186,53 +208,80 @@ const totalContainers = cases.length + souvenirPackages.length + stickerCapsules
 
   <!-- Sticker Capsules Grid -->
   <div id="ch-stickers-section" class="ch-grid" style="display:none;">
-    {stickerCapsules.map((cap) => (
-      <div class="ch-card ch-card-sticker">
-        <div class="ch-card-img ch-card-img-capsule">
-          <span class="ch-card-cap-icon">S</span>
+    {stickerCapsules.map((cap) => {
+      const priceData = getContainerData(cap.id, cap.name);
+      const { price, image } = priceData;
+      return (
+        <div class="ch-card ch-card-sticker">
+          <div class={`ch-card-img ch-card-img-capsule${image ? ' ch-has-img' : ''}`}>
+            {image ? (
+              <img src={image} alt={cap.name} loading="lazy" class="ch-card-container-img" />
+            ) : (
+              <span class="ch-card-cap-icon">S</span>
+            )}
+          </div>
+          <div class="ch-card-body">
+            <span class="ch-card-name">{cap.name}</span>
+            {cap.tournament && <span class="ch-card-year">{cap.tournament}</span>}
+            {!cap.tournament && cap.year && <span class="ch-card-year">{cap.year}</span>}
+            {price > 0 && <span class="ch-card-price">${price.toFixed(2)}</span>}
+          </div>
         </div>
-        <div class="ch-card-body">
-          <span class="ch-card-name">{cap.name}</span>
-          {cap.tournament && <span class="ch-card-year">{cap.tournament}</span>}
-          {!cap.tournament && cap.year && <span class="ch-card-year">{cap.year}</span>}
-        </div>
-      </div>
-    ))}
+      );
+    })}
   </div>
 
   <!-- Autograph Capsules Grid -->
   <div id="ch-autographs-section" class="ch-grid" style="display:none;">
-    {autographCapsules.map((cap) => (
-      <div class="ch-card ch-card-autograph">
-        <div class="ch-card-img ch-card-img-capsule">
-          <span class="ch-card-cap-icon">A</span>
+    {autographCapsules.map((cap) => {
+      const priceData = getContainerData(cap.id, cap.name);
+      const { price, image } = priceData;
+      return (
+        <div class="ch-card ch-card-autograph">
+          <div class={`ch-card-img ch-card-img-capsule${image ? ' ch-has-img' : ''}`}>
+            {image ? (
+              <img src={image} alt={cap.name} loading="lazy" class="ch-card-container-img" />
+            ) : (
+              <span class="ch-card-cap-icon">A</span>
+            )}
+          </div>
+          <div class="ch-card-body">
+            <span class="ch-card-name">{cap.name}</span>
+            {cap.tournament && <span class="ch-card-year">{cap.tournament}</span>}
+            {price > 0 && <span class="ch-card-price">${price.toFixed(2)}</span>}
+          </div>
         </div>
-        <div class="ch-card-body">
-          <span class="ch-card-name">{cap.name}</span>
-          {cap.tournament && <span class="ch-card-year">{cap.tournament}</span>}
-        </div>
-      </div>
-    ))}
+      );
+    })}
   </div>
 
   <!-- Music Kit Boxes Grid -->
   <div id="ch-music-section" class="ch-grid" style="display:none;">
-    {musicKitBoxes.map((kit) => (
-      <div class="ch-card ch-card-music">
-        <div class="ch-card-img ch-card-img-capsule">
-          <span class="ch-card-cap-icon">M</span>
+    {musicKitBoxes.map((kit) => {
+      const priceData = getContainerData(kit.id, kit.name);
+      const { price, image } = priceData;
+      return (
+        <div class="ch-card ch-card-music">
+          <div class={`ch-card-img ch-card-img-capsule${image ? ' ch-has-img' : ''}`}>
+            {image ? (
+              <img src={image} alt={kit.name} loading="lazy" class="ch-card-container-img" />
+            ) : (
+              <span class="ch-card-cap-icon">M</span>
+            )}
+          </div>
+          <div class="ch-card-body">
+            <span class="ch-card-name">{kit.name}</span>
+            {price > 0 && <span class="ch-card-price">${price.toFixed(2)}</span>}
+          </div>
         </div>
-        <div class="ch-card-body">
-          <span class="ch-card-name">{kit.name}</span>
-        </div>
-      </div>
-    ))}
+      );
+    })}
   </div>
 
   <!-- Collections Grid -->
   <div id="ch-collections-section" class="ch-grid" style="display:none;">
     {collections.map((coll) => (
-      <a href={`/cs2-maps/${coll.mapName.toLowerCase().replace(/ /g, '-')}/`} class="ch-card">
+      <div class="ch-card">
         <div class="ch-card-img ch-card-img-coll">
           <span class="ch-card-map-label">{coll.mapName}</span>
         </div>
@@ -240,7 +289,7 @@ const totalContainers = cases.length + souvenirPackages.length + stickerCapsules
           <span class="ch-card-name">{coll.name}</span>
           <span class="ch-card-year">{coll.year}</span>
         </div>
-      </a>
+      </div>
     ))}
   </div>
 
@@ -507,6 +556,16 @@ const totalContainers = cases.length + souvenirPackages.length + stickerCapsules
     }
 
     .ch-section-wrap { margin-bottom: 2rem; }
+
+    .ch-card-container-img {
+      max-width: 85%;
+      max-height: 110px;
+      object-fit: contain;
+    }
+
+    .ch-has-img {
+      padding: .5rem;
+    }
 
     .ch-card-map-label {
       font-size: 1.1rem;

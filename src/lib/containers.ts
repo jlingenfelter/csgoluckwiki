@@ -342,7 +342,10 @@ export const STICKER_CAPSULES: OtherContainer[] = [
 
   // Non-tournament community/collab sticker capsules
   { id: 'warhammer-40000-sticker-capsule',    name: 'Warhammer 40,000 Sticker Capsule',     type: 'sticker-capsule', convarsId: 428 },
-  { id: 'warhammer-40000-sticker-capsule-2',  name: 'Warhammer 40,000 Sticker Capsule 2',   type: 'sticker-capsule', convarsId: 429 },
+  { id: 'warhammer-40000-traitor-astartes-sticker-capsule',  name: 'Warhammer 40,000 Traitor Astartes Sticker Capsule',  type: 'sticker-capsule', convarsId: 429 },
+  { id: 'warhammer-40000-adeptus-astartes-sticker-capsule', name: 'Warhammer 40,000 Adeptus Astartes Sticker Capsule', type: 'sticker-capsule' },
+  { id: 'warhammer-40000-imperium-sticker-capsule',         name: 'Warhammer 40,000 Imperium Sticker Capsule',         type: 'sticker-capsule' },
+  { id: 'warhammer-40000-xenos-sticker-capsule',            name: 'Warhammer 40,000 Xenos Sticker Capsule',            type: 'sticker-capsule' },
   { id: 'craft-sticker-capsule',              name: 'Craft Sticker Capsule',                type: 'sticker-capsule', convarsId: 427 },
   { id: 'elemental-craft-sticker-capsule',    name: 'Elemental Craft Sticker Capsule',      type: 'sticker-capsule', convarsId: 453 },
   { id: 'feral-predators-capsule',            name: 'Feral Predators Capsule',              type: 'sticker-capsule', convarsId: 413 },
