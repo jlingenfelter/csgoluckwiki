@@ -293,9 +293,9 @@ const hasMarketData = sticker.liquidity != null || sticker.volume7d != null || s
         {bestProvider && <span class="st-price-source">on {getMarketplaceName(bestProvider)}</span>}
       </div>
 
-      {bestProvider && bestPrice > 0 && (
-        <a href={getMarketplaceUrl(bestProvider)} target="_blank" rel="noopener noreferrer nofollow" class="st-buy-btn">
-          Buy on {getMarketplaceName(bestProvider)}
+      {bestPrice > 0 && (
+        <a href="/go/" rel="nofollow" class="st-buy-btn">
+          Open Cases on CSGOLuck
         </a>
       )}
 
@@ -404,7 +404,6 @@ const hasMarketData = sticker.liquidity != null || sticker.volume7d != null || s
                 {idx === 0 && <span class="st-badge st-badge-best">Best</span>}
                 {diff > 0 && <span class="st-badge st-badge-diff">+{diff}%</span>}
               </div>
-              <a href={getMarketplaceUrl(pk)} target="_blank" rel="noopener noreferrer nofollow" class="st-price-link">Buy</a>
             </div>
           );
         })}

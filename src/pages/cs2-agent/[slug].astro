@@ -48,15 +48,6 @@ const agentListings = sdItem?.count ?? 0;
 const searchTerm = marketHashName.replace(/\s+/g, '+');
 const marketplaces = [
   { name: 'CSGOLuck', color: '#2ecc71', icon: '/images/csgoluck-logo.png', url: '/go/', featured: true },
-  { name: 'Steam Market', color: '#66c0f4', domain: 'store.steampowered.com', url: `https://steamcommunity.com/market/search?appid=730&q=${searchTerm}` },
-  { name: 'Skinport', color: '#00a3ff', domain: 'skinport.com', url: `https://skinport.com/market?search=${searchTerm}`, trustpilot: 4.9 },
-  { name: 'Buff163', color: '#d4956e', domain: 'buff.163.com', url: `https://buff.163.com/market/csgo#tab=selling&page_num=1&search=${searchTerm}` },
-  { name: 'CS.Money', color: '#ffca28', domain: 'cs.money', url: `https://cs.money/market/buy/?search=${searchTerm}`, trustpilot: 4.6 },
-  { name: 'DMarket', color: '#6c5ce7', domain: 'dmarket.com', url: `https://dmarket.com/ingame-items/item-list/csgo-skins?title=${searchTerm}`, trustpilot: 4.0 },
-  { name: 'CSFloat', color: '#1a73e8', domain: 'csfloat.com', url: 'https://csfloat.com/', trustpilot: 4.8 },
-  { name: 'Waxpeer', color: '#ff9800', domain: 'waxpeer.com', url: `https://waxpeer.com/`, trustpilot: 4.0 },
-  { name: 'Tradeit.gg', color: '#4caf50', domain: 'tradeit.gg', url: `https://tradeit.gg/csgo/store?search=${searchTerm}`, trustpilot: 4.8 },
-  { name: 'SkinBaron', color: '#e53935', domain: 'skinbaron.de', url: `https://skinbaron.de/en/csgo?str=${searchTerm}`, trustpilot: 4.4 },
 ];
 
 // Tier descriptions for SEO
@@ -84,7 +75,7 @@ const faqs = [
     question: `How much is the ${agent.name} agent worth in CS2?`,
     answer: agentPrice
       ? `The ${agent.name} | ${agent.faction} agent is currently listed at approximately $${fmtPrice(agentPrice)} on the market${agentListings > 0 ? `, with ${agentListings} active listing${agentListings !== 1 ? 's' : ''}` : ''}. As an ${agent.tier}-tier agent, ${agent.tier === 'Elite' ? 'it commands premium prices due to its rarity' : agent.tier === 'Superior' ? 'it sits in the mid-to-high price range' : agent.tier === 'Exceptional' ? 'it falls in the moderate price bracket' : 'it is generally one of the more affordable agents'}. Prices fluctuate based on supply, demand, and market conditions.`
-      : `The ${agent.name} | ${agent.faction} agent is an ${agent.tier}-tier operative. Check current marketplace listings on Steam Community Market, Skinport, Buff163, or CSFloat for the latest pricing.`,
+      : `The ${agent.name} | ${agent.faction} agent is an ${agent.tier}-tier operative. Check current marketplace listings for the latest pricing.`,
   },
   {
     question: `What tier is the ${agent.name} agent in CS2?`,
@@ -96,7 +87,7 @@ const faqs = [
   },
   {
     question: `How do you get the ${agent.name} agent?`,
-    answer: `The ${agent.name} agent was originally available through Operation ${agent.operation}. Since the operation has ended, this agent can now be acquired through the Steam Community Market or third-party marketplaces like Skinport, Buff163, and CSFloat. Prices vary based on supply and demand.`,
+    answer: `The ${agent.name} agent was originally available through Operation ${agent.operation}. Since the operation has ended, this agent can now be acquired through the Steam Community Market or third-party marketplaces. Prices vary based on supply and demand.`,
   },
   {
     question: `What faction is ${agent.name} from?`,
@@ -332,7 +323,7 @@ const productSchema = JSON.stringify({
       }
     </p>
     <p>
-      To find the best price on the {agent.name} agent, compare listings across multiple marketplaces using the links above. Monitor pricing trends via the <a href="/price-tracker/">Price Tracker</a>, or check the <a href="/market-trends/">Market Trends</a> dashboard for broader market data. Our <a href="/cs2-guides/trading-guide/">Trading Guide</a> covers marketplace best practices for buying and selling CS2 items.
+      To find the best price on the {agent.name} agent, compare listings across multiple marketplaces. Monitor pricing trends via the <a href="/price-tracker/">Price Tracker</a>, or check the <a href="/market-trends/">Market Trends</a> dashboard for broader market data. Our <a href="/cs2-guides/trading-guide/">Trading Guide</a> covers marketplace best practices for buying and selling CS2 items.
     </p>
   </div>
 

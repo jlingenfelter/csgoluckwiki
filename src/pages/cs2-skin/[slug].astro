@@ -878,11 +878,6 @@ const listingDesc = (skin.listingCount ?? 0) > 10000 ? 'widely available with hi
                       </div>
                       <div class="wi-market-right">
                         <span class="wi-market-amount">${fmtPrice(price)}</span>
-                        {mpUrl !== '#' ? (
-                          <a href={mpUrl} target="_blank" rel="nofollow noopener" class="wi-market-buy-link">View</a>
-                        ) : (
-                          <span class="wi-market-buy-link wi-mp-disabled">--</span>
-                        )}
                       </div>
                     </div>
                   );
