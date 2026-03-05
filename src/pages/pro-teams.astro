@@ -223,8 +223,7 @@ const spotlightTeams = [...teamCardsWithRegion]
 <!-- Team Listings: Horizontal Row Cards -->
 <section class="th-listings" id="thGrid">
   {teamCardsWithRegion.map((t, i) => (
-    <a href={`/pro-teams/${t.slug}/`}
-       class={`th-row${i >= 48 ? ' th-paginated' : ''}`}
+    <div class={`th-row${i >= 48 ? ' th-paginated' : ''}`}
        data-name={t.name.toLowerCase()}
        data-players={t.players.length}
        data-edpi={t.avgEdpi}
@@ -232,7 +231,7 @@ const spotlightTeams = [...teamCardsWithRegion]
        data-letter={t.name.charAt(0).toUpperCase()}
        data-idx={i}
        id={i === 0 || teamCardsWithRegion[i - 1]?.name.charAt(0).toUpperCase() !== t.name.charAt(0).toUpperCase() ? `letter-${t.name.charAt(0).toUpperCase()}` : undefined}>
-      <div class="th-row-main">
+      <a href={`/pro-teams/${t.slug}/`} class="th-row-header">
         <div class="th-row-identity">
           <h3 class="th-row-name">{t.name}</h3>
           <div class="th-row-tags">
@@ -240,29 +239,37 @@ const spotlightTeams = [...teamCardsWithRegion]
             <span class="th-row-count">{t.players.length} player{t.players.length !== 1 ? 's' : ''}</span>
           </div>
         </div>
-        <div class="th-row-roster">
-          {t.topNames.map(name => (
-            <span class="th-row-player">{name}</span>
-          ))}
-          {t.players.length > 5 && <span class="th-row-more">+{t.players.length - 5}</span>}
+        <div class="th-row-stats">
+          <div class="th-row-stat">
+            <span class="th-row-sv">{t.avgEdpi}</span>
+            <span class="th-row-sl">eDPI</span>
+          </div>
+          <div class="th-row-stat">
+            <span class="th-row-sv">{t.topRes}</span>
+            <span class="th-row-sl">Resolution</span>
+          </div>
+          <div class="th-row-stat th-row-stat-wide">
+            <span class="th-row-sv">{t.topMouse}</span>
+            <span class="th-row-sl">Mouse</span>
+          </div>
         </div>
+        <span class="th-row-arrow">&rarr;</span>
+      </a>
+      <div class="th-row-roster">
+        {t.players.map(p => (
+          <a href={`/pro-players/${p.slug}/`} class="th-player-card">
+            {p.image
+              ? <img src={p.image} alt={p.name} class="th-player-img" width="48" height="48" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'" />
+              : null}
+            <span class="th-player-ph" style={p.image ? 'display:none' : ''}>{p.name.charAt(0)}</span>
+            <span class="th-player-info">
+              <span class="th-player-name">{p.flag} {p.name}</span>
+              <span class="th-player-edpi">{p.edpi} eDPI</span>
+            </span>
+          </a>
+        ))}
       </div>
-      <div class="th-row-stats">
-        <div class="th-row-stat">
-          <span class="th-row-sv">{t.avgEdpi}</span>
-          <span class="th-row-sl">eDPI</span>
-        </div>
-        <div class="th-row-stat">
-          <span class="th-row-sv">{t.topRes}</span>
-          <span class="th-row-sl">Resolution</span>
-        </div>
-        <div class="th-row-stat th-row-stat-wide">
-          <span class="th-row-sv">{t.topMouse}</span>
-          <span class="th-row-sl">Mouse</span>
-        </div>
-      </div>
-      <span class="th-row-arrow">&rarr;</span>
-    </a>
+    </div>
   ))}
 </section>
 
@@ -446,18 +453,24 @@ const spotlightTeams = [...teamCardsWithRegion]
 
 /* Team Listings: Horizontal Row Cards */
 .th-listings{display:flex;flex-direction:column;gap:.5rem;margin-bottom:1rem}
-.th-row{display:flex;align-items:center;gap:1.25rem;text-decoration:none;color:inherit;background:var(--bg2);border:1px solid var(--border);border-radius:4px;padding:1rem 1.25rem;transition:border-left .15s}
+.th-row{display:flex;flex-direction:column;gap:.75rem;background:var(--bg2);border:1px solid var(--border);border-radius:4px;padding:1rem 1.25rem;transition:border-left .15s}
 .th-row:hover{border-left:3px solid var(--accent)}
 .th-row.hidden{display:none}
-.th-row-main{flex:1;min-width:0;display:flex;align-items:center;gap:1.5rem}
+.th-row-header{display:flex;align-items:center;gap:1.5rem;text-decoration:none;color:inherit;padding-bottom:.5rem;border-bottom:1px solid var(--border)}
+.th-row-header:hover .th-row-name{color:var(--accent)}
 .th-row-identity{min-width:180px;flex-shrink:0}
 .th-row-name{margin:0;font-size:1.1rem;font-weight:800;color:var(--text)}
 .th-row-tags{display:flex;gap:.4rem;margin-top:.3rem}
 .th-row-region{font-size:.68rem;font-weight:600;color:var(--text2);background:var(--bg3);padding:.15rem .4rem;border-radius:4px}
 .th-row-count{font-size:.68rem;font-weight:700;color:#000;background:var(--accent);padding:.15rem .4rem;border-radius:4px}
-.th-row-roster{display:flex;flex-wrap:wrap;gap:.3rem;flex:1;min-width:0}
-.th-row-player{font-size:.75rem;color:var(--text2);background:var(--bg);padding:.15rem .45rem;border-radius:4px;border:1px solid var(--border);white-space:nowrap}
-.th-row-more{font-size:.72rem;color:var(--text2);padding:.15rem .3rem}
+.th-row-roster{display:flex;flex-wrap:wrap;gap:.5rem;flex:1;min-width:0}
+.th-player-card{display:flex;align-items:center;gap:.5rem;background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:.4rem .6rem .4rem .4rem;cursor:pointer;transition:all .2s ease;text-decoration:none;color:inherit}
+.th-player-card:hover{border-color:#2ecc71;box-shadow:0 0 10px rgba(46,204,113,.15);transform:translateY(-1px)}
+.th-player-img{width:36px;height:36px;border-radius:50%;object-fit:cover;flex-shrink:0;background:var(--bg3)}
+.th-player-ph{width:36px;height:36px;border-radius:50%;background:var(--bg3);color:var(--text2);display:flex;align-items:center;justify-content:center;font-size:.85rem;font-weight:700;flex-shrink:0}
+.th-player-info{display:flex;flex-direction:column;min-width:0}
+.th-player-name{font-size:.78rem;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.th-player-edpi{font-size:.65rem;color:var(--text2)}
 .th-row-stats{display:flex;gap:.75rem;flex-shrink:0}
 .th-row-stat{text-align:center;min-width:70px}
 .th-row-stat-wide{min-width:110px}
@@ -510,17 +523,25 @@ const spotlightTeams = [...teamCardsWithRegion]
 @media(max-width:1024px){
   .th-spotlight-grid{grid-template-columns:repeat(2,1fr)}
   .th-analysis-cols{grid-template-columns:1fr}
-  .th-row-roster{display:none}
+  .th-row-header{flex-wrap:wrap;gap:.75rem}
+  .th-row-stats{gap:.5rem}
+  .th-row-stat-wide{display:none}
 }
 @media(max-width:768px){
   .th-hero h1{font-size:1.7rem}
   .th-hero-inner{flex-direction:column;gap:1.25rem}
   .th-hero-metrics{flex-wrap:wrap;gap:1rem}
   .th-spotlight-grid{grid-template-columns:1fr}
-  .th-row{flex-direction:column;align-items:flex-start;gap:.75rem}
-  .th-row-main{flex-direction:column;gap:.5rem;width:100%}
+  .th-row{padding:.75rem}
+  .th-row-header{flex-direction:column;align-items:flex-start;gap:.5rem}
   .th-row-stats{width:100%;justify-content:space-between}
   .th-row-arrow{display:none}
+  .th-row-roster{gap:.4rem}
+  .th-player-card{padding:.3rem .5rem .3rem .3rem}
+  .th-player-img{width:30px;height:30px}
+  .th-player-ph{width:30px;height:30px;font-size:.75rem}
+  .th-player-name{font-size:.72rem}
+  .th-player-edpi{font-size:.6rem}
   .th-controls-row{flex-direction:column}
   .th-search-wrap{width:100%}
   .th-alpha-bar{overflow-x:auto}
