@@ -274,7 +274,7 @@ const faqs = [
       </div>
     </div>
     <button class="hp-reel-spin-btn" id="hpSpinBtn">
-      <img src="/images/csgoluck-logo.png" alt="" class="hp-reel-btn-logo" width="24" height="24" />
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/></svg>
       Open Case
     </button>
   </div>
@@ -611,7 +611,8 @@ html.light-mode .hp-title{color:#000}
 .hp-reel-item-img{width:80px;height:60px;object-fit:contain;filter:drop-shadow(0 2px 4px rgba(0,0,0,.3))}
 .hp-reel-item-name{font-size:.6rem;color:var(--text2);text-align:center;max-width:100px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding:0 4px}
 .hp-reel-item-bar{position:absolute;bottom:0;left:0;right:0;height:4px}
-.hp-reel-btn-logo{height:24px;width:auto;filter:brightness(0) invert(1);flex-shrink:0}
+.hp-reel-gold{background:linear-gradient(180deg,rgba(255,215,0,.15),rgba(255,170,0,.1))}
+.hp-reel-gold-img{width:50px;height:50px;object-fit:contain;filter:drop-shadow(0 2px 8px rgba(255,215,0,.5))}
 .hp-reel-spin-btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;margin-top:12px;padding:12px;background:linear-gradient(135deg,#2ecc71,#27ae60);color:#fff;border:none;border-radius:6px;font-size:.95rem;font-weight:700;cursor:pointer;box-shadow:0 4px 15px rgba(46,204,113,.3);transition:all .2s ease;font-family:inherit}
 .hp-reel-spin-btn:hover{background:linear-gradient(135deg,#27ae60,#219a52);transform:translateY(-2px);box-shadow:0 6px 20px rgba(46,204,113,.45)}
 .hp-reel-spin-btn:disabled{opacity:.5;cursor:not-allowed;transform:none;box-shadow:none}
@@ -811,11 +812,28 @@ html.light-mode .hp-title{color:#000}
     return item;
   }
 
+  function buildGoldItem() {
+    var item = document.createElement('div');
+    item.className = 'hp-reel-item hp-reel-gold';
+    item.innerHTML =
+      '<img src="/images/csgoluck-logo.png" alt="CSGOLuck" class="hp-reel-item-img hp-reel-gold-img" />' +
+      '<span class="hp-reel-item-name">CSGOLuck</span>';
+    var bar = document.createElement('div');
+    bar.className = 'hp-reel-item-bar';
+    bar.style.background = '#ffd700';
+    item.appendChild(bar);
+    return item;
+  }
+
   function buildStrip() {
     strip.innerHTML = '';
     for (var i = 0; i < STRIP_COUNT; i++) {
-      var skin = skins[Math.floor(Math.random() * skins.length)];
-      strip.appendChild(buildReelItem(skin));
+      if (i % 8 === 4) {
+        strip.appendChild(buildGoldItem());
+      } else {
+        var skin = skins[Math.floor(Math.random() * skins.length)];
+        strip.appendChild(buildReelItem(skin));
+      }
     }
     strip.style.transform = 'translateX(0)';
     strip.classList.remove('spinning');
