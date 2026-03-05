@@ -108,7 +108,7 @@ const eliteRanks = allRanks.filter(r => ['Distinguished', 'Legendary', 'Supreme'
 </script>
 </head>
 <body style="background:#0d0e12;color:#ffffff">
-<header>
+<header class="site-header">
 <nav>
 <a href="/" class="logo"><img src="/images/csgoluck-logo.png" alt="CSGOLuck" class="logo-img logo-dark" width="141" height="25" /><img src="/images/csgoluck-logo-light.png" alt="CSGOLuck" class="logo-img logo-light" width="141" height="25" /></a>
 <button class="hamburger" id="hamburgerBtn" aria-label="Toggle menu" aria-expanded="false"><span></span><span></span><span></span></button>
@@ -505,8 +505,8 @@ body{background:var(--bg);color:var(--text);font-family:'Montserrat',sans-serif;
 a{color:var(--accent);text-decoration:none;transition:color .2s,text-shadow .2s}
 a:hover{color:var(--accent2)}
 ::selection{background:rgba(46,204,113,0.25);color:var(--text)}
-header{background:rgba(26,26,36,0.88);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);box-shadow:0 2px 12px rgba(0,0,0,0.3);position:relative;z-index:1000}
-header::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--green),var(--accent2),var(--green));z-index:1001}
+.site-header{background:rgba(26,26,36,0.88);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);box-shadow:0 2px 12px rgba(0,0,0,0.3);position:relative;z-index:1000}
+.site-header::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--green),var(--accent2),var(--green));z-index:1001}
 nav{max-width:1200px;margin:0 auto;padding:.7rem 1.5rem;display:flex;align-items:center;gap:1.5rem;flex-wrap:wrap}
 .logo{display:inline-flex;align-items:center;text-decoration:none;flex-shrink:0}
 .logo-img{height:25px;width:auto;display:block}
