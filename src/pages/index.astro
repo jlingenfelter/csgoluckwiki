@@ -1,11 +1,13 @@
 ---
 import Base from '../layouts/Base.astro';
 import { SKINS, getLowestPrice, getHighestPrice, RARITY_COLORS, RARITY_BG, SKINS_TOTAL, getCollections, fmtPrice } from '../lib/skins';
-import { WEAPONS } from '../lib/weapons';
+import { WEAPONS, getWeaponImage } from '../lib/weapons';
 import { faqSchema } from '../lib/weapons';
 import { skinHeroImage, skinHeroSideImage, homeSkinCardImage, categoryCardImage } from '../lib/imageOptimize';
 import { getAllGear, getGearImageUrl, getPlayerBySlug } from '../lib/pro-players';
 import { caseDatabase } from '../lib/cases';
+import { MAP_LAYOUTS } from '../lib/map-layouts';
+import casePricesData from '../lib/case-prices.json';
 
 const topSkins = SKINS
   .filter(s => !s.phase)
@@ -133,13 +135,35 @@ const caseCount = Object.keys(caseDatabase).length;
 
 // Popular tool links
 const popularTools = [
-  { name: 'Sensitivity Converter', slug: 'sensitivity-converter', desc: 'Convert sens between games' },
-  { name: 'Crosshair Generator', slug: 'crosshair-generator', desc: 'Build & export crosshairs' },
-  { name: 'Damage Calculator', slug: 'damage-calculator', desc: 'Calculate exact damage' },
-  { name: 'Case Simulator', slug: 'case-simulator', desc: 'Open cases risk-free' },
-  { name: 'Float Checker', slug: 'float-checker', desc: 'Inspect skin wear values' },
-  { name: 'Economy Calculator', slug: 'economy-calculator', desc: 'Plan your buy rounds' },
+  { name: 'Sensitivity Converter', slug: 'sensitivity-converter', desc: 'Convert sens between games', icon: '<path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>' },
+  { name: 'Crosshair Generator', slug: 'crosshair-generator', desc: 'Build & export crosshairs', icon: '<circle cx="12" cy="12" r="3" fill="none" stroke="currentColor" stroke-width="2"/><line x1="12" y1="2" x2="12" y2="8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="12" y1="16" x2="12" y2="22" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="2" y1="12" x2="8" y2="12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="16" y1="12" x2="22" y2="12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>' },
+  { name: 'Damage Calculator', slug: 'damage-calculator', desc: 'Calculate exact damage', icon: '<rect x="4" y="2" width="16" height="20" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><line x1="8" y1="6" x2="16" y2="6" stroke="currentColor" stroke-width="2"/><line x1="8" y1="10" x2="16" y2="10" stroke="currentColor" stroke-width="1.5"/><line x1="8" y1="14" x2="12" y2="14" stroke="currentColor" stroke-width="1.5"/><line x1="8" y1="18" x2="14" y2="18" stroke="currentColor" stroke-width="1.5"/>' },
+  { name: 'Case Simulator', slug: 'case-simulator', desc: 'Open cases risk-free', icon: '<rect x="2" y="7" width="20" height="14" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="14" r="2" fill="currentColor"/>' },
+  { name: 'Float Checker', slug: 'float-checker', desc: 'Inspect skin wear values', icon: '<path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>' },
+  { name: 'Economy Calculator', slug: 'economy-calculator', desc: 'Plan your buy rounds', icon: '<line x1="12" y1="1" x2="12" y2="23" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>' },
 ];
+
+// Featured pro players with photos
+const featuredPlayerSlugs = ['s1mple', 'zywoo', 'niko', 'ropz', 'm0nesy', 'donk'];
+const featuredPlayers = featuredPlayerSlugs
+  .map(slug => getPlayerBySlug(slug))
+  .filter((p): p is NonNullable<typeof p> => !!p && !!p.image);
+
+// Featured maps for thumbnails
+const featuredMapSlugs = ['dust2', 'mirage', 'inferno', 'nuke'];
+const featuredMaps = MAP_LAYOUTS.filter(m => featuredMapSlugs.includes(m.slug));
+
+// Featured cases with images
+const featuredCaseSlugs = ['kilowatt', 'gallery', 'revolution', 'dreams-nightmares', 'clutch'];
+const casePrices = (casePricesData as any).cases || {};
+const featuredCases = featuredCaseSlugs
+  .map(slug => {
+    const caseData = caseDatabase[slug];
+    const priceData = casePrices[slug];
+    if (!caseData || !priceData?.image) return null;
+    return { slug, name: caseData.name, image: priceData.image, price: priceData.price };
+  })
+  .filter((c): c is NonNullable<typeof c> => !!c);
 
 const faqs = [
   { question: 'What is CSGOLuck Wiki?', answer: 'CSGOLuck Wiki is the knowledge base powered by CSGOLuck.com, built for the CS2 community. We track skin prices across 14+ marketplaces, document weapon stats, catalog settings from 860+ pro players, and provide 30+ free interactive tools — your one-stop shop for everything Counter-Strike 2.' },
@@ -161,6 +185,13 @@ const faqs = [
 
 <!-- ===== HERO ===== -->
 <section class="hp-hero">
+  {heroSkins.length >= 3 && (
+    <div class="hp-hero-skins" aria-hidden="true">
+      <img src={skinHeroSideImage(heroSkins[0].image)} alt="" class="hp-hero-skin hp-hero-skin-left" width="400" height="300" loading="eager" />
+      <img src={skinHeroImage(heroSkins[1].image)} alt="" class="hp-hero-skin hp-hero-skin-center" width="600" height="450" loading="eager" />
+      <img src={skinHeroSideImage(heroSkins[2].image)} alt="" class="hp-hero-skin hp-hero-skin-right" width="400" height="300" loading="eager" />
+    </div>
+  )}
   <div class="hp-hero-inner">
     <h1 class="hp-title">CSGOLuck <em>Wiki</em></h1>
     <p class="hp-subtitle">The open CS2 encyclopedia — community-driven guides, live market data, and pro player configs.</p>
@@ -316,16 +347,22 @@ const faqs = [
     <a href="/cs2-weapons/" class="hp-section-link">All {weaponCount} weapons &rarr;</a>
   </div>
   <div class="hp-weapon-grid">
-    {featuredWeapons.map(w => (
-      <a href={`/cs2-weapon/${w.slug}/`} class="hp-weapon-card">
-        <strong>{w.name}</strong>
-        <div class="hp-weapon-stats">
-          {w.damage && <span>DMG {w.damage}</span>}
-          {w.rpm && <span>RPM {w.rpm}</span>}
-          {w.price && <span>${w.price}</span>}
-        </div>
-      </a>
-    ))}
+    {featuredWeapons.map(w => {
+      const wImg = getWeaponImage(w.slug);
+      return (
+        <a href={`/cs2-weapon/${w.slug}/`} class="hp-weapon-card">
+          <div class="hp-weapon-text">
+            <strong>{w.name}</strong>
+            <div class="hp-weapon-stats">
+              {w.damage && <span>DMG {w.damage}</span>}
+              {w.rpm && <span>RPM {w.rpm}</span>}
+              {w.price && <span>${w.price}</span>}
+            </div>
+          </div>
+          {wImg && <img src={categoryCardImage(wImg)} alt={w.name} class="hp-weapon-img" width="120" height="60" loading="lazy" />}
+        </a>
+      );
+    })}
   </div>
   <div class="hp-weapon-links">
     <a href="/cs2-weapons/rifle/">Rifles</a>
@@ -349,8 +386,11 @@ const faqs = [
   <div class="hp-tool-grid">
     {popularTools.map(t => (
       <a href={`/${t.slug}/`} class="hp-tool-card">
-        <strong>{t.name}</strong>
-        <span>{t.desc}</span>
+        <svg class="hp-tool-icon" viewBox="0 0 24 24" set:html={t.icon} />
+        <div class="hp-tool-text">
+          <strong>{t.name}</strong>
+          <span>{t.desc}</span>
+        </div>
       </a>
     ))}
   </div>
@@ -376,7 +416,15 @@ const faqs = [
       <h2>Pro Players</h2>
       <a href="/pro-players/" class="hp-section-link">{playerCount}+ configs &rarr;</a>
     </div>
-    <p class="hp-section-desc">Crosshair codes, sensitivity, resolution, and full gear setups from verified professional CS2 players.</p>
+    <div class="hp-player-row">
+      {featuredPlayers.map(p => (
+        <a href={`/pro-player/${p.slug}/`} class="hp-player-card">
+          <img src={p.image} alt={p.name} class="hp-player-photo" width="64" height="64" loading="lazy" />
+          <span class="hp-player-name">{p.name}</span>
+          <span class="hp-player-team">{p.team}</span>
+        </a>
+      ))}
+    </div>
     <div class="hp-quick-links">
       <a href="/pro-players/">Browse All Pros</a>
       <a href="/crosshair-codes/">Pro Crosshairs</a>
@@ -390,7 +438,14 @@ const faqs = [
       <h2>Maps & Strats</h2>
       <a href="/cs2-maps/" class="hp-section-link">All maps &rarr;</a>
     </div>
-    <p class="hp-section-desc">Callout names, smoke lineups, flash spots, CT/T strategies and tips for every active duty map in the competitive pool.</p>
+    <div class="hp-map-row">
+      {featuredMaps.map(m => (
+        <a href={`/cs2-map/${m.slug}/`} class="hp-map-card">
+          <img src={m.radarImageUrl} alt={m.slug} class="hp-map-img" width="80" height="80" loading="lazy" />
+          <span class="hp-map-name">{m.slug.charAt(0).toUpperCase() + m.slug.slice(1)}</span>
+        </a>
+      ))}
+    </div>
     <div class="hp-quick-links">
       <a href="/cs2-maps/">Map Reference</a>
       <a href="/workshop-maps/">Workshop Maps</a>
@@ -406,7 +461,15 @@ const faqs = [
       <h2>Cases & Collections</h2>
       <a href="/cs2-cases/" class="hp-section-link">{caseCount} cases &rarr;</a>
     </div>
-    <p class="hp-section-desc">Every CS2 weapon case with drop rates, skin contents, ROI analysis, and unboxing odds.</p>
+    <div class="hp-case-row">
+      {featuredCases.map(c => (
+        <a href={`/cs2-cases/${c.slug}/`} class="hp-case-card">
+          <img src={c.image} alt={c.name} class="hp-case-img" width="80" height="80" loading="lazy" />
+          <span class="hp-case-name">{c.name}</span>
+          {c.price > 0 && <span class="hp-case-price">${c.price.toFixed(2)}</span>}
+        </a>
+      ))}
+    </div>
     <div class="hp-quick-links">
       <a href="/cs2-cases/">Case Archive</a>
       <a href="/case-simulator/">Case Simulator</a>
@@ -432,6 +495,7 @@ const faqs = [
 
 <!-- ===== CTA ===== -->
 <section class="hp-cta-banner">
+  <img src="/images/agents/cmdr-frank-wet-sox-baroud-seal-frogman.png" alt="" class="hp-cta-agent hp-cta-agent-left" width="120" height="120" loading="lazy" aria-hidden="true" />
   <div class="hp-cta-inner">
     <div class="hp-cta-text">
       <strong>Ready to play?</strong>
@@ -439,6 +503,7 @@ const faqs = [
     </div>
     <a href="/go/" rel="nofollow" class="hp-cta-btn">Visit CSGOLuck.com</a>
   </div>
+  <img src="/images/agents/blackwolf-sabre.png" alt="" class="hp-cta-agent hp-cta-agent-right" width="120" height="120" loading="lazy" aria-hidden="true" />
 </section>
 
 <!-- ===== FAQ ===== -->
@@ -481,8 +546,15 @@ const faqs = [
 
 <style is:inline>
 /* ── Hero ─────────────────────────────────── */
-.hp-hero{background:var(--bg);padding:3.5rem 2rem 2.5rem;border-bottom:1px solid var(--border)}
-.hp-hero-inner{max-width:900px;margin:0 auto;text-align:left}
+.hp-hero{background:var(--bg);padding:3.5rem 2rem 2.5rem;border-bottom:1px solid var(--border);position:relative;overflow:hidden}
+.hp-hero-inner{max-width:900px;margin:0 auto;text-align:left;position:relative;z-index:2}
+
+/* Hero skin showcase */
+.hp-hero-skins{position:absolute;top:50%;right:0;transform:translateY(-50%);pointer-events:none;z-index:1;width:500px;height:350px}
+.hp-hero-skin{position:absolute;object-fit:contain;filter:drop-shadow(0 4px 24px rgba(0,0,0,.4))}
+.hp-hero-skin-center{top:50%;left:50%;transform:translate(-50%,-50%);max-width:320px;max-height:240px;opacity:.18}
+.hp-hero-skin-left{top:20%;left:0;max-width:220px;max-height:165px;opacity:.12;transform:rotate(-8deg)}
+.hp-hero-skin-right{bottom:15%;right:0;max-width:220px;max-height:165px;opacity:.12;transform:rotate(8deg)}
 
 .hp-title{font-size:2.8rem;font-weight:900;margin:0 0 .75rem;color:#fff;line-height:1.1;letter-spacing:-.02em}
 html.light-mode .hp-title{color:#000}
@@ -577,20 +649,26 @@ html.light-mode .hp-title{color:#000}
 
 /* ── Weapon Grid ──────────────────────────── */
 .hp-weapon-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.5rem;margin-bottom:1rem}
-.hp-weapon-card{display:flex;flex-direction:column;gap:.25rem;padding:.75rem;background:var(--bg3);border:1px solid var(--border);border-radius:4px;text-decoration:none;color:inherit;transition:border-left .15s}
+.hp-weapon-card{display:flex;align-items:center;gap:.5rem;padding:.75rem;background:var(--bg3);border:1px solid var(--border);border-radius:4px;text-decoration:none;color:inherit;transition:border-left .15s;overflow:hidden}
 .hp-weapon-card:hover{border-left:3px solid #2ecc71}
-.hp-weapon-card strong{font-size:.9rem;color:var(--text)}
+.hp-weapon-text{flex:1;display:flex;flex-direction:column;gap:.25rem;min-width:0}
+.hp-weapon-text strong{font-size:.9rem;color:var(--text)}
 .hp-weapon-stats{display:flex;gap:.75rem;font-size:.75rem;color:var(--text2)}
+.hp-weapon-img{max-height:45px;width:auto;object-fit:contain;opacity:.65;flex-shrink:0;filter:drop-shadow(0 1px 3px rgba(0,0,0,.3))}
+.hp-weapon-card:hover .hp-weapon-img{opacity:.9}
 .hp-weapon-links{font-size:.82rem;color:var(--text2)}
 .hp-weapon-links a{color:#2ecc71;text-decoration:none;margin:0 .2rem}
 .hp-weapon-links a:hover{text-decoration:underline}
 
 /* ── Tool Grid ────────────────────────────── */
 .hp-tool-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.5rem;margin-bottom:1rem}
-.hp-tool-card{display:flex;flex-direction:column;gap:.2rem;padding:.75rem;background:var(--bg3);border:1px solid var(--border);border-radius:4px;text-decoration:none;color:inherit;transition:border-left .15s}
+.hp-tool-card{display:flex;align-items:center;gap:.65rem;padding:.75rem;background:var(--bg3);border:1px solid var(--border);border-radius:4px;text-decoration:none;color:inherit;transition:border-left .15s}
 .hp-tool-card:hover{border-left:3px solid #2ecc71}
-.hp-tool-card strong{font-size:.88rem;color:var(--text)}
-.hp-tool-card span{font-size:.75rem;color:var(--text2)}
+.hp-tool-icon{width:28px;height:28px;flex-shrink:0;color:#2ecc71;opacity:.7}
+.hp-tool-card:hover .hp-tool-icon{opacity:1}
+.hp-tool-text{display:flex;flex-direction:column;gap:.15rem;min-width:0}
+.hp-tool-text strong{font-size:.88rem;color:var(--text)}
+.hp-tool-text span{font-size:.75rem;color:var(--text2)}
 .hp-tool-links{font-size:.82rem;color:var(--text2);line-height:1.8}
 .hp-tool-links strong{color:var(--text);margin-right:.3rem}
 .hp-tool-links a{color:#2ecc71;text-decoration:none}
@@ -601,13 +679,41 @@ html.light-mode .hp-title{color:#000}
 .hp-quick-links a{padding:.4rem .75rem;background:var(--bg3);border:1px solid var(--border);border-radius:4px;font-size:.82rem;font-weight:600;color:var(--text2);text-decoration:none;transition:border-color .15s,color .15s}
 .hp-quick-links a:hover{border-color:#2ecc71;color:#2ecc71}
 
+/* ── Pro Player Row ───────────────────────── */
+.hp-player-row{display:flex;gap:.75rem;margin-bottom:1rem;overflow-x:auto;padding-bottom:.25rem}
+.hp-player-card{display:flex;flex-direction:column;align-items:center;gap:.3rem;padding:.5rem .75rem;text-decoration:none;color:inherit;flex-shrink:0;border-radius:4px;transition:background .15s}
+.hp-player-card:hover{background:var(--bg3)}
+.hp-player-photo{width:56px;height:56px;border-radius:50%;object-fit:cover;border:2px solid var(--border);background:var(--bg3)}
+.hp-player-card:hover .hp-player-photo{border-color:#2ecc71}
+.hp-player-name{font-size:.82rem;font-weight:700;color:var(--text);white-space:nowrap}
+.hp-player-team{font-size:.7rem;color:var(--text2);white-space:nowrap}
+
+/* ── Map Row ─────────────────────────────── */
+.hp-map-row{display:flex;gap:.75rem;margin-bottom:1rem}
+.hp-map-card{display:flex;flex-direction:column;align-items:center;gap:.35rem;padding:.5rem;text-decoration:none;color:inherit;border-radius:4px;transition:background .15s}
+.hp-map-card:hover{background:var(--bg3)}
+.hp-map-img{width:72px;height:72px;border-radius:4px;object-fit:cover;border:1px solid var(--border);background:var(--bg3)}
+.hp-map-card:hover .hp-map-img{border-color:#2ecc71}
+.hp-map-name{font-size:.78rem;font-weight:700;color:var(--text)}
+
+/* ── Case Row ────────────────────────────── */
+.hp-case-row{display:flex;gap:.75rem;margin-bottom:1rem;overflow-x:auto;padding-bottom:.25rem}
+.hp-case-card{display:flex;flex-direction:column;align-items:center;gap:.3rem;padding:.5rem;text-decoration:none;color:inherit;border-radius:4px;flex-shrink:0;transition:background .15s}
+.hp-case-card:hover{background:var(--bg3)}
+.hp-case-img{width:72px;height:72px;object-fit:contain;filter:drop-shadow(0 2px 6px rgba(0,0,0,.3))}
+.hp-case-name{font-size:.75rem;font-weight:700;color:var(--text);white-space:nowrap;max-width:90px;overflow:hidden;text-overflow:ellipsis;text-align:center}
+.hp-case-price{font-size:.7rem;font-weight:600;color:#2ecc71}
+
 /* ── CTA Banner ───────────────────────────── */
-.hp-cta-banner{margin-bottom:2rem;background:linear-gradient(135deg,#1a6b3a 0%,#145a2f 50%,#0f4423 100%);border-radius:4px;padding:2rem}
-.hp-cta-inner{display:flex;align-items:center;justify-content:space-between;gap:1.5rem;flex-wrap:wrap}
+.hp-cta-banner{margin-bottom:2rem;background:linear-gradient(135deg,#1a6b3a 0%,#145a2f 50%,#0f4423 100%);border-radius:4px;padding:2rem;position:relative;overflow:hidden}
+.hp-cta-inner{display:flex;align-items:center;justify-content:space-between;gap:1.5rem;flex-wrap:wrap;position:relative;z-index:2}
 .hp-cta-text strong{display:block;font-size:1.3rem;font-weight:800;color:#fff;margin-bottom:.15rem}
 .hp-cta-text span{font-size:.95rem;color:rgba(255,255,255,.75)}
 .hp-cta-btn{display:inline-block;background:#fff;color:#145a2f;font-weight:800;font-size:.95rem;padding:.75rem 2rem;border-radius:4px;text-decoration:none;transition:background .2s;white-space:nowrap}
 .hp-cta-btn:hover{background:#5dde9e;color:#000}
+.hp-cta-agent{position:absolute;bottom:0;height:100px;width:auto;object-fit:contain;opacity:.15;pointer-events:none;z-index:1}
+.hp-cta-agent-left{left:1.5rem}
+.hp-cta-agent-right{right:1.5rem}
 
 /* ── FAQ ──────────────────────────────────── */
 .hp-faq{margin-bottom:2rem}
@@ -623,6 +729,9 @@ html.light-mode .hp-title{color:#000}
 /* ── Responsive ───────────────────────────── */
 @media(max-width:1000px){
   .hp-skin-grid{grid-template-columns:repeat(3,1fr)}
+  .hp-hero-skins{width:380px}
+  .hp-hero-skin-center{max-width:260px;max-height:195px}
+  .hp-hero-skin-left,.hp-hero-skin-right{max-width:180px;max-height:135px}
 }
 @media(max-width:768px){
   .hp-title{font-size:2rem}
@@ -633,9 +742,12 @@ html.light-mode .hp-title{color:#000}
   .hp-weapon-grid,.hp-tool-grid{grid-template-columns:repeat(2,1fr)}
   .hp-grid-2{grid-template-columns:1fr}
   .hp-cta-inner{flex-direction:column;text-align:center}
+  .hp-cta-agent{display:none}
   .hp-nav{gap:.25rem}
   .hp-nav-item{padding:.5rem .6rem;font-size:.72rem}
   .hp-nav-item svg{width:18px;height:18px}
+  .hp-hero-skins{display:none}
+  .hp-weapon-img{max-height:35px}
 }
 @media(max-width:480px){
   .hp-hero{padding:2rem 1rem 1.5rem}
@@ -644,6 +756,9 @@ html.light-mode .hp-title{color:#000}
   .hp-weapon-grid,.hp-tool-grid{grid-template-columns:1fr}
   .hp-quick-cats{gap:.35rem}
   .hp-cat-pill{padding:.35rem .7rem;font-size:.8rem}
+  .hp-player-photo{width:44px;height:44px}
+  .hp-map-img{width:56px;height:56px}
+  .hp-case-img{width:56px;height:56px}
 }
 </style>
 
