@@ -163,6 +163,13 @@ const roles = ['All', 'Rifler', 'AWPer', 'IGL', 'Entry', 'Support'] as const;
     ))}
   </div>
 
+  <div class="xc-pagination" id="xcPagination">
+    <button class="xc-page-btn" id="xcPrev" aria-label="Previous page">&laquo; Prev</button>
+    <div class="xc-page-nums" id="xcPageNums"></div>
+    <button class="xc-page-btn" id="xcNext" aria-label="Next page">Next &raquo;</button>
+  </div>
+  <div class="xc-page-info" id="xcPageInfo"></div>
+
   <section class="xc-faq">
     <h2 class="xc-section-title">Frequently Asked Questions</h2>
     {faqs.map(item => (
@@ -248,6 +255,18 @@ const roles = ['All', 'Rifler', 'AWPer', 'IGL', 'Entry', 'Support'] as const;
   .xc-link{display:block;padding:.5rem .75rem;background:var(--bg3);border:1px solid var(--border);border-left:3px solid transparent;border-radius:4px;color:var(--accent);text-decoration:none;font-size:.85rem;transition:border-left-color .15s}
   .xc-link:hover{border-left-color:var(--accent)}
 
+  /* Pagination */
+  .xc-pagination{display:flex;align-items:center;justify-content:center;gap:.5rem;margin-bottom:.75rem;flex-wrap:wrap}
+  .xc-page-btn{padding:.45rem .9rem;background:var(--bg2);border:1px solid var(--border);border-radius:4px;color:var(--text2);cursor:pointer;font-size:.82rem;font-weight:600;font-family:inherit;transition:all .15s}
+  .xc-page-btn:hover:not(:disabled){border-color:var(--accent);color:var(--text)}
+  .xc-page-btn:disabled{opacity:.4;cursor:default}
+  .xc-page-nums{display:flex;gap:.3rem;flex-wrap:wrap;justify-content:center}
+  .xc-page-num{padding:.35rem .65rem;background:var(--bg3);border:1px solid var(--border);border-radius:4px;color:var(--text2);cursor:pointer;font-size:.8rem;font-weight:500;font-family:inherit;transition:all .15s;min-width:32px;text-align:center}
+  .xc-page-num:hover{border-color:var(--accent);color:var(--text)}
+  .xc-page-num.xc-page-active{background:var(--accent);border-color:var(--accent);color:#000;font-weight:700}
+  .xc-page-ellipsis{padding:.35rem .3rem;color:var(--text2);font-size:.8rem}
+  .xc-page-info{text-align:center;font-size:.78rem;color:var(--text2);margin-bottom:2rem}
+
   @media(max-width:768px){
     .xc-filter-bar{flex-direction:column;align-items:stretch}
     .xc-search{width:100%;min-width:unset}
@@ -257,42 +276,105 @@ const roles = ['All', 'Rifler', 'AWPer', 'IGL', 'Entry', 'Support'] as const;
 
 <script is:inline>
   document.addEventListener('DOMContentLoaded', function() {
-    const grid = document.getElementById('crosshairGrid');
-    const filterBtns = document.querySelectorAll('.xc-filter-btn');
-    const searchInput = document.getElementById('searchInput');
-    let activeRole = 'All';
-    let searchTerm = '';
+    var grid = document.getElementById('crosshairGrid');
+    var filterBtns = document.querySelectorAll('.xc-filter-btn');
+    var searchInput = document.getElementById('searchInput');
+    var prevBtn = document.getElementById('xcPrev');
+    var nextBtn = document.getElementById('xcNext');
+    var pageNumsWrap = document.getElementById('xcPageNums');
+    var pageInfo = document.getElementById('xcPageInfo');
+    var PER_PAGE = 48;
+    var currentPage = 1;
+    var activeRole = 'All';
+    var searchTerm = '';
 
-    function filterCards() {
-      const cards = grid.querySelectorAll('.xc-card');
-      cards.forEach(card => {
-        const cardRole = card.dataset.role;
-        const cardPlayer = card.dataset.player;
+    function getVisibleCards() {
+      var all = grid.querySelectorAll('.xc-card');
+      var visible = [];
+      all.forEach(function(card) {
+        var roleMatch = activeRole === 'All' || card.dataset.role === activeRole;
+        var searchMatch = card.dataset.player.includes(searchTerm.toLowerCase());
+        if (roleMatch && searchMatch) visible.push(card);
+      });
+      return visible;
+    }
 
-        const roleMatch = activeRole === 'All' || cardRole === activeRole;
-        const searchMatch = cardPlayer.includes(searchTerm.toLowerCase());
+    function renderPage() {
+      var allCards = grid.querySelectorAll('.xc-card');
+      var visible = getVisibleCards();
+      var totalPages = Math.max(1, Math.ceil(visible.length / PER_PAGE));
+      if (currentPage > totalPages) currentPage = totalPages;
+      var start = (currentPage - 1) * PER_PAGE;
+      var end = start + PER_PAGE;
+      var visibleSet = new Set(visible.slice(start, end));
 
-        if (roleMatch && searchMatch) {
+      allCards.forEach(function(card) {
+        if (visibleSet.has(card)) {
           card.classList.remove('xc-hidden');
         } else {
           card.classList.add('xc-hidden');
         }
       });
+
+      /* Pagination controls */
+      prevBtn.disabled = currentPage <= 1;
+      nextBtn.disabled = currentPage >= totalPages;
+
+      pageNumsWrap.innerHTML = '';
+      var pages = [];
+      if (totalPages <= 7) {
+        for (var i = 1; i <= totalPages; i++) pages.push(i);
+      } else {
+        pages.push(1);
+        if (currentPage > 3) pages.push('...');
+        for (var i = Math.max(2, currentPage - 1); i <= Math.min(totalPages - 1, currentPage + 1); i++) pages.push(i);
+        if (currentPage < totalPages - 2) pages.push('...');
+        pages.push(totalPages);
+      }
+      pages.forEach(function(p) {
+        if (p === '...') {
+          var span = document.createElement('span');
+          span.className = 'xc-page-ellipsis';
+          span.textContent = '...';
+          pageNumsWrap.appendChild(span);
+        } else {
+          var btn = document.createElement('button');
+          btn.className = 'xc-page-num' + (p === currentPage ? ' xc-page-active' : '');
+          btn.textContent = p;
+          btn.addEventListener('click', function() { currentPage = p; renderPage(); scrollToGrid(); });
+          pageNumsWrap.appendChild(btn);
+        }
+      });
+
+      pageInfo.textContent = visible.length > 0
+        ? 'Showing ' + (start + 1) + '–' + Math.min(end, visible.length) + ' of ' + visible.length + ' crosshairs'
+        : 'No crosshairs match your filters';
     }
 
-    filterBtns.forEach(btn => {
+    function scrollToGrid() {
+      grid.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    prevBtn.addEventListener('click', function() { if (currentPage > 1) { currentPage--; renderPage(); scrollToGrid(); } });
+    nextBtn.addEventListener('click', function() { currentPage++; renderPage(); scrollToGrid(); });
+
+    filterBtns.forEach(function(btn) {
       btn.addEventListener('click', function() {
-        filterBtns.forEach(b => b.classList.remove('xc-filter-active'));
+        filterBtns.forEach(function(b) { b.classList.remove('xc-filter-active'); });
         this.classList.add('xc-filter-active');
         activeRole = this.dataset.role;
-        filterCards();
+        currentPage = 1;
+        renderPage();
       });
     });
 
     searchInput.addEventListener('input', function() {
       searchTerm = this.value;
-      filterCards();
+      currentPage = 1;
+      renderPage();
     });
+
+    renderPage();
 
     // --- Crosshair canvas rendering ---
     var CH_COLORS = {
