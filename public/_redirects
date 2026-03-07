@@ -9,9 +9,13 @@
 # Old /map/ singular → /cs2-maps/ plural
 /map/:slug /cs2-maps/:slug/ 301
 
-# Old /players/ plural → /pro-players/ singular (new site uses singular)
+# Old /players/ plural → /pro-players/ (new site route)
 /players/ /pro-players/ 301
 /players/:slug /pro-players/:slug/ 301
+
+# Singular /pro-player/ → /pro-players/ (common mistype / old links)
+/pro-player/ /pro-players/ 301
+/pro-player/:slug /pro-players/:slug/ 301
 
 # Old /ranks/ → /cs2-ranks/ (new site uses singular)
 /ranks/ /cs2-rank-distribution/ 301
