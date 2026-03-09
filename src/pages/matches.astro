@@ -57,7 +57,7 @@ const explore = [
 
 <ExploreMore items={explore} />
 
-<style>
+<style is:global>
 .page-intro { color: var(--text2); margin-bottom: 1.5rem; font-size: .95rem; }
 
 /* Tabs */
@@ -84,8 +84,8 @@ const explore = [
 .match-card.finished { border-left: 3px solid var(--text3); }
 
 .match-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: .75rem; flex-wrap: wrap; gap: .5rem; }
-.match-league { display: flex; align-items: center; gap: .5rem; font-size: .8rem; color: var(--text2); }
-.match-league img { height: 18px; width: auto; border-radius: 2px; }
+.match-league { display: flex; align-items: center; gap: .5rem; font-size: .8rem; color: var(--text2); overflow: hidden; }
+.match-league img { height: 18px; max-height: 18px; width: auto; max-width: 80px; border-radius: 2px; object-fit: contain; }
 .match-tier { font-size: .7rem; font-weight: 700; text-transform: uppercase; padding: .15rem .4rem; border-radius: 3px; }
 .tier-s { background: #f1c40f; color: #000; }
 .tier-a { background: #e67e22; color: #000; }
@@ -96,7 +96,7 @@ const explore = [
 .match-body { display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
 .match-team { display: flex; align-items: center; gap: .65rem; flex: 1; min-width: 0; }
 .match-team.right { justify-content: flex-end; text-direction: rtl; flex-direction: row-reverse; }
-.team-logo { width: 36px; height: 36px; border-radius: 4px; object-fit: contain; background: var(--bg3); flex-shrink: 0; }
+.team-logo { width: 36px; height: 36px; max-width: 36px; max-height: 36px; border-radius: 4px; object-fit: contain; background: var(--bg3); flex-shrink: 0; }
 .team-logo-placeholder { width: 36px; height: 36px; border-radius: 4px; background: var(--bg3); display: flex; align-items: center; justify-content: center; font-size: .7rem; font-weight: 700; color: var(--text3); flex-shrink: 0; }
 .team-name { font-weight: 600; font-size: .95rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .team-name.winner { color: var(--accent); }
@@ -202,7 +202,7 @@ function timeFromNow(iso) {
 
 function teamLogoHTML(team) {
   if (team.image) {
-    return `<img src="${team.image}" alt="${team.name}" class="team-logo" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'" /><div class="team-logo-placeholder" style="display:none">${(team.acronym || team.name?.[0] || '?')}</div>`;
+    return `<img src="${team.image}" alt="${team.name}" class="team-logo" style="width:36px;height:36px;max-width:36px;max-height:36px;object-fit:contain;border-radius:4px;background:var(--bg3);flex-shrink:0" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'" /><div class="team-logo-placeholder" style="display:none">${(team.acronym || team.name?.[0] || '?')}</div>`;
   }
   return `<div class="team-logo-placeholder">${(team.acronym || team.name?.[0] || '?')}</div>`;
 }
@@ -237,7 +237,7 @@ function renderMatchCard(match, type) {
     <div class="match-card ${cardClass}">
       <div class="match-header">
         <div class="match-league">
-          ${match.league?.image ? `<img src="${match.league.image}" alt="${match.league.name}" />` : ''}
+          ${match.league?.image ? `<img src="${match.league.image}" alt="${match.league.name}" style="height:18px;max-height:18px;width:auto;max-width:80px;object-fit:contain" />` : ''}
           <span>${match.league?.name || ''} ${match.serie?.name ? '· ' + match.serie.name : ''}</span>
         </div>
         ${match.tournament?.tier ? `<span class="match-tier ${tierClass(match.tournament.tier)}">${tierLabel(match.tournament.tier)}</span>` : ''}

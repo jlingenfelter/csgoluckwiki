@@ -40,7 +40,7 @@ const explore = [
 
 <ExploreMore items={explore} />
 
-<style>
+<style is:global>
 .page-intro { color: var(--text2); margin-bottom: 1.5rem; font-size: .95rem; }
 
 .tourney-tabs { display: flex; gap: .5rem; margin-bottom: 1.5rem; border-bottom: 2px solid var(--border); }
@@ -57,7 +57,7 @@ const explore = [
 
 .tourney-card-header { display: flex; justify-content: space-between; align-items: center; padding: 1rem 1.25rem; cursor: pointer; }
 .tourney-info { display: flex; align-items: center; gap: .75rem; min-width: 0; flex: 1; }
-.tourney-logo { height: 28px; width: auto; border-radius: 3px; }
+.tourney-logo { height: 28px; max-height: 28px; width: auto; max-width: 100px; border-radius: 3px; object-fit: contain; }
 .tourney-name { font-weight: 700; font-size: .95rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .tourney-meta { display: flex; gap: .75rem; align-items: center; flex-shrink: 0; }
 .tourney-tier { font-size: .7rem; font-weight: 700; text-transform: uppercase; padding: .15rem .4rem; border-radius: 3px; }
@@ -161,7 +161,7 @@ function renderTournament(t) {
     <div class="tourney-card">
       <div class="tourney-card-header" onclick="this.parentElement.classList.toggle('open')">
         <div class="tourney-info">
-          ${t.league?.image ? `<img src="${t.league.image}" alt="" class="tourney-logo" />` : ''}
+          ${t.league?.image ? `<img src="${t.league.image}" alt="" class="tourney-logo" style="height:28px;max-height:28px;width:auto;max-width:100px;object-fit:contain" />` : ''}
           <span class="tourney-name">${t.league?.name || ''} — ${t.name || t.serie?.name || ''}</span>
         </div>
         <div class="tourney-meta">
