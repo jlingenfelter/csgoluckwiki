@@ -109,6 +109,17 @@ import Base from '../layouts/Base.astro';
 .td-team-card-name { font-weight: 700; font-size: .88rem; display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .td-team-card-location { font-size: .72rem; color: var(--text3); display: block; }
 
+/* ── Round Tabs ── */
+.td-round-tabs { display: flex; gap: 0; overflow-x: auto; border-bottom: 1px solid var(--border); margin-bottom: .75rem; scrollbar-width: none; -ms-overflow-style: none; }
+.td-round-tabs::-webkit-scrollbar { display: none; }
+.td-round-tab { background: none; border: none; padding: .5rem .85rem; font-size: .78rem; font-weight: 600; color: var(--text3); cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -1px; font-family: inherit; transition: color .15s, border-color .15s; white-space: nowrap; flex-shrink: 0; }
+.td-round-tab:hover { color: var(--text1); }
+.td-round-tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+.td-round-tab .td-round-count { font-size: .65rem; font-weight: 700; background: var(--bg3); color: var(--text3); padding: .05rem .3rem; border-radius: 8px; margin-left: .3rem; }
+.td-round-tab.active .td-round-count { background: rgba(46,204,113,.15); color: var(--accent); }
+.td-round-panel { display: none; }
+.td-round-panel.active { display: block; }
+
 /* ── Responsive ── */
 @media (max-width: 600px) {
   .td-header { padding: 1rem; }
@@ -119,6 +130,7 @@ import Base from '../layouts/Base.astro';
   .td-match-meta { width: 100%; justify-content: flex-start; }
   .td-teams-grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
   .td-standings th, .td-standings td { padding: .5rem; font-size: .78rem; }
+  .td-round-tab { padding: .4rem .6rem; font-size: .72rem; }
 }
 </style>
 
@@ -273,10 +285,14 @@ import Base from '../layouts/Base.astro';
     let matchesHTML = '';
     const matches = data.matches || [];
     if (matches.length > 0) {
-      // Group by status: running first, then finished (most recent first), then not_started (soonest first)
-      const live = matches.filter(m => m.status === 'running');
-      const finished = matches.filter(m => m.status === 'finished').sort((a, b) => new Date(b.beginAt || 0) - new Date(a.beginAt || 0));
-      const upcoming = matches.filter(m => m.status === 'not_started').sort((a, b) => new Date(a.beginAt || 0) - new Date(b.beginAt || 0));
+      function extractRound(name) {
+        if (!name) return 'Matches';
+        const m = name.match(/^(Round \d+|Grand Final|Semifinal|Semi-?final|Quarter-?final|Upper bracket.*?|Lower bracket.*?|Group [A-Z]|Decider|Winners'? (?:match|round)|Losers'? (?:match|round)|Consolidation final|Opening match)(?:\s*:|$)/i);
+        if (m) return m[1].trim();
+        const r = name.match(/^([^:]+):/);
+        if (r && r[1].length < 30) return r[1].trim();
+        return 'Matches';
+      }
 
       function renderMatchCard(m) {
         const t1 = m.opponents?.[0] || { name: 'TBD' };
@@ -310,6 +326,11 @@ import Base from '../layouts/Base.astro';
           scoreHTML = `<span class="td-match-vs">VS</span>`;
         }
 
+        // Strip round prefix from name for cleaner display
+        let displayName = m.name || 'Match';
+        const colonIdx = displayName.indexOf(':');
+        if (colonIdx > 0 && colonIdx < 30) displayName = displayName.substring(colonIdx + 1).trim();
+
         return `
           <a href="/match-detail/?id=${m.id}" class="td-match-card">
             <div class="td-match-teams">
@@ -331,18 +352,55 @@ import Base from '../layouts/Base.astro';
           </a>`;
       }
 
+      // Group matches by round
+      const roundGroups = new Map();
+      matches.forEach(m => {
+        const round = extractRound(m.name);
+        if (!roundGroups.has(round)) roundGroups.set(round, []);
+        roundGroups.get(round).push(m);
+      });
+
+      const roundKeys = [...roundGroups.keys()];
       matchesHTML = `<h2 class="td-section-title">Matches</h2>`;
-      if (live.length > 0) {
-        matchesHTML += `<div class="td-match-group-title">Live</div>`;
-        matchesHTML += live.map(renderMatchCard).join('');
-      }
-      if (finished.length > 0) {
-        matchesHTML += `<div class="td-match-group-title">Completed</div>`;
-        matchesHTML += finished.map(renderMatchCard).join('');
-      }
-      if (upcoming.length > 0) {
-        matchesHTML += `<div class="td-match-group-title">Upcoming</div>`;
-        matchesHTML += upcoming.map(renderMatchCard).join('');
+
+      if (roundKeys.length > 1) {
+        // Multiple rounds → render as tabs
+        let tabsHTML = '<div class="td-round-tabs">';
+        let panelsHTML = '';
+        // Put Live tab first if there are any live matches
+        const hasLive = matches.some(m => m.status === 'running');
+        if (hasLive) {
+          const liveMatches = matches.filter(m => m.status === 'running');
+          tabsHTML += `<button class="td-round-tab active" data-panel="tdm-live" onclick="this.parentElement.querySelectorAll('.td-round-tab').forEach(b=>b.classList.remove('active'));this.classList.add('active');this.closest('.td-matches-wrap').querySelectorAll('.td-round-panel').forEach(p=>p.classList.remove('active'));document.getElementById('tdm-live').classList.add('active')">🔴 Live<span class="td-round-count">${liveMatches.length}</span></button>`;
+          panelsHTML += `<div class="td-round-panel active" id="tdm-live">${liveMatches.map(renderMatchCard).join('')}</div>`;
+        }
+        roundKeys.forEach((round, i) => {
+          const rms = roundGroups.get(round);
+          const activeClass = (!hasLive && i === 0) ? ' active' : '';
+          const panelId = `tdm-r${i}`;
+          tabsHTML += `<button class="td-round-tab${activeClass}" data-panel="${panelId}" onclick="this.parentElement.querySelectorAll('.td-round-tab').forEach(b=>b.classList.remove('active'));this.classList.add('active');this.closest('.td-matches-wrap').querySelectorAll('.td-round-panel').forEach(p=>p.classList.remove('active'));document.getElementById('${panelId}').classList.add('active')">${round}<span class="td-round-count">${rms.length}</span></button>`;
+          panelsHTML += `<div class="td-round-panel${activeClass}" id="${panelId}">${rms.map(renderMatchCard).join('')}</div>`;
+        });
+        tabsHTML += '</div>';
+        matchesHTML += `<div class="td-matches-wrap">${tabsHTML}${panelsHTML}</div>`;
+      } else {
+        // Single group or few matches → flat list
+        const live = matches.filter(m => m.status === 'running');
+        const finished = matches.filter(m => m.status === 'finished').sort((a, b) => new Date(b.beginAt || 0) - new Date(a.beginAt || 0));
+        const upcoming = matches.filter(m => m.status === 'not_started').sort((a, b) => new Date(a.beginAt || 0) - new Date(b.beginAt || 0));
+
+        if (live.length > 0) {
+          matchesHTML += `<div class="td-match-group-title">Live</div>`;
+          matchesHTML += live.map(renderMatchCard).join('');
+        }
+        if (finished.length > 0) {
+          matchesHTML += `<div class="td-match-group-title">Completed</div>`;
+          matchesHTML += finished.map(renderMatchCard).join('');
+        }
+        if (upcoming.length > 0) {
+          matchesHTML += `<div class="td-match-group-title">Upcoming</div>`;
+          matchesHTML += upcoming.map(renderMatchCard).join('');
+        }
       }
     }
 

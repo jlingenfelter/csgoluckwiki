@@ -127,10 +127,22 @@ a.tourney-card-link:hover .tourney-detail-arrow { transform: translateX(3px); }
 /* Finished badge */
 .tourney-badge-finished { font-size: .7rem; font-weight: 700; text-transform: uppercase; padding: .15rem .4rem; border-radius: 3px; background: var(--bg3); color: var(--text2); }
 
+/* ── Round Tabs inside tournament cards ── */
+.round-tabs { display: flex; gap: 0; overflow-x: auto; border-bottom: 1px solid var(--border); margin-bottom: .5rem; padding-top: .75rem; scrollbar-width: none; -ms-overflow-style: none; }
+.round-tabs::-webkit-scrollbar { display: none; }
+.round-tab { background: none; border: none; padding: .4rem .75rem; font-size: .75rem; font-weight: 600; color: var(--text3); cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -1px; font-family: inherit; transition: color .15s, border-color .15s; white-space: nowrap; flex-shrink: 0; }
+.round-tab:hover { color: var(--text1); }
+.round-tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+.round-tab .round-count { font-size: .65rem; font-weight: 700; background: var(--bg3); color: var(--text3); padding: .05rem .3rem; border-radius: 8px; margin-left: .3rem; }
+.round-tab.active .round-count { background: rgba(46,204,113,.15); color: var(--accent); }
+.round-panel { display: none; }
+.round-panel.active { display: block; }
+
 @media (max-width: 600px) {
   .tourney-card-header { flex-direction: column; gap: .5rem; align-items: flex-start; }
   .tourney-meta { flex-wrap: wrap; }
   .tourney-match-row { flex-wrap: wrap; }
+  .round-tab { padding: .35rem .55rem; font-size: .7rem; }
 }
 </style>
 
@@ -175,19 +187,66 @@ function formatTime(iso) {
   return new Date(iso).toLocaleString(undefined, { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
 }
 
+function extractRound(name) {
+  if (!name) return 'Matches';
+  // Try extracting "Round 1", "Grand Final", "Quarter-final", "Semifinal", "Upper bracket", etc.
+  const m = name.match(/^(Round \d+|Grand Final|Semifinal|Semi-?final|Quarter-?final|Upper bracket.*?|Lower bracket.*?|Group [A-Z]|Decider|Winners'? (?:match|round)|Losers'? (?:match|round)|Consolidation final|Opening match)(?:\s*:|$)/i);
+  if (m) return m[1].trim();
+  // Fallback: check for "Round N:" pattern more broadly
+  const r = name.match(/^([^:]+):/);
+  if (r && r[1].length < 30) return r[1].trim();
+  return 'Matches';
+}
+
+function renderMatchRow(m) {
+  const statusClass = m.status || 'not_started';
+  const statusLabel = m.status === 'running' ? '● LIVE' : m.status === 'finished' ? 'Done' : formatTime(m.beginAt);
+  const streamHTML = m.streams?.[0]?.url ? `<a href="${m.streams[0].url}" target="_blank" rel="noopener" class="tmr-stream" onclick="event.stopPropagation()">▶ Watch</a>` : '';
+  // Strip the round prefix from name for cleaner display within a tab
+  let displayName = m.name || 'Match';
+  const colonIdx = displayName.indexOf(':');
+  if (colonIdx > 0 && colonIdx < 30) displayName = displayName.substring(colonIdx + 1).trim();
+
+  return `<div class="tourney-match-row">
+    <a href="/match-detail/?id=${m.id}" class="tmr-name-link" onclick="event.stopPropagation()">${displayName}</a>
+    <span class="tmr-status ${statusClass}">${statusLabel}</span>
+    ${streamHTML}
+  </div>`;
+}
+
 function renderTournament(t) {
   const dateStr = t.beginAt ? `${formatDate(t.beginAt)}${t.endAt ? ' – ' + formatDate(t.endAt) : ''}` : '';
-  const matchesHTML = (t.matches || []).map(m => {
-    const statusClass = m.status || 'not_started';
-    const statusLabel = m.status === 'running' ? '● LIVE' : m.status === 'finished' ? 'Done' : formatTime(m.beginAt);
-    const streamHTML = m.streams?.[0]?.url ? `<a href="${m.streams[0].url}" target="_blank" rel="noopener" class="tmr-stream" onclick="event.stopPropagation()">▶ Watch</a>` : '';
+  const matches = t.matches || [];
 
-    return `<div class="tourney-match-row">
-      <a href="/match-detail/?id=${m.id}" class="tmr-name-link" onclick="event.stopPropagation()">${m.name || 'Match'}</a>
-      <span class="tmr-status ${statusClass}">${statusLabel}</span>
-      ${streamHTML}
-    </div>`;
-  }).join('');
+  // Group matches by round
+  const groups = new Map();
+  matches.forEach(m => {
+    const round = extractRound(m.name);
+    if (!groups.has(round)) groups.set(round, []);
+    groups.get(round).push(m);
+  });
+
+  let matchesInner = '';
+  const roundKeys = [...groups.keys()];
+
+  if (roundKeys.length > 1) {
+    // Multiple rounds → render as tabs
+    const uid = 'rt-' + t.id;
+    let tabsHTML = '<div class="round-tabs">';
+    let panelsHTML = '';
+    roundKeys.forEach((round, i) => {
+      const rms = groups.get(round);
+      const activeClass = i === 0 ? ' active' : '';
+      const panelId = `${uid}-p${i}`;
+      tabsHTML += `<button class="round-tab${activeClass}" data-panel="${panelId}" onclick="event.stopPropagation();this.parentElement.querySelectorAll('.round-tab').forEach(b=>b.classList.remove('active'));this.classList.add('active');this.closest('.tourney-matches').querySelectorAll('.round-panel').forEach(p=>p.classList.remove('active'));document.getElementById('${panelId}').classList.add('active')">${round}<span class="round-count">${rms.length}</span></button>`;
+      panelsHTML += `<div class="round-panel${activeClass}" id="${panelId}">${rms.map(renderMatchRow).join('')}</div>`;
+    });
+    tabsHTML += '</div>';
+    matchesInner = tabsHTML + panelsHTML;
+  } else if (matches.length > 0) {
+    // Single round or no grouping → flat list (with trimmed names)
+    matchesInner = matches.map(renderMatchRow).join('');
+  }
 
   return `
     <div class="tourney-card" onclick="this.classList.toggle('open')">
@@ -205,10 +264,10 @@ function renderTournament(t) {
           <span class="tourney-toggle">▼</span>
         </div>
       </div>
-      ${t.matches?.length ? `<div class="tourney-matches">
-        ${matchesHTML}
+      <div class="tourney-matches">
+        ${matchesInner}
         <a href="/tournament-detail/?id=${t.id}" class="tourney-detail-link" onclick="event.stopPropagation()">View Full Tournament Details →</a>
-      </div>` : `<div class="tourney-matches"><a href="/tournament-detail/?id=${t.id}" class="tourney-detail-link" onclick="event.stopPropagation()">View Full Tournament Details →</a></div>`}
+      </div>
     </div>
   `;
 }
