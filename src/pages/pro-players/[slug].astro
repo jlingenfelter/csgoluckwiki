@@ -34,7 +34,7 @@ const teammates = isRealTeam
   ? PRO_PLAYERS.filter(p => p.team === player.team && p.slug !== player.slug)
   : [];
 
-const title = `${player.name} CS2 Settings — Crosshair, Sensitivity, Gear & Config | CSGOLuck Wiki`;
+const title = `${player.name} Settings, Crosshair, Team & Stats | CSGOLuck Wiki`;
 const description = `${player.name}${player.realName ? ` (${player.realName})` : ''} CS2 settings: ${player.dpi} DPI, ${player.sens} sensitivity (${player.edpi} eDPI), ${player.res} ${player.stretch}, ${player.mouse}. Full crosshair code, gear, and config.`;
 
 const breadcrumbs = [
