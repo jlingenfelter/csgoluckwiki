@@ -1,0 +1,447 @@
+---
+import Base from '../layouts/Base.astro';
+---
+<Base title="Match Details — CS2 Pro Match | CSGOLuck Wiki" description="Detailed CS2 match results with per-map scores, half-by-half breakdowns, and stream links." currentNav="/matches/">
+
+<nav class="breadcrumb" aria-label="Breadcrumb">
+<a href="/">Home</a> <span class="sep">›</span> <a href="/matches/">CS2 Matches</a> <span class="sep">›</span> <span id="breadcrumb-match">Match Details</span>
+</nav>
+
+<div id="match-detail">
+  <div class="loading-state" id="loading"><div class="spinner"></div> Loading match details…</div>
+  <div class="error-state" id="error-state" style="display:none"></div>
+</div>
+
+<style is:global>
+/* ── Loading & Error ── */
+.loading-state { text-align: center; padding: 3rem; color: var(--text2); font-size: .9rem; }
+.spinner { display: inline-block; width: 20px; height: 20px; border: 2px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin .6s linear infinite; margin-right: .5rem; vertical-align: middle; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.error-state { text-align: center; padding: 3rem; color: #e74c3c; }
+.error-state a { color: var(--accent); }
+
+/* ── Back Link ── */
+.back-link { display: inline-flex; align-items: center; gap: .4rem; color: var(--text2); font-size: .85rem; text-decoration: none; margin-bottom: 1.25rem; transition: color .2s; }
+.back-link:hover { color: var(--accent); }
+
+/* ── Match Header Card ── */
+.detail-header { background: var(--bg2); border: 1px solid var(--border); border-radius: 4px; padding: 1.5rem; margin-bottom: 1.25rem; }
+.detail-header.live { border-left: 4px solid #e74c3c; }
+.detail-header.finished { border-left: 4px solid var(--text3); }
+.detail-header.upcoming { border-left: 4px solid var(--accent); }
+.detail-header:hover { border-color: var(--accent); }
+
+.detail-league-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; flex-wrap: wrap; gap: .5rem; }
+.detail-league { display: flex; align-items: center; gap: .6rem; }
+.detail-league img { height: 24px; max-height: 24px; width: auto; max-width: 100px; border-radius: 2px; object-fit: contain; }
+.detail-league-text { font-size: .85rem; color: var(--text2); }
+.detail-league-text strong { color: var(--text1); font-weight: 600; }
+
+.match-tier { font-size: .7rem; font-weight: 700; text-transform: uppercase; padding: .15rem .4rem; border-radius: 3px; }
+.tier-s { background: #f1c40f; color: #000; }
+.tier-a { background: #e67e22; color: #000; }
+.tier-b { background: #3498db; color: #fff; }
+.tier-c { background: #7f8c8d; color: #fff; }
+.tier-d { background: #566573; color: #fff; }
+
+/* ── Scoreboard (teams + series score) ── */
+.scoreboard { display: flex; align-items: center; justify-content: center; gap: 2rem; padding: 1rem 0; }
+.sb-team { display: flex; flex-direction: column; align-items: center; gap: .5rem; flex: 1; max-width: 220px; text-align: center; }
+.sb-logo { width: 64px; height: 64px; max-width: 64px; max-height: 64px; border-radius: 4px; object-fit: contain; background: var(--bg3); }
+.sb-logo-placeholder { width: 64px; height: 64px; border-radius: 4px; background: var(--bg3); display: flex; align-items: center; justify-content: center; font-size: 1rem; font-weight: 700; color: var(--text3); }
+.sb-name { font-size: 1rem; font-weight: 700; font-family: 'Montserrat', sans-serif; }
+.sb-name.winner { color: var(--accent); }
+.sb-location { font-size: .75rem; color: var(--text3); }
+
+.sb-score-center { display: flex; align-items: center; gap: .75rem; flex-shrink: 0; }
+.sb-score-val { font-size: 2.5rem; font-weight: 800; font-family: 'Montserrat', sans-serif; min-width: 2rem; text-align: center; }
+.sb-score-val.winner { color: var(--accent); }
+.sb-sep { font-size: 1.5rem; color: var(--text3); }
+.sb-vs { font-size: 1.2rem; font-weight: 700; color: var(--text3); text-transform: uppercase; }
+
+.match-status-badge { font-size: .75rem; font-weight: 700; text-transform: uppercase; padding: .2rem .5rem; border-radius: 3px; display: inline-block; margin-top: .5rem; }
+.status-running { background: #e74c3c; color: #fff; }
+.status-not_started { background: var(--accent); color: #000; }
+.status-finished { background: var(--bg3); color: var(--text2); }
+
+/* ── Metadata Row ── */
+.meta-row { display: flex; flex-wrap: wrap; gap: .75rem; justify-content: center; padding-top: .75rem; border-top: 1px solid var(--border); margin-top: 1rem; }
+.meta-item { font-size: .8rem; color: var(--text2); display: flex; align-items: center; gap: .3rem; }
+.meta-item strong { color: var(--text1); font-weight: 600; }
+.meta-sep { color: var(--border); }
+
+/* ── Section Headings ── */
+.section-title { font-size: 1.15rem; font-weight: 700; font-family: 'Montserrat', sans-serif; margin: 1.5rem 0 .75rem; color: var(--text1); }
+
+/* ── Map / Game Cards ── */
+.game-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 4px; margin-bottom: .75rem; overflow: hidden; transition: border-color .2s; }
+.game-card:hover { border-color: var(--accent); }
+
+.game-card-header { display: flex; align-items: center; justify-content: space-between; padding: .75rem 1rem; background: var(--bg3); border-bottom: 1px solid var(--border); }
+.game-map-info { display: flex; align-items: center; gap: .6rem; }
+.game-map-img { width: 40px; height: 26px; border-radius: 3px; object-fit: cover; background: var(--bg); }
+.game-map-name { font-weight: 700; font-size: .9rem; font-family: 'Montserrat', sans-serif; }
+.game-position { font-size: .75rem; color: var(--text3); font-weight: 600; }
+.game-winner-tag { font-size: .7rem; font-weight: 700; color: var(--accent); text-transform: uppercase; }
+.game-status-tag { font-size: .7rem; font-weight: 600; color: var(--text3); text-transform: uppercase; }
+
+.game-card-body { padding: .75rem 1rem; }
+
+/* Per-map scoreboard */
+.game-scores { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: .5rem; }
+.game-team { display: flex; align-items: center; gap: .5rem; }
+.game-team.right { justify-content: flex-end; flex-direction: row-reverse; }
+.game-team-name { font-weight: 600; font-size: .85rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.game-team-name.winner { color: var(--accent); }
+.game-team-logo { width: 24px; height: 24px; border-radius: 3px; object-fit: contain; background: var(--bg3); }
+.game-team-logo-placeholder { width: 24px; height: 24px; border-radius: 3px; background: var(--bg3); display: flex; align-items: center; justify-content: center; font-size: .55rem; font-weight: 700; color: var(--text3); }
+
+.game-total-score { display: flex; align-items: center; justify-content: center; gap: .4rem; }
+.game-score-val { font-size: 1.3rem; font-weight: 800; font-family: 'Montserrat', sans-serif; min-width: 1.3rem; text-align: center; }
+.game-score-val.winner { color: var(--accent); }
+.game-score-sep { color: var(--text3); font-size: 1rem; }
+
+/* Half breakdown */
+.half-breakdown { margin-top: .75rem; padding-top: .6rem; border-top: 1px solid var(--border); }
+.half-row { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: .5rem; padding: .2rem 0; font-size: .78rem; }
+.half-label { text-align: center; color: var(--text3); font-weight: 600; min-width: 5rem; font-size: .72rem; text-transform: uppercase; }
+.half-score { font-weight: 700; text-align: center; }
+.half-score.left { text-align: right; }
+.half-score.right { text-align: left; }
+.half-score.winner { color: var(--accent); }
+
+.game-duration { font-size: .75rem; color: var(--text3); margin-top: .5rem; text-align: right; }
+
+/* ── Streams Card ── */
+.streams-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 4px; padding: 1rem 1.25rem; margin-bottom: .75rem; transition: border-color .2s; }
+.streams-card:hover { border-color: var(--accent); }
+.stream-list { display: flex; flex-wrap: wrap; gap: .5rem; }
+.stream-link { display: inline-flex; align-items: center; gap: .4rem; padding: .4rem .8rem; background: var(--bg3); border: 1px solid var(--border); border-radius: 4px; color: var(--accent); font-size: .8rem; font-weight: 600; text-decoration: none; transition: border-color .2s, background .2s; }
+.stream-link:hover { border-color: var(--accent); background: rgba(46,204,113,.08); }
+.stream-lang { font-size: .7rem; color: var(--text3); font-weight: 400; text-transform: uppercase; }
+
+/* ── Responsive ── */
+@media (max-width: 600px) {
+  .scoreboard { flex-direction: column; gap: 1rem; }
+  .sb-team { flex-direction: row; max-width: none; }
+  .sb-logo, .sb-logo-placeholder { width: 48px; height: 48px; }
+  .sb-score-val { font-size: 1.8rem; }
+  .game-scores { font-size: .8rem; }
+  .meta-row { flex-direction: column; align-items: center; gap: .4rem; }
+  .detail-header { padding: 1rem; }
+}
+</style>
+
+<script>
+(function() {
+  const matchId = new URLSearchParams(window.location.search).get('id');
+  if (!matchId) {
+    showError('No match ID found in URL.');
+    return;
+  }
+
+  const container = document.getElementById('match-detail');
+  const loadingEl = document.getElementById('loading');
+  const errorEl = document.getElementById('error-state');
+
+  fetchMatch(matchId);
+
+  async function fetchMatch(id) {
+    try {
+      const res = await fetch(`/api/match-detail?id=${encodeURIComponent(id)}`);
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const data = await res.json();
+      if (!data || data.error) throw new Error(data?.error || 'Invalid response');
+      render(data);
+    } catch (err) {
+      console.error('Failed to load match:', err);
+      showError('Unable to load match details. <a href="/matches/">Back to matches</a>');
+    }
+  }
+
+  function showError(msg) {
+    const loadingEl = document.getElementById('loading');
+    const errorEl = document.getElementById('error-state');
+    if (loadingEl) loadingEl.style.display = 'none';
+    if (errorEl) { errorEl.style.display = 'block'; errorEl.innerHTML = msg; }
+  }
+
+  function tierClass(tier) {
+    return tier ? `tier-${tier}` : 'tier-d';
+  }
+
+  function tierLabel(tier) {
+    const labels = { s: 'S-Tier', a: 'A-Tier', b: 'B-Tier', c: 'C-Tier', d: 'D-Tier' };
+    return labels[tier] || tier?.toUpperCase() || '';
+  }
+
+  function formatDateTime(iso) {
+    if (!iso) return '—';
+    const d = new Date(iso);
+    return d.toLocaleString(undefined, { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+  }
+
+  function formatDuration(beginAt, endAt) {
+    if (!beginAt || !endAt) return null;
+    const ms = new Date(endAt) - new Date(beginAt);
+    if (ms <= 0) return null;
+    const mins = Math.floor(ms / 60000);
+    if (mins < 60) return `${mins}m`;
+    const hrs = Math.floor(mins / 60);
+    return `${hrs}h ${mins % 60}m`;
+  }
+
+  function formatGameLength(seconds) {
+    if (!seconds || seconds <= 0) return null;
+    const m = Math.floor(seconds / 60);
+    const s = seconds % 60;
+    return `${m}:${s.toString().padStart(2, '0')}`;
+  }
+
+  function teamLogoHTML(team, size, cssClass) {
+    if (team.image) {
+      return `<img src="${team.image}" alt="${team.name || ''}" class="${cssClass}" style="width:${size}px;height:${size}px;max-width:${size}px;max-height:${size}px;object-fit:contain;border-radius:4px;background:var(--bg3);flex-shrink:0" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'" /><div class="${cssClass}-placeholder" style="display:none;width:${size}px;height:${size}px;border-radius:4px;background:var(--bg3);align-items:center;justify-content:center;font-size:${Math.max(size * 0.2, 10)}px;font-weight:700;color:var(--text3);flex-shrink:0">${team.acronym || team.name?.[0] || '?'}</div>`;
+    }
+    return `<div class="${cssClass}-placeholder" style="display:flex;width:${size}px;height:${size}px;border-radius:4px;background:var(--bg3);align-items:center;justify-content:center;font-size:${Math.max(size * 0.2, 10)}px;font-weight:700;color:var(--text3);flex-shrink:0">${team.acronym || team.name?.[0] || '?'}</div>`;
+  }
+
+  function render(match) {
+    const t1 = match.opponents?.[0] || { name: 'TBD' };
+    const t2 = match.opponents?.[1] || { name: 'TBD' };
+    const r1 = match.results?.find(r => r.team_id === t1.id)?.score ?? 0;
+    const r2 = match.results?.find(r => r.team_id === t2.id)?.score ?? 0;
+    const isLive = match.status === 'running';
+    const isFinished = match.status === 'finished';
+    const t1Winner = isFinished && match.winnerId === t1.id;
+    const t2Winner = isFinished && match.winnerId === t2.id;
+    const statusClass = isLive ? 'live' : (isFinished ? 'finished' : 'upcoming');
+    const format = match.numberOfGames > 1 ? `BO${match.numberOfGames}` : 'BO1';
+    const duration = formatDuration(match.beginAt, match.endAt);
+
+    // Update breadcrumb
+    const bcEl = document.getElementById('breadcrumb-match');
+    if (bcEl) {
+      const label = t1.name && t2.name ? `${t1.acronym || t1.name} vs ${t2.acronym || t2.name}` : (match.name || 'Match Details');
+      bcEl.textContent = label;
+    }
+
+    // Update page title
+    if (t1.name && t2.name) {
+      document.title = `${t1.name} vs ${t2.name} — CS2 Match Details | CSGOLuck Wiki`;
+    }
+
+    // Status badge
+    let statusBadge = '';
+    if (isLive) {
+      statusBadge = `<span class="match-status-badge status-running">● LIVE</span>`;
+    } else if (isFinished) {
+      statusBadge = `<span class="match-status-badge status-finished">Finished</span>`;
+    } else {
+      statusBadge = `<span class="match-status-badge status-not_started">Upcoming</span>`;
+    }
+
+    // Series score or VS
+    let scoreCenterHTML = '';
+    if (isLive || isFinished) {
+      scoreCenterHTML = `
+        <span class="sb-score-val ${t1Winner ? 'winner' : ''}">${r1}</span>
+        <span class="sb-sep">:</span>
+        <span class="sb-score-val ${t2Winner ? 'winner' : ''}">${r2}</span>`;
+    } else {
+      scoreCenterHTML = `<span class="sb-vs">VS</span>`;
+    }
+
+    // Metadata items
+    const metaItems = [];
+    metaItems.push(`<span class="meta-item"><strong>Format:</strong> ${format}</span>`);
+    if (match.beginAt) metaItems.push(`<span class="meta-item"><strong>Start:</strong> ${formatDateTime(match.beginAt)}</span>`);
+    if (isFinished && match.endAt) metaItems.push(`<span class="meta-item"><strong>End:</strong> ${formatDateTime(match.endAt)}</span>`);
+    if (duration) metaItems.push(`<span class="meta-item"><strong>Duration:</strong> ${duration}</span>`);
+    if (match.tournament?.prizepool) metaItems.push(`<span class="meta-item"><strong>Prize Pool:</strong> ${match.tournament.prizepool}</span>`);
+    if (match.forfeit) metaItems.push(`<span class="meta-item" style="color:#e74c3c"><strong>Forfeit</strong></span>`);
+    if (match.draw) metaItems.push(`<span class="meta-item"><strong>Draw</strong></span>`);
+
+    // Games / Maps
+    let gamesHTML = '';
+    const games = match.games || [];
+    const sortedGames = [...games].sort((a, b) => (a.position || 0) - (b.position || 0));
+
+    if (sortedGames.length > 0) {
+      gamesHTML = `<h2 class="section-title">Map Results</h2>`;
+      sortedGames.forEach(game => {
+        const gt1 = game.teams?.find(t => t.id === t1.id) || game.teams?.[0] || {};
+        const gt2 = game.teams?.find(t => t.id === t2.id) || game.teams?.[1] || {};
+        const gWinner1 = game.winnerId === t1.id;
+        const gWinner2 = game.winnerId === t2.id;
+        const mapName = game.map?.name || 'Unknown Map';
+        const gameDuration = formatGameLength(game.length);
+
+        // Winner tag
+        let winnerTag = '';
+        if (game.status === 'finished' && game.winnerName) {
+          winnerTag = `<span class="game-winner-tag">${game.winnerName} wins</span>`;
+        } else if (game.status === 'running') {
+          winnerTag = `<span class="game-status-tag" style="color:#e74c3c">● Live</span>`;
+        } else if (game.status === 'not_started') {
+          winnerTag = `<span class="game-status-tag">Not Started</span>`;
+        }
+
+        // Half breakdown
+        let halfHTML = '';
+        const hasHalves = (gt1.firstHalfScore != null || gt2.firstHalfScore != null);
+        if (hasHalves) {
+          halfHTML = `<div class="half-breakdown">`;
+
+          // First half
+          if (gt1.firstHalfScore != null || gt2.firstHalfScore != null) {
+            const fh1 = gt1.firstHalfScore ?? '—';
+            const fh2 = gt2.firstHalfScore ?? '—';
+            const fh1w = fh1 > fh2 ? 'winner' : '';
+            const fh2w = fh2 > fh1 ? 'winner' : '';
+            halfHTML += `
+              <div class="half-row">
+                <span class="half-score left ${fh1w}">${fh1}</span>
+                <span class="half-label">1st Half</span>
+                <span class="half-score right ${fh2w}">${fh2}</span>
+              </div>`;
+          }
+
+          // Second half
+          if (gt1.secondHalfScore != null || gt2.secondHalfScore != null) {
+            const sh1 = gt1.secondHalfScore ?? '—';
+            const sh2 = gt2.secondHalfScore ?? '—';
+            const sh1w = sh1 > sh2 ? 'winner' : '';
+            const sh2w = sh2 > sh1 ? 'winner' : '';
+            halfHTML += `
+              <div class="half-row">
+                <span class="half-score left ${sh1w}">${sh1}</span>
+                <span class="half-label">2nd Half</span>
+                <span class="half-score right ${sh2w}">${sh2}</span>
+              </div>`;
+          }
+
+          // Overtime
+          if (gt1.overtimeScore != null || gt2.overtimeScore != null) {
+            const ot1 = gt1.overtimeScore ?? '—';
+            const ot2 = gt2.overtimeScore ?? '—';
+            const ot1w = ot1 > ot2 ? 'winner' : '';
+            const ot2w = ot2 > ot1 ? 'winner' : '';
+            halfHTML += `
+              <div class="half-row">
+                <span class="half-score left ${ot1w}">${ot1}</span>
+                <span class="half-label">Overtime</span>
+                <span class="half-score right ${ot2w}">${ot2}</span>
+              </div>`;
+          }
+
+          halfHTML += `</div>`;
+        }
+
+        gamesHTML += `
+          <div class="game-card">
+            <div class="game-card-header">
+              <div class="game-map-info">
+                ${game.map?.image ? `<img src="${game.map.image}" alt="${mapName}" class="game-map-img" style="width:40px;height:26px;border-radius:3px;object-fit:cover;background:var(--bg)" loading="lazy" onerror="this.style.display='none'" />` : ''}
+                <span class="game-map-name">${mapName}</span>
+                <span class="game-position">Map ${game.position || ''}</span>
+              </div>
+              ${winnerTag}
+            </div>
+            <div class="game-card-body">
+              <div class="game-scores">
+                <div class="game-team">
+                  ${teamLogoHTML(gt1.id ? { id: gt1.id, name: gt1.name, image: t1.image, acronym: t1.acronym } : t1, 24, 'game-team-logo')}
+                  <span class="game-team-name ${gWinner1 ? 'winner' : ''}">${gt1.name || t1.name || 'TBD'}</span>
+                </div>
+                <div class="game-total-score">
+                  <span class="game-score-val ${gWinner1 ? 'winner' : ''}">${gt1.score ?? '—'}</span>
+                  <span class="game-score-sep">:</span>
+                  <span class="game-score-val ${gWinner2 ? 'winner' : ''}">${gt2.score ?? '—'}</span>
+                </div>
+                <div class="game-team right">
+                  ${teamLogoHTML(gt2.id ? { id: gt2.id, name: gt2.name, image: t2.image, acronym: t2.acronym } : t2, 24, 'game-team-logo')}
+                  <span class="game-team-name ${gWinner2 ? 'winner' : ''}">${gt2.name || t2.name || 'TBD'}</span>
+                </div>
+              </div>
+              ${halfHTML}
+              ${gameDuration ? `<div class="game-duration">Duration: ${gameDuration}</div>` : ''}
+            </div>
+          </div>`;
+      });
+    }
+
+    // Streams
+    let streamsHTML = '';
+    const streams = match.streams || [];
+    const validStreams = streams.filter(s => s.url);
+    if (validStreams.length > 0) {
+      streamsHTML = `
+        <h2 class="section-title">Streams</h2>
+        <div class="streams-card">
+          <div class="stream-list">
+            ${validStreams.map(s => `
+              <a href="${s.url}" target="_blank" rel="noopener" class="stream-link">
+                ▶ ${s.language ? `<span class="stream-lang">[${s.language.toUpperCase()}]</span>` : ''} Watch Stream
+              </a>
+            `).join('')}
+          </div>
+        </div>`;
+    }
+
+    // Build full HTML
+    const html = `
+      <a href="/matches/" class="back-link">← Back to Matches</a>
+
+      <div class="detail-header ${statusClass}">
+        <div class="detail-league-row">
+          <div class="detail-league">
+            ${match.league?.image ? `<img src="${match.league.image}" alt="${match.league?.name || ''}" style="height:24px;max-height:24px;width:auto;max-width:100px;object-fit:contain;border-radius:2px" loading="lazy" onerror="this.style.display='none'" />` : ''}
+            <span class="detail-league-text">
+              <strong>${match.league?.name || ''}</strong>
+              ${match.serie?.name ? ' · ' + match.serie.name : ''}
+              ${match.tournament?.name ? ' · ' + match.tournament.name : ''}
+            </span>
+          </div>
+          ${match.tournament?.tier ? `<span class="match-tier ${tierClass(match.tournament.tier)}">${tierLabel(match.tournament.tier)}</span>` : ''}
+        </div>
+
+        <div class="scoreboard">
+          <div class="sb-team">
+            ${teamLogoHTML(t1, 64, 'sb-logo')}
+            <div>
+              <div class="sb-name ${t1Winner ? 'winner' : ''}">${t1.name || 'TBD'}</div>
+              ${t1.location ? `<div class="sb-location">${t1.location}</div>` : ''}
+            </div>
+          </div>
+
+          <div class="sb-score-center">
+            ${scoreCenterHTML}
+          </div>
+
+          <div class="sb-team">
+            ${teamLogoHTML(t2, 64, 'sb-logo')}
+            <div>
+              <div class="sb-name ${t2Winner ? 'winner' : ''}">${t2.name || 'TBD'}</div>
+              ${t2.location ? `<div class="sb-location">${t2.location}</div>` : ''}
+            </div>
+          </div>
+        </div>
+
+        ${statusBadge}
+
+        <div class="meta-row">
+          ${metaItems.join('<span class="meta-sep">·</span>')}
+        </div>
+      </div>
+
+      ${gamesHTML}
+      ${streamsHTML}
+    `;
+
+    loadingEl.style.display = 'none';
+    container.insertAdjacentHTML('beforeend', html);
+  }
+})();
+</script>
+
+</Base>

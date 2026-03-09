@@ -234,7 +234,7 @@ function renderMatchCard(match, type) {
     : '';
 
   return `
-    <div class="match-card ${cardClass}">
+    <a href="/match-detail/?id=${match.id}" class="match-card ${cardClass}" style="display:block;text-decoration:none;color:inherit">
       <div class="match-header">
         <div class="match-league">
           ${match.league?.image ? `<img src="${match.league.image}" alt="${match.league.name}" style="height:18px;max-height:18px;width:auto;max-width:80px;object-fit:contain" />` : ''}
@@ -267,7 +267,7 @@ function renderMatchCard(match, type) {
           ${streamHTML}
         </div>
       </div>
-    </div>
+    </a>
   `;
 }
 

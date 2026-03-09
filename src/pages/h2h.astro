@@ -1,0 +1,788 @@
+---
+import Base from '../layouts/Base.astro';
+import ExploreMore from '../components/ExploreMore.astro';
+
+const title = 'CS2 Team Head-to-Head Comparator — Compare Pro Teams | CSGOLuck Wiki';
+const description = 'Compare CS2 professional teams head-to-head. View rosters, player stats (ADR, KAST%, HLTV Rating), and team averages side by side.';
+---
+
+<Base title={title} description={description} currentNav="/pro-teams/">
+
+<nav class="breadcrumb" aria-label="Breadcrumb">
+  <a href="/">Home</a> <span class="sep">&rsaquo;</span> <a href="/pro-teams/">Pro Teams</a> <span class="sep">&rsaquo;</span> <span>Head-to-Head</span>
+</nav>
+
+<div class="h2h-hero">
+  <h1 class="h2h-title">Team Head-to-Head</h1>
+  <p class="h2h-desc">Select two CS2 pro teams to compare rosters, player stats, and team averages side by side.</p>
+</div>
+
+<!-- Team Selection -->
+<section class="h2h-selector">
+  <div class="h2h-selector-grid">
+    <!-- Team 1 -->
+    <div class="h2h-team-pick" id="pick-team1">
+      <label class="h2h-pick-label" for="search-team1">Team 1</label>
+      <div class="h2h-search-wrap">
+        <input type="text" id="search-team1" class="h2h-search" placeholder="Search for a team..." autocomplete="off" />
+        <div class="h2h-dropdown" id="dropdown-team1"></div>
+      </div>
+      <div class="h2h-selected-team" id="selected-team1">
+        <div class="h2h-placeholder-card">
+          <div class="h2h-placeholder-icon">
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          </div>
+          <span>Select a team</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- VS Divider -->
+    <div class="h2h-vs-divider">
+      <span class="h2h-vs-text">VS</span>
+    </div>
+
+    <!-- Team 2 -->
+    <div class="h2h-team-pick" id="pick-team2">
+      <label class="h2h-pick-label" for="search-team2">Team 2</label>
+      <div class="h2h-search-wrap">
+        <input type="text" id="search-team2" class="h2h-search" placeholder="Search for a team..." autocomplete="off" />
+        <div class="h2h-dropdown" id="dropdown-team2"></div>
+      </div>
+      <div class="h2h-selected-team" id="selected-team2">
+        <div class="h2h-placeholder-card">
+          <div class="h2h-placeholder-icon">
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          </div>
+          <span>Select a team</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Comparison Results -->
+<section class="h2h-results" id="h2h-results" style="display:none">
+
+  <!-- Team Averages Comparison -->
+  <div class="h2h-panel" id="averages-panel">
+    <h2 class="h2h-section-title">Team Averages</h2>
+    <p class="h2h-section-desc">Average player stats across all active roster members with available data.</p>
+    <div class="h2h-loading" id="averages-loading">
+      <div class="spinner"></div> Fetching player stats...
+    </div>
+    <div id="averages-content" style="display:none"></div>
+  </div>
+
+  <!-- Roster Comparison -->
+  <div class="h2h-panel" id="roster-panel">
+    <h2 class="h2h-section-title">Roster Comparison</h2>
+    <div id="roster-content"></div>
+  </div>
+
+</section>
+
+<!-- Empty state before selection -->
+<section class="h2h-empty" id="h2h-empty">
+  <div class="h2h-empty-icon">
+    <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><path d="M20 8v6"/><path d="M23 11h-6"/></svg>
+  </div>
+  <p>Search and select two teams above to see a head-to-head comparison.</p>
+</section>
+
+<div class="h2h-links">
+  <span class="h2h-links-label">Related:</span>
+  <a href="/pro-teams/">Pro Teams</a>
+  <a href="/pro-players/">Pro Players</a>
+  <a href="/matches/">Live Matches</a>
+  <a href="/tournaments/">Tournaments</a>
+  <a href="/pro-gaming-gear/">Pro Gear</a>
+</div>
+
+<ExploreMore context="players" />
+
+<style is:global>
+/* Hero */
+.h2h-hero { margin-bottom: 1.75rem; }
+.h2h-title { font-size: 1.75rem; font-weight: 800; margin-bottom: .4rem; }
+.h2h-desc { color: var(--text2); font-size: .95rem; margin: 0; }
+
+/* Selector Section */
+.h2h-selector { margin-bottom: 2rem; }
+.h2h-selector-grid {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  gap: 1.5rem;
+  align-items: start;
+}
+
+/* VS Divider */
+.h2h-vs-divider {
+  display: flex; align-items: center; justify-content: center;
+  padding-top: 2.5rem;
+}
+.h2h-vs-text {
+  font-size: 1.4rem; font-weight: 800; color: var(--text3);
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: 50%; width: 52px; height: 52px;
+  display: flex; align-items: center; justify-content: center;
+  letter-spacing: 1px;
+}
+
+/* Team Pick */
+.h2h-team-pick { position: relative; }
+.h2h-pick-label { display: block; font-size: .8rem; font-weight: 700; color: var(--text2); text-transform: uppercase; letter-spacing: .5px; margin-bottom: .5rem; }
+
+/* Search Input */
+.h2h-search-wrap { position: relative; margin-bottom: .75rem; }
+.h2h-search {
+  width: 100%; padding: .65rem .85rem; font-size: .9rem;
+  background: var(--bg2); border: 1px solid var(--border); border-radius: 4px;
+  color: var(--text1); font-family: inherit; outline: none;
+  transition: border-color .2s;
+  box-sizing: border-box;
+}
+.h2h-search::placeholder { color: var(--text3); }
+.h2h-search:focus { border-color: var(--accent); }
+
+/* Dropdown */
+.h2h-dropdown {
+  position: absolute; top: 100%; left: 0; right: 0;
+  background: var(--bg2); border: 1px solid var(--border); border-top: none;
+  border-radius: 0 0 4px 4px; max-height: 260px; overflow-y: auto;
+  display: none; z-index: 100;
+  box-shadow: 0 8px 24px rgba(0,0,0,.4);
+}
+.h2h-dropdown.open { display: block; }
+
+.h2h-dropdown-item {
+  display: flex; align-items: center; gap: .65rem;
+  padding: .6rem .85rem; cursor: pointer;
+  border-left: 3px solid transparent;
+  transition: background .15s, border-color .15s;
+}
+.h2h-dropdown-item:hover { background: var(--bg3); border-left-color: var(--accent); }
+.h2h-dropdown-item img {
+  width: 28px; height: 28px; border-radius: 4px; object-fit: contain;
+  background: var(--bg3); flex-shrink: 0;
+}
+.h2h-dropdown-item-placeholder {
+  width: 28px; height: 28px; border-radius: 4px; background: var(--bg3);
+  display: flex; align-items: center; justify-content: center;
+  font-size: .65rem; font-weight: 700; color: var(--text3); flex-shrink: 0;
+}
+.h2h-dropdown-item-info { flex: 1; min-width: 0; }
+.h2h-dropdown-item-name { font-weight: 600; font-size: .85rem; display: block; }
+.h2h-dropdown-item-meta { font-size: .72rem; color: var(--text3); display: block; }
+.h2h-dropdown-loading { padding: 1rem; text-align: center; color: var(--text3); font-size: .85rem; }
+.h2h-dropdown-empty { padding: 1rem; text-align: center; color: var(--text3); font-size: .85rem; }
+
+/* Selected Team Card */
+.h2h-selected-team { min-height: 100px; }
+.h2h-placeholder-card {
+  background: var(--bg2); border: 1px dashed var(--border); border-radius: 4px;
+  padding: 1.5rem; text-align: center; color: var(--text3); font-size: .85rem;
+  display: flex; flex-direction: column; align-items: center; gap: .5rem;
+}
+.h2h-placeholder-icon { opacity: .3; }
+
+.h2h-team-card {
+  background: var(--bg2); border: 1px solid var(--border); border-radius: 4px;
+  padding: 1rem 1.25rem; display: flex; align-items: center; gap: .85rem;
+  border-left: 3px solid var(--accent);
+  position: relative;
+}
+.h2h-team-card img {
+  width: 48px; height: 48px; border-radius: 4px; object-fit: contain;
+  background: var(--bg3); flex-shrink: 0;
+}
+.h2h-team-card-placeholder {
+  width: 48px; height: 48px; border-radius: 4px; background: var(--bg3);
+  display: flex; align-items: center; justify-content: center;
+  font-size: .85rem; font-weight: 700; color: var(--text3); flex-shrink: 0;
+}
+.h2h-team-card-info { flex: 1; min-width: 0; }
+.h2h-team-card-name { font-weight: 700; font-size: 1.05rem; display: block; }
+.h2h-team-card-meta { font-size: .8rem; color: var(--text2); margin-top: .15rem; display: block; }
+.h2h-team-card-remove {
+  position: absolute; top: .5rem; right: .5rem;
+  background: none; border: none; color: var(--text3); cursor: pointer;
+  padding: .25rem; line-height: 1; font-size: 1rem;
+  transition: color .2s;
+}
+.h2h-team-card-remove:hover { color: #e74c3c; }
+
+/* Results Section */
+.h2h-results { margin-bottom: 2rem; }
+.h2h-panel {
+  background: var(--bg2); border: 1px solid var(--border); border-radius: 4px;
+  padding: 1.5rem; margin-bottom: 1.25rem;
+}
+.h2h-section-title { font-size: 1.15rem; font-weight: 700; margin: 0 0 .25rem; }
+.h2h-section-desc { color: var(--text2); font-size: .85rem; margin: 0 0 1.25rem; }
+
+/* Loading */
+.h2h-loading { text-align: center; padding: 1.5rem; color: var(--text2); font-size: .9rem; }
+.spinner { display: inline-block; width: 18px; height: 18px; border: 2px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin .6s linear infinite; margin-right: .4rem; vertical-align: middle; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* Stat Bars */
+.h2h-stat-row {
+  display: grid; grid-template-columns: 80px 1fr 80px;
+  align-items: center; gap: .75rem;
+  padding: .6rem 0; border-bottom: 1px solid var(--border);
+}
+.h2h-stat-row:last-child { border-bottom: none; }
+.h2h-stat-val {
+  font-size: .95rem; font-weight: 700; font-family: 'Montserrat', sans-serif;
+}
+.h2h-stat-val.left { text-align: right; }
+.h2h-stat-val.right { text-align: left; }
+.h2h-stat-val.better { color: var(--accent); }
+
+.h2h-stat-bar-wrap {
+  display: flex; flex-direction: column; align-items: center; gap: .2rem;
+}
+.h2h-stat-label {
+  font-size: .72rem; font-weight: 600; color: var(--text3); text-transform: uppercase;
+  letter-spacing: .3px;
+}
+.h2h-stat-bar-track {
+  width: 100%; height: 8px; background: var(--bg3); border-radius: 4px;
+  display: flex; overflow: hidden; position: relative;
+}
+.h2h-stat-bar-left {
+  height: 100%; border-radius: 4px 0 0 4px;
+  transition: width .5s ease;
+  position: absolute; right: 50%; top: 0;
+}
+.h2h-stat-bar-right {
+  height: 100%; border-radius: 0 4px 4px 0;
+  transition: width .5s ease;
+  position: absolute; left: 50%; top: 0;
+}
+.h2h-stat-bar-left.winning { background: var(--accent); }
+.h2h-stat-bar-left.losing { background: var(--text3); opacity: .4; }
+.h2h-stat-bar-right.winning { background: var(--accent); }
+.h2h-stat-bar-right.losing { background: var(--text3); opacity: .4; }
+.h2h-stat-bar-left.tied { background: var(--text3); opacity: .6; }
+.h2h-stat-bar-right.tied { background: var(--text3); opacity: .6; }
+
+.h2h-stat-bar-divider {
+  position: absolute; left: 50%; top: -2px; bottom: -2px; width: 2px;
+  background: var(--bg); z-index: 1; transform: translateX(-50%);
+}
+
+/* Team headers above bars */
+.h2h-bar-header {
+  display: grid; grid-template-columns: 80px 1fr 80px; gap: .75rem;
+  margin-bottom: .5rem; padding-bottom: .65rem; border-bottom: 1px solid var(--border);
+}
+.h2h-bar-team-name {
+  font-size: .82rem; font-weight: 700; color: var(--text2);
+  display: flex; align-items: center; gap: .4rem;
+}
+.h2h-bar-team-name.left { justify-content: flex-end; }
+.h2h-bar-team-name.right { justify-content: flex-start; }
+.h2h-bar-team-name img { width: 20px; height: 20px; border-radius: 2px; object-fit: contain; }
+.h2h-bar-center { text-align: center; font-size: .72rem; font-weight: 600; color: var(--text3); text-transform: uppercase; letter-spacing: .5px; line-height: 20px; }
+
+/* No stats message */
+.h2h-no-stats { text-align: center; padding: 1rem; color: var(--text3); font-size: .85rem; }
+
+/* Roster Grid */
+.h2h-roster-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;
+}
+.h2h-roster-col-header {
+  display: flex; align-items: center; gap: .5rem;
+  padding-bottom: .5rem; border-bottom: 2px solid var(--accent);
+  margin-bottom: .75rem;
+}
+.h2h-roster-col-header img { width: 24px; height: 24px; border-radius: 3px; object-fit: contain; }
+.h2h-roster-col-header span { font-weight: 700; font-size: .95rem; }
+
+.h2h-player-card {
+  background: var(--bg3); border: 1px solid var(--border); border-radius: 4px;
+  padding: .75rem .85rem; margin-bottom: .5rem;
+  display: flex; align-items: flex-start; gap: .65rem;
+  border-left: 3px solid transparent;
+  transition: border-color .2s;
+}
+.h2h-player-card:hover { border-left-color: var(--accent); }
+
+.h2h-player-img {
+  width: 42px; height: 42px; border-radius: 4px; object-fit: cover;
+  background: var(--bg2); flex-shrink: 0;
+}
+.h2h-player-img-placeholder {
+  width: 42px; height: 42px; border-radius: 4px; background: var(--bg2);
+  display: flex; align-items: center; justify-content: center;
+  font-size: .75rem; font-weight: 700; color: var(--text3); flex-shrink: 0;
+}
+.h2h-player-info { flex: 1; min-width: 0; }
+.h2h-player-name { font-weight: 700; font-size: .88rem; display: block; margin-bottom: .15rem; }
+.h2h-player-real-name { font-size: .72rem; color: var(--text3); display: block; margin-bottom: .3rem; }
+.h2h-player-role {
+  display: inline-block; font-size: .65rem; font-weight: 700;
+  text-transform: uppercase; padding: .1rem .35rem; border-radius: 3px;
+  background: var(--bg2); color: var(--text2); margin-bottom: .35rem;
+}
+
+.h2h-player-stats-grid {
+  display: grid; grid-template-columns: 1fr 1fr 1fr; gap: .25rem;
+  margin-top: .25rem;
+}
+.h2h-player-stat {
+  text-align: center; padding: .2rem; background: var(--bg2); border-radius: 3px;
+}
+.h2h-player-stat-label { font-size: .6rem; color: var(--text3); text-transform: uppercase; font-weight: 600; display: block; }
+.h2h-player-stat-val { font-size: .8rem; font-weight: 700; display: block; }
+.h2h-player-stat-loading { font-size: .65rem; color: var(--text3); font-style: italic; }
+
+.h2h-player-no-stats { font-size: .72rem; color: var(--text3); font-style: italic; margin-top: .25rem; }
+
+/* Country flag proxy (text fallback) */
+.h2h-flag { font-size: .75rem; margin-right: .15rem; }
+
+/* Empty state */
+.h2h-empty { text-align: center; padding: 3rem 1rem; color: var(--text3); }
+.h2h-empty-icon { margin-bottom: .75rem; opacity: .25; }
+.h2h-empty p { font-size: .95rem; max-width: 400px; margin: 0 auto; }
+
+/* Related Links */
+.h2h-links { display: flex; flex-wrap: wrap; gap: .5rem; align-items: center; margin: 2rem 0; }
+.h2h-links-label { font-size: .8rem; font-weight: 600; color: var(--text3); }
+.h2h-links a {
+  font-size: .8rem; color: var(--text2); text-decoration: none; padding: .3rem .6rem;
+  background: var(--bg2); border: 1px solid var(--border); border-radius: 4px;
+  transition: border-color .2s, color .2s;
+}
+.h2h-links a:hover { border-color: var(--accent); color: var(--accent); }
+
+/* Responsive */
+@media (max-width: 768px) {
+  .h2h-selector-grid {
+    grid-template-columns: 1fr;
+    gap: .75rem;
+  }
+  .h2h-vs-divider { padding-top: 0; padding-bottom: 0; }
+  .h2h-vs-text { width: 40px; height: 40px; font-size: 1rem; }
+  .h2h-stat-row { grid-template-columns: 60px 1fr 60px; gap: .4rem; }
+  .h2h-stat-val { font-size: .82rem; }
+  .h2h-bar-header { grid-template-columns: 60px 1fr 60px; gap: .4rem; }
+  .h2h-roster-grid { grid-template-columns: 1fr; }
+  .h2h-title { font-size: 1.35rem; }
+}
+
+@media (max-width: 480px) {
+  .h2h-stat-row { grid-template-columns: 50px 1fr 50px; gap: .3rem; }
+  .h2h-stat-val { font-size: .75rem; }
+  .h2h-stat-label { font-size: .6rem; }
+  .h2h-bar-header { grid-template-columns: 50px 1fr 50px; gap: .3rem; }
+}
+</style>
+
+<script>
+// ── State ──
+let team1 = null;
+let team2 = null;
+let team1Stats = {};
+let team2Stats = {};
+let searchTimers = {};
+
+// ── Debounced search ──
+function debounce(fn, ms) {
+  let timer;
+  return function (...args) {
+    clearTimeout(timer);
+    timer = setTimeout(() => fn.apply(this, args), ms);
+  };
+}
+
+// ── Team search ──
+async function searchTeams(query) {
+  if (!query || query.length < 2) return [];
+  try {
+    const res = await fetch(`/api/team-stats?name=${encodeURIComponent(query)}`);
+    if (!res.ok) return [];
+    const data = await res.json();
+    return data.teams || [];
+  } catch (e) {
+    console.error('Team search error:', e);
+    return [];
+  }
+}
+
+// ── Player stats ──
+async function fetchPlayerStats(slug) {
+  try {
+    const res = await fetch(`/api/player-stats?slug=${encodeURIComponent(slug)}`);
+    if (!res.ok) return null;
+    return await res.json();
+  } catch (e) {
+    console.error(`Player stats error (${slug}):`, e);
+    return null;
+  }
+}
+
+// ── Render dropdown items ──
+function renderDropdownItems(teams) {
+  return teams.map(t => {
+    const logoHTML = t.image
+      ? `<img src="${t.image}" alt="${t.name}" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'" /><div class="h2h-dropdown-item-placeholder" style="display:none">${(t.acronym || t.name?.[0] || '?')}</div>`
+      : `<div class="h2h-dropdown-item-placeholder">${(t.acronym || t.name?.[0] || '?')}</div>`;
+    const playerCount = t.players ? t.players.length : 0;
+    const meta = [t.acronym, t.location, playerCount ? `${playerCount} players` : ''].filter(Boolean).join(' · ');
+    return `<div class="h2h-dropdown-item" data-team-id="${t.id}">${logoHTML}<div class="h2h-dropdown-item-info"><span class="h2h-dropdown-item-name">${t.name}</span><span class="h2h-dropdown-item-meta">${meta}</span></div></div>`;
+  }).join('');
+}
+
+// ── Render selected team card ──
+function renderSelectedTeam(team) {
+  const logoHTML = team.image
+    ? `<img src="${team.image}" alt="${team.name}" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'" /><div class="h2h-team-card-placeholder" style="display:none">${(team.acronym || team.name?.[0] || '?')}</div>`
+    : `<div class="h2h-team-card-placeholder">${(team.acronym || team.name?.[0] || '?')}</div>`;
+  const activePlayers = (team.players || []).filter(p => p.active !== false);
+  const meta = [team.acronym, team.location, `${activePlayers.length} players`].filter(Boolean).join(' · ');
+  return `<div class="h2h-team-card">${logoHTML}<div class="h2h-team-card-info"><span class="h2h-team-card-name">${team.name}</span><span class="h2h-team-card-meta">${meta}</span></div><button class="h2h-team-card-remove" title="Remove team">&times;</button></div>`;
+}
+
+// ── Setup search for a side ──
+function setupSearch(side) {
+  const input = document.getElementById(`search-${side}`);
+  const dropdown = document.getElementById(`dropdown-${side}`);
+  const selectedEl = document.getElementById(`selected-${side}`);
+
+  const doSearch = debounce(async (query) => {
+    if (query.length < 2) {
+      dropdown.classList.remove('open');
+      dropdown.innerHTML = '';
+      return;
+    }
+    dropdown.classList.add('open');
+    dropdown.innerHTML = '<div class="h2h-dropdown-loading"><span class="spinner"></span> Searching...</div>';
+
+    const teams = await searchTeams(query);
+    if (teams.length === 0) {
+      dropdown.innerHTML = '<div class="h2h-dropdown-empty">No teams found</div>';
+      return;
+    }
+
+    // Filter out already-selected team
+    const otherId = side === 'team1' ? team2?.id : team1?.id;
+    const filtered = otherId ? teams.filter(t => t.id !== otherId) : teams;
+
+    if (filtered.length === 0) {
+      dropdown.innerHTML = '<div class="h2h-dropdown-empty">No other teams found</div>';
+      return;
+    }
+    dropdown.innerHTML = renderDropdownItems(filtered);
+
+    // Click handlers
+    dropdown.querySelectorAll('.h2h-dropdown-item').forEach(item => {
+      item.addEventListener('click', () => {
+        const teamId = parseInt(item.dataset.teamId, 10);
+        const team = teams.find(t => t.id === teamId);
+        if (!team) return;
+        selectTeam(side, team);
+        dropdown.classList.remove('open');
+        dropdown.innerHTML = '';
+        input.value = '';
+      });
+    });
+  }, 300);
+
+  input.addEventListener('input', (e) => doSearch(e.target.value.trim()));
+  input.addEventListener('focus', (e) => {
+    if (e.target.value.trim().length >= 2) doSearch(e.target.value.trim());
+  });
+
+  // Close dropdown on outside click
+  document.addEventListener('click', (e) => {
+    if (!e.target.closest(`#pick-${side}`)) {
+      dropdown.classList.remove('open');
+    }
+  });
+}
+
+// ── Select a team ──
+function selectTeam(side, team) {
+  if (side === 'team1') team1 = team;
+  else team2 = team;
+
+  const selectedEl = document.getElementById(`selected-${side}`);
+  selectedEl.innerHTML = renderSelectedTeam(team);
+
+  // Remove button handler
+  selectedEl.querySelector('.h2h-team-card-remove').addEventListener('click', () => {
+    if (side === 'team1') { team1 = null; team1Stats = {}; }
+    else { team2 = null; team2Stats = {}; }
+    selectedEl.innerHTML = `<div class="h2h-placeholder-card"><div class="h2h-placeholder-icon"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div><span>Select a team</span></div>`;
+    hideResults();
+  });
+
+  // If both teams selected, show comparison
+  if (team1 && team2) {
+    showComparison();
+  }
+}
+
+// ── Show / Hide ──
+function hideResults() {
+  document.getElementById('h2h-results').style.display = 'none';
+  document.getElementById('h2h-empty').style.display = 'block';
+}
+
+async function showComparison() {
+  document.getElementById('h2h-empty').style.display = 'none';
+  document.getElementById('h2h-results').style.display = 'block';
+
+  // Show rosters immediately
+  renderRosters();
+
+  // Fetch and show averages
+  await fetchAndShowAverages();
+}
+
+// ── Render Rosters ──
+function renderRosters() {
+  const container = document.getElementById('roster-content');
+  const t1Players = (team1.players || []).filter(p => p.active !== false);
+  const t2Players = (team2.players || []).filter(p => p.active !== false);
+
+  function playerCardHTML(p, teamSide) {
+    const imgHTML = p.image
+      ? `<img class="h2h-player-img" src="${p.image}" alt="${p.name}" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'" /><div class="h2h-player-img-placeholder" style="display:none">${p.name?.[0] || '?'}</div>`
+      : `<div class="h2h-player-img-placeholder">${p.name?.[0] || '?'}</div>`;
+    const realName = [p.firstName, p.lastName].filter(Boolean).join(' ');
+    const roleHTML = p.role ? `<span class="h2h-player-role">${p.role}</span>` : '';
+    const flagHTML = p.nationality ? `<span class="h2h-flag" title="${p.nationality}">${countryToFlag(p.nationality)}</span>` : '';
+
+    return `<div class="h2h-player-card" data-player-slug="${p.slug}" data-team-side="${teamSide}">
+      ${imgHTML}
+      <div class="h2h-player-info">
+        <span class="h2h-player-name">${flagHTML}${p.name}</span>
+        ${realName ? `<span class="h2h-player-real-name">${realName}${p.age ? ` (${p.age})` : ''}</span>` : ''}
+        ${roleHTML}
+        <div class="h2h-player-stats-grid" id="pstats-${p.slug}">
+          <div class="h2h-player-stat"><span class="h2h-player-stat-label">ADR</span><span class="h2h-player-stat-loading">...</span></div>
+          <div class="h2h-player-stat"><span class="h2h-player-stat-label">KAST</span><span class="h2h-player-stat-loading">...</span></div>
+          <div class="h2h-player-stat"><span class="h2h-player-stat-label">Rating</span><span class="h2h-player-stat-loading">...</span></div>
+        </div>
+      </div>
+    </div>`;
+  }
+
+  function teamLogo(team) {
+    return team.image ? `<img src="${team.image}" alt="${team.name}" style="width:24px;height:24px;border-radius:3px;object-fit:contain" onerror="this.style.display='none'" />` : '';
+  }
+
+  container.innerHTML = `<div class="h2h-roster-grid">
+    <div>
+      <div class="h2h-roster-col-header">${teamLogo(team1)}<span>${team1.name}</span></div>
+      ${t1Players.length > 0 ? t1Players.map(p => playerCardHTML(p, 'team1')).join('') : '<p class="h2h-no-stats">No active players found</p>'}
+    </div>
+    <div>
+      <div class="h2h-roster-col-header">${teamLogo(team2)}<span>${team2.name}</span></div>
+      ${t2Players.length > 0 ? t2Players.map(p => playerCardHTML(p, 'team2')).join('') : '<p class="h2h-no-stats">No active players found</p>'}
+    </div>
+  </div>`;
+}
+
+// ── Fetch player stats & compute averages ──
+async function fetchAndShowAverages() {
+  const loadingEl = document.getElementById('averages-loading');
+  const contentEl = document.getElementById('averages-content');
+  loadingEl.style.display = 'block';
+  contentEl.style.display = 'none';
+
+  const t1Players = (team1.players || []).filter(p => p.active !== false);
+  const t2Players = (team2.players || []).filter(p => p.active !== false);
+
+  const allPlayers = [
+    ...t1Players.map(p => ({ ...p, teamSide: 'team1' })),
+    ...t2Players.map(p => ({ ...p, teamSide: 'team2' })),
+  ];
+
+  // Fetch all player stats in parallel
+  const results = await Promise.allSettled(
+    allPlayers.map(p => fetchPlayerStats(p.slug))
+  );
+
+  team1Stats = {};
+  team2Stats = {};
+
+  results.forEach((result, i) => {
+    const player = allPlayers[i];
+    const data = result.status === 'fulfilled' ? result.value : null;
+    const statsMap = player.teamSide === 'team1' ? team1Stats : team2Stats;
+
+    if (data && data.stats && data.stats.averages) {
+      statsMap[player.slug] = data.stats.averages;
+      // Update player card stats
+      updatePlayerCardStats(player.slug, data.stats.averages);
+    } else {
+      // Show no data
+      updatePlayerCardNoStats(player.slug);
+    }
+  });
+
+  // Compute team averages
+  const t1Avgs = computeTeamAverages(team1Stats);
+  const t2Avgs = computeTeamAverages(team2Stats);
+
+  loadingEl.style.display = 'none';
+  contentEl.style.display = 'block';
+
+  if (t1Avgs.count === 0 && t2Avgs.count === 0) {
+    contentEl.innerHTML = '<p class="h2h-no-stats">No player stats data available for either team.</p>';
+    return;
+  }
+
+  renderAverages(t1Avgs, t2Avgs);
+}
+
+function updatePlayerCardStats(slug, avgs) {
+  const el = document.getElementById(`pstats-${CSS.escape(slug)}`);
+  if (!el) return;
+  const adr = avgs.adr != null ? avgs.adr.toFixed(1) : '—';
+  const kastRaw = avgs.kast;
+  const kastVal = kastRaw != null ? (kastRaw > 1 ? kastRaw : kastRaw * 100) : null;
+  const kast = kastVal != null ? kastVal.toFixed(1) + '%' : '—';
+  const rating = avgs.rating != null ? avgs.rating.toFixed(2) : '—';
+  el.innerHTML = `
+    <div class="h2h-player-stat"><span class="h2h-player-stat-label">ADR</span><span class="h2h-player-stat-val">${adr}</span></div>
+    <div class="h2h-player-stat"><span class="h2h-player-stat-label">KAST</span><span class="h2h-player-stat-val">${kast}</span></div>
+    <div class="h2h-player-stat"><span class="h2h-player-stat-label">Rating</span><span class="h2h-player-stat-val">${rating}</span></div>
+  `;
+}
+
+function updatePlayerCardNoStats(slug) {
+  const el = document.getElementById(`pstats-${CSS.escape(slug)}`);
+  if (!el) return;
+  el.innerHTML = '<span class="h2h-player-no-stats">Stats unavailable</span>';
+}
+
+function computeTeamAverages(statsMap) {
+  const values = Object.values(statsMap);
+  if (values.length === 0) return { count: 0, adr: 0, kast: 0, rating: 0, kills: 0, deaths: 0, assists: 0, headshots: 0, firstKillsDiff: 0, flashAssists: 0 };
+
+  const sum = (key) => values.reduce((s, v) => s + (v[key] || 0), 0);
+  const avg = (key) => sum(key) / values.length;
+
+  return {
+    count: values.length,
+    adr: avg('adr'),
+    kast: avg('kast'),
+    rating: avg('rating'),
+    kills: avg('kills'),
+    deaths: avg('deaths'),
+    assists: avg('assists'),
+    headshots: avg('headshots'),
+    firstKillsDiff: avg('firstKillsDiff'),
+    flashAssists: avg('flashAssists'),
+  };
+}
+
+// ── Render Averages Bars ──
+function renderAverages(t1, t2) {
+  const contentEl = document.getElementById('averages-content');
+
+  function teamLogoSmall(team) {
+    return team.image ? `<img src="${team.image}" alt="${team.name}" onerror="this.style.display='none'" />` : '';
+  }
+
+  const stats = [
+    { key: 'rating', label: 'HLTV Rating', format: v => v.toFixed(2), higherBetter: true },
+    { key: 'adr', label: 'ADR', format: v => v.toFixed(1), higherBetter: true },
+    { key: 'kast', label: 'KAST%', format: v => { const pct = v > 1 ? v : v * 100; return pct.toFixed(1) + '%'; }, higherBetter: true },
+    { key: 'kills', label: 'Avg Kills', format: v => v.toFixed(1), higherBetter: true },
+    { key: 'deaths', label: 'Avg Deaths', format: v => v.toFixed(1), higherBetter: false },
+    { key: 'assists', label: 'Avg Assists', format: v => v.toFixed(1), higherBetter: true },
+    { key: 'headshots', label: 'Avg HS', format: v => v.toFixed(1), higherBetter: true },
+    { key: 'firstKillsDiff', label: 'FK Diff', format: v => (v >= 0 ? '+' : '') + v.toFixed(2), higherBetter: true },
+    { key: 'flashAssists', label: 'Flash Assists', format: v => v.toFixed(1), higherBetter: true },
+  ];
+
+  let html = `<div class="h2h-bar-header">
+    <div class="h2h-bar-team-name left">${teamLogoSmall(team1)} ${team1.acronym || team1.name}</div>
+    <div class="h2h-bar-center">Stat</div>
+    <div class="h2h-bar-team-name right">${teamLogoSmall(team2)} ${team2.acronym || team2.name}</div>
+  </div>`;
+
+  stats.forEach(stat => {
+    const v1 = t1[stat.key] || 0;
+    const v2 = t2[stat.key] || 0;
+    const f1 = t1.count > 0 ? stat.format(v1) : '—';
+    const f2 = t2.count > 0 ? stat.format(v2) : '—';
+
+    let t1Better, t2Better;
+    if (stat.higherBetter) {
+      t1Better = v1 > v2;
+      t2Better = v2 > v1;
+    } else {
+      t1Better = v1 < v2;
+      t2Better = v2 < v1;
+    }
+    const tied = Math.abs(v1 - v2) < 0.001;
+
+    // Bar widths: proportional to max, capped at 50% of track
+    const maxVal = Math.max(Math.abs(v1), Math.abs(v2), 0.001);
+    const w1 = (Math.abs(v1) / maxVal) * 50;
+    const w2 = (Math.abs(v2) / maxVal) * 50;
+
+    const cls1 = tied ? 'tied' : (t1Better ? 'winning' : 'losing');
+    const cls2 = tied ? 'tied' : (t2Better ? 'winning' : 'losing');
+
+    html += `<div class="h2h-stat-row">
+      <div class="h2h-stat-val left ${t1Better && !tied ? 'better' : ''}">${f1}</div>
+      <div class="h2h-stat-bar-wrap">
+        <span class="h2h-stat-label">${stat.label}</span>
+        <div class="h2h-stat-bar-track">
+          <div class="h2h-stat-bar-left ${cls1}" style="width:${w1}%"></div>
+          <div class="h2h-stat-bar-divider"></div>
+          <div class="h2h-stat-bar-right ${cls2}" style="width:${w2}%"></div>
+        </div>
+      </div>
+      <div class="h2h-stat-val right ${t2Better && !tied ? 'better' : ''}">${f2}</div>
+    </div>`;
+  });
+
+  // Data info line
+  html += `<p style="text-align:center;font-size:.72rem;color:var(--text3);margin-top:1rem">Based on ${t1.count} player${t1.count !== 1 ? 's' : ''} (${team1.acronym || team1.name}) and ${t2.count} player${t2.count !== 1 ? 's' : ''} (${team2.acronym || team2.name}) with available stats.</p>`;
+
+  contentEl.innerHTML = html;
+}
+
+// ── Country to flag emoji ──
+function countryToFlag(countryName) {
+  const map = {
+    'Russia': 'RU', 'Ukraine': 'UA', 'Denmark': 'DK', 'Sweden': 'SE', 'Finland': 'FI',
+    'France': 'FR', 'Germany': 'DE', 'Poland': 'PL', 'Brazil': 'BR', 'United States': 'US',
+    'Canada': 'CA', 'China': 'CN', 'South Korea': 'KR', 'Kazakhstan': 'KZ', 'Australia': 'AU',
+    'Norway': 'NO', 'Bosnia and Herzegovina': 'BA', 'Serbia': 'RS', 'Montenegro': 'ME',
+    'Czech Republic': 'CZ', 'Slovakia': 'SK', 'Latvia': 'LV', 'Lithuania': 'LT', 'Estonia': 'EE',
+    'Netherlands': 'NL', 'Belgium': 'BE', 'Spain': 'ES', 'Portugal': 'PT', 'Italy': 'IT',
+    'Romania': 'RO', 'Bulgaria': 'BG', 'Croatia': 'HR', 'Hungary': 'HU', 'Turkey': 'TR',
+    'United Kingdom': 'GB', 'Austria': 'AT', 'Switzerland': 'CH', 'Israel': 'IL',
+    'Argentina': 'AR', 'Chile': 'CL', 'Mexico': 'MX', 'Indonesia': 'ID', 'India': 'IN',
+    'Japan': 'JP', 'Mongolia': 'MN', 'New Zealand': 'NZ', 'Kosovo': 'XK', 'Georgia': 'GE',
+    'Belarus': 'BY', 'Uruguay': 'UY', 'Peru': 'PE', 'Colombia': 'CO', 'Venezuela': 'VE',
+    'Philippines': 'PH', 'Thailand': 'TH', 'Vietnam': 'VN', 'Malaysia': 'MY', 'Singapore': 'SG',
+    'Taiwan': 'TW', 'Hong Kong': 'HK', 'Ireland': 'IE', 'Iceland': 'IS', 'Greece': 'GR',
+    'Slovenia': 'SI', 'North Macedonia': 'MK', 'Albania': 'AL', 'Moldova': 'MD', 'Cyprus': 'CY',
+    'Malta': 'MT', 'Luxembourg': 'LU', 'Pakistan': 'PK', 'Bangladesh': 'BD', 'Sri Lanka': 'LK',
+    'Nepal': 'NP', 'Myanmar': 'MM', 'Uzbekistan': 'UZ',
+  };
+  const code = map[countryName];
+  if (!code) return '';
+  return String.fromCodePoint(...[...code].map(c => 0x1f1e6 + c.charCodeAt(0) - 65));
+}
+
+// ── Init ──
+setupSearch('team1');
+setupSearch('team2');
+</script>
+
+</Base>

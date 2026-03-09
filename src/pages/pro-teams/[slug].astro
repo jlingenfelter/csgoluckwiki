@@ -188,6 +188,15 @@ const faqs = [
   </div>
 </section>
 
+<!-- PandaScore Live Performance Stats -->
+<section class="tp-section" id="performance">
+  <h2>Live Performance Stats</h2>
+  <p class="tp-section-desc">Real-time player performance data from professional matches, powered by PandaScore.</p>
+  <div id="teamLiveStats">
+    <div class="tp-ls-loading"><div class="tp-ls-spinner"></div> Loading performance data for {team.name}…</div>
+  </div>
+</section>
+
 <!-- Full Gear Comparison Table -->
 <section class="tp-section">
   <h2>{team.name} Gear Comparison</h2>
@@ -389,6 +398,31 @@ const faqs = [
 .tp-related-name{font-size:.88rem;font-weight:700;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .tp-related-count{font-size:.7rem;color:var(--text2)}
 
+/* Live Performance Stats */
+.tp-ls-loading{text-align:center;padding:1.5rem;color:var(--text2);font-size:.85rem}
+.tp-ls-spinner{display:inline-block;width:16px;height:16px;border:2px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .6s linear infinite;margin-right:.4rem;vertical-align:middle}
+@keyframes spin{to{transform:rotate(360deg)}}
+.tp-ls-error{text-align:center;padding:1.25rem;color:var(--text3);font-size:.82rem;background:var(--bg);border:1px solid var(--border);border-radius:4px}
+
+.tp-ls-wrap{overflow-x:auto;border:1px solid var(--border);border-radius:4px}
+.tp-ls-table{width:100%;border-collapse:collapse;background:var(--bg2);font-size:.82rem}
+.tp-ls-table thead{background:var(--bg3)}
+.tp-ls-table th{padding:.65rem .5rem;text-align:center;font-weight:700;color:var(--text);text-transform:uppercase;font-size:.65rem;letter-spacing:.04em;white-space:nowrap}
+.tp-ls-table th:first-child{text-align:left}
+.tp-ls-table td{padding:.55rem .5rem;border-bottom:1px solid var(--border);text-align:center;white-space:nowrap}
+.tp-ls-table tbody tr:hover td{background:var(--bg3)}
+.tp-ls-table td:first-child{text-align:left}
+.tp-ls-player{display:flex;align-items:center;gap:.5rem}
+.tp-ls-player img{width:24px;height:24px;border-radius:50%;object-fit:cover}
+.tp-ls-player strong{color:var(--text);font-weight:700}
+.tp-ls-highlight{color:var(--accent);font-weight:800}
+.tp-ls-loading-cell{color:var(--text3);font-style:italic}
+
+.tp-ls-team-avg{display:grid;grid-template-columns:repeat(4,1fr);gap:.5rem;margin-bottom:1rem}
+.tp-ls-avg-card{background:var(--bg);border:1px solid var(--border);border-left:3px solid var(--accent);border-radius:4px;padding:.6rem;text-align:center}
+.tp-ls-avg-val{display:block;font-size:1.2rem;font-weight:800;color:var(--accent);font-family:'Montserrat',sans-serif}
+.tp-ls-avg-lbl{display:block;font-size:.6rem;color:var(--text2);text-transform:uppercase;margin-top:.15rem}
+
 /* Responsive */
 @media(max-width:768px){
   .tp-hero{flex-direction:column;gap:1.25rem;padding:1.5rem}
@@ -403,6 +437,7 @@ const faqs = [
   .tp-xhair-player{min-width:auto}
   .tp-xhair-code{width:100%}
   .tp-related-card{min-width:160px}
+  .tp-ls-team-avg{grid-template-columns:repeat(2,1fr)}
 }
 </style>
 
@@ -423,5 +458,118 @@ const faqs = [
       });
     });
   });
+})();
+</script>
+
+<script is:inline define:vars={{ teamPlayerSlugs: players.map(p => ({ slug: p.slug, name: p.name, flag: p.flag, image: p.image })), teamDisplayName: team.name }}>
+(function(){
+  var container = document.getElementById('teamLiveStats');
+  if (!container || !teamPlayerSlugs || teamPlayerSlugs.length === 0) return;
+
+  function fmt(v, dec) { return v != null ? Number(v).toFixed(dec || 1) : '—'; }
+  function fmtPct(v) { return v != null ? (v > 1 ? fmt(v, 1) : fmt(v * 100, 1)) + '%' : '—'; }
+
+  // Show loading table immediately
+  var tableHTML = '<div class="tp-ls-team-avg" id="teamAvgCards">';
+  tableHTML += '<div class="tp-ls-avg-card"><span class="tp-ls-avg-val" id="tavg-rating">…</span><span class="tp-ls-avg-lbl">Avg Rating</span></div>';
+  tableHTML += '<div class="tp-ls-avg-card"><span class="tp-ls-avg-val" id="tavg-adr">…</span><span class="tp-ls-avg-lbl">Avg ADR</span></div>';
+  tableHTML += '<div class="tp-ls-avg-card"><span class="tp-ls-avg-val" id="tavg-kast">…</span><span class="tp-ls-avg-lbl">Avg KAST%</span></div>';
+  tableHTML += '<div class="tp-ls-avg-card"><span class="tp-ls-avg-val" id="tavg-kd">…</span><span class="tp-ls-avg-lbl">Avg K/D</span></div>';
+  tableHTML += '</div>';
+
+  tableHTML += '<div class="tp-ls-wrap"><table class="tp-ls-table"><thead><tr>';
+  tableHTML += '<th>Player</th><th>Rating</th><th>ADR</th><th>KAST%</th><th>K/D</th><th>Kills</th><th>Deaths</th><th>Assists</th><th>HS</th><th>FK Diff</th>';
+  tableHTML += '</tr></thead><tbody>';
+  teamPlayerSlugs.forEach(function(p) {
+    var imgHTML = p.image ? '<img src="' + p.image + '" alt="" style="width:24px;height:24px;border-radius:50%;object-fit:cover" />' : '';
+    tableHTML += '<tr id="tp-row-' + p.slug + '">';
+    tableHTML += '<td><div class="tp-ls-player">' + imgHTML + '<strong>' + p.flag + ' ' + p.name + '</strong></div></td>';
+    tableHTML += '<td class="tp-ls-loading-cell" colspan="9">Loading…</td>';
+    tableHTML += '</tr>';
+  });
+  tableHTML += '</tbody></table></div>';
+  container.innerHTML = tableHTML;
+
+  // Fetch stats for each player in parallel
+  var statsResults = {};
+  var completed = 0;
+  var total = teamPlayerSlugs.length;
+
+  teamPlayerSlugs.forEach(function(p) {
+    fetch('/api/player-stats?slug=' + encodeURIComponent(p.slug))
+      .then(function(res) { return res.ok ? res.json() : null; })
+      .then(function(data) {
+        if (data && !data.error && data.stats) {
+          statsResults[p.slug] = data.stats;
+          var avg = data.stats.averages || {};
+          var kd = (avg.kills && avg.deaths && avg.deaths > 0) ? (avg.kills / avg.deaths).toFixed(2) : '—';
+          var row = document.getElementById('tp-row-' + p.slug);
+          if (row) {
+            // Remove loading colspan cell, replace with individual stat cells
+            var imgHTML = p.image ? '<img src="' + p.image + '" alt="" style="width:24px;height:24px;border-radius:50%;object-fit:cover" />' : '';
+            row.innerHTML = '<td><div class="tp-ls-player">' + imgHTML + '<strong>' + p.flag + ' ' + p.name + '</strong></div></td>' +
+              '<td class="tp-ls-highlight">' + fmt(avg.rating) + '</td>' +
+              '<td class="tp-ls-highlight">' + fmt(avg.adr) + '</td>' +
+              '<td>' + fmtPct(avg.kast) + '</td>' +
+              '<td>' + kd + '</td>' +
+              '<td>' + fmt(avg.kills) + '</td>' +
+              '<td>' + fmt(avg.deaths) + '</td>' +
+              '<td>' + fmt(avg.assists) + '</td>' +
+              '<td>' + fmt(avg.headshots) + '</td>' +
+              '<td>' + fmt(avg.firstKillsDiff, 1) + '</td>';
+          }
+        } else {
+          var row = document.getElementById('tp-row-' + p.slug);
+          if (row) {
+            var imgHTML = p.image ? '<img src="' + p.image + '" alt="" style="width:24px;height:24px;border-radius:50%;object-fit:cover" />' : '';
+            row.innerHTML = '<td><div class="tp-ls-player">' + imgHTML + '<strong>' + p.flag + ' ' + p.name + '</strong></div></td>' +
+              '<td colspan="9" class="tp-ls-loading-cell">No data available</td>';
+          }
+        }
+      })
+      .catch(function() {
+        var row = document.getElementById('tp-row-' + p.slug);
+        if (row) {
+          var imgHTML = p.image ? '<img src="' + p.image + '" alt="" style="width:24px;height:24px;border-radius:50%;object-fit:cover" />' : '';
+          row.innerHTML = '<td><div class="tp-ls-player">' + imgHTML + '<strong>' + p.flag + ' ' + p.name + '</strong></div></td>' +
+            '<td colspan="9" class="tp-ls-loading-cell">No data available</td>';
+        }
+      })
+      .finally(function() {
+        completed++;
+        if (completed === total) updateTeamAverages();
+      });
+  });
+
+  function updateTeamAverages() {
+    var slugs = Object.keys(statsResults);
+    if (slugs.length === 0) return;
+
+    var sums = { rating: 0, adr: 0, kast: 0, kills: 0, deaths: 0 };
+    var counts = { rating: 0, adr: 0, kast: 0, kills: 0, deaths: 0 };
+
+    slugs.forEach(function(slug) {
+      var avg = statsResults[slug].averages || {};
+      if (avg.rating != null) { sums.rating += Number(avg.rating); counts.rating++; }
+      if (avg.adr != null) { sums.adr += Number(avg.adr); counts.adr++; }
+      if (avg.kast != null) {
+        var k = Number(avg.kast);
+        sums.kast += k > 1 ? k : k * 100;
+        counts.kast++;
+      }
+      if (avg.kills != null) { sums.kills += Number(avg.kills); counts.kills++; }
+      if (avg.deaths != null) { sums.deaths += Number(avg.deaths); counts.deaths++; }
+    });
+
+    var el;
+    el = document.getElementById('tavg-rating');
+    if (el) el.textContent = counts.rating > 0 ? (sums.rating / counts.rating).toFixed(2) : '—';
+    el = document.getElementById('tavg-adr');
+    if (el) el.textContent = counts.adr > 0 ? (sums.adr / counts.adr).toFixed(1) : '—';
+    el = document.getElementById('tavg-kast');
+    if (el) el.textContent = counts.kast > 0 ? (sums.kast / counts.kast).toFixed(1) + '%' : '—';
+    el = document.getElementById('tavg-kd');
+    if (el) el.textContent = (counts.kills > 0 && counts.deaths > 0) ? ((sums.kills / counts.kills) / (sums.deaths / counts.deaths)).toFixed(2) : '—';
+  }
 })();
 </script>

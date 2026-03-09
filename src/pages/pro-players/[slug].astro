@@ -121,6 +121,7 @@ const hasCrosshairSettings = player.crosshairSettings && Object.keys(player.cros
 
 // Sidebar sections
 const sections = [
+  { id: 'livestats', label: 'Performance Stats' },
   { id: 'sensitivity', label: 'Mouse & Sensitivity' },
   { id: 'crosshair', label: 'Crosshair' },
   { id: 'video', label: 'Video & Display' },
@@ -198,6 +199,15 @@ const faqs = [
   <p>{introText} Calculate your own effective sensitivity using the <a href="/edpi-calculator/">eDPI Calculator</a>, or use the <a href="/sensitivity-converter/">Sensitivity Converter</a> to match {player.name}'s setup from another game.</p>
   {player.bio && <p class="pp-bio-extra">{player.bio}</p>}
   {isRealTeam && <p class="pp-bio-extra">See all <a href={`/pro-teams/${player.team.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')}/`}>{player.team} team settings</a> for a full roster comparison, or browse the <a href="/pro-gaming-gear/">Pro Gaming Gear</a> hub to find gear used by top players.</p>}
+</section>
+
+<!-- PandaScore Live Performance Stats (loaded client-side) -->
+<section class="pp-live-stats" id="livestats">
+  <h2 class="pp-section-title">Performance Stats</h2>
+  <p class="pp-live-stats-sub">Live stats from professional matches, powered by PandaScore.</p>
+  <div id="liveStatsContent">
+    <div class="pp-ls-loading"><div class="pp-ls-spinner"></div> Loading performance data…</div>
+  </div>
 </section>
 
 <!-- Settings: Tabbed interface (Mouse | Crosshair | Video | Gear | Config) -->
@@ -692,6 +702,46 @@ const faqs = [
 .pp-similar-detail{font-size:.65rem;color:var(--text2)}
 .pp-similar-edpi{font-size:.72rem;color:var(--accent);font-weight:700}
 
+/* ── Live Performance Stats ─────────────────────────────────────────────── */
+.pp-live-stats{margin-bottom:2rem;scroll-margin-top:70px}
+.pp-live-stats-sub{font-size:.82rem;color:var(--text2);margin:0 0 1rem}
+.pp-ls-loading{text-align:center;padding:1.5rem;color:var(--text2);font-size:.85rem}
+.pp-ls-spinner{display:inline-block;width:16px;height:16px;border:2px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .6s linear infinite;margin-right:.4rem;vertical-align:middle}
+@keyframes pp-spin{to{transform:rotate(360deg)}}
+.pp-ls-error{text-align:center;padding:1.25rem;color:var(--text3);font-size:.82rem;background:var(--bg2);border:1px solid var(--border);border-radius:4px}
+
+.pp-ls-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:.5rem;margin-bottom:1rem}
+.pp-ls-stat{background:var(--bg2);border:1px solid var(--border);border-radius:4px;padding:.75rem .6rem;text-align:center;transition:border-left .15s}
+.pp-ls-stat:hover{border-left:3px solid var(--accent)}
+.pp-ls-stat-val{display:block;font-size:1.3rem;font-weight:800;color:var(--accent);font-family:'Montserrat',sans-serif;line-height:1.2}
+.pp-ls-stat-lbl{display:block;font-size:.62rem;color:var(--text2);text-transform:uppercase;letter-spacing:.04em;margin-top:.2rem;font-weight:600}
+.pp-ls-stat.pp-ls-primary{border-left:3px solid var(--accent);background:linear-gradient(135deg,rgba(46,204,113,.06),var(--bg2))}
+
+.pp-ls-totals{display:grid;grid-template-columns:repeat(3,1fr);gap:.5rem;margin-bottom:1rem}
+.pp-ls-total{background:var(--bg);border:1px solid var(--border);border-radius:4px;padding:.5rem;text-align:center}
+.pp-ls-total-val{display:block;font-size:1rem;font-weight:700;color:var(--text)}
+.pp-ls-total-lbl{display:block;font-size:.6rem;color:var(--text2);text-transform:uppercase;margin-top:.1rem}
+
+.pp-ls-recent h3{font-size:.92rem;font-weight:700;margin:0 0 .5rem;color:var(--text)}
+.pp-ls-games{display:flex;flex-direction:column;gap:.35rem}
+.pp-ls-game{display:flex;align-items:center;gap:.75rem;background:var(--bg2);border:1px solid var(--border);border-radius:4px;padding:.5rem .75rem;font-size:.82rem;transition:border-left .15s}
+.pp-ls-game:hover{border-left:3px solid var(--accent)}
+.pp-ls-game-opp{display:flex;align-items:center;gap:.4rem;min-width:120px;flex-shrink:0}
+.pp-ls-game-opp img{width:20px;height:20px;border-radius:2px;object-fit:contain}
+.pp-ls-game-opp span{font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pp-ls-game-stats{display:flex;gap:.75rem;flex:1;justify-content:flex-end}
+.pp-ls-game-stat{text-align:center;min-width:45px}
+.pp-ls-game-stat-val{display:block;font-weight:700;color:var(--text);font-size:.82rem}
+.pp-ls-game-stat-lbl{display:block;font-size:.55rem;color:var(--text2);text-transform:uppercase}
+.pp-ls-game-rating{font-weight:800;color:var(--accent)}
+
+@media(max-width:768px){
+  .pp-ls-grid{grid-template-columns:repeat(2,1fr)}
+  .pp-ls-totals{grid-template-columns:repeat(2,1fr)}
+  .pp-ls-game{flex-wrap:wrap}
+  .pp-ls-game-opp{min-width:100px}
+}
+
 /* ── FAQ: <details> accordion ────────────────────────────────────────────── */
 .pp-faq{background:var(--bg2);border:1px solid var(--border);border-radius:4px;margin-bottom:.35rem;overflow:hidden}
 .pp-faq-q{padding:.65rem 1rem;font-size:.88rem;font-weight:700;color:var(--text);cursor:pointer;user-select:none;list-style:none;display:flex;justify-content:space-between;align-items:center}
@@ -718,6 +768,93 @@ const faqs = [
   .pp-team-box{max-width:100%}
 }
 </style>
+
+<script is:inline define:vars={{ playerSlug: player.slug, playerDisplayName: player.name }}>
+(function(){
+  var container = document.getElementById('liveStatsContent');
+  if (!container) return;
+
+  fetch('/api/player-stats?slug=' + encodeURIComponent(playerSlug))
+    .then(function(res) {
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      return res.json();
+    })
+    .then(function(data) {
+      if (data.error) throw new Error(data.error);
+
+      var s = data.stats || {};
+      var avg = s.averages || {};
+      var tot = s.totals || {};
+      var pr = s.perRound || {};
+      var games = data.lastGames || [];
+
+      // Format helpers
+      function fmt(v, dec) { return v != null ? Number(v).toFixed(dec || 1) : '—'; }
+      function fmtK(v) { return v != null ? (v >= 1000 ? (v/1000).toFixed(1) + 'k' : v) : '—'; }
+      function fmtPct(v) { return v != null ? (v > 1 ? fmt(v, 1) : fmt(v * 100, 1)) + '%' : '—'; }
+
+      var html = '';
+
+      // Main stat cards
+      html += '<div class="pp-ls-grid">';
+      html += '<div class="pp-ls-stat pp-ls-primary"><span class="pp-ls-stat-val">' + fmt(avg.rating) + '</span><span class="pp-ls-stat-lbl">HLTV Rating</span></div>';
+      html += '<div class="pp-ls-stat pp-ls-primary"><span class="pp-ls-stat-val">' + fmt(avg.adr) + '</span><span class="pp-ls-stat-lbl">ADR</span></div>';
+      html += '<div class="pp-ls-stat pp-ls-primary"><span class="pp-ls-stat-val">' + fmtPct(avg.kast) + '</span><span class="pp-ls-stat-lbl">KAST%</span></div>';
+      html += '<div class="pp-ls-stat"><span class="pp-ls-stat-val">' + fmt(avg.kills) + '</span><span class="pp-ls-stat-lbl">Avg Kills</span></div>';
+      html += '<div class="pp-ls-stat"><span class="pp-ls-stat-val">' + fmt(avg.deaths) + '</span><span class="pp-ls-stat-lbl">Avg Deaths</span></div>';
+      html += '<div class="pp-ls-stat"><span class="pp-ls-stat-val">' + fmt(avg.assists) + '</span><span class="pp-ls-stat-lbl">Avg Assists</span></div>';
+      html += '<div class="pp-ls-stat"><span class="pp-ls-stat-val">' + fmt(avg.headshots) + '</span><span class="pp-ls-stat-lbl">Avg HS</span></div>';
+      html += '<div class="pp-ls-stat"><span class="pp-ls-stat-val">' + fmt(avg.firstKillsDiff, 1) + '</span><span class="pp-ls-stat-lbl">FK Diff</span></div>';
+      html += '</div>';
+
+      // Career totals
+      if (tot.kills || tot.matchesPlayed) {
+        html += '<div class="pp-ls-totals">';
+        html += '<div class="pp-ls-total"><span class="pp-ls-total-val">' + fmtK(tot.kills) + '</span><span class="pp-ls-total-lbl">Total Kills</span></div>';
+        html += '<div class="pp-ls-total"><span class="pp-ls-total-val">' + fmtK(tot.deaths) + '</span><span class="pp-ls-total-lbl">Total Deaths</span></div>';
+        html += '<div class="pp-ls-total"><span class="pp-ls-total-val">' + fmtK(tot.assists) + '</span><span class="pp-ls-total-lbl">Total Assists</span></div>';
+        html += '<div class="pp-ls-total"><span class="pp-ls-total-val">' + fmtK(tot.headshots) + '</span><span class="pp-ls-total-lbl">Total HS</span></div>';
+        html += '<div class="pp-ls-total"><span class="pp-ls-total-val">' + (tot.matchesPlayed || '—') + '</span><span class="pp-ls-total-lbl">Matches</span></div>';
+        html += '<div class="pp-ls-total"><span class="pp-ls-total-val">' + (tot.matchesWon || '—') + '</span><span class="pp-ls-total-lbl">Wins</span></div>';
+        html += '</div>';
+      }
+
+      // Per-round stats
+      if (pr.kills) {
+        html += '<div class="pp-ls-totals">';
+        html += '<div class="pp-ls-total"><span class="pp-ls-total-val">' + fmt(pr.kills, 2) + '</span><span class="pp-ls-total-lbl">Kills/Round</span></div>';
+        html += '<div class="pp-ls-total"><span class="pp-ls-total-val">' + fmt(pr.deaths, 2) + '</span><span class="pp-ls-total-lbl">Deaths/Round</span></div>';
+        html += '<div class="pp-ls-total"><span class="pp-ls-total-val">' + fmt(pr.headshots, 2) + '</span><span class="pp-ls-total-lbl">HS/Round</span></div>';
+        html += '</div>';
+      }
+
+      // Recent games
+      if (games.length > 0) {
+        html += '<div class="pp-ls-recent"><h3>Recent Games</h3><div class="pp-ls-games">';
+        games.forEach(function(g) {
+          var oppImg = g.opponent && g.opponent.image ? '<img src="' + g.opponent.image + '" alt="" style="width:20px;height:20px;object-fit:contain" />' : '';
+          var oppName = g.opponent ? g.opponent.name : 'Unknown';
+          html += '<div class="pp-ls-game">';
+          html += '<div class="pp-ls-game-opp">' + oppImg + '<span>' + oppName + '</span></div>';
+          html += '<div class="pp-ls-game-stats">';
+          html += '<div class="pp-ls-game-stat"><span class="pp-ls-game-stat-val">' + (g.kills || '—') + '</span><span class="pp-ls-game-stat-lbl">K</span></div>';
+          html += '<div class="pp-ls-game-stat"><span class="pp-ls-game-stat-val">' + (g.deaths || '—') + '</span><span class="pp-ls-game-stat-lbl">D</span></div>';
+          html += '<div class="pp-ls-game-stat"><span class="pp-ls-game-stat-val">' + (g.assists || '—') + '</span><span class="pp-ls-game-stat-lbl">A</span></div>';
+          html += '<div class="pp-ls-game-stat"><span class="pp-ls-game-stat-val">' + fmt(g.adr) + '</span><span class="pp-ls-game-stat-lbl">ADR</span></div>';
+          html += '<div class="pp-ls-game-stat"><span class="pp-ls-game-stat-val pp-ls-game-rating">' + fmt(g.rating) + '</span><span class="pp-ls-game-stat-lbl">Rating</span></div>';
+          html += '</div></div>';
+        });
+        html += '</div></div>';
+      }
+
+      container.innerHTML = html;
+    })
+    .catch(function(err) {
+      console.warn('PandaScore stats not available for ' + playerDisplayName + ':', err.message);
+      container.innerHTML = '<div class="pp-ls-error">Performance stats not available for this player. Stats are tracked for players with recent professional match data.</div>';
+    });
+})();
+</script>
 
 <script is:inline define:vars={{ xhairColor, crosshairSize: player.crosshairSize, crosshairGap: player.crosshairGap, crosshairThickness: player.crosshairThickness, crosshairDot: player.crosshairDot, crosshairOutline: player.crosshairOutline, configText, allCmds, playerName: player.name }}>
 (function(){
