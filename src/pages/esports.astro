@@ -405,7 +405,7 @@ function renderActiveTournaments(tournaments) {
     const tier = t.tier;
 
     return `<a href="/tournament-detail/?id=${t.id}" class="eh-tourney-row">
-      ${t.league?.image ? `<img src="${t.league.image}" alt="" class="eh-tourney-logo" loading="lazy" onerror="this.style.display='none'" />` : ''}
+      ${t.league?.image ? `<img src="${t.league.image}" alt="" class="eh-tourney-logo" style="height:22px;max-height:22px;width:auto;max-width:80px;object-fit:contain;border-radius:2px;flex-shrink:0" loading="lazy" onerror="this.style.display='none'" />` : ''}
       <span class="eh-tourney-name">${t.league?.name || ''} — ${t.name || t.serie?.name || ''}</span>
       ${t.prizepool ? `<span class="eh-tourney-prize">${t.prizepool}</span>` : ''}
       ${tier ? `<span class="eh-tourney-tier ${tierClass(tier)}">${tier.toUpperCase()}</span>` : ''}
