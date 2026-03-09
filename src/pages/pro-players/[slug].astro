@@ -702,11 +702,41 @@ const faqs = [
 .pp-similar-detail{font-size:.65rem;color:var(--text2)}
 .pp-similar-edpi{font-size:.72rem;color:var(--accent);font-weight:700}
 
-/* ── Live Performance Stats ─────────────────────────────────────────────── */
+/* ── Live Performance Stats (static container only — JS-injected styles in global block below) ── */
 .pp-live-stats{margin-bottom:2rem;scroll-margin-top:70px}
 .pp-live-stats-sub{font-size:.82rem;color:var(--text2);margin:0 0 1rem}
+
+/* ── FAQ: <details> accordion ────────────────────────────────────────────── */
+.pp-faq{background:var(--bg2);border:1px solid var(--border);border-radius:4px;margin-bottom:.35rem;overflow:hidden}
+.pp-faq-q{padding:.65rem 1rem;font-size:.88rem;font-weight:700;color:var(--text);cursor:pointer;user-select:none;list-style:none;display:flex;justify-content:space-between;align-items:center}
+.pp-faq-q::-webkit-details-marker{display:none}
+.pp-faq-q::after{content:'+';font-size:1.1rem;color:var(--accent);font-weight:700;flex-shrink:0;margin-left:.5rem}
+.pp-faq[open] .pp-faq-q::after{content:'\2212'}
+.pp-faq[open] .pp-faq-q{border-bottom:1px solid var(--border)}
+.pp-faq-a{padding:.65rem 1rem;font-size:.82rem;color:var(--text2);line-height:1.65;margin:0}
+
+/* ── Responsive ──────────────────────────────────────────────────────────── */
+@media(max-width:768px){
+  .pp-hero{flex-direction:column;align-items:flex-start;gap:.75rem}
+  .pp-hero-left{flex-direction:row;align-items:center;gap:.75rem}
+  .pp-hero-img{width:72px;height:72px}
+  .pp-hero-name{font-size:1.35rem}
+  .pp-hero-table{font-size:.75rem}
+  .pp-tab-bar{overflow-x:auto;-webkit-overflow-scrolling:touch}
+  .pp-tab{padding:.45rem .75rem;font-size:.78rem;white-space:nowrap}
+  .pp-kv-grid{grid-template-columns:1fr}
+  .pp-config-actions{flex-direction:column}
+  .pp-config-btn{justify-content:center}
+  .pp-code-box{flex-direction:column;align-items:stretch}
+  .pp-loadout-grid{grid-template-columns:1fr 1fr}
+  .pp-team-box{max-width:100%}
+}
+</style>
+
+<style is:global>
+/* ── Performance Stats (JS-injected content — must be global) ──────────── */
 .pp-ls-loading{text-align:center;padding:1.5rem;color:var(--text2);font-size:.85rem}
-.pp-ls-spinner{display:inline-block;width:16px;height:16px;border:2px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .6s linear infinite;margin-right:.4rem;vertical-align:middle}
+.pp-ls-spinner{display:inline-block;width:16px;height:16px;border:2px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:pp-spin .6s linear infinite;margin-right:.4rem;vertical-align:middle}
 @keyframes pp-spin{to{transform:rotate(360deg)}}
 .pp-ls-error{text-align:center;padding:1.25rem;color:var(--text3);font-size:.82rem;background:var(--bg2);border:1px solid var(--border);border-radius:4px}
 
@@ -740,32 +770,6 @@ const faqs = [
   .pp-ls-totals{grid-template-columns:repeat(2,1fr)}
   .pp-ls-game{flex-wrap:wrap}
   .pp-ls-game-opp{min-width:100px}
-}
-
-/* ── FAQ: <details> accordion ────────────────────────────────────────────── */
-.pp-faq{background:var(--bg2);border:1px solid var(--border);border-radius:4px;margin-bottom:.35rem;overflow:hidden}
-.pp-faq-q{padding:.65rem 1rem;font-size:.88rem;font-weight:700;color:var(--text);cursor:pointer;user-select:none;list-style:none;display:flex;justify-content:space-between;align-items:center}
-.pp-faq-q::-webkit-details-marker{display:none}
-.pp-faq-q::after{content:'+';font-size:1.1rem;color:var(--accent);font-weight:700;flex-shrink:0;margin-left:.5rem}
-.pp-faq[open] .pp-faq-q::after{content:'\2212'}
-.pp-faq[open] .pp-faq-q{border-bottom:1px solid var(--border)}
-.pp-faq-a{padding:.65rem 1rem;font-size:.82rem;color:var(--text2);line-height:1.65;margin:0}
-
-/* ── Responsive ──────────────────────────────────────────────────────────── */
-@media(max-width:768px){
-  .pp-hero{flex-direction:column;align-items:flex-start;gap:.75rem}
-  .pp-hero-left{flex-direction:row;align-items:center;gap:.75rem}
-  .pp-hero-img{width:72px;height:72px}
-  .pp-hero-name{font-size:1.35rem}
-  .pp-hero-table{font-size:.75rem}
-  .pp-tab-bar{overflow-x:auto;-webkit-overflow-scrolling:touch}
-  .pp-tab{padding:.45rem .75rem;font-size:.78rem;white-space:nowrap}
-  .pp-kv-grid{grid-template-columns:1fr}
-  .pp-config-actions{flex-direction:column}
-  .pp-config-btn{justify-content:center}
-  .pp-code-box{flex-direction:column;align-items:stretch}
-  .pp-loadout-grid{grid-template-columns:1fr 1fr}
-  .pp-team-box{max-width:100%}
 }
 </style>
 
