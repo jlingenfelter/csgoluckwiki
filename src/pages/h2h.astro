@@ -74,6 +74,16 @@ const description = 'Compare CS2 professional teams head-to-head. View rosters, 
     <div id="averages-content" style="display:none"></div>
   </div>
 
+  <!-- Match History -->
+  <div class="h2h-panel" id="history-panel">
+    <h2 class="h2h-section-title">Match History</h2>
+    <p class="h2h-section-desc">Head-to-head match results between these two teams.</p>
+    <div class="h2h-loading" id="history-loading">
+      <div class="spinner"></div> Loading match history...
+    </div>
+    <div id="history-content" style="display:none"></div>
+  </div>
+
   <!-- Roster Comparison -->
   <div class="h2h-panel" id="roster-panel">
     <h2 class="h2h-section-title">Roster Comparison</h2>
@@ -360,6 +370,107 @@ const description = 'Compare CS2 professional teams head-to-head. View rosters, 
 }
 .h2h-links a:hover { border-color: var(--accent); color: var(--accent); }
 
+/* Match History */
+.h2h-hist-record {
+  display: flex; align-items: center; justify-content: center; gap: 1.25rem;
+  padding: 1rem 0 1.25rem; text-align: center;
+}
+.h2h-hist-record-team {
+  display: flex; flex-direction: column; align-items: center; gap: .35rem;
+  min-width: 80px;
+}
+.h2h-hist-record-team img {
+  width: 36px; height: 36px; border-radius: 4px; object-fit: contain;
+  background: var(--bg3);
+}
+.h2h-hist-record-team-name {
+  font-size: .8rem; font-weight: 700; color: var(--text2);
+}
+.h2h-hist-record-score {
+  font-size: 2rem; font-weight: 800; font-family: 'Montserrat', sans-serif;
+  color: var(--text1); letter-spacing: 2px;
+}
+.h2h-hist-record-score .h2h-hist-dash {
+  color: var(--text3); margin: 0 .15rem;
+}
+.h2h-hist-bar {
+  width: 100%; height: 10px; border-radius: 5px; overflow: hidden;
+  display: flex; background: var(--bg3); margin-bottom: 1.25rem;
+}
+.h2h-hist-bar-t1 {
+  height: 100%; background: var(--accent); transition: width .5s ease;
+}
+.h2h-hist-bar-draw {
+  height: 100%; background: var(--text3); opacity: .4; transition: width .5s ease;
+}
+.h2h-hist-bar-t2 {
+  height: 100%; background: #e74c3c; transition: width .5s ease;
+}
+.h2h-hist-bar-labels {
+  display: flex; justify-content: space-between; margin-top: .35rem; margin-bottom: 1rem;
+  font-size: .72rem; font-weight: 600; color: var(--text3);
+}
+.h2h-hist-bar-labels .t1-label { color: var(--accent); }
+.h2h-hist-bar-labels .t2-label { color: #e74c3c; }
+
+.h2h-hist-match {
+  display: grid; grid-template-columns: 70px 1fr auto;
+  align-items: center; gap: .75rem;
+  padding: .7rem .85rem; border-bottom: 1px solid var(--border);
+  text-decoration: none; color: inherit;
+  border-left: 3px solid transparent;
+  transition: background .15s, border-color .15s;
+}
+.h2h-hist-match:last-child { border-bottom: none; }
+.h2h-hist-match:hover { background: var(--bg3); border-left-color: var(--accent); }
+
+.h2h-hist-date {
+  font-size: .75rem; color: var(--text3); font-weight: 600;
+  white-space: nowrap;
+}
+.h2h-hist-matchup {
+  display: flex; align-items: center; gap: .5rem;
+  flex-wrap: wrap;
+}
+.h2h-hist-team {
+  display: flex; align-items: center; gap: .35rem;
+  font-size: .88rem; font-weight: 600;
+}
+.h2h-hist-team img {
+  width: 22px; height: 22px; border-radius: 3px; object-fit: contain;
+  background: var(--bg3);
+}
+.h2h-hist-score {
+  font-size: .95rem; font-weight: 800; font-family: 'Montserrat', sans-serif;
+  display: flex; align-items: center; gap: .25rem;
+}
+.h2h-hist-score .dash { color: var(--text3); }
+.h2h-hist-winner { color: var(--accent); }
+.h2h-hist-loser { color: var(--text3); }
+
+.h2h-hist-tourney {
+  display: flex; align-items: center; gap: .4rem;
+  font-size: .75rem; color: var(--text2);
+  white-space: nowrap;
+}
+.h2h-hist-tourney img {
+  width: 18px; height: 18px; border-radius: 2px; object-fit: contain;
+}
+.h2h-hist-tier {
+  display: inline-block; font-size: .6rem; font-weight: 700;
+  text-transform: uppercase; padding: .1rem .3rem; border-radius: 3px;
+  line-height: 1;
+}
+.h2h-hist-tier.tier-s { background: #f1c40f; color: #000; }
+.h2h-hist-tier.tier-a { background: var(--accent); color: #fff; }
+.h2h-hist-tier.tier-b { background: var(--bg3); color: var(--text2); }
+.h2h-hist-tier.tier-c { background: var(--bg3); color: var(--text3); }
+.h2h-hist-tier.tier-d { background: var(--bg3); color: var(--text3); }
+
+.h2h-hist-empty {
+  text-align: center; padding: 2rem 1rem; color: var(--text3); font-size: .9rem;
+}
+
 /* Responsive */
 @media (max-width: 768px) {
   .h2h-selector-grid {
@@ -373,6 +484,9 @@ const description = 'Compare CS2 professional teams head-to-head. View rosters, 
   .h2h-bar-header { grid-template-columns: 60px 1fr 60px; gap: .4rem; }
   .h2h-roster-grid { grid-template-columns: 1fr; }
   .h2h-title { font-size: 1.35rem; }
+  .h2h-hist-match { grid-template-columns: 55px 1fr auto; gap: .5rem; padding: .6rem .65rem; }
+  .h2h-hist-record-score { font-size: 1.5rem; }
+  .h2h-hist-record { gap: .75rem; }
 }
 
 @media (max-width: 480px) {
@@ -380,6 +494,9 @@ const description = 'Compare CS2 professional teams head-to-head. View rosters, 
   .h2h-stat-val { font-size: .75rem; }
   .h2h-stat-label { font-size: .6rem; }
   .h2h-bar-header { grid-template-columns: 50px 1fr 50px; gap: .3rem; }
+  .h2h-hist-match { grid-template-columns: 1fr; gap: .35rem; }
+  .h2h-hist-tourney { margin-top: .15rem; }
+  .h2h-hist-record-score { font-size: 1.3rem; }
 }
 </style>
 
@@ -541,8 +658,11 @@ async function showComparison() {
   // Show rosters immediately
   renderRosters();
 
-  // Fetch and show averages
-  await fetchAndShowAverages();
+  // Fetch and show averages + match history in parallel
+  await Promise.all([
+    fetchAndShowAverages(),
+    fetchAndShowHistory(),
+  ]);
 }
 
 // ── Render Rosters ──
@@ -753,6 +873,136 @@ function renderAverages(t1, t2) {
   html += `<p style="text-align:center;font-size:.72rem;color:var(--text3);margin-top:1rem">Based on ${t1.count} player${t1.count !== 1 ? 's' : ''} (${team1.acronym || team1.name}) and ${t2.count} player${t2.count !== 1 ? 's' : ''} (${team2.acronym || team2.name}) with available stats.</p>`;
 
   contentEl.innerHTML = html;
+}
+
+// ── Fetch & render match history ──
+async function fetchAndShowHistory() {
+  const loadingEl = document.getElementById('history-loading');
+  const contentEl = document.getElementById('history-content');
+  loadingEl.style.display = 'block';
+  contentEl.style.display = 'none';
+
+  try {
+    const res = await fetch(`/api/h2h-matches?team1=${team1.id}&team2=${team2.id}`);
+    if (!res.ok) throw new Error('Failed to fetch match history');
+    const data = await res.json();
+
+    loadingEl.style.display = 'none';
+    contentEl.style.display = 'block';
+
+    const record = data.record || { team1Wins: 0, team2Wins: 0, draws: 0, total: 0 };
+    const matches = data.matches || [];
+
+    if (matches.length === 0) {
+      contentEl.innerHTML = '<div class="h2h-hist-empty">No match history found between these teams.</div>';
+      return;
+    }
+
+    // Find team names/logos from the first match opponents, or fall back to selected teams
+    const t1Name = team1.acronym || team1.name;
+    const t2Name = team2.acronym || team2.name;
+    const t1Img = team1.image;
+    const t2Img = team2.image;
+
+    // Record summary
+    const total = record.total || (record.team1Wins + record.team2Wins + record.draws);
+    const t1Pct = total > 0 ? (record.team1Wins / total) * 100 : 0;
+    const drawPct = total > 0 ? (record.draws / total) * 100 : 0;
+    const t2Pct = total > 0 ? (record.team2Wins / total) * 100 : 0;
+
+    let html = `<div class="h2h-hist-record">
+      <div class="h2h-hist-record-team">
+        ${t1Img ? `<img src="${t1Img}" alt="${t1Name}" onerror="this.style.display='none'" />` : ''}
+        <span class="h2h-hist-record-team-name">${t1Name}</span>
+      </div>
+      <div class="h2h-hist-record-score">
+        <span class="h2h-hist-winner">${record.team1Wins}</span>
+        <span class="h2h-hist-dash">-</span>
+        <span class="h2h-hist-winner">${record.team2Wins}</span>
+      </div>
+      <div class="h2h-hist-record-team">
+        ${t2Img ? `<img src="${t2Img}" alt="${t2Name}" onerror="this.style.display='none'" />` : ''}
+        <span class="h2h-hist-record-team-name">${t2Name}</span>
+      </div>
+    </div>`;
+
+    // Win ratio bar
+    html += `<div class="h2h-hist-bar">
+      <div class="h2h-hist-bar-t1" style="width:${t1Pct}%"></div>
+      <div class="h2h-hist-bar-draw" style="width:${drawPct}%"></div>
+      <div class="h2h-hist-bar-t2" style="width:${t2Pct}%"></div>
+    </div>`;
+    html += `<div class="h2h-hist-bar-labels">
+      <span class="t1-label">${record.team1Wins} win${record.team1Wins !== 1 ? 's' : ''}</span>
+      ${record.draws > 0 ? `<span>${record.draws} draw${record.draws !== 1 ? 's' : ''}</span>` : ''}
+      <span class="t2-label">${record.team2Wins} win${record.team2Wins !== 1 ? 's' : ''}</span>
+    </div>`;
+
+    // Match list
+    matches.forEach(match => {
+      const date = match.beginAt ? new Date(match.beginAt) : null;
+      const dateStr = date ? date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : '—';
+
+      // Determine scores for each side
+      const r1 = (match.results || []).find(r => r.team_id === data.team1Id);
+      const r2 = (match.results || []).find(r => r.team_id === data.team2Id);
+      const s1 = r1 ? r1.score : 0;
+      const s2 = r2 ? r2.score : 0;
+
+      // Winner highlight
+      const t1Won = match.winnerId === data.team1Id;
+      const t2Won = match.winnerId === data.team2Id;
+      const s1Class = t1Won ? 'h2h-hist-winner' : 'h2h-hist-loser';
+      const s2Class = t2Won ? 'h2h-hist-winner' : 'h2h-hist-loser';
+
+      // Opponent logos from match data or fallback
+      const opp1 = (match.opponents || []).find(o => o.id === data.team1Id);
+      const opp2 = (match.opponents || []).find(o => o.id === data.team2Id);
+      const logo1 = (opp1 && opp1.image) || t1Img;
+      const logo2 = (opp2 && opp2.image) || t2Img;
+      const name1 = (opp1 && (opp1.acronym || opp1.name)) || t1Name;
+      const name2 = (opp2 && (opp2.acronym || opp2.name)) || t2Name;
+
+      // Tournament info
+      const tourney = match.tournament || {};
+      const league = match.league || {};
+      const tourneyName = [league.name, tourney.name].filter(Boolean).join(' — ') || 'Unknown Tournament';
+      const tourneyImg = league.image || '';
+      const tier = (tourney.tier || '').toLowerCase();
+      const tierBadge = tier ? `<span class="h2h-hist-tier tier-${tier}">${tier.toUpperCase()}</span>` : '';
+
+      html += `<a class="h2h-hist-match" href="/match-detail/?id=${match.id}">
+        <div class="h2h-hist-date">${dateStr}</div>
+        <div class="h2h-hist-matchup">
+          <span class="h2h-hist-team">
+            ${logo1 ? `<img src="${logo1}" alt="${name1}" onerror="this.style.display='none'" />` : ''}
+            <span class="${t1Won ? 'h2h-hist-winner' : ''}">${name1}</span>
+          </span>
+          <span class="h2h-hist-score">
+            <span class="${s1Class}">${s1}</span>
+            <span class="dash">-</span>
+            <span class="${s2Class}">${s2}</span>
+          </span>
+          <span class="h2h-hist-team">
+            ${logo2 ? `<img src="${logo2}" alt="${name2}" onerror="this.style.display='none'" />` : ''}
+            <span class="${t2Won ? 'h2h-hist-winner' : ''}">${name2}</span>
+          </span>
+        </div>
+        <div class="h2h-hist-tourney">
+          ${tourneyImg ? `<img src="${tourneyImg}" alt="" onerror="this.style.display='none'" />` : ''}
+          <span>${tourneyName}</span>
+          ${tierBadge}
+        </div>
+      </a>`;
+    });
+
+    contentEl.innerHTML = html;
+  } catch (err) {
+    console.error('Match history error:', err);
+    loadingEl.style.display = 'none';
+    contentEl.style.display = 'block';
+    contentEl.innerHTML = '<div class="h2h-hist-empty">Failed to load match history.</div>';
+  }
 }
 
 // ── Country to flag emoji ──

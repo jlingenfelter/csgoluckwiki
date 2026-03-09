@@ -1,0 +1,339 @@
+---
+import Base from '../../layouts/Base.astro';
+import ExploreMore from '../../components/ExploreMore.astro';
+import { breadcrumbSchema, faqSchema } from '../../lib/weapons';
+import { allRanks } from '../../lib/ranks';
+
+const title = 'All CS2 Ranks — Competitive Skill Groups Explained | CSGOLuck Wiki';
+const description = 'Complete guide to every CS2 rank from Silver 1 to Global Elite. See stats, player percentages, Premier ratings, and tips for all 18 competitive skill groups.';
+
+const breadcrumbs = [
+  { name: 'Home', url: '/' },
+  { name: 'CS2 Ranks', url: '/cs2-ranks/' },
+];
+
+const faqs = [
+  {
+    question: 'How many ranks are there in CS2?',
+    answer: 'CS2 has 18 traditional Competitive skill groups (from Silver I to Global Elite) plus the Premier numeric rating system which ranges from 0 to over 30,000. Wingman uses its own separate set of the same 18 skill groups.',
+  },
+  {
+    question: 'Does my Competitive rank affect my Premier rating?',
+    answer: 'No, Competitive skill groups and Premier CS Rating are tracked independently. Your performance in one mode does not directly affect the other.',
+  },
+  {
+    question: 'How often do CS2 ranks reset?',
+    answer: 'Premier ratings undergo seasonal resets where your rating is partially adjusted at the start of each new CS2 season. Competitive skill groups can also decay if you do not play for an extended period.',
+  },
+  {
+    question: 'What is the average CS2 rank?',
+    answer: 'In Competitive, the average skill group hovers around Gold Nova II to Gold Nova Master. In Premier, the median CS Rating sits in the mid-range tiers. Check our rank distribution page for the latest data.',
+  },
+];
+
+const tiers = [
+  { name: 'Silver', ranks: allRanks.filter(r => r.tier === 'Silver') },
+  { name: 'Gold Nova', ranks: allRanks.filter(r => r.tier === 'Gold Nova') },
+  { name: 'Master Guardian', ranks: allRanks.filter(r => r.tier === 'Master Guardian') },
+  { name: 'Distinguished', ranks: allRanks.filter(r => r.tier === 'Distinguished') },
+  { name: 'Legendary', ranks: allRanks.filter(r => r.tier === 'Legendary') },
+  { name: 'Supreme', ranks: allRanks.filter(r => r.tier === 'Supreme') },
+  { name: 'Global Elite', ranks: allRanks.filter(r => r.tier === 'Global Elite') },
+];
+
+const sections = [
+  { id: 'all-ranks', label: 'All Ranks' },
+  { id: 'overview', label: 'How Ranking Works' },
+  { id: 'premier', label: 'Premier Rating' },
+  { id: 'distribution', label: 'Distribution' },
+  { id: 'rank-up', label: 'How to Rank Up' },
+  { id: 'faq', label: 'FAQ' },
+  { id: 'related', label: 'Related' },
+];
+---
+
+<Base title={title} description={description} currentNav="/cs2-ranks/">
+  <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema(breadcrumbs))}></script>
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema(faqs))}></script>
+
+  <div class="cr-wrap">
+    <nav class="cr-breadcrumb">
+      <a href="/">Home</a>
+      <span class="cr-sep">/</span>
+      <span>CS2 Ranks</span>
+    </nav>
+
+    <header class="cr-header">
+      <h1>CS2 Ranks</h1>
+      <p class="cr-subtitle">All 18 competitive skill groups from Silver I to Global Elite — stats, tips, and how to rank up</p>
+    </header>
+
+    <nav class="cr-toc-mobile" aria-label="Table of contents">
+      {sections.map((s) => (
+        <a href={`#${s.id}`} class="cr-toc-mobile-link">{s.label}</a>
+      ))}
+    </nav>
+
+    <div class="cr-layout">
+      <aside class="cr-sidebar">
+        <nav class="cr-toc" aria-label="Table of contents">
+          <span class="cr-toc-title">Contents</span>
+          {sections.map((s) => (
+            <a href={`#${s.id}`} class="cr-toc-link">{s.label}</a>
+          ))}
+        </nav>
+      </aside>
+
+      <article class="cr-content">
+        <p class="cr-intro">
+          Counter-Strike 2 features <strong>18 competitive skill groups</strong> ranging from Silver I to Global Elite. Each rank reflects your skill level and determines the opponents you face. Below is a complete overview of every rank, the stats associated with it, and how to climb.
+        </p>
+
+        <!-- All Ranks Grid -->
+        <section id="all-ranks">
+          <div class="cr-section-header"><h2>All CS2 Ranks</h2></div>
+
+          {tiers.map((tier) => (
+            <div class="cr-tier-group">
+              <h3 class="cr-tier-name" style={`border-left-color:${tier.ranks[0].color}`}>{tier.name}</h3>
+              <div class="cr-rank-grid">
+                {tier.ranks.map(r => {
+                  let cumBelow = 0;
+                  for (const rx of allRanks) {
+                    if (rx.slug === r.slug) break;
+                    cumBelow += rx.percentage;
+                  }
+                  return (
+                    <a href={`/cs2-ranks/${r.slug}/`} class="cr-rank-card">
+                      <div class="cr-rank-badge-wrap">
+                        <img src={`/images/ranks/${r.slug}.png`} alt={r.rank} class="cr-rank-badge" width="64" height="64" loading="lazy" />
+                        <span class="cr-rank-abbr" style={`background:${r.color};color:#0d0e12`}>{r.abbr}</span>
+                      </div>
+                      <div class="cr-rank-info">
+                        <span class="cr-rank-name">{r.rank}</span>
+                        <div class="cr-rank-meta">
+                          <span>{r.percentage}% of players</span>
+                          <span>·</span>
+                          <span>{r.percentile}</span>
+                        </div>
+                        <div class="cr-rank-stats">
+                          <span>K/D {r.avgKD}</span>
+                          <span>ADR {r.avgADR}</span>
+                          <span>HS {r.avgHS}</span>
+                        </div>
+                      </div>
+                      <span class="cr-rank-arrow">&rarr;</span>
+                    </a>
+                  );
+                })}
+              </div>
+            </div>
+          ))}
+        </section>
+
+        <!-- Distribution Chart -->
+        <section id="distribution">
+          <div class="cr-section-header"><h2>Rank Distribution</h2></div>
+          <p>The chart below shows the percentage of active CS2 players at each competitive skill group. Gold Nova ranks hold the largest share of the player base.</p>
+          <div class="cr-chart-wrap">
+            <div class="cr-chart">
+              {allRanks.map(r => {
+                const barHeight = Math.max(r.percentage * 6, 8);
+                return (
+                  <a href={`/cs2-ranks/${r.slug}/`} class="cr-chart-col">
+                    <span class="cr-chart-val">{r.percentage}%</span>
+                    <div class="cr-chart-bar" style={`height:${barHeight}px;background:${r.color}`} />
+                    <span class="cr-chart-label">{r.abbr}</span>
+                  </a>
+                );
+              })}
+            </div>
+          </div>
+          <p style="font-size:.88rem;color:var(--text2)">For a detailed breakdown with historical trends, visit the <a href="/cs2-rank-distribution/">full rank distribution page</a>.</p>
+        </section>
+
+        <!-- Overview -->
+        <section id="overview">
+          <div class="cr-section-header"><h2>How CS2 Ranking Works</h2></div>
+          <p>CS2 uses three separate ranking systems, one for each of its main competitive modes. Your rank in one mode has no direct impact on another.</p>
+          <ul class="cr-list">
+            <li><strong>Premier:</strong> A numeric CS Rating from 0 to 30,000+ that places you on a global leaderboard. This is the primary ranked experience.</li>
+            <li><strong>Competitive:</strong> Traditional skill group badges ranging from Silver I to Global Elite. You select specific maps to queue, and each map has its own rank.</li>
+            <li><strong>Wingman:</strong> A 2v2 mode with its own separate skill group rankings, independent of Competitive.</li>
+          </ul>
+          <p>All three systems use a variant of the Elo algorithm behind the scenes, though Valve has not published the exact formula. Wins, losses, round differential, and individual performance all factor into your rating movement.</p>
+        </section>
+
+        <!-- Premier -->
+        <section id="premier">
+          <div class="cr-section-header"><h2>Premier Rating System</h2></div>
+          <p>Premier is the headline mode in CS2 and uses a transparent numeric rating. After completing placement matches, you receive a CS Rating that changes after every game.</p>
+          <div class="cr-premier-table-wrap">
+            <table class="cr-premier-table">
+              <thead>
+                <tr><th>Rank</th><th>Premier Rating</th><th>Players</th><th>K/D</th><th>ADR</th></tr>
+              </thead>
+              <tbody>
+                {allRanks.map(r => (
+                  <tr>
+                    <td><a href={`/cs2-ranks/${r.slug}/`} style="color:var(--text);text-decoration:none;display:flex;align-items:center;gap:.5rem"><img src={`/images/ranks/${r.slug}.png`} alt="" width="20" height="20" loading="lazy" style="vertical-align:middle" /> {r.abbr}</a></td>
+                    <td>{r.premierRange}</td>
+                    <td>{r.percentage}%</td>
+                    <td>{r.avgKD}</td>
+                    <td>{r.avgADR}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          <p style="font-size:.88rem;color:var(--text2)">Haven't unlocked Premier yet? See our <a href="/unlock-premier-cs2/">step-by-step unlock guide</a>.</p>
+        </section>
+
+        <!-- Rank Up -->
+        <section id="rank-up">
+          <div class="cr-section-header"><h2>How to Rank Up Faster</h2></div>
+          <p>No matter which mode you play, the fundamentals of climbing are the same:</p>
+          <ul class="cr-list">
+            <li><strong>Win consistently:</strong> Wins are the single most important factor. Focus on improving your win rate rather than chasing individual stats.</li>
+            <li><strong>Perform well in losses:</strong> Strong individual performance in a losing match may reduce the amount of rating you lose.</li>
+            <li><strong>Queue with reliable teammates:</strong> Communication and coordination directly translate to more wins, especially at higher ranks.</li>
+            <li><strong>Focus on fundamentals:</strong> Crosshair placement, utility usage, and economy management are the building blocks. See our <a href="/cs2-guides/ranks-guide/">comprehensive ranks guide</a> for detailed strategies.</li>
+            <li><strong>Avoid tilt-queueing:</strong> If you lose two or three in a row, take a break.</li>
+          </ul>
+        </section>
+
+        <!-- FAQ -->
+        <section id="faq">
+          <div class="cr-section-header"><h2>Frequently Asked Questions</h2></div>
+          <div class="cr-faq-list">
+            {faqs.map((faq) => (
+              <details class="cr-faq-item">
+                <summary class="cr-faq-question">{faq.question}</summary>
+                <p class="cr-faq-answer">{faq.answer}</p>
+              </details>
+            ))}
+          </div>
+        </section>
+
+        <!-- Related -->
+        <section id="related">
+          <div class="cr-section-header"><h2>Related Articles</h2></div>
+          <div class="cr-resources-grid">
+            <a href="/cs2-rank-distribution/" class="cr-resource-card"><span class="cr-resource-name">Rank Distribution</span><span class="cr-resource-arrow">&rarr;</span></a>
+            <a href="/cs2-ranks-explained/" class="cr-resource-card"><span class="cr-resource-name">Ranks Explained (Deep Dive)</span><span class="cr-resource-arrow">&rarr;</span></a>
+            <a href="/cs2-ranks-competitive-faq/" class="cr-resource-card"><span class="cr-resource-name">Competitive FAQ</span><span class="cr-resource-arrow">&rarr;</span></a>
+            <a href="/cs2-guides/ranks-guide/" class="cr-resource-card"><span class="cr-resource-name">Ranking System Guide</span><span class="cr-resource-arrow">&rarr;</span></a>
+            <a href="/unlock-premier-cs2/" class="cr-resource-card"><span class="cr-resource-name">Unlock Premier Mode</span><span class="cr-resource-arrow">&rarr;</span></a>
+            <a href="/cs2-premier-vs-faceit/" class="cr-resource-card"><span class="cr-resource-name">Premier vs FACEIT</span><span class="cr-resource-arrow">&rarr;</span></a>
+          </div>
+        </section>
+      </article>
+    </div>
+  </div>
+
+  <ExploreMore context="guides" />
+</Base>
+
+<style>
+  .cr-wrap{max-width:1100px;margin:0 auto;padding:0 1.5rem 2rem}
+  .cr-breadcrumb{display:flex;align-items:center;gap:.5rem;padding:1.25rem 0;font-size:.85rem;color:var(--text2)}
+  .cr-breadcrumb a{color:var(--accent);text-decoration:none}
+  .cr-breadcrumb a:hover{color:var(--accent2)}
+  .cr-sep{color:var(--border)}
+  .cr-header{padding:1.5rem 0 1.25rem;border-bottom:2px solid var(--accent);margin-bottom:1.5rem}
+  .cr-header h1{margin:0 0 .35rem;font-size:2.2rem;font-weight:800;color:var(--text);letter-spacing:-.02em;line-height:1.2}
+  .cr-subtitle{margin:0;font-size:1.05rem;color:var(--text2);font-weight:400}
+  .cr-toc-mobile{display:none}
+  .cr-layout{display:grid;grid-template-columns:220px 1fr;gap:2.5rem;align-items:start}
+  .cr-sidebar{position:sticky;top:80px}
+  .cr-toc{display:flex;flex-direction:column;gap:0;border-left:2px solid var(--border);padding-left:0}
+  .cr-toc-title{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--accent);padding:0 0 .6rem 1rem}
+  .cr-toc-link{display:block;padding:.4rem 1rem;font-size:.82rem;color:var(--text2);text-decoration:none;border-left:2px solid transparent;margin-left:-2px;transition:color .2s,border-color .2s}
+  .cr-toc-link:hover{color:var(--text);border-left-color:var(--accent)}
+  .cr-content{min-width:0}
+  .cr-intro{font-size:1rem;line-height:1.8;color:var(--text2);margin-bottom:2rem}
+  .cr-section-header{background:rgba(46,204,113,.05);margin:0 -1.25rem 1.25rem;padding:.75rem 1.25rem;border-radius:4px}
+  .cr-section-header h2{margin:0;padding:0;font-size:1.5rem;font-weight:700;color:var(--text);border:none;letter-spacing:-.01em}
+  section{margin-bottom:2.5rem}
+  p{line-height:1.7;color:var(--text2);margin-bottom:1rem}
+  .cr-list{list-style:none;padding:0;margin:.75rem 0 1.5rem}
+  .cr-list li{padding:.4rem 0 .4rem 1.6rem;position:relative;color:var(--text2);line-height:1.65}
+  .cr-list li::before{content:'';position:absolute;left:.25rem;top:.75rem;width:6px;height:6px;background:var(--accent);border-radius:1px}
+  .cr-list li strong{color:var(--text)}
+
+  /* Tier groups */
+  .cr-tier-group{margin-bottom:1.5rem}
+  .cr-tier-name{font-size:.85rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--text2);margin:0 0 .6rem;padding-left:.75rem;border-left:3px solid var(--border)}
+
+  /* Rank cards */
+  .cr-rank-grid{display:flex;flex-direction:column;gap:.4rem}
+  .cr-rank-card{display:flex;align-items:center;gap:1rem;padding:.75rem 1rem;background:var(--bg2);border:1px solid var(--border);border-radius:4px;text-decoration:none;border-left:3px solid transparent;transition:border-left-color .2s,background .2s}
+  .cr-rank-card:hover{border-left-color:var(--accent);background:var(--bg3)}
+  .cr-rank-badge-wrap{display:flex;flex-direction:column;align-items:center;gap:.25rem;flex-shrink:0;width:64px}
+  .cr-rank-badge{width:48px;height:48px;object-fit:contain}
+  .cr-rank-abbr{font-size:.65rem;font-weight:800;padding:.15rem .4rem;border-radius:3px;line-height:1}
+  .cr-rank-info{flex:1;min-width:0}
+  .cr-rank-name{display:block;font-size:.95rem;font-weight:700;color:var(--text);margin-bottom:.2rem}
+  .cr-rank-meta{display:flex;gap:.4rem;font-size:.78rem;color:var(--text2)}
+  .cr-rank-stats{display:flex;gap:.75rem;font-size:.72rem;color:var(--text2);margin-top:.25rem;opacity:.7}
+  .cr-rank-arrow{font-size:1rem;color:var(--accent);opacity:0;transition:opacity .2s;flex-shrink:0}
+  .cr-rank-card:hover .cr-rank-arrow{opacity:1}
+
+  /* Distribution chart */
+  .cr-chart-wrap{background:var(--bg2);border:1px solid var(--border);border-radius:4px;padding:1.5rem;margin-bottom:1rem}
+  .cr-chart{display:flex;align-items:flex-end;justify-content:center;gap:4px;min-height:100px;padding-bottom:.5rem}
+  .cr-chart-col{display:flex;flex-direction:column;align-items:center;gap:3px;flex:1;min-width:0;text-decoration:none}
+  .cr-chart-val{font-size:.55rem;color:var(--text2);opacity:0;transition:opacity .2s}
+  .cr-chart-col:hover .cr-chart-val{opacity:1;font-weight:700;color:var(--text)}
+  .cr-chart-bar{width:100%;max-width:40px;min-width:8px;border-radius:3px 3px 0 0;transition:opacity .2s}
+  .cr-chart-col:hover .cr-chart-bar{opacity:.85}
+  .cr-chart-label{font-size:.55rem;color:var(--text2);font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+
+  /* Premier table */
+  .cr-premier-table-wrap{overflow-x:auto;margin:.75rem 0 1rem}
+  .cr-premier-table{width:100%;border-collapse:collapse;font-size:.85rem}
+  .cr-premier-table thead tr{background:var(--accent)}
+  .cr-premier-table th{padding:.5rem .75rem;text-align:left;font-weight:700;color:#0d0e12;font-size:.78rem;text-transform:uppercase;letter-spacing:.04em}
+  .cr-premier-table td{padding:.45rem .75rem;border-bottom:1px solid var(--border)}
+  .cr-premier-table tbody tr:last-child td{border-bottom:none}
+  .cr-premier-table tbody tr{background:var(--bg3)}
+  .cr-premier-table tbody tr:hover{background:var(--bg2)}
+
+  /* FAQ */
+  .cr-faq-list{display:flex;flex-direction:column;gap:.5rem}
+  .cr-faq-item{background:var(--bg2);border:1px solid var(--border);border-radius:4px;overflow:hidden}
+  .cr-faq-question{display:block;padding:1rem 1.25rem;font-size:.95rem;font-weight:600;color:var(--text);cursor:pointer;list-style:none;position:relative;padding-right:2.5rem;transition:background .2s}
+  .cr-faq-question::-webkit-details-marker{display:none}
+  .cr-faq-question::after{content:'+';position:absolute;right:1.25rem;top:50%;transform:translateY(-50%);font-size:1.2rem;color:var(--accent);font-weight:700}
+  .cr-faq-item[open] .cr-faq-question::after{content:'\2212'}
+  .cr-faq-item[open] .cr-faq-question{border-bottom:1px solid var(--border);background:rgba(46,204,113,.03)}
+  .cr-faq-question:hover{background:rgba(46,204,113,.03)}
+  .cr-faq-answer{padding:1rem 1.25rem;margin:0;font-size:.9rem;color:var(--text2);line-height:1.7}
+
+  /* Resources */
+  .cr-resources-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.6rem;margin:.5rem 0 1.5rem}
+  .cr-resource-card{display:flex;align-items:center;justify-content:space-between;padding:.75rem 1rem;background:var(--bg2);border:1px solid var(--border);border-radius:4px;text-decoration:none;border-left:2px solid transparent;transition:border-left-color .2s,color .2s}
+  .cr-resource-card:hover{border-left-color:var(--accent)}
+  .cr-resource-name{font-size:.88rem;color:var(--text2);font-weight:500;transition:color .2s}
+  .cr-resource-card:hover .cr-resource-name{color:var(--text)}
+  .cr-resource-arrow{font-size:1rem;color:var(--accent);opacity:0;transition:opacity .2s}
+  .cr-resource-card:hover .cr-resource-arrow{opacity:1}
+
+  @media(max-width:860px){
+    .cr-layout{grid-template-columns:1fr;gap:0}
+    .cr-sidebar{display:none}
+    .cr-toc-mobile{display:flex;gap:.25rem;overflow-x:auto;padding:.75rem 0;margin-bottom:1rem;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+    .cr-toc-mobile::-webkit-scrollbar{display:none}
+    .cr-toc-mobile-link{flex-shrink:0;padding:.35rem .75rem;font-size:.78rem;font-weight:600;color:var(--text2);background:var(--bg2);border:1px solid var(--border);border-radius:4px;text-decoration:none;white-space:nowrap;transition:color .2s,border-color .2s}
+    .cr-toc-mobile-link:hover{color:var(--accent);border-color:var(--accent)}
+    .cr-header h1{font-size:1.7rem}
+    .cr-section-header{margin:0 -1rem 1rem;padding:.6rem 1rem}
+    .cr-resources-grid{grid-template-columns:repeat(2,1fr)}
+  }
+  @media(max-width:600px){
+    .cr-wrap{padding:0 1rem 1.5rem}
+    .cr-resources-grid{grid-template-columns:1fr}
+    .cr-header h1{font-size:1.5rem}
+    .cr-rank-stats{display:none}
+  }
+</style>

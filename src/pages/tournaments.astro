@@ -9,19 +9,20 @@ const explore = [
   { title: 'Pro Gaming Gear', href: '/pro-gaming-gear/', desc: 'Gear used by the pros' },
 ];
 ---
-<Base title="CS2 Tournaments — Active & Upcoming Events | CSGOLuck Wiki" description="Track active and upcoming CS2 tournaments. Tournament brackets, match schedules, and results." currentNav="/tournaments/">
+<Base title="CS2 Tournaments — Active, Upcoming & Past Events | CSGOLuck Wiki" description="Track active, upcoming, and past CS2 tournaments. Tournament brackets, match schedules, and results." currentNav="/tournaments/">
 
 <nav class="breadcrumb" aria-label="Breadcrumb">
 <a href="/">Home</a> <span class="sep">›</span> <span>CS2 Tournaments</span>
 </nav>
 
 <h1>CS2 Tournaments</h1>
-<p class="page-intro">Active and upcoming Counter-Strike 2 tournaments with match schedules and results.</p>
+<p class="page-intro">Active, upcoming, and past Counter-Strike 2 tournaments with match schedules and results.</p>
 
 <!-- Tab Navigation -->
 <div class="tourney-tabs" role="tablist">
   <button class="tourney-tab active" data-tab="active" role="tab" aria-selected="true">Active</button>
   <button class="tourney-tab" data-tab="upcoming" role="tab" aria-selected="false">Upcoming</button>
+  <button class="tourney-tab" data-tab="past" role="tab" aria-selected="false">Past</button>
 </div>
 
 <!-- Active Tournaments Panel -->
@@ -35,6 +36,13 @@ const explore = [
 <div class="tourney-panel" id="panel-upcoming" role="tabpanel">
   <div id="upcoming-tournaments">
     <div class="loading-state"><div class="spinner"></div> Loading upcoming tournaments…</div>
+  </div>
+</div>
+
+<!-- Past Tournaments Panel -->
+<div class="tourney-panel" id="panel-past" role="tabpanel">
+  <div id="past-tournaments">
+    <div class="loading-state"><div class="spinner"></div> Loading past tournaments…</div>
   </div>
 </div>
 
@@ -94,6 +102,18 @@ const explore = [
 
 .load-more-btn { display: block; width: 100%; padding: .75rem; background: var(--bg3); border: 1px solid var(--border); border-radius: 4px; color: var(--text2); font-size: .85rem; font-weight: 600; cursor: pointer; font-family: inherit; margin-top: .5rem; transition: border-color .2s, color .2s; }
 .load-more-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+/* Clickable tournament card links */
+a.tourney-card-link { text-decoration: none; color: inherit; display: block; }
+a.tourney-card-link .tourney-card { cursor: pointer; transition: border-color .2s, border-left-color .2s; }
+a.tourney-card-link:hover .tourney-card { border-left: 3px solid var(--accent); }
+
+/* Winner badge for past tournaments */
+.tourney-winner { font-size: .8rem; color: #f1c40f; font-weight: 700; }
+.tourney-winner::before { content: '🏆 '; }
+
+/* Finished badge */
+.tourney-badge-finished { font-size: .7rem; font-weight: 700; text-transform: uppercase; padding: .15rem .4rem; border-radius: 3px; background: var(--bg3); color: var(--text2); }
 
 @media (max-width: 600px) {
   .tourney-card-header { flex-direction: column; gap: .5rem; align-items: flex-start; }
@@ -158,8 +178,9 @@ function renderTournament(t) {
   }).join('');
 
   return `
+    <a href="/tournament-detail/?id=${t.id}" class="tourney-card-link">
     <div class="tourney-card">
-      <div class="tourney-card-header" onclick="this.parentElement.classList.toggle('open')">
+      <div class="tourney-card-header" onclick="event.preventDefault(); this.parentElement.classList.toggle('open')">
         <div class="tourney-info">
           ${t.league?.image ? `<img src="${t.league.image}" alt="" class="tourney-logo" style="height:28px;max-height:28px;width:auto;max-width:100px;object-fit:contain" />` : ''}
           <span class="tourney-name">${t.league?.name || ''} — ${t.name || t.serie?.name || ''}</span>
@@ -175,6 +196,32 @@ function renderTournament(t) {
       </div>
       ${t.matches?.length ? `<div class="tourney-matches">${matchesHTML}</div>` : ''}
     </div>
+    </a>
+  `;
+}
+
+function renderPastTournament(t) {
+  const dateStr = t.beginAt ? `${formatDate(t.beginAt)}${t.endAt ? ' – ' + formatDate(t.endAt) : ''}` : '';
+  const winnerName = t.winner?.name || t.winner?.acronym || '';
+
+  return `
+    <a href="/tournament-detail/?id=${t.id}" class="tourney-card-link">
+    <div class="tourney-card">
+      <div class="tourney-card-header">
+        <div class="tourney-info">
+          ${t.league?.image ? `<img src="${t.league.image}" alt="" class="tourney-logo" style="height:28px;max-height:28px;width:auto;max-width:100px;object-fit:contain" />` : ''}
+          <span class="tourney-name">${t.league?.name || ''} — ${t.name || t.serie?.name || ''}</span>
+        </div>
+        <div class="tourney-meta">
+          <span class="tourney-badge-finished">Finished</span>
+          ${winnerName ? `<span class="tourney-winner">${winnerName}</span>` : ''}
+          ${t.tier ? `<span class="tourney-tier ${tierClass(t.tier)}">${tierLabel(t.tier)}</span>` : ''}
+          ${t.prizepool ? `<span class="tourney-prize">${t.prizepool}</span>` : ''}
+          <span class="tourney-dates">${dateStr}</span>
+        </div>
+      </div>
+    </div>
+    </a>
   `;
 }
 
@@ -206,8 +253,23 @@ async function loadUpcoming() {
   container.innerHTML = data.tournaments.map(renderTournament).join('');
 }
 
+async function loadPast() {
+  const data = await fetchTournaments('past', 1, 20);
+  const container = document.getElementById('past-tournaments');
+  if (!data || !data.tournaments) {
+    container.innerHTML = '<div class="empty-state">Unable to load past tournaments.</div>';
+    return;
+  }
+  if (data.tournaments.length === 0) {
+    container.innerHTML = '<div class="empty-state">No past tournaments found.</div>';
+    return;
+  }
+  container.innerHTML = data.tournaments.map(renderPastTournament).join('');
+}
+
 loadActive();
 loadUpcoming();
+loadPast();
 setInterval(loadActive, 300000);
 </script>
 

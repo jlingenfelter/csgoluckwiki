@@ -122,6 +122,7 @@ const hasCrosshairSettings = player.crosshairSettings && Object.keys(player.cros
 // Sidebar sections
 const sections = [
   { id: 'livestats', label: 'Performance Stats' },
+  { id: 'matchhistory', label: 'Match History' },
   { id: 'sensitivity', label: 'Mouse & Sensitivity' },
   { id: 'crosshair', label: 'Crosshair' },
   { id: 'video', label: 'Video & Display' },
@@ -207,6 +208,15 @@ const faqs = [
   <p class="pp-live-stats-sub">Live stats from professional matches, powered by PandaScore.</p>
   <div id="liveStatsContent">
     <div class="pp-ls-loading"><div class="pp-ls-spinner"></div> Loading performance data…</div>
+  </div>
+</section>
+
+<!-- Match History (loaded client-side) -->
+<section class="pp-match-history" id="matchhistory">
+  <h2 class="pp-section-title">Recent Matches</h2>
+  <p class="pp-match-history-sub">Recent match results for this player's team.</p>
+  <div id="matchHistoryContent">
+    <div class="pp-mh-loading"><div class="pp-mh-spinner"></div> Loading match history…</div>
   </div>
 </section>
 
@@ -771,6 +781,47 @@ const faqs = [
   .pp-ls-game{flex-wrap:wrap}
   .pp-ls-game-opp{min-width:100px}
 }
+
+/* ── Form Chart (inside Performance Stats, JS-injected) ───────────────── */
+.pp-ls-form{margin-top:1rem;padding-top:1rem;border-top:1px solid var(--border)}
+.pp-ls-form h3{font-size:.92rem;font-weight:700;margin:0 0 .5rem;color:var(--text)}
+.pp-ls-form-row{display:flex;gap:.5rem;align-items:center}
+.pp-ls-form-dot{width:42px;height:42px;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;font-weight:700;transition:transform .15s}
+.pp-ls-form-dot:hover{transform:scale(1.1)}
+.pp-ls-form-w{background:rgba(46,204,113,.15);border:2px solid #2ecc71}
+.pp-ls-form-l{background:rgba(231,76,60,.15);border:2px solid #e74c3c}
+.pp-ls-form-letter{font-size:.72rem;line-height:1}
+.pp-ls-form-w .pp-ls-form-letter{color:#2ecc71}
+.pp-ls-form-l .pp-ls-form-letter{color:#e74c3c}
+.pp-ls-form-rating{font-size:.55rem;color:var(--text2);line-height:1;margin-top:.1rem}
+
+/* ── Match History (JS-injected content — must be global) ──────────────── */
+.pp-match-history{margin-bottom:2rem;scroll-margin-top:70px}
+.pp-match-history-sub{font-size:.82rem;color:var(--text2);margin:0 0 1rem}
+.pp-mh-loading{text-align:center;padding:1.5rem;color:var(--text2);font-size:.85rem}
+.pp-mh-spinner{display:inline-block;width:16px;height:16px;border:2px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:pp-spin .6s linear infinite;margin-right:.4rem;vertical-align:middle}
+.pp-mh-empty{text-align:center;padding:1.25rem;color:var(--text3);font-size:.82rem;background:var(--bg2);border:1px solid var(--border);border-radius:4px}
+
+.pp-mh-list{display:flex;flex-direction:column;gap:.35rem}
+.pp-mh-row{display:flex;align-items:center;gap:.75rem;background:var(--bg2);border:1px solid var(--border);border-radius:4px;padding:.55rem .75rem;font-size:.82rem;text-decoration:none;color:inherit;transition:border-left .15s}
+.pp-mh-row:hover{border-left:3px solid var(--accent);background:var(--bg3)}
+.pp-mh-date{color:var(--text2);font-size:.75rem;min-width:75px;flex-shrink:0}
+.pp-mh-vs{color:var(--text3);font-size:.7rem;font-weight:600;flex-shrink:0}
+.pp-mh-opponent{display:flex;align-items:center;gap:.4rem;min-width:100px;flex-shrink:0}
+.pp-mh-opp-img{width:20px;height:20px;border-radius:2px;object-fit:contain}
+.pp-mh-opponent span{font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pp-mh-score{font-weight:700;color:var(--text);min-width:70px;flex-shrink:0;display:flex;align-items:center;gap:.35rem}
+.pp-mh-badge{display:inline-block;font-size:.65rem;font-weight:800;padding:.12rem .4rem;border-radius:4px;text-transform:uppercase;letter-spacing:.03em;line-height:1}
+.pp-mh-win{background:rgba(46,204,113,.15);color:#2ecc71;border:1px solid rgba(46,204,113,.3)}
+.pp-mh-loss{background:rgba(231,76,60,.15);color:#e74c3c;border:1px solid rgba(231,76,60,.3)}
+.pp-mh-tournament{color:var(--text2);font-size:.72rem;flex:1;text-align:right;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+@media(max-width:768px){
+  .pp-mh-row{flex-wrap:wrap;gap:.4rem}
+  .pp-mh-date{min-width:auto}
+  .pp-mh-opponent{min-width:80px}
+  .pp-mh-tournament{flex-basis:100%;text-align:left;margin-top:.15rem}
+}
 </style>
 
 <script is:inline define:vars={{ playerSlug: player.slug, playerDisplayName: player.name }}>
@@ -851,11 +902,104 @@ const faqs = [
         html += '</div></div>';
       }
 
+      // Form Chart — last 5 games
+      if (games.length > 0) {
+        var formGames = games.slice(0, 5);
+        html += '<div class="pp-ls-form"><h3>Current Form</h3><div class="pp-ls-form-row">';
+        formGames.forEach(function(g) {
+          var rating = g.rating != null ? Number(g.rating) : null;
+          var isWin = rating !== null && rating >= 1.0;
+          var cls = isWin ? 'pp-ls-form-dot pp-ls-form-w' : 'pp-ls-form-dot pp-ls-form-l';
+          var label = isWin ? 'W' : 'L';
+          html += '<div class="' + cls + '"><span class="pp-ls-form-letter">' + label + '</span><span class="pp-ls-form-rating">' + fmt(rating) + '</span></div>';
+        });
+        html += '</div></div>';
+      }
+
       container.innerHTML = html;
     })
     .catch(function(err) {
       console.warn('PandaScore stats not available for ' + playerDisplayName + ':', err.message);
       container.innerHTML = '<div class="pp-ls-error">Performance stats not available for this player. Stats are tracked for players with recent professional match data.</div>';
+    });
+})();
+</script>
+
+<script is:inline define:vars={{ playerSlug: player.slug }}>
+(function(){
+  var container = document.getElementById('matchHistoryContent');
+  if (!container) return;
+
+  fetch('/api/player-matches?slug=' + encodeURIComponent(playerSlug))
+    .then(function(res) {
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      return res.json();
+    })
+    .then(function(data) {
+      if (data.error) throw new Error(data.error);
+
+      var matches = (data.matches || []).slice(0, 10);
+      var currentTeam = data.currentTeam;
+      var currentTeamId = currentTeam ? currentTeam.id : null;
+
+      if (matches.length === 0) {
+        container.innerHTML = '<div class="pp-mh-empty">No recent match data available.</div>';
+        return;
+      }
+
+      var html = '<div class="pp-mh-list">';
+      matches.forEach(function(m) {
+        var date = m.beginAt ? new Date(m.beginAt) : null;
+        var dateStr = date ? date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : '—';
+
+        // Find opponent
+        var opponent = null;
+        var ownTeam = null;
+        if (m.opponents && m.opponents.length === 2) {
+          m.opponents.forEach(function(o) {
+            if (o.id === currentTeamId) { ownTeam = o; } else { opponent = o; }
+          });
+        }
+        if (!opponent && m.opponents && m.opponents.length === 2) {
+          opponent = m.opponents[1];
+          ownTeam = m.opponents[0];
+        }
+
+        // Score
+        var ownScore = '—';
+        var oppScore = '—';
+        var isWin = false;
+        if (m.results && m.results.length === 2 && ownTeam) {
+          m.results.forEach(function(r) {
+            if (r.team_id === ownTeam.id) { ownScore = r.score; }
+            else { oppScore = r.score; }
+          });
+        }
+        if (m.winnerId && ownTeam) {
+          isWin = m.winnerId === ownTeam.id;
+        }
+
+        var resultClass = isWin ? 'pp-mh-badge pp-mh-win' : 'pp-mh-badge pp-mh-loss';
+        var resultLabel = isWin ? 'W' : 'L';
+        var oppImg = opponent && opponent.image ? '<img src="' + opponent.image + '" alt="" class="pp-mh-opp-img" />' : '';
+        var oppName = opponent ? (opponent.acronym || opponent.name) : 'TBD';
+        var tournamentName = m.tournament ? m.tournament.name : (m.league ? m.league.name : '');
+
+        html += '<a href="/match-detail/?id=' + m.id + '" class="pp-mh-row">';
+        html += '<span class="pp-mh-date">' + dateStr + '</span>';
+        html += '<span class="pp-mh-vs">vs</span>';
+        html += '<span class="pp-mh-opponent">' + oppImg + '<span>' + oppName + '</span></span>';
+        html += '<span class="pp-mh-score"><span class="' + resultClass + '">' + resultLabel + '</span> ' + ownScore + '–' + oppScore + '</span>';
+        html += '<span class="pp-mh-tournament">' + tournamentName + '</span>';
+        html += '</a>';
+      });
+      html += '</div>';
+
+      container.innerHTML = html;
+    })
+    .catch(function(err) {
+      console.warn('Match history not available:', err.message);
+      container.innerHTML = '<div class="pp-mh-empty">Match history not available for this player.</div>';
     });
 })();
 </script>

@@ -197,6 +197,24 @@ const faqs = [
   </div>
 </section>
 
+<!-- Match History -->
+<section class="tp-match-history" id="matchhistory">
+  <h2 class="tp-section-title">Recent Matches</h2>
+  <p class="tp-match-history-sub">Recent match results, powered by PandaScore.</p>
+  <div id="matchHistoryContent">
+    <div class="tp-mh-loading"><div class="tp-mh-spinner"></div> Loading match history…</div>
+  </div>
+</section>
+
+<!-- Map Stats (computed from match data) -->
+<section class="tp-section" id="mapstats">
+  <h2>Map Stats</h2>
+  <p class="tp-section-desc">Map frequency from recent matches.</p>
+  <div id="mapStatsContent">
+    <div class="tp-mh-loading"><div class="tp-mh-spinner"></div> Waiting for match data…</div>
+  </div>
+</section>
+
 <!-- Full Gear Comparison Table -->
 <section class="tp-section">
   <h2>{team.name} Gear Comparison</h2>
@@ -444,6 +462,56 @@ const faqs = [
 @media(max-width:768px){
   .tp-ls-team-avg{grid-template-columns:repeat(2,1fr)}
 }
+
+/* ── Match History Section ── */
+.tp-match-history{margin-bottom:2.5rem}
+.tp-section-title{margin-bottom:1rem;font-size:1.3rem}
+.tp-match-history-sub{font-size:.88rem;color:var(--text2);margin-bottom:1rem}
+.tp-mh-loading{text-align:center;padding:1.5rem;color:var(--text2);font-size:.85rem}
+.tp-mh-spinner{display:inline-block;width:16px;height:16px;border:2px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:tp-spin .6s linear infinite;margin-right:.4rem;vertical-align:middle}
+.tp-mh-error{text-align:center;padding:1.25rem;color:var(--text3);font-size:.82rem;background:var(--bg);border:1px solid var(--border);border-radius:4px}
+.tp-mh-empty{text-align:center;padding:1.5rem;color:var(--text3);font-size:.85rem;background:var(--bg);border:1px solid var(--border);border-radius:4px}
+
+/* Upcoming / Past sub-headings */
+.tp-mh-subhead{font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--text2);margin:1.25rem 0 .5rem;padding-left:.25rem}
+.tp-mh-subhead:first-child{margin-top:0}
+
+/* Match rows */
+.tp-mh-list{display:flex;flex-direction:column;gap:.45rem}
+.tp-mh-row{display:flex;align-items:center;gap:.75rem;background:var(--bg2);border:1px solid var(--border);border-radius:4px;padding:.6rem .85rem;text-decoration:none;color:inherit;transition:border-left .15s}
+.tp-mh-row:hover{border-left:3px solid var(--accent)}
+.tp-mh-date{font-size:.72rem;color:var(--text3);min-width:70px;flex-shrink:0}
+.tp-mh-opponent{display:flex;align-items:center;gap:.45rem;flex:1;min-width:0}
+.tp-mh-opp-img{width:22px;height:22px;border-radius:4px;object-fit:contain;flex-shrink:0;background:var(--bg3)}
+.tp-mh-opp-name{font-size:.85rem;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tp-mh-score{font-size:.88rem;font-weight:800;min-width:50px;text-align:center;color:var(--text)}
+.tp-mh-tournament{font-size:.72rem;color:var(--text3);min-width:0;flex-shrink:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:180px}
+.tp-mh-badge{font-size:.6rem;font-weight:700;padding:.15rem .4rem;border-radius:4px;text-transform:uppercase;letter-spacing:.03em;flex-shrink:0}
+.tp-mh-badge-win{background:rgba(46,204,113,.15);color:var(--accent);border:1px solid var(--accent)}
+.tp-mh-badge-loss{background:rgba(239,83,80,.12);color:var(--red, #ef5350);border:1px solid var(--red, #ef5350)}
+.tp-mh-badge-upcoming{background:rgba(33,150,243,.12);color:var(--blue, #42a5f5);border:1px solid var(--blue, #42a5f5)}
+.tp-mh-badge-draw{background:rgba(255,193,7,.12);color:#ffc107;border:1px solid #ffc107}
+
+/* Load more button */
+.tp-mh-load-more{display:block;width:100%;margin-top:.75rem;padding:.55rem;background:var(--bg2);border:1px solid var(--border);border-radius:4px;color:var(--accent);font-size:.82rem;font-weight:700;cursor:pointer;text-align:center;font-family:inherit;transition:background .15s}
+.tp-mh-load-more:hover{background:var(--bg3)}
+.tp-mh-load-more:disabled{opacity:.5;cursor:default}
+
+/* ── Map Stats Section ── */
+.tp-ms-chart{display:flex;flex-direction:column;gap:.4rem;margin-top:.5rem}
+.tp-ms-bar-row{display:flex;align-items:center;gap:.6rem}
+.tp-ms-bar-label{font-size:.8rem;font-weight:600;color:var(--text);min-width:100px;text-align:right;flex-shrink:0}
+.tp-ms-bar-track{flex:1;background:var(--bg);border:1px solid var(--border);border-radius:4px;height:22px;overflow:hidden;position:relative}
+.tp-ms-bar-fill{height:100%;background:var(--accent);border-radius:4px 0 0 4px;transition:width .4s ease}
+.tp-ms-bar-count{font-size:.72rem;color:var(--text2);min-width:30px;flex-shrink:0}
+.tp-ms-empty{text-align:center;padding:1rem;color:var(--text3);font-size:.82rem}
+
+@media(max-width:768px){
+  .tp-mh-row{flex-wrap:wrap;gap:.4rem}
+  .tp-mh-date{min-width:auto;width:100%;font-size:.68rem}
+  .tp-mh-tournament{max-width:120px}
+  .tp-ms-bar-label{min-width:70px;font-size:.72rem}
+}
 </style>
 
 <script is:inline>
@@ -576,5 +644,277 @@ const faqs = [
     el = document.getElementById('tavg-kd');
     if (el) el.textContent = (counts.kills > 0 && counts.deaths > 0) ? ((sums.kills / counts.kills) / (sums.deaths / counts.deaths)).toFixed(2) : '—';
   }
+})();
+</script>
+
+<script is:inline define:vars={{ matchTeamSlug: team.slug, matchTeamName: team.name }}>
+(function(){
+  var container = document.getElementById('matchHistoryContent');
+  var mapContainer = document.getElementById('mapStatsContent');
+  if (!container) return;
+
+  var currentPage = 1;
+  var allPastMatches = [];
+  var allUpcomingMatches = [];
+  var teamId = null;
+  var VISIBLE_COUNT = 15;
+  var visiblePast = VISIBLE_COUNT;
+
+  // Derive PandaScore-style slug from team name
+  var pandaSlug = matchTeamSlug;
+
+  function fmtDate(iso) {
+    if (!iso) return '—';
+    var d = new Date(iso);
+    var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    return months[d.getMonth()] + ' ' + d.getDate() + ', ' + d.getFullYear();
+  }
+
+  function fmtDateShort(iso) {
+    if (!iso) return '—';
+    var d = new Date(iso);
+    var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    return months[d.getMonth()] + ' ' + d.getDate();
+  }
+
+  function getOpponent(match) {
+    if (!match.opponents || match.opponents.length < 2) return null;
+    // Find the opponent that is NOT our team
+    for (var i = 0; i < match.opponents.length; i++) {
+      if (match.opponents[i].id !== teamId) return match.opponents[i];
+    }
+    return match.opponents[1]; // fallback
+  }
+
+  function getTeamScore(match) {
+    if (!match.results || match.results.length === 0) return null;
+    for (var i = 0; i < match.results.length; i++) {
+      if (match.results[i].team_id === teamId) return match.results[i].score;
+    }
+    return null;
+  }
+
+  function getOppScore(match, oppId) {
+    if (!match.results || match.results.length === 0) return null;
+    for (var i = 0; i < match.results.length; i++) {
+      if (match.results[i].team_id === oppId) return match.results[i].score;
+    }
+    return null;
+  }
+
+  function renderMatchRow(match, type) {
+    var opp = getOpponent(match);
+    var oppName = opp ? (opp.acronym || opp.name || 'TBD') : 'TBD';
+    var oppImg = opp && opp.image ? '<img class="tp-mh-opp-img" src="' + opp.image + '" alt="' + oppName + '" onerror="this.style.display=\'none\'" />' : '';
+    var dateStr = type === 'upcoming' ? fmtDate(match.beginAt) : fmtDateShort(match.beginAt);
+
+    var scoreHTML = '';
+    var badgeHTML = '';
+
+    if (type === 'upcoming') {
+      scoreHTML = '<span class="tp-mh-score">—</span>';
+      badgeHTML = '<span class="tp-mh-badge tp-mh-badge-upcoming">Upcoming</span>';
+    } else {
+      var ts = getTeamScore(match);
+      var os = opp ? getOppScore(match, opp.id) : null;
+      scoreHTML = '<span class="tp-mh-score">' + (ts != null ? ts : '?') + ' - ' + (os != null ? os : '?') + '</span>';
+
+      if (match.draw) {
+        badgeHTML = '<span class="tp-mh-badge tp-mh-badge-draw">Draw</span>';
+      } else if (match.winnerId === teamId) {
+        badgeHTML = '<span class="tp-mh-badge tp-mh-badge-win">W</span>';
+      } else if (match.winnerId) {
+        badgeHTML = '<span class="tp-mh-badge tp-mh-badge-loss">L</span>';
+      } else {
+        badgeHTML = '';
+      }
+    }
+
+    var tourneyName = '';
+    if (match.league && match.league.name) tourneyName = match.league.name;
+    if (match.tournament && match.tournament.name) {
+      tourneyName += tourneyName ? ' - ' + match.tournament.name : match.tournament.name;
+    }
+
+    var href = '/match-detail/?id=' + match.id;
+
+    return '<a class="tp-mh-row" href="' + href + '">' +
+      '<span class="tp-mh-date">' + dateStr + '</span>' +
+      '<span class="tp-mh-opponent">' + oppImg + '<span class="tp-mh-opp-name">' + oppName + '</span></span>' +
+      scoreHTML +
+      '<span class="tp-mh-tournament" title="' + tourneyName.replace(/"/g, '&quot;') + '">' + tourneyName + '</span>' +
+      badgeHTML +
+    '</a>';
+  }
+
+  function renderMatches() {
+    var html = '';
+
+    // Upcoming matches first
+    if (allUpcomingMatches.length > 0) {
+      html += '<div class="tp-mh-subhead">Upcoming</div>';
+      html += '<div class="tp-mh-list">';
+      for (var i = 0; i < allUpcomingMatches.length; i++) {
+        html += renderMatchRow(allUpcomingMatches[i], 'upcoming');
+      }
+      html += '</div>';
+    }
+
+    // Past matches
+    if (allPastMatches.length > 0) {
+      html += '<div class="tp-mh-subhead">Past Matches</div>';
+      html += '<div class="tp-mh-list" id="pastMatchList">';
+      var showCount = Math.min(visiblePast, allPastMatches.length);
+      for (var i = 0; i < showCount; i++) {
+        html += renderMatchRow(allPastMatches[i], 'past');
+      }
+      html += '</div>';
+
+      if (allPastMatches.length > visiblePast) {
+        html += '<button class="tp-mh-load-more" id="mhLoadMore">Load more matches</button>';
+      }
+    }
+
+    if (allUpcomingMatches.length === 0 && allPastMatches.length === 0) {
+      html = '<div class="tp-mh-empty">No match data available for ' + matchTeamName + '.</div>';
+    }
+
+    container.innerHTML = html;
+
+    // Bind load more button
+    var loadBtn = document.getElementById('mhLoadMore');
+    if (loadBtn) {
+      loadBtn.addEventListener('click', function() {
+        loadBtn.disabled = true;
+        loadBtn.textContent = 'Loading…';
+        currentPage++;
+        fetchPage(currentPage);
+      });
+    }
+  }
+
+  function renderMapStats() {
+    if (!mapContainer) return;
+    // We only have match-level data from the API (not individual game maps)
+    // so we extract tournament names or match metadata that might hint at maps.
+    // Since the match data doesn't include per-game map names, show a note.
+    // However, if match.name often contains map info, parse it.
+    var mapCounts = {};
+    var totalParsed = 0;
+
+    for (var i = 0; i < allPastMatches.length; i++) {
+      var m = allPastMatches[i];
+      // PandaScore match names sometimes contain map names like "Map 1 - Mirage"
+      // The match name format is often "Team A vs Team B" but games array would have map info.
+      // Without games array, we try to extract from the match name
+      if (m.name) {
+        var mapPatterns = ['mirage','dust2','inferno','nuke','overpass','ancient','anubis','vertigo','train','cache'];
+        var lower = m.name.toLowerCase();
+        for (var j = 0; j < mapPatterns.length; j++) {
+          if (lower.indexOf(mapPatterns[j]) !== -1) {
+            var mapName = mapPatterns[j].charAt(0).toUpperCase() + mapPatterns[j].slice(1);
+            if (mapName === 'Dust2') mapName = 'Dust II';
+            mapCounts[mapName] = (mapCounts[mapName] || 0) + 1;
+            totalParsed++;
+          }
+        }
+      }
+    }
+
+    // Also count tournament tiers for context
+    if (totalParsed === 0) {
+      // No map data could be extracted; show a simple tournament tier breakdown instead
+      var tierCounts = {};
+      for (var i = 0; i < allPastMatches.length; i++) {
+        var tier = allPastMatches[i].tournament && allPastMatches[i].tournament.tier;
+        if (tier) {
+          var label = tier === 's' ? 'S-Tier' : tier === 'a' ? 'A-Tier' : tier === 'b' ? 'B-Tier' : tier.toUpperCase() + '-Tier';
+          tierCounts[label] = (tierCounts[label] || 0) + 1;
+        }
+      }
+
+      var tierEntries = Object.keys(tierCounts).map(function(k){ return { name: k, count: tierCounts[k] }; });
+      tierEntries.sort(function(a,b){ return b.count - a.count; });
+
+      if (tierEntries.length === 0) {
+        mapContainer.innerHTML = '<div class="tp-ms-empty">Map data not available for these matches.</div>';
+        return;
+      }
+
+      var maxCount = tierEntries[0].count;
+      var html = '<p class="tp-section-desc" style="margin-bottom:.75rem">Map-level data is unavailable. Showing tournament tier breakdown instead.</p>';
+      html += '<div class="tp-ms-chart">';
+      for (var i = 0; i < tierEntries.length; i++) {
+        var pct = Math.round((tierEntries[i].count / maxCount) * 100);
+        html += '<div class="tp-ms-bar-row">' +
+          '<span class="tp-ms-bar-label">' + tierEntries[i].name + '</span>' +
+          '<div class="tp-ms-bar-track"><div class="tp-ms-bar-fill" style="width:' + pct + '%"></div></div>' +
+          '<span class="tp-ms-bar-count">' + tierEntries[i].count + '</span>' +
+        '</div>';
+      }
+      html += '</div>';
+      mapContainer.innerHTML = html;
+      return;
+    }
+
+    // Render map frequency chart
+    var mapEntries = Object.keys(mapCounts).map(function(k){ return { name: k, count: mapCounts[k] }; });
+    mapEntries.sort(function(a,b){ return b.count - a.count; });
+
+    var maxCount = mapEntries[0].count;
+    var html = '<div class="tp-ms-chart">';
+    for (var i = 0; i < mapEntries.length; i++) {
+      var pct = Math.round((mapEntries[i].count / maxCount) * 100);
+      html += '<div class="tp-ms-bar-row">' +
+        '<span class="tp-ms-bar-label">' + mapEntries[i].name + '</span>' +
+        '<div class="tp-ms-bar-track"><div class="tp-ms-bar-fill" style="width:' + pct + '%"></div></div>' +
+        '<span class="tp-ms-bar-count">' + mapEntries[i].count + '</span>' +
+      '</div>';
+    }
+    html += '</div>';
+    mapContainer.innerHTML = html;
+  }
+
+  function fetchPage(page) {
+    fetch('/api/team-matches?slug=' + encodeURIComponent(pandaSlug) + '&page=' + page + '&per_page=20')
+      .then(function(res) { return res.ok ? res.json() : null; })
+      .then(function(data) {
+        if (!data || data.error) {
+          if (page === 1) {
+            container.innerHTML = '<div class="tp-mh-error">Could not load match history.</div>';
+            if (mapContainer) mapContainer.innerHTML = '<div class="tp-ms-empty">No data available.</div>';
+          }
+          return;
+        }
+
+        teamId = data.teamId;
+
+        if (page === 1) {
+          allUpcomingMatches = data.upcoming || [];
+          allPastMatches = data.past || [];
+        } else {
+          // Append new past matches
+          var newPast = data.past || [];
+          for (var i = 0; i < newPast.length; i++) {
+            allPastMatches.push(newPast[i]);
+          }
+          visiblePast += VISIBLE_COUNT;
+        }
+
+        renderMatches();
+
+        // Update map stats after data loads
+        if (page === 1) renderMapStats();
+      })
+      .catch(function() {
+        if (page === 1) {
+          container.innerHTML = '<div class="tp-mh-error">Could not load match history.</div>';
+          if (mapContainer) mapContainer.innerHTML = '<div class="tp-ms-empty">No data available.</div>';
+        }
+      });
+  }
+
+  // Initial fetch
+  fetchPage(1);
 })();
 </script>

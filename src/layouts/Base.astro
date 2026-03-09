@@ -280,8 +280,9 @@ const eliteRanks = allRanks.filter(r => ['Distinguished', 'Legendary', 'Supreme'
 <a href="/cs2-guides/" class="mega-view-all">All Guides &rarr;</a>
 </div>
 <div class="mega-col">
-<a href="/cs2-rank-distribution/" class="mega-heading">Ranks</a>
-<a href="/cs2-rank-distribution/" class="mega-link" style="font-weight:700"><span>Rank Distribution</span></a>
+<a href="/cs2-ranks/" class="mega-heading">Ranks</a>
+<a href="/cs2-ranks/" class="mega-link" style="font-weight:700"><span>All Ranks</span></a>
+<a href="/cs2-rank-distribution/" class="mega-link"><span>Rank Distribution</span></a>
 <a href="/cs2-guides/ranks-guide/" class="mega-link"><span>Ranking Guide</span></a>
 {silverRanks.slice(0, 2).map(r => (
 <a href={`/cs2-ranks/${r.slug}/`} class="mega-link"><span>{r.rank}</span><span class="mega-count">{r.abbr}</span></a>
@@ -412,6 +413,7 @@ const eliteRanks = allRanks.filter(r => ['Distinguished', 'Legendary', 'Supreme'
 <a href="/cs2-guides/advanced-guide/">Advanced Guide</a>
 <a href="/cs2-guides/aim-guide/">Aim Guide</a>
 <div class="mobile-divider"></div>
+<a href="/cs2-ranks/">All Ranks</a>
 <a href="/cs2-rank-distribution/">Rank Distribution</a>
 <a href="/cs2-guides/ranks-guide/">Ranking Guide</a>
 {allRanks.slice(0, 6).map(r => <a href={`/cs2-ranks/${r.slug}/`}>{r.abbr} — {r.rank}</a>)}
@@ -868,7 +870,7 @@ document.addEventListener('DOMContentLoaded',function(){
     ]},
     {g:'Pro Scene',icon:'trophy',items:[
       {t:'All Pro Players',u:'/pro-players/'},{t:'Teams',u:'/pro-teams/'},{t:'Pro Gaming Gear',u:'/pro-gaming-gear/'},
-      {t:'Crosshair Codes',u:'/crosshair-codes/'},{t:'Rank Distribution',u:'/cs2-rank-distribution/'}
+      {t:'Crosshair Codes',u:'/crosshair-codes/'},{t:'CS2 Ranks',u:'/cs2-ranks/'},{t:'Rank Distribution',u:'/cs2-rank-distribution/'}
     ]},
     {g:'Learn',icon:'book',items:[
       {t:'All Guides',u:'/cs2-guides/'},{t:"Beginner's Guide",u:'/cs2-guides/beginners-guide/'},{t:'Aim Guide',u:'/cs2-guides/aim-guide/'},

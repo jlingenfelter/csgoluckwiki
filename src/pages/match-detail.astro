@@ -120,6 +120,32 @@ import Base from '../layouts/Base.astro';
 .stream-link:hover { border-color: var(--accent); background: rgba(46,204,113,.08); }
 .stream-lang { font-size: .7rem; color: var(--text3); font-weight: 400; text-transform: uppercase; }
 
+/* ── Player Stats per Map ── */
+.gps-toggle { display: block; width: 100%; padding: .5rem 1rem; margin-top: .6rem; background: var(--bg3); border: 1px solid var(--border); border-radius: 4px; color: var(--accent); font-size: .8rem; font-weight: 600; font-family: 'Montserrat', sans-serif; cursor: pointer; text-align: center; transition: background .2s, border-color .2s; }
+.gps-toggle:hover { background: rgba(46,204,113,.08); border-color: var(--accent); }
+.gps-toggle.open { border-color: var(--accent); }
+.gps-table-wrap { margin-top: .6rem; overflow-x: auto; }
+.gps-team-label { font-size: .82rem; font-weight: 700; font-family: 'Montserrat', sans-serif; color: var(--text1); margin: .6rem 0 .3rem; }
+.gps-team-label:first-child { margin-top: 0; }
+.gps-table { width: 100%; border-collapse: collapse; font-size: .78rem; }
+.gps-table th { text-align: left; padding: .35rem .5rem; color: var(--text3); font-weight: 600; font-size: .72rem; text-transform: uppercase; border-bottom: 1px solid var(--border); white-space: nowrap; }
+.gps-table th:not(:first-child) { text-align: center; }
+.gps-table td { padding: .35rem .5rem; border-bottom: 1px solid var(--border); white-space: nowrap; }
+.gps-table td:not(:first-child) { text-align: center; }
+.gps-table tr:last-child td { border-bottom: none; }
+.gps-table a { color: var(--accent); text-decoration: none; font-weight: 600; }
+.gps-table a:hover { text-decoration: underline; }
+.gps-mvp { background: rgba(46,204,113,.08); }
+.gps-mvp td:first-child::after { content: ' ★'; color: var(--accent); font-size: .7rem; }
+.gps-loading { text-align: center; padding: 1rem; color: var(--text3); font-size: .8rem; }
+.gps-error { text-align: center; padding: .75rem; color: #e74c3c; font-size: .8rem; }
+
+/* ── Auto-Refresh Badge ── */
+.auto-refresh-badge { display: inline-flex; align-items: center; gap: .35rem; font-size: .7rem; font-weight: 600; color: #e74c3c; background: rgba(231,76,60,.08); border: 1px solid rgba(231,76,60,.2); border-radius: 3px; padding: .15rem .45rem; margin-left: .5rem; vertical-align: middle; }
+.auto-refresh-badge .ar-dot { display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: #e74c3c; animation: ar-pulse 1.5s ease-in-out infinite; }
+@keyframes ar-pulse { 0%, 100% { opacity: 1; } 50% { opacity: .3; } }
+.auto-refresh-ts { font-size: .7rem; color: var(--text3); margin-left: .5rem; }
+
 /* ── Responsive ── */
 @media (max-width: 600px) {
   .scoreboard { flex-direction: column; gap: 1rem; }
@@ -129,6 +155,10 @@ import Base from '../layouts/Base.astro';
   .game-scores { font-size: .8rem; }
   .meta-row { flex-direction: column; align-items: center; gap: .4rem; }
   .detail-header { padding: 1rem; }
+  .gps-table { font-size: .72rem; }
+  .gps-table th, .gps-table td { padding: .25rem .35rem; }
+  .auto-refresh-badge { display: flex; margin-left: 0; margin-top: .35rem; }
+  .auto-refresh-ts { display: block; margin-left: 0; margin-top: .2rem; }
 }
 </style>
 
@@ -365,6 +395,7 @@ import Base from '../layouts/Base.astro';
               </div>
               ${halfHTML}
               ${gameDuration ? `<div class="game-duration">Duration: ${gameDuration}</div>` : ''}
+              ${game.id ? `<button class="gps-toggle" data-game-id="${game.id}" onclick="window.__togglePlayerStats(this, ${game.id})">Show Player Stats ▾</button><div class="gps-table-wrap" id="gps-wrap-${game.id}" style="display:none"></div>` : ''}
             </div>
           </div>`;
       });
@@ -428,6 +459,7 @@ import Base from '../layouts/Base.astro';
         </div>
 
         ${statusBadge}
+        ${isLive ? `<span class="auto-refresh-badge"><span class="ar-dot"></span> Auto-refreshing every 30s</span><span class="auto-refresh-ts" id="ar-ts"></span>` : ''}
 
         <div class="meta-row">
           ${metaItems.join('<span class="meta-sep">·</span>')}
@@ -440,6 +472,143 @@ import Base from '../layouts/Base.astro';
 
     loadingEl.style.display = 'none';
     container.insertAdjacentHTML('beforeend', html);
+
+    // ── Auto-refresh for live matches ──
+    if (match.status === 'running') {
+      function updateTimestamp() {
+        const tsEl = document.getElementById('ar-ts');
+        if (tsEl) {
+          const now = new Date();
+          tsEl.textContent = 'Last updated: ' + now.toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+        }
+      }
+      updateTimestamp();
+
+      if (window.__autoRefreshInterval) clearInterval(window.__autoRefreshInterval);
+      window.__autoRefreshInterval = setInterval(async function() {
+        try {
+          const res = await fetch(`/api/match-detail?id=${encodeURIComponent(matchId)}`);
+          if (!res.ok) return;
+          const freshData = await res.json();
+          if (!freshData || freshData.error) return;
+
+          // Clear existing rendered content (keep loading/error elements)
+          const children = Array.from(container.children);
+          children.forEach(function(child) {
+            if (child.id !== 'loading' && child.id !== 'error-state') {
+              child.remove();
+            }
+          });
+
+          // Clear player stats cache so fresh data can be fetched
+          window.__gpsCache = {};
+
+          // Re-render with fresh data
+          render(freshData);
+
+          // Stop polling if match is finished
+          if (freshData.status === 'finished') {
+            clearInterval(window.__autoRefreshInterval);
+            window.__autoRefreshInterval = null;
+          }
+        } catch (e) {
+          console.error('Auto-refresh failed:', e);
+        }
+      }, 30000);
+    }
+  }
+
+  // ── Player Stats per Map ──
+  window.__gpsCache = {};
+
+  window.__togglePlayerStats = async function(btn, gameId) {
+    const wrap = document.getElementById('gps-wrap-' + gameId);
+    if (!wrap) return;
+
+    // Toggle visibility
+    if (wrap.style.display !== 'none') {
+      wrap.style.display = 'none';
+      btn.classList.remove('open');
+      btn.textContent = 'Show Player Stats \u25BE';
+      return;
+    }
+
+    wrap.style.display = 'block';
+    btn.classList.add('open');
+    btn.textContent = 'Hide Player Stats \u25B4';
+
+    // If already loaded from cache, don't re-fetch
+    if (window.__gpsCache[gameId]) {
+      renderPlayerStats(wrap, window.__gpsCache[gameId]);
+      return;
+    }
+
+    // Show loading
+    wrap.innerHTML = '<div class="gps-loading"><div class="spinner"></div> Loading player stats\u2026</div>';
+
+    try {
+      const res = await fetch('/api/game-stats?id=' + encodeURIComponent(gameId));
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      const data = await res.json();
+      if (!data || data.error) throw new Error(data?.error || 'Invalid response');
+
+      window.__gpsCache[gameId] = data;
+      renderPlayerStats(wrap, data);
+    } catch (err) {
+      console.error('Failed to load player stats for game ' + gameId + ':', err);
+      wrap.innerHTML = '<div class="gps-error">Unable to load player stats.</div>';
+    }
+  };
+
+  function renderPlayerStats(wrap, data) {
+    if (!data.teams || data.teams.length === 0) {
+      wrap.innerHTML = '<div class="gps-error">No player stats available.</div>';
+      return;
+    }
+
+    let html = '';
+    data.teams.forEach(function(team) {
+      if (!team.players || team.players.length === 0) return;
+
+      // Sort players by rating descending
+      const sorted = [...team.players].sort(function(a, b) { return (b.rating || 0) - (a.rating || 0); });
+      const mvpRating = sorted[0]?.rating || 0;
+
+      html += '<div class="gps-team-label">' + escapeHtml(team.name || team.acronym || 'Team') + '</div>';
+      html += '<table class="gps-table"><thead><tr>';
+      html += '<th>Player</th><th>K</th><th>D</th><th>A</th><th>+/-</th><th>ADR</th><th>KAST%</th><th>Rating</th>';
+      html += '</tr></thead><tbody>';
+
+      sorted.forEach(function(p) {
+        const isMvp = p.rating === mvpRating && mvpRating > 0;
+        const kd = (p.kills || 0) - (p.deaths || 0);
+        const kdStr = kd > 0 ? '+' + kd : '' + kd;
+        const kastPct = p.kast != null ? (p.kast * 100).toFixed(0) + '%' : '\u2014';
+        const ratingStr = p.rating != null ? p.rating.toFixed(2) : '\u2014';
+        const adrStr = p.adr != null ? p.adr.toFixed(1) : '\u2014';
+        const playerLink = p.slug ? '<a href="/pro-players/' + encodeURIComponent(p.slug) + '/">' + escapeHtml(p.name) + '</a>' : escapeHtml(p.name);
+
+        html += '<tr class="' + (isMvp ? 'gps-mvp' : '') + '">';
+        html += '<td>' + playerLink + '</td>';
+        html += '<td>' + (p.kills ?? '\u2014') + '</td>';
+        html += '<td>' + (p.deaths ?? '\u2014') + '</td>';
+        html += '<td>' + (p.assists ?? '\u2014') + '</td>';
+        html += '<td>' + kdStr + '</td>';
+        html += '<td>' + adrStr + '</td>';
+        html += '<td>' + kastPct + '</td>';
+        html += '<td>' + ratingStr + '</td>';
+        html += '</tr>';
+      });
+
+      html += '</tbody></table>';
+    });
+
+    wrap.innerHTML = html;
+  }
+
+  function escapeHtml(str) {
+    if (!str) return '';
+    return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
   }
 })();
 </script>

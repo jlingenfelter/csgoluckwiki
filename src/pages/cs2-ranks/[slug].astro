@@ -27,7 +27,7 @@ const faqs = [
 
 const breadcrumbs = [
   { name: 'Home', url: '/' },
-  { name: 'Rank Distribution', url: '/cs2-rank-distribution/' },
+  { name: 'CS2 Ranks', url: '/cs2-ranks/' },
   { name: rank.rank, url: `/cs2-ranks/${rank.slug}/` },
 ];
 
@@ -45,7 +45,7 @@ const cumulativePercentile = cumulativeBelow + rank.percentage;
   <script type="application/ld+json" set:html={JSON.stringify(faqSchema(faqs))}></script>
 
   <nav class="breadcrumb">
-    <a href="/">Home</a> / <a href="/cs2-rank-distribution/">Rank Distribution</a> / <span>{rank.rank}</span>
+    <a href="/">Home</a> / <a href="/cs2-ranks/">CS2 Ranks</a> / <span>{rank.rank}</span>
   </nav>
 
   <!-- Hero: Two-Column Layout -->
