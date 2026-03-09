@@ -27,7 +27,10 @@ export async function onRequestGet(context) {
       return new Response(JSON.stringify({ error: 'Provide ?id= parameter' }), { status: 400, headers });
     }
 
-    const base = 'https://api.pandascore.co/csgo';
+    // Use the generic (non-game-specific) endpoint for individual tournament lookups.
+    // PandaScore's /csgo/tournaments/{id} returns 404 even for valid IDs from the list,
+    // but the generic /tournaments/{id} works correctly.
+    const base = 'https://api.pandascore.co';
 
     // Fetch tournament info, standings, matches, and teams in parallel
     const [infoRes, standingsRes, matchesRes, teamsRes] = await Promise.all([

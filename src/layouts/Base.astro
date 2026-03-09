@@ -214,15 +214,34 @@ const eliteRanks = allRanks.filter(r => ['Distinguished', 'Legendary', 'Supreme'
 </div>
 
 <!-- Esports Mega Menu -->
-<div class="nav-dropdown nav-mega">
-<button class="nav-dropdown-btn nav-esports-btn" class:list={[{ active: currentNav === '/matches/' || currentNav === '/tournaments/' || currentNav === '/pickems/' || currentNav === '/esports/' }]} aria-expanded="false">Esports ▾</button>
+<div class="nav-dropdown nav-mega nav-mega-3col">
+<button class="nav-dropdown-btn nav-esports-btn" class:list={[{ active: currentNav === '/matches/' || currentNav === '/tournaments/' || currentNav === '/pickems/' || currentNav === '/esports/' || currentNav === '/h2h/' || currentNav === '/match-detail/' || currentNav === '/tournament-detail/' }]} aria-expanded="false">Esports ▾</button>
 <div class="nav-mega-menu">
 <div class="mega-col">
-<a href="/esports/" class="mega-heading">CS2 Esports</a>
+<a href="/esports/" class="mega-heading">Esports Hub</a>
 <a href="/matches/" class="mega-link" style="font-weight:700"><span>🔴 Live Matches</span></a>
 <a href="/tournaments/" class="mega-link" style="font-weight:700"><span>Tournaments</span></a>
-<a href="/h2h/" class="mega-link" style="font-weight:700"><span>H2H Comparator</span></a>
+<a href="/h2h/" class="mega-link"><span>H2H Comparator</span></a>
 <a href="/pickems/" class="mega-link" style="font-weight:700;color:#2ecc71"><span>Pick'Ems</span></a>
+</div>
+<div class="mega-col">
+<span class="mega-heading mega-heading-static">Pro Scene</span>
+<a href="/pro-teams/" class="mega-link" style="font-weight:700"><span>Pro Teams</span></a>
+<a href="/pro-players/" class="mega-link" style="font-weight:700"><span>Pro Players</span></a>
+<a href="/pro-gaming-gear/" class="mega-link"><span>Pro Gaming Gear</span></a>
+<div class="mega-divider"></div>
+<a href="/pro-players/role/awper/" class="mega-link"><span>AWPers</span></a>
+<a href="/pro-players/role/rifler/" class="mega-link"><span>Riflers</span></a>
+<a href="/pro-players/role/igl/" class="mega-link"><span>IGLs</span></a>
+</div>
+<div class="mega-col">
+<span class="mega-heading mega-heading-static">Resources</span>
+<a href="/cs2-tournaments/" class="mega-link"><span>CS2 Tournament Guide</span></a>
+<a href="/cs2-esports-pro-scene-faq/" class="mega-link"><span>Esports FAQ</span></a>
+<div class="mega-divider"></div>
+<a href="/crosshair-codes/" class="mega-link"><span>Pro Crosshair Codes</span></a>
+<a href="/sensitivity-converter/" class="mega-link"><span>Sensitivity Converter</span></a>
+<a href="/edpi-calculator/" class="mega-link"><span>eDPI Calculator</span></a>
 </div>
 </div>
 </div>
@@ -370,6 +389,13 @@ const eliteRanks = allRanks.filter(r => ['Distinguished', 'Legendary', 'Supreme'
 <a href="/tournaments/">Tournaments</a>
 <a href="/h2h/">H2H Comparator</a>
 <a href="/pickems/" style="color:#2ecc71;font-weight:700">Pick'Ems</a>
+<div class="mobile-divider"></div>
+<a href="/pro-teams/">Pro Teams</a>
+<a href="/pro-players/">Pro Players</a>
+<a href="/pro-gaming-gear/">Pro Gaming Gear</a>
+<div class="mobile-divider"></div>
+<a href="/cs2-tournaments/">CS2 Tournament Guide</a>
+<a href="/cs2-esports-pro-scene-faq/">Esports FAQ</a>
 </div>
 </details>
 <details class="mobile-section">
@@ -867,7 +893,8 @@ document.addEventListener('DOMContentLoaded',function(){
       {t:'Workshop Maps',u:'/workshop-maps/'}
     ]},
     {g:'Esports',icon:'trophy',items:[
-      {t:'Esports Hub',u:'/esports/'},{t:'Live Matches',u:'/matches/'},{t:'Tournaments',u:'/tournaments/'},{t:'H2H Comparator',u:'/h2h/'},{t:"Pick'Ems",u:'/pickems/'}
+      {t:'Esports Hub',u:'/esports/'},{t:'Live Matches',u:'/matches/'},{t:'Tournaments',u:'/tournaments/'},{t:'H2H Comparator',u:'/h2h/'},{t:"Pick'Ems",u:'/pickems/'},
+      {t:'Pro Teams',u:'/pro-teams/'},{t:'Pro Players',u:'/pro-players/'},{t:'Pro Gaming Gear',u:'/pro-gaming-gear/'},{t:'CS2 Tournament Guide',u:'/cs2-tournaments/'},{t:'Esports FAQ',u:'/cs2-esports-pro-scene-faq/'}
     ]},
     {g:'Pro Scene',icon:'trophy',items:[
       {t:'All Pro Players',u:'/pro-players/'},{t:'Teams',u:'/pro-teams/'},{t:'Pro Gaming Gear',u:'/pro-gaming-gear/'},
