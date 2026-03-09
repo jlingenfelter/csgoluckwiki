@@ -219,7 +219,7 @@ export function getPlayerBySlug(s: string): ProPlayer | undefined {
 }
 
 // ── Team helpers ────────────────────────────────────────────────────────────
-const NON_TEAMS = ['free agent', 'retired', 'inactive', 'no team', 'none', 'benched', 'n/a', ''];
+const NON_TEAMS = ['free agent', 'retired', 'inactive', 'no team', 'none', 'benched', 'n/a', '', 'content creator'];
 
 export interface TeamInfo {
   name: string;

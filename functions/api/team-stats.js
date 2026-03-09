@@ -11,14 +11,15 @@ export async function onRequestGet(context) {
   const { env, request } = context;
   const apiKey = env.PANDASCORE_API_KEY;
 
-  const headers = {
+  const baseHeaders = {
     'Content-Type': 'application/json',
     'Access-Control-Allow-Origin': '*',
-    'Cache-Control': 'public, max-age=3600, s-maxage=3600',
   };
+  const errorHeaders = { ...baseHeaders, 'Cache-Control': 'no-store' };
+  const headers = { ...baseHeaders, 'Cache-Control': 'public, max-age=3600, s-maxage=3600' };
 
   if (!apiKey) {
-    return new Response(JSON.stringify({ error: 'No PandaScore API key configured' }), { status: 500, headers });
+    return new Response(JSON.stringify({ error: 'No PandaScore API key configured' }), { status: 500, headers: errorHeaders });
   }
 
   try {
@@ -41,7 +42,7 @@ export async function onRequestGet(context) {
     } else if (teamName) {
       apiUrl = `https://api.pandascore.co/teams?search[name]=${encodeURIComponent(teamName)}&per_page=10&token=${apiKey}`;
     } else {
-      return new Response(JSON.stringify({ error: 'Provide ?id=, ?slug=, or ?name= parameter' }), { status: 400, headers });
+      return new Response(JSON.stringify({ error: 'Provide ?id=, ?slug=, or ?name= parameter' }), { status: 400, headers: errorHeaders });
     }
 
     const res = await fetch(apiUrl, {
@@ -51,7 +52,7 @@ export async function onRequestGet(context) {
 
     if (!res.ok) {
       const errText = await res.text();
-      return new Response(JSON.stringify({ error: 'PandaScore API error', status: res.status, detail: errText }), { status: res.status, headers });
+      return new Response(JSON.stringify({ error: 'PandaScore API error', status: res.status, detail: errText }), { status: res.status, headers: errorHeaders });
     }
 
     const raw = await res.json();
@@ -83,6 +84,6 @@ export async function onRequestGet(context) {
 
     return new Response(JSON.stringify(teamId ? slimTeams[0] : { teams: slimTeams, count: slimTeams.length }), { status: 200, headers });
   } catch (err) {
-    return new Response(JSON.stringify({ error: 'Server error', message: err.message }), { status: 500, headers });
+    return new Response(JSON.stringify({ error: 'Server error', message: err.message }), { status: 500, headers: errorHeaders });
   }
 }
