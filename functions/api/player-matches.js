@@ -40,7 +40,7 @@ export async function onRequestGet(context) {
       // Strategy 1: Try slug lookup
       if (playerSlug) {
         const slugRes = await fetch(
-          `https://api.pandascore.co/csgo/players?filter[slug]=${encodeURIComponent(playerSlug)}&per_page=1&token=${apiKey}`,
+          `https://api.pandascore.co/players?filter[slug]=${encodeURIComponent(playerSlug)}&filter[videogame]=csgo&per_page=1&token=${apiKey}`,
           { cf: { cacheTtl: 86400 } }
         );
         if (slugRes.ok) {
@@ -54,7 +54,7 @@ export async function onRequestGet(context) {
         const searchName = playerName || (playerSlug ? playerSlug.replace(/-/g, ' ') : '');
         if (searchName) {
           const nameRes = await fetch(
-            `https://api.pandascore.co/csgo/players?search[name]=${encodeURIComponent(searchName)}&per_page=5&token=${apiKey}`,
+            `https://api.pandascore.co/players?search[name]=${encodeURIComponent(searchName)}&filter[videogame]=csgo&per_page=5&token=${apiKey}`,
             { cf: { cacheTtl: 86400 } }
           );
           if (nameRes.ok) {
@@ -75,7 +75,7 @@ export async function onRequestGet(context) {
 
     // Fetch the player's team to find matches by team
     const playerRes = await fetch(
-      `https://api.pandascore.co/csgo/players/${playerId}?token=${apiKey}`,
+      `https://api.pandascore.co/players/${playerId}?token=${apiKey}`,
       { cf: { cacheTtl: 3600 } }
     );
 

@@ -33,7 +33,7 @@ export async function onRequestGet(context) {
 
     // If slug provided, resolve to ID first
     if (!pid && playerSlug) {
-      const searchUrl = `https://api.pandascore.co/csgo/players?filter[slug]=${encodeURIComponent(playerSlug)}&per_page=1&token=${apiKey}`;
+      const searchUrl = `https://api.pandascore.co/players?filter[slug]=${encodeURIComponent(playerSlug)}&filter[videogame]=csgo&per_page=1&token=${apiKey}`;
       const searchRes = await fetch(searchUrl, { cf: { cacheTtl: 86400 } });
       if (searchRes.ok) {
         const players = await searchRes.json();
@@ -46,7 +46,7 @@ export async function onRequestGet(context) {
     }
 
     // Fetch player stats
-    const statsUrl = `https://api.pandascore.co/csgo/players/${pid}/stats?token=${apiKey}`;
+    const statsUrl = `https://api.pandascore.co/players/${pid}/stats?token=${apiKey}`;
     const statsRes = await fetch(statsUrl, {
       headers: { 'Accept': 'application/json' },
       cf: { cacheTtl: 3600 },

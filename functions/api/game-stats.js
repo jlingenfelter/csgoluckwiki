@@ -28,7 +28,7 @@ export async function onRequestGet(context) {
     }
 
     const gameRes = await fetch(
-      `https://api.pandascore.co/csgo/games/${gameId}?token=${apiKey}`,
+      `https://api.pandascore.co/games/${gameId}?token=${apiKey}`,
       { headers: { 'Accept': 'application/json' }, cf: { cacheTtl: 3600 } }
     );
 

@@ -829,7 +829,7 @@ const faqs = [
   var container = document.getElementById('liveStatsContent');
   if (!container) return;
 
-  fetch('/api/player-stats?slug=' + encodeURIComponent(playerSlug))
+  fetch('/api/player-stats?slug=' + encodeURIComponent(playerSlug) + '&name=' + encodeURIComponent(playerDisplayName))
     .then(function(res) {
       if (!res.ok) throw new Error('HTTP ' + res.status);
       return res.json();
@@ -925,12 +925,12 @@ const faqs = [
 })();
 </script>
 
-<script is:inline define:vars={{ playerSlug: player.slug }}>
+<script is:inline define:vars={{ playerSlug: player.slug, playerIGN: player.name }}>
 (function(){
   var container = document.getElementById('matchHistoryContent');
   if (!container) return;
 
-  fetch('/api/player-matches?slug=' + encodeURIComponent(playerSlug))
+  fetch('/api/player-matches?slug=' + encodeURIComponent(playerSlug) + '&name=' + encodeURIComponent(playerIGN))
     .then(function(res) {
       if (!res.ok) throw new Error('HTTP ' + res.status);
       return res.json();
