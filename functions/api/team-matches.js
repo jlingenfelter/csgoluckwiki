@@ -36,16 +36,25 @@ export async function onRequestGet(context) {
     }
 
     // Resolve to team ID using multiple strategies
+    // Use generic /teams endpoint with videogame filter — the /csgo/teams endpoint
+    // returns degraded data (same issue as /csgo/players, /csgo/tournaments).
+    let teamImage = null;
+    let teamName_ = null;
+
     if (!teamId) {
       // Strategy 1: Try slug lookup
       if (teamSlug) {
         const slugRes = await fetch(
-          `https://api.pandascore.co/csgo/teams?filter[slug]=${encodeURIComponent(teamSlug)}&per_page=1&token=${apiKey}`,
+          `https://api.pandascore.co/teams?filter[slug]=${encodeURIComponent(teamSlug)}&filter[videogame]=csgo&per_page=1&token=${apiKey}`,
           { cf: { cacheTtl: 86400 } }
         );
         if (slugRes.ok) {
           const teams = await slugRes.json();
-          if (teams.length > 0) teamId = teams[0].id;
+          if (teams.length > 0) {
+            teamId = teams[0].id;
+            teamImage = teams[0].image_url;
+            teamName_ = teams[0].name;
+          }
         }
       }
 
@@ -54,18 +63,31 @@ export async function onRequestGet(context) {
         const searchName = teamName || (teamSlug ? teamSlug.replace(/-/g, ' ') : '');
         if (searchName) {
           const nameRes = await fetch(
-            `https://api.pandascore.co/csgo/teams?search[name]=${encodeURIComponent(searchName)}&per_page=5&token=${apiKey}`,
+            `https://api.pandascore.co/teams?search[name]=${encodeURIComponent(searchName)}&filter[videogame]=csgo&per_page=5&token=${apiKey}`,
             { cf: { cacheTtl: 86400 } }
           );
           if (nameRes.ok) {
             const teams = await nameRes.json();
             if (teams.length > 0) {
-              // Try exact match first (case-insensitive)
               const exact = teams.find(t => t.name.toLowerCase() === searchName.toLowerCase());
-              teamId = exact ? exact.id : teams[0].id;
+              const matched = exact || teams[0];
+              teamId = matched.id;
+              teamImage = matched.image_url;
+              teamName_ = matched.name;
             }
           }
         }
+      }
+    } else {
+      // If ID provided, fetch team details for image
+      const teamRes = await fetch(
+        `https://api.pandascore.co/teams/${teamId}?token=${apiKey}`,
+        { cf: { cacheTtl: 86400 } }
+      );
+      if (teamRes.ok) {
+        const t = await teamRes.json();
+        teamImage = t.image_url;
+        teamName_ = t.name;
       }
     }
 
@@ -73,20 +95,24 @@ export async function onRequestGet(context) {
       return new Response(JSON.stringify({ error: 'Team not found' }), { status: 404, headers });
     }
 
-    // Fetch past and upcoming matches
+    // Fetch past and upcoming matches — use generic /matches endpoint with videogame filter
+    // to avoid degraded data from the /csgo/matches endpoint (0-0 scores, missing data).
     const [pastRes, upcomingRes] = await Promise.all([
       fetch(
-        `https://api.pandascore.co/csgo/matches/past?filter[opponent_id]=${teamId}&sort=-begin_at&page=${page}&per_page=${perPage}&token=${apiKey}`,
+        `https://api.pandascore.co/matches/past?filter[opponent_id]=${teamId}&filter[videogame]=csgo&sort=-begin_at&page=${page}&per_page=${perPage}&token=${apiKey}`,
         { cf: { cacheTtl: 600 } }
       ),
       fetch(
-        `https://api.pandascore.co/csgo/matches/upcoming?filter[opponent_id]=${teamId}&sort=begin_at&per_page=5&token=${apiKey}`,
+        `https://api.pandascore.co/matches/upcoming?filter[opponent_id]=${teamId}&filter[videogame]=csgo&sort=begin_at&per_page=5&token=${apiKey}`,
         { cf: { cacheTtl: 300 } }
       ),
     ]);
 
-    const pastMatches = pastRes.ok ? await pastRes.json() : [];
+    let pastMatches = pastRes.ok ? await pastRes.json() : [];
     const upcomingMatches = upcomingRes.ok ? await upcomingRes.json() : [];
+
+    // Filter out forfeits and canceled matches — these show as 0-0 with no meaningful data
+    pastMatches = pastMatches.filter(m => !m.forfeit && m.status !== 'canceled');
 
     function slimMatch(m) {
       return {
@@ -120,6 +146,8 @@ export async function onRequestGet(context) {
 
     const result = {
       teamId: parseInt(teamId, 10),
+      teamName: teamName_,
+      teamImage: teamImage,
       past: pastMatches.map(slimMatch),
       upcoming: upcomingMatches.map(slimMatch),
     };

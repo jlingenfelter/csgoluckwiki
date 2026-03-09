@@ -27,13 +27,14 @@ export async function onRequestGet(context) {
     const teamSlug = url.searchParams.get('slug');
     const teamName = url.searchParams.get('name');
 
+    // Use generic /teams endpoint with videogame filter — /csgo/teams is degraded.
     let apiUrl;
     if (teamId) {
-      apiUrl = `https://api.pandascore.co/csgo/teams/${teamId}?token=${apiKey}`;
+      apiUrl = `https://api.pandascore.co/teams/${teamId}?token=${apiKey}`;
     } else if (teamSlug) {
-      apiUrl = `https://api.pandascore.co/csgo/teams?filter[slug]=${encodeURIComponent(teamSlug)}&per_page=1&token=${apiKey}`;
+      apiUrl = `https://api.pandascore.co/teams?filter[slug]=${encodeURIComponent(teamSlug)}&filter[videogame]=csgo&per_page=1&token=${apiKey}`;
     } else if (teamName) {
-      apiUrl = `https://api.pandascore.co/csgo/teams?search[name]=${encodeURIComponent(teamName)}&per_page=10&token=${apiKey}`;
+      apiUrl = `https://api.pandascore.co/teams?search[name]=${encodeURIComponent(teamName)}&filter[videogame]=csgo&per_page=10&token=${apiKey}`;
     } else {
       return new Response(JSON.stringify({ error: 'Provide ?id=, ?slug=, or ?name= parameter' }), { status: 400, headers });
     }

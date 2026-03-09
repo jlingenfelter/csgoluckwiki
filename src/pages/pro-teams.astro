@@ -190,10 +190,13 @@ const spotlightTeams = [...teamCardsWithRegion]
   <h2>Featured Teams</h2>
   <div class="th-spotlight-grid">
     {spotlightTeams.map(t => (
-      <a href={`/pro-teams/${t.slug}/`} class="th-spotlight-card">
+      <a href={`/pro-teams/${t.slug}/`} class="th-spotlight-card" data-team-name={t.name}>
         <div class="th-spotlight-header">
-          <h3 class="th-spotlight-name">{t.name}</h3>
-          <span class="th-spotlight-region">{t.region}</span>
+          <div class="th-spotlight-logo" id={`logo-${t.slug}`}><span class="th-spotlight-letter">{t.name.charAt(0)}</span></div>
+          <div class="th-spotlight-title">
+            <h3 class="th-spotlight-name">{t.name}</h3>
+            <span class="th-spotlight-region">{t.region}</span>
+          </div>
         </div>
         <div class="th-spotlight-body">
           <div class="th-spotlight-stat">
@@ -231,7 +234,8 @@ const spotlightTeams = [...teamCardsWithRegion]
        data-letter={t.name.charAt(0).toUpperCase()}
        data-idx={i}
        id={i === 0 || teamCardsWithRegion[i - 1]?.name.charAt(0).toUpperCase() !== t.name.charAt(0).toUpperCase() ? `letter-${t.name.charAt(0).toUpperCase()}` : undefined}>
-      <a href={`/pro-teams/${t.slug}/`} class="th-row-header">
+      <a href={`/pro-teams/${t.slug}/`} class="th-row-header" data-team-name={t.name}>
+        <div class="th-row-logo" id={`rlogo-${t.slug}`}><span class="th-row-letter">{t.name.charAt(0)}</span></div>
         <div class="th-row-identity">
           <h3 class="th-row-name">{t.name}</h3>
           <div class="th-row-tags">
@@ -440,7 +444,11 @@ const spotlightTeams = [...teamCardsWithRegion]
 .th-spotlight-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem}
 .th-spotlight-card{display:block;text-decoration:none;color:inherit;background:var(--bg2);border:1px solid var(--border);border-radius:4px;padding:1.25rem;transition:border-left .15s}
 .th-spotlight-card:hover{border-left:3px solid var(--accent)}
-.th-spotlight-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;gap:.5rem}
+.th-spotlight-header{display:flex;align-items:center;gap:.75rem;margin-bottom:1rem}
+.th-spotlight-logo{width:44px;height:44px;border-radius:4px;background:rgba(255,255,255,.06);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;flex-shrink:0;overflow:hidden}
+.th-spotlight-logo img{width:100%;height:100%;object-fit:contain;padding:4px}
+.th-spotlight-letter{font-size:1.2rem;font-weight:800;color:var(--accent)}
+.th-spotlight-title{flex:1;min-width:0;display:flex;align-items:center;justify-content:space-between;gap:.5rem}
 .th-spotlight-name{margin:0;font-size:1.15rem;font-weight:800;color:var(--text)}
 .th-spotlight-region{font-size:.7rem;font-weight:600;color:var(--text2);background:var(--bg3);padding:.2rem .5rem;border-radius:4px;white-space:nowrap}
 .th-spotlight-body{display:flex;gap:1rem;margin-bottom:1rem}
@@ -456,7 +464,10 @@ const spotlightTeams = [...teamCardsWithRegion]
 .th-row{display:flex;flex-direction:column;gap:.75rem;background:var(--bg2);border:1px solid var(--border);border-radius:4px;padding:1rem 1.25rem;transition:border-left .15s}
 .th-row:hover{border-left:3px solid var(--accent)}
 .th-row.hidden{display:none}
-.th-row-header{display:flex;align-items:center;gap:1.5rem;text-decoration:none;color:inherit;padding-bottom:.5rem;border-bottom:1px solid var(--border)}
+.th-row-logo{width:36px;height:36px;border-radius:4px;background:rgba(255,255,255,.06);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;flex-shrink:0;overflow:hidden}
+.th-row-logo img{width:100%;height:100%;object-fit:contain;padding:3px}
+.th-row-letter{font-size:1rem;font-weight:800;color:var(--accent)}
+.th-row-header{display:flex;align-items:center;gap:1rem;text-decoration:none;color:inherit;padding-bottom:.5rem;border-bottom:1px solid var(--border)}
 .th-row-header:hover .th-row-name{color:var(--accent)}
 .th-row-identity{min-width:180px;flex-shrink:0}
 .th-row-name{margin:0;font-size:1.1rem;font-weight:800;color:var(--text)}
@@ -653,5 +664,67 @@ const spotlightTeams = [...teamCardsWithRegion]
 
   // Initial state
   updateLoadMore();
+})();
+</script>
+
+<script is:inline>
+// Fetch team logos from PandaScore via /api/team-stats
+(function(){
+  // Collect all team names from visible cards
+  var allHeaders = document.querySelectorAll('[data-team-name]');
+  var teamNames = [];
+  var seen = {};
+  allHeaders.forEach(function(el) {
+    var name = el.dataset.teamName;
+    if (name && !seen[name]) {
+      seen[name] = true;
+      teamNames.push(name);
+    }
+  });
+
+  // Fetch team images in small batches to avoid overwhelming the API
+  var batchSize = 6;
+  var idx = 0;
+
+  function fetchBatch() {
+    var batch = teamNames.slice(idx, idx + batchSize);
+    if (batch.length === 0) return;
+
+    batch.forEach(function(name) {
+      fetch('/api/team-stats?name=' + encodeURIComponent(name))
+        .then(function(res) { return res.ok ? res.json() : null; })
+        .then(function(data) {
+          if (!data) return;
+          var teams = data.teams || [data];
+          // Find best match by name
+          var team = null;
+          for (var i = 0; i < teams.length; i++) {
+            if (teams[i].name && teams[i].name.toLowerCase() === name.toLowerCase()) {
+              team = teams[i];
+              break;
+            }
+          }
+          if (!team && teams.length > 0) team = teams[0];
+          if (!team || !team.image) return;
+
+          // Update all elements with this team name
+          document.querySelectorAll('[data-team-name="' + name + '"]').forEach(function(el) {
+            // Find the logo container inside this element
+            var logo = el.querySelector('.th-spotlight-logo, .th-row-logo');
+            if (logo) {
+              logo.innerHTML = '<img src="' + team.image + '" alt="' + name + '" loading="lazy" onerror="this.parentElement.innerHTML=\'<span class=\\\'th-spotlight-letter\\\'>' + name.charAt(0) + '</span>\'" />';
+            }
+          });
+        })
+        .catch(function() {});
+    });
+
+    idx += batchSize;
+    if (idx < teamNames.length) {
+      setTimeout(fetchBatch, 500); // small delay between batches
+    }
+  }
+
+  fetchBatch();
 })();
 </script>

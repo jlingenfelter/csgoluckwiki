@@ -27,13 +27,14 @@ export async function onRequestGet(context) {
       return new Response(JSON.stringify({ error: 'Provide ?id= parameter' }), { status: 400, headers });
     }
 
-    // Fetch match + games in parallel
+    // Fetch match + games in parallel — use generic /matches endpoint
+    // to avoid degraded data from the /csgo/ specific endpoints.
     const [matchRes, gamesRes] = await Promise.all([
-      fetch(`https://api.pandascore.co/csgo/matches/${matchId}?token=${apiKey}`, {
+      fetch(`https://api.pandascore.co/matches/${matchId}?token=${apiKey}`, {
         headers: { 'Accept': 'application/json' },
         cf: { cacheTtl: 300 },
       }),
-      fetch(`https://api.pandascore.co/csgo/matches/${matchId}/games?token=${apiKey}`, {
+      fetch(`https://api.pandascore.co/matches/${matchId}/games?token=${apiKey}`, {
         headers: { 'Accept': 'application/json' },
         cf: { cacheTtl: 300 },
       }),

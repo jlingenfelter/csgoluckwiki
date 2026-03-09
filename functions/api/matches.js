@@ -33,8 +33,9 @@ export async function onRequestGet(context) {
       return new Response(JSON.stringify({ error: 'Invalid type. Use: running, upcoming, past' }), { status: 400, headers });
     }
 
-    // Build PandaScore URL
-    const apiUrl = `https://api.pandascore.co/csgo/matches/${type}?per_page=${perPage}&page=${page}&sort=${type === 'past' ? '-end_at' : 'begin_at'}&token=${apiKey}`;
+    // Build PandaScore URL — use generic /matches endpoint with videogame filter
+    // to avoid degraded data from the /csgo/ specific endpoints.
+    const apiUrl = `https://api.pandascore.co/matches/${type}?filter[videogame]=csgo&per_page=${perPage}&page=${page}&sort=${type === 'past' ? '-end_at' : 'begin_at'}&token=${apiKey}`;
 
     const res = await fetch(apiUrl, {
       headers: { 'Accept': 'application/json' },

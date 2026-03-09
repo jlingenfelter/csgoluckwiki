@@ -202,7 +202,7 @@ function timeFromNow(iso) {
 
 function teamLogoHTML(team) {
   if (team.image) {
-    return `<img src="${team.image}" alt="${team.name}" class="team-logo" style="width:36px;height:36px;max-width:36px;max-height:36px;object-fit:contain;border-radius:4px;background:var(--bg3);flex-shrink:0" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'" /><div class="team-logo-placeholder" style="display:none">${(team.acronym || team.name?.[0] || '?')}</div>`;
+    return `<img src="${team.image}" alt="${team.name}" class="team-logo" style="width:36px;height:36px;max-width:36px;max-height:36px;object-fit:contain;border-radius:4px;background:rgba(255,255,255,.08);padding:3px;flex-shrink:0" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'" /><div class="team-logo-placeholder" style="display:none">${(team.acronym || team.name?.[0] || '?')}</div>`;
   }
   return `<div class="team-logo-placeholder">${(team.acronym || team.name?.[0] || '?')}</div>`;
 }

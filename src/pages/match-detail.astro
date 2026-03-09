@@ -47,8 +47,8 @@ import Base from '../layouts/Base.astro';
 /* ── Scoreboard (teams + series score) ── */
 .scoreboard { display: flex; align-items: center; justify-content: center; gap: 2rem; padding: 1rem 0; }
 .sb-team { display: flex; flex-direction: column; align-items: center; gap: .5rem; flex: 1; max-width: 220px; text-align: center; }
-.sb-logo { width: 64px; height: 64px; max-width: 64px; max-height: 64px; border-radius: 4px; object-fit: contain; background: var(--bg3); }
-.sb-logo-placeholder { width: 64px; height: 64px; border-radius: 4px; background: var(--bg3); display: flex; align-items: center; justify-content: center; font-size: 1rem; font-weight: 700; color: var(--text3); }
+.sb-logo { width: 64px; height: 64px; max-width: 64px; max-height: 64px; border-radius: 4px; object-fit: contain; background: rgba(255,255,255,.08); padding: 6px; }
+.sb-logo-placeholder { width: 64px; height: 64px; border-radius: 4px; background: rgba(255,255,255,.08); display: flex; align-items: center; justify-content: center; font-size: 1rem; font-weight: 700; color: var(--text3); }
 .sb-name { font-size: 1rem; font-weight: 700; font-family: 'Montserrat', sans-serif; }
 .sb-name.winner { color: var(--accent); }
 .sb-location { font-size: .75rem; color: var(--text3); }
@@ -93,8 +93,11 @@ import Base from '../layouts/Base.astro';
 .game-team.right { justify-content: flex-end; flex-direction: row-reverse; }
 .game-team-name { font-weight: 600; font-size: .85rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .game-team-name.winner { color: var(--accent); }
-.game-team-logo { width: 24px; height: 24px; border-radius: 3px; object-fit: contain; background: var(--bg3); }
-.game-team-logo-placeholder { width: 24px; height: 24px; border-radius: 3px; background: var(--bg3); display: flex; align-items: center; justify-content: center; font-size: .55rem; font-weight: 700; color: var(--text3); }
+.game-team-logo { width: 24px; height: 24px; border-radius: 3px; object-fit: contain; background: rgba(255,255,255,.1); padding: 2px; }
+.game-team-logo-placeholder { width: 24px; height: 24px; border-radius: 3px; background: rgba(255,255,255,.1); display: flex; align-items: center; justify-content: center; font-size: .55rem; font-weight: 700; color: var(--text3); }
+.game-w-badge { display: inline-flex; align-items: center; justify-content: center; width: 20px; height: 20px; border-radius: 3px; font-size: .65rem; font-weight: 800; flex-shrink: 0; line-height: 1; }
+.game-w-badge.win { background: rgba(46,204,113,.15); color: #2ecc71; border: 1px solid rgba(46,204,113,.3); }
+.game-w-badge.loss { background: rgba(231,76,60,.12); color: #e74c3c; border: 1px solid rgba(231,76,60,.25); }
 
 .game-total-score { display: flex; align-items: center; justify-content: center; gap: .4rem; }
 .game-score-val { font-size: 1.3rem; font-weight: 800; font-family: 'Montserrat', sans-serif; min-width: 1.3rem; text-align: center; }
@@ -229,10 +232,11 @@ import Base from '../layouts/Base.astro';
   }
 
   function teamLogoHTML(team, size, cssClass) {
+    const pad = Math.max(Math.round(size * 0.08), 2);
     if (team.image) {
-      return `<img src="${team.image}" alt="${team.name || ''}" class="${cssClass}" style="width:${size}px;height:${size}px;max-width:${size}px;max-height:${size}px;object-fit:contain;border-radius:4px;background:var(--bg3);flex-shrink:0" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'" /><div class="${cssClass}-placeholder" style="display:none;width:${size}px;height:${size}px;border-radius:4px;background:var(--bg3);align-items:center;justify-content:center;font-size:${Math.max(size * 0.2, 10)}px;font-weight:700;color:var(--text3);flex-shrink:0">${team.acronym || team.name?.[0] || '?'}</div>`;
+      return `<img src="${team.image}" alt="${team.name || ''}" class="${cssClass}" style="width:${size}px;height:${size}px;max-width:${size}px;max-height:${size}px;object-fit:contain;border-radius:4px;background:rgba(255,255,255,.08);padding:${pad}px;flex-shrink:0" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'" /><div class="${cssClass}-placeholder" style="display:none;width:${size}px;height:${size}px;border-radius:4px;background:rgba(255,255,255,.08);align-items:center;justify-content:center;font-size:${Math.max(size * 0.2, 10)}px;font-weight:700;color:var(--text3);flex-shrink:0">${team.acronym || team.name?.[0] || '?'}</div>`;
     }
-    return `<div class="${cssClass}-placeholder" style="display:flex;width:${size}px;height:${size}px;border-radius:4px;background:var(--bg3);align-items:center;justify-content:center;font-size:${Math.max(size * 0.2, 10)}px;font-weight:700;color:var(--text3);flex-shrink:0">${team.acronym || team.name?.[0] || '?'}</div>`;
+    return `<div class="${cssClass}-placeholder" style="display:flex;width:${size}px;height:${size}px;border-radius:4px;background:rgba(255,255,255,.08);align-items:center;justify-content:center;font-size:${Math.max(size * 0.2, 10)}px;font-weight:700;color:var(--text3);flex-shrink:0">${team.acronym || team.name?.[0] || '?'}</div>`;
   }
 
   function render(match) {
@@ -380,6 +384,7 @@ import Base from '../layouts/Base.astro';
             <div class="game-card-body">
               <div class="game-scores">
                 <div class="game-team">
+                  ${gWinner1 ? '<span class="game-w-badge win">W</span>' : (gWinner2 ? '<span class="game-w-badge loss">L</span>' : '')}
                   ${teamLogoHTML(gt1.id ? { id: gt1.id, name: gt1.name, image: t1.image, acronym: t1.acronym } : t1, 24, 'game-team-logo')}
                   <span class="game-team-name ${gWinner1 ? 'winner' : ''}">${gt1.name || t1.name || 'TBD'}</span>
                 </div>
@@ -389,6 +394,7 @@ import Base from '../layouts/Base.astro';
                   <span class="game-score-val ${gWinner2 ? 'winner' : ''}">${gt2.score ?? '—'}</span>
                 </div>
                 <div class="game-team right">
+                  ${gWinner2 ? '<span class="game-w-badge win">W</span>' : (gWinner1 ? '<span class="game-w-badge loss">L</span>' : '')}
                   ${teamLogoHTML(gt2.id ? { id: gt2.id, name: gt2.name, image: t2.image, acronym: t2.acronym } : t2, 24, 'game-team-logo')}
                   <span class="game-team-name ${gWinner2 ? 'winner' : ''}">${gt2.name || t2.name || 'TBD'}</span>
                 </div>

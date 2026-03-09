@@ -90,7 +90,7 @@ export async function onRequestGet(context) {
     let pastMatches = [];
     if (currentTeamId) {
       const matchesRes = await fetch(
-        `https://api.pandascore.co/csgo/matches/past?filter[opponent_id]=${currentTeamId}&sort=-begin_at&page=${page}&per_page=${perPage}&token=${apiKey}`,
+        `https://api.pandascore.co/matches/past?filter[opponent_id]=${currentTeamId}&filter[videogame]=csgo&sort=-begin_at&page=${page}&per_page=${perPage}&token=${apiKey}`,
         { cf: { cacheTtl: 600 } }
       );
       if (matchesRes.ok) {

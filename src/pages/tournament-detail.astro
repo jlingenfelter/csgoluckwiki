@@ -186,14 +186,15 @@ import Base from '../layouts/Base.astro';
   }
 
   function teamLogoHTML(team, size, prefix) {
+    const pad = Math.max(Math.round(size * 0.08), 2);
     if (team.image || team.teamImage) {
       const src = team.image || team.teamImage;
       const name = team.name || team.teamName || '';
       const fallback = team.acronym || team.teamAcronym || name?.[0] || '?';
-      return `<img src="${src}" alt="${name}" style="width:${size}px;height:${size}px;border-radius:${size > 28 ? 4 : 3}px;object-fit:contain;background:var(--bg3);flex-shrink:0" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'" /><div class="${prefix}-placeholder" style="display:none;width:${size}px;height:${size}px;border-radius:${size > 28 ? 4 : 3}px;background:var(--bg3);align-items:center;justify-content:center;font-size:${Math.max(size * 0.2, 10)}px;font-weight:700;color:var(--text3);flex-shrink:0">${fallback}</div>`;
+      return `<img src="${src}" alt="${name}" style="width:${size}px;height:${size}px;border-radius:${size > 28 ? 4 : 3}px;object-fit:contain;background:rgba(255,255,255,.08);padding:${pad}px;flex-shrink:0" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'" /><div class="${prefix}-placeholder" style="display:none;width:${size}px;height:${size}px;border-radius:${size > 28 ? 4 : 3}px;background:rgba(255,255,255,.08);align-items:center;justify-content:center;font-size:${Math.max(size * 0.2, 10)}px;font-weight:700;color:var(--text3);flex-shrink:0">${fallback}</div>`;
     }
     const fallback = team.acronym || team.teamAcronym || team.name?.[0] || team.teamName?.[0] || '?';
-    return `<div class="${prefix}-placeholder" style="display:flex;width:${size}px;height:${size}px;border-radius:${size > 28 ? 4 : 3}px;background:var(--bg3);align-items:center;justify-content:center;font-size:${Math.max(size * 0.2, 10)}px;font-weight:700;color:var(--text3);flex-shrink:0">${fallback}</div>`;
+    return `<div class="${prefix}-placeholder" style="display:flex;width:${size}px;height:${size}px;border-radius:${size > 28 ? 4 : 3}px;background:rgba(255,255,255,.08);align-items:center;justify-content:center;font-size:${Math.max(size * 0.2, 10)}px;font-weight:700;color:var(--text3);flex-shrink:0">${fallback}</div>`;
   }
 
   function teamSlug(name) {
