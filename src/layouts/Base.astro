@@ -187,8 +187,8 @@ const eliteRanks = allRanks.filter(r => ['Distinguished', 'Legendary', 'Supreme'
 </div>
 
 <!-- Pro Scene Mega Menu -->
-<div class="nav-dropdown nav-mega nav-mega-3col">
-<button class="nav-dropdown-btn" class:list={[{ active: currentNav?.startsWith('/pro-') || currentNav === '/matches/' || currentNav === '/tournaments/' }]} aria-expanded="false">Pro Scene ▾</button>
+<div class="nav-dropdown nav-mega nav-mega-2col">
+<button class="nav-dropdown-btn" class:list={[{ active: currentNav?.startsWith('/pro-') }]} aria-expanded="false">Pro Scene ▾</button>
 <div class="nav-mega-menu">
 <div class="mega-col">
 <a href="/pro-players/" class="mega-heading">Players &amp; Roles</a>
@@ -210,10 +210,18 @@ const eliteRanks = allRanks.filter(r => ['Distinguished', 'Legendary', 'Supreme'
 <a href="/cm360-calculator/" class="mega-link"><span>cm/360 Calculator</span></a>
 <a href="/resolution-calculator/" class="mega-link"><span>Resolution Calculator</span></a>
 </div>
+</div>
+</div>
+
+<!-- Esports Mega Menu -->
+<div class="nav-dropdown nav-mega">
+<button class="nav-dropdown-btn nav-esports-btn" class:list={[{ active: currentNav === '/matches/' || currentNav === '/tournaments/' || currentNav === '/pickems/' }]} aria-expanded="false">Esports ▾</button>
+<div class="nav-mega-menu">
 <div class="mega-col">
-<a href="/matches/" class="mega-heading">Live Esports</a>
+<a href="/matches/" class="mega-heading">CS2 Esports</a>
 <a href="/matches/" class="mega-link" style="font-weight:700"><span>🔴 Live Matches</span></a>
 <a href="/tournaments/" class="mega-link" style="font-weight:700"><span>Tournaments</span></a>
+<a href="/pickems/" class="mega-link" style="font-weight:700;color:#2ecc71"><span>Pick'Ems</span></a>
 </div>
 </div>
 </div>
@@ -255,9 +263,6 @@ const eliteRanks = allRanks.filter(r => ['Distinguished', 'Legendary', 'Supreme'
 </div>
 </div>
 </div>
-
-<!-- Pick'Ems -->
-<a href="/pickems/" class:list={['nav-pickems', { active: currentNav === '/pickems/' }]}>Pick'Ems</a>
 
 <!-- Learn Mega Menu -->
 <div class="nav-dropdown nav-mega nav-mega-3col">
@@ -356,11 +361,16 @@ const eliteRanks = allRanks.filter(r => ['Distinguished', 'Legendary', 'Supreme'
 </div>
 </details>
 <details class="mobile-section">
-<summary>Pro Scene</summary>
+<summary>Esports</summary>
 <div class="mobile-sub">
 <a href="/matches/" style="color:var(--accent);font-weight:700">🔴 Live Matches</a>
 <a href="/tournaments/">Tournaments</a>
-<div class="mobile-divider"></div>
+<a href="/pickems/" style="color:#2ecc71;font-weight:700">Pick'Ems</a>
+</div>
+</details>
+<details class="mobile-section">
+<summary>Pro Scene</summary>
+<div class="mobile-sub">
 <a href="/pro-players/">All Pro Players</a>
 <a href="/pro-teams/">Teams</a>
 <a href="/pro-gaming-gear/">Gear</a>
@@ -391,7 +401,6 @@ const eliteRanks = allRanks.filter(r => ['Distinguished', 'Legendary', 'Supreme'
 <a href="/launch-options/">Launch Options</a>
 </div>
 </details>
-<a href="/pickems/" class="mobile-pickems">Pick'Ems</a>
 <a href="/csgo-promo-code/" class="mobile-promo">Promo Code</a>
 <details class="mobile-section">
 <summary>Learn</summary>
@@ -584,7 +593,7 @@ nav{max-width:1200px;margin:0 auto;padding:.7rem 1.5rem;display:flex;align-items
 .nav-mega-2col.open .nav-mega-menu{grid-template-columns:repeat(2,1fr)}
 .nav-dropdown-btn.active{color:var(--accent)}
 @media(max-width:768px){.nav-mega-menu{left:0;transform:translateX(0) translateY(-8px);max-width:calc(100vw - 2rem)}.nav-mega.open .nav-mega-menu,.nav-mega-3col.open .nav-mega-menu,.nav-mega-2col.open .nav-mega-menu{grid-template-columns:repeat(2,1fr);transform:translateX(0) translateY(0)}}
-.nav-pickems{color:#2ecc71 !important;font-weight:600 !important;position:relative}.nav-pickems::before{content:'';position:absolute;top:4px;right:4px;width:6px;height:6px;border-radius:50%;background:#2ecc71;animation:pk-pulse 2s ease-in-out infinite}@keyframes pk-pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(1.3)}}.mobile-pickems{color:#2ecc71 !important;font-weight:600 !important}
+.nav-esports-btn{position:relative}.nav-esports-btn::after{content:'';position:absolute;top:6px;right:2px;width:6px;height:6px;border-radius:50%;background:#e74c3c;animation:pk-pulse 2s ease-in-out infinite}@keyframes pk-pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(1.3)}}
 .nav-promo{padding:.3rem .8rem;border-radius:4px;font-size:.82rem;font-weight:700;color:#000 !important;background:linear-gradient(135deg,#ffd700,#ffaa00);text-decoration:none;white-space:nowrap;box-shadow:0 2px 10px rgba(255,215,0,.3);transition:all .2s;letter-spacing:.02em}.nav-promo:hover{transform:translateY(-1px);box-shadow:0 4px 16px rgba(255,215,0,.45)}.nav-promo.active{box-shadow:0 4px 16px rgba(255,215,0,.5)}
 .mobile-promo{display:block;text-align:center;margin:.5rem 1rem;padding:.6rem 1rem;border-radius:4px;font-weight:700;color:#000 !important;background:linear-gradient(135deg,#ffd700,#ffaa00);text-decoration:none;box-shadow:0 2px 10px rgba(255,215,0,.3);font-size:.9rem}
 .nav-search{margin-left:auto}
@@ -852,8 +861,10 @@ document.addEventListener('DOMContentLoaded',function(){
       {t:'Anubis',u:'/cs2-maps/anubis/'},{t:'Vertigo',u:'/cs2-maps/vertigo/'},{t:'Overpass',u:'/cs2-maps/overpass/'},
       {t:'Workshop Maps',u:'/workshop-maps/'}
     ]},
+    {g:'Esports',icon:'trophy',items:[
+      {t:'Live Matches',u:'/matches/'},{t:'Tournaments',u:'/tournaments/'},{t:"Pick'Ems",u:'/pickems/'}
+    ]},
     {g:'Pro Scene',icon:'trophy',items:[
-      {t:'Live Matches',u:'/matches/'},{t:'Tournaments',u:'/tournaments/'},
       {t:'All Pro Players',u:'/pro-players/'},{t:'Teams',u:'/pro-teams/'},{t:'Pro Gaming Gear',u:'/pro-gaming-gear/'},
       {t:'Crosshair Codes',u:'/crosshair-codes/'},{t:'Rank Distribution',u:'/cs2-rank-distribution/'}
     ]},
