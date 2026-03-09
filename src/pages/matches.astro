@@ -1,0 +1,366 @@
+---
+import Base from '../layouts/Base.astro';
+import ExploreMore from '../components/ExploreMore.astro';
+
+const explore = [
+  { title: 'Pro Players', href: '/pro-players/', desc: '800+ pro player settings and configs' },
+  { title: 'Pro Teams', href: '/pro-teams/', desc: 'Team rosters and average settings' },
+  { title: 'Tournaments', href: '/tournaments/', desc: 'Active and upcoming CS2 tournaments' },
+  { title: 'Pro Gaming Gear', href: '/pro-gaming-gear/', desc: 'Gear used by the pros' },
+];
+---
+<Base title="Live CS2 Matches & Results — Pro Match Tracker | CSGOLuck Wiki" description="Track live CS2 matches, upcoming schedules, and recent results. Real-time scores from PandaScore." currentNav="/matches/">
+
+<nav class="breadcrumb" aria-label="Breadcrumb">
+<a href="/">Home</a> <span class="sep">›</span> <span>CS2 Matches</span>
+</nav>
+
+<h1>CS2 Match Tracker</h1>
+<p class="page-intro">Live scores, upcoming matches, and recent results from the CS2 pro scene. Data updates automatically.</p>
+
+<!-- Tab Navigation -->
+<div class="match-tabs" role="tablist">
+  <button class="match-tab active" data-tab="live" role="tab" aria-selected="true">
+    <span class="live-dot"></span> Live
+    <span class="tab-count" id="live-count">0</span>
+  </button>
+  <button class="match-tab" data-tab="upcoming" role="tab" aria-selected="false">
+    Upcoming
+    <span class="tab-count" id="upcoming-count">–</span>
+  </button>
+  <button class="match-tab" data-tab="results" role="tab" aria-selected="false">
+    Results
+    <span class="tab-count" id="results-count">–</span>
+  </button>
+</div>
+
+<!-- Live Matches Panel -->
+<div class="match-panel active" id="panel-live" role="tabpanel">
+  <div class="match-list" id="live-matches">
+    <div class="loading-state"><div class="spinner"></div> Loading live matches…</div>
+  </div>
+</div>
+
+<!-- Upcoming Matches Panel -->
+<div class="match-panel" id="panel-upcoming" role="tabpanel">
+  <div class="match-list" id="upcoming-matches">
+    <div class="loading-state"><div class="spinner"></div> Loading upcoming matches…</div>
+  </div>
+</div>
+
+<!-- Results Panel -->
+<div class="match-panel" id="panel-results" role="tabpanel">
+  <div class="match-list" id="results-matches">
+    <div class="loading-state"><div class="spinner"></div> Loading results…</div>
+  </div>
+</div>
+
+<ExploreMore items={explore} />
+
+<style>
+.page-intro { color: var(--text2); margin-bottom: 1.5rem; font-size: .95rem; }
+
+/* Tabs */
+.match-tabs { display: flex; gap: .5rem; margin-bottom: 1.5rem; border-bottom: 2px solid var(--border); padding-bottom: 0; }
+.match-tab { background: none; border: none; padding: .6rem 1.2rem; font-size: .9rem; font-weight: 600; color: var(--text2); cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -2px; font-family: inherit; display: flex; align-items: center; gap: .5rem; transition: color .2s, border-color .2s; }
+.match-tab:hover { color: var(--text1); }
+.match-tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+.tab-count { background: var(--bg3); padding: .1rem .45rem; border-radius: 10px; font-size: .75rem; font-weight: 700; }
+.match-tab.active .tab-count { background: var(--accent); color: #000; }
+
+/* Live dot */
+.live-dot { width: 8px; height: 8px; border-radius: 50%; background: #e74c3c; display: inline-block; animation: pulse-dot 1.5s infinite; }
+@keyframes pulse-dot { 0%, 100% { opacity: 1; } 50% { opacity: .3; } }
+
+/* Panels */
+.match-panel { display: none; }
+.match-panel.active { display: block; }
+
+/* Match Cards */
+.match-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 4px; padding: 1rem 1.25rem; margin-bottom: .75rem; transition: border-color .2s; }
+.match-card:hover { border-color: var(--accent); }
+.match-card.live { border-left: 3px solid #e74c3c; }
+.match-card.upcoming { border-left: 3px solid var(--accent); }
+.match-card.finished { border-left: 3px solid var(--text3); }
+
+.match-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: .75rem; flex-wrap: wrap; gap: .5rem; }
+.match-league { display: flex; align-items: center; gap: .5rem; font-size: .8rem; color: var(--text2); }
+.match-league img { height: 18px; width: auto; border-radius: 2px; }
+.match-tier { font-size: .7rem; font-weight: 700; text-transform: uppercase; padding: .15rem .4rem; border-radius: 3px; }
+.tier-s { background: #f1c40f; color: #000; }
+.tier-a { background: #e67e22; color: #000; }
+.tier-b { background: #3498db; color: #fff; }
+.tier-c { background: #7f8c8d; color: #fff; }
+.tier-d { background: #566573; color: #fff; }
+
+.match-body { display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
+.match-team { display: flex; align-items: center; gap: .65rem; flex: 1; min-width: 0; }
+.match-team.right { justify-content: flex-end; text-direction: rtl; flex-direction: row-reverse; }
+.team-logo { width: 36px; height: 36px; border-radius: 4px; object-fit: contain; background: var(--bg3); flex-shrink: 0; }
+.team-logo-placeholder { width: 36px; height: 36px; border-radius: 4px; background: var(--bg3); display: flex; align-items: center; justify-content: center; font-size: .7rem; font-weight: 700; color: var(--text3); flex-shrink: 0; }
+.team-name { font-weight: 600; font-size: .95rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.team-name.winner { color: var(--accent); }
+
+.match-score { display: flex; align-items: center; gap: .5rem; flex-shrink: 0; }
+.score-val { font-size: 1.4rem; font-weight: 800; min-width: 1.5rem; text-align: center; font-family: 'Montserrat', sans-serif; }
+.score-val.winner { color: var(--accent); }
+.score-sep { color: var(--text3); font-size: 1.1rem; }
+.score-vs { font-size: .8rem; font-weight: 700; color: var(--text3); text-transform: uppercase; }
+
+.match-footer { display: flex; justify-content: space-between; align-items: center; margin-top: .75rem; flex-wrap: wrap; gap: .5rem; }
+.match-time { font-size: .8rem; color: var(--text2); }
+.match-time .countdown { color: var(--accent); font-weight: 600; }
+.match-format { font-size: .75rem; color: var(--text3); font-weight: 600; }
+.match-stream { font-size: .75rem; color: var(--accent); text-decoration: none; font-weight: 600; }
+.match-stream:hover { text-decoration: underline; }
+
+.match-status { font-size: .7rem; font-weight: 700; text-transform: uppercase; padding: .15rem .4rem; border-radius: 3px; }
+.status-running { background: #e74c3c; color: #fff; }
+.status-not_started { background: var(--accent); color: #000; }
+.status-finished { background: var(--bg3); color: var(--text2); }
+
+/* Empty / loading */
+.loading-state { text-align: center; padding: 2rem; color: var(--text2); font-size: .9rem; }
+.spinner { display: inline-block; width: 20px; height: 20px; border: 2px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin .6s linear infinite; margin-right: .5rem; vertical-align: middle; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.empty-state { text-align: center; padding: 2rem; color: var(--text3); }
+.empty-state svg { margin-bottom: .5rem; opacity: .5; }
+
+/* Load more */
+.load-more-btn { display: block; width: 100%; padding: .75rem; background: var(--bg3); border: 1px solid var(--border); border-radius: 4px; color: var(--text2); font-size: .85rem; font-weight: 600; cursor: pointer; font-family: inherit; margin-top: .5rem; transition: border-color .2s, color .2s; }
+.load-more-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+/* Responsive */
+@media (max-width: 600px) {
+  .match-body { flex-direction: column; gap: .5rem; }
+  .match-team, .match-team.right { justify-content: center; flex-direction: row; }
+  .match-score { margin: .25rem 0; }
+  .score-val { font-size: 1.2rem; }
+}
+</style>
+
+<script>
+const API_BASE = '/api/matches';
+
+// State
+let liveData = [];
+let upcomingData = [];
+let pastData = [];
+let upcomingPage = 1;
+let pastPage = 1;
+let liveInterval;
+
+// Tab switching
+document.querySelectorAll('.match-tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.match-tab').forEach(t => { t.classList.remove('active'); t.setAttribute('aria-selected', 'false'); });
+    document.querySelectorAll('.match-panel').forEach(p => p.classList.remove('active'));
+    tab.classList.add('active');
+    tab.setAttribute('aria-selected', 'true');
+    document.getElementById(`panel-${tab.dataset.tab}`).classList.add('active');
+  });
+});
+
+// Fetch helpers
+async function fetchMatches(type, page = 1, perPage = 10) {
+  try {
+    const res = await fetch(`${API_BASE}?type=${type}&page=${page}&per_page=${perPage}`);
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    return await res.json();
+  } catch (err) {
+    console.error(`Failed to fetch ${type} matches:`, err);
+    return null;
+  }
+}
+
+function tierClass(tier) {
+  return tier ? `tier-${tier}` : 'tier-d';
+}
+
+function tierLabel(tier) {
+  const labels = { s: 'S-Tier', a: 'A-Tier', b: 'B-Tier', c: 'C-Tier', d: 'D-Tier' };
+  return labels[tier] || tier?.toUpperCase() || '';
+}
+
+function formatTime(iso) {
+  if (!iso) return '';
+  const d = new Date(iso);
+  return d.toLocaleString(undefined, { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+}
+
+function timeFromNow(iso) {
+  if (!iso) return '';
+  const diff = new Date(iso) - Date.now();
+  if (diff < 0) return 'Starting soon';
+  const mins = Math.floor(diff / 60000);
+  if (mins < 60) return `in ${mins}m`;
+  const hrs = Math.floor(mins / 60);
+  if (hrs < 24) return `in ${hrs}h ${mins % 60}m`;
+  const days = Math.floor(hrs / 24);
+  return `in ${days}d ${hrs % 24}h`;
+}
+
+function teamLogoHTML(team) {
+  if (team.image) {
+    return `<img src="${team.image}" alt="${team.name}" class="team-logo" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'" /><div class="team-logo-placeholder" style="display:none">${(team.acronym || team.name?.[0] || '?')}</div>`;
+  }
+  return `<div class="team-logo-placeholder">${(team.acronym || team.name?.[0] || '?')}</div>`;
+}
+
+function renderMatchCard(match, type) {
+  const t1 = match.opponents[0] || { name: 'TBD' };
+  const t2 = match.opponents[1] || { name: 'TBD' };
+  const r1 = match.results?.find(r => r.team_id === t1.id)?.score ?? 0;
+  const r2 = match.results?.find(r => r.team_id === t2.id)?.score ?? 0;
+  const isLive = match.status === 'running';
+  const isFinished = match.status === 'finished';
+  const t1Winner = isFinished && match.winnerId === t1.id;
+  const t2Winner = isFinished && match.winnerId === t2.id;
+
+  const cardClass = isLive ? 'live' : (isFinished ? 'finished' : 'upcoming');
+  const format = match.numberOfGames > 1 ? `BO${match.numberOfGames}` : 'BO1';
+
+  let timeHTML = '';
+  if (isLive) {
+    timeHTML = `<span class="match-status status-running">● LIVE</span>`;
+  } else if (isFinished) {
+    timeHTML = `<span class="match-time">${formatTime(match.endAt || match.beginAt)}</span>`;
+  } else {
+    timeHTML = `<span class="match-time">${formatTime(match.beginAt)} · <span class="countdown">${timeFromNow(match.beginAt)}</span></span>`;
+  }
+
+  const streamHTML = match.streams?.[0]?.url
+    ? `<a href="${match.streams[0].url}" target="_blank" rel="noopener" class="match-stream">▶ Watch</a>`
+    : '';
+
+  return `
+    <div class="match-card ${cardClass}">
+      <div class="match-header">
+        <div class="match-league">
+          ${match.league?.image ? `<img src="${match.league.image}" alt="${match.league.name}" />` : ''}
+          <span>${match.league?.name || ''} ${match.serie?.name ? '· ' + match.serie.name : ''}</span>
+        </div>
+        ${match.tournament?.tier ? `<span class="match-tier ${tierClass(match.tournament.tier)}">${tierLabel(match.tournament.tier)}</span>` : ''}
+      </div>
+      <div class="match-body">
+        <div class="match-team">
+          ${teamLogoHTML(t1)}
+          <span class="team-name ${t1Winner ? 'winner' : ''}">${t1.name || 'TBD'}</span>
+        </div>
+        <div class="match-score">
+          ${isLive || isFinished
+            ? `<span class="score-val ${t1Winner ? 'winner' : ''}">${r1}</span>
+               <span class="score-sep">:</span>
+               <span class="score-val ${t2Winner ? 'winner' : ''}">${r2}</span>`
+            : `<span class="score-vs">vs</span>`
+          }
+        </div>
+        <div class="match-team right">
+          ${teamLogoHTML(t2)}
+          <span class="team-name ${t2Winner ? 'winner' : ''}">${t2.name || 'TBD'}</span>
+        </div>
+      </div>
+      <div class="match-footer">
+        ${timeHTML}
+        <div style="display:flex;gap:.75rem;align-items:center">
+          <span class="match-format">${format}</span>
+          ${streamHTML}
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function renderEmpty(message) {
+  return `<div class="empty-state"><p>${message}</p></div>`;
+}
+
+// Load live matches + auto-refresh
+async function loadLive() {
+  const data = await fetchMatches('running', 1, 20);
+  const container = document.getElementById('live-matches');
+  if (!data || !data.matches) {
+    container.innerHTML = renderEmpty('Unable to load live matches.');
+    return;
+  }
+  liveData = data.matches;
+  document.getElementById('live-count').textContent = liveData.length;
+  if (liveData.length === 0) {
+    container.innerHTML = renderEmpty('No live matches right now. Check back soon!');
+    return;
+  }
+  container.innerHTML = liveData.map(m => renderMatchCard(m, 'live')).join('');
+}
+
+async function loadUpcoming() {
+  const data = await fetchMatches('upcoming', upcomingPage, 15);
+  const container = document.getElementById('upcoming-matches');
+  if (!data || !data.matches) {
+    container.innerHTML = renderEmpty('Unable to load upcoming matches.');
+    return;
+  }
+  if (upcomingPage === 1) upcomingData = data.matches;
+  else upcomingData = [...upcomingData, ...data.matches];
+
+  document.getElementById('upcoming-count').textContent = upcomingData.length + (data.count >= 15 ? '+' : '');
+
+  if (upcomingData.length === 0) {
+    container.innerHTML = renderEmpty('No upcoming matches scheduled.');
+    return;
+  }
+  let html = upcomingData.map(m => renderMatchCard(m, 'upcoming')).join('');
+  if (data.count >= 15) {
+    html += `<button class="load-more-btn" id="load-more-upcoming">Load More Matches</button>`;
+  }
+  container.innerHTML = html;
+
+  const btn = document.getElementById('load-more-upcoming');
+  if (btn) btn.addEventListener('click', () => { upcomingPage++; loadUpcoming(); });
+}
+
+async function loadPast() {
+  const data = await fetchMatches('past', pastPage, 15);
+  const container = document.getElementById('results-matches');
+  if (!data || !data.matches) {
+    container.innerHTML = renderEmpty('Unable to load match results.');
+    return;
+  }
+  if (pastPage === 1) pastData = data.matches;
+  else pastData = [...pastData, ...data.matches];
+
+  document.getElementById('results-count').textContent = pastData.length + (data.count >= 15 ? '+' : '');
+
+  if (pastData.length === 0) {
+    container.innerHTML = renderEmpty('No recent match results.');
+    return;
+  }
+  let html = pastData.map(m => renderMatchCard(m, 'results')).join('');
+  if (data.count >= 15) {
+    html += `<button class="load-more-btn" id="load-more-past">Load More Results</button>`;
+  }
+  container.innerHTML = html;
+
+  const btn = document.getElementById('load-more-past');
+  if (btn) btn.addEventListener('click', () => { pastPage++; loadPast(); });
+}
+
+// Update countdowns every 30s
+function updateCountdowns() {
+  document.querySelectorAll('#upcoming-matches .countdown').forEach(el => {
+    const card = el.closest('.match-card');
+    // Re-rendered via loadUpcoming on interval anyway
+  });
+}
+
+// Initialize
+loadLive();
+loadUpcoming();
+loadPast();
+
+// Auto-refresh live matches every 60s
+liveInterval = setInterval(loadLive, 60000);
+// Refresh upcoming every 2 min
+setInterval(loadUpcoming, 120000);
+</script>
+
+</Base>

@@ -187,8 +187,8 @@ const eliteRanks = allRanks.filter(r => ['Distinguished', 'Legendary', 'Supreme'
 </div>
 
 <!-- Pro Scene Mega Menu -->
-<div class="nav-dropdown nav-mega nav-mega-2col">
-<button class="nav-dropdown-btn" class:list={[{ active: currentNav?.startsWith('/pro-') }]} aria-expanded="false">Pro Scene ▾</button>
+<div class="nav-dropdown nav-mega nav-mega-3col">
+<button class="nav-dropdown-btn" class:list={[{ active: currentNav?.startsWith('/pro-') || currentNav === '/matches/' || currentNav === '/tournaments/' }]} aria-expanded="false">Pro Scene ▾</button>
 <div class="nav-mega-menu">
 <div class="mega-col">
 <a href="/pro-players/" class="mega-heading">Players &amp; Roles</a>
@@ -209,6 +209,11 @@ const eliteRanks = allRanks.filter(r => ['Distinguished', 'Legendary', 'Supreme'
 <a href="/edpi-calculator/" class="mega-link"><span>eDPI Calculator</span></a>
 <a href="/cm360-calculator/" class="mega-link"><span>cm/360 Calculator</span></a>
 <a href="/resolution-calculator/" class="mega-link"><span>Resolution Calculator</span></a>
+</div>
+<div class="mega-col">
+<a href="/matches/" class="mega-heading">Live Esports</a>
+<a href="/matches/" class="mega-link" style="font-weight:700"><span>🔴 Live Matches</span></a>
+<a href="/tournaments/" class="mega-link" style="font-weight:700"><span>Tournaments</span></a>
 </div>
 </div>
 </div>
@@ -353,6 +358,9 @@ const eliteRanks = allRanks.filter(r => ['Distinguished', 'Legendary', 'Supreme'
 <details class="mobile-section">
 <summary>Pro Scene</summary>
 <div class="mobile-sub">
+<a href="/matches/" style="color:var(--accent);font-weight:700">🔴 Live Matches</a>
+<a href="/tournaments/">Tournaments</a>
+<div class="mobile-divider"></div>
 <a href="/pro-players/">All Pro Players</a>
 <a href="/pro-teams/">Teams</a>
 <a href="/pro-gaming-gear/">Gear</a>
@@ -845,6 +853,7 @@ document.addEventListener('DOMContentLoaded',function(){
       {t:'Workshop Maps',u:'/workshop-maps/'}
     ]},
     {g:'Pro Scene',icon:'trophy',items:[
+      {t:'Live Matches',u:'/matches/'},{t:'Tournaments',u:'/tournaments/'},
       {t:'All Pro Players',u:'/pro-players/'},{t:'Teams',u:'/pro-teams/'},{t:'Pro Gaming Gear',u:'/pro-gaming-gear/'},
       {t:'Crosshair Codes',u:'/crosshair-codes/'},{t:'Rank Distribution',u:'/cs2-rank-distribution/'}
     ]},

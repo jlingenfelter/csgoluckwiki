@@ -1,0 +1,214 @@
+---
+import Base from '../layouts/Base.astro';
+import ExploreMore from '../components/ExploreMore.astro';
+
+const explore = [
+  { title: 'CS2 Matches', href: '/matches/', desc: 'Live scores and upcoming match schedule' },
+  { title: 'Pro Players', href: '/pro-players/', desc: '800+ pro player settings and configs' },
+  { title: 'Pro Teams', href: '/pro-teams/', desc: 'Team rosters and average settings' },
+  { title: 'Pro Gaming Gear', href: '/pro-gaming-gear/', desc: 'Gear used by the pros' },
+];
+---
+<Base title="CS2 Tournaments — Active & Upcoming Events | CSGOLuck Wiki" description="Track active and upcoming CS2 tournaments. Tournament brackets, match schedules, and results." currentNav="/tournaments/">
+
+<nav class="breadcrumb" aria-label="Breadcrumb">
+<a href="/">Home</a> <span class="sep">›</span> <span>CS2 Tournaments</span>
+</nav>
+
+<h1>CS2 Tournaments</h1>
+<p class="page-intro">Active and upcoming Counter-Strike 2 tournaments with match schedules and results.</p>
+
+<!-- Tab Navigation -->
+<div class="tourney-tabs" role="tablist">
+  <button class="tourney-tab active" data-tab="active" role="tab" aria-selected="true">Active</button>
+  <button class="tourney-tab" data-tab="upcoming" role="tab" aria-selected="false">Upcoming</button>
+</div>
+
+<!-- Active Tournaments Panel -->
+<div class="tourney-panel active" id="panel-active" role="tabpanel">
+  <div id="active-tournaments">
+    <div class="loading-state"><div class="spinner"></div> Loading active tournaments…</div>
+  </div>
+</div>
+
+<!-- Upcoming Tournaments Panel -->
+<div class="tourney-panel" id="panel-upcoming" role="tabpanel">
+  <div id="upcoming-tournaments">
+    <div class="loading-state"><div class="spinner"></div> Loading upcoming tournaments…</div>
+  </div>
+</div>
+
+<ExploreMore items={explore} />
+
+<style>
+.page-intro { color: var(--text2); margin-bottom: 1.5rem; font-size: .95rem; }
+
+.tourney-tabs { display: flex; gap: .5rem; margin-bottom: 1.5rem; border-bottom: 2px solid var(--border); }
+.tourney-tab { background: none; border: none; padding: .6rem 1.2rem; font-size: .9rem; font-weight: 600; color: var(--text2); cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -2px; font-family: inherit; transition: color .2s, border-color .2s; }
+.tourney-tab:hover { color: var(--text1); }
+.tourney-tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+
+.tourney-panel { display: none; }
+.tourney-panel.active { display: block; }
+
+/* Tournament Cards */
+.tourney-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 4px; margin-bottom: 1rem; overflow: hidden; transition: border-color .2s; }
+.tourney-card:hover { border-color: var(--accent); }
+
+.tourney-card-header { display: flex; justify-content: space-between; align-items: center; padding: 1rem 1.25rem; cursor: pointer; }
+.tourney-info { display: flex; align-items: center; gap: .75rem; min-width: 0; flex: 1; }
+.tourney-logo { height: 28px; width: auto; border-radius: 3px; }
+.tourney-name { font-weight: 700; font-size: .95rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.tourney-meta { display: flex; gap: .75rem; align-items: center; flex-shrink: 0; }
+.tourney-tier { font-size: .7rem; font-weight: 700; text-transform: uppercase; padding: .15rem .4rem; border-radius: 3px; }
+.tier-s { background: #f1c40f; color: #000; }
+.tier-a { background: #e67e22; color: #000; }
+.tier-b { background: #3498db; color: #fff; }
+.tier-c { background: #7f8c8d; color: #fff; }
+.tier-d { background: #566573; color: #fff; }
+.tourney-type { font-size: .75rem; color: var(--text3); font-weight: 600; text-transform: uppercase; }
+.tourney-dates { font-size: .8rem; color: var(--text2); }
+.tourney-prize { font-size: .8rem; color: var(--accent); font-weight: 600; }
+.tourney-region { font-size: .75rem; color: var(--text3); font-weight: 600; background: var(--bg3); padding: .1rem .35rem; border-radius: 3px; }
+.tourney-toggle { font-size: .8rem; color: var(--text3); transition: transform .2s; }
+.tourney-card.open .tourney-toggle { transform: rotate(180deg); }
+
+.tourney-matches { display: none; padding: 0 1.25rem 1rem; border-top: 1px solid var(--border); }
+.tourney-card.open .tourney-matches { display: block; }
+
+.tourney-match-row { display: flex; justify-content: space-between; align-items: center; padding: .5rem 0; border-bottom: 1px solid var(--border-light, rgba(255,255,255,.05)); font-size: .85rem; gap: .5rem; }
+.tourney-match-row:last-child { border-bottom: none; }
+.tmr-name { flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.tmr-status { font-size: .7rem; font-weight: 700; text-transform: uppercase; padding: .1rem .35rem; border-radius: 3px; }
+.tmr-status.running { background: #e74c3c; color: #fff; }
+.tmr-status.finished { background: var(--bg3); color: var(--text2); }
+.tmr-status.not_started { background: rgba(46,204,113,.15); color: var(--accent); }
+.tmr-time { font-size: .8rem; color: var(--text3); white-space: nowrap; }
+.tmr-stream { font-size: .75rem; color: var(--accent); text-decoration: none; font-weight: 600; }
+.tmr-stream:hover { text-decoration: underline; }
+
+.loading-state { text-align: center; padding: 2rem; color: var(--text2); font-size: .9rem; }
+.spinner { display: inline-block; width: 20px; height: 20px; border: 2px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin .6s linear infinite; margin-right: .5rem; vertical-align: middle; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.empty-state { text-align: center; padding: 2rem; color: var(--text3); }
+
+.load-more-btn { display: block; width: 100%; padding: .75rem; background: var(--bg3); border: 1px solid var(--border); border-radius: 4px; color: var(--text2); font-size: .85rem; font-weight: 600; cursor: pointer; font-family: inherit; margin-top: .5rem; transition: border-color .2s, color .2s; }
+.load-more-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+@media (max-width: 600px) {
+  .tourney-card-header { flex-direction: column; gap: .5rem; align-items: flex-start; }
+  .tourney-meta { flex-wrap: wrap; }
+  .tourney-match-row { flex-wrap: wrap; }
+}
+</style>
+
+<script>
+const API_BASE = '/api/tournaments';
+
+// Tab switching
+document.querySelectorAll('.tourney-tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.tourney-tab').forEach(t => { t.classList.remove('active'); t.setAttribute('aria-selected', 'false'); });
+    document.querySelectorAll('.tourney-panel').forEach(p => p.classList.remove('active'));
+    tab.classList.add('active');
+    tab.setAttribute('aria-selected', 'true');
+    document.getElementById(`panel-${tab.dataset.tab}`).classList.add('active');
+  });
+});
+
+async function fetchTournaments(type, page = 1, perPage = 15) {
+  try {
+    const res = await fetch(`${API_BASE}?type=${type}&page=${page}&per_page=${perPage}`);
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    return await res.json();
+  } catch (err) {
+    console.error(`Failed to fetch ${type} tournaments:`, err);
+    return null;
+  }
+}
+
+function tierClass(tier) { return tier ? `tier-${tier}` : 'tier-d'; }
+function tierLabel(tier) {
+  const labels = { s: 'S-Tier', a: 'A-Tier', b: 'B-Tier', c: 'C-Tier', d: 'D-Tier' };
+  return labels[tier] || tier?.toUpperCase() || '';
+}
+
+function formatDate(iso) {
+  if (!iso) return '';
+  return new Date(iso).toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
+}
+
+function formatTime(iso) {
+  if (!iso) return '';
+  return new Date(iso).toLocaleString(undefined, { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+}
+
+function renderTournament(t) {
+  const dateStr = t.beginAt ? `${formatDate(t.beginAt)}${t.endAt ? ' – ' + formatDate(t.endAt) : ''}` : '';
+  const matchesHTML = (t.matches || []).map(m => {
+    const statusClass = m.status || 'not_started';
+    const statusLabel = m.status === 'running' ? '● LIVE' : m.status === 'finished' ? 'Done' : formatTime(m.beginAt);
+    const streamHTML = m.streams?.[0]?.url ? `<a href="${m.streams[0].url}" target="_blank" rel="noopener" class="tmr-stream">▶ Watch</a>` : '';
+
+    return `<div class="tourney-match-row">
+      <span class="tmr-name">${m.name || 'Match'}</span>
+      <span class="tmr-status ${statusClass}">${statusLabel}</span>
+      ${streamHTML}
+    </div>`;
+  }).join('');
+
+  return `
+    <div class="tourney-card">
+      <div class="tourney-card-header" onclick="this.parentElement.classList.toggle('open')">
+        <div class="tourney-info">
+          ${t.league?.image ? `<img src="${t.league.image}" alt="" class="tourney-logo" />` : ''}
+          <span class="tourney-name">${t.league?.name || ''} — ${t.name || t.serie?.name || ''}</span>
+        </div>
+        <div class="tourney-meta">
+          ${t.tier ? `<span class="tourney-tier ${tierClass(t.tier)}">${tierLabel(t.tier)}</span>` : ''}
+          ${t.type ? `<span class="tourney-type">${t.type}</span>` : ''}
+          ${t.region ? `<span class="tourney-region">${t.region}</span>` : ''}
+          ${t.prizepool ? `<span class="tourney-prize">${t.prizepool}</span>` : ''}
+          <span class="tourney-dates">${dateStr}</span>
+          <span class="tourney-toggle">▼</span>
+        </div>
+      </div>
+      ${t.matches?.length ? `<div class="tourney-matches">${matchesHTML}</div>` : ''}
+    </div>
+  `;
+}
+
+async function loadActive() {
+  const data = await fetchTournaments('running', 1, 20);
+  const container = document.getElementById('active-tournaments');
+  if (!data || !data.tournaments) {
+    container.innerHTML = '<div class="empty-state">Unable to load tournaments.</div>';
+    return;
+  }
+  if (data.tournaments.length === 0) {
+    container.innerHTML = '<div class="empty-state">No active tournaments right now.</div>';
+    return;
+  }
+  container.innerHTML = data.tournaments.map(renderTournament).join('');
+}
+
+async function loadUpcoming() {
+  const data = await fetchTournaments('upcoming', 1, 20);
+  const container = document.getElementById('upcoming-tournaments');
+  if (!data || !data.tournaments) {
+    container.innerHTML = '<div class="empty-state">Unable to load tournaments.</div>';
+    return;
+  }
+  if (data.tournaments.length === 0) {
+    container.innerHTML = '<div class="empty-state">No upcoming tournaments scheduled.</div>';
+    return;
+  }
+  container.innerHTML = data.tournaments.map(renderTournament).join('');
+}
+
+loadActive();
+loadUpcoming();
+setInterval(loadActive, 300000);
+</script>
+
+</Base>
