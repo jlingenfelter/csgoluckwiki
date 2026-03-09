@@ -98,14 +98,23 @@ export async function onRequestGet(context) {
         beginAt: g.begin_at,
         endAt: g.end_at,
         length: g.length,
-        teams: (g.teams || []).map(t => ({
-          id: t.team?.id,
-          name: t.team?.name,
-          firstHalfScore: t.first_half_score,
-          secondHalfScore: t.second_half_score,
-          overtimeScore: t.overtime_score,
-          score: t.score,
-        })),
+        teams: (g.teams || []).map(t => {
+          // Compute total score from halves if score field is null
+          const fh = t.first_half_score ?? 0;
+          const sh = t.second_half_score ?? 0;
+          const ot = t.overtime_score ?? 0;
+          const computedScore = (t.first_half_score != null || t.second_half_score != null)
+            ? fh + sh + ot
+            : null;
+          return {
+            id: t.team?.id,
+            name: t.team?.name,
+            firstHalfScore: t.first_half_score,
+            secondHalfScore: t.second_half_score,
+            overtimeScore: t.overtime_score,
+            score: t.score ?? computedScore,
+          };
+        }),
         rounds: g.rounds ? g.rounds.length : 0,
       })),
     };

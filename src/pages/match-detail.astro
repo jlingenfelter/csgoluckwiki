@@ -106,6 +106,8 @@ import Base from '../layouts/Base.astro';
 .game-total-score { display: flex; align-items: center; justify-content: center; gap: .5rem; background: var(--bg3); padding: .4rem .75rem; border-radius: 6px; }
 .game-score-val { font-size: 1.5rem; font-weight: 800; font-family: 'Montserrat', sans-serif; min-width: 1.5rem; text-align: center; }
 .game-score-val.winner { color: var(--accent); }
+.game-total-score-noscores .game-score-val { font-size: 1rem; font-weight: 700; }
+.game-total-score-noscores .game-score-sep { font-size: .75rem; }
 .game-score-sep { color: var(--text3); font-size: 1rem; }
 
 /* Half breakdown */
@@ -315,8 +317,17 @@ import Base from '../layouts/Base.astro';
     if (playableGames.length > 0) {
       gamesHTML += `<h2 class="section-title">Map Results</h2>`;
       playableGames.forEach(game => {
-        const gt1 = game.teams?.find(t => t.id === t1.id) || game.teams?.[0] || {};
-        const gt2 = game.teams?.find(t => t.id === t2.id) || game.teams?.[1] || {};
+        const gt1Raw = game.teams?.find(t => t.id === t1.id) || game.teams?.[0] || {};
+        const gt2Raw = game.teams?.find(t => t.id === t2.id) || game.teams?.[1] || {};
+        // Compute total score from halves if score is null
+        const computeScore = (t) => {
+          if (t.score != null) return t.score;
+          if (t.firstHalfScore != null || t.secondHalfScore != null)
+            return (t.firstHalfScore ?? 0) + (t.secondHalfScore ?? 0) + (t.overtimeScore ?? 0);
+          return null;
+        };
+        const gt1 = { ...gt1Raw, score: computeScore(gt1Raw) };
+        const gt2 = { ...gt2Raw, score: computeScore(gt2Raw) };
         const gWinner1 = game.winnerId === t1.id;
         const gWinner2 = game.winnerId === t2.id;
         const mapName = game.map?.name || 'Unknown Map';
@@ -400,11 +411,20 @@ import Base from '../layouts/Base.astro';
                   ${teamLogoHTML(gt1.id ? { id: gt1.id, name: gt1.name, image: t1.image, acronym: t1.acronym } : t1, 24, 'game-team-logo')}
                   <span class="game-team-name ${gWinner1 ? 'winner' : ''}">${gt1.name || t1.name || 'TBD'}</span>
                 </div>
+                ${(gt1.score != null && gt2.score != null) ? `
                 <div class="game-total-score">
-                  <span class="game-score-val ${gWinner1 ? 'winner' : ''}">${gt1.score ?? '—'}</span>
+                  <span class="game-score-val ${gWinner1 ? 'winner' : ''}">${gt1.score}</span>
                   <span class="game-score-sep">:</span>
-                  <span class="game-score-val ${gWinner2 ? 'winner' : ''}">${gt2.score ?? '—'}</span>
-                </div>
+                  <span class="game-score-val ${gWinner2 ? 'winner' : ''}">${gt2.score}</span>
+                </div>` : (game.winnerId ? `
+                <div class="game-total-score game-total-score-noscores">
+                  <span class="game-score-val ${gWinner1 ? 'winner' : ''}">${gWinner1 ? 'W' : 'L'}</span>
+                  <span class="game-score-sep">–</span>
+                  <span class="game-score-val ${gWinner2 ? 'winner' : ''}">${gWinner2 ? 'W' : 'L'}</span>
+                </div>` : `
+                <div class="game-total-score">
+                  <span class="game-score-sep" style="font-size:.85rem">vs</span>
+                </div>`)}
                 <div class="game-team right">
                   ${gWinner2 ? '<span class="game-w-badge win">W</span>' : (gWinner1 ? '<span class="game-w-badge loss">L</span>' : '')}
                   ${teamLogoHTML(gt2.id ? { id: gt2.id, name: gt2.name, image: t2.image, acronym: t2.acronym } : t2, 24, 'game-team-logo')}
