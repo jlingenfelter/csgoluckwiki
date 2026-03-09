@@ -380,11 +380,11 @@ function renderRecentResults(matches) {
     return `<a href="/match-detail/?id=${m.id}" class="eh-result-row">
       <span class="eh-result-date">${formatDateShort(m.beginAt)}</span>
       <span class="eh-result-teams">
-        ${t1.image ? `<img src="${t1.image}" alt="" width="20" height="20" loading="lazy" onerror="this.style.display='none'" />` : ''}
+        ${t1.image ? `<img src="${t1.image}" alt="" width="20" height="20" style="width:20px;height:20px;max-width:20px;max-height:20px;border-radius:3px;object-fit:contain;background:var(--bg3);flex-shrink:0" loading="lazy" onerror="this.style.display='none'" />` : ''}
         <span class="eh-result-name ${t1Win ? 'winner' : ''}">${t1.acronym || t1.name || 'TBD'}</span>
         <span class="eh-result-vs">vs</span>
         <span class="eh-result-name ${t2Win ? 'winner' : ''}">${t2.acronym || t2.name || 'TBD'}</span>
-        ${t2.image ? `<img src="${t2.image}" alt="" width="20" height="20" loading="lazy" onerror="this.style.display='none'" />` : ''}
+        ${t2.image ? `<img src="${t2.image}" alt="" width="20" height="20" style="width:20px;height:20px;max-width:20px;max-height:20px;border-radius:3px;object-fit:contain;background:var(--bg3);flex-shrink:0" loading="lazy" onerror="this.style.display='none'" />` : ''}
       </span>
       <span class="eh-result-score">${r1} : ${r2}</span>
       <span class="eh-result-tourney">${tourney}</span>
