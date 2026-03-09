@@ -36,12 +36,13 @@ export async function onRequestGet(context) {
     }
 
     // Resolve to player ID using multiple strategies.
-    // Use /csgo/players for search — generic /players with filter[videogame]=csgo returns empty.
+    // Use generic /players for search (no videogame filter — slug is unique).
+    // /csgo/players doesn't support filter[slug] or search[name].
     if (!playerId) {
-      // Strategy 1: Try slug lookup
+      // Strategy 1: Try slug lookup (generic, no videogame filter)
       if (playerSlug) {
         const slugRes = await fetch(
-          `https://api.pandascore.co/csgo/players?filter[slug]=${encodeURIComponent(playerSlug)}&per_page=1&token=${apiKey}`,
+          `https://api.pandascore.co/players?filter[slug]=${encodeURIComponent(playerSlug)}&per_page=1&token=${apiKey}`,
           { cf: { cacheTtl: 3600 } }
         );
         if (slugRes.ok) {
@@ -50,12 +51,12 @@ export async function onRequestGet(context) {
         }
       }
 
-      // Strategy 2: If slug didn't work, try name search
+      // Strategy 2: If slug didn't work, try name search (generic, no videogame filter)
       if (!playerId) {
         const searchName = playerName || (playerSlug ? playerSlug.replace(/-/g, ' ') : '');
         if (searchName) {
           const nameRes = await fetch(
-            `https://api.pandascore.co/csgo/players?search[name]=${encodeURIComponent(searchName)}&per_page=5&token=${apiKey}`,
+            `https://api.pandascore.co/players?search[name]=${encodeURIComponent(searchName)}&per_page=5&token=${apiKey}`,
             { cf: { cacheTtl: 3600 } }
           );
           if (nameRes.ok) {

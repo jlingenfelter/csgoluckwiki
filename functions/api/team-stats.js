@@ -27,15 +27,19 @@ export async function onRequestGet(context) {
     const teamSlug = url.searchParams.get('slug');
     const teamName = url.searchParams.get('name');
 
-    // Use /csgo/teams for search — generic /teams with filter[videogame]=csgo
-    // returns "Provided attributes do not exist" error.
+    // Endpoint strategy:
+    // - /csgo/teams/{id} for individual lookup (works)
+    // - Generic /teams?filter[slug]= for slug search (no videogame filter — slug is unique)
+    // - Generic /teams?search[name]= for name search (no videogame filter)
+    // Note: /csgo/teams doesn't support filter[slug] or search[name] params,
+    // and generic endpoints don't support filter[videogame].
     let apiUrl;
     if (teamId) {
       apiUrl = `https://api.pandascore.co/csgo/teams/${teamId}?token=${apiKey}`;
     } else if (teamSlug) {
-      apiUrl = `https://api.pandascore.co/csgo/teams?filter[slug]=${encodeURIComponent(teamSlug)}&per_page=1&token=${apiKey}`;
+      apiUrl = `https://api.pandascore.co/teams?filter[slug]=${encodeURIComponent(teamSlug)}&per_page=1&token=${apiKey}`;
     } else if (teamName) {
-      apiUrl = `https://api.pandascore.co/csgo/teams?search[name]=${encodeURIComponent(teamName)}&per_page=10&token=${apiKey}`;
+      apiUrl = `https://api.pandascore.co/teams?search[name]=${encodeURIComponent(teamName)}&per_page=10&token=${apiKey}`;
     } else {
       return new Response(JSON.stringify({ error: 'Provide ?id=, ?slug=, or ?name= parameter' }), { status: 400, headers });
     }

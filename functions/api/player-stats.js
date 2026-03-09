@@ -32,10 +32,10 @@ export async function onRequestGet(context) {
     let pid = playerId;
 
     // If slug provided, resolve to ID first.
-    // Use /csgo/players for slug lookup — generic /players with filter[videogame]=csgo
-    // returns empty results. The /csgo/ prefix works for player slug searches.
+    // Use generic /players for search (no videogame filter — slug is unique).
+    // /csgo/players doesn't support filter[slug] or search[name].
     if (!pid && playerSlug) {
-      const searchUrl = `https://api.pandascore.co/csgo/players?filter[slug]=${encodeURIComponent(playerSlug)}&per_page=1&token=${apiKey}`;
+      const searchUrl = `https://api.pandascore.co/players?filter[slug]=${encodeURIComponent(playerSlug)}&per_page=1&token=${apiKey}`;
       const searchRes = await fetch(searchUrl, { cf: { cacheTtl: 3600 } });
       if (searchRes.ok) {
         const players = await searchRes.json();
@@ -43,7 +43,7 @@ export async function onRequestGet(context) {
       }
       // Fallback: try name search if slug didn't match
       if (!pid) {
-        const nameUrl = `https://api.pandascore.co/csgo/players?search[name]=${encodeURIComponent(playerSlug)}&per_page=5&token=${apiKey}`;
+        const nameUrl = `https://api.pandascore.co/players?search[name]=${encodeURIComponent(playerSlug)}&per_page=5&token=${apiKey}`;
         const nameRes = await fetch(nameUrl, { cf: { cacheTtl: 3600 } });
         if (nameRes.ok) {
           const players = await nameRes.json();

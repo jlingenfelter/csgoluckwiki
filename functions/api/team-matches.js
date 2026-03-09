@@ -36,15 +36,17 @@ export async function onRequestGet(context) {
     }
 
     // Resolve to team ID using multiple strategies.
-    // Use /csgo/teams — generic /teams with filter[videogame]=csgo returns parameter error.
+    // Generic /teams for search (no videogame filter — slug/name unique enough).
+    // /csgo/teams doesn't support filter[slug] or search[name].
+    // /csgo/teams/{id} for individual lookups.
     let teamImage = null;
     let teamName_ = null;
 
     if (!teamId) {
-      // Strategy 1: Try slug lookup
+      // Strategy 1: Try slug lookup (generic, no videogame filter)
       if (teamSlug) {
         const slugRes = await fetch(
-          `https://api.pandascore.co/csgo/teams?filter[slug]=${encodeURIComponent(teamSlug)}&per_page=1&token=${apiKey}`,
+          `https://api.pandascore.co/teams?filter[slug]=${encodeURIComponent(teamSlug)}&per_page=1&token=${apiKey}`,
           { cf: { cacheTtl: 3600 } }
         );
         if (slugRes.ok) {
@@ -57,12 +59,12 @@ export async function onRequestGet(context) {
         }
       }
 
-      // Strategy 2: If slug didn't work, try name search
+      // Strategy 2: If slug didn't work, try name search (generic, no videogame filter)
       if (!teamId) {
         const searchName = teamName || (teamSlug ? teamSlug.replace(/-/g, ' ') : '');
         if (searchName) {
           const nameRes = await fetch(
-            `https://api.pandascore.co/csgo/teams?search[name]=${encodeURIComponent(searchName)}&per_page=5&token=${apiKey}`,
+            `https://api.pandascore.co/teams?search[name]=${encodeURIComponent(searchName)}&per_page=5&token=${apiKey}`,
             { cf: { cacheTtl: 3600 } }
           );
           if (nameRes.ok) {
