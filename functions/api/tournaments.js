@@ -31,8 +31,9 @@ export async function onRequestGet(context) {
       return new Response(JSON.stringify({ error: 'Invalid type. Use: running, upcoming, past' }), { status: 400, headers });
     }
 
-    // Use generic /tournaments endpoint — /csgo/tournaments returns degraded data.
-    const apiUrl = `https://api.pandascore.co/tournaments/${type}?filter[videogame]=csgo&per_page=${perPage}&page=${page}&sort=${type === 'past' ? '-end_at' : 'begin_at'}&token=${apiKey}`;
+    // Use /csgo/ prefix for tournament list queries — generic endpoint with
+    // filter[videogame] returns empty results for list queries.
+    const apiUrl = `https://api.pandascore.co/csgo/tournaments/${type}?per_page=${perPage}&page=${page}&sort=${type === 'past' ? '-end_at' : 'begin_at'}&token=${apiKey}`;
 
     const res = await fetch(apiUrl, {
       headers: { 'Accept': 'application/json' },

@@ -33,9 +33,9 @@ export async function onRequestGet(context) {
 
     // Fetch past matches for team1, then filter to matches against team2
     // PandaScore doesn't have a direct H2H endpoint, so we fetch team1's matches and filter
-    // Use generic /matches endpoint — the /csgo/matches endpoint returns degraded data.
+    // Use /csgo/ prefix for match list queries — generic endpoint returns empty results.
     const matchesRes = await fetch(
-      `https://api.pandascore.co/matches/past?filter[opponent_id]=${team1Id}&filter[videogame]=csgo&sort=-begin_at&per_page=100&token=${apiKey}`,
+      `https://api.pandascore.co/csgo/matches/past?filter[opponent_id]=${team1Id}&sort=-begin_at&per_page=100&token=${apiKey}`,
       { cf: { cacheTtl: 1800 } }
     );
 

@@ -95,15 +95,16 @@ export async function onRequestGet(context) {
       return new Response(JSON.stringify({ error: 'Team not found' }), { status: 404, headers });
     }
 
-    // Fetch past and upcoming matches — use generic /matches endpoint with videogame filter
-    // to avoid degraded data from the /csgo/matches endpoint (0-0 scores, missing data).
+    // Fetch past and upcoming matches — use /csgo/ prefix for match list queries.
+    // Generic /matches with filter[videogame] returns empty for list queries.
+    // Team search above uses generic endpoint (which works for search queries).
     const [pastRes, upcomingRes] = await Promise.all([
       fetch(
-        `https://api.pandascore.co/matches/past?filter[opponent_id]=${teamId}&filter[videogame]=csgo&sort=-begin_at&page=${page}&per_page=${perPage}&token=${apiKey}`,
+        `https://api.pandascore.co/csgo/matches/past?filter[opponent_id]=${teamId}&sort=-begin_at&page=${page}&per_page=${perPage}&token=${apiKey}`,
         { cf: { cacheTtl: 600 } }
       ),
       fetch(
-        `https://api.pandascore.co/matches/upcoming?filter[opponent_id]=${teamId}&filter[videogame]=csgo&sort=begin_at&per_page=5&token=${apiKey}`,
+        `https://api.pandascore.co/csgo/matches/upcoming?filter[opponent_id]=${teamId}&sort=begin_at&per_page=5&token=${apiKey}`,
         { cf: { cacheTtl: 300 } }
       ),
     ]);
