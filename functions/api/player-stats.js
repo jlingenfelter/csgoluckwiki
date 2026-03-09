@@ -5,6 +5,7 @@
  * Query params:
  *   ?id=12345          (PandaScore player ID)
  *   ?slug=s1mple       (PandaScore player slug — searches by slug)
+ *   ?name=s1mple       (player display name — used for name-based search fallback)
  */
 export async function onRequestGet(context) {
   const { env, request } = context;
@@ -24,31 +25,72 @@ export async function onRequestGet(context) {
     const url = new URL(request.url);
     const playerId = url.searchParams.get('id');
     const playerSlug = url.searchParams.get('slug');
+    const playerName = url.searchParams.get('name');
 
     if (!playerId && !playerSlug) {
       return new Response(JSON.stringify({ error: 'Provide ?id= or ?slug= parameter' }), { status: 400, headers });
     }
 
     let pid = playerId;
+    let resolvedVideogame = null;
 
-    // If slug provided, resolve to ID first.
-    // Use generic /players for search (no videogame filter — slug is unique).
-    // /csgo/players doesn't support filter[slug] or search[name].
+    // If slug provided, resolve to ID first using multiple strategies
     if (!pid && playerSlug) {
-      const searchUrl = `https://api.pandascore.co/players?filter[slug]=${encodeURIComponent(playerSlug)}&per_page=1&token=${apiKey}`;
+      // Strategy 1: Exact slug lookup (generic /players — slug is globally unique)
+      const searchUrl = `https://api.pandascore.co/players?filter[slug]=${encodeURIComponent(playerSlug)}&per_page=5&token=${apiKey}`;
       const searchRes = await fetch(searchUrl, { cf: { cacheTtl: 3600 } });
       if (searchRes.ok) {
         const players = await searchRes.json();
-        if (players.length > 0) pid = players[0].id;
+        // Prefer CS2/CSGO players when multiple matches
+        const csPlayer = players.find(p =>
+          p.current_videogame?.slug === 'cs-go' || p.current_videogame?.slug === 'cs-2' ||
+          p.current_videogame?.id === 3 || p.current_videogame?.id === 14
+        );
+        if (csPlayer) {
+          pid = csPlayer.id;
+          resolvedVideogame = csPlayer.current_videogame?.slug;
+        } else if (players.length > 0) {
+          pid = players[0].id;
+          resolvedVideogame = players[0].current_videogame?.slug;
+        }
       }
-      // Fallback: try name search if slug didn't match
+
+      // Strategy 2: Name-based search using the provided name parameter
       if (!pid) {
-        const nameUrl = `https://api.pandascore.co/players?search[name]=${encodeURIComponent(playerSlug)}&per_page=5&token=${apiKey}`;
+        const searchName = playerName || playerSlug.replace(/-/g, ' ');
+        const nameUrl = `https://api.pandascore.co/players?search[name]=${encodeURIComponent(searchName)}&per_page=10&token=${apiKey}`;
         const nameRes = await fetch(nameUrl, { cf: { cacheTtl: 3600 } });
         if (nameRes.ok) {
           const players = await nameRes.json();
           if (players.length > 0) {
-            const exact = players.find(p => p.slug === playerSlug || p.name.toLowerCase() === playerSlug.toLowerCase());
+            // Prefer CS2/CSGO players, then exact name match
+            const csPlayers = players.filter(p =>
+              p.current_videogame?.slug === 'cs-go' || p.current_videogame?.slug === 'cs-2' ||
+              p.current_videogame?.id === 3 || p.current_videogame?.id === 14
+            );
+            if (csPlayers.length > 0) {
+              const exact = csPlayers.find(p =>
+                p.slug === playerSlug || p.name.toLowerCase() === searchName.toLowerCase()
+              );
+              pid = exact ? exact.id : csPlayers[0].id;
+            } else {
+              const exact = players.find(p =>
+                p.slug === playerSlug || p.name.toLowerCase() === searchName.toLowerCase()
+              );
+              pid = exact ? exact.id : players[0].id;
+            }
+          }
+        }
+      }
+
+      // Strategy 3: Try CSGO-specific player endpoint by ID range (fallback)
+      if (!pid && playerName) {
+        const csgoUrl = `https://api.pandascore.co/csgo/players?search[name]=${encodeURIComponent(playerName)}&per_page=5&token=${apiKey}`;
+        const csgoRes = await fetch(csgoUrl, { cf: { cacheTtl: 3600 } });
+        if (csgoRes.ok) {
+          const players = await csgoRes.json();
+          if (players.length > 0) {
+            const exact = players.find(p => p.name.toLowerCase() === playerName.toLowerCase());
             pid = exact ? exact.id : players[0].id;
           }
         }
@@ -56,10 +98,10 @@ export async function onRequestGet(context) {
     }
 
     if (!pid) {
-      return new Response(JSON.stringify({ error: 'Player not found' }), { status: 404, headers });
+      return new Response(JSON.stringify({ error: 'Player not found', slug: playerSlug, name: playerName }), { status: 404, headers });
     }
 
-    // Fetch player stats — use /csgo/ prefix for consistency
+    // Fetch player stats — /csgo/ prefix is valid for both CS:GO and CS2
     const statsUrl = `https://api.pandascore.co/csgo/players/${pid}/stats?token=${apiKey}`;
     const statsRes = await fetch(statsUrl, {
       headers: { 'Accept': 'application/json' },
@@ -67,6 +109,36 @@ export async function onRequestGet(context) {
     });
 
     if (!statsRes.ok) {
+      // If /csgo/ stats fail, try getting basic player info as fallback
+      const basicUrl = `https://api.pandascore.co/players/${pid}?token=${apiKey}`;
+      const basicRes = await fetch(basicUrl, { cf: { cacheTtl: 3600 } });
+      if (basicRes.ok) {
+        const basicPlayer = await basicRes.json();
+        // Return basic info without stats
+        return new Response(JSON.stringify({
+          id: basicPlayer.id,
+          name: basicPlayer.name,
+          slug: basicPlayer.slug,
+          firstName: basicPlayer.first_name,
+          lastName: basicPlayer.last_name,
+          nationality: basicPlayer.nationality,
+          image: basicPlayer.image_url,
+          role: basicPlayer.role,
+          active: basicPlayer.active,
+          currentTeam: basicPlayer.current_team ? {
+            id: basicPlayer.current_team.id,
+            name: basicPlayer.current_team.name,
+            image: basicPlayer.current_team.image_url,
+            slug: basicPlayer.current_team.slug,
+          } : null,
+          stats: { totals: {}, averages: {}, perRound: {} },
+          lastGames: [],
+          teams: (basicPlayer.teams || []).map(t => ({
+            id: t.id, name: t.name, image: t.image_url, slug: t.slug,
+          })),
+          _note: 'Stats endpoint returned ' + statsRes.status + ' — basic info only',
+        }), { status: 200, headers });
+      }
       const errText = await statsRes.text();
       return new Response(JSON.stringify({ error: 'PandaScore API error', status: statsRes.status, detail: errText }), { status: statsRes.status, headers });
     }

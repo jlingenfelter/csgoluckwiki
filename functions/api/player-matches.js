@@ -5,7 +5,7 @@
  * Query params:
  *   ?id=12345          (PandaScore player ID)
  *   ?slug=s1mple       (PandaScore player slug)
- *   ?name=s1mple        (player name — fuzzy search fallback)
+ *   ?name=s1mple       (player name — fuzzy search fallback)
  *   ?page=1            (optional, default 1)
  *   ?per_page=15       (optional, default 15, max 50)
  */
@@ -35,61 +35,96 @@ export async function onRequestGet(context) {
       return new Response(JSON.stringify({ error: 'Provide ?id=, ?slug=, or ?name= parameter' }), { status: 400, headers });
     }
 
-    // Resolve to player ID using multiple strategies.
-    // Use generic /players for search (no videogame filter — slug is unique).
-    // /csgo/players doesn't support filter[slug] or search[name].
+    // Resolve to player ID using multiple strategies
     if (!playerId) {
-      // Strategy 1: Try slug lookup (generic, no videogame filter)
+      // Strategy 1: Exact slug lookup with CS2/CSGO preference
       if (playerSlug) {
         const slugRes = await fetch(
-          `https://api.pandascore.co/players?filter[slug]=${encodeURIComponent(playerSlug)}&per_page=1&token=${apiKey}`,
+          `https://api.pandascore.co/players?filter[slug]=${encodeURIComponent(playerSlug)}&per_page=5&token=${apiKey}`,
           { cf: { cacheTtl: 3600 } }
         );
         if (slugRes.ok) {
           const players = await slugRes.json();
-          if (players.length > 0) playerId = players[0].id;
+          const csPlayer = players.find(p =>
+            p.current_videogame?.slug === 'cs-go' || p.current_videogame?.slug === 'cs-2' ||
+            p.current_videogame?.id === 3 || p.current_videogame?.id === 14
+          );
+          if (csPlayer) playerId = csPlayer.id;
+          else if (players.length > 0) playerId = players[0].id;
         }
       }
 
-      // Strategy 2: If slug didn't work, try name search (generic, no videogame filter)
+      // Strategy 2: Name-based search with CS2/CSGO preference
       if (!playerId) {
         const searchName = playerName || (playerSlug ? playerSlug.replace(/-/g, ' ') : '');
         if (searchName) {
           const nameRes = await fetch(
-            `https://api.pandascore.co/players?search[name]=${encodeURIComponent(searchName)}&per_page=5&token=${apiKey}`,
+            `https://api.pandascore.co/players?search[name]=${encodeURIComponent(searchName)}&per_page=10&token=${apiKey}`,
             { cf: { cacheTtl: 3600 } }
           );
           if (nameRes.ok) {
             const players = await nameRes.json();
             if (players.length > 0) {
-              // Try exact match first (case-insensitive)
-              const exact = players.find(p => p.name.toLowerCase() === searchName.toLowerCase());
-              playerId = exact ? exact.id : players[0].id;
+              const csPlayers = players.filter(p =>
+                p.current_videogame?.slug === 'cs-go' || p.current_videogame?.slug === 'cs-2' ||
+                p.current_videogame?.id === 3 || p.current_videogame?.id === 14
+              );
+              if (csPlayers.length > 0) {
+                const exact = csPlayers.find(p => p.name.toLowerCase() === searchName.toLowerCase());
+                playerId = exact ? exact.id : csPlayers[0].id;
+              } else {
+                const exact = players.find(p => p.name.toLowerCase() === searchName.toLowerCase());
+                playerId = exact ? exact.id : players[0].id;
+              }
             }
+          }
+        }
+      }
+
+      // Strategy 3: CSGO-specific player search
+      if (!playerId && playerName) {
+        const csgoRes = await fetch(
+          `https://api.pandascore.co/csgo/players?search[name]=${encodeURIComponent(playerName)}&per_page=5&token=${apiKey}`,
+          { cf: { cacheTtl: 3600 } }
+        );
+        if (csgoRes.ok) {
+          const players = await csgoRes.json();
+          if (players.length > 0) {
+            const exact = players.find(p => p.name.toLowerCase() === playerName.toLowerCase());
+            playerId = exact ? exact.id : players[0].id;
           }
         }
       }
     }
 
     if (!playerId) {
-      return new Response(JSON.stringify({ error: 'Player not found' }), { status: 404, headers });
+      return new Response(JSON.stringify({ error: 'Player not found', slug: playerSlug, name: playerName }), { status: 404, headers });
     }
 
-    // Fetch the player's team to find matches by team — use /csgo/ prefix
+    // Fetch the player's team to find matches — /csgo/ prefix works for both CS:GO and CS2
     const playerRes = await fetch(
       `https://api.pandascore.co/csgo/players/${playerId}?token=${apiKey}`,
       { cf: { cacheTtl: 3600 } }
     );
 
+    // Fallback: if /csgo/ fails, try generic /players
+    let player;
     if (!playerRes.ok) {
-      return new Response(JSON.stringify({ error: 'Player not found' }), { status: 404, headers });
+      const genericRes = await fetch(
+        `https://api.pandascore.co/players/${playerId}?token=${apiKey}`,
+        { cf: { cacheTtl: 3600 } }
+      );
+      if (!genericRes.ok) {
+        return new Response(JSON.stringify({ error: 'Player not found' }), { status: 404, headers });
+      }
+      player = await genericRes.json();
+    } else {
+      player = await playerRes.json();
     }
 
-    const player = await playerRes.json();
     const currentTeamId = player.current_team?.id;
 
-    // Fetch past matches for the player's current team — use /csgo/ prefix for match lists.
-    // Generic /matches with filter[videogame] returns empty for list queries.
+    // Fetch past matches for the player's current team
     let pastMatches = [];
     if (currentTeamId) {
       const matchesRes = await fetch(
