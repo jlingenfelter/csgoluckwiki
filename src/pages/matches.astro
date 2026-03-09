@@ -325,8 +325,10 @@ async function loadPast() {
     container.innerHTML = renderEmpty('Unable to load match results.');
     return;
   }
-  if (pastPage === 1) pastData = data.matches;
-  else pastData = [...pastData, ...data.matches];
+  // Filter out forfeited/canceled matches — they have no real data
+  const validMatches = (data.matches || []).filter(m => !m.forfeit && m.status !== 'canceled');
+  if (pastPage === 1) pastData = validMatches;
+  else pastData = [...pastData, ...validMatches];
 
   document.getElementById('results-count').textContent = pastData.length + (data.count >= 15 ? '+' : '');
 

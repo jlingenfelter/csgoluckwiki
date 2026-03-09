@@ -73,47 +73,51 @@ import Base from '../layouts/Base.astro';
 /* ── Section Headings ── */
 .section-title { font-size: 1.15rem; font-weight: 700; font-family: 'Montserrat', sans-serif; margin: 1.5rem 0 .75rem; color: var(--text1); }
 
+/* ── Forfeit Notice ── */
+.forfeit-notice { display: flex; align-items: center; gap: .6rem; background: rgba(231,76,60,.08); border: 1px solid rgba(231,76,60,.2); border-left: 4px solid #e74c3c; border-radius: 4px; padding: .75rem 1rem; margin: 1rem 0; color: var(--text2); font-size: .85rem; }
+.forfeit-icon { font-size: 1.1rem; flex-shrink: 0; }
+
 /* ── Map / Game Cards ── */
-.game-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 4px; margin-bottom: .75rem; overflow: hidden; transition: border-color .2s; }
-.game-card:hover { border-color: var(--accent); }
+.game-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 6px; margin-bottom: 1rem; overflow: hidden; transition: border-color .2s, box-shadow .2s; }
+.game-card:hover { border-color: var(--accent); box-shadow: 0 2px 12px rgba(46,204,113,.06); }
 
-.game-card-header { display: flex; align-items: center; justify-content: space-between; padding: .75rem 1rem; background: var(--bg3); border-bottom: 1px solid var(--border); }
-.game-map-info { display: flex; align-items: center; gap: .6rem; }
-.game-map-img { width: 40px; height: 26px; border-radius: 3px; object-fit: cover; background: var(--bg); }
-.game-map-name { font-weight: 700; font-size: .9rem; font-family: 'Montserrat', sans-serif; }
-.game-position { font-size: .75rem; color: var(--text3); font-weight: 600; }
-.game-winner-tag { font-size: .7rem; font-weight: 700; color: var(--accent); text-transform: uppercase; }
-.game-status-tag { font-size: .7rem; font-weight: 600; color: var(--text3); text-transform: uppercase; }
+.game-card-header { display: flex; align-items: center; justify-content: space-between; padding: .85rem 1.25rem; background: linear-gradient(135deg, var(--bg3) 0%, rgba(46,204,113,.03) 100%); border-bottom: 1px solid var(--border); }
+.game-map-info { display: flex; align-items: center; gap: .75rem; }
+.game-map-img { width: 48px; height: 32px; border-radius: 4px; object-fit: cover; background: var(--bg); border: 1px solid var(--border); }
+.game-map-name { font-weight: 700; font-size: 1rem; font-family: 'Montserrat', sans-serif; }
+.game-position { font-size: .72rem; color: var(--text3); font-weight: 600; background: var(--bg); padding: .1rem .4rem; border-radius: 3px; }
+.game-winner-tag { font-size: .72rem; font-weight: 700; color: var(--accent); text-transform: uppercase; background: rgba(46,204,113,.08); padding: .15rem .5rem; border-radius: 3px; }
+.game-status-tag { font-size: .72rem; font-weight: 600; color: var(--text3); text-transform: uppercase; background: var(--bg); padding: .15rem .5rem; border-radius: 3px; }
 
-.game-card-body { padding: .75rem 1rem; }
+.game-card-body { padding: 1rem 1.25rem; }
 
 /* Per-map scoreboard */
-.game-scores { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: .5rem; }
-.game-team { display: flex; align-items: center; gap: .5rem; }
+.game-scores { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: .75rem; padding: .25rem 0; }
+.game-team { display: flex; align-items: center; gap: .6rem; }
 .game-team.right { justify-content: flex-end; flex-direction: row-reverse; }
-.game-team-name { font-weight: 600; font-size: .85rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.game-team-name { font-weight: 600; font-size: .9rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .game-team-name.winner { color: var(--accent); }
-.game-team-logo { width: 24px; height: 24px; border-radius: 3px; object-fit: contain; background: rgba(255,255,255,.1); padding: 2px; }
-.game-team-logo-placeholder { width: 24px; height: 24px; border-radius: 3px; background: rgba(255,255,255,.1); display: flex; align-items: center; justify-content: center; font-size: .55rem; font-weight: 700; color: var(--text3); }
-.game-w-badge { display: inline-flex; align-items: center; justify-content: center; width: 20px; height: 20px; border-radius: 3px; font-size: .65rem; font-weight: 800; flex-shrink: 0; line-height: 1; }
+.game-team-logo { width: 28px; height: 28px; border-radius: 4px; object-fit: contain; background: rgba(255,255,255,.08); padding: 3px; }
+.game-team-logo-placeholder { width: 28px; height: 28px; border-radius: 4px; background: rgba(255,255,255,.08); display: flex; align-items: center; justify-content: center; font-size: .55rem; font-weight: 700; color: var(--text3); }
+.game-w-badge { display: inline-flex; align-items: center; justify-content: center; width: 22px; height: 22px; border-radius: 4px; font-size: .65rem; font-weight: 800; flex-shrink: 0; line-height: 1; }
 .game-w-badge.win { background: rgba(46,204,113,.15); color: #2ecc71; border: 1px solid rgba(46,204,113,.3); }
 .game-w-badge.loss { background: rgba(231,76,60,.12); color: #e74c3c; border: 1px solid rgba(231,76,60,.25); }
 
-.game-total-score { display: flex; align-items: center; justify-content: center; gap: .4rem; }
-.game-score-val { font-size: 1.3rem; font-weight: 800; font-family: 'Montserrat', sans-serif; min-width: 1.3rem; text-align: center; }
+.game-total-score { display: flex; align-items: center; justify-content: center; gap: .5rem; background: var(--bg3); padding: .4rem .75rem; border-radius: 6px; }
+.game-score-val { font-size: 1.5rem; font-weight: 800; font-family: 'Montserrat', sans-serif; min-width: 1.5rem; text-align: center; }
 .game-score-val.winner { color: var(--accent); }
 .game-score-sep { color: var(--text3); font-size: 1rem; }
 
 /* Half breakdown */
-.half-breakdown { margin-top: .75rem; padding-top: .6rem; border-top: 1px solid var(--border); }
-.half-row { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: .5rem; padding: .2rem 0; font-size: .78rem; }
-.half-label { text-align: center; color: var(--text3); font-weight: 600; min-width: 5rem; font-size: .72rem; text-transform: uppercase; }
-.half-score { font-weight: 700; text-align: center; }
+.half-breakdown { margin-top: .85rem; padding-top: .7rem; border-top: 1px solid var(--border); }
+.half-row { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: .5rem; padding: .3rem 0; font-size: .8rem; }
+.half-label { text-align: center; color: var(--text3); font-weight: 600; min-width: 5rem; font-size: .7rem; text-transform: uppercase; letter-spacing: .03em; background: var(--bg3); padding: .15rem .5rem; border-radius: 3px; }
+.half-score { font-weight: 700; text-align: center; font-size: .85rem; }
 .half-score.left { text-align: right; }
 .half-score.right { text-align: left; }
 .half-score.winner { color: var(--accent); }
 
-.game-duration { font-size: .75rem; color: var(--text3); margin-top: .5rem; text-align: right; }
+.game-duration { font-size: .75rem; color: var(--text3); margin-top: .6rem; text-align: right; padding-top: .4rem; border-top: 1px solid var(--border); }
 
 /* ── Streams Card ── */
 .streams-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 4px; padding: 1rem 1.25rem; margin-bottom: .75rem; transition: border-color .2s; }
@@ -299,10 +303,18 @@ import Base from '../layouts/Base.astro';
     let gamesHTML = '';
     const games = match.games || [];
     const sortedGames = [...games].sort((a, b) => (a.position || 0) - (b.position || 0));
+    // Filter out unplayed maps for forfeited matches
+    const playableGames = match.forfeit
+      ? sortedGames.filter(g => g.status === 'finished' || g.status === 'running')
+      : sortedGames;
 
-    if (sortedGames.length > 0) {
-      gamesHTML = `<h2 class="section-title">Map Results</h2>`;
-      sortedGames.forEach(game => {
+    if (match.forfeit) {
+      gamesHTML += `<div class="forfeit-notice"><span class="forfeit-icon">⚠</span> This match was decided by forfeit${playableGames.length > 0 ? '. Maps played before the forfeit are shown below.' : '. No maps were played.'}</div>`;
+    }
+
+    if (playableGames.length > 0) {
+      gamesHTML += `<h2 class="section-title">Map Results</h2>`;
+      playableGames.forEach(game => {
         const gt1 = game.teams?.find(t => t.id === t1.id) || game.teams?.[0] || {};
         const gt2 = game.teams?.find(t => t.id === t2.id) || game.teams?.[1] || {};
         const gWinner1 = game.winnerId === t1.id;

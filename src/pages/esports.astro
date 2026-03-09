@@ -232,7 +232,7 @@ const breadcrumbs = [
 .eh-result-row:hover { border-left: 3px solid var(--accent); }
 .eh-result-date { font-size: .72rem; color: var(--text3); min-width: 55px; flex-shrink: 0; }
 .eh-result-teams { flex: 1; display: flex; align-items: center; gap: .4rem; min-width: 0; font-size: .85rem; font-weight: 600; }
-.eh-result-teams img { width: 20px; height: 20px; border-radius: 3px; object-fit: contain; background: var(--bg3); flex-shrink: 0; }
+.eh-result-teams img { width: 20px; height: 20px; max-width: 20px; max-height: 20px; border-radius: 3px; object-fit: contain; background: var(--bg3); flex-shrink: 0; }
 .eh-result-name { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .eh-result-name.winner { color: var(--accent); }
 .eh-result-vs { color: var(--text3); font-size: .75rem; padding: 0 .15rem; }
@@ -339,8 +339,9 @@ async function loadLiveBanner() {
     document.getElementById('stat-tournaments').textContent = (tourneyData?.tournaments || []).length;
     document.getElementById('stat-recent').textContent = (pastData?.matches || []).length + '+';
 
-    // Render recent results
-    renderRecentResults(pastData?.matches || []);
+    // Render recent results (filter out forfeits/canceled — no real data)
+    const validPastMatches = (pastData?.matches || []).filter(m => !m.forfeit && m.status !== 'canceled');
+    renderRecentResults(validPastMatches);
 
     // Render active tournaments
     renderActiveTournaments(tourneyData?.tournaments || []);
@@ -379,11 +380,11 @@ function renderRecentResults(matches) {
     return `<a href="/match-detail/?id=${m.id}" class="eh-result-row">
       <span class="eh-result-date">${formatDateShort(m.beginAt)}</span>
       <span class="eh-result-teams">
-        ${t1.image ? `<img src="${t1.image}" alt="" loading="lazy" onerror="this.style.display='none'" />` : ''}
+        ${t1.image ? `<img src="${t1.image}" alt="" width="20" height="20" loading="lazy" onerror="this.style.display='none'" />` : ''}
         <span class="eh-result-name ${t1Win ? 'winner' : ''}">${t1.acronym || t1.name || 'TBD'}</span>
         <span class="eh-result-vs">vs</span>
         <span class="eh-result-name ${t2Win ? 'winner' : ''}">${t2.acronym || t2.name || 'TBD'}</span>
-        ${t2.image ? `<img src="${t2.image}" alt="" loading="lazy" onerror="this.style.display='none'" />` : ''}
+        ${t2.image ? `<img src="${t2.image}" alt="" width="20" height="20" loading="lazy" onerror="this.style.display='none'" />` : ''}
       </span>
       <span class="eh-result-score">${r1} : ${r2}</span>
       <span class="eh-result-tourney">${tourney}</span>

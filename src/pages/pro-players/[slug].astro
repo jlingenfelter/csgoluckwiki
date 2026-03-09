@@ -826,6 +826,8 @@ const faqs = [
 
 <script is:inline define:vars={{ playerSlug: player.slug, playerDisplayName: player.name }}>
 (function(){
+  // Share player-stats data globally so match history can use lastGames as fallback
+  window.__playerStatsData = null;
   var container = document.getElementById('liveStatsContent');
   if (!container) return;
 
@@ -836,6 +838,8 @@ const faqs = [
     })
     .then(function(data) {
       if (data.error) throw new Error(data.error);
+      // Store globally for match history fallback
+      window.__playerStatsData = data;
 
       var s = data.stats || {};
       var avg = s.averages || {};
@@ -998,8 +1002,57 @@ const faqs = [
       container.innerHTML = html;
     })
     .catch(function(err) {
-      console.warn('Match history not available:', err.message);
-      container.innerHTML = '<div class="pp-mh-empty">Match history not available for this player.</div>';
+      console.warn('Match history not available via player-matches:', err.message);
+      // Fallback: use lastGames from player-stats if available
+      var statsData = window.__playerStatsData;
+      if (statsData && statsData.lastGames && statsData.lastGames.length > 0) {
+        var games = statsData.lastGames;
+        var html = '<div class="pp-mh-list">';
+        games.forEach(function(g) {
+          var oppImg = g.opponent && g.opponent.image ? '<img src="' + g.opponent.image + '" alt="" class="pp-mh-opp-img" />' : '';
+          var oppName = g.opponent ? g.opponent.name : 'Unknown';
+          var rating = g.rating != null ? Number(g.rating) : null;
+          var isWin = rating !== null && rating >= 1.0;
+          var resultClass = isWin ? 'pp-mh-badge pp-mh-win' : 'pp-mh-badge pp-mh-loss';
+          var resultLabel = isWin ? 'W' : 'L';
+
+          html += '<div class="pp-mh-row" style="cursor:default">';
+          html += '<span class="pp-mh-date">' + (g.kills || 0) + '/' + (g.deaths || 0) + '/' + (g.assists || 0) + '</span>';
+          html += '<span class="pp-mh-vs">vs</span>';
+          html += '<span class="pp-mh-opponent">' + oppImg + '<span>' + oppName + '</span></span>';
+          html += '<span class="pp-mh-score"><span class="' + resultClass + '">' + resultLabel + '</span> ' + (g.rating != null ? Number(g.rating).toFixed(2) : '—') + ' rating</span>';
+          html += '<span class="pp-mh-tournament" style="font-size:.72rem;color:var(--text3)">' + (g.adr != null ? Number(g.adr).toFixed(1) + ' ADR' : '') + '</span>';
+          html += '</div>';
+        });
+        html += '</div>';
+        container.innerHTML = html;
+      } else {
+        // Wait briefly for player-stats to finish, then retry
+        setTimeout(function() {
+          var retryData = window.__playerStatsData;
+          if (retryData && retryData.lastGames && retryData.lastGames.length > 0) {
+            var gms = retryData.lastGames;
+            var h = '<div class="pp-mh-list">';
+            gms.forEach(function(g) {
+              var oi = g.opponent && g.opponent.image ? '<img src="' + g.opponent.image + '" alt="" class="pp-mh-opp-img" />' : '';
+              var on = g.opponent ? g.opponent.name : 'Unknown';
+              var r = g.rating != null ? Number(g.rating) : null;
+              var w = r !== null && r >= 1.0;
+              h += '<div class="pp-mh-row" style="cursor:default">';
+              h += '<span class="pp-mh-date">' + (g.kills||0) + '/' + (g.deaths||0) + '/' + (g.assists||0) + '</span>';
+              h += '<span class="pp-mh-vs">vs</span>';
+              h += '<span class="pp-mh-opponent">' + oi + '<span>' + on + '</span></span>';
+              h += '<span class="pp-mh-score"><span class="' + (w?'pp-mh-badge pp-mh-win':'pp-mh-badge pp-mh-loss') + '">' + (w?'W':'L') + '</span> ' + (r!=null?r.toFixed(2):'—') + ' rating</span>';
+              h += '<span class="pp-mh-tournament" style="font-size:.72rem;color:var(--text3)">' + (g.adr!=null?Number(g.adr).toFixed(1)+' ADR':'') + '</span>';
+              h += '</div>';
+            });
+            h += '</div>';
+            container.innerHTML = h;
+          } else {
+            container.innerHTML = '<div class="pp-mh-empty">Match history not available for this player.</div>';
+          }
+        }, 2000);
+      }
     });
 })();
 </script>
