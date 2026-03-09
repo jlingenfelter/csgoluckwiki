@@ -1030,9 +1030,34 @@ function countryToFlag(countryName) {
   return String.fromCodePoint(...[...code].map(c => 0x1f1e6 + c.charCodeAt(0) - 65));
 }
 
+// ── Load team by PandaScore ID ──
+async function loadTeamById(id) {
+  try {
+    const res = await fetch(`/api/team-stats?id=${encodeURIComponent(id)}`);
+    if (!res.ok) return null;
+    return await res.json();
+  } catch (e) {
+    console.error('Failed to load team by ID:', e);
+    return null;
+  }
+}
+
 // ── Init ──
 setupSearch('team1');
 setupSearch('team2');
+
+// Auto-load teams from URL params (e.g., ?team1=12345&team2=67890)
+(async function() {
+  const params = new URLSearchParams(window.location.search);
+  const t1Id = params.get('team1');
+  const t2Id = params.get('team2');
+  if (!t1Id && !t2Id) return;
+
+  const loads = [];
+  if (t1Id) loads.push(loadTeamById(t1Id).then(t => { if (t) selectTeam('team1', t); }));
+  if (t2Id) loads.push(loadTeamById(t2Id).then(t => { if (t) selectTeam('team2', t); }));
+  await Promise.all(loads);
+})();
 </script>
 
 </Base>

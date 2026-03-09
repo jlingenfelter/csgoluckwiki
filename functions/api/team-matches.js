@@ -35,9 +35,8 @@ export async function onRequestGet(context) {
       return new Response(JSON.stringify({ error: 'Provide ?id=, ?slug=, or ?name= parameter' }), { status: 400, headers });
     }
 
-    // Resolve to team ID using multiple strategies
-    // Use generic /teams endpoint with videogame filter — the /csgo/teams endpoint
-    // returns degraded data (same issue as /csgo/players, /csgo/tournaments).
+    // Resolve to team ID using multiple strategies.
+    // Use /csgo/teams — generic /teams with filter[videogame]=csgo returns parameter error.
     let teamImage = null;
     let teamName_ = null;
 
@@ -45,8 +44,8 @@ export async function onRequestGet(context) {
       // Strategy 1: Try slug lookup
       if (teamSlug) {
         const slugRes = await fetch(
-          `https://api.pandascore.co/teams?filter[slug]=${encodeURIComponent(teamSlug)}&filter[videogame]=csgo&per_page=1&token=${apiKey}`,
-          { cf: { cacheTtl: 86400 } }
+          `https://api.pandascore.co/csgo/teams?filter[slug]=${encodeURIComponent(teamSlug)}&per_page=1&token=${apiKey}`,
+          { cf: { cacheTtl: 3600 } }
         );
         if (slugRes.ok) {
           const teams = await slugRes.json();
@@ -63,8 +62,8 @@ export async function onRequestGet(context) {
         const searchName = teamName || (teamSlug ? teamSlug.replace(/-/g, ' ') : '');
         if (searchName) {
           const nameRes = await fetch(
-            `https://api.pandascore.co/teams?search[name]=${encodeURIComponent(searchName)}&filter[videogame]=csgo&per_page=5&token=${apiKey}`,
-            { cf: { cacheTtl: 86400 } }
+            `https://api.pandascore.co/csgo/teams?search[name]=${encodeURIComponent(searchName)}&per_page=5&token=${apiKey}`,
+            { cf: { cacheTtl: 3600 } }
           );
           if (nameRes.ok) {
             const teams = await nameRes.json();
@@ -81,8 +80,8 @@ export async function onRequestGet(context) {
     } else {
       // If ID provided, fetch team details for image
       const teamRes = await fetch(
-        `https://api.pandascore.co/teams/${teamId}?token=${apiKey}`,
-        { cf: { cacheTtl: 86400 } }
+        `https://api.pandascore.co/csgo/teams/${teamId}?token=${apiKey}`,
+        { cf: { cacheTtl: 3600 } }
       );
       if (teamRes.ok) {
         const t = await teamRes.json();

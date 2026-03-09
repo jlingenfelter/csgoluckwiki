@@ -27,8 +27,9 @@ export async function onRequestGet(context) {
       return new Response(JSON.stringify({ error: 'Provide ?id= parameter' }), { status: 400, headers });
     }
 
+    // Use /csgo/ prefix for individual game lookups — generic /games/{id} returns 404.
     const gameRes = await fetch(
-      `https://api.pandascore.co/games/${gameId}?token=${apiKey}`,
+      `https://api.pandascore.co/csgo/games/${gameId}?token=${apiKey}`,
       { headers: { 'Accept': 'application/json' }, cf: { cacheTtl: 3600 } }
     );
 

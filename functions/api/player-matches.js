@@ -35,13 +35,14 @@ export async function onRequestGet(context) {
       return new Response(JSON.stringify({ error: 'Provide ?id=, ?slug=, or ?name= parameter' }), { status: 400, headers });
     }
 
-    // Resolve to player ID using multiple strategies
+    // Resolve to player ID using multiple strategies.
+    // Use /csgo/players for search — generic /players with filter[videogame]=csgo returns empty.
     if (!playerId) {
       // Strategy 1: Try slug lookup
       if (playerSlug) {
         const slugRes = await fetch(
-          `https://api.pandascore.co/players?filter[slug]=${encodeURIComponent(playerSlug)}&filter[videogame]=csgo&per_page=1&token=${apiKey}`,
-          { cf: { cacheTtl: 86400 } }
+          `https://api.pandascore.co/csgo/players?filter[slug]=${encodeURIComponent(playerSlug)}&per_page=1&token=${apiKey}`,
+          { cf: { cacheTtl: 3600 } }
         );
         if (slugRes.ok) {
           const players = await slugRes.json();
@@ -54,8 +55,8 @@ export async function onRequestGet(context) {
         const searchName = playerName || (playerSlug ? playerSlug.replace(/-/g, ' ') : '');
         if (searchName) {
           const nameRes = await fetch(
-            `https://api.pandascore.co/players?search[name]=${encodeURIComponent(searchName)}&filter[videogame]=csgo&per_page=5&token=${apiKey}`,
-            { cf: { cacheTtl: 86400 } }
+            `https://api.pandascore.co/csgo/players?search[name]=${encodeURIComponent(searchName)}&per_page=5&token=${apiKey}`,
+            { cf: { cacheTtl: 3600 } }
           );
           if (nameRes.ok) {
             const players = await nameRes.json();
@@ -73,9 +74,9 @@ export async function onRequestGet(context) {
       return new Response(JSON.stringify({ error: 'Player not found' }), { status: 404, headers });
     }
 
-    // Fetch the player's team to find matches by team
+    // Fetch the player's team to find matches by team — use /csgo/ prefix
     const playerRes = await fetch(
-      `https://api.pandascore.co/players/${playerId}?token=${apiKey}`,
+      `https://api.pandascore.co/csgo/players/${playerId}?token=${apiKey}`,
       { cf: { cacheTtl: 3600 } }
     );
 

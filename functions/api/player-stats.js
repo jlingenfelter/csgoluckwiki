@@ -31,13 +31,27 @@ export async function onRequestGet(context) {
 
     let pid = playerId;
 
-    // If slug provided, resolve to ID first
+    // If slug provided, resolve to ID first.
+    // Use /csgo/players for slug lookup — generic /players with filter[videogame]=csgo
+    // returns empty results. The /csgo/ prefix works for player slug searches.
     if (!pid && playerSlug) {
-      const searchUrl = `https://api.pandascore.co/players?filter[slug]=${encodeURIComponent(playerSlug)}&filter[videogame]=csgo&per_page=1&token=${apiKey}`;
-      const searchRes = await fetch(searchUrl, { cf: { cacheTtl: 86400 } });
+      const searchUrl = `https://api.pandascore.co/csgo/players?filter[slug]=${encodeURIComponent(playerSlug)}&per_page=1&token=${apiKey}`;
+      const searchRes = await fetch(searchUrl, { cf: { cacheTtl: 3600 } });
       if (searchRes.ok) {
         const players = await searchRes.json();
         if (players.length > 0) pid = players[0].id;
+      }
+      // Fallback: try name search if slug didn't match
+      if (!pid) {
+        const nameUrl = `https://api.pandascore.co/csgo/players?search[name]=${encodeURIComponent(playerSlug)}&per_page=5&token=${apiKey}`;
+        const nameRes = await fetch(nameUrl, { cf: { cacheTtl: 3600 } });
+        if (nameRes.ok) {
+          const players = await nameRes.json();
+          if (players.length > 0) {
+            const exact = players.find(p => p.slug === playerSlug || p.name.toLowerCase() === playerSlug.toLowerCase());
+            pid = exact ? exact.id : players[0].id;
+          }
+        }
       }
     }
 
@@ -45,8 +59,8 @@ export async function onRequestGet(context) {
       return new Response(JSON.stringify({ error: 'Player not found' }), { status: 404, headers });
     }
 
-    // Fetch player stats
-    const statsUrl = `https://api.pandascore.co/players/${pid}/stats?token=${apiKey}`;
+    // Fetch player stats — use /csgo/ prefix for consistency
+    const statsUrl = `https://api.pandascore.co/csgo/players/${pid}/stats?token=${apiKey}`;
     const statsRes = await fetch(statsUrl, {
       headers: { 'Accept': 'application/json' },
       cf: { cacheTtl: 3600 },
