@@ -5,6 +5,7 @@
  * Query params:
  *   ?id=12345          (PandaScore player ID)
  *   ?slug=s1mple       (PandaScore player slug)
+ *   ?name=s1mple        (player name — fuzzy search fallback)
  *   ?page=1            (optional, default 1)
  *   ?per_page=15       (optional, default 15, max 50)
  */
@@ -26,22 +27,45 @@ export async function onRequestGet(context) {
     const url = new URL(request.url);
     let playerId = url.searchParams.get('id');
     const playerSlug = url.searchParams.get('slug');
+    const playerName = url.searchParams.get('name');
     const page = url.searchParams.get('page') || '1';
     const perPage = Math.min(parseInt(url.searchParams.get('per_page') || '15', 10), 50);
 
-    if (!playerId && !playerSlug) {
-      return new Response(JSON.stringify({ error: 'Provide ?id= or ?slug= parameter' }), { status: 400, headers });
+    if (!playerId && !playerSlug && !playerName) {
+      return new Response(JSON.stringify({ error: 'Provide ?id=, ?slug=, or ?name= parameter' }), { status: 400, headers });
     }
 
-    // Resolve slug to ID
-    if (!playerId && playerSlug) {
-      const searchRes = await fetch(
-        `https://api.pandascore.co/csgo/players?filter[slug]=${encodeURIComponent(playerSlug)}&per_page=1&token=${apiKey}`,
-        { cf: { cacheTtl: 86400 } }
-      );
-      if (searchRes.ok) {
-        const players = await searchRes.json();
-        if (players.length > 0) playerId = players[0].id;
+    // Resolve to player ID using multiple strategies
+    if (!playerId) {
+      // Strategy 1: Try slug lookup
+      if (playerSlug) {
+        const slugRes = await fetch(
+          `https://api.pandascore.co/csgo/players?filter[slug]=${encodeURIComponent(playerSlug)}&per_page=1&token=${apiKey}`,
+          { cf: { cacheTtl: 86400 } }
+        );
+        if (slugRes.ok) {
+          const players = await slugRes.json();
+          if (players.length > 0) playerId = players[0].id;
+        }
+      }
+
+      // Strategy 2: If slug didn't work, try name search
+      if (!playerId) {
+        const searchName = playerName || (playerSlug ? playerSlug.replace(/-/g, ' ') : '');
+        if (searchName) {
+          const nameRes = await fetch(
+            `https://api.pandascore.co/csgo/players?search[name]=${encodeURIComponent(searchName)}&per_page=5&token=${apiKey}`,
+            { cf: { cacheTtl: 86400 } }
+          );
+          if (nameRes.ok) {
+            const players = await nameRes.json();
+            if (players.length > 0) {
+              // Try exact match first (case-insensitive)
+              const exact = players.find(p => p.name.toLowerCase() === searchName.toLowerCase());
+              playerId = exact ? exact.id : players[0].id;
+            }
+          }
+        }
       }
     }
 

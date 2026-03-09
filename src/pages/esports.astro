@@ -1,0 +1,421 @@
+---
+import Base from '../layouts/Base.astro';
+import { breadcrumbSchema } from '../lib/weapons';
+
+const title = 'CS2 Esports Hub — Live Matches, Tournaments, Teams & Stats | CSGOLuck Wiki';
+const description = 'Your CS2 esports command center. Live match scores, tournament brackets, pro team stats, head-to-head comparisons, and player performance data — all powered by real-time data.';
+
+const breadcrumbs = [
+  { name: 'Home', url: '/' },
+  { name: 'CS2 Esports', url: '/esports/' },
+];
+---
+<Base {title} {description} currentNav="/matches/">
+<Fragment slot="head">
+<script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema(breadcrumbs))} />
+</Fragment>
+
+<nav class="breadcrumb" aria-label="Breadcrumb">
+<a href="/">Home</a> <span class="sep">›</span> <span>CS2 Esports</span>
+</nav>
+
+<section class="eh-hero">
+  <h1>CS2 Esports Hub</h1>
+  <p>Your command center for Counter-Strike 2 competitive scene. Live scores, tournament tracking, team stats, and head-to-head analysis — all powered by real-time PandaScore data.</p>
+</section>
+
+<!-- Live Matches Banner -->
+<section class="eh-live-banner" id="liveBanner">
+  <div class="eh-live-icon"><span class="eh-live-dot"></span> LIVE NOW</div>
+  <div class="eh-live-content" id="liveMatchesPreview">
+    <span class="eh-live-loading">Checking for live matches…</span>
+  </div>
+  <a href="/matches/" class="eh-live-cta">View All Matches →</a>
+</section>
+
+<!-- Main Feature Grid -->
+<section class="eh-grid">
+  <a href="/matches/" class="eh-card eh-card-primary">
+    <div class="eh-card-icon">🔴</div>
+    <div class="eh-card-content">
+      <h2>Live Matches</h2>
+      <p>Real-time scores, upcoming schedules, and recent results from the CS2 pro scene. Auto-refreshing live data with match details.</p>
+    </div>
+    <span class="eh-card-arrow">→</span>
+  </a>
+
+  <a href="/tournaments/" class="eh-card eh-card-primary">
+    <div class="eh-card-icon">🏆</div>
+    <div class="eh-card-content">
+      <h2>Tournaments</h2>
+      <p>Active, upcoming, and past CS2 tournaments. Standings, match schedules, prize pools, and participating teams.</p>
+    </div>
+    <span class="eh-card-arrow">→</span>
+  </a>
+
+  <a href="/h2h/" class="eh-card">
+    <div class="eh-card-icon">⚔️</div>
+    <div class="eh-card-content">
+      <h2>H2H Comparator</h2>
+      <p>Compare any two pro teams head-to-head. Win rates, player stats, match history, and performance averages.</p>
+    </div>
+    <span class="eh-card-arrow">→</span>
+  </a>
+
+  <a href="/pro-teams/" class="eh-card">
+    <div class="eh-card-icon">👥</div>
+    <div class="eh-card-content">
+      <h2>Pro Teams</h2>
+      <p>Full team rosters with settings, gear, crosshair codes, live performance stats, and recent match results.</p>
+    </div>
+    <span class="eh-card-arrow">→</span>
+  </a>
+
+  <a href="/pro-players/" class="eh-card">
+    <div class="eh-card-icon">🎯</div>
+    <div class="eh-card-content">
+      <h2>Pro Players</h2>
+      <p>800+ pro player configs: sensitivity, crosshair, resolution, gear, and live performance stats from recent matches.</p>
+    </div>
+    <span class="eh-card-arrow">→</span>
+  </a>
+
+  <a href="/pickems/" class="eh-card">
+    <div class="eh-card-icon">🎰</div>
+    <div class="eh-card-content">
+      <h2>Pick'Ems</h2>
+      <p>Make your CS2 tournament predictions. Track your picks against real results and compete for accuracy.</p>
+    </div>
+    <span class="eh-card-arrow">→</span>
+  </a>
+</section>
+
+<!-- Quick Stats -->
+<section class="eh-stats-section">
+  <h2>Real-Time Stats</h2>
+  <p class="eh-stats-desc">Live data pulled from professional CS2 matches via PandaScore.</p>
+  <div class="eh-stats-grid" id="quickStats">
+    <div class="eh-stat-card">
+      <span class="eh-stat-val" id="stat-live">—</span>
+      <span class="eh-stat-label">Live Matches</span>
+    </div>
+    <div class="eh-stat-card">
+      <span class="eh-stat-val" id="stat-upcoming">—</span>
+      <span class="eh-stat-label">Upcoming Today</span>
+    </div>
+    <div class="eh-stat-card">
+      <span class="eh-stat-val" id="stat-tournaments">—</span>
+      <span class="eh-stat-label">Active Tournaments</span>
+    </div>
+    <div class="eh-stat-card">
+      <span class="eh-stat-val" id="stat-recent">—</span>
+      <span class="eh-stat-label">Matches Today</span>
+    </div>
+  </div>
+</section>
+
+<!-- Recent Results Preview -->
+<section class="eh-section">
+  <div class="eh-section-header">
+    <h2>Recent Results</h2>
+    <a href="/matches/" class="eh-section-link">View All →</a>
+  </div>
+  <div class="eh-results-list" id="recentResults">
+    <div class="eh-results-loading"><div class="spinner"></div> Loading recent results…</div>
+  </div>
+</section>
+
+<!-- Upcoming Tournaments Preview -->
+<section class="eh-section">
+  <div class="eh-section-header">
+    <h2>Active Tournaments</h2>
+    <a href="/tournaments/" class="eh-section-link">View All →</a>
+  </div>
+  <div class="eh-tourney-list" id="activeTournaments">
+    <div class="eh-results-loading"><div class="spinner"></div> Loading tournaments…</div>
+  </div>
+</section>
+
+<!-- Data Source Note -->
+<section class="eh-section eh-data-note">
+  <h2>About Our Esports Data</h2>
+  <p>All match data, tournament information, and player statistics are sourced from <strong>PandaScore</strong> — one of the most comprehensive esports data providers. Data is updated in real-time for live matches and cached for recent results to ensure fast page loads.</p>
+  <div class="eh-features-grid">
+    <div class="eh-feature">
+      <strong>Real-Time Scores</strong>
+      <span>Live match data auto-refreshes every 30 seconds during active matches.</span>
+    </div>
+    <div class="eh-feature">
+      <strong>Per-Map Stats</strong>
+      <span>Detailed player statistics for each map including K/D, ADR, KAST%, and Rating.</span>
+    </div>
+    <div class="eh-feature">
+      <strong>H2H Analysis</strong>
+      <span>Compare any two teams with head-to-head win rates and historical match data.</span>
+    </div>
+    <div class="eh-feature">
+      <strong>Tournament Tracking</strong>
+      <span>Complete tournament brackets, standings, and match schedules for every CS2 event.</span>
+    </div>
+  </div>
+</section>
+
+<!-- Internal Links -->
+<section class="eh-section">
+  <div class="internal-links">
+    <a href="/matches/">Live Matches</a>
+    <a href="/tournaments/">Tournaments</a>
+    <a href="/h2h/">H2H Comparator</a>
+    <a href="/pro-teams/">Pro Teams</a>
+    <a href="/pro-players/">Pro Players</a>
+    <a href="/pickems/">Pick'Ems</a>
+    <a href="/pro-gaming-gear/">Pro Gaming Gear</a>
+    <a href="/crosshair-codes/">Crosshair Codes</a>
+    <a href="/cs2-guides/">Guides</a>
+    <a href="/cs2-tools/">All Tools</a>
+  </div>
+</section>
+
+<style>
+/* Hero */
+.eh-hero { margin-bottom: 1.5rem; }
+.eh-hero h1 { font-size: 2rem; font-weight: 800; margin: 0 0 .5rem; }
+.eh-hero p { color: var(--text2); font-size: .95rem; line-height: 1.6; margin: 0; max-width: 700px; }
+
+/* Live Banner */
+.eh-live-banner { display: flex; align-items: center; gap: 1rem; background: var(--bg2); border: 1px solid var(--border); border-left: 4px solid #e74c3c; border-radius: 4px; padding: 1rem 1.25rem; margin-bottom: 1.5rem; }
+.eh-live-icon { display: flex; align-items: center; gap: .4rem; font-size: .75rem; font-weight: 800; color: #e74c3c; text-transform: uppercase; letter-spacing: .05em; white-space: nowrap; flex-shrink: 0; }
+.eh-live-dot { width: 8px; height: 8px; border-radius: 50%; background: #e74c3c; animation: eh-pulse 1.5s ease-in-out infinite; }
+@keyframes eh-pulse { 0%, 100% { opacity: 1; } 50% { opacity: .3; } }
+.eh-live-content { flex: 1; min-width: 0; font-size: .85rem; color: var(--text1); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.eh-live-loading { color: var(--text3); font-size: .82rem; }
+.eh-live-cta { flex-shrink: 0; font-size: .82rem; font-weight: 600; color: var(--accent); text-decoration: none; white-space: nowrap; }
+.eh-live-cta:hover { text-decoration: underline; }
+.eh-live-banner.no-live { border-left-color: var(--accent); }
+.eh-live-banner.no-live .eh-live-icon { color: var(--accent); }
+.eh-live-banner.no-live .eh-live-dot { background: var(--accent); animation: none; }
+
+/* Feature Grid */
+.eh-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: .75rem; margin-bottom: 2rem; }
+.eh-card { display: flex; align-items: center; gap: 1rem; background: var(--bg2); border: 1px solid var(--border); border-radius: 4px; padding: 1.25rem; text-decoration: none; color: inherit; transition: border-color .2s, border-left-color .2s; border-left: 3px solid transparent; }
+.eh-card:hover { border-color: var(--accent); border-left-color: var(--accent); }
+.eh-card-primary { border-left: 3px solid var(--accent); }
+.eh-card-icon { font-size: 1.5rem; flex-shrink: 0; width: 40px; text-align: center; }
+.eh-card-content { flex: 1; min-width: 0; }
+.eh-card-content h2 { font-size: 1rem; font-weight: 700; margin: 0 0 .25rem; color: var(--text1); font-family: 'Montserrat', sans-serif; }
+.eh-card-content p { font-size: .8rem; color: var(--text2); margin: 0; line-height: 1.4; }
+.eh-card-arrow { font-size: 1.1rem; color: var(--accent); font-weight: 700; flex-shrink: 0; transition: transform .15s; }
+.eh-card:hover .eh-card-arrow { transform: translateX(3px); }
+
+/* Stats Grid */
+.eh-stats-section { margin-bottom: 2rem; }
+.eh-stats-section h2 { font-size: 1.3rem; font-weight: 700; margin: 0 0 .25rem; }
+.eh-stats-desc { font-size: .85rem; color: var(--text2); margin: 0 0 1rem; }
+.eh-stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: .75rem; }
+.eh-stat-card { background: var(--bg2); border: 1px solid var(--border); border-left: 3px solid var(--accent); border-radius: 4px; padding: .75rem 1rem; text-align: center; }
+.eh-stat-val { display: block; font-size: 1.5rem; font-weight: 800; color: var(--accent); font-family: 'Montserrat', sans-serif; }
+.eh-stat-label { display: block; font-size: .7rem; color: var(--text2); text-transform: uppercase; margin-top: .15rem; letter-spacing: .03em; }
+
+/* Section Layout */
+.eh-section { margin-bottom: 2rem; }
+.eh-section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: .75rem; }
+.eh-section-header h2 { font-size: 1.3rem; font-weight: 700; margin: 0; }
+.eh-section-link { font-size: .82rem; font-weight: 600; color: var(--accent); text-decoration: none; }
+.eh-section-link:hover { text-decoration: underline; }
+
+/* Recent Results */
+.eh-results-loading { text-align: center; padding: 1.5rem; color: var(--text2); font-size: .85rem; }
+.spinner { display: inline-block; width: 16px; height: 16px; border: 2px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin .6s linear infinite; margin-right: .4rem; vertical-align: middle; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.eh-result-row { display: flex; align-items: center; gap: .75rem; background: var(--bg2); border: 1px solid var(--border); border-radius: 4px; padding: .65rem 1rem; margin-bottom: .5rem; text-decoration: none; color: inherit; transition: border-left .15s; }
+.eh-result-row:hover { border-left: 3px solid var(--accent); }
+.eh-result-date { font-size: .72rem; color: var(--text3); min-width: 55px; flex-shrink: 0; }
+.eh-result-teams { flex: 1; display: flex; align-items: center; gap: .4rem; min-width: 0; font-size: .85rem; font-weight: 600; }
+.eh-result-teams img { width: 20px; height: 20px; border-radius: 3px; object-fit: contain; background: var(--bg3); flex-shrink: 0; }
+.eh-result-name { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.eh-result-name.winner { color: var(--accent); }
+.eh-result-vs { color: var(--text3); font-size: .75rem; padding: 0 .15rem; }
+.eh-result-score { font-size: .9rem; font-weight: 800; font-family: 'Montserrat', sans-serif; min-width: 50px; text-align: center; flex-shrink: 0; }
+.eh-result-tourney { font-size: .72rem; color: var(--text3); max-width: 150px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex-shrink: 0; }
+.eh-result-badge { font-size: .6rem; font-weight: 700; padding: .12rem .35rem; border-radius: 3px; text-transform: uppercase; flex-shrink: 0; }
+.eh-result-badge.tier-s { background: #f1c40f; color: #000; }
+.eh-result-badge.tier-a { background: #e67e22; color: #000; }
+.eh-result-badge.tier-b { background: #3498db; color: #fff; }
+.eh-result-badge.tier-c { background: #7f8c8d; color: #fff; }
+.eh-result-badge.tier-d { background: #566573; color: #fff; }
+.eh-results-empty { text-align: center; padding: 1.5rem; color: var(--text3); font-size: .85rem; }
+
+/* Active Tournaments */
+.eh-tourney-row { display: flex; align-items: center; gap: .75rem; background: var(--bg2); border: 1px solid var(--border); border-radius: 4px; padding: .65rem 1rem; margin-bottom: .5rem; text-decoration: none; color: inherit; transition: border-left .15s; }
+.eh-tourney-row:hover { border-left: 3px solid var(--accent); }
+.eh-tourney-logo { height: 22px; max-height: 22px; width: auto; max-width: 80px; object-fit: contain; border-radius: 2px; flex-shrink: 0; }
+.eh-tourney-name { flex: 1; font-size: .88rem; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.eh-tourney-prize { font-size: .8rem; color: var(--accent); font-weight: 600; flex-shrink: 0; }
+.eh-tourney-dates { font-size: .72rem; color: var(--text3); flex-shrink: 0; }
+.eh-tourney-tier { font-size: .6rem; font-weight: 700; padding: .12rem .35rem; border-radius: 3px; text-transform: uppercase; flex-shrink: 0; }
+
+/* Data Note */
+.eh-data-note p { font-size: .88rem; color: var(--text2); line-height: 1.6; margin: 0 0 1rem; }
+.eh-data-note p strong { color: var(--text1); }
+.eh-data-note h2 { font-size: 1.3rem; font-weight: 700; margin: 0 0 .5rem; }
+.eh-features-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: .75rem; }
+.eh-feature { background: var(--bg2); border: 1px solid var(--border); border-left: 3px solid var(--accent); border-radius: 4px; padding: .75rem 1rem; }
+.eh-feature strong { display: block; font-size: .85rem; color: var(--text1); margin-bottom: .2rem; }
+.eh-feature span { font-size: .78rem; color: var(--text2); line-height: 1.4; }
+
+/* Responsive */
+@media (max-width: 768px) {
+  .eh-hero h1 { font-size: 1.5rem; }
+  .eh-grid { grid-template-columns: 1fr; }
+  .eh-stats-grid { grid-template-columns: repeat(2, 1fr); }
+  .eh-live-banner { flex-direction: column; align-items: flex-start; gap: .5rem; }
+  .eh-features-grid { grid-template-columns: 1fr; }
+  .eh-result-tourney { display: none; }
+}
+@media (max-width: 480px) {
+  .eh-stats-grid { grid-template-columns: repeat(2, 1fr); }
+  .eh-stat-val { font-size: 1.2rem; }
+}
+</style>
+
+<script>
+// Fetch live matches for the banner and stats
+async function loadLiveBanner() {
+  try {
+    const [liveRes, upcomingRes, pastRes, tourneyRes] = await Promise.all([
+      fetch('/api/matches?type=running&per_page=5'),
+      fetch('/api/matches?type=upcoming&per_page=20'),
+      fetch('/api/matches?type=past&per_page=8'),
+      fetch('/api/tournaments?type=running&per_page=8'),
+    ]);
+
+    const liveData = liveRes.ok ? await liveRes.json() : null;
+    const upcomingData = upcomingRes.ok ? await upcomingRes.json() : null;
+    const pastData = pastRes.ok ? await pastRes.json() : null;
+    const tourneyData = tourneyRes.ok ? await tourneyRes.json() : null;
+
+    // Update live banner
+    const banner = document.getElementById('liveBanner');
+    const preview = document.getElementById('liveMatchesPreview');
+    const liveMatches = liveData?.matches || [];
+
+    if (liveMatches.length > 0) {
+      const summaries = liveMatches.slice(0, 3).map(m => {
+        const t1 = m.opponents?.[0] || {};
+        const t2 = m.opponents?.[1] || {};
+        const r1 = m.results?.find(r => r.team_id === t1.id)?.score ?? 0;
+        const r2 = m.results?.find(r => r.team_id === t2.id)?.score ?? 0;
+        return `<a href="/match-detail/?id=${m.id}" style="color:var(--text1);text-decoration:none;font-weight:600"><strong>${t1.acronym || t1.name || 'TBD'}</strong> ${r1}:${r2} <strong>${t2.acronym || t2.name || 'TBD'}</strong></a>`;
+      });
+      preview.innerHTML = summaries.join(' <span style="color:var(--text3);padding:0 .5rem">|</span> ');
+      if (liveMatches.length > 3) {
+        preview.innerHTML += ` <span style="color:var(--text3);font-size:.78rem">+${liveMatches.length - 3} more</span>`;
+      }
+    } else {
+      banner.classList.add('no-live');
+      document.querySelector('.eh-live-icon').innerHTML = '📅 NEXT UP';
+      const upcoming = upcomingData?.matches || [];
+      if (upcoming.length > 0) {
+        const next = upcoming[0];
+        const t1 = next.opponents?.[0] || {};
+        const t2 = next.opponents?.[1] || {};
+        const when = next.beginAt ? new Date(next.beginAt).toLocaleString(undefined, { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }) : '';
+        preview.innerHTML = `<strong>${t1.name || 'TBD'}</strong> vs <strong>${t2.name || 'TBD'}</strong> <span style="color:var(--accent);font-weight:600;margin-left:.5rem">${when}</span>`;
+      } else {
+        preview.innerHTML = '<span style="color:var(--text3)">No matches scheduled</span>';
+      }
+    }
+
+    // Update quick stats
+    document.getElementById('stat-live').textContent = liveMatches.length;
+
+    // Count upcoming today
+    const today = new Date();
+    today.setHours(23, 59, 59, 999);
+    const upcomingToday = (upcomingData?.matches || []).filter(m => m.beginAt && new Date(m.beginAt) <= today).length;
+    document.getElementById('stat-upcoming').textContent = upcomingToday;
+
+    document.getElementById('stat-tournaments').textContent = (tourneyData?.tournaments || []).length;
+    document.getElementById('stat-recent').textContent = (pastData?.matches || []).length + '+';
+
+    // Render recent results
+    renderRecentResults(pastData?.matches || []);
+
+    // Render active tournaments
+    renderActiveTournaments(tourneyData?.tournaments || []);
+
+  } catch (err) {
+    console.error('Esports hub load error:', err);
+  }
+}
+
+function tierClass(tier) {
+  return tier ? `tier-${tier}` : 'tier-d';
+}
+
+function formatDateShort(iso) {
+  if (!iso) return '';
+  return new Date(iso).toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
+}
+
+function renderRecentResults(matches) {
+  const container = document.getElementById('recentResults');
+  if (!matches || matches.length === 0) {
+    container.innerHTML = '<div class="eh-results-empty">No recent results available.</div>';
+    return;
+  }
+
+  container.innerHTML = matches.map(m => {
+    const t1 = m.opponents?.[0] || {};
+    const t2 = m.opponents?.[1] || {};
+    const r1 = m.results?.find(r => r.team_id === t1.id)?.score ?? 0;
+    const r2 = m.results?.find(r => r.team_id === t2.id)?.score ?? 0;
+    const t1Win = m.winnerId === t1.id;
+    const t2Win = m.winnerId === t2.id;
+    const tier = m.tournament?.tier;
+    const tourney = m.league?.name || m.tournament?.name || '';
+
+    return `<a href="/match-detail/?id=${m.id}" class="eh-result-row">
+      <span class="eh-result-date">${formatDateShort(m.beginAt)}</span>
+      <span class="eh-result-teams">
+        ${t1.image ? `<img src="${t1.image}" alt="" loading="lazy" onerror="this.style.display='none'" />` : ''}
+        <span class="eh-result-name ${t1Win ? 'winner' : ''}">${t1.acronym || t1.name || 'TBD'}</span>
+        <span class="eh-result-vs">vs</span>
+        <span class="eh-result-name ${t2Win ? 'winner' : ''}">${t2.acronym || t2.name || 'TBD'}</span>
+        ${t2.image ? `<img src="${t2.image}" alt="" loading="lazy" onerror="this.style.display='none'" />` : ''}
+      </span>
+      <span class="eh-result-score">${r1} : ${r2}</span>
+      <span class="eh-result-tourney">${tourney}</span>
+      ${tier ? `<span class="eh-result-badge ${tierClass(tier)}">${tier.toUpperCase()}</span>` : ''}
+    </a>`;
+  }).join('');
+}
+
+function renderActiveTournaments(tournaments) {
+  const container = document.getElementById('activeTournaments');
+  if (!tournaments || tournaments.length === 0) {
+    container.innerHTML = '<div class="eh-results-empty">No active tournaments right now.</div>';
+    return;
+  }
+
+  container.innerHTML = tournaments.map(t => {
+    const dateStr = t.beginAt ? `${formatDateShort(t.beginAt)}${t.endAt ? ' – ' + formatDateShort(t.endAt) : ''}` : '';
+    const tier = t.tier;
+
+    return `<a href="/tournament-detail/?id=${t.id}" class="eh-tourney-row">
+      ${t.league?.image ? `<img src="${t.league.image}" alt="" class="eh-tourney-logo" loading="lazy" onerror="this.style.display='none'" />` : ''}
+      <span class="eh-tourney-name">${t.league?.name || ''} — ${t.name || t.serie?.name || ''}</span>
+      ${t.prizepool ? `<span class="eh-tourney-prize">${t.prizepool}</span>` : ''}
+      ${tier ? `<span class="eh-tourney-tier ${tierClass(tier)}">${tier.toUpperCase()}</span>` : ''}
+      <span class="eh-tourney-dates">${dateStr}</span>
+    </a>`;
+  }).join('');
+}
+
+loadLiveBanner();
+// Refresh every 2 minutes
+setInterval(loadLiveBanner, 120000);
+</script>
+
+</Base>

@@ -108,9 +108,21 @@ a.tourney-card-link { text-decoration: none; color: inherit; display: block; }
 a.tourney-card-link .tourney-card { cursor: pointer; transition: border-color .2s, border-left-color .2s; }
 a.tourney-card-link:hover .tourney-card { border-left: 3px solid var(--accent); }
 
+/* Tournament detail link inside expandable cards */
+.tourney-detail-link { display: block; padding: .6rem 0 .2rem; font-size: .82rem; font-weight: 600; color: var(--accent); text-decoration: none; text-align: center; margin-top: .5rem; border-top: 1px solid var(--border); transition: opacity .15s; }
+.tourney-detail-link:hover { opacity: .8; text-decoration: underline; }
+
+/* Match name links inside tournament cards */
+.tmr-name-link { flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--text1); text-decoration: none; font-weight: 500; transition: color .15s; }
+.tmr-name-link:hover { color: var(--accent); }
+
+/* Arrow on past tournament cards */
+.tourney-detail-arrow { color: var(--accent); font-weight: 700; font-size: .9rem; transition: transform .15s; }
+a.tourney-card-link:hover .tourney-detail-arrow { transform: translateX(3px); }
+
 /* Winner badge for past tournaments */
 .tourney-winner { font-size: .8rem; color: #f1c40f; font-weight: 700; }
-.tourney-winner::before { content: '🏆 '; }
+.tourney-winner::before { content: '\uD83C\uDFC6 '; }
 
 /* Finished badge */
 .tourney-badge-finished { font-size: .7rem; font-weight: 700; text-transform: uppercase; padding: .15rem .4rem; border-radius: 3px; background: var(--bg3); color: var(--text2); }
@@ -168,19 +180,18 @@ function renderTournament(t) {
   const matchesHTML = (t.matches || []).map(m => {
     const statusClass = m.status || 'not_started';
     const statusLabel = m.status === 'running' ? '● LIVE' : m.status === 'finished' ? 'Done' : formatTime(m.beginAt);
-    const streamHTML = m.streams?.[0]?.url ? `<a href="${m.streams[0].url}" target="_blank" rel="noopener" class="tmr-stream">▶ Watch</a>` : '';
+    const streamHTML = m.streams?.[0]?.url ? `<a href="${m.streams[0].url}" target="_blank" rel="noopener" class="tmr-stream" onclick="event.stopPropagation()">▶ Watch</a>` : '';
 
     return `<div class="tourney-match-row">
-      <span class="tmr-name">${m.name || 'Match'}</span>
+      <a href="/match-detail/?id=${m.id}" class="tmr-name-link" onclick="event.stopPropagation()">${m.name || 'Match'}</a>
       <span class="tmr-status ${statusClass}">${statusLabel}</span>
       ${streamHTML}
     </div>`;
   }).join('');
 
   return `
-    <a href="/tournament-detail/?id=${t.id}" class="tourney-card-link">
-    <div class="tourney-card">
-      <div class="tourney-card-header" onclick="event.preventDefault(); this.parentElement.classList.toggle('open')">
+    <div class="tourney-card" onclick="this.classList.toggle('open')">
+      <div class="tourney-card-header">
         <div class="tourney-info">
           ${t.league?.image ? `<img src="${t.league.image}" alt="" class="tourney-logo" style="height:28px;max-height:28px;width:auto;max-width:100px;object-fit:contain" />` : ''}
           <span class="tourney-name">${t.league?.name || ''} — ${t.name || t.serie?.name || ''}</span>
@@ -194,9 +205,11 @@ function renderTournament(t) {
           <span class="tourney-toggle">▼</span>
         </div>
       </div>
-      ${t.matches?.length ? `<div class="tourney-matches">${matchesHTML}</div>` : ''}
+      ${t.matches?.length ? `<div class="tourney-matches">
+        ${matchesHTML}
+        <a href="/tournament-detail/?id=${t.id}" class="tourney-detail-link" onclick="event.stopPropagation()">View Full Tournament Details →</a>
+      </div>` : `<div class="tourney-matches"><a href="/tournament-detail/?id=${t.id}" class="tourney-detail-link" onclick="event.stopPropagation()">View Full Tournament Details →</a></div>`}
     </div>
-    </a>
   `;
 }
 
@@ -218,6 +231,7 @@ function renderPastTournament(t) {
           ${t.tier ? `<span class="tourney-tier ${tierClass(t.tier)}">${tierLabel(t.tier)}</span>` : ''}
           ${t.prizepool ? `<span class="tourney-prize">${t.prizepool}</span>` : ''}
           <span class="tourney-dates">${dateStr}</span>
+          <span class="tourney-detail-arrow">→</span>
         </div>
       </div>
     </div>

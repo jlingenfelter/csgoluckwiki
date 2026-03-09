@@ -5,6 +5,7 @@
  * Query params:
  *   ?id=12345          (PandaScore team ID)
  *   ?slug=natus-vincere (PandaScore team slug)
+ *   ?name=Natus Vincere (team name — fuzzy search fallback)
  *   ?page=1            (optional, default 1)
  *   ?per_page=20       (optional, default 20, max 50)
  */
@@ -26,22 +27,45 @@ export async function onRequestGet(context) {
     const url = new URL(request.url);
     let teamId = url.searchParams.get('id');
     const teamSlug = url.searchParams.get('slug');
+    const teamName = url.searchParams.get('name');
     const page = url.searchParams.get('page') || '1';
     const perPage = Math.min(parseInt(url.searchParams.get('per_page') || '20', 10), 50);
 
-    if (!teamId && !teamSlug) {
-      return new Response(JSON.stringify({ error: 'Provide ?id= or ?slug= parameter' }), { status: 400, headers });
+    if (!teamId && !teamSlug && !teamName) {
+      return new Response(JSON.stringify({ error: 'Provide ?id=, ?slug=, or ?name= parameter' }), { status: 400, headers });
     }
 
-    // Resolve slug to ID if needed
-    if (!teamId && teamSlug) {
-      const searchRes = await fetch(
-        `https://api.pandascore.co/csgo/teams?filter[slug]=${encodeURIComponent(teamSlug)}&per_page=1&token=${apiKey}`,
-        { cf: { cacheTtl: 86400 } }
-      );
-      if (searchRes.ok) {
-        const teams = await searchRes.json();
-        if (teams.length > 0) teamId = teams[0].id;
+    // Resolve to team ID using multiple strategies
+    if (!teamId) {
+      // Strategy 1: Try slug lookup
+      if (teamSlug) {
+        const slugRes = await fetch(
+          `https://api.pandascore.co/csgo/teams?filter[slug]=${encodeURIComponent(teamSlug)}&per_page=1&token=${apiKey}`,
+          { cf: { cacheTtl: 86400 } }
+        );
+        if (slugRes.ok) {
+          const teams = await slugRes.json();
+          if (teams.length > 0) teamId = teams[0].id;
+        }
+      }
+
+      // Strategy 2: If slug didn't work, try name search
+      if (!teamId) {
+        const searchName = teamName || (teamSlug ? teamSlug.replace(/-/g, ' ') : '');
+        if (searchName) {
+          const nameRes = await fetch(
+            `https://api.pandascore.co/csgo/teams?search[name]=${encodeURIComponent(searchName)}&per_page=5&token=${apiKey}`,
+            { cf: { cacheTtl: 86400 } }
+          );
+          if (nameRes.ok) {
+            const teams = await nameRes.json();
+            if (teams.length > 0) {
+              // Try exact match first (case-insensitive)
+              const exact = teams.find(t => t.name.toLowerCase() === searchName.toLowerCase());
+              teamId = exact ? exact.id : teams[0].id;
+            }
+          }
+        }
       }
     }
 

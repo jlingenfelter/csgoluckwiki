@@ -876,7 +876,7 @@ const faqs = [
   }
 
   function fetchPage(page) {
-    fetch('/api/team-matches?slug=' + encodeURIComponent(pandaSlug) + '&page=' + page + '&per_page=20')
+    fetch('/api/team-matches?slug=' + encodeURIComponent(pandaSlug) + '&name=' + encodeURIComponent(matchTeamName) + '&page=' + page + '&per_page=20')
       .then(function(res) { return res.ok ? res.json() : null; })
       .then(function(data) {
         if (!data || data.error) {

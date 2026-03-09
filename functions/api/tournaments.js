@@ -58,6 +58,12 @@ export async function onRequestGet(context) {
       hasBracket: t.has_bracket,
       region: t.region,
       winnerId: t.winner_id,
+      winner: t.winner ? {
+        id: t.winner.id,
+        name: t.winner.name,
+        acronym: t.winner.acronym,
+        image: t.winner.image_url,
+      } : null,
       league: {
         id: t.league?.id,
         name: t.league?.name,

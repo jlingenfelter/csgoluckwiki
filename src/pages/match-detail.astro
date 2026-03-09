@@ -458,12 +458,19 @@ import Base from '../layouts/Base.astro';
           </div>
         </div>
 
-        ${statusBadge}
-        ${isLive ? `<span class="auto-refresh-badge"><span class="ar-dot"></span> Auto-refreshing every 30s</span><span class="auto-refresh-ts" id="ar-ts"></span>` : ''}
+        <div style="text-align:center">
+          ${statusBadge}
+          ${isLive ? `<span class="auto-refresh-badge"><span class="ar-dot"></span> Auto-refreshing every 30s</span><span class="auto-refresh-ts" id="ar-ts"></span>` : ''}
+        </div>
 
         <div class="meta-row">
           ${metaItems.join('<span class="meta-sep">·</span>')}
         </div>
+
+        ${(t1.id && t2.id) ? `<div class="meta-row" style="border-top:none;margin-top:.25rem;padding-top:0">
+          <a href="/h2h/?team1=${t1.id}&team2=${t2.id}" style="font-size:.8rem;color:var(--accent);text-decoration:none;font-weight:600">⚔️ H2H History</a>
+          ${match.tournament?.id ? `<span class="meta-sep">·</span><a href="/tournament-detail/?id=${match.tournament.id}" style="font-size:.8rem;color:var(--accent);text-decoration:none;font-weight:600">🏆 Tournament</a>` : ''}
+        </div>` : ''}
       </div>
 
       ${gamesHTML}
