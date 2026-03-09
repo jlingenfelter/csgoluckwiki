@@ -121,12 +121,12 @@ const hasCrosshairSettings = player.crosshairSettings && Object.keys(player.cros
 
 // Sidebar sections
 const sections = [
-  { id: 'livestats', label: 'Performance Stats' },
-  { id: 'matchhistory', label: 'Match History' },
   { id: 'sensitivity', label: 'Mouse & Sensitivity' },
   { id: 'crosshair', label: 'Crosshair' },
   { id: 'video', label: 'Video & Display' },
   { id: 'viewmodel', label: 'Viewmodel' },
+  { id: 'livestats', label: 'Performance Stats' },
+  { id: 'matchhistory', label: 'Match History' },
 ];
 if (hasRadarSettings || hasHudSettings) sections.push({ id: 'gamehud', label: 'Radar & HUD' });
 if (hasMonitorSettings) sections.push({ id: 'monitorsettings', label: 'Monitor Settings' });
@@ -202,37 +202,21 @@ const faqs = [
   {isRealTeam && <p class="pp-bio-extra">See all <a href={`/pro-teams/${player.team.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')}/`}>{player.team} team settings</a> for a full roster comparison, or browse the <a href="/pro-gaming-gear/">Pro Gaming Gear</a> hub to find gear used by top players.</p>}
 </section>
 
-<!-- PandaScore Live Performance Stats (loaded client-side) -->
-<section class="pp-live-stats" id="livestats">
-  <h2 class="pp-section-title">Performance Stats</h2>
-  <p class="pp-live-stats-sub">Live stats from professional matches, powered by PandaScore.</p>
-  <div id="liveStatsContent">
-    <div class="pp-ls-loading"><div class="pp-ls-spinner"></div> Loading performance data…</div>
-  </div>
-</section>
+<!-- Two-column layout: sticky sidebar nav + main content -->
+<div class="pp-layout">
+<nav class="pp-sidebar" id="ppSidebar">
+  <ul class="pp-sidebar-list">
+    {sections.map(s => (
+      <li><a href={`#${s.id}`} class="pp-sidebar-link" data-section={s.id}>{s.label}</a></li>
+    ))}
+  </ul>
+</nav>
 
-<!-- Match History (loaded client-side) -->
-<section class="pp-match-history" id="matchhistory">
-  <h2 class="pp-section-title">Recent Matches</h2>
-  <p class="pp-match-history-sub">Recent match results for this player's team.</p>
-  <div id="matchHistoryContent">
-    <div class="pp-mh-loading"><div class="pp-mh-spinner"></div> Loading match history…</div>
-  </div>
-</section>
+<div class="pp-main">
 
-<!-- Settings: Tabbed interface (Mouse | Crosshair | Video | Gear | Config) -->
-<div class="pp-tabbed" id="ppTabbed">
-  <nav class="pp-tab-bar">
-    <button class="pp-tab active" data-tab="mouse">Mouse</button>
-    <button class="pp-tab" data-tab="crosshair">Crosshair</button>
-    <button class="pp-tab" data-tab="video">Video</button>
-    <button class="pp-tab" data-tab="gear">Gear</button>
-    <button class="pp-tab" data-tab="config">Config</button>
-  </nav>
-
-  <!-- MOUSE TAB -->
-  <div class="pp-tab-panel active" id="pp-panel-mouse">
-    <h2 class="pp-panel-title">Mouse & Sensitivity</h2>
+  <!-- MOUSE & SENSITIVITY -->
+  <section class="pp-section" id="sensitivity">
+    <h2 class="pp-section-title">Mouse & Sensitivity</h2>
     <div class="pp-kv-grid">
       <div class="pp-kv"><span class="pp-kv-key">Mouse DPI</span><span class="pp-kv-val">{player.dpi}</span></div>
       <div class="pp-kv"><span class="pp-kv-key">Game Sensitivity</span><span class="pp-kv-val">{player.sens}</span></div>
@@ -257,11 +241,11 @@ const faqs = [
       <div class="pp-kv"><span class="pp-kv-key">Mouse</span><span class="pp-kv-val">{player.mouse}</span></div>
       <div class="pp-kv"><span class="pp-kv-key">Mousepad</span><span class="pp-kv-val">{player.mousepad}</span></div>
     </div>
-  </div>
+  </section>
 
-  <!-- CROSSHAIR TAB -->
-  <div class="pp-tab-panel" id="pp-panel-crosshair">
-    <h2 class="pp-panel-title">Crosshair</h2>
+  <!-- CROSSHAIR -->
+  <section class="pp-section" id="crosshair">
+    <h2 class="pp-section-title">Crosshair</h2>
     <div class="pp-xhair-preview" id="xhairPreview">
       <div class="pp-xhair-render" id="xhairRender"></div>
       <span class="pp-xhair-label">{player.name}'s Crosshair</span>
@@ -304,11 +288,11 @@ const faqs = [
       </div>
     </details>
     )}
-  </div>
+  </section>
 
-  <!-- VIDEO TAB -->
-  <div class="pp-tab-panel" id="pp-panel-video">
-    <h2 class="pp-panel-title">Video & Display</h2>
+  <!-- VIDEO & DISPLAY -->
+  <section class="pp-section" id="video">
+    <h2 class="pp-section-title">Video & Display</h2>
     <div class="pp-kv-grid">
       <div class="pp-kv pp-kv-accent"><span class="pp-kv-key">Resolution</span><span class="pp-kv-val">{player.res}</span></div>
       <div class="pp-kv"><span class="pp-kv-key">Aspect Ratio</span><span class="pp-kv-val">{player.aspect}</span></div>
@@ -408,11 +392,11 @@ const faqs = [
     </div>
     </>
     )}
-  </div>
+  </section>
 
-  <!-- GEAR TAB -->
-  <div class="pp-tab-panel" id="pp-panel-gear">
-    <h2 class="pp-panel-title">Equipment</h2>
+  <!-- GEAR & PERIPHERALS -->
+  <section class="pp-section" id="gear">
+    <h2 class="pp-section-title">Gear & Peripherals</h2>
     <div class="pp-gear-list">
       {[
         { key: 'mouse' as const, label: 'Mouse', value: player.mouse },
@@ -461,11 +445,11 @@ const faqs = [
     </div>
     </>
     )}
-  </div>
+  </section>
 
-  <!-- CONFIG TAB -->
-  <div class="pp-tab-panel" id="pp-panel-config">
-    <h2 class="pp-panel-title">Config & Download</h2>
+  <!-- CONFIG & DOWNLOAD -->
+  <section class="pp-section" id="config">
+    <h2 class="pp-section-title">Config & Download</h2>
     <p class="pp-config-desc">Grab {player.name}'s full CS2 config as an autoexec file, or copy console commands directly.</p>
     <div class="pp-config-actions">
       <button class="pp-config-btn pp-config-dl" id="downloadConfig">
@@ -495,9 +479,28 @@ const faqs = [
     </div>
     </>
     )}
-  </div>
+  </section>
 
-</div><!-- /pp-tabbed -->
+<!-- PandaScore Live Performance Stats (loaded client-side) -->
+<section class="pp-section pp-live-stats" id="livestats">
+  <h2 class="pp-section-title">Performance Stats</h2>
+  <p class="pp-live-stats-sub">Live stats from professional matches, powered by PandaScore.</p>
+  <div id="liveStatsContent">
+    <div class="pp-ls-loading"><div class="pp-ls-spinner"></div> Loading performance data…</div>
+  </div>
+</section>
+
+<!-- Match History (loaded client-side) -->
+<section class="pp-section pp-match-history" id="matchhistory">
+  <h2 class="pp-section-title">Recent Matches</h2>
+  <p class="pp-match-history-sub">Recent match results for this player's team.</p>
+  <div id="matchHistoryContent">
+    <div class="pp-mh-loading"><div class="pp-mh-spinner"></div> Loading match history…</div>
+  </div>
+</section>
+
+</div><!-- /pp-main -->
+</div><!-- /pp-layout -->
 
 <!-- Team Info: Sidebar-style box -->
 {isRealTeam && teammates.length > 0 && (
@@ -599,17 +602,19 @@ const faqs = [
 .pp-bio p{color:var(--text2);font-size:.88rem;margin:0}
 .pp-bio-extra{margin-top:.6rem;color:var(--text);font-style:italic;border-left:3px solid var(--accent);padding-left:.75rem}
 
-/* ── Tab Bar ─────────────────────────────────────────────────────────────── */
-.pp-tabbed{margin-bottom:2.5rem}
-.pp-tab-bar{display:flex;gap:0;border-bottom:2px solid var(--border);margin-bottom:0}
-.pp-tab{background:none;border:none;padding:.55rem 1.1rem;font-size:.85rem;font-weight:600;color:var(--text2);cursor:pointer;font-family:inherit;border-bottom:2px solid transparent;margin-bottom:-2px;transition:color .15s,border-color .15s;border-radius:4px 4px 0 0}
-.pp-tab:hover{color:var(--text)}
-.pp-tab.active{color:var(--accent);border-bottom-color:var(--accent)}
+/* ── Two-Column Layout: Sticky Sidebar + Main ───────────────────────────── */
+.pp-layout{display:flex;gap:1.5rem;align-items:flex-start;margin-bottom:2.5rem}
+.pp-sidebar{position:sticky;top:70px;width:200px;flex-shrink:0;align-self:flex-start}
+.pp-sidebar-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:1px;background:var(--bg2);border:1px solid var(--border);border-radius:4px;overflow:hidden}
+.pp-sidebar-list li{margin:0}
+.pp-sidebar-link{display:block;padding:.5rem .75rem;font-size:.78rem;font-weight:600;color:var(--text2);text-decoration:none;border-left:3px solid transparent;transition:all .15s}
+.pp-sidebar-link:hover{color:var(--text);background:var(--bg3);border-left-color:var(--accent)}
+.pp-sidebar-link.active{color:var(--accent);background:var(--bg3);border-left-color:var(--accent)}
+.pp-main{flex:1;min-width:0}
 
-/* ── Tab Panels ──────────────────────────────────────────────────────────── */
-.pp-tab-panel{display:none;background:var(--bg2);border:1px solid var(--border);border-top:none;border-radius:0 0 4px 4px;padding:1.5rem}
-.pp-tab-panel.active{display:block}
-.pp-panel-title{font-size:1.1rem;margin:0 0 .75rem;font-weight:700}
+/* ── Section blocks ─────────────────────────────────────────────────────── */
+.pp-section{margin-bottom:2rem;scroll-margin-top:70px;background:var(--bg2);border:1px solid var(--border);border-radius:4px;padding:1.5rem}
+.pp-section-title{font-size:1.1rem;margin:0 0 .75rem;font-weight:700}
 .pp-sub{font-size:.92rem;font-weight:700;color:var(--text);margin:1.25rem 0 .5rem;padding-top:1rem;border-top:1px solid var(--border)}
 
 /* ── Key-Value Grid (settings rows) ──────────────────────────────────────── */
@@ -699,9 +704,7 @@ const faqs = [
 .pp-team-member-name{font-weight:700;font-size:.85rem;color:var(--text)}
 .pp-team-member-edpi{font-size:.78rem;color:var(--text2)}
 
-/* ── Sections (below tabs) ───────────────────────────────────────────────── */
-.pp-section{margin-bottom:2rem;scroll-margin-top:70px}
-.pp-section-title{font-size:1.1rem;margin:0 0 .65rem;font-weight:700}
+/* (section styles defined above in layout block) */
 
 /* ── Similar Players: Horizontal scrolling strip ─────────────────────────── */
 .pp-similar-strip{display:flex;gap:.5rem;overflow-x:auto;padding-bottom:.5rem;-webkit-overflow-scrolling:touch}
@@ -712,8 +715,7 @@ const faqs = [
 .pp-similar-detail{font-size:.65rem;color:var(--text2)}
 .pp-similar-edpi{font-size:.72rem;color:var(--accent);font-weight:700}
 
-/* ── Live Performance Stats (static container only — JS-injected styles in global block below) ── */
-.pp-live-stats{margin-bottom:2rem;scroll-margin-top:70px}
+/* ── Live Performance Stats ── */
 .pp-live-stats-sub{font-size:.82rem;color:var(--text2);margin:0 0 1rem}
 
 /* ── FAQ: <details> accordion ────────────────────────────────────────────── */
@@ -732,8 +734,8 @@ const faqs = [
   .pp-hero-img{width:72px;height:72px}
   .pp-hero-name{font-size:1.35rem}
   .pp-hero-table{font-size:.75rem}
-  .pp-tab-bar{overflow-x:auto;-webkit-overflow-scrolling:touch}
-  .pp-tab{padding:.45rem .75rem;font-size:.78rem;white-space:nowrap}
+  .pp-sidebar{display:none}
+  .pp-layout{flex-direction:column}
   .pp-kv-grid{grid-template-columns:1fr}
   .pp-config-actions{flex-direction:column}
   .pp-config-btn{justify-content:center}
@@ -796,7 +798,6 @@ const faqs = [
 .pp-ls-form-rating{font-size:.55rem;color:var(--text2);line-height:1;margin-top:.1rem}
 
 /* ── Match History (JS-injected content — must be global) ──────────────── */
-.pp-match-history{margin-bottom:2rem;scroll-margin-top:70px}
 .pp-match-history-sub{font-size:.82rem;color:var(--text2);margin:0 0 1rem}
 .pp-mh-loading{text-align:center;padding:1.5rem;color:var(--text2);font-size:.85rem}
 .pp-mh-spinner{display:inline-block;width:16px;height:16px;border:2px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:pp-spin .6s linear infinite;margin-right:.4rem;vertical-align:middle}
@@ -1059,16 +1060,38 @@ const faqs = [
 
 <script is:inline define:vars={{ xhairColor, crosshairSize: player.crosshairSize, crosshairGap: player.crosshairGap, crosshairThickness: player.crosshairThickness, crosshairDot: player.crosshairDot, crosshairOutline: player.crosshairOutline, configText, allCmds, playerName: player.name }}>
 (function(){
-  // ── Tab switching ──
-  var tabs = document.querySelectorAll('.pp-tab');
-  var panels = document.querySelectorAll('.pp-tab-panel');
-  tabs.forEach(function(tab){
-    tab.addEventListener('click', function(){
-      tabs.forEach(function(t){ t.classList.remove('active'); });
-      panels.forEach(function(p){ p.classList.remove('active'); });
-      tab.classList.add('active');
-      var target = document.getElementById('pp-panel-' + tab.dataset.tab);
-      if (target) target.classList.add('active');
+  // ── Sidebar scroll spy ──
+  var sidebarLinks = document.querySelectorAll('.pp-sidebar-link');
+  var sectionEls = [];
+  sidebarLinks.forEach(function(link) {
+    var id = link.getAttribute('data-section');
+    var el = document.getElementById(id);
+    if (el) sectionEls.push({ id: id, el: el, link: link });
+  });
+
+  function updateActiveLink() {
+    var scrollY = window.scrollY + 120;
+    var active = null;
+    for (var i = sectionEls.length - 1; i >= 0; i--) {
+      if (sectionEls[i].el.offsetTop <= scrollY) {
+        active = sectionEls[i];
+        break;
+      }
+    }
+    sidebarLinks.forEach(function(l) { l.classList.remove('active'); });
+    if (active) active.link.classList.add('active');
+  }
+
+  window.addEventListener('scroll', updateActiveLink, { passive: true });
+  updateActiveLink();
+
+  // Smooth scroll on click
+  sidebarLinks.forEach(function(link) {
+    link.addEventListener('click', function(e) {
+      e.preventDefault();
+      var id = link.getAttribute('data-section');
+      var target = document.getElementById(id);
+      if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
     });
   });
 
