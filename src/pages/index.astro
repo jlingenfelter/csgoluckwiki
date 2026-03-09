@@ -227,6 +227,8 @@ const faqs = [
       <span class="hp-stat-pill">8 Active Maps</span>
       <span class="hp-stat-dot">&middot;</span>
       <span class="hp-stat-pill">40+ Tools</span>
+      <span class="hp-stat-dot">&middot;</span>
+      <span class="hp-stat-pill hp-stat-live"><span class="hp-live-dot"></span>Live Esports</span>
     </div>
 
     <div class="hp-search-wrap">
@@ -244,6 +246,7 @@ const faqs = [
       <a href="/pro-players/" class="hp-cat-pill">Pro Players</a>
       <a href="/cs2-tools/" class="hp-cat-pill">Tools</a>
       <a href="/cs2-guides/" class="hp-cat-pill">Guides</a>
+      <a href="/matches/" class="hp-cat-pill">Esports</a>
     </div>
   </div>
 </section>
@@ -257,6 +260,7 @@ const faqs = [
   <a href="/cs2-cases/" class="hp-nav-item"><svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2" fill="none" stroke="currentColor" stroke-width="1.5"/></svg><span>Cases</span></a>
   <a href="/cs2-tools/" class="hp-nav-item"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 01-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z" fill="none" stroke="currentColor" stroke-width="1.5"/></svg><span>Tools</span></a>
   <a href="/cs2-guides/" class="hp-nav-item"><svg viewBox="0 0 24 24"><path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2z" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z" fill="none" stroke="currentColor" stroke-width="1.5"/></svg><span>Guides</span></a>
+  <a href="/matches/" class="hp-nav-item"><svg viewBox="0 0 24 24"><path d="M6 9H4.5a2.5 2.5 0 010-5C7 4 7 7 7 7m12-3a2.5 2.5 0 00-2.5 2.5V9m-9 0h9V4a3 3 0 00-6 0v5m0 0H7l1 12h8l1-12h-3z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Esports</span></a>
 </nav>
 
 <!-- ===== MINI CASE OPENING ===== -->
@@ -495,6 +499,56 @@ const faqs = [
   </section>
 </div>
 
+<!-- ===== LIVE ESPORTS ===== -->
+<section class="hp-section hp-esports-section">
+  <div class="hp-section-head">
+    <h2><span class="hp-live-dot"></span> Live Esports</h2>
+    <a href="/matches/" class="hp-section-link">All matches &rarr;</a>
+  </div>
+  <div class="hp-esports-live" id="wikiEsportsLive">
+    <div class="hp-esports-placeholder">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+      <span>Loading live matches...</span>
+    </div>
+  </div>
+  <div class="hp-esports-grid">
+    <a href="/matches/" class="hp-esports-card">
+      <svg viewBox="0 0 24 24" class="hp-esports-card-icon"><rect x="2" y="3" width="20" height="14" rx="2" fill="none" stroke="currentColor" stroke-width="1.5"/><line x1="8" y1="21" x2="16" y2="21" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><line x1="12" y1="17" x2="12" y2="21" stroke="currentColor" stroke-width="1.5"/></svg>
+      <div class="hp-esports-card-text">
+        <strong>Live Matches</strong>
+        <span>Real-time scores & streams</span>
+      </div>
+    </a>
+    <a href="/tournaments/" class="hp-esports-card">
+      <svg viewBox="0 0 24 24" class="hp-esports-card-icon"><path d="M6 9H4.5a2.5 2.5 0 010-5C7 4 7 7 7 7m12-3a2.5 2.5 0 00-2.5 2.5V9m-9 0h9V4a3 3 0 00-6 0v5m0 0H7l1 12h8l1-12h-3z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <div class="hp-esports-card-text">
+        <strong>Tournaments</strong>
+        <span>Majors, RMRs & more</span>
+      </div>
+    </a>
+    <a href="/h2h/" class="hp-esports-card">
+      <svg viewBox="0 0 24 24" class="hp-esports-card-icon"><path d="M16 21v-2a4 4 0 00-4-4H6a4 4 0 00-4 4v2" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="9" cy="7" r="4" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M22 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>
+      <div class="hp-esports-card-text">
+        <strong>Head-to-Head</strong>
+        <span>Compare teams & history</span>
+      </div>
+    </a>
+    <a href="/pickems/" class="hp-esports-card">
+      <svg viewBox="0 0 24 24" class="hp-esports-card-icon"><path d="M22 11.08V12a10 10 0 11-5.93-9.14" fill="none" stroke="currentColor" stroke-width="1.5"/><polyline points="22 4 12 14.01 9 11.01" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <div class="hp-esports-card-text">
+        <strong>Pick'Ems</strong>
+        <span>Predict match outcomes</span>
+      </div>
+    </a>
+  </div>
+  <div class="hp-quick-links">
+    <a href="/matches/">Match Tracker</a>
+    <a href="/tournaments/">Tournament Brackets</a>
+    <a href="/h2h/">Team Comparisons</a>
+    <a href="/pickems/">Pick'Ems</a>
+  </div>
+</section>
+
 <!-- ===== CTA ===== -->
 <section class="hp-cta-banner">
   <img src="/images/agents/cmdr-frank-wet-sox-baroud-seal-frogman.png" alt="" class="hp-cta-agent hp-cta-agent-left" width="120" height="120" loading="lazy" aria-hidden="true" />
@@ -531,6 +585,7 @@ const faqs = [
   <a href="/cs2-cases/">Cases</a>
   <a href="/cs2-tools/">Tools</a>
   <a href="/cs2-guides/">Guides</a>
+  <a href="/matches/">Esports</a>
   <a href="/sensitivity-converter/">Sens Converter</a>
   <a href="/crosshair-generator/">Crosshair Generator</a>
   <a href="/damage-calculator/">Damage Calculator</a>
@@ -748,6 +803,36 @@ html.light-mode .hp-title{color:#000}
 .hp-faq-a{max-height:0;overflow:hidden;margin:0;padding:0;font-size:.88rem;color:var(--text2);line-height:1.65;transition:max-height .35s ease,padding .35s ease}
 .hp-faq-a.open{max-height:300px;padding:.75rem 0 1rem}
 
+/* ── Live Esports ────────────────────────── */
+.hp-live-dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:#2ecc71;margin-right:4px;vertical-align:middle;box-shadow:0 0 6px rgba(46,204,113,.6);animation:hp-live-pulse 2s ease-in-out infinite}
+@keyframes hp-live-pulse{0%,100%{opacity:1;box-shadow:0 0 6px rgba(46,204,113,.6)}50%{opacity:.5;box-shadow:0 0 12px rgba(46,204,113,.9)}}
+.hp-stat-live{display:inline-flex;align-items:center}
+.hp-esports-section{margin-bottom:2rem}
+.hp-esports-live{margin-bottom:1rem;min-height:80px}
+.hp-esports-placeholder{display:flex;align-items:center;justify-content:center;gap:8px;padding:1.5rem;color:var(--text2);font-size:.88rem}
+.hp-esports-placeholder svg{opacity:.5}
+.hp-esports-match{display:flex;align-items:center;gap:.75rem;padding:.75rem;background:var(--bg3);border:1px solid var(--border);border-radius:4px;margin-bottom:.5rem;text-decoration:none;color:inherit;transition:border-color .15s}
+.hp-esports-match:hover{border-left:3px solid #2ecc71}
+.hp-esports-match:last-child{margin-bottom:0}
+.hp-esports-team{display:flex;align-items:center;gap:6px;min-width:0;flex:1}
+.hp-esports-team-logo{width:28px;height:28px;object-fit:contain;border-radius:4px;background:var(--bg2);flex-shrink:0}
+.hp-esports-team-name{font-size:.82rem;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hp-esports-vs{font-size:.72rem;color:var(--text2);font-weight:700;padding:0 .25rem;flex-shrink:0}
+.hp-esports-score{font-size:.95rem;font-weight:800;color:#2ecc71;flex-shrink:0;min-width:36px;text-align:center}
+.hp-esports-meta{display:flex;flex-direction:column;align-items:flex-end;gap:2px;flex-shrink:0;min-width:0}
+.hp-esports-league{font-size:.68rem;color:var(--text2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:120px}
+.hp-esports-badge{display:inline-block;padding:2px 6px;border-radius:4px;font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.04em}
+.hp-esports-badge-live{background:rgba(46,204,113,.15);color:#2ecc71;border:1px solid rgba(46,204,113,.3)}
+.hp-esports-badge-upcoming{background:rgba(255,255,255,.06);color:var(--text2);border:1px solid var(--border)}
+.hp-esports-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:.5rem;margin-bottom:1rem}
+.hp-esports-card{display:flex;align-items:center;gap:.65rem;padding:.75rem;background:var(--bg3);border:1px solid var(--border);border-radius:4px;text-decoration:none;color:inherit;transition:border-left .15s}
+.hp-esports-card:hover{border-left:3px solid #2ecc71}
+.hp-esports-card-icon{width:24px;height:24px;flex-shrink:0;color:#2ecc71;opacity:.7}
+.hp-esports-card:hover .hp-esports-card-icon{opacity:1}
+.hp-esports-card-text{display:flex;flex-direction:column;gap:.1rem;min-width:0}
+.hp-esports-card-text strong{font-size:.85rem;color:var(--text)}
+.hp-esports-card-text span{font-size:.72rem;color:var(--text2)}
+
 /* ── Responsive ───────────────────────────── */
 @media(max-width:1000px){
   .hp-skin-grid{grid-template-columns:repeat(3,1fr)}
@@ -763,6 +848,7 @@ html.light-mode .hp-title{color:#000}
   .hp-skin-grid{grid-template-columns:repeat(2,1fr)}
   .hp-weapon-grid,.hp-tool-grid{grid-template-columns:repeat(2,1fr)}
   .hp-grid-2{grid-template-columns:1fr}
+  .hp-esports-grid{grid-template-columns:repeat(2,1fr)}
   .hp-cta-inner{flex-direction:column;text-align:center}
   .hp-cta-agent{display:none}
   .hp-nav{gap:.25rem}
@@ -776,6 +862,7 @@ html.light-mode .hp-title{color:#000}
   .hp-title{font-size:1.6rem}
   .hp-skin-grid{grid-template-columns:1fr}
   .hp-weapon-grid,.hp-tool-grid{grid-template-columns:1fr}
+  .hp-esports-grid{grid-template-columns:1fr}
   .hp-quick-cats{gap:.35rem}
   .hp-cat-pill{padding:.35rem .7rem;font-size:.8rem}
   .hp-player-photo{width:44px;height:44px}
@@ -945,6 +1032,7 @@ html.light-mode .hp-title{color:#000}
 <script>
 if (typeof window !== 'undefined') {
   document.addEventListener('DOMContentLoaded', () => {
+    // FAQ accordion
     document.querySelectorAll('.hp-faq-q').forEach(dt => {
       dt.addEventListener('click', () => {
         const dd = dt.nextElementSibling;
@@ -957,6 +1045,54 @@ if (typeof window !== 'undefined') {
         }
       });
     });
+
+    // Live esports matches
+    (async function loadEsportsMatches() {
+      const container = document.getElementById('wikiEsportsLive');
+      if (!container) return;
+      try {
+        let res = await fetch('/api/matches?type=running&per_page=3');
+        let data = await res.json();
+        let matches = data.matches || [];
+        let badge = 'live';
+        if (matches.length === 0) {
+          res = await fetch('/api/matches?type=upcoming&per_page=3');
+          data = await res.json();
+          matches = data.matches || [];
+          badge = 'upcoming';
+        }
+        if (matches.length === 0) {
+          container.innerHTML = '<div class="hp-esports-placeholder"><span>No live matches right now — check <a href="/matches/" style="color:#2ecc71">Match Tracker</a></span></div>';
+          return;
+        }
+        container.innerHTML = matches.map((m: any) => {
+          const t1 = m.opponents?.[0] || {};
+          const t2 = m.opponents?.[1] || {};
+          const r1 = m.results?.[0]?.score ?? '-';
+          const r2 = m.results?.[1]?.score ?? '-';
+          const league = m.league?.name || m.tournament?.name || '';
+          const badgeCls = badge === 'live' ? 'hp-esports-badge-live' : 'hp-esports-badge-upcoming';
+          const badgeText = badge === 'live' ? 'LIVE' : 'Upcoming';
+          return `<a href="/matches/" class="hp-esports-match">
+            <div class="hp-esports-team">
+              ${t1.image ? `<img src="${t1.image}" alt="${t1.name||''}" class="hp-esports-team-logo" />` : ''}
+              <span class="hp-esports-team-name">${t1.name || 'TBD'}</span>
+            </div>
+            <span class="hp-esports-score">${r1} - ${r2}</span>
+            <div class="hp-esports-team" style="justify-content:flex-end">
+              <span class="hp-esports-team-name" style="text-align:right">${t2.name || 'TBD'}</span>
+              ${t2.image ? `<img src="${t2.image}" alt="${t2.name||''}" class="hp-esports-team-logo" />` : ''}
+            </div>
+            <div class="hp-esports-meta">
+              <span class="hp-esports-badge ${badgeCls}">${badgeText}</span>
+              <span class="hp-esports-league">${league}</span>
+            </div>
+          </a>`;
+        }).join('');
+      } catch (e) {
+        container.innerHTML = '<div class="hp-esports-placeholder"><span>Could not load matches — <a href="/matches/" style="color:#2ecc71">view all</a></span></div>';
+      }
+    })();
   });
 }
 </script>
