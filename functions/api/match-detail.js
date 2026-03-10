@@ -115,7 +115,14 @@ export async function onRequestGet(context) {
             score: t.score ?? computedScore,
           };
         }),
-        rounds: g.rounds ? g.rounds.length : 0,
+        rounds: g.rounds ? g.rounds.map(r => ({
+          round: r.round,
+          winnerTeam: r.winner_team,
+          winnerSide: r.winner_side,
+          outcome: r.outcome,
+          ct: r.ct,
+          t: r.terrorists,
+        })) : [],
       })),
     };
 

@@ -121,6 +121,17 @@ import Base from '../layouts/Base.astro';
 
 .game-duration { font-size: .75rem; color: var(--text3); margin-top: .6rem; text-align: right; padding-top: .4rem; border-top: 1px solid var(--border); }
 
+/* ── Round Timeline ── */
+.round-timeline { margin-top: .6rem; padding-top: .5rem; border-top: 1px solid var(--border); }
+.rt-row { display: flex; align-items: center; gap: 3px; justify-content: center; flex-wrap: wrap; }
+.rt-dot { width: 14px; height: 14px; border-radius: 2px; flex-shrink: 0; opacity: .85; transition: opacity .15s, transform .15s; cursor: default; }
+.rt-dot:hover { opacity: 1; transform: scale(1.3); }
+.rt-half-sep { width: 2px; height: 16px; background: var(--border); margin: 0 4px; flex-shrink: 0; border-radius: 1px; }
+.rt-t1.rt-ct { background: #5b9bd5; }
+.rt-t1.rt-t { background: #e8c44a; }
+.rt-t2.rt-ct { background: rgba(91,155,213,.35); }
+.rt-t2.rt-t { background: rgba(232,196,74,.35); }
+
 /* ── Streams Card ── */
 .streams-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 4px; padding: 1rem 1.25rem; margin-bottom: .75rem; transition: border-color .2s; }
 .streams-card:hover { border-color: var(--accent); }
@@ -432,6 +443,27 @@ import Base from '../layouts/Base.astro';
                 </div>
               </div>
               ${halfHTML}
+              ${(() => {
+                const rounds = game.rounds || [];
+                if (rounds.length === 0) return '';
+                const team1Id = gt1.id || t1.id;
+                const team2Id = gt2.id || t2.id;
+                // Build round dots: each round is a colored dot for the winning team/side
+                const halfPoint = Math.min(12, Math.floor(rounds.length / 2));
+                let html = '<div class="round-timeline">';
+                html += '<div class="rt-row">';
+                rounds.forEach((r, i) => {
+                  // Insert half separator
+                  if (i === halfPoint) html += '<span class="rt-half-sep"></span>';
+                  const isT1 = r.winnerTeam === team1Id;
+                  const side = r.winnerSide || '';
+                  const cls = isT1 ? 'rt-t1' : 'rt-t2';
+                  const sideCls = side === 'ct' ? 'rt-ct' : 'rt-t';
+                  html += '<span class="rt-dot ' + cls + ' ' + sideCls + '" title="R' + (i+1) + ' ' + side.toUpperCase() + ' ' + r.outcome + '"></span>';
+                });
+                html += '</div></div>';
+                return html;
+              })()}
               ${gameDuration ? `<div class="game-duration">Duration: ${gameDuration}</div>` : ''}
               ${game.id ? `<button class="gps-toggle" data-game-id="${game.id}" onclick="window.__togglePlayerStats(this, ${game.id})">Show Player Stats ▾</button><div class="gps-table-wrap" id="gps-wrap-${game.id}" style="display:none"></div>` : ''}
             </div>
@@ -628,7 +660,7 @@ import Base from '../layouts/Base.astro';
         const isMvp = p.rating === mvpRating && mvpRating > 0;
         const kd = (p.kills || 0) - (p.deaths || 0);
         const kdStr = kd > 0 ? '+' + kd : '' + kd;
-        const kastPct = p.kast != null ? (p.kast * 100).toFixed(0) + '%' : '\u2014';
+        const kastPct = p.kast != null ? p.kast.toFixed(0) + '%' : '\u2014';
         const ratingStr = p.rating != null ? p.rating.toFixed(2) : '\u2014';
         const adrStr = p.adr != null ? p.adr.toFixed(1) : '\u2014';
         const playerLink = p.slug ? '<a href="/pro-players/' + encodeURIComponent(p.slug) + '/">' + escapeHtml(p.name) + '</a>' : escapeHtml(p.name);

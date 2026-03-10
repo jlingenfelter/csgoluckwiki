@@ -39,6 +39,36 @@ export async function onRequestGet(context) {
 
     const game = await gameRes.json();
 
+    // PandaScore returns players at the top level (game.players[]),
+    // NOT nested under game.teams[].players[]. Group them by team.
+    const teamMap = {};
+    for (const t of (game.teams || [])) {
+      teamMap[t.id] = { id: t.id, name: t.name, acronym: t.acronym, players: [] };
+    }
+    for (const p of (game.players || [])) {
+      const teamId = p.team?.id;
+      if (teamId && !teamMap[teamId]) {
+        teamMap[teamId] = { id: teamId, name: p.team.name, acronym: p.team.acronym, players: [] };
+      }
+      if (teamId && teamMap[teamId]) {
+        teamMap[teamId].players.push({
+          id: p.player?.id,
+          name: p.player?.name,
+          slug: p.player?.slug,
+          nationality: p.player?.nationality,
+          kills: p.kills,
+          deaths: p.deaths,
+          assists: p.assists,
+          headshots: p.headshots,
+          adr: p.adr,
+          kast: p.kast,       // already a percentage (e.g. 71.4)
+          rating: p.rating,
+          firstKillsDiff: p.first_kills_diff,
+          flashAssists: p.flash_assists,
+        });
+      }
+    }
+
     const result = {
       id: game.id,
       position: game.position,
@@ -50,38 +80,14 @@ export async function onRequestGet(context) {
       map: game.map ? { id: game.map.id, name: game.map.name, image: game.map.image_url } : null,
       winnerId: game.winner?.id,
       winnerName: game.winner?.name,
-      teams: (game.teams || []).map(t => ({
-        id: t.team?.id,
-        name: t.team?.name,
-        acronym: t.team?.acronym,
-        score: t.score,
-        firstHalfScore: t.first_half_score,
-        secondHalfScore: t.second_half_score,
-        overtimeScore: t.overtime_score,
-        players: (t.players || []).map(p => ({
-          id: p.player?.id || p.id,
-          name: p.player?.name || p.name,
-          slug: p.player?.slug || p.slug,
-          nationality: p.player?.nationality || p.nationality,
-          kills: p.kills,
-          deaths: p.deaths,
-          assists: p.assists,
-          headshots: p.headshots,
-          adr: p.adr,
-          kast: p.kast,
-          rating: p.rating,
-          firstKillsDiff: p.first_kills_diff,
-          flashAssists: p.flash_assists,
-        })),
-      })),
+      teams: Object.values(teamMap),
       rounds: game.rounds ? game.rounds.map(r => ({
-        number: r.number,
+        number: r.round,
         outcome: r.outcome,
-        winnerId: r.winner?.id,
-        winnerName: r.winner?.name,
+        winnerTeam: r.winner_team,
         winnerSide: r.winner_side,
-        ct: r.ct?.team?.id,
-        t: r.t?.team?.id,
+        ct: r.ct,
+        t: r.terrorists,
       })) : [],
     };
 
