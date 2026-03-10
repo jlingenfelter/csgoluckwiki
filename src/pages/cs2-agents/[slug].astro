@@ -67,7 +67,7 @@ const pageDesc = agentPrice
 const breadcrumbs = [
   { name: 'Home', url: '/' },
   { name: 'Agents', url: '/cs2-agents/' },
-  { name: agent.name, url: `/cs2-agent/${agent.slug}/` },
+  { name: agent.name, url: `/cs2-agents/${agent.slug}/` },
 ];
 
 const faqs = [
@@ -259,7 +259,7 @@ const productSchema = JSON.stringify({
           </div>
           <div class="ad-same-tier-list">
             {sameTierAgents.map(sa => (
-              <a href={`/cs2-agent/${sa.slug}/`} class="ad-same-tier-item">
+              <a href={`/cs2-agents/${sa.slug}/`} class="ad-same-tier-item">
                 <div class="ad-same-tier-avatar">
                   {sa.image ? (
                     <img src={sa.image} alt={sa.name} width="48" height="48" loading="lazy" />
@@ -337,7 +337,7 @@ const productSchema = JSON.stringify({
           const raKey = `${ra.name} | ${ra.faction}`.trim();
           const raPrice = skindeckItems[raKey]?.price ?? null;
           return (
-            <a href={`/cs2-agent/${ra.slug}/`} class="ad-rel-card" style={`--rc:${raTierColor}`}>
+            <a href={`/cs2-agents/${ra.slug}/`} class="ad-rel-card" style={`--rc:${raTierColor}`}>
               <div class="ad-rel-thumb" style={`background:linear-gradient(135deg, ${raTierColor}22, ${raTierColor}08)`}>
                 {ra.image ? (
                   <img src={ra.image} alt={ra.name} loading="lazy" width="200" height="250" />

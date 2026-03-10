@@ -129,7 +129,7 @@ const crumbs = [
       const low = getLowestPrice(skin);
       const rarityColor = RARITY_COLORS[skin.rarity] || '#fff';
       return (
-        <a href={`/cs2-skin/${skin.slug}/`} class="mt-skin-row">
+        <a href={`/cs2-skins/${skin.slug}/`} class="mt-skin-row">
           <span class="mt-rank">#{idx + 1}</span>
           <span class="mt-skin-info">
             <span class="mt-skin-weapon">{skin.weapon}</span>
@@ -153,7 +153,7 @@ const crumbs = [
       const high = getHighestPrice(skin);
       const rarityColor = RARITY_COLORS[skin.rarity] || '#fff';
       return (
-        <a href={`/cs2-skin/${skin.slug}/`} class="mt-skin-row">
+        <a href={`/cs2-skins/${skin.slug}/`} class="mt-skin-row">
           <span class="mt-value-badge">Value</span>
           <span class="mt-skin-info">
             <span class="mt-skin-weapon">{skin.weapon}</span>
@@ -177,7 +177,7 @@ const crumbs = [
       const rarityColor = RARITY_COLORS[skin.rarity] || '#fff';
       const isKnife = skin.category === 'knife';
       return (
-        <a href={`/cs2-skin/${skin.slug}/`} class="mt-skin-row">
+        <a href={`/cs2-skins/${skin.slug}/`} class="mt-skin-row">
           <span class="mt-premium-badge">{isKnife ? 'Knife' : 'Glove'}</span>
           <span class="mt-skin-info">
             <span class="mt-skin-weapon">{skin.weapon}</span>
@@ -203,7 +203,7 @@ const crumbs = [
       const low = getLowestPrice(skin);
       const rarityColor = RARITY_COLORS[skin.rarity] || '#fff';
       return (
-        <a href={`/cs2-skin/${skin.slug}/`} class="mt-mover-row">
+        <a href={`/cs2-skins/${skin.slug}/`} class="mt-mover-row">
           <span class="mt-mover-rank">#{idx + 1}</span>
           <span class="mt-mover-img">
             {skin.image && <img src={skin.image} alt={`${skin.weapon} | ${skin.name}`} loading="lazy" width="60" height="45" />}
@@ -233,7 +233,7 @@ const crumbs = [
       const low = getLowestPrice(skin);
       const rarityColor = RARITY_COLORS[skin.rarity] || '#fff';
       return (
-        <a href={`/cs2-skin/${skin.slug}/`} class="mt-mover-row">
+        <a href={`/cs2-skins/${skin.slug}/`} class="mt-mover-row">
           <span class="mt-mover-rank">#{idx + 1}</span>
           <span class="mt-mover-img">
             {skin.image && <img src={skin.image} alt={`${skin.weapon} | ${skin.name}`} loading="lazy" width="60" height="45" />}
@@ -264,7 +264,7 @@ const crumbs = [
       const liqColor = getLiquidityColor(skin.liquidity || 0);
       const liqLabel = getLiquidityLabel(skin.liquidity || 0);
       return (
-        <a href={`/cs2-skin/${skin.slug}/`} class="mt-mover-row">
+        <a href={`/cs2-skins/${skin.slug}/`} class="mt-mover-row">
           <span class="mt-mover-rank">#{idx + 1}</span>
           <span class="mt-mover-img">
             {skin.image && <img src={skin.image} alt={`${skin.weapon} | ${skin.name}`} loading="lazy" width="60" height="45" />}
@@ -293,7 +293,7 @@ const crumbs = [
     {mostListedSkins.map((skin, idx) => {
       const low = getLowestPrice(skin);
       return (
-        <a href={`/cs2-skin/${skin.slug}/`} class="mt-mover-row">
+        <a href={`/cs2-skins/${skin.slug}/`} class="mt-mover-row">
           <span class="mt-mover-rank">#{idx + 1}</span>
           <span class="mt-mover-img">
             {skin.image && <img src={skin.image} alt={`${skin.weapon} | ${skin.name}`} loading="lazy" width="60" height="45" />}

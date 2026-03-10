@@ -353,7 +353,7 @@ const faqs = [
       const low = getLowestPrice(skin);
       const high = getHighestPrice(skin);
       return (
-        <a href={`/cs2-skin/${skin.slug}/`} class="hp-skin-card" style={`--rc:${rc}`}>
+        <a href={`/cs2-skins/${skin.slug}/`} class="hp-skin-card" style={`--rc:${rc}`}>
           <div class="hp-skin-head">
             <span class="hp-skin-weapon">{skin.weapon}</span>
             <strong class="hp-skin-name">{skin.name}</strong>
@@ -406,7 +406,7 @@ const faqs = [
     {featuredWeapons.map(w => {
       const wImg = getWeaponImage(w.slug);
       return (
-        <a href={`/cs2-weapon/${w.slug}/`} class="hp-weapon-card">
+        <a href={`/cs2-weapons/${w.slug}/`} class="hp-weapon-card">
           <div class="hp-weapon-text">
             <strong>{w.name}</strong>
             <div class="hp-weapon-stats">

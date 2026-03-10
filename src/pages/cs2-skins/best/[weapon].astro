@@ -27,7 +27,7 @@ const description = `Discover the best ${weapon.name} skins in Counter-Strike 2.
 const breadcrumbs = [
   { name: 'Home', url: '/' },
   { name: 'Skins', url: '/cs2-skins/' },
-  { name: `${weapon.name} Skins`, url: `/cs2-weapon/${weapon.slug}/` },
+  { name: `${weapon.name} Skins`, url: `/cs2-weapons/${weapon.slug}/` },
   { name: `Best ${weapon.name} Skins`, url: `/cs2-skins/best/${weapon.slug}/` },
 ];
 
@@ -44,7 +44,7 @@ const faqs = [
 <script type="application/ld+json" set:html={JSON.stringify(faqSchema(faqs))} />
 
 <nav class="breadcrumb">
-  <a href="/">Home</a> / <a href="/cs2-skins/">Skins</a> / <a href={`/cs2-weapon/${weapon.slug}/`}>{weapon.name}</a> / <span>Best Skins</span>
+  <a href="/">Home</a> / <a href="/cs2-skins/">Skins</a> / <a href={`/cs2-weapons/${weapon.slug}/`}>{weapon.name}</a> / <span>Best Skins</span>
 </nav>
 
 <!-- Hero: Left-aligned -->
@@ -69,7 +69,7 @@ const faqs = [
     <p class="sb-tier-desc">Premium collector items and investment-grade skins.</p>
     <div class="sb-tier-list">
       {luxury.map(s => (
-        <a href={`/cs2-skin/${s.slug}/`} class="sb-skin-row">
+        <a href={`/cs2-skins/${s.slug}/`} class="sb-skin-row">
           <div class="sb-skin-img">
             {s.image && <img src={skinCardImage(s.image)} alt={`${s.weapon} | ${s.name}`} width="80" height="60" loading="lazy" />}
           </div>
@@ -93,7 +93,7 @@ const faqs = [
     <p class="sb-tier-desc">High-quality skins that stand out in-game without breaking the bank.</p>
     <div class="sb-tier-list">
       {premium.map(s => (
-        <a href={`/cs2-skin/${s.slug}/`} class="sb-skin-row">
+        <a href={`/cs2-skins/${s.slug}/`} class="sb-skin-row">
           <div class="sb-skin-img">
             {s.image && <img src={skinCardImage(s.image)} alt={`${s.weapon} | ${s.name}`} width="80" height="60" loading="lazy" />}
           </div>
@@ -117,7 +117,7 @@ const faqs = [
     <p class="sb-tier-desc">Great designs at accessible price points for competitive players.</p>
     <div class="sb-tier-list">
       {mid.map(s => (
-        <a href={`/cs2-skin/${s.slug}/`} class="sb-skin-row">
+        <a href={`/cs2-skins/${s.slug}/`} class="sb-skin-row">
           <div class="sb-skin-img">
             {s.image && <img src={skinCardImage(s.image)} alt={`${s.weapon} | ${s.name}`} width="80" height="60" loading="lazy" />}
           </div>
@@ -141,7 +141,7 @@ const faqs = [
     <p class="sb-tier-desc">Affordable skins that look great without the investment.</p>
     <div class="sb-tier-list">
       {budget.map(s => (
-        <a href={`/cs2-skin/${s.slug}/`} class="sb-skin-row">
+        <a href={`/cs2-skins/${s.slug}/`} class="sb-skin-row">
           <div class="sb-skin-img">
             {s.image && <img src={skinCardImage(s.image)} alt={`${s.weapon} | ${s.name}`} width="80" height="60" loading="lazy" />}
           </div>

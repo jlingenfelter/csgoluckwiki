@@ -156,7 +156,7 @@ const faqs = [
     const rarityColor = RARITY_COLORS[skin.rarity] || '#fff';
     const rarityBg = RARITY_BG[skin.rarity] || 'rgba(255,255,255,0.08)';
     return (
-      <a href={`/cs2-skin/${skin.slug}/`}
+      <a href={`/cs2-skins/${skin.slug}/`}
          class={`bu-card${i >= 60 ? ' bu-hidden' : ''}`}
          data-cat={skin.category}
          data-rarity={RARITY_ORDER[skin.rarity] ?? 99}

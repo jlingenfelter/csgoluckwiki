@@ -126,7 +126,7 @@ const topComparisons = getWeaponComparisons().slice(0, 8);
   const rarityColor = RARITY_COLORS[skin.rarity] || '#fff';
   const rarityBg = RARITY_BG[skin.rarity] || 'rgba(255,255,255,0.05)';
   return (
-    <a href={`/cs2-skin/${skin.slug}/`} class={`sh-card${i >= 48 ? ' sh-hidden' : ''}`} data-weapon={skin.weapon} data-category={skin.category} data-rarity={skin.rarity} data-price={high} data-name={`${skin.weapon} ${skin.name}`}>
+    <a href={`/cs2-skins/${skin.slug}/`} class={`sh-card${i >= 48 ? ' sh-hidden' : ''}`} data-weapon={skin.weapon} data-category={skin.category} data-rarity={skin.rarity} data-price={high} data-name={`${skin.weapon} ${skin.name}`}>
       <div class="sh-card-img" style={`background:${rarityBg}`}>
         <span class="sh-card-rarity" style={`background:${rarityColor}`}>{skin.rarity}</span>
         {skin.image

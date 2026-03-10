@@ -299,7 +299,7 @@ const rarities = ['All', 'Covert', 'Classified', 'Restricted', 'Mil-Spec', 'Indu
     resultsCount.textContent = `${results.length} ${results.length === 1 ? 'skin' : 'skins'} found`;
 
     resultsGrid.innerHTML = results.map(skin => `
-      <a href="/cs2-skin/${skin.slug}/" class="sr-skin-card" data-rarity="${skin.rarity}">
+      <a href="/cs2-skins/${skin.slug}/" class="sr-skin-card" data-rarity="${skin.rarity}">
         <div class="sr-skin-img">
           ${skin.image ? `<img src="${skin.image}" alt="${skin.name}">` : 'No image'}
         </div>
@@ -395,7 +395,7 @@ document.addEventListener('DOMContentLoaded', () => {
     grid.innerHTML = favs.map(f => `
       <div class="sr-wl-card">
         <button class="sr-wl-remove" data-slug="${f.slug}" title="Remove from watchlist">&times;</button>
-        <a href="/cs2-skin/${f.slug}/" style="text-decoration:none;color:inherit;display:flex;flex-direction:column;flex:1">
+        <a href="/cs2-skins/${f.slug}/" style="text-decoration:none;color:inherit;display:flex;flex-direction:column;flex:1">
           <div class="sr-wl-card-img">
             ${f.image ? `<img src="${f.image}" alt="${f.weapon} | ${f.name}" loading="lazy" />` : ''}
           </div>

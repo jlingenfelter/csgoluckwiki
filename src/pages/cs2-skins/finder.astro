@@ -192,7 +192,7 @@ function renderMore() {
   const batch = filtered.slice(showing, showing + PAGE_SIZE);
   for (const s of batch) {
     const row = document.createElement('a');
-    row.href = `/cs2-skin/${s.s}/`;
+    row.href = `/cs2-skins/${s.s}/`;
     row.className = 'sf-result-row';
     row.innerHTML = `
       <div class="sf-result-img">${s.i ? `<img src="${s.i}" alt="${s.n}" width="72" height="52" loading="lazy" />` : '<span class="sf-result-placeholder"></span>'}</div>

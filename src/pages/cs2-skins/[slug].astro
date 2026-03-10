@@ -493,9 +493,9 @@ const faqs = [
 const crumbs = [
   { name: 'Home', url: 'https://wiki.csgoluck.com/' },
   { name: 'Skins', url: 'https://wiki.csgoluck.com/cs2-skins/' },
-  { name: `${skin.weapon} Skins`, url: `https://wiki.csgoluck.com/cs2-weapon/${skin.weaponSlug}/` },
-  ...(isPhaseVariant && parentSkin ? [{ name: parentSkin.name, url: `https://wiki.csgoluck.com/cs2-skin/${parentSkin.slug}/` }] : []),
-  { name: isPhaseVariant ? skin.phase! : skin.name, url: `https://wiki.csgoluck.com/cs2-skin/${skin.slug}/` },
+  { name: `${skin.weapon} Skins`, url: `https://wiki.csgoluck.com/cs2-weapons/${skin.weaponSlug}/` },
+  ...(isPhaseVariant && parentSkin ? [{ name: parentSkin.name, url: `https://wiki.csgoluck.com/cs2-skins/${parentSkin.slug}/` }] : []),
+  { name: isPhaseVariant ? skin.phase! : skin.name, url: `https://wiki.csgoluck.com/cs2-skins/${skin.slug}/` },
 ];
 
 // ── Related skins from same collection ────────────────────────────────────
@@ -587,7 +587,7 @@ const listingDesc = (skin.listingCount ?? 0) > 10000 ? 'widely available with hi
 
 <!-- Breadcrumb Navigation -->
 <nav class="wi-crumbs">
-  <a href="/">Home</a> <span class="wi-crumbs-sep">/</span> <a href="/cs2-skins/">Skins</a> <span class="wi-crumbs-sep">/</span> <a href={`/cs2-weapon/${skin.weaponSlug}/`}>{skin.weapon}</a>{isPhaseVariant && parentSkin ? <> <span class="wi-crumbs-sep">/</span> <a href={`/cs2-skin/${parentSkin.slug}/`}>{parentSkin.name}</a></> : null} <span class="wi-crumbs-sep">/</span> <span class="wi-crumbs-current">{isPhaseVariant ? skin.phase : skin.name}</span>
+  <a href="/">Home</a> <span class="wi-crumbs-sep">/</span> <a href="/cs2-skins/">Skins</a> <span class="wi-crumbs-sep">/</span> <a href={`/cs2-weapons/${skin.weaponSlug}/`}>{skin.weapon}</a>{isPhaseVariant && parentSkin ? <> <span class="wi-crumbs-sep">/</span> <a href={`/cs2-skins/${parentSkin.slug}/`}>{parentSkin.name}</a></> : null} <span class="wi-crumbs-sep">/</span> <span class="wi-crumbs-current">{isPhaseVariant ? skin.phase : skin.name}</span>
 </nav>
 
 <!-- Title Strip -->
@@ -642,7 +642,7 @@ const listingDesc = (skin.listingCount ?? 0) > 10000 ? 'widely available with hi
         <tbody>
           <tr class="wi-spec-row"><td class="wi-spec-key">Class</td><td class="wi-spec-val">{skin.category === 'knife' || skin.category === 'glove' ? 'Special' : 'Skin'}</td></tr>
           <tr class="wi-spec-row"><td class="wi-spec-key">Weapon Type</td><td class="wi-spec-val">{catLabel}</td></tr>
-          <tr class="wi-spec-row"><td class="wi-spec-key">Weapon</td><td class="wi-spec-val"><a href={`/cs2-weapon/${skin.weaponSlug}/`}>{skin.weapon}</a></td></tr>
+          <tr class="wi-spec-row"><td class="wi-spec-key">Weapon</td><td class="wi-spec-val"><a href={`/cs2-weapons/${skin.weaponSlug}/`}>{skin.weapon}</a></td></tr>
           <tr class="wi-spec-row"><td class="wi-spec-key">Skin Name</td><td class="wi-spec-val">{skin.name}</td></tr>
           {skin.collection && <tr class="wi-spec-row"><td class="wi-spec-key">Set</td><td class="wi-spec-val">{skin.collection}</td></tr>}
           <tr class="wi-spec-row"><td class="wi-spec-key">Grade</td><td class="wi-spec-val" style={`color:${rarityColor}`}>{skin.rarity}</td></tr>
@@ -1190,7 +1190,7 @@ const listingDesc = (skin.listingCount ?? 0) > 10000 ? 'widely available with hi
       {phaseVariants.map(pv => {
         const pvLow = getLowestPrice(pv);
         return (
-          <a href={`/cs2-skin/${pv.slug}/`} class="wi-phase-item">
+          <a href={`/cs2-skins/${pv.slug}/`} class="wi-phase-item">
             <div class="wi-phase-thumb">
               {pv.image
                 ? <img src={skinRelatedImage(pv.image)} alt={`${pv.weapon} | ${pv.name}`} loading="lazy" width="200" height="150" />
@@ -1213,9 +1213,9 @@ const listingDesc = (skin.listingCount ?? 0) > 10000 ? 'widely available with hi
       <h2>Phase Variants</h2>
     </div>
     <div class="wi-phases-nav">
-      <a href={`/cs2-skin/${parentSkin.slug}/`} class="wi-phase-link">All Phases</a>
+      <a href={`/cs2-skins/${parentSkin.slug}/`} class="wi-phase-link">All Phases</a>
       {siblingVariants.map(pv => (
-        <a href={`/cs2-skin/${pv.slug}/`} class={`wi-phase-link ${pv.slug === skin.slug ? 'active' : ''}`}>
+        <a href={`/cs2-skins/${pv.slug}/`} class={`wi-phase-link ${pv.slug === skin.slug ? 'active' : ''}`}>
           {pv.phase}
         </a>
       ))}
@@ -1234,7 +1234,7 @@ const listingDesc = (skin.listingCount ?? 0) > 10000 ? 'widely available with hi
         const rsBg = RARITY_BG[rs.rarity] || 'rgba(255,255,255,0.05)';
         const rsLow = getLowestPrice(rs);
         return (
-          <a href={`/cs2-skin/${rs.slug}/`} class="wi-rel-card" style={`--rc:${rsColor};--rbg:${rsBg}`}>
+          <a href={`/cs2-skins/${rs.slug}/`} class="wi-rel-card" style={`--rc:${rsColor};--rbg:${rsBg}`}>
             <div class="wi-rel-thumb" style={`background:${rsBg}`}>
               {rs.image
                 ? <img src={skinRelatedImage(rs.image)} alt={`${rs.weapon} | ${rs.name}`} loading="lazy" width="280" height="210" />
@@ -1295,11 +1295,11 @@ const listingDesc = (skin.listingCount ?? 0) > 10000 ? 'widely available with hi
 
   {weapon && (
     <p>
-      The <a href={`/cs2-weapon/${skin.weaponSlug}/`}>{skin.weapon}</a> is classified as a {weapon.category?.toLowerCase() || catLabel.toLowerCase()} in CS2
+      The <a href={`/cs2-weapons/${skin.weaponSlug}/`}>{skin.weapon}</a> is classified as a {weapon.category?.toLowerCase() || catLabel.toLowerCase()} in CS2
       {weapon.price ? `, available in-game for $${weapon.price.toLocaleString()}` : ''}.
       {weapon.damage ? ` Base damage output is ${weapon.damage}` : ''}
       {weapon.rpm ? ` with a fire rate of ${weapon.rpm} RPM` : ''}.
-      See all <a href={`/cs2-weapon/${skin.weaponSlug}/`}>{skin.weapon} skins</a> for additional options.
+      See all <a href={`/cs2-weapons/${skin.weaponSlug}/`}>{skin.weapon} skins</a> for additional options.
     </p>
   )}
 </div>
@@ -1315,7 +1315,7 @@ const listingDesc = (skin.listingCount ?? 0) > 10000 ? 'widely available with hi
         const rsBg = RARITY_BG[rs.rarity] || 'rgba(255,255,255,0.05)';
         const rsHigh = getHighestPrice(rs);
         return (
-          <a href={`/cs2-skin/${rs.slug}/`} class="wi-rel-card" style={`--rc:${rsColor};--rbg:${rsBg}`}>
+          <a href={`/cs2-skins/${rs.slug}/`} class="wi-rel-card" style={`--rc:${rsColor};--rbg:${rsBg}`}>
             <div class="wi-rel-thumb" style={`background:${rsBg}`}>
               {rs.image
                 ? <img src={skinRelatedImage(rs.image)} alt={`${rs.weapon} | ${rs.name}`} loading="lazy" width="280" height="210" />
@@ -1344,7 +1344,7 @@ const listingDesc = (skin.listingCount ?? 0) > 10000 ? 'widely available with hi
         const rsBg = RARITY_BG[rs.rarity] || 'rgba(255,255,255,0.05)';
         const rsHigh = getHighestPrice(rs);
         return (
-          <a href={`/cs2-skin/${rs.slug}/`} class="wi-rel-card" style={`--rc:${rsColor};--rbg:${rsBg}`}>
+          <a href={`/cs2-skins/${rs.slug}/`} class="wi-rel-card" style={`--rc:${rsColor};--rbg:${rsBg}`}>
             <div class="wi-rel-thumb" style={`background:${rsBg}`}>
               {rs.image
                 ? <img src={skinRelatedImage(rs.image)} alt={`${rs.weapon} | ${rs.name}`} loading="lazy" width="280" height="210" />
@@ -1372,7 +1372,7 @@ const listingDesc = (skin.listingCount ?? 0) > 10000 ? 'widely available with hi
         const rsBg = RARITY_BG[rs.rarity] || 'rgba(255,255,255,0.05)';
         const rsHigh = getHighestPrice(rs);
         return (
-          <a href={`/cs2-skin/${rs.slug}/`} class="wi-rel-card" style={`--rc:${rsColor};--rbg:${rsBg}`}>
+          <a href={`/cs2-skins/${rs.slug}/`} class="wi-rel-card" style={`--rc:${rsColor};--rbg:${rsBg}`}>
             <div class="wi-rel-thumb" style={`background:${rsBg}`}>
               {rs.image
                 ? <img src={skinRelatedImage(rs.image)} alt={`${rs.weapon} | ${rs.name}`} loading="lazy" width="280" height="210" />
@@ -1401,7 +1401,7 @@ const listingDesc = (skin.listingCount ?? 0) > 10000 ? 'widely available with hi
         const rsBg = RARITY_BG[rs.rarity] || 'rgba(255,255,255,0.05)';
         const rsLow = getLowestPrice(rs);
         return (
-          <a href={`/cs2-skin/${rs.slug}/`} class="wi-similar-card">
+          <a href={`/cs2-skins/${rs.slug}/`} class="wi-similar-card">
             <div class="wi-similar-thumb" style={`background:${rsBg}`}>
               {rs.image
                 ? <img src={skinRelatedImage(rs.image)} alt={`${rs.weapon} | ${rs.name}`} loading="lazy" width="280" height="210" />
@@ -1433,7 +1433,7 @@ const listingDesc = (skin.listingCount ?? 0) > 10000 ? 'widely available with hi
 
 <!-- Internal Links -->
 <div class="internal-links">
-  <a href={`/cs2-weapon/${skin.weaponSlug}/`}>{skin.weapon} Stats</a>
+  <a href={`/cs2-weapons/${skin.weaponSlug}/`}>{skin.weapon} Stats</a>
   <a href={`/cs2-weapons/${skin.category}/`}>All {catLabel} Skins</a>
   <a href="/cs2-skins/">All Skins</a>
   <a href="/skin-compare/">Compare Skins</a>
@@ -1743,7 +1743,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (recent.length > 0) {
       section.style.display = '';
       strip.innerHTML = recent.map(r => `
-        <a href="/cs2-skin/${r.slug}/" class="wi-recent-card">
+        <a href="/cs2-skins/${r.slug}/" class="wi-recent-card">
           <div class="wi-recent-card-img">
             ${r.image ? `<img src="${r.image}" alt="${r.weapon} | ${r.name}" loading="lazy" />` : ''}
           </div>

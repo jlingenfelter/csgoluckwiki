@@ -9,6 +9,11 @@
 # Old /map/ singular → /cs2-maps/ plural
 /map/:slug /cs2-maps/:slug/ 301
 
+# Singular → Plural nesting (URL consolidation)
+/cs2-skin/:slug /cs2-skins/:slug/ 301
+/cs2-weapon/:slug /cs2-weapons/:slug/ 301
+/cs2-agent/:slug /cs2-agents/:slug/ 301
+
 # Old /players/ plural → /pro-players/ (new site route)
 /players/ /pro-players/ 301
 /players/:slug /pro-players/:slug/ 301

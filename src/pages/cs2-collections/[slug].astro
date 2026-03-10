@@ -140,7 +140,7 @@ const relatedCollections = allCollections.filter(c => c.slug !== collection.slug
               {skinsByRarity[rarity].map(skin => {
                 const price = getLowestPrice(skin);
                 return (
-                  <a href={`/cs2-skin/${skin.slug}/`} class="cl-card">
+                  <a href={`/cs2-skins/${skin.slug}/`} class="cl-card">
                     <div class="cl-card-img" style={`background:${rarityBg}`}>
                       <span class="cl-card-rarity" style={`background:${rarityColor}`}>{rarity}</span>
                       {skin.image ? (

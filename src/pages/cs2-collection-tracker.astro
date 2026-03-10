@@ -973,7 +973,7 @@ const rarityColorsJson = JSON.stringify(RARITY_COLORS);
             '<div class="ct-skin-info-weapon">' + escHtml(s.weapon) + ' &middot; ' + escHtml(s.rarity) + '</div>' +
           '</div>' +
           '<span class="ct-skin-price">' + formatPrice(s.lowestPrice) + '</span>' +
-          '<a href="/cs2-skin/' + s.slug + '/" class="ct-skin-view" onclick="event.stopPropagation()">View</a>';
+          '<a href="/cs2-skins/' + s.slug + '/" class="ct-skin-view" onclick="event.stopPropagation()">View</a>';
 
         (function(skinSlug, colSlug, el) {
           el.addEventListener('click', function(e) {

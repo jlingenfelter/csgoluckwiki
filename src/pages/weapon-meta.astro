@@ -119,7 +119,7 @@ const breadcrumbs = [
       </div>
       <div class="wm-weapons-list">
         {t.weapons.map((w, i) => (
-          <a href={`/cs2-weapon/${w.slug}/`} class:list={['wm-weapon-row', { 'wm-weapon-alt': i % 2 === 1 }]}>
+          <a href={`/cs2-weapons/${w.slug}/`} class:list={['wm-weapon-row', { 'wm-weapon-alt': i % 2 === 1 }]}>
             <div class="wm-weapon-main">
               <span class="wm-weapon-name">{w.name}</span>
               <span class="wm-weapon-role" style={`border-color: ${t.color}40; color: ${t.color};`}>{w.role}</span>

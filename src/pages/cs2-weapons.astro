@@ -76,7 +76,7 @@ const itemListSchema = JSON.stringify({
             {!isCosmetic && <span class="wh-th wh-th-rpm">RPM</span>}
           </div>
           {weapons.map((w, i) => (
-            <a href={`/cs2-weapon/${w.slug}/`} class:list={['wh-row', { 'wh-row-alt': i % 2 === 1 }]}>
+            <a href={`/cs2-weapons/${w.slug}/`} class:list={['wh-row', { 'wh-row-alt': i % 2 === 1 }]}>
               <span class="wh-td wh-td-name">{w.name}</span>
               <span class="wh-td wh-td-cat">
                 <span class={`wh-side wh-side-${w.team}`}>{w.team === 'ct' ? 'CT' : w.team === 't' ? 'T' : 'Both'}</span>

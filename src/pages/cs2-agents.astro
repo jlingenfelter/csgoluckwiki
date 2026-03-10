@@ -91,7 +91,7 @@ const faqs = [
     <p class="ag-section-desc">Internationally recruited counter-terrorism specialists from elite military units.</p>
     <div class="ag-grid">
       {ctAgents.map(agent => (
-        <a href={`/cs2-agent/${agent.slug}/`} class="ag-card">
+        <a href={`/cs2-agents/${agent.slug}/`} class="ag-card">
           <div class="ag-card-img" style={`background:linear-gradient(135deg, ${getTierColor(agent.tier)}22, ${getTierColor(agent.tier)}08)`}>
             <span class="ag-card-tier" style={`background:${getTierColor(agent.tier)}`}>{agent.tier}</span>
             {agent.image ? <img src={agent.image} alt={agent.name} class="ag-card-avatar" loading="lazy" /> : <span class="ag-card-icon">CT</span>}
@@ -112,7 +112,7 @@ const faqs = [
     <p class="ag-section-desc">A varied lineup of hostile operatives representing the Sabre, Phoenix Connexion, Balkans, and The Doctor organisations.</p>
     <div class="ag-grid">
       {tAgents.map(agent => (
-        <a href={`/cs2-agent/${agent.slug}/`} class="ag-card">
+        <a href={`/cs2-agents/${agent.slug}/`} class="ag-card">
           <div class="ag-card-img" style={`background:linear-gradient(135deg, ${getTierColor(agent.tier)}22, ${getTierColor(agent.tier)}08)`}>
             <span class="ag-card-tier" style={`background:${getTierColor(agent.tier)}`}>{agent.tier}</span>
             {agent.image ? <img src={agent.image} alt={agent.name} class="ag-card-avatar" loading="lazy" /> : <span class="ag-card-icon">T</span>}

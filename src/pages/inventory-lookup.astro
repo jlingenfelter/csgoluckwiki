@@ -482,7 +482,7 @@ const faqs = [
       data.items.sort(function(a, b) { return (b.price || 0) - (a.price || 0); }).slice(0, 12).forEach(function(item) {
         var skinSlug = itemNameToSlug(item.name);
         var card = document.createElement('a');
-        card.href = skinSlug ? '/cs2-skin/' + skinSlug + '/' : '/cs2-skins/';
+        card.href = skinSlug ? '/cs2-skins/' + skinSlug + '/' : '/cs2-skins/';
         card.className = 'il-item-card';
         card.innerHTML = '<div class="il-item-img">' + escapeHtml(item.name.split('|')[0] || '') + '</div>' +
           '<div class="il-item-info">' +

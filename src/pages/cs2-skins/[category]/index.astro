@@ -108,7 +108,7 @@ const wearMap: Record<string, string> = {
   const rarityColor = RARITY_COLORS[skin.rarity] || '#fff';
   const rarityBg = RARITY_BG[skin.rarity] || 'rgba(255,255,255,0.08)';
   return (
-    <a href={`/cs2-skin/${skin.slug}/`} class={`sc-card${i >= 48 ? ' sc-hidden' : ''}`} data-weapon={skin.weaponSlug} data-rarity={skin.rarity} data-price={high} data-name={skin.name}>
+    <a href={`/cs2-skins/${skin.slug}/`} class={`sc-card${i >= 48 ? ' sc-hidden' : ''}`} data-weapon={skin.weaponSlug} data-rarity={skin.rarity} data-price={high} data-name={skin.name}>
       <div class="sc-card-img" style={`background:${rarityBg}`}>
         <span class="sc-card-rarity" style={`background:${rarityColor}`}>{skin.rarity}</span>
         {skin.image

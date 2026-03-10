@@ -145,7 +145,7 @@ const faqs = [
 <!-- Deal Rows -->
 <div id="sd-grid" class="sd-list">
   {topDeals.map(d => (
-    <a href={`/cs2-skin/${d.s}/`} class="sd-row" data-cat={d.c} data-best={d.best} data-discount={d.discount} data-savings={(d.steam - d.best).toFixed(2)}>
+    <a href={`/cs2-skins/${d.s}/`} class="sd-row" data-cat={d.c} data-best={d.best} data-discount={d.discount} data-savings={(d.steam - d.best).toFixed(2)}>
       <div class="sd-row-img">
         {d.i && <img src={d.i} alt={d.n} width="72" height="52" loading="lazy" />}
       </div>

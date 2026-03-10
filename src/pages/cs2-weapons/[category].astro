@@ -159,7 +159,7 @@ const breadcrumbs = [
                   const skins = getSkinsByWeapon(w.slug);
                   const skinCount = skins.length;
                   return (
-                    <a href={`/cs2-weapon/${w.slug}/`} class:list={['wc-row', { 'wc-row-alt': i % 2 === 1 }]}>
+                    <a href={`/cs2-weapons/${w.slug}/`} class:list={['wc-row', { 'wc-row-alt': i % 2 === 1 }]}>
                       <span class="wc-rd wc-rd-name">{w.name}</span>
                       <span class="wc-rd wc-rd-side">
                         <span class={`wc-side wc-side-${w.team}`}>{w.team === 'ct' ? 'CT' : w.team === 't' ? 'T' : 'Both'}</span>
@@ -184,7 +184,7 @@ const breadcrumbs = [
               const skins = getSkinsByWeapon(w.slug);
               const skinCount = skins.length;
               return (
-                <a href={`/cs2-weapon/${w.slug}/`} class:list={['wc-row', { 'wc-row-alt': i % 2 === 1 }]}>
+                <a href={`/cs2-weapons/${w.slug}/`} class:list={['wc-row', { 'wc-row-alt': i % 2 === 1 }]}>
                   <span class="wc-rd wc-rd-name">{w.name}</span>
                   <span class="wc-rd wc-rd-side">
                     <span class={`wc-side wc-side-${w.team}`}>{w.team === 'ct' ? 'CT' : w.team === 't' ? 'T' : 'Both'}</span>

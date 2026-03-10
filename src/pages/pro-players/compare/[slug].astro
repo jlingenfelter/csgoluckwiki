@@ -194,8 +194,8 @@ if (p1.loadout || p2.loadout) {
           {loadoutSlots.map((s, i) => (
             <tr class={i % 2 === 0 ? 'px-row-even' : 'px-row-odd'}>
               <td class="px-cell-label">{s.label}</td>
-              <td>{s.slug1 ? <a href={`/cs2-skin/${s.slug1}/`} class="px-val-link">{s.name1}</a> : s.name1 || '—'}</td>
-              <td>{s.slug2 ? <a href={`/cs2-skin/${s.slug2}/`} class="px-val-link">{s.name2}</a> : s.name2 || '—'}</td>
+              <td>{s.slug1 ? <a href={`/cs2-skins/${s.slug1}/`} class="px-val-link">{s.name1}</a> : s.name1 || '—'}</td>
+              <td>{s.slug2 ? <a href={`/cs2-skins/${s.slug2}/`} class="px-val-link">{s.name2}</a> : s.name2 || '—'}</td>
             </tr>
           ))}
         </tbody>

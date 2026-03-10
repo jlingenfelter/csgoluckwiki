@@ -117,7 +117,7 @@ const faqs = [
   </div>
   <p class="sw-hero-desc">Browse all {weaponName} skins in CS2. Compare prices across wear conditions and find the best deals.</p>
   {weaponData && !weaponData.cosmetic && (
-    <a href={`/cs2-weapon/${weaponSlug}/`} class="sw-stats-link">View {weaponName} weapon stats &rarr;</a>
+    <a href={`/cs2-weapons/${weaponSlug}/`} class="sw-stats-link">View {weaponName} weapon stats &rarr;</a>
   )}
 </section>
 
@@ -152,7 +152,7 @@ const faqs = [
   const rarityBg = RARITY_BG[skin.rarity] || 'rgba(255,255,255,0.04)';
   const rarityIdx = ['Consumer','Industrial','Mil-Spec','Restricted','Classified','Covert','Extraordinary','Contraband'].indexOf(skin.rarity);
   return (
-    <a href={`/cs2-skin/${skin.slug}/`} class="sw-card" data-price={high} data-name={skin.name} data-rarity={rarityIdx}>
+    <a href={`/cs2-skins/${skin.slug}/`} class="sw-card" data-price={high} data-name={skin.name} data-rarity={rarityIdx}>
       <div class="sw-card-img" style={`background:${rarityBg}`}>
         <span class="sw-card-rarity" style={`background:${rarityColor}`}>{skin.rarity}</span>
         {skin.image
@@ -191,7 +191,7 @@ const faqs = [
   <strong>Related:</strong>
   <a href="/cs2-skins/">All Skins</a>
   <a href={`/cs2-skins/${category}/`}>{catInfo.label} Skins</a>
-  {weaponData && <a href={`/cs2-weapon/${weaponSlug}/`}>{weaponName} Stats</a>}
+  {weaponData && <a href={`/cs2-weapons/${weaponSlug}/`}>{weaponName} Stats</a>}
   <a href="/skin-compare/">Compare Skins</a>
   <a href="/price-tracker/">Price Tracker</a>
   <a href="/tradeup-calculator/">Trade-Up Calculator</a>

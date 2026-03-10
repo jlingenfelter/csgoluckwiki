@@ -429,7 +429,7 @@ const faqs = [
     <h3 class="pp-sub">{player.name}'s Weapon Skins</h3>
     <div class="pp-loadout-grid">
       {resolvedLoadout.map(item => (
-        <a href={item.skin ? `/cs2-skin/${item.slug}/` : '#'} class={`pp-loadout-card${item.skin ? '' : ' pp-loadout-nolink'}`} style={item.rarityColor ? `border-color:${item.rarityColor}` : ''}>
+        <a href={item.skin ? `/cs2-skins/${item.slug}/` : '#'} class={`pp-loadout-card${item.skin ? '' : ' pp-loadout-nolink'}`} style={item.rarityColor ? `border-color:${item.rarityColor}` : ''}>
           {item.image ? (
             <img class="pp-loadout-img" src={item.image} alt={item.name} width="160" height="120" loading="lazy" onerror="this.style.display='none'" />
           ) : (

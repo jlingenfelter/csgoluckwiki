@@ -294,7 +294,7 @@ const totalTracked = skinsWithPrices.length;
     selectedNameEl.textContent = skin.name;
     selectedWeaponEl.textContent = skin.weapon;
     selectedPriceEl.textContent = formatPrice(skin.lowestPrice);
-    selectedLinkEl.href = '/cs2-skin/' + skin.slug + '/';
+    selectedLinkEl.href = '/cs2-skins/' + skin.slug + '/';
     targetPriceInput.value = '';
     selectedSkinEl.style.display = 'block';
 
@@ -417,7 +417,7 @@ const totalTracked = skinsWithPrices.length;
       html += '<div class="pa-alert-card ' + (a.triggered ? 'pa-alert-triggered' : '') + '">';
       html += '<div class="pa-alert-header">';
       html += '<div class="pa-alert-skin-info">';
-      html += '<a href="/cs2-skin/' + a.slug + '/" class="pa-alert-name">' + escapeHtml(a.name) + '</a>';
+      html += '<a href="/cs2-skins/' + a.slug + '/" class="pa-alert-name">' + escapeHtml(a.name) + '</a>';
       html += '<span class="pa-alert-weapon">' + escapeHtml(a.weapon) + '</span>';
       html += '</div>';
       html += '<span class="pa-alert-status ' + statusClass + '">' + statusLabel + '</span>';
