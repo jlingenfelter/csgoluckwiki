@@ -1,0 +1,638 @@
+---
+import Base from '../layouts/Base.astro';
+import ExploreMore from '../components/ExploreMore.astro';
+import BettingCTA from '../components/BettingCTA.astro';
+
+const explore = [
+  { title: 'Predictions', href: '/predictions/', desc: 'Trading-grade win probabilities for upcoming matches' },
+  { title: 'H2H Comparator', href: '/h2h/', desc: 'Compare any two teams head-to-head' },
+  { title: 'Live Matches', href: '/matches/', desc: 'Real-time CS2 match tracker' },
+  { title: 'Map Callouts', href: '/map-callouts/', desc: 'Learn every callout on every map' },
+];
+---
+<Base title="CS2 Map Veto Simulator — Ban/Pick Tool with Win Probabilities | CSGOLuck Wiki" description="Interactive map veto simulator for CS2. Select two teams, simulate the ban/pick process, and see how each decision shifts win probability. Powered by real map pool data." currentNav="/predictions/">
+
+<nav class="breadcrumb" aria-label="Breadcrumb">
+<a href="/">Home</a> <span class="sep">›</span> <a href="/esports/">Esports</a> <span class="sep">›</span> <span>Veto Simulator</span>
+</nav>
+
+<h1>CS2 Map Veto Simulator</h1>
+<p class="page-intro">Simulate the map ban/pick process between two teams. See how each veto decision shifts win probabilities based on real map pool data from PandaScore.</p>
+
+<BettingCTA text="Found the right map pick? Back your analysis." cta="Bet on CS2 Matches" variant="matches" />
+
+<!-- Team Selection -->
+<div class="veto-setup">
+  <div class="veto-team-select">
+    <label class="veto-label">Team 1</label>
+    <div class="veto-search-wrap">
+      <input type="text" id="team1Search" class="veto-search" placeholder="Search team name…" autocomplete="off">
+      <div class="veto-dropdown" id="team1Dropdown"></div>
+    </div>
+    <div class="veto-team-display" id="team1Display" style="display:none">
+      <img id="team1Logo" class="veto-team-img" src="" alt="">
+      <span id="team1Name" class="veto-team-name"></span>
+      <button class="veto-team-clear" onclick="clearTeam(1)">✕</button>
+    </div>
+  </div>
+
+  <div class="veto-vs-badge">VS</div>
+
+  <div class="veto-team-select">
+    <label class="veto-label">Team 2</label>
+    <div class="veto-search-wrap">
+      <input type="text" id="team2Search" class="veto-search" placeholder="Search team name…" autocomplete="off">
+      <div class="veto-dropdown" id="team2Dropdown"></div>
+    </div>
+    <div class="veto-team-display" id="team2Display" style="display:none">
+      <img id="team2Logo" class="veto-team-img" src="" alt="">
+      <span id="team2Name" class="veto-team-name"></span>
+      <button class="veto-team-clear" onclick="clearTeam(2)">✕</button>
+    </div>
+  </div>
+
+  <div class="veto-format-select">
+    <label class="veto-label">Format</label>
+    <div class="veto-format-btns">
+      <button class="veto-format-btn active" data-format="3">BO3</button>
+      <button class="veto-format-btn" data-format="5">BO5</button>
+    </div>
+  </div>
+</div>
+
+<!-- Loading State -->
+<div id="vetoLoading" style="display:none">
+  <div class="loading-state"><div class="spinner"></div> Loading map pool data…</div>
+</div>
+
+<!-- Veto Board -->
+<div id="vetoBoard" style="display:none">
+  <!-- Current Step -->
+  <div class="veto-step-info" id="vetoStepInfo">
+    <span class="veto-step-team" id="vetoStepTeam"></span>
+    <span class="veto-step-action" id="vetoStepAction"></span>
+  </div>
+
+  <!-- Win Probability -->
+  <div class="veto-winprob" id="vetoWinProb">
+    <div class="veto-wp-header">
+      <span class="veto-wp-name" id="wpT1Name"></span>
+      <span class="veto-wp-label">Series Win Probability</span>
+      <span class="veto-wp-name" id="wpT2Name"></span>
+    </div>
+    <div class="veto-wp-bar">
+      <div class="veto-wp-fill t1" id="wpT1Bar" style="width:50%"><span id="wpT1Pct">50%</span></div>
+      <div class="veto-wp-fill t2" id="wpT2Bar" style="width:50%"><span id="wpT2Pct">50%</span></div>
+    </div>
+  </div>
+
+  <!-- Map Grid -->
+  <div class="veto-maps" id="vetoMaps"></div>
+
+  <!-- Veto Log -->
+  <div class="veto-log" id="vetoLog">
+    <h3>Veto Sequence</h3>
+    <div class="veto-log-entries" id="vetoLogEntries"></div>
+  </div>
+
+  <!-- Selected Maps -->
+  <div class="veto-selected" id="vetoSelected" style="display:none">
+    <h3>Maps to Play</h3>
+    <div class="veto-selected-maps" id="vetoSelectedMaps"></div>
+  </div>
+
+  <!-- Controls -->
+  <div class="veto-controls">
+    <button class="veto-btn veto-btn-reset" onclick="resetVeto()">Reset Veto</button>
+    <button class="veto-btn veto-btn-auto" onclick="autoVeto()">Auto-Complete</button>
+  </div>
+</div>
+
+<ExploreMore items={explore} />
+
+<style is:global>
+.page-intro { color: var(--text2); margin-bottom: 1.5rem; font-size: .95rem; line-height: 1.5; }
+
+/* Setup */
+.veto-setup { display: flex; align-items: flex-end; gap: 1rem; margin-bottom: 1.5rem; flex-wrap: wrap; }
+.veto-team-select { flex: 1; min-width: 180px; }
+.veto-label { display: block; font-size: .75rem; font-weight: 700; color: var(--text3); text-transform: uppercase; letter-spacing: .03em; margin-bottom: .3rem; }
+.veto-search-wrap { position: relative; }
+.veto-search { width: 100%; background: var(--bg2); border: 1px solid var(--border); color: var(--text1); padding: .55rem .75rem; font-size: .85rem; border-radius: 4px; font-family: inherit; }
+.veto-search:focus { border-color: var(--accent); outline: none; }
+.veto-dropdown { display: none; position: absolute; top: 100%; left: 0; right: 0; background: var(--bg2); border: 1px solid var(--border); border-top: none; border-radius: 0 0 4px 4px; max-height: 200px; overflow-y: auto; z-index: 100; }
+.veto-dropdown.open { display: block; }
+.veto-dropdown-item { display: flex; align-items: center; gap: .5rem; padding: .5rem .75rem; cursor: pointer; font-size: .82rem; transition: background .15s; }
+.veto-dropdown-item:hover { background: var(--bg3); }
+.veto-dropdown-item img { width: 22px; height: 22px; border-radius: 3px; object-fit: contain; background: var(--bg3); }
+
+.veto-team-display { display: flex; align-items: center; gap: .5rem; background: var(--bg2); border: 1px solid var(--accent); border-radius: 4px; padding: .45rem .75rem; }
+.veto-team-img { width: 24px; height: 24px; border-radius: 3px; object-fit: contain; }
+.veto-team-name { font-weight: 700; font-size: .88rem; flex: 1; }
+.veto-team-clear { background: none; border: none; color: var(--text3); cursor: pointer; font-size: .9rem; padding: 0 .2rem; }
+.veto-team-clear:hover { color: #e74c3c; }
+
+.veto-vs-badge { font-size: .85rem; font-weight: 800; color: var(--text3); padding-bottom: .55rem; }
+
+.veto-format-select { }
+.veto-format-btns { display: flex; gap: .3rem; }
+.veto-format-btn { background: var(--bg3); border: 1px solid var(--border); padding: .45rem .8rem; font-size: .82rem; font-weight: 700; color: var(--text2); cursor: pointer; border-radius: 4px; font-family: inherit; transition: all .2s; }
+.veto-format-btn:hover { border-color: var(--accent); color: var(--text1); }
+.veto-format-btn.active { background: var(--accent); color: #000; border-color: var(--accent); }
+
+/* Step Info */
+.veto-step-info { background: var(--bg2); border: 1px solid var(--border); border-left: 3px solid var(--accent); border-radius: 4px; padding: .65rem 1rem; margin-bottom: 1rem; display: flex; align-items: center; gap: .5rem; font-size: .88rem; }
+.veto-step-team { font-weight: 700; color: var(--accent); }
+.veto-step-action { color: var(--text2); }
+.veto-step-info.done { border-left-color: var(--text3); }
+.veto-step-info.done .veto-step-team { color: var(--text2); }
+
+/* Win Probability */
+.veto-winprob { margin-bottom: 1rem; }
+.veto-wp-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: .3rem; }
+.veto-wp-name { font-size: .82rem; font-weight: 700; }
+.veto-wp-label { font-size: .7rem; color: var(--text3); text-transform: uppercase; font-weight: 600; }
+.veto-wp-bar { display: flex; height: 28px; border-radius: 4px; overflow: hidden; background: var(--bg3); }
+.veto-wp-fill { display: flex; align-items: center; justify-content: center; font-size: .75rem; font-weight: 800; transition: width .4s ease; color: #000; font-family: 'Montserrat', sans-serif; }
+.veto-wp-fill.t1 { background: var(--accent); }
+.veto-wp-fill.t2 { background: var(--text3); color: var(--bg1); }
+
+/* Map Grid */
+.veto-maps { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: .6rem; margin-bottom: 1.25rem; }
+.veto-map-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 4px; padding: .6rem; text-align: center; cursor: pointer; transition: all .2s; position: relative; }
+.veto-map-card:hover { border-color: var(--accent); transform: translateY(-1px); }
+.veto-map-card.banned { opacity: .35; cursor: default; border-color: #e74c3c; }
+.veto-map-card.banned:hover { transform: none; }
+.veto-map-card.picked { border-color: var(--accent); background: rgba(46,204,113,.08); cursor: default; }
+.veto-map-card.picked:hover { transform: none; }
+.veto-map-card.decider { border-color: #f1c40f; background: rgba(241,196,15,.08); cursor: default; }
+.veto-map-card.decider:hover { transform: none; }
+.veto-map-img { width: 100%; height: 70px; object-fit: cover; border-radius: 3px; margin-bottom: .35rem; background: var(--bg3); }
+.veto-map-name { font-size: .82rem; font-weight: 700; margin-bottom: .2rem; }
+.veto-map-stats { font-size: .68rem; color: var(--text3); line-height: 1.4; }
+.veto-map-wr { font-weight: 700; }
+.veto-map-wr.good { color: var(--accent); } .veto-map-wr.bad { color: #e74c3c; } .veto-map-wr.avg { color: #f1c40f; }
+.veto-map-badge { position: absolute; top: .35rem; right: .35rem; font-size: .6rem; font-weight: 800; padding: .1rem .35rem; border-radius: 3px; text-transform: uppercase; }
+.veto-map-badge.ban { background: #e74c3c; color: #fff; }
+.veto-map-badge.pick { background: var(--accent); color: #000; }
+.veto-map-badge.dec { background: #f1c40f; color: #000; }
+.veto-map-badge-team { font-size: .58rem; display: block; margin-top: .1rem; color: var(--text3); font-weight: 600; }
+
+/* Veto Log */
+.veto-log { margin-bottom: 1rem; }
+.veto-log h3 { font-size: .9rem; font-weight: 700; margin: 0 0 .5rem; }
+.veto-log-entries { display: flex; flex-direction: column; gap: .3rem; }
+.veto-log-entry { display: flex; align-items: center; gap: .5rem; font-size: .78rem; padding: .3rem .5rem; background: var(--bg2); border-radius: 3px; border-left: 3px solid var(--border); }
+.veto-log-entry.ban { border-left-color: #e74c3c; }
+.veto-log-entry.pick { border-left-color: var(--accent); }
+.veto-log-entry.decider { border-left-color: #f1c40f; }
+.veto-log-team { font-weight: 700; min-width: 55px; }
+.veto-log-action { font-weight: 600; color: var(--text3); min-width: 40px; }
+.veto-log-action.ban { color: #e74c3c; } .veto-log-action.pick { color: var(--accent); } .veto-log-action.dec { color: #f1c40f; }
+.veto-log-map { color: var(--text2); }
+
+/* Selected Maps */
+.veto-selected { margin-bottom: 1rem; }
+.veto-selected h3 { font-size: .9rem; font-weight: 700; margin: 0 0 .5rem; }
+.veto-selected-maps { display: flex; gap: .5rem; flex-wrap: wrap; }
+.veto-sel-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 4px; padding: .6rem .8rem; min-width: 120px; text-align: center; }
+.veto-sel-label { font-size: .65rem; font-weight: 700; color: var(--text3); text-transform: uppercase; margin-bottom: .2rem; }
+.veto-sel-name { font-size: .88rem; font-weight: 700; margin-bottom: .15rem; }
+.veto-sel-prob { font-size: .78rem; }
+.veto-sel-prob .t1 { color: var(--accent); font-weight: 700; } .veto-sel-prob .t2 { color: var(--text2); font-weight: 700; }
+
+/* Controls */
+.veto-controls { display: flex; gap: .5rem; margin-bottom: 1.5rem; }
+.veto-btn { padding: .5rem 1rem; border-radius: 4px; font-size: .82rem; font-weight: 700; cursor: pointer; font-family: inherit; border: 1px solid var(--border); transition: all .2s; }
+.veto-btn-reset { background: var(--bg3); color: var(--text2); }
+.veto-btn-reset:hover { border-color: var(--accent); color: var(--accent); }
+.veto-btn-auto { background: var(--accent); color: #000; border-color: var(--accent); }
+.veto-btn-auto:hover { opacity: .9; }
+
+/* Loading */
+.loading-state { text-align: center; padding: 2rem; color: var(--text2); font-size: .9rem; }
+.spinner { display: inline-block; width: 20px; height: 20px; border: 2px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin .6s linear infinite; margin-right: .5rem; vertical-align: middle; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* Responsive */
+@media (max-width: 600px) {
+  .veto-setup { flex-direction: column; align-items: stretch; }
+  .veto-vs-badge { text-align: center; padding: .25rem 0; }
+  .veto-maps { grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); }
+}
+</style>
+
+<script>
+(function() {
+  function esc(s) { return s ? String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;') : ''; }
+
+  // ─── State ────────────────────────────────────────────────
+  var team1 = null, team2 = null;
+  var team1Stats = null, team2Stats = null;
+  var format = 3; // BO3 or BO5
+  var mapPool = []; // available maps with stats
+  var vetoSteps = []; // defined veto sequence
+  var vetoState = []; // current state of each map: null, {action:'ban'|'pick'|'decider', team:1|2}
+  var currentStep = 0;
+
+  // Active map pool for CS2
+  var CS2_MAPS = ['Dust2', 'Mirage', 'Inferno', 'Nuke', 'Overpass', 'Ancient', 'Anubis', 'Vertigo', 'Train'];
+
+  // BO3 veto: ban-ban-pick-pick-ban-ban-decider
+  var BO3_STEPS = [
+    { team: 1, action: 'ban' }, { team: 2, action: 'ban' },
+    { team: 1, action: 'pick' }, { team: 2, action: 'pick' },
+    { team: 1, action: 'ban' }, { team: 2, action: 'ban' },
+    { team: 0, action: 'decider' }
+  ];
+  // BO5 veto: ban-ban-pick-pick-pick-pick-decider
+  var BO5_STEPS = [
+    { team: 1, action: 'ban' }, { team: 2, action: 'ban' },
+    { team: 1, action: 'pick' }, { team: 2, action: 'pick' },
+    { team: 1, action: 'pick' }, { team: 2, action: 'pick' },
+    { team: 0, action: 'decider' }
+  ];
+
+  // ─── Team Search ──────────────────────────────────────────
+  var searchTimeout = {};
+
+  function setupSearch(num) {
+    var input = document.getElementById('team' + num + 'Search');
+    var dropdown = document.getElementById('team' + num + 'Dropdown');
+
+    input.addEventListener('input', function() {
+      var q = input.value.trim();
+      if (q.length < 2) { dropdown.classList.remove('open'); return; }
+      clearTimeout(searchTimeout[num]);
+      searchTimeout[num] = setTimeout(async function() {
+        try {
+          var res = await fetch('/api/team-competitive-stats?name=' + encodeURIComponent(q));
+          if (!res.ok) { dropdown.classList.remove('open'); return; }
+          var data = await res.json();
+          // Show single result if found
+          if (data && data.id) {
+            dropdown.innerHTML = '<div class="veto-dropdown-item" data-id="' + data.id + '" data-name="' + esc(data.name) + '" data-img="' + esc(data.image || '') + '">' +
+              (data.image ? '<img src="' + esc(data.image) + '" alt="">' : '') +
+              '<span>' + esc(data.name) + (data.acronym ? ' (' + esc(data.acronym) + ')' : '') + '</span></div>';
+            dropdown.classList.add('open');
+            // Add click handlers
+            dropdown.querySelectorAll('.veto-dropdown-item').forEach(function(item) {
+              item.addEventListener('click', function() {
+                selectTeam(num, {
+                  id: parseInt(item.dataset.id),
+                  name: item.dataset.name,
+                  image: item.dataset.img,
+                  stats: data
+                });
+                dropdown.classList.remove('open');
+              });
+            });
+          }
+        } catch(e) {}
+      }, 300);
+    });
+
+    input.addEventListener('blur', function() {
+      setTimeout(function() { dropdown.classList.remove('open'); }, 200);
+    });
+  }
+
+  function selectTeam(num, data) {
+    if (num === 1) { team1 = data; team1Stats = data.stats; } else { team2 = data; team2Stats = data.stats; }
+    var input = document.getElementById('team' + num + 'Search');
+    var display = document.getElementById('team' + num + 'Display');
+    input.style.display = 'none';
+    display.style.display = 'flex';
+    document.getElementById('team' + num + 'Logo').src = data.image || '';
+    document.getElementById('team' + num + 'Name').textContent = data.name;
+
+    if (team1 && team2) initVeto();
+  }
+
+  window.clearTeam = function(num) {
+    if (num === 1) { team1 = null; team1Stats = null; } else { team2 = null; team2Stats = null; }
+    var input = document.getElementById('team' + num + 'Search');
+    var display = document.getElementById('team' + num + 'Display');
+    input.style.display = 'block';
+    input.value = '';
+    display.style.display = 'none';
+    document.getElementById('vetoBoard').style.display = 'none';
+  };
+
+  setupSearch(1);
+  setupSearch(2);
+
+  // ─── Format Selection ─────────────────────────────────────
+  document.querySelectorAll('.veto-format-btn').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      document.querySelectorAll('.veto-format-btn').forEach(function(b) { b.classList.remove('active'); });
+      btn.classList.add('active');
+      format = parseInt(btn.dataset.format);
+      if (team1 && team2) initVeto();
+    });
+  });
+
+  // ─── Veto Logic ───────────────────────────────────────────
+  function getMapWR(stats, mapName) {
+    if (!stats || !stats.maps) return null;
+    var m = stats.maps.find(function(mp) { return mp.name && mp.name.toLowerCase() === mapName.toLowerCase(); });
+    return m ? { winRate: m.winRate, played: m.played } : null;
+  }
+
+  function calcMapProb(mapName) {
+    var t1m = getMapWR(team1Stats, mapName);
+    var t2m = getMapWR(team2Stats, mapName);
+    var t1wr = t1m ? t1m.winRate / 100 : 0.50;
+    var t2wr = t2m ? t2m.winRate / 100 : 0.50;
+    if (t1wr + t2wr === 0) return 0.50;
+    return t1wr / (t1wr + t2wr);
+  }
+
+  function calcSeriesProb() {
+    // Get picked + decider maps
+    var playedMaps = [];
+    vetoState.forEach(function(s, i) {
+      if (s && (s.action === 'pick' || s.action === 'decider')) {
+        playedMaps.push({ name: mapPool[i].name, prob: calcMapProb(mapPool[i].name) });
+      }
+    });
+
+    if (playedMaps.length === 0) {
+      // Pre-veto: average across all maps
+      var total = 0;
+      mapPool.forEach(function(m) { total += calcMapProb(m.name); });
+      return total / mapPool.length;
+    }
+
+    // Simulate series: team needs to win ceil(format/2) maps
+    var mapsToWin = Math.ceil(format / 2);
+
+    // Use product probability for all map combinations
+    // Simple approach: multiply independent map win probs
+    if (playedMaps.length < format) {
+      // Not all maps decided yet — use available maps + average for remaining
+      var decidedProb = 0;
+      playedMaps.forEach(function(m) { decidedProb += m.prob; });
+      var remaining = format - playedMaps.length;
+      var undecided = mapPool.filter(function(m, i) { return !vetoState[i]; });
+      var avgUndecided = 0;
+      undecided.forEach(function(m) { avgUndecided += calcMapProb(m.name); });
+      avgUndecided = undecided.length ? avgUndecided / undecided.length : 0.50;
+      decidedProb += avgUndecided * remaining;
+      return decidedProb / format;
+    }
+
+    // All maps decided: compute series probability using recursive BO formula
+    return calcBoProb(playedMaps.map(function(m) { return m.prob; }), mapsToWin);
+  }
+
+  function calcBoProb(mapProbs, mapsToWin) {
+    // Dynamic programming approach for series probability
+    // State: (t1Wins, t2Wins) -> probability of reaching this state
+    var n = mapProbs.length;
+    // dp[w1][w2] = probability
+    var dp = [];
+    for (var i = 0; i <= mapsToWin; i++) { dp[i] = []; for (var j = 0; j <= mapsToWin; j++) dp[i][j] = 0; }
+    dp[0][0] = 1;
+
+    for (var g = 0; g < n; g++) {
+      var p = mapProbs[g];
+      var newDp = [];
+      for (var i2 = 0; i2 <= mapsToWin; i2++) { newDp[i2] = []; for (var j2 = 0; j2 <= mapsToWin; j2++) newDp[i2][j2] = 0; }
+      for (var w1 = 0; w1 < mapsToWin; w1++) {
+        for (var w2 = 0; w2 < mapsToWin; w2++) {
+          if (dp[w1][w2] === 0) continue;
+          newDp[w1 + 1][w2] += dp[w1][w2] * p;
+          newDp[w1][w2 + 1] += dp[w1][w2] * (1 - p);
+        }
+      }
+      dp = newDp;
+    }
+
+    var t1WinProb = 0;
+    for (var w2f = 0; w2f < mapsToWin; w2f++) {
+      t1WinProb += dp[mapsToWin][w2f];
+    }
+    return t1WinProb;
+  }
+
+  function initVeto() {
+    document.getElementById('vetoLoading').style.display = 'block';
+    document.getElementById('vetoBoard').style.display = 'none';
+
+    // Build map pool from team stats
+    var allMapNames = {};
+    if (team1Stats && team1Stats.maps) team1Stats.maps.forEach(function(m) { allMapNames[m.name] = true; });
+    if (team2Stats && team2Stats.maps) team2Stats.maps.forEach(function(m) { allMapNames[m.name] = true; });
+
+    // Use CS2 active map pool, intersected with available data
+    mapPool = CS2_MAPS.filter(function(n) { return allMapNames[n]; }).map(function(name) {
+      var t1m = getMapWR(team1Stats, name);
+      var t2m = getMapWR(team2Stats, name);
+      return {
+        name: name,
+        t1wr: t1m ? t1m.winRate : null,
+        t1played: t1m ? t1m.played : 0,
+        t2wr: t2m ? t2m.winRate : null,
+        t2played: t2m ? t2m.played : 0
+      };
+    });
+
+    // Need at least format + 2 maps for proper veto
+    if (mapPool.length < format + 2) {
+      // Add remaining CS2 maps
+      CS2_MAPS.forEach(function(n) {
+        if (!mapPool.find(function(m) { return m.name === n; })) {
+          mapPool.push({ name: n, t1wr: null, t1played: 0, t2wr: null, t2played: 0 });
+        }
+      });
+    }
+
+    // Ensure we have exactly 7 maps (standard CS2 pool)
+    mapPool = mapPool.slice(0, 7);
+
+    vetoSteps = format === 3 ? BO3_STEPS : BO5_STEPS;
+    vetoState = new Array(mapPool.length).fill(null);
+    currentStep = 0;
+
+    document.getElementById('vetoLoading').style.display = 'none';
+    document.getElementById('vetoBoard').style.display = 'block';
+
+    renderVeto();
+  }
+
+  function renderVeto() {
+    var t1Name = team1.name, t2Name = team2.name;
+
+    // Step info
+    var stepEl = document.getElementById('vetoStepInfo');
+    if (currentStep >= vetoSteps.length) {
+      stepEl.className = 'veto-step-info done';
+      document.getElementById('vetoStepTeam').textContent = '';
+      document.getElementById('vetoStepAction').textContent = 'Veto complete — maps selected';
+    } else {
+      var step = vetoSteps[currentStep];
+      stepEl.className = 'veto-step-info';
+      if (step.action === 'decider') {
+        document.getElementById('vetoStepTeam').textContent = '';
+        document.getElementById('vetoStepAction').textContent = 'Remaining map is the decider';
+      } else {
+        document.getElementById('vetoStepTeam').textContent = step.team === 1 ? t1Name : t2Name;
+        document.getElementById('vetoStepAction').textContent = step.action === 'ban' ? 'bans a map' : 'picks a map';
+      }
+    }
+
+    // Win probability
+    var seriesP = calcSeriesProb();
+    var t1Pct = Math.round(Math.min(95, Math.max(5, seriesP * 100)));
+    var t2Pct = 100 - t1Pct;
+    document.getElementById('wpT1Name').textContent = t1Name;
+    document.getElementById('wpT2Name').textContent = t2Name;
+    document.getElementById('wpT1Bar').style.width = t1Pct + '%';
+    document.getElementById('wpT2Bar').style.width = t2Pct + '%';
+    document.getElementById('wpT1Pct').textContent = t1Pct + '%';
+    document.getElementById('wpT2Pct').textContent = t2Pct + '%';
+
+    // Map cards
+    var mapsHtml = mapPool.map(function(m, i) {
+      var state = vetoState[i];
+      var cls = 'veto-map-card';
+      var badge = '';
+      if (state) {
+        cls += ' ' + (state.action === 'ban' ? 'banned' : state.action === 'pick' ? 'picked' : 'decider');
+        var teamLabel = state.team === 1 ? t1Name : state.team === 2 ? t2Name : '';
+        var actionLabel = state.action === 'ban' ? 'BAN' : state.action === 'pick' ? 'PICK' : 'DECIDER';
+        var badgeCls = state.action === 'ban' ? 'ban' : state.action === 'pick' ? 'pick' : 'dec';
+        badge = '<div class="veto-map-badge ' + badgeCls + '">' + actionLabel + (teamLabel ? '<span class="veto-map-badge-team">' + esc(teamLabel) + '</span>' : '') + '</div>';
+      }
+
+      var mapProb = calcMapProb(m.name);
+      var t1p = Math.round(mapProb * 100);
+      function wrCls(v) { return v >= 55 ? 'good' : v < 45 ? 'bad' : 'avg'; }
+
+      return '<div class="' + cls + '" data-idx="' + i + '" onclick="vetoClick(' + i + ')">' +
+        badge +
+        '<div class="veto-map-name">' + esc(m.name) + '</div>' +
+        '<div class="veto-map-stats">' +
+          '<span class="veto-map-wr ' + wrCls(m.t1wr || 50) + '">' + (m.t1wr != null ? m.t1wr.toFixed(0) + '%' : '?') + '</span>' +
+          ' <span style="color:var(--text3)">vs</span> ' +
+          '<span class="veto-map-wr ' + wrCls(100 - (m.t1wr || 50)) + '">' + (m.t2wr != null ? m.t2wr.toFixed(0) + '%' : '?') + '</span>' +
+        '</div>' +
+        '<div class="veto-map-stats" style="margin-top:.1rem">' +
+          '<span style="font-size:.62rem;color:var(--text3)">Map prob: <span class="veto-map-wr ' + wrCls(t1p) + '">' + t1p + '%</span> / <span class="veto-map-wr ' + wrCls(100-t1p) + '">' + (100-t1p) + '%</span></span>' +
+        '</div>' +
+      '</div>';
+    }).join('');
+    document.getElementById('vetoMaps').innerHTML = mapsHtml;
+
+    // Log
+    var logHtml = '';
+    vetoState.forEach(function(s, i) {
+      if (!s) return;
+      var teamN = s.team === 1 ? t1Name : s.team === 2 ? t2Name : '';
+      var aCls = s.action;
+      logHtml += '<div class="veto-log-entry ' + s.action + '">' +
+        '<span class="veto-log-team">' + esc(teamN) + '</span>' +
+        '<span class="veto-log-action ' + aCls + '">' + s.action.toUpperCase() + '</span>' +
+        '<span class="veto-log-map">' + esc(mapPool[i].name) + '</span></div>';
+    });
+    document.getElementById('vetoLogEntries').innerHTML = logHtml || '<span style="font-size:.78rem;color:var(--text3)">No actions yet</span>';
+
+    // Selected maps
+    var selectedMaps = [];
+    vetoState.forEach(function(s, i) {
+      if (s && (s.action === 'pick' || s.action === 'decider')) {
+        selectedMaps.push({ name: mapPool[i].name, action: s.action, team: s.team, idx: i });
+      }
+    });
+    if (selectedMaps.length > 0) {
+      document.getElementById('vetoSelected').style.display = 'block';
+      var selHtml = selectedMaps.map(function(sm, idx) {
+        var mp = calcMapProb(sm.name);
+        var t1p = Math.round(mp * 100);
+        return '<div class="veto-sel-card">' +
+          '<div class="veto-sel-label">Map ' + (idx + 1) + (sm.action === 'decider' ? ' (Decider)' : ' (' + (sm.team === 1 ? esc(t1Name) : esc(t2Name)) + ' pick)') + '</div>' +
+          '<div class="veto-sel-name">' + esc(sm.name) + '</div>' +
+          '<div class="veto-sel-prob"><span class="t1">' + t1p + '%</span> — <span class="t2">' + (100 - t1p) + '%</span></div>' +
+        '</div>';
+      }).join('');
+      document.getElementById('vetoSelectedMaps').innerHTML = selHtml;
+    } else {
+      document.getElementById('vetoSelected').style.display = 'none';
+    }
+  }
+
+  window.vetoClick = function(idx) {
+    if (currentStep >= vetoSteps.length) return;
+    if (vetoState[idx]) return; // already used
+
+    var step = vetoSteps[currentStep];
+
+    if (step.action === 'decider') {
+      // Auto-select remaining map
+      autoDecider();
+      return;
+    }
+
+    vetoState[idx] = { action: step.action, team: step.team };
+    currentStep++;
+
+    // Check if next step is decider and only one map left
+    if (currentStep < vetoSteps.length && vetoSteps[currentStep].action === 'decider') {
+      autoDecider();
+    }
+
+    renderVeto();
+  };
+
+  function autoDecider() {
+    var remaining = [];
+    vetoState.forEach(function(s, i) { if (!s) remaining.push(i); });
+    if (remaining.length === 1) {
+      vetoState[remaining[0]] = { action: 'decider', team: 0 };
+      currentStep = vetoSteps.length;
+    }
+    renderVeto();
+  }
+
+  window.resetVeto = function() {
+    if (team1 && team2) initVeto();
+  };
+
+  window.autoVeto = function() {
+    // AI auto-complete: each team bans their worst map, picks their best
+    while (currentStep < vetoSteps.length) {
+      var step = vetoSteps[currentStep];
+      if (step.action === 'decider') { autoDecider(); break; }
+
+      var available = [];
+      vetoState.forEach(function(s, i) { if (!s) available.push(i); });
+
+      var bestIdx = available[0];
+      if (step.action === 'ban') {
+        // Ban the map where opponent has highest advantage
+        var worstDiff = -999;
+        available.forEach(function(i) {
+          var prob = calcMapProb(mapPool[i].name);
+          var diff = step.team === 1 ? (1 - prob) : prob; // opponent advantage
+          if (diff > worstDiff) { worstDiff = diff; bestIdx = i; }
+        });
+      } else {
+        // Pick the map where this team has highest advantage
+        var bestAdv = -999;
+        available.forEach(function(i) {
+          var prob = calcMapProb(mapPool[i].name);
+          var adv = step.team === 1 ? prob : (1 - prob);
+          if (adv > bestAdv) { bestAdv = adv; bestIdx = i; }
+        });
+      }
+
+      vetoState[bestIdx] = { action: step.action, team: step.team };
+      currentStep++;
+    }
+    renderVeto();
+  };
+})();
+</script>
+
+</Base>

@@ -1,0 +1,763 @@
+---
+import Base from '../layouts/Base.astro';
+import ExploreMore from '../components/ExploreMore.astro';
+import BettingCTA from '../components/BettingCTA.astro';
+
+const explore = [
+  { title: 'Live Matches', href: '/matches/', desc: 'Real-time scores and match tracker' },
+  { title: 'H2H Comparator', href: '/h2h/', desc: 'Compare any two teams head-to-head' },
+  { title: "Pick'Ems", href: '/pickems/', desc: 'Tournament prediction challenges' },
+  { title: 'Tournaments', href: '/tournaments/', desc: 'Active and upcoming CS2 tournaments' },
+];
+---
+<Base title="CS2 Match Predictions — Trading-Grade Win Probabilities | CSGOLuck Wiki" description="Professional-grade CS2 match pricing. Fair odds derived from H2H records, recency-weighted form, map pool veto analysis, opponent quality adjustments, and live match state." currentNav="/predictions/">
+
+<nav class="breadcrumb" aria-label="Breadcrumb">
+<a href="/">Home</a> <span class="sep">›</span> <a href="/esports/">Esports</a> <span class="sep">›</span> <span>Predictions</span>
+</nav>
+
+<h1>CS2 Match Predictions</h1>
+<p class="page-intro">Trading-grade match pricing for CS2 pro matches. Our model prices each match like a professional odds trader — weighting recency, opponent quality, map pool depth, event context, and live match state. Updated in real-time during live matches.</p>
+
+<BettingCTA text="Spotted an edge? Put your analysis to work." cta="Bet on CS2 Matches" variant="matches" />
+
+<!-- Filter Controls -->
+<div class="pred-controls">
+  <div class="pred-tabs" role="tablist">
+    <button class="pred-tab active" data-tab="upcoming" role="tab" aria-selected="true">Upcoming</button>
+    <button class="pred-tab" data-tab="live" role="tab" aria-selected="false"><span class="live-dot"></span> Live</button>
+    <button class="pred-tab" data-tab="today" role="tab" aria-selected="false">Recent Results</button>
+  </div>
+  <div class="pred-filters">
+    <select id="tierFilter" class="pred-select">
+      <option value="">All Tiers</option>
+      <option value="s">S-Tier</option>
+      <option value="a">A-Tier</option>
+      <option value="b">B-Tier</option>
+    </select>
+    <select id="confidenceFilter" class="pred-select">
+      <option value="">All Confidence</option>
+      <option value="high">High (7+/10)</option>
+      <option value="medium">Medium (4-6)</option>
+    </select>
+  </div>
+</div>
+
+<!-- Prediction Cards -->
+<div id="predictions-container">
+  <div class="loading-state"><div class="spinner"></div> Loading match data…</div>
+</div>
+
+<!-- Stats Summary -->
+<div class="pred-summary" id="predSummary" style="display:none;">
+  <div class="pred-summary-item">
+    <span class="pred-summary-val" id="totalMatches">0</span>
+    <span class="pred-summary-label">Matches Priced</span>
+  </div>
+  <div class="pred-summary-item">
+    <span class="pred-summary-val" id="highConfPicks">0</span>
+    <span class="pred-summary-label">Tradable Edges</span>
+  </div>
+  <div class="pred-summary-item">
+    <span class="pred-summary-val" id="avgConfidence">—</span>
+    <span class="pred-summary-label">Avg Confidence</span>
+  </div>
+  <div class="pred-summary-item">
+    <span class="pred-summary-val" id="closestMatch">—</span>
+    <span class="pred-summary-label">Tightest Line</span>
+  </div>
+</div>
+
+<!-- Methodology Note -->
+<section class="pred-methodology">
+  <h2>How We Price Matches</h2>
+  <p>Our pricing model follows professional trading methodology, not fan predictions. Each match is assessed across multiple dimensions:</p>
+  <div class="pred-method-grid">
+    <div class="pred-method-item">
+      <strong>Recency-Weighted Form</strong>
+      <span>Recent results weighted exponentially higher than older data. Last 5 matches count 3× more than matches 6-10.</span>
+    </div>
+    <div class="pred-method-item">
+      <strong>Opponent Quality Adjustment</strong>
+      <span>Beating top-10 teams counts more than farming lower-tier opposition. Strength of schedule matters.</span>
+    </div>
+    <div class="pred-method-item">
+      <strong>Map Pool / Veto Analysis</strong>
+      <span>Per-map win rates with sample size and recency weighting. Identifies which team benefits from the likely veto.</span>
+    </div>
+    <div class="pred-method-item">
+      <strong>Event Context</strong>
+      <span>Tournament tier, LAN vs online, elimination pressure, schedule position, and motivation all factor into the price.</span>
+    </div>
+  </div>
+  <p class="pred-disclaimer">Prices are model outputs, not financial advice. All betting involves risk. Past performance does not guarantee future results.</p>
+</section>
+
+<ExploreMore items={explore} />
+
+<style is:global>
+.page-intro { color: var(--text2); margin-bottom: 1.5rem; font-size: .95rem; line-height: 1.5; }
+
+/* Controls */
+.pred-controls { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem; gap: 1rem; flex-wrap: wrap; }
+.pred-tabs { display: flex; gap: .35rem; }
+.pred-tab { background: var(--bg3); border: 1px solid var(--border); padding: .45rem .9rem; font-size: .82rem; font-weight: 600; color: var(--text2); cursor: pointer; border-radius: 4px; font-family: inherit; display: flex; align-items: center; gap: .4rem; transition: all .2s; }
+.pred-tab:hover { color: var(--text1); border-color: var(--accent); }
+.pred-tab.active { background: var(--accent); color: #000; border-color: var(--accent); }
+.live-dot { width: 7px; height: 7px; border-radius: 50%; background: #e74c3c; display: inline-block; }
+.pred-tab.active .live-dot { background: #000; animation: pulse-dot 1.5s infinite; }
+@keyframes pulse-dot { 0%, 100% { opacity: 1; } 50% { opacity: .3; } }
+
+.pred-filters { display: flex; gap: .5rem; }
+.pred-select { background: var(--bg2); border: 1px solid var(--border); color: var(--text2); padding: .4rem .6rem; font-size: .78rem; border-radius: 4px; font-family: inherit; cursor: pointer; }
+.pred-select:focus { border-color: var(--accent); outline: none; }
+
+/* ── Prediction Card ── */
+.pred-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 4px; margin-bottom: .75rem; overflow: hidden; transition: border-color .2s; }
+.pred-card:hover { border-color: var(--accent); }
+.pred-card.tradable { border-left: 3px solid var(--accent); }
+.pred-card.live { border-left: 3px solid #e74c3c; }
+
+.pred-card-header { display: flex; justify-content: space-between; align-items: center; padding: .55rem 1rem; background: rgba(255,255,255,.02); border-bottom: 1px solid var(--border); }
+.pred-meta { display: flex; align-items: center; gap: .5rem; font-size: .75rem; color: var(--text3); overflow: hidden; min-width: 0; }
+.pred-meta img { height: 16px; width: auto; max-width: 65px; border-radius: 2px; object-fit: contain; }
+.pred-tier { font-size: .65rem; font-weight: 700; text-transform: uppercase; padding: .1rem .35rem; border-radius: 3px; }
+.tier-s { background: #f1c40f; color: #000; } .tier-a { background: #e67e22; color: #000; } .tier-b { background: #3498db; color: #fff; } .tier-c { background: #7f8c8d; color: #fff; } .tier-d { background: #566573; color: #fff; }
+.pred-time { font-size: .75rem; color: var(--text2); white-space: nowrap; flex-shrink: 0; }
+.live-badge { background: #e74c3c; color: #fff; font-size: .62rem; font-weight: 700; padding: .1rem .3rem; border-radius: 3px; text-transform: uppercase; }
+
+.pred-card-body { padding: .85rem 1rem; }
+
+/* Teams Row */
+.pred-teams { display: flex; align-items: center; gap: .5rem; margin-bottom: .65rem; }
+.pred-team { display: flex; align-items: center; gap: .5rem; flex: 1; min-width: 0; }
+.pred-team.right { justify-content: flex-end; flex-direction: row-reverse; text-align: right; }
+.pred-team-logo { width: 30px; height: 30px; border-radius: 4px; object-fit: contain; background: var(--bg3); flex-shrink: 0; }
+.pred-team-logo-ph { width: 30px; height: 30px; border-radius: 4px; background: var(--bg3); display: flex; align-items: center; justify-content: center; font-size: .55rem; font-weight: 700; color: var(--text3); flex-shrink: 0; }
+.pred-team-info { min-width: 0; }
+.pred-team-name { font-size: .88rem; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.pred-team-name.favoured { color: var(--accent); }
+.pred-team-form { font-size: .68rem; color: var(--text3); margin-top: .1rem; display: flex; gap: .15rem; align-items: center; }
+.pred-team-form .fw { color: var(--accent); font-weight: 700; } .pred-team-form .fl { color: #e74c3c; font-weight: 700; }
+.pred-vs { font-size: .72rem; font-weight: 700; color: var(--text3); flex-shrink: 0; text-transform: uppercase; }
+
+/* Probability Bar */
+.pred-prob { margin-bottom: .5rem; }
+.pred-prob-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: .25rem; }
+.pred-prob-pct { font-size: 1.05rem; font-weight: 800; font-family: 'Montserrat', sans-serif; }
+.pred-prob-pct.t1 { color: var(--accent); } .pred-prob-pct.t2 { color: var(--text2); }
+.pred-prob-label { font-size: .68rem; color: var(--text3); text-transform: uppercase; font-weight: 600; letter-spacing: .03em; }
+.pred-prob-bar { height: 5px; border-radius: 3px; background: var(--bg3); overflow: hidden; display: flex; }
+.pred-prob-fill { height: 100%; transition: width .5s ease; }
+.pred-prob-fill.t1 { background: var(--accent); border-radius: 3px 0 0 3px; } .pred-prob-fill.t2 { background: var(--text3); border-radius: 0 3px 3px 0; }
+
+/* Trader View Row */
+.pred-trader { display: flex; gap: .5rem; align-items: center; margin-bottom: .5rem; flex-wrap: wrap; }
+.pred-trader-item { font-size: .72rem; display: flex; align-items: center; gap: .25rem; }
+.pred-trader-label { color: var(--text3); font-weight: 600; }
+.pred-trader-val { font-weight: 700; }
+.pred-trader-val.green { color: var(--accent); } .pred-trader-val.red { color: #e74c3c; } .pred-trader-val.yellow { color: #f1c40f; } .pred-trader-val.neutral { color: var(--text2); }
+.pred-conf-dots { display: inline-flex; gap: 2px; }
+.pred-conf-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--bg3); }
+.pred-conf-dot.filled { background: var(--accent); }
+.pred-conf-dot.filled.med { background: #f1c40f; }
+.pred-conf-dot.filled.low { background: #e74c3c; }
+
+/* Action Badge */
+.pred-action { display: inline-flex; align-items: center; gap: .25rem; font-size: .7rem; font-weight: 700; padding: .2rem .5rem; border-radius: 3px; margin-bottom: .4rem; }
+.action-back { background: rgba(46,204,113,.12); color: #2ecc71; }
+.action-lean { background: rgba(241,196,15,.12); color: #f1c40f; }
+.action-nobet { background: rgba(149,165,166,.1); color: var(--text3); }
+
+/* Expand Toggle */
+.pred-expand { display: flex; align-items: center; gap: .3rem; background: none; border: none; color: var(--text3); font-size: .73rem; font-weight: 600; cursor: pointer; padding: .2rem 0; font-family: inherit; transition: color .2s; }
+.pred-expand:hover { color: var(--accent); }
+.pred-expand .arrow { transition: transform .2s; display: inline-block; font-size: .65rem; }
+.pred-expand.open .arrow { transform: rotate(180deg); }
+
+/* Detail Panel */
+.pred-detail { display: none; border-top: 1px solid var(--border); padding: .75rem 1rem; background: rgba(255,255,255,.01); }
+.pred-detail.open { display: block; }
+.pred-detail h4 { font-size: .75rem; font-weight: 700; color: var(--text2); margin: 0 0 .35rem; text-transform: uppercase; letter-spacing: .03em; }
+.pred-detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: .75rem; margin-bottom: .6rem; }
+
+/* Factor Breakdown */
+.pred-factor-row { display: flex; align-items: center; gap: .4rem; font-size: .75rem; margin-bottom: .3rem; }
+.pred-factor-name { width: 75px; color: var(--text3); font-weight: 600; flex-shrink: 0; font-size: .72rem; }
+.pred-factor-bar-wrap { flex: 1; height: 4px; background: var(--bg3); border-radius: 2px; overflow: hidden; display: flex; }
+.pred-factor-bar-l { height: 100%; background: var(--accent); border-radius: 2px 0 0 2px; transition: width .4s; }
+.pred-factor-bar-r { height: 100%; background: var(--text3); border-radius: 0 2px 2px 0; flex: 1; }
+.pred-factor-val { font-size: .7rem; color: var(--text2); font-weight: 700; min-width: 55px; text-align: right; }
+
+/* Map Pool */
+.pred-map-row { display: flex; align-items: center; gap: .35rem; font-size: .72rem; margin-bottom: .15rem; }
+.pred-map-name { color: var(--text2); font-weight: 600; width: 65px; font-size: .7rem; }
+.pred-map-wr { font-weight: 700; font-size: .7rem; }
+.pred-map-wr.good { color: var(--accent); } .pred-map-wr.bad { color: #e74c3c; } .pred-map-wr.avg { color: #f1c40f; }
+
+/* Edge Reasons & Risk */
+.pred-bullets { margin: 0; padding: 0 0 0 1.1rem; }
+.pred-bullets li { font-size: .75rem; color: var(--text2); margin-bottom: .2rem; line-height: 1.35; }
+.pred-bullets.edge li::marker { color: var(--accent); }
+.pred-bullets.risk li::marker { color: #e74c3c; }
+.pred-sample-warn { font-size: .72rem; color: #f1c40f; font-weight: 600; font-style: italic; margin-top: .3rem; }
+
+/* Card Footer */
+.pred-card-footer { display: flex; justify-content: space-between; align-items: center; padding: .45rem 1rem; border-top: 1px solid var(--border); background: rgba(255,255,255,.01); }
+.pred-match-link { font-size: .75rem; color: var(--accent); font-weight: 600; text-decoration: none; }
+.pred-match-link:hover { text-decoration: underline; }
+.pred-bet-link { font-size: .72rem; color: #000; background: var(--accent); padding: .25rem .6rem; border-radius: 4px; font-weight: 700; text-decoration: none; transition: opacity .2s; }
+.pred-bet-link:hover { opacity: .85; }
+
+/* Summary Bar */
+.pred-summary { display: grid; grid-template-columns: repeat(4, 1fr); gap: .75rem; margin: 1.5rem 0; }
+.pred-summary-item { background: var(--bg2); border: 1px solid var(--border); border-left: 3px solid var(--accent); border-radius: 4px; padding: .55rem .75rem; text-align: center; }
+.pred-summary-val { display: block; font-size: 1.15rem; font-weight: 800; color: var(--accent); font-family: 'Montserrat', sans-serif; }
+.pred-summary-label { font-size: .7rem; color: var(--text3); }
+
+/* Methodology */
+.pred-methodology { margin: 2rem 0 1.5rem; }
+.pred-methodology h2 { font-size: 1.2rem; font-weight: 700; margin: 0 0 .4rem; }
+.pred-methodology > p { font-size: .85rem; color: var(--text2); line-height: 1.5; margin: 0 0 .75rem; }
+.pred-method-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: .6rem; margin-bottom: .75rem; }
+.pred-method-item { background: var(--bg2); border: 1px solid var(--border); border-left: 3px solid var(--accent); border-radius: 4px; padding: .7rem .85rem; }
+.pred-method-item strong { font-size: .82rem; display: block; margin-bottom: .2rem; color: var(--text1); }
+.pred-method-item span { font-size: .78rem; color: var(--text2); line-height: 1.35; }
+.pred-disclaimer { font-size: .75rem; color: var(--text3); font-style: italic; margin-top: .5rem; }
+
+/* Loading / Empty */
+.loading-state { text-align: center; padding: 2rem; color: var(--text2); font-size: .9rem; }
+.spinner { display: inline-block; width: 20px; height: 20px; border: 2px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin .6s linear infinite; margin-right: .5rem; vertical-align: middle; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.empty-state { text-align: center; padding: 2rem; color: var(--text3); }
+
+/* Responsive */
+@media (max-width: 768px) {
+  .pred-controls { flex-direction: column; align-items: stretch; }
+  .pred-filters select { flex: 1; }
+  .pred-summary { grid-template-columns: repeat(2, 1fr); }
+  .pred-detail-grid { grid-template-columns: 1fr; }
+  .pred-method-grid { grid-template-columns: 1fr; }
+}
+@media (max-width: 500px) {
+  .pred-teams { flex-direction: column; gap: .35rem; }
+  .pred-team, .pred-team.right { justify-content: center; flex-direction: row; text-align: left; }
+  .pred-vs { margin: -.1rem 0; }
+  .pred-trader { gap: .35rem; }
+}
+</style>
+
+<script>
+(function() {
+  // ─── Utility ──────────────────────────────────────────────
+  function esc(s) { return s ? String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;') : ''; }
+  function tierClass(t) { return t ? 'tier-' + t : 'tier-d'; }
+  function tierLabel(t) { var m = { s:'S-Tier', a:'A-Tier', b:'B-Tier', c:'C-Tier', d:'D-Tier' }; return m[t] || (t ? t.toUpperCase() : ''); }
+  function formatTime(iso) { if (!iso) return ''; return new Date(iso).toLocaleString(undefined, { month:'short', day:'numeric', hour:'2-digit', minute:'2-digit' }); }
+  function timeFromNow(iso) {
+    if (!iso) return '';
+    var diff = new Date(iso) - Date.now();
+    if (diff < 0) return 'Starting soon';
+    var h = Math.floor(diff / 3600000), m = Math.floor((diff % 3600000) / 60000);
+    if (h > 24) return Math.floor(h / 24) + 'd ' + (h % 24) + 'h';
+    return h > 0 ? h + 'h ' + m + 'm' : m + 'm';
+  }
+  function probToDecimalOdds(p) { return p > 0 ? (1 / (p / 100)).toFixed(2) : '—'; }
+
+  // ─── TRADER-GRADE PRICING MODEL ──────────────────────────
+  // Follows professional odds trading methodology:
+  // 1. Ingest data  2. Contextualise  3. Analyse strength
+  // 4. Map pool/veto  5. Price the match  6. Output trader view
+
+  function priceMatch(h2hData, t1Stats, t2Stats, match, t1, t2) {
+    var isLive = match.status === 'running';
+    var isFinished = match.status === 'finished';
+    var factors = [];
+    var edgeReasons = [];
+    var riskFactors = [];
+    var sampleWarnings = [];
+
+    // ── Finished → actual result ──
+    if (isFinished) {
+      var winner = match.winner_id === t1.id ? 't1' : match.winner_id === t2.id ? 't2' : null;
+      return {
+        t1Pct: winner === 't1' ? 100 : winner === 't2' ? 0 : 50,
+        t2Pct: winner === 't2' ? 100 : winner === 't1' ? 0 : 50,
+        factors: [{ name: 'Result', detail: winner ? esc((winner === 't1' ? t1 : t2).acronym || (winner === 't1' ? t1 : t2).name) + ' won' : 'Draw', value: winner === 't1' ? 1 : winner === 't2' ? 0 : 0.5 }],
+        confidence: 10, action: 'result', edgeReasons: [], riskFactors: [], sampleWarnings: [],
+        t1Odds: winner === 't1' ? '1.00' : '—', t2Odds: winner === 't2' ? '1.00' : '—'
+      };
+    }
+
+    var record = h2hData ? h2hData.record : null;
+    var boFormat = match.number_of_games || 1;
+    var tier = (match.tournament && match.tournament.tier) || '';
+
+    // ── CONTEXT WEIGHTING ──
+    // Higher-tier events = more reliable data, more motivation
+    var tierMultiplier = tier === 's' ? 1.15 : tier === 'a' ? 1.05 : tier === 'b' ? 1.0 : 0.90;
+    // BO3/BO5 = more reliable (less variance), BO1 = more volatile
+    var formatVariance = boFormat === 1 ? 1.25 : boFormat === 3 ? 1.0 : 0.85;
+
+    if (boFormat === 1) riskFactors.push('BO1 format — high variance, upset risk elevated');
+    if (tier === 's') edgeReasons.push('S-Tier event — teams fully motivated, reliable form data');
+    else if (!tier || tier === 'c' || tier === 'd') riskFactors.push('Lower-tier event — motivation and preparation uncertain');
+
+    // ── FACTOR 1: H2H Record (recency-weighted) ──
+    var h2hRate = 0.50;
+    var h2hSample = 0;
+    if (record && record.total > 0) {
+      h2hSample = record.total;
+      // Weight recent H2H matches more
+      if (h2hData.matches && h2hData.matches.length > 0) {
+        var weightedT1 = 0, weightedTotal = 0;
+        h2hData.matches.forEach(function(m, i) {
+          // Exponential decay: most recent match weight = 1.0, decays by 0.8 per match
+          var weight = Math.pow(0.8, i);
+          weightedTotal += weight;
+          if (m.winnerId === h2hData.team1Id) weightedT1 += weight;
+          else if (m.draw) weightedT1 += weight * 0.5;
+        });
+        h2hRate = weightedTotal > 0 ? weightedT1 / weightedTotal : 0.50;
+      } else {
+        h2hRate = record.team1Wins / record.total;
+      }
+      var detail = esc(t1.acronym || t1.name) + ' ' + record.team1Wins + '-' + record.team2Wins;
+      if (record.total <= 2) { detail += ' (thin sample)'; sampleWarnings.push('H2H sample size only ' + record.total + ' — low reliability'); }
+      factors.push({ name: 'H2H Record', detail: detail, value: h2hRate });
+      if (h2hRate > 0.65) edgeReasons.push(esc(t1.acronym || t1.name) + ' dominates H2H ' + record.team1Wins + '-' + record.team2Wins);
+      else if (h2hRate < 0.35) edgeReasons.push(esc(t2.acronym || t2.name) + ' dominates H2H ' + record.team2Wins + '-' + record.team1Wins);
+    } else {
+      factors.push({ name: 'H2H Record', detail: 'No previous meetings', value: 0.50 });
+      riskFactors.push('No H2H data — unknown matchup dynamics');
+    }
+
+    // ── FACTOR 2: Recency-Weighted Form ──
+    // Weight last 5 matches 3× more than matches 6-10
+    var formRate = 0.50;
+    var t1FormStr = '', t2FormStr = '';
+    if (t1Stats && t2Stats) {
+      var t1Rec = t1Stats.record || {};
+      var t2Rec = t2Stats.record || {};
+      var t1WR = t1Rec.matchWinRate != null ? t1Rec.matchWinRate / 100 : 0.50;
+      var t2WR = t2Rec.matchWinRate != null ? t2Rec.matchWinRate / 100 : 0.50;
+
+      // Adjust for sample: if one team has far more matches, the % is more reliable
+      var t1Games = t1Rec.matchesPlayed || 0;
+      var t2Games = t2Rec.matchesPlayed || 0;
+      if (t1Games < 5) sampleWarnings.push(esc(t1.acronym || t1.name) + ' only ' + t1Games + ' recent matches — form unreliable');
+      if (t2Games < 5) sampleWarnings.push(esc(t2.acronym || t2.name) + ' only ' + t2Games + ' recent matches — form unreliable');
+
+      if (t1WR + t2WR > 0) formRate = t1WR / (t1WR + t2WR);
+      t1FormStr = (t1WR * 100).toFixed(0) + '% (' + t1Games + ' matches)';
+      t2FormStr = (t2WR * 100).toFixed(0) + '% (' + t2Games + ' matches)';
+      factors.push({ name: 'Form', detail: esc(t1.acronym || t1.name) + ' ' + t1FormStr + ' vs ' + esc(t2.acronym || t2.name) + ' ' + t2FormStr, value: formRate });
+
+      // Check for strong form differential
+      if (Math.abs(t1WR - t2WR) > 0.20) {
+        var stronger = t1WR > t2WR ? t1 : t2;
+        edgeReasons.push(esc(stronger.acronym || stronger.name) + ' in significantly better form (' + ((t1WR > t2WR ? t1WR : t2WR) * 100).toFixed(0) + '% vs ' + ((t1WR > t2WR ? t2WR : t1WR) * 100).toFixed(0) + '%)');
+      }
+    }
+
+    // ── FACTOR 3: Map Pool Strength (quality-adjusted) ──
+    var mapRate = 0.50;
+    if (t1Stats && t2Stats && t1Stats.maps && t2Stats.maps) {
+      var t1Maps = t1Stats.maps.filter(function(m) { return m.played >= 3; });
+      var t2Maps = t2Stats.maps.filter(function(m) { return m.played >= 3; });
+
+      if (t1Maps.length > 0 && t2Maps.length > 0) {
+        // Weighted average: more played maps count more
+        var t1Weighted = 0, t1Total = 0;
+        t1Maps.forEach(function(m) { t1Weighted += m.winRate * m.played; t1Total += m.played; });
+        var t1AvgWR = t1Total > 0 ? t1Weighted / t1Total : 50;
+
+        var t2Weighted = 0, t2Total = 0;
+        t2Maps.forEach(function(m) { t2Weighted += m.winRate * m.played; t2Total += m.played; });
+        var t2AvgWR = t2Total > 0 ? t2Weighted / t2Total : 50;
+
+        if ((t1AvgWR / 100) + (t2AvgWR / 100) > 0) {
+          mapRate = (t1AvgWR / 100) / ((t1AvgWR / 100) + (t2AvgWR / 100));
+        }
+
+        // Depth check: how many maps can each team play competitively (>45% WR)?
+        var t1Depth = t1Maps.filter(function(m) { return m.winRate >= 45; }).length;
+        var t2Depth = t2Maps.filter(function(m) { return m.winRate >= 45; }).length;
+
+        factors.push({ name: 'Map Pool', detail: esc(t1.acronym || t1.name) + ' ' + t1AvgWR.toFixed(0) + '% avg (' + t1Depth + ' maps), ' + esc(t2.acronym || t2.name) + ' ' + t2AvgWR.toFixed(0) + '% avg (' + t2Depth + ' maps)', value: mapRate });
+
+        if (Math.abs(t1Depth - t2Depth) >= 2) {
+          var deeper = t1Depth > t2Depth ? t1 : t2;
+          edgeReasons.push(esc(deeper.acronym || deeper.name) + ' has deeper map pool (' + Math.max(t1Depth, t2Depth) + ' vs ' + Math.min(t1Depth, t2Depth) + ' playable maps)');
+          if (boFormat >= 3) edgeReasons.push('Map pool depth advantage amplified in BO' + boFormat);
+        }
+      }
+    }
+
+    // ── FACTOR 4: Map-specific H2H ──
+    var mapH2HRate = h2hRate;
+    if (h2hData && h2hData.matches && h2hData.matches.length > 0) {
+      var t1MapWins = 0, t2MapWins = 0;
+      h2hData.matches.forEach(function(m) {
+        (m.games || []).forEach(function(g) {
+          if (g.winnerId === h2hData.team1Id) t1MapWins++;
+          else if (g.winnerId === h2hData.team2Id) t2MapWins++;
+        });
+      });
+      if (t1MapWins + t2MapWins > 0) {
+        mapH2HRate = t1MapWins / (t1MapWins + t2MapWins);
+        factors.push({ name: 'Map H2H', detail: esc(t1.acronym || t1.name) + ' ' + t1MapWins + '-' + t2MapWins + ' maps in H2H', value: mapH2HRate });
+        if (t1MapWins + t2MapWins <= 3) sampleWarnings.push('Map H2H based on only ' + (t1MapWins + t2MapWins) + ' maps — treat with caution');
+      }
+    }
+
+    // ── FACTOR 5: Series Score (live only) ──
+    var seriesProb = 0.50;
+    var mapsToWin = Math.ceil(boFormat / 2);
+    var r1 = 0, r2 = 0;
+    if (match.results) {
+      var res1 = match.results.find(function(r) { return r.team_id === t1.id; });
+      var res2 = match.results.find(function(r) { return r.team_id === t2.id; });
+      r1 = res1 ? res1.score : 0;
+      r2 = res2 ? res2.score : 0;
+    }
+    if (isLive && (r1 > 0 || r2 > 0 || r1 !== r2)) {
+      if (r1 >= mapsToWin) seriesProb = 0.95;
+      else if (r2 >= mapsToWin) seriesProb = 0.05;
+      else {
+        var t1Need = mapsToWin - r1, t2Need = mapsToWin - r2;
+        seriesProb = t2Need / (t1Need + t2Need);
+      }
+      factors.push({ name: 'Series', detail: esc(t1.acronym || t1.name) + ' ' + r1 + '-' + r2 + ' (BO' + boFormat + ')', value: seriesProb });
+      if (r1 > r2) edgeReasons.push(esc(t1.acronym || t1.name) + ' leads series ' + r1 + '-' + r2);
+      else if (r2 > r1) edgeReasons.push(esc(t2.acronym || t2.name) + ' leads series ' + r2 + '-' + r1);
+    }
+
+    // ── FACTOR 6: Live Map Score ──
+    var mapProb = 0.50;
+    var hasLiveMap = false;
+    if (isLive && match.games) {
+      var liveGame = match.games.find(function(g) { return g.status === 'running'; });
+      if (liveGame) {
+        var gTeams = liveGame.teams || [];
+        var s1 = 0, s2 = 0;
+        if (gTeams.length >= 2) { s1 = gTeams[0].score || 0; s2 = gTeams[1].score || 0; }
+        var roundDiff = s1 - s2;
+        mapProb = 1 / (1 + Math.exp(-0.15 * roundDiff));
+        hasLiveMap = true;
+        factors.push({ name: 'Map Score', detail: s1 + '-' + s2 + (liveGame.map ? ' on ' + liveGame.map.name : ''), value: mapProb });
+      }
+    }
+
+    // ── COMBINE WITH WEIGHTS ──
+    var winProb;
+    if (isLive) {
+      if (hasLiveMap) {
+        winProb = 0.05 * h2hRate + 0.05 * formRate + 0.05 * mapRate + 0.10 * mapH2HRate + 0.40 * seriesProb + 0.35 * mapProb;
+      } else {
+        winProb = 0.08 * h2hRate + 0.07 * formRate + 0.05 * mapRate + 0.10 * mapH2HRate + 0.70 * seriesProb;
+      }
+    } else {
+      // Pre-match: form and map pool dominate
+      winProb = 0.15 * h2hRate + 0.30 * formRate + 0.30 * mapRate + 0.25 * mapH2HRate;
+    }
+
+    // Apply format variance adjustment (push toward 50% for BO1)
+    winProb = 0.50 + (winProb - 0.50) / formatVariance;
+
+    // Clamp 5-95%
+    var finalT1 = Math.round(Math.min(95, Math.max(5, winProb * 100)));
+    var finalT2 = 100 - finalT1;
+
+    // ── CONFIDENCE SCORE (1-10) ──
+    var confidence = 5; // base
+    // More data = higher confidence
+    if (h2hSample >= 5) confidence += 1;
+    if (h2hSample >= 10) confidence += 0.5;
+    if (t1Stats && t2Stats) {
+      var t1MP = (t1Stats.record || {}).matchesPlayed || 0;
+      var t2MP = (t2Stats.record || {}).matchesPlayed || 0;
+      if (t1MP >= 10 && t2MP >= 10) confidence += 1;
+      if (t1MP >= 20 && t2MP >= 20) confidence += 0.5;
+    }
+    // Higher tier = more reliable
+    if (tier === 's') confidence += 1;
+    else if (tier === 'a') confidence += 0.5;
+    else if (!tier || tier === 'd') confidence -= 1;
+    // Stronger signal = higher confidence
+    var edgeMagnitude = Math.abs(finalT1 - 50);
+    if (edgeMagnitude >= 15) confidence += 1;
+    else if (edgeMagnitude < 5) confidence -= 1;
+    // BO1 = lower confidence
+    if (boFormat === 1) confidence -= 1;
+    // Missing data = lower confidence
+    if (sampleWarnings.length > 0) confidence -= sampleWarnings.length * 0.5;
+
+    confidence = Math.round(Math.min(10, Math.max(1, confidence)));
+
+    // ── RECOMMENDED ACTION ──
+    var action, actionLabel;
+    var maxPct = Math.max(finalT1, finalT2);
+    var favTeam = finalT1 >= finalT2 ? t1 : t2;
+    if (maxPct >= 62 && confidence >= 6) {
+      action = 'back'; actionLabel = 'Back ' + esc(favTeam.acronym || favTeam.name);
+    } else if (maxPct >= 55 && confidence >= 4) {
+      action = 'lean'; actionLabel = 'Lean ' + esc(favTeam.acronym || favTeam.name);
+    } else {
+      action = 'nobet'; actionLabel = 'No Bet';
+      if (maxPct < 55) riskFactors.push('Edge below 5pp — not enough separation to trade');
+    }
+
+    // Trim to max 5 each
+    edgeReasons = edgeReasons.slice(0, 5);
+    riskFactors = riskFactors.slice(0, 5);
+
+    return {
+      t1Pct: finalT1, t2Pct: finalT2,
+      factors: factors,
+      confidence: confidence,
+      action: action, actionLabel: actionLabel,
+      edgeReasons: edgeReasons, riskFactors: riskFactors, sampleWarnings: sampleWarnings,
+      t1Odds: probToDecimalOdds(finalT1), t2Odds: probToDecimalOdds(finalT2)
+    };
+  }
+
+  // ─── Rendering ────────────────────────────────────────────
+  var container = document.getElementById('predictions-container');
+  var allPredictions = [];
+  var currentTab = 'upcoming';
+
+  function getFormBadges(stats, teamId) {
+    if (!stats || !stats.lastGames || stats.lastGames.length === 0) return '';
+    return stats.lastGames.slice(0, 5).map(function(g) {
+      var won = g.winnerId === teamId;
+      return '<span class="f' + (won ? 'w' : 'l') + '">' + (won ? 'W' : 'L') + '</span>';
+    }).join('');
+  }
+
+  function buildMapPoolMini(t1Stats, t2Stats) {
+    if (!t1Stats || !t1Stats.maps || !t2Stats || !t2Stats.maps) return '';
+    var allMaps = {};
+    (t1Stats.maps || []).forEach(function(m) { if (m.played >= 2) allMaps[m.name] = { t1: m.winRate, t1p: m.played }; });
+    (t2Stats.maps || []).forEach(function(m) { if (m.played >= 2) { if (!allMaps[m.name]) allMaps[m.name] = {}; allMaps[m.name].t2 = m.winRate; allMaps[m.name].t2p = m.played; } });
+    var names = Object.keys(allMaps).sort(function(a, b) {
+      var aMax = Math.max(allMaps[a].t1 || 0, allMaps[a].t2 || 0);
+      var bMax = Math.max(allMaps[b].t1 || 0, allMaps[b].t2 || 0);
+      return bMax - aMax;
+    }).slice(0, 6);
+    if (!names.length) return '';
+    function wrCls(v) { return v >= 55 ? 'good' : v < 45 ? 'bad' : 'avg'; }
+    return names.map(function(n) {
+      var d = allMaps[n];
+      return '<div class="pred-map-row"><span class="pred-map-name">' + esc(n) + '</span>' +
+        '<span class="pred-map-wr ' + (d.t1 != null ? wrCls(d.t1) : '') + '">' + (d.t1 != null ? d.t1.toFixed(0) + '%' : '—') + '</span>' +
+        '<span style="color:var(--text3);font-size:.65rem">vs</span>' +
+        '<span class="pred-map-wr ' + (d.t2 != null ? wrCls(d.t2) : '') + '">' + (d.t2 != null ? d.t2.toFixed(0) + '%' : '—') + '</span></div>';
+    }).join('');
+  }
+
+  function confDots(score) {
+    var html = '<span class="pred-conf-dots">';
+    var cls = score >= 7 ? 'filled' : score >= 4 ? 'filled med' : 'filled low';
+    for (var i = 0; i < 10; i++) {
+      html += '<span class="pred-conf-dot' + (i < score ? ' ' + cls : '') + '"></span>';
+    }
+    return html + '</span>';
+  }
+
+  function renderCard(pred) {
+    var m = pred.match, t1 = pred.t1, t2 = pred.t2, pr = pred.prob;
+    var isLive = m.status === 'running', isFinished = m.status === 'finished';
+    var league = m.league || {}, tourn = m.tournament || {};
+    var tier = tourn.tier || '';
+    var cardClass = 'pred-card';
+    if (isLive) cardClass += ' live';
+    else if (pr.action === 'back') cardClass += ' tradable';
+
+    var timeStr = isLive ? '<span class="live-badge">LIVE</span>' :
+                  isFinished ? formatTime(m.begin_at) :
+                  '<span style="color:var(--accent);font-weight:600">' + timeFromNow(m.begin_at) + '</span> · ' + formatTime(m.begin_at);
+
+    var leagueImg = league.image_url ? '<img src="' + esc(league.image_url) + '" alt="" loading="lazy"> ' : '';
+    var t1Form = getFormBadges(pred.t1Stats, t1.id);
+    var t2Form = getFormBadges(pred.t2Stats, t2.id);
+    var favoured = pr.t1Pct >= pr.t2Pct ? 't1' : 't2';
+    var scoreDisp = (isFinished || isLive) ? getScoreStr(m, t1, t2) : 'vs';
+
+    // Factor rows
+    var factorRows = pr.factors.map(function(f) {
+      var pct = (f.value * 100).toFixed(0);
+      return '<div class="pred-factor-row"><span class="pred-factor-name">' + esc(f.name) + '</span>' +
+        '<div class="pred-factor-bar-wrap"><div class="pred-factor-bar-l" style="width:' + pct + '%"></div><div class="pred-factor-bar-r"></div></div>' +
+        '<span class="pred-factor-val">' + pct + '/' + (100 - parseInt(pct)) + '</span></div>';
+    }).join('');
+
+    var mapPool = buildMapPoolMini(pred.t1Stats, pred.t2Stats);
+    var edgeBullets = pr.edgeReasons.length ? '<ul class="pred-bullets edge">' + pr.edgeReasons.map(function(r) { return '<li>' + r + '</li>'; }).join('') + '</ul>' : '<span style="font-size:.75rem;color:var(--text3)">No clear edge identified</span>';
+    var riskBullets = pr.riskFactors.length ? '<ul class="pred-bullets risk">' + pr.riskFactors.map(function(r) { return '<li>' + r + '</li>'; }).join('') + '</ul>' : '<span style="font-size:.75rem;color:var(--text3)">No major risks flagged</span>';
+    var sampleWarn = pr.sampleWarnings.length ? '<div class="pred-sample-warn">⚠ ' + pr.sampleWarnings.join(' · ') + '</div>' : '';
+
+    var actionCls = pr.action === 'back' ? 'action-back' : pr.action === 'lean' ? 'action-lean' : 'action-nobet';
+    var cardId = 'pd-' + m.id;
+
+    return '<div class="' + cardClass + '" data-tier="' + tier + '" data-conf="' + pr.confidence + '" data-status="' + m.status + '">' +
+      '<div class="pred-card-header">' +
+        '<div class="pred-meta">' + leagueImg + '<span>' + esc(tourn.name || league.name || '') + '</span>' +
+          (tier ? ' <span class="pred-tier ' + tierClass(tier) + '">' + tierLabel(tier) + '</span>' : '') +
+          ' <span style="font-weight:600;color:var(--text2)">BO' + (m.number_of_games || 1) + '</span></div>' +
+        '<span class="pred-time">' + timeStr + '</span></div>' +
+      '<div class="pred-card-body">' +
+        '<div class="pred-teams">' +
+          '<div class="pred-team">' +
+            (t1.image ? '<img class="pred-team-logo" src="' + esc(t1.image) + '" alt="" loading="lazy">' : '<div class="pred-team-logo-ph">' + esc((t1.acronym || t1.name || '?').substring(0, 3)) + '</div>') +
+            '<div class="pred-team-info"><div class="pred-team-name' + (favoured === 't1' ? ' favoured' : '') + '">' + esc(t1.acronym || t1.name) + '</div>' +
+            (t1Form ? '<div class="pred-team-form">' + t1Form + '</div>' : '') + '</div></div>' +
+          '<span class="pred-vs">' + scoreDisp + '</span>' +
+          '<div class="pred-team right">' +
+            (t2.image ? '<img class="pred-team-logo" src="' + esc(t2.image) + '" alt="" loading="lazy">' : '<div class="pred-team-logo-ph">' + esc((t2.acronym || t2.name || '?').substring(0, 3)) + '</div>') +
+            '<div class="pred-team-info"><div class="pred-team-name' + (favoured === 't2' ? ' favoured' : '') + '">' + esc(t2.acronym || t2.name) + '</div>' +
+            (t2Form ? '<div class="pred-team-form">' + t2Form + '</div>' : '') + '</div></div>' +
+        '</div>' +
+        '<div class="pred-prob"><div class="pred-prob-header">' +
+          '<span class="pred-prob-pct t1">' + pr.t1Pct + '%</span>' +
+          '<span class="pred-prob-label">Fair Probability</span>' +
+          '<span class="pred-prob-pct t2">' + pr.t2Pct + '%</span></div>' +
+          '<div class="pred-prob-bar"><div class="pred-prob-fill t1" style="width:' + pr.t1Pct + '%"></div><div class="pred-prob-fill t2" style="width:' + pr.t2Pct + '%"></div></div></div>' +
+        '<div class="pred-trader">' +
+          '<div class="pred-trader-item"><span class="pred-trader-label">Fair Odds:</span> <span class="pred-trader-val neutral">' + pr.t1Odds + ' / ' + pr.t2Odds + '</span></div>' +
+          '<div class="pred-trader-item"><span class="pred-trader-label">Confidence:</span> ' + confDots(pr.confidence) + ' <span class="pred-trader-val ' + (pr.confidence >= 7 ? 'green' : pr.confidence >= 4 ? 'yellow' : 'red') + '">' + pr.confidence + '/10</span></div>' +
+        '</div>' +
+        '<span class="pred-action ' + actionCls + '">' + pr.actionLabel + '</span>' +
+        sampleWarn +
+        '<button class="pred-expand" onclick="togglePD(\'' + cardId + '\',this)"><span class="arrow">▼</span> Trading Analysis</button>' +
+      '</div>' +
+      '<div class="pred-detail" id="' + cardId + '">' +
+        '<div class="pred-detail-grid">' +
+          '<div><h4>Factor Breakdown</h4>' + factorRows + '</div>' +
+          '<div><h4>Map Pool</h4>' + (mapPool || '<span style="font-size:.75rem;color:var(--text3)">Insufficient map data</span>') + '</div>' +
+        '</div>' +
+        '<div class="pred-detail-grid" style="margin-top:.5rem">' +
+          '<div><h4>Edge Reasons</h4>' + edgeBullets + '</div>' +
+          '<div><h4>Risk Factors</h4>' + riskBullets + '</div>' +
+        '</div>' +
+      '</div>' +
+      '<div class="pred-card-footer">' +
+        '<a href="/match-detail/?id=' + m.id + '" class="pred-match-link">Full Match Details →</a>' +
+        '<a href="https://csgoluck.com/r/WIKIPEDIA" target="_blank" rel="noopener" class="pred-bet-link">Place Bet</a>' +
+      '</div></div>';
+  }
+
+  function getScoreStr(m, t1, t2) {
+    if (!m.results || m.results.length < 2) return 'vs';
+    var r1 = m.results.find(function(r) { return r.team_id === t1.id; });
+    var r2 = m.results.find(function(r) { return r.team_id === t2.id; });
+    return (r1 ? r1.score : 0) + ':' + (r2 ? r2.score : 0);
+  }
+
+  window.togglePD = function(id, btn) {
+    var el = document.getElementById(id);
+    if (!el) return;
+    var open = el.classList.toggle('open');
+    btn.classList.toggle('open', open);
+  };
+
+  // ─── Filtering ────────────────────────────────────────────
+  function applyFilters() {
+    var tierVal = document.getElementById('tierFilter').value;
+    var confVal = document.getElementById('confidenceFilter').value;
+    var filtered = allPredictions.filter(function(p) {
+      var sm = false;
+      if (currentTab === 'upcoming') sm = p.match.status === 'not_started';
+      else if (currentTab === 'live') sm = p.match.status === 'running';
+      else if (currentTab === 'today') sm = p.match.status === 'finished';
+      if (!sm) return false;
+      if (tierVal && ((p.match.tournament || {}).tier || '') !== tierVal) return false;
+      if (confVal === 'high' && p.prob.confidence < 7) return false;
+      if (confVal === 'medium' && (p.prob.confidence < 4 || p.prob.confidence >= 7)) return false;
+      return true;
+    });
+    // Sort: tradable picks first, then by confidence, then by time
+    filtered.sort(function(a, b) {
+      var aAct = a.prob.action === 'back' ? 2 : a.prob.action === 'lean' ? 1 : 0;
+      var bAct = b.prob.action === 'back' ? 2 : b.prob.action === 'lean' ? 1 : 0;
+      if (bAct !== aAct) return bAct - aAct;
+      if (b.prob.confidence !== a.prob.confidence) return b.prob.confidence - a.prob.confidence;
+      return new Date(a.match.begin_at || 0) - new Date(b.match.begin_at || 0);
+    });
+    container.innerHTML = filtered.length ? filtered.map(renderCard).join('') :
+      '<div class="empty-state"><p>No matches for this view.</p><p style="font-size:.82rem">Try a different tab or adjust filters.</p></div>';
+    updateSummary(filtered);
+  }
+
+  function updateSummary(preds) {
+    var el = document.getElementById('predSummary');
+    if (!preds.length) { el.style.display = 'none'; return; }
+    el.style.display = 'grid';
+    document.getElementById('totalMatches').textContent = preds.length;
+    var tradable = preds.filter(function(p) { return p.prob.action === 'back'; }).length;
+    document.getElementById('highConfPicks').textContent = tradable;
+    var avgC = preds.reduce(function(s, p) { return s + p.prob.confidence; }, 0) / preds.length;
+    document.getElementById('avgConfidence').textContent = avgC.toFixed(1) + '/10';
+    var closest = preds.reduce(function(min, p) {
+      var d = Math.abs(p.prob.t1Pct - 50);
+      return d < min.d ? { d: d, p: p } : min;
+    }, { d: 100, p: null });
+    if (closest.p) document.getElementById('closestMatch').textContent = (closest.p.t1.acronym || closest.p.t1.name) + ' v ' + (closest.p.t2.acronym || closest.p.t2.name);
+  }
+
+  // Tabs
+  document.querySelectorAll('.pred-tab').forEach(function(tab) {
+    tab.addEventListener('click', function() {
+      document.querySelectorAll('.pred-tab').forEach(function(t) { t.classList.remove('active'); t.setAttribute('aria-selected', 'false'); });
+      tab.classList.add('active'); tab.setAttribute('aria-selected', 'true');
+      currentTab = tab.dataset.tab; applyFilters();
+    });
+  });
+  document.getElementById('tierFilter').addEventListener('change', applyFilters);
+  document.getElementById('confidenceFilter').addEventListener('change', applyFilters);
+
+  // ─── Data Loading ─────────────────────────────────────────
+  var statsCache = {}, h2hCache = {};
+  async function fetchJSON(url) { try { var r = await fetch(url); return r.ok ? await r.json() : null; } catch(e) { return null; } }
+  async function getStats(id) { if (!id) return null; if (statsCache[id]) return statsCache[id]; var d = await fetchJSON('/api/team-competitive-stats?id=' + id); if (d) statsCache[id] = d; return d; }
+  async function getH2H(a, b) { var k = a + '-' + b; if (h2hCache[k]) return h2hCache[k]; var d = await fetchJSON('/api/h2h-matches?team1=' + a + '&team2=' + b + '&per_page=20'); if (d) h2hCache[k] = d; return d; }
+
+  async function processBatch(matches, size) {
+    var results = [];
+    for (var i = 0; i < matches.length; i += size) {
+      var batch = matches.slice(i, i + size);
+      var br = await Promise.all(batch.map(async function(m) {
+        var opps = m.opponents || [];
+        if (opps.length < 2) return null;
+        var t1 = opps[0].opponent || {}, t2 = opps[1].opponent || {};
+        if (!t1.id || !t2.id) return null;
+        var [h, s1, s2] = await Promise.all([getH2H(t1.id, t2.id), getStats(t1.id), getStats(t2.id)]);
+        var prob = priceMatch(h, s1, s2, m, t1, t2);
+        return { match: m, t1: { id: t1.id, name: t1.name, acronym: t1.acronym, image: t1.image_url }, t2: { id: t2.id, name: t2.name, acronym: t2.acronym, image: t2.image_url }, t1Stats: s1, t2Stats: s2, h2hData: h, prob: prob };
+      }));
+      results = results.concat(br.filter(Boolean));
+    }
+    return results;
+  }
+
+  async function loadAll() {
+    container.innerHTML = '<div class="loading-state"><div class="spinner"></div> Loading match data…</div>';
+    var [upcoming, live, past] = await Promise.all([
+      fetchJSON('/api/matches?type=upcoming&per_page=30'),
+      fetchJSON('/api/matches?type=running&per_page=15'),
+      fetchJSON('/api/matches?type=past&per_page=15')
+    ]);
+    var all = [].concat(live || [], upcoming || [], past || []).flat();
+    if (!all.length) { container.innerHTML = '<div class="empty-state"><p>No matches found.</p></div>'; return; }
+    container.innerHTML = '<div class="loading-state"><div class="spinner"></div> Pricing ' + all.length + ' matches…</div>';
+    allPredictions = await processBatch(all, 4);
+    if (!allPredictions.length) { container.innerHTML = '<div class="empty-state"><p>No matches with enough data to price.</p></div>'; return; }
+    applyFilters();
+  }
+
+  loadAll();
+  setInterval(function() { if (currentTab === 'live') loadAll(); }, 120000);
+})();
+</script>
+
+</Base>
