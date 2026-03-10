@@ -59,27 +59,29 @@ const explore = [
 .tourney-panel { display: none; }
 .tourney-panel.active { display: block; }
 
-/* Tournament Cards */
-.tourney-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 4px; margin-bottom: 1rem; overflow: hidden; transition: border-color .2s; }
-.tourney-card:hover { border-color: var(--accent); }
+/* Tournament Cards — Redesigned */
+.tourney-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 4px; margin-bottom: .75rem; overflow: hidden; transition: border-color .2s, box-shadow .2s; }
+.tourney-card:hover { border-color: var(--accent); box-shadow: 0 2px 12px rgba(46,204,113,.06); }
 
-.tourney-card-header { display: flex; justify-content: space-between; align-items: center; padding: 1rem 1.25rem; cursor: pointer; }
-.tourney-info { display: flex; align-items: center; gap: .75rem; min-width: 0; flex: 1; }
-.tourney-logo { height: 28px; max-height: 28px; width: auto; max-width: 100px; border-radius: 3px; object-fit: contain; }
-.tourney-name { font-weight: 700; font-size: .95rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.tourney-meta { display: flex; gap: .75rem; align-items: center; flex-shrink: 0; }
-.tourney-tier { font-size: .7rem; font-weight: 700; text-transform: uppercase; padding: .15rem .4rem; border-radius: 3px; }
+.tourney-card-header { display: flex; flex-direction: column; padding: 1rem 1.25rem; cursor: pointer; gap: .6rem; }
+.tourney-top-row { display: flex; align-items: center; gap: .75rem; }
+.tourney-logo { height: 32px; max-height: 32px; width: auto; max-width: 120px; border-radius: 3px; object-fit: contain; flex-shrink: 0; }
+.tourney-name { font-weight: 800; font-size: 1.05rem; font-family: 'Montserrat', sans-serif; color: var(--text1); min-width: 0; overflow: hidden; text-overflow: ellipsis; flex: 1; }
+.tourney-toggle { font-size: .75rem; color: var(--text3); transition: transform .2s; flex-shrink: 0; margin-left: auto; }
+.tourney-card.open .tourney-toggle { transform: rotate(180deg); }
+
+.tourney-bottom-row { display: flex; flex-wrap: wrap; gap: .4rem; align-items: center; }
+.tourney-tier { font-size: .65rem; font-weight: 700; text-transform: uppercase; padding: .18rem .45rem; border-radius: 3px; letter-spacing: .03em; }
 .tier-s { background: #f1c40f; color: #000; }
 .tier-a { background: #e67e22; color: #000; }
 .tier-b { background: #3498db; color: #fff; }
 .tier-c { background: #7f8c8d; color: #fff; }
 .tier-d { background: #566573; color: #fff; }
-.tourney-type { font-size: .75rem; color: var(--text3); font-weight: 600; text-transform: uppercase; }
-.tourney-dates { font-size: .8rem; color: var(--text2); }
-.tourney-prize { font-size: .8rem; color: var(--accent); font-weight: 600; }
-.tourney-region { font-size: .75rem; color: var(--text3); font-weight: 600; background: var(--bg3); padding: .1rem .35rem; border-radius: 3px; }
-.tourney-toggle { font-size: .8rem; color: var(--text3); transition: transform .2s; }
-.tourney-card.open .tourney-toggle { transform: rotate(180deg); }
+.tourney-type { font-size: .72rem; color: var(--text3); font-weight: 600; text-transform: uppercase; background: var(--bg3); padding: .15rem .4rem; border-radius: 3px; }
+.tourney-region { font-size: .72rem; color: var(--text3); font-weight: 600; background: var(--bg3); padding: .15rem .4rem; border-radius: 3px; }
+.tourney-dates { font-size: .78rem; color: var(--text2); }
+.tourney-prize { font-size: .82rem; color: var(--accent); font-weight: 700; }
+.tourney-meta-sep { width: 1px; height: 14px; background: var(--border); flex-shrink: 0; }
 
 .tourney-matches { display: none; padding: 0 1.25rem 1rem; border-top: 1px solid var(--border); }
 .tourney-card.open .tourney-matches { display: block; }
@@ -139,8 +141,9 @@ a.tourney-card-link:hover .tourney-detail-arrow { transform: translateX(3px); }
 .round-panel.active { display: block; }
 
 @media (max-width: 600px) {
-  .tourney-card-header { flex-direction: column; gap: .5rem; align-items: flex-start; }
-  .tourney-meta { flex-wrap: wrap; }
+  .tourney-card-header { padding: .75rem 1rem; gap: .5rem; }
+  .tourney-bottom-row { flex-wrap: wrap; }
+  .tourney-name { font-size: .95rem; }
   .tourney-match-row { flex-wrap: wrap; }
   .round-tab { padding: .35rem .55rem; font-size: .7rem; }
 }
@@ -248,20 +251,24 @@ function renderTournament(t) {
     matchesInner = matches.map(renderMatchRow).join('');
   }
 
+  const metaItems = [
+    t.tier ? `<span class="tourney-tier ${tierClass(t.tier)}">${tierLabel(t.tier)}</span>` : '',
+    t.type ? `<span class="tourney-type">${t.type}</span>` : '',
+    t.region ? `<span class="tourney-region">${t.region}</span>` : '',
+    t.prizepool ? `<span class="tourney-prize">${t.prizepool}</span>` : '',
+    dateStr ? `<span class="tourney-dates">${dateStr}</span>` : '',
+  ].filter(Boolean).join('<span class="tourney-meta-sep"></span>');
+
   return `
     <div class="tourney-card" onclick="this.classList.toggle('open')">
       <div class="tourney-card-header">
-        <div class="tourney-info">
-          ${t.league?.image ? `<img src="${t.league.image}" alt="" class="tourney-logo" style="height:28px;max-height:28px;width:auto;max-width:100px;object-fit:contain" />` : ''}
+        <div class="tourney-top-row">
+          ${t.league?.image ? `<img src="${t.league.image}" alt="" class="tourney-logo" />` : ''}
           <span class="tourney-name">${t.league?.name || ''} — ${t.name || t.serie?.name || ''}</span>
-        </div>
-        <div class="tourney-meta">
-          ${t.tier ? `<span class="tourney-tier ${tierClass(t.tier)}">${tierLabel(t.tier)}</span>` : ''}
-          ${t.type ? `<span class="tourney-type">${t.type}</span>` : ''}
-          ${t.region ? `<span class="tourney-region">${t.region}</span>` : ''}
-          ${t.prizepool ? `<span class="tourney-prize">${t.prizepool}</span>` : ''}
-          <span class="tourney-dates">${dateStr}</span>
           <span class="tourney-toggle">▼</span>
+        </div>
+        <div class="tourney-bottom-row">
+          ${metaItems}
         </div>
       </div>
       <div class="tourney-matches">
@@ -276,21 +283,25 @@ function renderPastTournament(t) {
   const dateStr = t.beginAt ? `${formatDate(t.beginAt)}${t.endAt ? ' – ' + formatDate(t.endAt) : ''}` : '';
   const winnerName = t.winner?.name || t.winner?.acronym || '';
 
+  const metaItems = [
+    '<span class="tourney-badge-finished">Finished</span>',
+    winnerName ? `<span class="tourney-winner">${winnerName}</span>` : '',
+    t.tier ? `<span class="tourney-tier ${tierClass(t.tier)}">${tierLabel(t.tier)}</span>` : '',
+    t.prizepool ? `<span class="tourney-prize">${t.prizepool}</span>` : '',
+    dateStr ? `<span class="tourney-dates">${dateStr}</span>` : '',
+  ].filter(Boolean).join('<span class="tourney-meta-sep"></span>');
+
   return `
     <a href="/tournament-detail/?id=${t.id}" class="tourney-card-link">
     <div class="tourney-card">
       <div class="tourney-card-header">
-        <div class="tourney-info">
-          ${t.league?.image ? `<img src="${t.league.image}" alt="" class="tourney-logo" style="height:28px;max-height:28px;width:auto;max-width:100px;object-fit:contain" />` : ''}
+        <div class="tourney-top-row">
+          ${t.league?.image ? `<img src="${t.league.image}" alt="" class="tourney-logo" />` : ''}
           <span class="tourney-name">${t.league?.name || ''} — ${t.name || t.serie?.name || ''}</span>
-        </div>
-        <div class="tourney-meta">
-          <span class="tourney-badge-finished">Finished</span>
-          ${winnerName ? `<span class="tourney-winner">${winnerName}</span>` : ''}
-          ${t.tier ? `<span class="tourney-tier ${tierClass(t.tier)}">${tierLabel(t.tier)}</span>` : ''}
-          ${t.prizepool ? `<span class="tourney-prize">${t.prizepool}</span>` : ''}
-          <span class="tourney-dates">${dateStr}</span>
           <span class="tourney-detail-arrow">→</span>
+        </div>
+        <div class="tourney-bottom-row">
+          ${metaItems}
         </div>
       </div>
     </div>
