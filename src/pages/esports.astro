@@ -1,6 +1,7 @@
 ---
 import Base from '../layouts/Base.astro';
 import { breadcrumbSchema } from '../lib/weapons';
+import BettingCTA from '../components/BettingCTA.astro';
 
 const title = 'CS2 Esports Hub — Live Matches, Tournaments, Teams & Stats | CSGOLuck Wiki';
 const description = 'Your CS2 esports command center. Live match scores, tournament brackets, pro team stats, head-to-head comparisons, and player performance data — all powered by real-time data.';
@@ -32,6 +33,8 @@ const breadcrumbs = [
   </div>
   <a href="/matches/" class="eh-live-cta">View All Matches →</a>
 </section>
+
+<BettingCTA variant="esports" />
 
 <!-- Main Feature Grid -->
 <section class="eh-grid">

@@ -1,5 +1,6 @@
 ---
 import Base from '../layouts/Base.astro';
+import BettingCTA from '../components/BettingCTA.astro';
 import { TOURNAMENTS, CHALLENGES, getTournament, getTeamById } from '../lib/pickem-data';
 import type { PickemTeam, PickemStage, PickemTournament } from '../lib/pickem-data';
 import { optimizeImage } from '../lib/imageOptimize';
@@ -46,6 +47,8 @@ const description = `Make your CS2 Major Pick'em predictions for ${tournament.na
     <p class="pk-hero-sub">{tournament.name} · {tournament.location}</p>
     <p class="pk-hero-dates">{tournament.dates.start} — {tournament.dates.end}</p>
   </section>
+
+  <BettingCTA variant="pickems" />
 
   <!-- Stage Tabs -->
   <div class="pk-tabs-wrap">

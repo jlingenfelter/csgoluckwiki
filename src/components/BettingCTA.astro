@@ -1,0 +1,77 @@
+---
+interface Props {
+  text?: string;
+  cta?: string;
+  variant?: 'matches' | 'match' | 'tournament' | 'tournaments' | 'h2h' | 'pickems' | 'esports' | 'watch';
+}
+
+const variants: Record<string, { text: string; cta: string }> = {
+  matches:     { text: 'Think you know who wins next? Back your picks on CSGOLuck.',            cta: 'Bet on CS2 Matches' },
+  match:       { text: 'Like what you see? Place your bets on live CS2 matches.',               cta: 'Bet on This Match' },
+  tournament:  { text: 'Follow the action and back your favourite teams to win.',               cta: 'Bet on This Tournament' },
+  tournaments: { text: 'Major tournaments mean major opportunities. Bet on the biggest events.', cta: 'Bet on CS2 Tournaments' },
+  h2h:         { text: 'Compared the stats? Put your knowledge to work.',                       cta: 'Bet on CS2 Teams' },
+  pickems:     { text: 'Turn your predictions into real wins.',                                  cta: 'Bet on CSGOLuck' },
+  esports:     { text: 'The home of CS2 esports betting. Bet on live matches and tournaments.', cta: 'Visit CSGOLuck' },
+  watch:       { text: 'Watching CS2? Make it more exciting with live betting.',                 cta: 'Bet Live on CSGOLuck' },
+};
+
+const { variant = 'esports', text, cta } = Astro.props;
+const v = variants[variant] || variants.esports;
+const displayText = text || v.text;
+const displayCta = cta || v.cta;
+const href = 'https://csgoluck.com/r/WIKIPEDIA';
+---
+
+<div class="betting-cta">
+  <div class="betting-cta-body">
+    <span class="betting-cta-text">{displayText}</span>
+    <a href={href} target="_blank" rel="noopener" class="betting-cta-btn">{displayCta} &rarr;</a>
+  </div>
+</div>
+
+<style>
+.betting-cta {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-left: 4px solid var(--accent);
+  border-radius: 4px;
+  padding: .85rem 1.25rem;
+  margin: 1.25rem 0;
+  transition: border-color .2s;
+}
+.betting-cta:hover { border-color: var(--accent); }
+.betting-cta-body {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+.betting-cta-text {
+  font-size: .88rem;
+  color: var(--text2);
+  flex: 1;
+  min-width: 200px;
+}
+.betting-cta-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: .3rem;
+  background: var(--accent);
+  color: #000;
+  font-size: .82rem;
+  font-weight: 700;
+  font-family: 'Montserrat', sans-serif;
+  padding: .5rem 1rem;
+  border-radius: 4px;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: opacity .2s, transform .1s;
+}
+.betting-cta-btn:hover { opacity: .9; transform: translateY(-1px); }
+@media (max-width: 600px) {
+  .betting-cta-body { flex-direction: column; align-items: flex-start; }
+  .betting-cta-btn { align-self: flex-start; }
+}
+</style>

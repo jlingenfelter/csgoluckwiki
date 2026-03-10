@@ -168,6 +168,14 @@ import Base from '../layouts/Base.astro';
 .mvp-team { color: var(--text3); font-size: .75rem; }
 .mvp-stats { color: var(--text2); font-size: .75rem; }
 
+/* ── Betting CTA ── */
+.betting-cta { background: var(--bg2); border: 1px solid var(--border); border-left: 4px solid var(--accent); border-radius: 4px; padding: .85rem 1.25rem; margin: 1.25rem 0; transition: border-color .2s; }
+.betting-cta:hover { border-color: var(--accent); }
+.betting-cta-body { display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap; }
+.betting-cta-text { font-size: .88rem; color: var(--text2); flex: 1; min-width: 200px; }
+.betting-cta-btn { display: inline-flex; align-items: center; gap: .3rem; background: var(--accent); color: #000; font-size: .82rem; font-weight: 700; font-family: 'Montserrat', sans-serif; padding: .5rem 1rem; border-radius: 4px; text-decoration: none; white-space: nowrap; transition: opacity .2s, transform .1s; }
+.betting-cta-btn:hover { opacity: .9; transform: translateY(-1px); }
+
 /* ── Auto-Refresh Badge ── */
 .auto-refresh-badge { display: inline-flex; align-items: center; gap: .35rem; font-size: .7rem; font-weight: 600; color: #e74c3c; background: rgba(231,76,60,.08); border: 1px solid rgba(231,76,60,.2); border-radius: 3px; padding: .15rem .45rem; margin-left: .5rem; vertical-align: middle; }
 .auto-refresh-badge .ar-dot { display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: #e74c3c; animation: ar-pulse 1.5s ease-in-out infinite; }
@@ -584,6 +592,13 @@ import Base from '../layouts/Base.astro';
           <a href="/h2h/?team1=${t1.id}&team2=${t2.id}" style="font-size:.8rem;color:var(--accent);text-decoration:none;font-weight:600">⚔️ H2H History</a>
           ${match.tournament?.id ? `<span class="meta-sep">·</span><a href="/tournament-detail/?id=${match.tournament.id}" style="font-size:.8rem;color:var(--accent);text-decoration:none;font-weight:600">🏆 Tournament</a>` : ''}
         </div>` : ''}
+      </div>
+
+      <div class="betting-cta">
+        <div class="betting-cta-body">
+          <span class="betting-cta-text">Like what you see? Place your bets on live CS2 matches.</span>
+          <a href="https://csgoluck.com/r/WIKIPEDIA" target="_blank" rel="noopener" class="betting-cta-btn">Bet on This Match &rarr;</a>
+        </div>
       </div>
 
       ${gamesHTML}

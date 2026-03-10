@@ -1,6 +1,7 @@
 ---
 import Base from '../layouts/Base.astro';
 import ExploreMore from '../components/ExploreMore.astro';
+import BettingCTA from '../components/BettingCTA.astro';
 
 const explore = [
   { title: 'CS2 Matches', href: '/matches/', desc: 'Live scores and upcoming match schedule' },
@@ -17,6 +18,8 @@ const explore = [
 
 <h1>CS2 Tournaments</h1>
 <p class="page-intro">Active, upcoming, and past Counter-Strike 2 tournaments with match schedules and results.</p>
+
+<BettingCTA variant="tournaments" />
 
 <!-- Tab Navigation -->
 <div class="tourney-tabs" role="tablist">

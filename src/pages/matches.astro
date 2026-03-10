@@ -1,6 +1,7 @@
 ---
 import Base from '../layouts/Base.astro';
 import ExploreMore from '../components/ExploreMore.astro';
+import BettingCTA from '../components/BettingCTA.astro';
 
 const explore = [
   { title: 'Pro Players', href: '/pro-players/', desc: '800+ pro player settings and configs' },
@@ -17,6 +18,8 @@ const explore = [
 
 <h1>CS2 Match Tracker</h1>
 <p class="page-intro">Live scores, upcoming matches, and recent results from the CS2 pro scene. Data updates automatically.</p>
+
+<BettingCTA variant="matches" />
 
 <!-- Tab Navigation -->
 <div class="match-tabs" role="tablist">
