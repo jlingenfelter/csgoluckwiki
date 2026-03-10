@@ -1,0 +1,800 @@
+---
+import Base from '../layouts/Base.astro';
+import ExploreMore from '../components/ExploreMore.astro';
+import BettingCTA from '../components/BettingCTA.astro';
+
+const explore = [
+  { title: 'Match Predictions', href: '/predictions/', desc: 'Trading-grade match win probabilities' },
+  { title: 'Hot Picks', href: '/hot-picks/', desc: 'Best value bets for today' },
+  { title: 'H2H Comparator', href: '/h2h/', desc: 'Compare any two teams head-to-head' },
+  { title: 'Pro Settings', href: '/pro-settings/', desc: 'Pro player configs and gear' },
+];
+---
+<Base title="CS2 Player Form Impact — Individual Performance Analysis | CSGOLuck Wiki" description="See how individual player form impacts team win probability. Analyse player ratings, ADR, KAST, and recent performance trends for CS2 pro teams." currentNav="/player-form/">
+
+<nav class="breadcrumb" aria-label="Breadcrumb">
+<a href="/">Home</a> <span class="sep">›</span> <a href="/esports/">Esports</a> <span class="sep">›</span> <span>Player Form</span>
+</nav>
+
+<h1>Player Form Impact</h1>
+<p class="page-intro">Analyse how individual player form impacts team performance. Search for any CS2 pro team to see per-player ratings, recent trends, and how each player's current form shifts the team's overall win probability.</p>
+
+<BettingCTA text="Found a team in peak form? Back them with confidence." cta="Bet on CS2 Matches" variant="matches" />
+
+<!-- Search -->
+<div class="pf-search-wrap">
+  <div class="pf-search">
+    <svg class="pf-search-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+    <input type="text" id="teamSearch" class="pf-search-input" placeholder="Search team (e.g. NAVI, FaZe, Vitality…)" autocomplete="off" />
+    <div class="pf-search-results" id="searchResults"></div>
+  </div>
+</div>
+
+<!-- Quick Access -->
+<div class="pf-quick">
+  <span class="pf-quick-label">Popular:</span>
+  <button class="pf-quick-btn" data-team="natus-vincere">NAVI</button>
+  <button class="pf-quick-btn" data-team="team-spirit">Spirit</button>
+  <button class="pf-quick-btn" data-team="vitality">Vitality</button>
+  <button class="pf-quick-btn" data-team="faze-clan">FaZe</button>
+  <button class="pf-quick-btn" data-team="g2-esports">G2</button>
+  <button class="pf-quick-btn" data-team="mouz">MOUZ</button>
+  <button class="pf-quick-btn" data-team="the-mongolz">Mongolz</button>
+  <button class="pf-quick-btn" data-team="furia">FURIA</button>
+</div>
+
+<!-- Team Overview -->
+<div id="teamContainer" style="display:none;">
+  <!-- Header -->
+  <div class="pf-team-header" id="teamHeader"></div>
+
+  <!-- Form Impact Summary -->
+  <div class="pf-impact-summary" id="impactSummary"></div>
+
+  <!-- Player Cards -->
+  <div class="pf-players" id="playerCards"></div>
+
+  <!-- Methodology -->
+  <div class="pf-method">
+    <h3>How Form Impact Works</h3>
+    <p>Each player's <strong>form score</strong> compares their recent 5-game performance to their career averages across three key metrics:</p>
+    <ul>
+      <li><strong>Rating 2.0</strong> — HLTV-style game rating (weight: 40%)</li>
+      <li><strong>ADR</strong> — Average damage per round (weight: 35%)</li>
+      <li><strong>KAST</strong> — % rounds with Kill, Assist, Survived, or Traded (weight: 25%)</li>
+    </ul>
+    <p>A form score of <span style="color:#2ecc71;">100</span> means performing at career average. Above 100 = hot streak, below 100 = slumping. The team's overall form impact is the average of all player form scores, weighted slightly towards the star player (highest career rating).</p>
+    <p>Form impact shifts the team's base win probability by up to ±8%. A team with all players in peak form (120+) gets a meaningful boost, while a team with multiple slumping players (80 or below) gets penalised.</p>
+  </div>
+</div>
+
+<!-- Empty state -->
+<div id="emptyState" class="pf-empty">
+  <div class="pf-empty-icon">📊</div>
+  <h3>Search for a Team</h3>
+  <p>Enter a team name above or click a popular team to see how individual player form impacts their win probability.</p>
+</div>
+
+<ExploreMore items={explore} />
+
+<style is:inline>
+  .pf-search-wrap {
+    max-width: 600px;
+    margin: 0 auto 16px;
+  }
+  .pf-search {
+    position: relative;
+  }
+  .pf-search-icon {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-muted, #888);
+    pointer-events: none;
+  }
+  .pf-search-input {
+    width: 100%;
+    padding: 14px 16px 14px 44px;
+    background: var(--bg2, #13141a);
+    border: 2px solid var(--border, #222);
+    border-radius: 10px;
+    color: var(--text, #eee);
+    font-size: 1rem;
+    font-family: inherit;
+    outline: none;
+    transition: border-color 0.2s;
+    box-sizing: border-box;
+  }
+  .pf-search-input:focus {
+    border-color: #2ecc71;
+  }
+  .pf-search-results {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: var(--bg2, #13141a);
+    border: 1px solid var(--border, #222);
+    border-radius: 8px;
+    margin-top: 4px;
+    display: none;
+    z-index: 100;
+    max-height: 300px;
+    overflow-y: auto;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+  }
+  .pf-search-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 14px;
+    cursor: pointer;
+    transition: background 0.15s;
+    border-bottom: 1px solid var(--border, #222);
+  }
+  .pf-search-item:last-child { border-bottom: none; }
+  .pf-search-item:hover { background: rgba(46,204,113,0.08); }
+  .pf-search-item img {
+    width: 28px;
+    height: 28px;
+    object-fit: contain;
+  }
+  .pf-search-item-name {
+    font-weight: 600;
+    color: var(--text, #eee);
+  }
+
+  .pf-quick {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-bottom: 32px;
+  }
+  .pf-quick-label {
+    font-size: 0.8rem;
+    color: var(--text-muted, #888);
+  }
+  .pf-quick-btn {
+    padding: 6px 14px;
+    background: var(--bg2, #13141a);
+    border: 1px solid var(--border, #222);
+    border-radius: 20px;
+    color: var(--text, #eee);
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s;
+    font-family: inherit;
+  }
+  .pf-quick-btn:hover {
+    border-color: #2ecc71;
+    background: rgba(46,204,113,0.08);
+    color: #2ecc71;
+  }
+
+  /* Team Header */
+  .pf-team-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 20px 24px;
+    background: var(--bg2, #13141a);
+    border: 1px solid var(--border, #222);
+    border-radius: 10px;
+    margin-bottom: 16px;
+  }
+  .pf-team-logo {
+    width: 56px;
+    height: 56px;
+    object-fit: contain;
+  }
+  .pf-team-info {
+    flex: 1;
+  }
+  .pf-team-name {
+    font-size: 1.4rem;
+    font-weight: 700;
+    margin: 0;
+    color: var(--text, #eee);
+  }
+  .pf-team-meta {
+    font-size: 0.85rem;
+    color: var(--text-muted, #888);
+    margin: 2px 0 0;
+  }
+  .pf-team-record {
+    display: flex;
+    gap: 16px;
+    font-variant-numeric: tabular-nums;
+  }
+  .pf-record-item {
+    text-align: center;
+  }
+  .pf-record-val {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--text, #eee);
+  }
+  .pf-record-label {
+    font-size: 0.65rem;
+    color: var(--text-muted, #888);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  /* Impact Summary */
+  .pf-impact-summary {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+  .pf-impact-card {
+    background: var(--bg2, #13141a);
+    border: 1px solid var(--border, #222);
+    border-radius: 10px;
+    padding: 16px;
+    text-align: center;
+  }
+  .pf-impact-label {
+    font-size: 0.75rem;
+    color: var(--text-muted, #888);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 6px;
+  }
+  .pf-impact-val {
+    font-size: 1.6rem;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+  }
+  .pf-impact-sub {
+    font-size: 0.7rem;
+    color: var(--text-muted, #888);
+    margin-top: 4px;
+  }
+  .pf-impact-val--hot { color: #2ecc71; }
+  .pf-impact-val--neutral { color: #f39c12; }
+  .pf-impact-val--cold { color: #e74c3c; }
+  .pf-impact-val--boost { color: #2ecc71; }
+  .pf-impact-val--drag { color: #e74c3c; }
+
+  /* Player Cards */
+  .pf-players {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 12px;
+    margin-bottom: 32px;
+  }
+  .pf-player {
+    background: var(--bg2, #13141a);
+    border: 1px solid var(--border, #222);
+    border-radius: 10px;
+    overflow: hidden;
+    transition: border-color 0.2s;
+  }
+  .pf-player--hot { border-color: rgba(46,204,113,0.4); }
+  .pf-player--cold { border-color: rgba(231,76,60,0.4); }
+
+  .pf-player-head {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 14px;
+    border-bottom: 1px solid var(--border, #222);
+  }
+  .pf-player-img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+    background: var(--bg3, #1a1b22);
+  }
+  .pf-player-info {
+    flex: 1;
+    min-width: 0;
+  }
+  .pf-player-name {
+    font-weight: 700;
+    font-size: 0.95rem;
+    color: var(--text, #eee);
+    display: block;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .pf-player-role {
+    font-size: 0.7rem;
+    color: var(--text-muted, #888);
+    text-transform: capitalize;
+  }
+  .pf-player-form-badge {
+    font-size: 0.8rem;
+    font-weight: 700;
+    padding: 3px 8px;
+    border-radius: 6px;
+    font-variant-numeric: tabular-nums;
+  }
+  .pf-form--hot { background: rgba(46,204,113,0.15); color: #2ecc71; }
+  .pf-form--neutral { background: rgba(243,156,18,0.15); color: #f39c12; }
+  .pf-form--cold { background: rgba(231,76,60,0.15); color: #e74c3c; }
+
+  .pf-player-stats {
+    padding: 10px 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .pf-stat-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .pf-stat-label {
+    font-size: 0.7rem;
+    color: var(--text-muted, #888);
+    min-width: 48px;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+  }
+  .pf-stat-bar-wrap {
+    flex: 1;
+    height: 6px;
+    background: rgba(255,255,255,0.08);
+    border-radius: 3px;
+    overflow: hidden;
+    position: relative;
+  }
+  .pf-stat-bar {
+    height: 100%;
+    border-radius: 3px;
+    transition: width 0.4s;
+  }
+  .pf-stat-bar--career {
+    position: absolute;
+    top: 0;
+    height: 100%;
+    width: 2px;
+    background: rgba(255,255,255,0.4);
+    z-index: 1;
+  }
+  .pf-stat-val {
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: var(--text, #eee);
+    min-width: 36px;
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Recent games sparkline */
+  .pf-player-recent {
+    padding: 8px 14px 12px;
+    border-top: 1px solid var(--border, #222);
+  }
+  .pf-recent-label {
+    font-size: 0.6rem;
+    color: var(--text-muted, #888);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 6px;
+  }
+  .pf-recent-games {
+    display: flex;
+    gap: 4px;
+    align-items: flex-end;
+    height: 30px;
+  }
+  .pf-recent-bar {
+    flex: 1;
+    border-radius: 2px;
+    min-height: 4px;
+    transition: height 0.3s;
+    position: relative;
+  }
+  .pf-recent-bar::after {
+    content: attr(data-rating);
+    position: absolute;
+    bottom: -14px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 0.5rem;
+    color: var(--text-muted, #666);
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Impact arrow on player card */
+  .pf-impact-arrow {
+    font-size: 0.7rem;
+    font-weight: 700;
+    padding: 2px 6px;
+    border-radius: 4px;
+  }
+  .pf-impact-arrow--up { color: #2ecc71; }
+  .pf-impact-arrow--down { color: #e74c3c; }
+  .pf-impact-arrow--flat { color: var(--text-muted, #888); }
+
+  /* Methodology */
+  .pf-method {
+    background: var(--bg2, #13141a);
+    border: 1px solid var(--border, #222);
+    border-radius: 10px;
+    padding: 20px 24px;
+    margin-bottom: 32px;
+  }
+  .pf-method h3 {
+    font-size: 1rem;
+    color: var(--text, #eee);
+    margin: 0 0 10px;
+  }
+  .pf-method p {
+    font-size: 0.85rem;
+    color: var(--text-muted, #888);
+    line-height: 1.6;
+    margin: 0 0 10px;
+  }
+  .pf-method ul {
+    margin: 8px 0 12px 20px;
+    padding: 0;
+  }
+  .pf-method li {
+    font-size: 0.85rem;
+    color: var(--text-muted, #888);
+    line-height: 1.6;
+    margin-bottom: 4px;
+  }
+
+  /* Empty state */
+  .pf-empty {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--text-muted, #888);
+  }
+  .pf-empty-icon { font-size: 3rem; margin-bottom: 12px; }
+  .pf-empty h3 { color: var(--text, #eee); margin: 0 0 8px; }
+  .pf-empty p { font-size: 0.9rem; max-width: 400px; margin: 0 auto; }
+
+  /* Loading */
+  .pf-loading {
+    text-align: center;
+    padding: 40px;
+    color: #2ecc71;
+    font-size: 0.9rem;
+  }
+  .pf-loading .spinner {
+    width: 24px;
+    height: 24px;
+    border: 3px solid rgba(46,204,113,0.2);
+    border-top-color: #2ecc71;
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+    margin: 0 auto 12px;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  @media (max-width: 600px) {
+    .pf-players { grid-template-columns: 1fr; }
+    .pf-impact-summary { grid-template-columns: 1fr 1fr; }
+    .pf-team-header { flex-direction: column; text-align: center; }
+    .pf-team-record { justify-content: center; }
+  }
+</style>
+
+<script>
+  const searchInput = document.getElementById('teamSearch');
+  const searchResults = document.getElementById('searchResults');
+  const teamContainer = document.getElementById('teamContainer');
+  const emptyState = document.getElementById('emptyState');
+  const teamHeader = document.getElementById('teamHeader');
+  const impactSummary = document.getElementById('impactSummary');
+  const playerCards = document.getElementById('playerCards');
+
+  let searchTimeout = null;
+  const statsCache = {};
+
+  // ── Search ──────────────────────────────────────────────────
+  searchInput.addEventListener('input', () => {
+    clearTimeout(searchTimeout);
+    const q = searchInput.value.trim();
+    if (q.length < 2) { searchResults.style.display = 'none'; return; }
+
+    searchTimeout = setTimeout(async () => {
+      try {
+        const res = await fetch(`/api/team-stats?name=${encodeURIComponent(q)}`);
+        if (!res.ok) return;
+        const data = await res.json();
+        const teams = data.teams || [data];
+        if (!teams.length) { searchResults.style.display = 'none'; return; }
+
+        searchResults.innerHTML = teams.slice(0, 8).map(t => `
+          <div class="pf-search-item" data-slug="${t.slug}" data-id="${t.id}">
+            ${t.image ? `<img src="${t.image}" alt="" />` : '<span style="width:28px;height:28px;display:block;"></span>'}
+            <span class="pf-search-item-name">${t.name}</span>
+          </div>
+        `).join('');
+        searchResults.style.display = 'block';
+
+        searchResults.querySelectorAll('.pf-search-item').forEach(item => {
+          item.addEventListener('click', () => {
+            loadTeam(item.dataset.slug, item.dataset.id);
+            searchResults.style.display = 'none';
+            searchInput.value = '';
+          });
+        });
+      } catch {}
+    }, 400);
+  });
+
+  // Hide results on click outside
+  document.addEventListener('click', e => {
+    if (!e.target.closest('.pf-search')) searchResults.style.display = 'none';
+  });
+
+  // Quick access buttons
+  document.querySelectorAll('.pf-quick-btn').forEach(btn => {
+    btn.addEventListener('click', () => loadTeam(btn.dataset.team));
+  });
+
+  // ── Load Team ──────────────────────────────────────────────
+  async function loadTeam(slug, id) {
+    emptyState.style.display = 'none';
+    teamContainer.style.display = 'block';
+    teamHeader.innerHTML = '<div class="pf-loading"><div class="spinner"></div>Loading team data…</div>';
+    impactSummary.innerHTML = '';
+    playerCards.innerHTML = '';
+
+    try {
+      // Step 1: Get team roster
+      const teamParam = id ? `id=${id}` : `slug=${encodeURIComponent(slug)}`;
+      const teamRes = await fetch(`/api/team-stats?${teamParam}`);
+      if (!teamRes.ok) throw new Error('Team not found');
+      const teamRaw = await teamRes.json();
+      const team = teamRaw.teams ? teamRaw.teams[0] : teamRaw;
+      if (!team) throw new Error('Team not found');
+
+      // Also get competitive stats
+      const compRes = await fetch(`/api/team-competitive-stats?${teamParam}`);
+      const compData = compRes.ok ? await compRes.json() : null;
+
+      // Render header
+      renderHeader(team, compData);
+
+      // Step 2: Fetch player stats (batch of 3 to avoid rate limiting)
+      const activePlayers = (team.players || []).filter(p => p.active !== false).slice(0, 6);
+      if (!activePlayers.length) {
+        playerCards.innerHTML = '<p style="color:var(--text-muted);text-align:center;padding:40px;">No active players found for this team.</p>';
+        return;
+      }
+
+      playerCards.innerHTML = '<div class="pf-loading"><div class="spinner"></div>Fetching player stats…</div>';
+
+      const playerData = [];
+      for (let i = 0; i < activePlayers.length; i += 3) {
+        const batch = activePlayers.slice(i, i + 3);
+        const results = await Promise.all(batch.map(async p => {
+          if (statsCache[p.id]) return { player: p, stats: statsCache[p.id] };
+          try {
+            const res = await fetch(`/api/player-stats?id=${p.id}`);
+            if (!res.ok) return { player: p, stats: null };
+            const data = await res.json();
+            statsCache[p.id] = data;
+            return { player: p, stats: data };
+          } catch {
+            return { player: p, stats: null };
+          }
+        }));
+        playerData.push(...results);
+        if (i + 3 < activePlayers.length) await new Promise(r => setTimeout(r, 300));
+      }
+
+      // Step 3: Calculate form scores
+      const formResults = playerData.map(({ player, stats }) => {
+        if (!stats || !stats.stats) return { player, stats: null, formScore: 100, tier: 'neutral' };
+
+        const career = stats.stats.averages || {};
+        const recent = stats.lastGames || [];
+
+        // Career averages
+        const careerRating = career.rating || 1.0;
+        const careerAdr = career.adr || 70;
+        const careerKast = career.kast || 65;
+
+        // Recent averages (last 5 games)
+        const recentRating = recent.length ? recent.reduce((s, g) => s + (g.rating || 1.0), 0) / recent.length : careerRating;
+        const recentAdr = recent.length ? recent.reduce((s, g) => s + (g.adr || 70), 0) / recent.length : careerAdr;
+        const recentKast = recent.length ? recent.reduce((s, g) => s + (g.kast || 65), 0) / recent.length : careerKast;
+
+        // Form ratios (1.0 = at career average)
+        const ratingForm = careerRating > 0 ? recentRating / careerRating : 1;
+        const adrForm = careerAdr > 0 ? recentAdr / careerAdr : 1;
+        const kastForm = careerKast > 0 ? recentKast / careerKast : 1;
+
+        // Weighted composite form score (100 = career average)
+        const formScore = Math.round((ratingForm * 0.40 + adrForm * 0.35 + kastForm * 0.25) * 100);
+
+        const tier = formScore >= 110 ? 'hot' : formScore >= 95 ? 'neutral' : 'cold';
+
+        return {
+          player,
+          stats,
+          formScore,
+          tier,
+          careerRating,
+          careerAdr,
+          careerKast,
+          recentRating: Math.round(recentRating * 100) / 100,
+          recentAdr: Math.round(recentAdr * 10) / 10,
+          recentKast: Math.round(recentKast * 10) / 10,
+          recent,
+        };
+      });
+
+      // Step 4: Calculate team form impact
+      // Star player weight: highest career rating gets 1.3x weight, others 1.0x
+      const starIdx = formResults.reduce((best, r, i) =>
+        (r.careerRating || 0) > (formResults[best]?.careerRating || 0) ? i : best, 0);
+
+      let weightSum = 0;
+      let formSum = 0;
+      formResults.forEach((r, i) => {
+        const w = i === starIdx ? 1.3 : 1.0;
+        formSum += r.formScore * w;
+        weightSum += w;
+      });
+      const teamFormScore = Math.round(formSum / weightSum);
+
+      // Win prob shift: (teamForm - 100) * 0.08, clamped to ±8%
+      const probShift = Math.max(-8, Math.min(8, (teamFormScore - 100) * 0.08 * 100));
+
+      // Render summary
+      renderImpactSummary(teamFormScore, probShift, formResults);
+
+      // Render player cards
+      renderPlayers(formResults, starIdx);
+
+    } catch (err) {
+      teamHeader.innerHTML = `<p style="color:#e74c3c;text-align:center;padding:20px;">${err.message || 'Failed to load team data'}</p>`;
+    }
+  }
+
+  // ── Render Functions ────────────────────────────────────────
+
+  function renderHeader(team, compData) {
+    const record = compData?.record || {};
+    teamHeader.innerHTML = `
+      ${team.image ? `<img src="${team.image}" alt="${team.name}" class="pf-team-logo" />` : ''}
+      <div class="pf-team-info">
+        <h2 class="pf-team-name">${team.name}</h2>
+        <p class="pf-team-meta">${team.location || ''} · ${(team.players || []).filter(p => p.active !== false).length} active players</p>
+      </div>
+      <div class="pf-team-record">
+        <div class="pf-record-item">
+          <div class="pf-record-val">${record.matchesPlayed || '—'}</div>
+          <div class="pf-record-label">Matches</div>
+        </div>
+        <div class="pf-record-item">
+          <div class="pf-record-val">${record.matchesWon || '—'}</div>
+          <div class="pf-record-label">Wins</div>
+        </div>
+        <div class="pf-record-item">
+          <div class="pf-record-val" style="color:${(record.matchWinRate || 0) >= 0.5 ? '#2ecc71' : '#e74c3c'}">${record.matchWinRate ? Math.round(record.matchWinRate * 100) + '%' : '—'}</div>
+          <div class="pf-record-label">Win Rate</div>
+        </div>
+      </div>
+    `;
+  }
+
+  function renderImpactSummary(teamForm, probShift, formResults) {
+    const hotCount = formResults.filter(r => r.tier === 'hot').length;
+    const coldCount = formResults.filter(r => r.tier === 'cold').length;
+    const formTier = teamForm >= 110 ? 'hot' : teamForm >= 95 ? 'neutral' : 'cold';
+    const shiftStr = probShift >= 0 ? `+${probShift.toFixed(1)}%` : `${probShift.toFixed(1)}%`;
+
+    impactSummary.innerHTML = `
+      <div class="pf-impact-card">
+        <div class="pf-impact-label">Team Form Score</div>
+        <div class="pf-impact-val pf-impact-val--${formTier}">${teamForm}</div>
+        <div class="pf-impact-sub">${teamForm >= 110 ? 'In peak form' : teamForm >= 95 ? 'Near average form' : 'Below average form'}</div>
+      </div>
+      <div class="pf-impact-card">
+        <div class="pf-impact-label">Win Prob Impact</div>
+        <div class="pf-impact-val ${probShift >= 0 ? 'pf-impact-val--boost' : 'pf-impact-val--drag'}">${shiftStr}</div>
+        <div class="pf-impact-sub">${probShift >= 0 ? 'Form advantage' : 'Form disadvantage'}</div>
+      </div>
+      <div class="pf-impact-card">
+        <div class="pf-impact-label">Hot Players</div>
+        <div class="pf-impact-val pf-impact-val--hot">${hotCount}</div>
+        <div class="pf-impact-sub">Performing above average</div>
+      </div>
+      <div class="pf-impact-card">
+        <div class="pf-impact-label">Cold Players</div>
+        <div class="pf-impact-val pf-impact-val--cold">${coldCount}</div>
+        <div class="pf-impact-sub">Below career average</div>
+      </div>
+    `;
+  }
+
+  function renderPlayers(formResults, starIdx) {
+    playerCards.innerHTML = formResults.map((r, i) => {
+      const p = r.player;
+      const s = r.stats;
+      const isStar = i === starIdx;
+      const formClass = r.tier === 'hot' ? 'pf-form--hot' : r.tier === 'cold' ? 'pf-form--cold' : 'pf-form--neutral';
+      const cardClass = r.tier === 'hot' ? 'pf-player--hot' : r.tier === 'cold' ? 'pf-player--cold' : '';
+
+      // Rating bar (out of 2.0, scaled)
+      const ratingPct = Math.min(100, (r.recentRating / 1.8) * 100);
+      const careerRatingPct = Math.min(100, ((r.careerRating || 1.0) / 1.8) * 100);
+      // ADR bar (out of 120)
+      const adrPct = Math.min(100, (r.recentAdr / 120) * 100);
+      const careerAdrPct = Math.min(100, ((r.careerAdr || 70) / 120) * 100);
+      // KAST bar (out of 100)
+      const kastPct = Math.min(100, r.recentKast);
+      const careerKastPct = Math.min(100, r.careerKast || 65);
+
+      const barColor = r.tier === 'hot' ? '#2ecc71' : r.tier === 'cold' ? '#e74c3c' : '#f39c12';
+
+      // Recent games sparkline
+      const recent = r.recent || [];
+      const sparkline = recent.length ? recent.map(g => {
+        const rating = g.rating || 1.0;
+        const h = Math.max(4, Math.round((rating / 1.8) * 30));
+        const color = rating >= 1.15 ? '#2ecc71' : rating >= 0.95 ? '#f39c12' : '#e74c3c';
+        return `<div class="pf-recent-bar" style="height:${h}px;background:${color};" data-rating="${rating.toFixed(2)}"></div>`;
+      }).join('') : '<span style="font-size:0.65rem;color:var(--text-muted);">No recent data</span>';
+
+      return `
+        <div class="pf-player ${cardClass}">
+          <div class="pf-player-head">
+            ${s?.image ? `<img src="${s.image}" alt="${s?.name || p.name}" class="pf-player-img" />` : `<div class="pf-player-img" style="display:flex;align-items:center;justify-content:center;background:rgba(46,204,113,0.1);color:#2ecc71;font-weight:700;font-size:1.1rem;">${(s?.name || p.name).charAt(0)}</div>`}
+            <div class="pf-player-info">
+              <span class="pf-player-name">${s?.name || p.name}${isStar ? ' ⭐' : ''}</span>
+              <span class="pf-player-role">${p.role || s?.role || 'Player'}${isStar ? ' · Star Player' : ''}</span>
+            </div>
+            <span class="pf-player-form-badge ${formClass}">${r.formScore}</span>
+          </div>
+          <div class="pf-player-stats">
+            <div class="pf-stat-row">
+              <span class="pf-stat-label">Rating</span>
+              <div class="pf-stat-bar-wrap">
+                <div class="pf-stat-bar" style="width:${ratingPct}%;background:${barColor};"></div>
+                <div class="pf-stat-bar--career" style="left:${careerRatingPct}%;"></div>
+              </div>
+              <span class="pf-stat-val">${r.recentRating.toFixed(2)}</span>
+            </div>
+            <div class="pf-stat-row">
+              <span class="pf-stat-label">ADR</span>
+              <div class="pf-stat-bar-wrap">
+                <div class="pf-stat-bar" style="width:${adrPct}%;background:${barColor};"></div>
+                <div class="pf-stat-bar--career" style="left:${careerAdrPct}%;"></div>
+              </div>
+              <span class="pf-stat-val">${r.recentAdr.toFixed(1)}</span>
+            </div>
+            <div class="pf-stat-row">
+              <span class="pf-stat-label">KAST</span>
+              <div class="pf-stat-bar-wrap">
+                <div class="pf-stat-bar" style="width:${kastPct}%;background:${barColor};"></div>
+                <div class="pf-stat-bar--career" style="left:${careerKastPct}%;"></div>
+              </div>
+              <span class="pf-stat-val">${r.recentKast.toFixed(1)}%</span>
+            </div>
+          </div>
+          <div class="pf-player-recent">
+            <div class="pf-recent-label">Last ${recent.length} Games</div>
+            <div class="pf-recent-games">${sparkline}</div>
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  // Auto-load from URL hash
+  if (window.location.hash) {
+    const slug = window.location.hash.slice(1);
+    if (slug) loadTeam(slug);
+  }
+</script>
+</Base>

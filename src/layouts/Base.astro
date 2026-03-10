@@ -215,7 +215,7 @@ const eliteRanks = allRanks.filter(r => ['Distinguished', 'Legendary', 'Supreme'
 
 <!-- Esports Mega Menu -->
 <div class="nav-dropdown nav-mega nav-mega-3col">
-<button class="nav-dropdown-btn nav-esports-btn" class:list={[{ active: currentNav === '/matches/' || currentNav === '/tournaments/' || currentNav === '/pickems/' || currentNav === '/esports/' || currentNav === '/h2h/' || currentNav === '/match-detail/' || currentNav === '/tournament-detail/' || currentNav === '/predictions/' }]} aria-expanded="false">Esports ▾</button>
+<button class="nav-dropdown-btn nav-esports-btn" class:list={[{ active: currentNav === '/matches/' || currentNav === '/tournaments/' || currentNav === '/pickems/' || currentNav === '/esports/' || currentNav === '/h2h/' || currentNav === '/match-detail/' || currentNav === '/tournament-detail/' || currentNav === '/predictions/' || currentNav === '/player-form/' }]} aria-expanded="false">Esports ▾</button>
 <div class="nav-mega-menu">
 <div class="mega-col">
 <a href="/esports/" class="mega-heading">Esports Hub</a>
@@ -223,6 +223,7 @@ const eliteRanks = allRanks.filter(r => ['Distinguished', 'Legendary', 'Supreme'
 <a href="/tournaments/" class="mega-link" style="font-weight:700"><span>Tournaments</span></a>
 <a href="/h2h/" class="mega-link"><span>H2H Comparator</span></a>
 <a href="/predictions/" class="mega-link" style="font-weight:700;color:#2ecc71"><span>📊 Predictions</span></a>
+<a href="/player-form/" class="mega-link" style="font-weight:700;color:#2ecc71"><span>📈 Player Form</span></a>
 <a href="/pickems/" class="mega-link" style="font-weight:700;color:#2ecc71"><span>Pick'Ems</span></a>
 </div>
 <div class="mega-col">
@@ -390,6 +391,7 @@ const eliteRanks = allRanks.filter(r => ['Distinguished', 'Legendary', 'Supreme'
 <a href="/tournaments/">Tournaments</a>
 <a href="/h2h/">H2H Comparator</a>
 <a href="/predictions/" style="color:#2ecc71;font-weight:700">📊 Predictions</a>
+<a href="/player-form/" style="color:#2ecc71;font-weight:700">📈 Player Form</a>
 <a href="/pickems/" style="color:#2ecc71;font-weight:700">Pick'Ems</a>
 <div class="mobile-divider"></div>
 <a href="/pro-teams/">Pro Teams</a>
@@ -895,7 +897,7 @@ document.addEventListener('DOMContentLoaded',function(){
       {t:'Workshop Maps',u:'/workshop-maps/'}
     ]},
     {g:'Esports',icon:'trophy',items:[
-      {t:'Esports Hub',u:'/esports/'},{t:'Live Matches',u:'/matches/'},{t:'Tournaments',u:'/tournaments/'},{t:'H2H Comparator',u:'/h2h/'},{t:'Match Predictions',u:'/predictions/'},{t:"Pick'Ems",u:'/pickems/'},
+      {t:'Esports Hub',u:'/esports/'},{t:'Live Matches',u:'/matches/'},{t:'Tournaments',u:'/tournaments/'},{t:'H2H Comparator',u:'/h2h/'},{t:'Match Predictions',u:'/predictions/'},{t:'Player Form Impact',u:'/player-form/'},{t:"Pick'Ems",u:'/pickems/'},
       {t:'Pro Teams',u:'/pro-teams/'},{t:'Pro Players',u:'/pro-players/'},{t:'Pro Gaming Gear',u:'/pro-gaming-gear/'},{t:'CS2 Tournament Guide',u:'/cs2-tournaments/'},{t:'Esports FAQ',u:'/cs2-esports-pro-scene-faq/'}
     ]},
     {g:'Pro Scene',icon:'trophy',items:[

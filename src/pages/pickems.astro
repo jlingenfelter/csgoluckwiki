@@ -246,6 +246,27 @@ const description = `Make your CS2 Major Pick'em predictions for ${tournament.na
         </ul>
       </div>
 
+      <!-- Model Hints -->
+      <div class="pk-model-hints">
+        <div class="pk-model-header">
+          <h3 class="pk-sidebar-title">📊 Model Hints</h3>
+          <label class="pk-toggle">
+            <input type="checkbox" id="pkHintsToggle" />
+            <span class="pk-toggle-slider"></span>
+          </label>
+        </div>
+        <p class="pk-model-desc" id="pkModelDesc">Enable AI-powered team strength indicators on chips and bracket matches to guide your picks.</p>
+        <div class="pk-model-status" id="pkModelStatus" style="display:none;">
+          <div class="pk-model-loading"><div class="pk-model-spinner"></div> Analysing teams…</div>
+        </div>
+        <div class="pk-model-legend" id="pkModelLegend" style="display:none;">
+          <div class="pk-legend-row"><span class="pk-legend-dot pk-legend--strong"></span> Strong (60%+ WR)</div>
+          <div class="pk-legend-row"><span class="pk-legend-dot pk-legend--average"></span> Average (45-60%)</div>
+          <div class="pk-legend-row"><span class="pk-legend-dot pk-legend--weak"></span> Weak (&lt;45% WR)</div>
+          <div class="pk-legend-row pk-legend-note">Based on recent match win rate, map pool depth, and form</div>
+        </div>
+      </div>
+
       <!-- Share / URL -->
       <div class="pk-share">
         <button class="pk-btn pk-btn--share" id="pkShare">
@@ -938,6 +959,201 @@ const description = `Make your CS2 Major Pick'em predictions for ${tournament.na
       line-height: 1.5;
     }
 
+    /* ── Model Hints ──────────────────────────────────────────── */
+    .pk-model-hints {
+      background: var(--bg2, #13141a);
+      border-radius: 10px;
+      border: 1px solid var(--border, #222);
+      padding: 16px;
+    }
+    .pk-model-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .pk-model-header .pk-sidebar-title { margin: 0; }
+    .pk-toggle {
+      position: relative;
+      width: 40px;
+      height: 22px;
+      display: inline-block;
+    }
+    .pk-toggle input { opacity: 0; width: 0; height: 0; }
+    .pk-toggle-slider {
+      position: absolute;
+      cursor: pointer;
+      inset: 0;
+      background: #333;
+      border-radius: 22px;
+      transition: .2s;
+    }
+    .pk-toggle-slider::before {
+      content: '';
+      position: absolute;
+      width: 16px;
+      height: 16px;
+      left: 3px;
+      bottom: 3px;
+      background: #888;
+      border-radius: 50%;
+      transition: .2s;
+    }
+    .pk-toggle input:checked + .pk-toggle-slider {
+      background: rgba(46,204,113,0.3);
+    }
+    .pk-toggle input:checked + .pk-toggle-slider::before {
+      transform: translateX(18px);
+      background: #2ecc71;
+    }
+    .pk-model-desc {
+      font-size: 0.75rem;
+      color: var(--text-muted, #888);
+      margin: 10px 0 0;
+      line-height: 1.4;
+    }
+    .pk-model-status {
+      margin-top: 10px;
+    }
+    .pk-model-loading {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.8rem;
+      color: #2ecc71;
+    }
+    .pk-model-spinner {
+      width: 14px;
+      height: 14px;
+      border: 2px solid rgba(46,204,113,0.2);
+      border-top-color: #2ecc71;
+      border-radius: 50%;
+      animation: pk-spin 0.8s linear infinite;
+    }
+    @keyframes pk-spin {
+      to { transform: rotate(360deg); }
+    }
+    .pk-model-legend {
+      margin-top: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .pk-legend-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.75rem;
+      color: var(--text-muted, #888);
+    }
+    .pk-legend-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .pk-legend--strong { background: #2ecc71; }
+    .pk-legend--average { background: #f39c12; }
+    .pk-legend--weak { background: #e74c3c; }
+    .pk-legend-note {
+      font-size: 0.65rem;
+      color: var(--text-muted, #666);
+      font-style: italic;
+      padding-top: 4px;
+      border-top: 1px solid var(--border, #222);
+    }
+
+    /* Hint badges on chips */
+    .pk-chip { position: relative; }
+    .pk-hint-badge {
+      position: absolute;
+      top: -4px;
+      right: -4px;
+      font-size: 0.55rem;
+      font-weight: 700;
+      padding: 1px 4px;
+      border-radius: 6px;
+      line-height: 1.2;
+      z-index: 2;
+      pointer-events: none;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.4);
+    }
+    .pk-hint-badge--strong {
+      background: #2ecc71;
+      color: #000;
+    }
+    .pk-hint-badge--average {
+      background: #f39c12;
+      color: #000;
+    }
+    .pk-hint-badge--weak {
+      background: #e74c3c;
+      color: #fff;
+    }
+
+    /* Strength bar under chip name */
+    .pk-hint-bar {
+      width: 90%;
+      height: 3px;
+      background: rgba(255,255,255,0.1);
+      border-radius: 2px;
+      overflow: hidden;
+      margin-top: 2px;
+    }
+    .pk-hint-bar-fill {
+      height: 100%;
+      border-radius: 2px;
+      transition: width 0.3s;
+    }
+
+    /* Bracket match probability overlay */
+    .pk-match-prob {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      padding: 2px 8px;
+      background: rgba(46,204,113,0.06);
+      border-top: 1px solid var(--border, #222);
+      font-size: 0.65rem;
+    }
+    .pk-match-prob-bar {
+      flex: 1;
+      height: 4px;
+      background: rgba(255,255,255,0.1);
+      border-radius: 2px;
+      overflow: hidden;
+      display: flex;
+    }
+    .pk-match-prob-t1 {
+      height: 100%;
+      background: #2ecc71;
+      transition: width 0.3s;
+    }
+    .pk-match-prob-t2 {
+      height: 100%;
+      background: #e74c3c;
+      transition: width 0.3s;
+    }
+    .pk-match-prob-pct {
+      color: var(--text-muted, #888);
+      font-weight: 600;
+      font-variant-numeric: tabular-nums;
+      white-space: nowrap;
+    }
+    .pk-match-prob-pct--fav { color: #2ecc71; }
+
+    /* Bracket team win rate badge */
+    .pk-bracket-wr {
+      margin-left: auto;
+      font-size: 0.65rem;
+      font-weight: 700;
+      padding: 1px 5px;
+      border-radius: 4px;
+      font-variant-numeric: tabular-nums;
+    }
+    .pk-bracket-wr--strong { background: rgba(46,204,113,0.15); color: #2ecc71; }
+    .pk-bracket-wr--average { background: rgba(243,156,18,0.15); color: #f39c12; }
+    .pk-bracket-wr--weak { background: rgba(231,76,60,0.15); color: #e74c3c; }
+
     /* ── Responsive ─────────────────────────────────────────────── */
     @media (max-width: 900px) {
       .pk-layout {
@@ -1503,5 +1719,282 @@ const description = `Make your CS2 Major Pick'em predictions for ${tournament.na
     // ── Initial render ─────────────────────────────────────────
     renderStage(activeStage);
     renderChallenges();
+  </script>
+
+  <!-- Model Hints Enhancement -->
+  <script>
+    (function() {
+      const hintsToggle = document.getElementById('pkHintsToggle');
+      const modelStatus = document.getElementById('pkModelStatus');
+      const modelDesc = document.getElementById('pkModelDesc');
+      const modelLegend = document.getElementById('pkModelLegend');
+
+      // Team slug → PandaScore lookup mapping
+      // Pickem team IDs are slugs that mostly match PandaScore slugs
+      const SLUG_OVERRIDES = {
+        'pain-gaming': 'pain-gaming',
+        'g2-esports': 'g2-esports',
+        'ninjas-in-pyjamas': 'ninjas-in-pyjamas',
+        'team-spirit': 'team-spirit',
+        'team-liquid': 'team-liquid',
+        'natus-vincere': 'natus-vincere',
+        'faze-clan': 'faze-clan',
+        'imperial-esports': 'imperial-esports',
+        'red-canids': 'red-canids',
+        'the-mongolz': 'the-mongolz',
+        'the-huns': 'the-huns',
+        'lynn-vision': 'lynn-vision',
+        'rare-atom': 'rare-atom',
+        'passion-ua': 'passion-ua',
+      };
+
+      // State
+      let hintsEnabled = false;
+      let teamStats = {}; // slug → { winRate, mapPool, form, tier, pandaId }
+      let fetchedSlugs = new Set();
+      let fetchQueue = [];
+      let isFetching = false;
+
+      function getPandaSlug(pickemSlug) {
+        return SLUG_OVERRIDES[pickemSlug] || pickemSlug;
+      }
+
+      // Fetch stats for a team
+      async function fetchTeamStats(pickemSlug) {
+        if (teamStats[pickemSlug] || fetchedSlugs.has(pickemSlug)) return;
+        fetchedSlugs.add(pickemSlug);
+
+        try {
+          const pandaSlug = getPandaSlug(pickemSlug);
+          const res = await fetch(`/api/team-competitive-stats?slug=${encodeURIComponent(pandaSlug)}`);
+          if (!res.ok) {
+            // Try name fallback
+            const nameRes = await fetch(`/api/team-competitive-stats?name=${encodeURIComponent(pickemSlug.replace(/-/g, ' '))}`);
+            if (!nameRes.ok) { teamStats[pickemSlug] = null; return; }
+            const data = await nameRes.json();
+            processStats(pickemSlug, data);
+            return;
+          }
+          const data = await res.json();
+          processStats(pickemSlug, data);
+        } catch {
+          teamStats[pickemSlug] = null;
+        }
+      }
+
+      function processStats(slug, data) {
+        if (!data || !data.record) { teamStats[slug] = null; return; }
+
+        const winRate = data.record.matchWinRate || 0;
+        const mapsPlayed = (data.maps || []).reduce((sum, m) => sum + (m.played || 0), 0);
+        const activeMaps = (data.maps || []).filter(m => (m.played || 0) >= 3).length;
+        const recentForm = (data.lastGames || []).slice(0, 5);
+        const recentWins = recentForm.filter(g => g.result === 'win').length;
+        const recentRate = recentForm.length ? recentWins / recentForm.length : winRate;
+
+        // Composite strength score: 50% win rate + 30% recent form + 20% map pool depth
+        const mapPoolScore = Math.min(activeMaps / 7, 1);
+        const strength = (winRate * 0.5) + (recentRate * 0.3) + (mapPoolScore * 0.2);
+
+        teamStats[slug] = {
+          winRate: Math.round(winRate * 100),
+          strength: Math.round(strength * 100),
+          recentRate: Math.round(recentRate * 100),
+          activeMaps,
+          mapsPlayed,
+          pandaId: data.id || null,
+          tier: strength >= 0.60 ? 'strong' : strength >= 0.45 ? 'average' : 'weak',
+        };
+      }
+
+      // Process batch of slugs
+      async function fetchBatch(slugs) {
+        const BATCH = 4;
+        for (let i = 0; i < slugs.length; i += BATCH) {
+          const batch = slugs.slice(i, i + BATCH);
+          await Promise.all(batch.map(s => fetchTeamStats(s)));
+          if (i + BATCH < slugs.length) await new Promise(r => setTimeout(r, 300));
+        }
+      }
+
+      // Get all visible team slugs
+      function getVisibleSlugs() {
+        const slugs = new Set();
+        document.querySelectorAll('.pk-chip[data-team-id]').forEach(chip => {
+          slugs.add(chip.dataset.teamId);
+        });
+        document.querySelectorAll('.pk-match-team[data-team-id]').forEach(el => {
+          if (el.dataset.teamId) slugs.add(el.dataset.teamId);
+        });
+        return [...slugs];
+      }
+
+      // Render hint badges on chips
+      function renderChipHints() {
+        document.querySelectorAll('.pk-chip[data-team-id]').forEach(chip => {
+          // Remove existing hints
+          chip.querySelectorAll('.pk-hint-badge, .pk-hint-bar').forEach(el => el.remove());
+
+          if (!hintsEnabled) return;
+
+          const slug = chip.dataset.teamId;
+          const stats = teamStats[slug];
+          if (!stats) return;
+
+          // Badge
+          const badge = document.createElement('span');
+          badge.className = `pk-hint-badge pk-hint-badge--${stats.tier}`;
+          badge.textContent = `${stats.strength}`;
+          badge.title = `Win rate: ${stats.winRate}% | Recent form: ${stats.recentRate}% | Maps: ${stats.activeMaps}`;
+          chip.appendChild(badge);
+
+          // Strength bar
+          const bar = document.createElement('div');
+          bar.className = 'pk-hint-bar';
+          const fill = document.createElement('div');
+          fill.className = 'pk-hint-bar-fill';
+          fill.style.width = `${stats.strength}%`;
+          fill.style.background = stats.tier === 'strong' ? '#2ecc71' : stats.tier === 'average' ? '#f39c12' : '#e74c3c';
+          bar.appendChild(fill);
+          chip.appendChild(bar);
+        });
+      }
+
+      // Render probability on bracket matches
+      function renderBracketHints() {
+        document.querySelectorAll('#pkBracket .pk-match').forEach(matchEl => {
+          // Remove existing probability bars
+          matchEl.querySelectorAll('.pk-match-prob').forEach(el => el.remove());
+          // Remove existing WR badges
+          matchEl.querySelectorAll('.pk-bracket-wr').forEach(el => el.remove());
+
+          if (!hintsEnabled) return;
+
+          const team1Slot = matchEl.querySelector('[data-match-slot="team1"]');
+          const team2Slot = matchEl.querySelector('[data-match-slot="team2"]');
+          if (!team1Slot || !team2Slot) return;
+
+          const t1Id = team1Slot.dataset.teamId;
+          const t2Id = team2Slot.dataset.teamId;
+
+          // Add WR badges to team slots
+          [team1Slot, team2Slot].forEach(slot => {
+            const tid = slot.dataset.teamId;
+            const stats = teamStats[tid];
+            if (!stats || !tid) return;
+            const wr = document.createElement('span');
+            wr.className = `pk-bracket-wr pk-bracket-wr--${stats.tier}`;
+            wr.textContent = `${stats.winRate}%`;
+            wr.title = `Strength: ${stats.strength} | Recent: ${stats.recentRate}% | Maps: ${stats.activeMaps}`;
+            slot.appendChild(wr);
+          });
+
+          // Probability bar between teams
+          if (!t1Id || !t2Id) return;
+          const s1 = teamStats[t1Id];
+          const s2 = teamStats[t2Id];
+          if (!s1 || !s2) return;
+
+          // Simple head-to-head probability from strength scores
+          const total = s1.strength + s2.strength;
+          if (total === 0) return;
+          const t1Pct = Math.round((s1.strength / total) * 100);
+          const t2Pct = 100 - t1Pct;
+
+          const probDiv = document.createElement('div');
+          probDiv.className = 'pk-match-prob';
+
+          const pct1 = document.createElement('span');
+          pct1.className = `pk-match-prob-pct ${t1Pct >= t2Pct ? 'pk-match-prob-pct--fav' : ''}`;
+          pct1.textContent = `${t1Pct}%`;
+
+          const bar = document.createElement('div');
+          bar.className = 'pk-match-prob-bar';
+          const fill1 = document.createElement('div');
+          fill1.className = 'pk-match-prob-t1';
+          fill1.style.width = `${t1Pct}%`;
+          const fill2 = document.createElement('div');
+          fill2.className = 'pk-match-prob-t2';
+          fill2.style.width = `${t2Pct}%`;
+          bar.appendChild(fill1);
+          bar.appendChild(fill2);
+
+          const pct2 = document.createElement('span');
+          pct2.className = `pk-match-prob-pct ${t2Pct > t1Pct ? 'pk-match-prob-pct--fav' : ''}`;
+          pct2.textContent = `${t2Pct}%`;
+
+          probDiv.appendChild(pct1);
+          probDiv.appendChild(bar);
+          probDiv.appendChild(pct2);
+          matchEl.appendChild(probDiv);
+        });
+      }
+
+      function renderAllHints() {
+        renderChipHints();
+        renderBracketHints();
+      }
+
+      // Toggle handler
+      hintsToggle.addEventListener('change', async () => {
+        hintsEnabled = hintsToggle.checked;
+
+        if (hintsEnabled) {
+          modelDesc.style.display = 'none';
+          modelStatus.style.display = 'block';
+          modelLegend.style.display = 'none';
+
+          // Fetch all visible teams
+          const slugs = getVisibleSlugs().filter(s => !teamStats[s]);
+          if (slugs.length > 0) {
+            await fetchBatch(slugs);
+          }
+
+          modelStatus.style.display = 'none';
+          modelLegend.style.display = 'flex';
+          renderAllHints();
+        } else {
+          modelDesc.style.display = 'block';
+          modelLegend.style.display = 'none';
+          renderAllHints(); // removes hints
+        }
+      });
+
+      // Re-render hints when tabs change (MutationObserver on stage visibility)
+      const observer = new MutationObserver(() => {
+        if (hintsEnabled) {
+          // Check for new teams that need fetching
+          const newSlugs = getVisibleSlugs().filter(s => !teamStats[s] && !fetchedSlugs.has(s));
+          if (newSlugs.length > 0) {
+            fetchBatch(newSlugs).then(() => renderAllHints());
+          } else {
+            renderAllHints();
+          }
+        }
+      });
+
+      document.querySelectorAll('.pk-stage').forEach(stage => {
+        observer.observe(stage, { attributes: true, attributeFilter: ['class'] });
+      });
+
+      // Also re-render when bracket state changes (picks update the DOM)
+      const bracketObserver = new MutationObserver(() => {
+        if (hintsEnabled) {
+          setTimeout(() => {
+            const newSlugs = getVisibleSlugs().filter(s => !teamStats[s] && !fetchedSlugs.has(s));
+            if (newSlugs.length > 0) {
+              fetchBatch(newSlugs).then(() => renderAllHints());
+            } else {
+              renderAllHints();
+            }
+          }, 100);
+        }
+      });
+
+      const bracketEl = document.getElementById('pkBracket');
+      if (bracketEl) {
+        bracketObserver.observe(bracketEl, { childList: true, subtree: true });
+      }
+    })();
   </script>
 </Base>
