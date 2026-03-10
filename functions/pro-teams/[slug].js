@@ -5,12 +5,23 @@
  * Fetches team data from PandaScore and renders a full HTML page.
  */
 export async function onRequestGet(context) {
-  const { env, params } = context;
+  const { request, env, params } = context;
   const apiKey = env.PANDASCORE_API_KEY;
   const slug = params.slug;
 
   if (!slug || !apiKey) {
     return new Response('Not found', { status: 404 });
+  }
+
+  // Try to serve the static Astro-built page first.
+  // If a pre-built team page exists, serve that instead.
+  try {
+    const assetRes = await env.ASSETS.fetch(request);
+    if (assetRes.status !== 404) {
+      return assetRes;
+    }
+  } catch (_) {
+    // ASSETS.fetch not available or errored — continue to dynamic render
   }
 
   try {
