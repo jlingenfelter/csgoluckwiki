@@ -206,12 +206,12 @@ const faqs = [
   </div>
 </section>
 
-<!-- Map Stats (computed from match data) -->
-<section class="tp-section" id="mapstats">
-  <h2>Map Stats</h2>
-  <p class="tp-section-desc">Map frequency from recent matches.</p>
-  <div id="mapStatsContent">
-    <div class="tp-mh-loading"><div class="tp-mh-spinner"></div> Waiting for match data…</div>
+<!-- Competitive Performance (from PandaScore team stats) -->
+<section class="tp-section" id="competitive">
+  <h2>Competitive Performance</h2>
+  <p class="tp-section-desc">Match record, map pool, and round statistics from professional play.</p>
+  <div id="compStatsContent">
+    <div class="tp-mh-loading"><div class="tp-mh-spinner"></div> Loading competitive stats…</div>
   </div>
 </section>
 
@@ -498,20 +498,58 @@ const faqs = [
 .tp-mh-load-more:hover{background:var(--bg3)}
 .tp-mh-load-more:disabled{opacity:.5;cursor:default}
 
-/* ── Map Stats Section ── */
-.tp-ms-chart{display:flex;flex-direction:column;gap:.4rem;margin-top:.5rem}
-.tp-ms-bar-row{display:flex;align-items:center;gap:.6rem}
-.tp-ms-bar-label{font-size:.8rem;font-weight:600;color:var(--text);min-width:100px;text-align:right;flex-shrink:0}
-.tp-ms-bar-track{flex:1;background:var(--bg);border:1px solid var(--border);border-radius:4px;height:22px;overflow:hidden;position:relative}
-.tp-ms-bar-fill{height:100%;background:var(--accent);border-radius:4px 0 0 4px;transition:width .4s ease}
-.tp-ms-bar-count{font-size:.72rem;color:var(--text2);min-width:30px;flex-shrink:0}
-.tp-ms-empty{text-align:center;padding:1rem;color:var(--text3);font-size:.82rem}
+/* ── Competitive Stats Section ── */
+.cs-record-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:.5rem;margin-bottom:1.25rem}
+.cs-record-card{background:var(--bg);border:1px solid var(--border);border-left:3px solid var(--accent);border-radius:4px;padding:.6rem .75rem;text-align:center}
+.cs-record-val{display:block;font-size:1.3rem;font-weight:800;color:var(--accent);font-family:'Montserrat',sans-serif}
+.cs-record-lbl{display:block;font-size:.6rem;color:var(--text2);text-transform:uppercase;margin-top:.15rem;letter-spacing:.03em}
+.cs-record-sub{display:block;font-size:.65rem;color:var(--text3);margin-top:.1rem}
+
+.cs-sub-title{font-size:.95rem;font-weight:700;font-family:'Montserrat',sans-serif;margin:1.25rem 0 .6rem;color:var(--text)}
+
+/* Map pool table */
+.cs-map-wrap{overflow-x:auto;border:1px solid var(--border);border-radius:4px;margin-bottom:1.25rem}
+.cs-map-table{width:100%;border-collapse:collapse;background:var(--bg2);font-size:.8rem}
+.cs-map-table thead{background:var(--bg3)}
+.cs-map-table th{padding:.6rem .5rem;text-align:center;font-weight:700;color:var(--text);text-transform:uppercase;font-size:.62rem;letter-spacing:.04em;white-space:nowrap}
+.cs-map-table th:first-child{text-align:left}
+.cs-map-table td{padding:.5rem;border-bottom:1px solid var(--border);text-align:center;white-space:nowrap}
+.cs-map-table tbody tr:hover td{background:var(--bg3)}
+.cs-map-table td:first-child{text-align:left}
+.cs-map-name{display:flex;align-items:center;gap:.5rem}
+.cs-map-img{width:36px;height:24px;border-radius:3px;object-fit:cover;border:1px solid var(--border);flex-shrink:0}
+.cs-map-name strong{color:var(--text);font-weight:700}
+
+/* Win rate bar */
+.cs-wr-bar{display:inline-flex;align-items:center;gap:.35rem}
+.cs-wr-track{width:48px;height:6px;background:var(--bg);border:1px solid var(--border);border-radius:3px;overflow:hidden;display:inline-block;vertical-align:middle}
+.cs-wr-fill{height:100%;border-radius:3px 0 0 3px;transition:width .4s ease}
+.cs-wr-fill.good{background:#2ecc71}
+.cs-wr-fill.ok{background:#f1c40f}
+.cs-wr-fill.bad{background:#e74c3c}
+.cs-wr-pct{font-weight:700;font-size:.78rem}
+
+/* Round stats grid */
+.cs-round-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:.5rem;margin-bottom:1rem}
+.cs-round-card{background:var(--bg);border:1px solid var(--border);border-radius:4px;padding:.5rem;text-align:center}
+.cs-round-card-label{font-size:.6rem;color:var(--text2);text-transform:uppercase;margin-bottom:.25rem;letter-spacing:.02em}
+.cs-round-card-val{font-size:1.1rem;font-weight:800;font-family:'Montserrat',sans-serif}
+.cs-round-card-sub{font-size:.6rem;color:var(--text3);margin-top:.1rem}
+.cs-ct-color{color:#5b9bd5}
+.cs-t-color{color:#e8c44a}
+.cs-accent-color{color:var(--accent)}
+
+.cs-empty{text-align:center;padding:1.25rem;color:var(--text3);font-size:.82rem;background:var(--bg);border:1px solid var(--border);border-radius:4px}
 
 @media(max-width:768px){
   .tp-mh-row{flex-wrap:wrap;gap:.4rem}
   .tp-mh-date{min-width:auto;width:100%;font-size:.68rem}
   .tp-mh-tournament{max-width:120px}
-  .tp-ms-bar-label{min-width:70px;font-size:.72rem}
+  .cs-record-grid{grid-template-columns:repeat(2,1fr)}
+  .cs-round-grid{grid-template-columns:repeat(2,1fr)}
+  .cs-map-table{font-size:.72rem}
+  .cs-map-table th,.cs-map-table td{padding:.35rem .3rem}
+  .cs-map-img{width:28px;height:18px}
 }
 </style>
 
@@ -651,7 +689,6 @@ const faqs = [
 <script is:inline define:vars={{ matchTeamSlug: team.slug, matchTeamName: team.name }}>
 (function(){
   var container = document.getElementById('matchHistoryContent');
-  var mapContainer = document.getElementById('mapStatsContent');
   if (!container) return;
 
   var currentPage = 1;
@@ -794,88 +831,6 @@ const faqs = [
     }
   }
 
-  function renderMapStats() {
-    if (!mapContainer) return;
-    // We only have match-level data from the API (not individual game maps)
-    // so we extract tournament names or match metadata that might hint at maps.
-    // Since the match data doesn't include per-game map names, show a note.
-    // However, if match.name often contains map info, parse it.
-    var mapCounts = {};
-    var totalParsed = 0;
-
-    for (var i = 0; i < allPastMatches.length; i++) {
-      var m = allPastMatches[i];
-      // PandaScore match names sometimes contain map names like "Map 1 - Mirage"
-      // The match name format is often "Team A vs Team B" but games array would have map info.
-      // Without games array, we try to extract from the match name
-      if (m.name) {
-        var mapPatterns = ['mirage','dust2','inferno','nuke','overpass','ancient','anubis','vertigo','train','cache'];
-        var lower = m.name.toLowerCase();
-        for (var j = 0; j < mapPatterns.length; j++) {
-          if (lower.indexOf(mapPatterns[j]) !== -1) {
-            var mapName = mapPatterns[j].charAt(0).toUpperCase() + mapPatterns[j].slice(1);
-            if (mapName === 'Dust2') mapName = 'Dust II';
-            mapCounts[mapName] = (mapCounts[mapName] || 0) + 1;
-            totalParsed++;
-          }
-        }
-      }
-    }
-
-    // Also count tournament tiers for context
-    if (totalParsed === 0) {
-      // No map data could be extracted; show a simple tournament tier breakdown instead
-      var tierCounts = {};
-      for (var i = 0; i < allPastMatches.length; i++) {
-        var tier = allPastMatches[i].tournament && allPastMatches[i].tournament.tier;
-        if (tier) {
-          var label = tier === 's' ? 'S-Tier' : tier === 'a' ? 'A-Tier' : tier === 'b' ? 'B-Tier' : tier.toUpperCase() + '-Tier';
-          tierCounts[label] = (tierCounts[label] || 0) + 1;
-        }
-      }
-
-      var tierEntries = Object.keys(tierCounts).map(function(k){ return { name: k, count: tierCounts[k] }; });
-      tierEntries.sort(function(a,b){ return b.count - a.count; });
-
-      if (tierEntries.length === 0) {
-        mapContainer.innerHTML = '<div class="tp-ms-empty">Map data not available for these matches.</div>';
-        return;
-      }
-
-      var maxCount = tierEntries[0].count;
-      var html = '<p class="tp-section-desc" style="margin-bottom:.75rem">Map-level data is unavailable. Showing tournament tier breakdown instead.</p>';
-      html += '<div class="tp-ms-chart">';
-      for (var i = 0; i < tierEntries.length; i++) {
-        var pct = Math.round((tierEntries[i].count / maxCount) * 100);
-        html += '<div class="tp-ms-bar-row">' +
-          '<span class="tp-ms-bar-label">' + tierEntries[i].name + '</span>' +
-          '<div class="tp-ms-bar-track"><div class="tp-ms-bar-fill" style="width:' + pct + '%"></div></div>' +
-          '<span class="tp-ms-bar-count">' + tierEntries[i].count + '</span>' +
-        '</div>';
-      }
-      html += '</div>';
-      mapContainer.innerHTML = html;
-      return;
-    }
-
-    // Render map frequency chart
-    var mapEntries = Object.keys(mapCounts).map(function(k){ return { name: k, count: mapCounts[k] }; });
-    mapEntries.sort(function(a,b){ return b.count - a.count; });
-
-    var maxCount = mapEntries[0].count;
-    var html = '<div class="tp-ms-chart">';
-    for (var i = 0; i < mapEntries.length; i++) {
-      var pct = Math.round((mapEntries[i].count / maxCount) * 100);
-      html += '<div class="tp-ms-bar-row">' +
-        '<span class="tp-ms-bar-label">' + mapEntries[i].name + '</span>' +
-        '<div class="tp-ms-bar-track"><div class="tp-ms-bar-fill" style="width:' + pct + '%"></div></div>' +
-        '<span class="tp-ms-bar-count">' + mapEntries[i].count + '</span>' +
-      '</div>';
-    }
-    html += '</div>';
-    mapContainer.innerHTML = html;
-  }
-
   function fetchPage(page) {
     fetch('/api/team-matches?slug=' + encodeURIComponent(pandaSlug) + '&name=' + encodeURIComponent(matchTeamName) + '&page=' + page + '&per_page=20')
       .then(function(res) { return res.ok ? res.json() : null; })
@@ -883,7 +838,6 @@ const faqs = [
         if (!data || data.error) {
           if (page === 1) {
             container.innerHTML = '<div class="tp-mh-error">Could not load match history.</div>';
-            if (mapContainer) mapContainer.innerHTML = '<div class="tp-ms-empty">No data available.</div>';
           }
           return;
         }
@@ -912,19 +866,91 @@ const faqs = [
         }
 
         renderMatches();
-
-        // Update map stats after data loads
-        if (page === 1) renderMapStats();
       })
       .catch(function() {
         if (page === 1) {
           container.innerHTML = '<div class="tp-mh-error">Could not load match history.</div>';
-          if (mapContainer) mapContainer.innerHTML = '<div class="tp-ms-empty">No data available.</div>';
         }
       });
   }
 
   // Initial fetch
   fetchPage(1);
+})();
+</script>
+
+<script is:inline define:vars={{ compTeamName: team.name }}>
+(function(){
+  var container = document.getElementById('compStatsContent');
+  if (!container) return;
+
+  function wrClass(pct) { return pct >= 55 ? 'good' : pct >= 45 ? 'ok' : 'bad'; }
+  function wrColor(pct) { return pct >= 55 ? 'var(--accent)' : pct >= 45 ? '#f1c40f' : '#e74c3c'; }
+
+  fetch('/api/team-competitive-stats?name=' + encodeURIComponent(compTeamName))
+    .then(function(r) { return r.ok ? r.json() : null; })
+    .then(function(data) {
+      if (!data || data.error) {
+        container.innerHTML = '<div class="cs-empty">Competitive stats not available for ' + compTeamName + '.</div>';
+        return;
+      }
+
+      var rec = data.record || {};
+      var rnd = data.rounds || {};
+      var maps = data.maps || [];
+
+      var html = '';
+
+      // ── Record Summary Cards ──
+      html += '<div class="cs-record-grid">';
+      html += '<div class="cs-record-card"><span class="cs-record-val">' + rec.matchWinRate + '%</span><span class="cs-record-lbl">Match Win Rate</span><span class="cs-record-sub">' + rec.matchesWon + 'W - ' + rec.matchesLost + 'L' + (rec.matchesDraw > 0 ? ' - ' + rec.matchesDraw + 'D' : '') + '</span></div>';
+      html += '<div class="cs-record-card"><span class="cs-record-val">' + rec.gamesPlayed + '</span><span class="cs-record-lbl">Maps Played</span><span class="cs-record-sub">' + rec.gamesWon + 'W - ' + rec.gamesLost + 'L (' + rec.gameWinRate + '%)</span></div>';
+      html += '<div class="cs-record-card"><span class="cs-record-val">' + rnd.winRate + '%</span><span class="cs-record-lbl">Round Win Rate</span><span class="cs-record-sub">' + rnd.won.toLocaleString() + ' / ' + rnd.played.toLocaleString() + '</span></div>';
+      html += '<div class="cs-record-card"><span class="cs-record-val">' + rnd.pistolWinRate + '%</span><span class="cs-record-lbl">Pistol Round WR</span><span class="cs-record-sub">' + rnd.pistolWon + ' / ' + rnd.pistolPlayed + '</span></div>';
+      html += '</div>';
+
+      // ── Round Stats: CT / T breakdown ──
+      html += '<h3 class="cs-sub-title">Round Stats by Side</h3>';
+      html += '<div class="cs-round-grid">';
+      html += '<div class="cs-round-card"><div class="cs-round-card-label">CT Win Rate</div><div class="cs-round-card-val cs-ct-color">' + rnd.ctWinRate + '%</div><div class="cs-round-card-sub">' + rnd.ctWon.toLocaleString() + ' / ' + rnd.ctPlayed.toLocaleString() + '</div></div>';
+      html += '<div class="cs-round-card"><div class="cs-round-card-label">T Win Rate</div><div class="cs-round-card-val cs-t-color">' + rnd.tWinRate + '%</div><div class="cs-round-card-sub">' + rnd.tWon.toLocaleString() + ' / ' + rnd.tPlayed.toLocaleString() + '</div></div>';
+      html += '<div class="cs-round-card"><div class="cs-round-card-label">Pistol Win Rate</div><div class="cs-round-card-val cs-accent-color">' + rnd.pistolWinRate + '%</div><div class="cs-round-card-sub">' + rnd.pistolWon + ' / ' + rnd.pistolPlayed + '</div></div>';
+      html += '<div class="cs-round-card"><div class="cs-round-card-label">Total Rounds</div><div class="cs-round-card-val" style="color:var(--text)">' + rnd.played.toLocaleString() + '</div><div class="cs-round-card-sub">' + rnd.won.toLocaleString() + ' won</div></div>';
+      html += '</div>';
+
+      // ── Map Pool Table ──
+      if (maps.length > 0) {
+        html += '<h3 class="cs-sub-title">Map Pool</h3>';
+        html += '<div class="cs-map-wrap"><table class="cs-map-table"><thead><tr>';
+        html += '<th>Map</th><th>Played</th><th>W-L</th><th>Win Rate</th><th>Pick%</th><th>Ban%</th><th>CT WR</th><th>T WR</th><th>Pistol</th>';
+        html += '</tr></thead><tbody>';
+
+        for (var i = 0; i < maps.length; i++) {
+          var m = maps[i];
+          var wr = m.winRate;
+          var cls = wrClass(wr);
+          var imgTag = m.image ? '<img src="' + m.image + '" alt="' + m.name + '" class="cs-map-img" loading="lazy" onerror="this.style.display=\'none\'" />' : '';
+
+          html += '<tr>';
+          html += '<td><div class="cs-map-name">' + imgTag + '<strong>' + m.name + '</strong></div></td>';
+          html += '<td>' + m.played + '</td>';
+          html += '<td>' + m.wins + '-' + m.losses + '</td>';
+          html += '<td><div class="cs-wr-bar"><div class="cs-wr-track"><div class="cs-wr-fill ' + cls + '" style="width:' + wr + '%"></div></div><span class="cs-wr-pct" style="color:' + wrColor(wr) + '">' + wr + '%</span></div></td>';
+          html += '<td>' + m.pickRate + '%</td>';
+          html += '<td>' + m.banRate + '%</td>';
+          html += '<td style="color:#5b9bd5;font-weight:600">' + m.ctWinRate + '%</td>';
+          html += '<td style="color:#e8c44a;font-weight:600">' + m.tWinRate + '%</td>';
+          html += '<td>' + m.pistolWinRate + '%</td>';
+          html += '</tr>';
+        }
+
+        html += '</tbody></table></div>';
+      }
+
+      container.innerHTML = html;
+    })
+    .catch(function() {
+      container.innerHTML = '<div class="cs-empty">Could not load competitive stats.</div>';
+    });
 })();
 </script>
