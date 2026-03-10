@@ -201,6 +201,9 @@ import Base from '../layouts/Base.astro';
 .md-h2h-bar { height: 8px; background: var(--bg3); border-radius: 4px; overflow: hidden; position: relative; }
 .md-h2h-bar-fill { height: 100%; background: var(--accent); border-radius: 4px; transition: width .6s ease; }
 
+/* Analysis Blurb */
+.md-h2h-blurb { font-size: .82rem; line-height: 1.65; color: var(--text2); margin: .75rem 0; padding: .75rem 1rem; background: rgba(255,255,255,.02); border-left: 3px solid var(--accent); border-radius: 0 4px 4px 0; }
+
 /* Odds Breakdown */
 .md-odds-breakdown { margin-top: .6rem; }
 .md-odds-breakdown summary { font-size: .78rem; font-weight: 600; color: var(--text2); cursor: pointer; padding: .3rem 0; user-select: none; list-style: none; }
@@ -883,6 +886,109 @@ import Base from '../layouts/Base.astro';
     return { t1Pct: finalT1, t2Pct: 100 - finalT1, factors: factors };
   }
 
+  function generateAnalysisBlurb(prob, h2hData, t1Stats, t2Stats, match, t1, t2) {
+    var t1Name = escapeHtml(t1.acronym || t1.name || 'Team 1');
+    var t2Name = escapeHtml(t2.acronym || t2.name || 'Team 2');
+    var fav = prob.t1Pct >= prob.t2Pct ? t1Name : t2Name;
+    var dog = prob.t1Pct >= prob.t2Pct ? t2Name : t1Name;
+    var favPct = Math.max(prob.t1Pct, prob.t2Pct);
+    var dogPct = Math.min(prob.t1Pct, prob.t2Pct);
+    var isLive = match.status === 'running';
+    var format = match.numberOfGames ? 'BO' + match.numberOfGames : '';
+
+    var parts = [];
+
+    // Opening sentence — who's favoured and by how much
+    if (favPct >= 70) {
+      parts.push(fav + ' are heavy favourites at ' + favPct + '% heading into this ' + format + '.');
+    } else if (favPct >= 60) {
+      parts.push(fav + ' hold a solid edge at ' + favPct + '% in this ' + format + ' matchup.');
+    } else if (favPct >= 55) {
+      parts.push(fav + ' are slight favourites at ' + favPct + '%, but this ' + format + ' could go either way.');
+    } else {
+      parts.push('This ' + format + ' is essentially a coin flip — ' + fav + ' edge ' + dog + ' by just ' + (favPct - dogPct) + ' percentage points.');
+    }
+
+    // H2H context
+    var record = h2hData ? h2hData.record : null;
+    if (record && record.total > 0) {
+      var h2hLeader = record.team1Wins > record.team2Wins ? t1Name : record.team2Wins > record.team1Wins ? t2Name : null;
+      if (h2hLeader && record.total >= 3) {
+        var leadWins = Math.max(record.team1Wins, record.team2Wins);
+        var trailWins = Math.min(record.team1Wins, record.team2Wins);
+        parts.push(h2hLeader + ' own the head-to-head ' + leadWins + '-' + trailWins + ' across ' + record.total + ' meetings' + (record.total >= 5 ? ', giving them a meaningful psychological edge.' : '.'));
+      } else if (h2hLeader) {
+        parts.push('The head-to-head is limited to just ' + record.total + ' match' + (record.total > 1 ? 'es' : '') + ', so sample size is a factor.');
+      } else if (record.total > 0) {
+        parts.push('These two are dead even in the head-to-head at ' + record.team1Wins + '-' + record.team2Wins + '.');
+      }
+    } else {
+      parts.push('This is a first-time meeting between these two rosters, so there\'s no historical edge to lean on.');
+    }
+
+    // Form
+    if (t1Stats && t2Stats && t1Stats.record && t2Stats.record) {
+      var t1WR = t1Stats.record.matchWinRate != null ? t1Stats.record.matchWinRate : null;
+      var t2WR = t2Stats.record.matchWinRate != null ? t2Stats.record.matchWinRate : null;
+      if (t1WR != null && t2WR != null) {
+        var formDiff = Math.abs(t1WR - t2WR);
+        if (formDiff > 15) {
+          var hotTeam = t1WR > t2WR ? t1Name : t2Name;
+          var hotWR = Math.max(t1WR, t2WR).toFixed(0);
+          var coldWR = Math.min(t1WR, t2WR).toFixed(0);
+          parts.push(hotTeam + ' are in significantly better form with a ' + hotWR + '% win rate versus ' + coldWR + '%, which is the biggest differentiator in this matchup.');
+        } else if (formDiff > 5) {
+          var betterTeam = t1WR > t2WR ? t1Name : t2Name;
+          parts.push(betterTeam + ' have the slight form advantage, though both teams are performing at a similar level recently.');
+        } else {
+          parts.push('Form-wise, both teams are closely matched with near-identical recent win rates.');
+        }
+      }
+    }
+
+    // Map pool insight
+    var games = match.games || [];
+    var maps = [];
+    games.forEach(function(g) { if (g.map && g.map.name && maps.indexOf(g.map.name) === -1) maps.push(g.map.name); });
+    if (maps.length > 0 && t1Stats && t2Stats) {
+      var t1Advantages = 0, t2Advantages = 0;
+      maps.forEach(function(mapName) {
+        var t1Map = (t1Stats.maps || []).find(function(m) { return m.name && m.name.toLowerCase() === mapName.toLowerCase(); });
+        var t2Map = (t2Stats.maps || []).find(function(m) { return m.name && m.name.toLowerCase() === mapName.toLowerCase(); });
+        var t1wr = t1Map ? t1Map.winRate : 50;
+        var t2wr = t2Map ? t2Map.winRate : 50;
+        if (t1wr > t2wr + 5) t1Advantages++;
+        else if (t2wr > t1wr + 5) t2Advantages++;
+      });
+      if (t1Advantages > t2Advantages) {
+        parts.push(t1Name + ' have the stronger map pool for this series, holding an advantage on ' + t1Advantages + ' of ' + maps.length + ' maps.');
+      } else if (t2Advantages > t1Advantages) {
+        parts.push(t2Name + ' have the stronger map pool for this series, holding an advantage on ' + t2Advantages + ' of ' + maps.length + ' maps.');
+      } else if (maps.length > 1) {
+        parts.push('The map pool is evenly split with no clear veto advantage for either side.');
+      }
+    }
+
+    // Live match context
+    if (isLive) {
+      var r1 = 0, r2 = 0;
+      if (match.results) {
+        var res1 = match.results.find(function(r) { return r.team_id === t1.id; });
+        var res2 = match.results.find(function(r) { return r.team_id === t2.id; });
+        r1 = res1 ? res1.score : 0;
+        r2 = res2 ? res2.score : 0;
+      }
+      if (r1 !== r2) {
+        var leader = r1 > r2 ? t1Name : t2Name;
+        var high = Math.max(r1, r2);
+        var low = Math.min(r1, r2);
+        parts.push(leader + ' lead the series ' + high + '-' + low + ', which heavily shifts the probability in their favour.');
+      }
+    }
+
+    return parts.join(' ');
+  }
+
   function renderH2HSection(h2hData, t1Stats, t2Stats, match, t1, t2) {
     var section = document.getElementById('h2h-section');
     if (!section) return;
@@ -898,6 +1004,11 @@ import Base from '../layouts/Base.astro';
     html += '<span class="md-h2h-bar-team"><strong>' + prob.t2Pct + '%</strong> ' + escapeHtml(t2.acronym || t2.name || 'T2') + '</span>';
     html += '</div>';
     html += '<div class="md-h2h-bar"><div class="md-h2h-bar-fill" style="width:' + prob.t1Pct + '%"></div></div>';
+
+    // Analysis blurb
+    if (match.status !== 'finished') {
+      html += '<div class="md-h2h-blurb">' + generateAnalysisBlurb(prob, h2hData, t1Stats, t2Stats, match, t1, t2) + '</div>';
+    }
 
     // Odds breakdown dropdown
     if (prob.factors.length > 0 && !(match.status === 'finished')) {
