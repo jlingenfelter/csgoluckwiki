@@ -100,6 +100,14 @@ export async function onRequestGet(context) {
         url: s.raw_url,
         embed: s.embed_url,
       })),
+      games: (m.games || []).map((g) => ({
+        id: g.id,
+        status: g.status,
+        map: g.map?.name || null,
+        mapImage: g.map?.image_url || null,
+        winnerId: g.winner?.id || null,
+        position: g.position,
+      })),
     }));
 
     // Cache headers: shorter for live, longer for past

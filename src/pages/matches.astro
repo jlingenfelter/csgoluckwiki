@@ -93,9 +93,9 @@ const explore = [
 .tier-c { background: #7f8c8d; color: #fff; }
 .tier-d { background: #566573; color: #fff; }
 
-.match-body { display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
+.match-body { display: flex; align-items: center; gap: .75rem; }
 .match-team { display: flex; align-items: center; gap: .65rem; flex: 1; min-width: 0; }
-.match-team.right { justify-content: flex-end; text-direction: rtl; flex-direction: row-reverse; }
+.match-team.right { justify-content: flex-end; flex-direction: row-reverse; }
 .team-logo { width: 36px; height: 36px; max-width: 36px; max-height: 36px; border-radius: 4px; object-fit: contain; background: var(--bg3); flex-shrink: 0; }
 .team-logo-placeholder { width: 36px; height: 36px; border-radius: 4px; background: var(--bg3); display: flex; align-items: center; justify-content: center; font-size: .7rem; font-weight: 700; color: var(--text3); flex-shrink: 0; }
 .team-name { font-weight: 600; font-size: .95rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -113,6 +113,8 @@ const explore = [
 .match-format { font-size: .75rem; color: var(--text3); font-weight: 600; }
 .match-stream { font-size: .75rem; color: var(--accent); text-decoration: none; font-weight: 600; }
 .match-stream:hover { text-decoration: underline; }
+.match-map { font-size: .72rem; color: var(--text2); font-weight: 600; background: var(--bg3); padding: .15rem .45rem; border-radius: 3px; }
+.match-progress { font-size: .72rem; color: var(--text3); font-weight: 600; }
 
 .match-status { font-size: .7rem; font-weight: 700; text-transform: uppercase; padding: .15rem .4rem; border-radius: 3px; }
 .status-running { background: #e74c3c; color: #fff; }
@@ -233,6 +235,16 @@ function renderMatchCard(match, type) {
     ? `<a href="${match.streams[0].url}" target="_blank" rel="noopener" class="match-stream">▶ Watch</a>`
     : '';
 
+  // Game/map progress
+  const games = match.games || [];
+  const currentGame = games.find(g => g.status === 'running');
+  const finishedGames = games.filter(g => g.status === 'finished').length;
+  const totalGames = match.numberOfGames || games.length;
+  const mapHTML = currentGame?.map ? `<span class="match-map">${currentGame.map}</span>` : '';
+  const progressHTML = (isLive && totalGames > 1 && finishedGames >= 0)
+    ? `<span class="match-progress">Map ${finishedGames + 1}/${totalGames}</span>`
+    : '';
+
   return `
     <a href="/match-detail/?id=${match.id}" class="match-card ${cardClass}" style="display:block;text-decoration:none;color:inherit">
       <div class="match-header">
@@ -263,6 +275,8 @@ function renderMatchCard(match, type) {
       <div class="match-footer">
         ${timeHTML}
         <div style="display:flex;gap:.75rem;align-items:center">
+          ${mapHTML}
+          ${progressHTML}
           <span class="match-format">${format}</span>
           ${streamHTML}
         </div>

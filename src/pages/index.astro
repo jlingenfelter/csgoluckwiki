@@ -814,11 +814,12 @@ html.light-mode .hp-title{color:#000}
 .hp-esports-match{display:flex;align-items:center;gap:.75rem;padding:.75rem;background:var(--bg3);border:1px solid var(--border);border-radius:4px;margin-bottom:.5rem;text-decoration:none;color:inherit;transition:border-color .15s}
 .hp-esports-match:hover{border-left:3px solid #2ecc71}
 .hp-esports-match:last-child{margin-bottom:0}
+.hp-esports-match-teams{display:flex;align-items:center;flex:1;min-width:0}
 .hp-esports-team{display:flex;align-items:center;gap:6px;min-width:0;flex:1}
 .hp-esports-team-logo{width:28px;height:28px;object-fit:contain;border-radius:4px;background:var(--bg2);flex-shrink:0}
 .hp-esports-team-name{font-size:.82rem;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .hp-esports-vs{font-size:.72rem;color:var(--text2);font-weight:700;padding:0 .25rem;flex-shrink:0}
-.hp-esports-score{font-size:.95rem;font-weight:800;color:#2ecc71;flex-shrink:0;min-width:36px;text-align:center}
+.hp-esports-score{font-size:.95rem;font-weight:800;color:#2ecc71;flex-shrink:0;min-width:40px;text-align:center;padding:0 .25rem}
 .hp-esports-meta{display:flex;flex-direction:column;align-items:flex-end;gap:2px;flex-shrink:0;min-width:0}
 .hp-esports-league{font-size:.68rem;color:var(--text2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:120px}
 .hp-esports-badge{display:inline-block;padding:2px 6px;border-radius:4px;font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.04em}
@@ -1106,14 +1107,16 @@ if (typeof window !== 'undefined') {
           const badgeCls = badge === 'live' ? 'hp-esports-badge-live' : 'hp-esports-badge-upcoming';
           const badgeText = badge === 'live' ? 'LIVE' : 'Upcoming';
           return `<a href="/matches/" class="hp-esports-match">
-            <div class="hp-esports-team">
-              ${t1.image ? `<img src="${t1.image}" alt="${t1.name||''}" class="hp-esports-team-logo" />` : ''}
-              <span class="hp-esports-team-name">${t1.name || 'TBD'}</span>
-            </div>
-            <span class="hp-esports-score">${r1} - ${r2}</span>
-            <div class="hp-esports-team" style="justify-content:flex-end">
-              <span class="hp-esports-team-name" style="text-align:right">${t2.name || 'TBD'}</span>
-              ${t2.image ? `<img src="${t2.image}" alt="${t2.name||''}" class="hp-esports-team-logo" />` : ''}
+            <div class="hp-esports-match-teams">
+              <div class="hp-esports-team">
+                ${t1.image ? `<img src="${t1.image}" alt="${t1.name||''}" class="hp-esports-team-logo" />` : ''}
+                <span class="hp-esports-team-name">${t1.name || 'TBD'}</span>
+              </div>
+              <span class="hp-esports-score">${r1} - ${r2}</span>
+              <div class="hp-esports-team" style="justify-content:flex-end">
+                <span class="hp-esports-team-name" style="text-align:right">${t2.name || 'TBD'}</span>
+                ${t2.image ? `<img src="${t2.image}" alt="${t2.name||''}" class="hp-esports-team-logo" />` : ''}
+              </div>
             </div>
             <div class="hp-esports-meta">
               <span class="hp-esports-badge ${badgeCls}">${badgeText}</span>
