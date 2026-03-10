@@ -182,6 +182,54 @@ import Base from '../layouts/Base.astro';
 @keyframes ar-pulse { 0%, 100% { opacity: 1; } 50% { opacity: .3; } }
 .auto-refresh-ts { font-size: .7rem; color: var(--text3); margin-left: .5rem; }
 
+/* ── Round Timeline Legend ── */
+.rt-legend { display: flex; align-items: center; gap: .5rem; justify-content: center; margin-top: .4rem; font-size: .68rem; color: var(--text3); flex-wrap: wrap; }
+.rt-legend-team { font-weight: 600; color: var(--text2); }
+.rt-legend-item { display: inline-flex; align-items: center; gap: .2rem; }
+.rt-swatch { display: inline-block; width: 10px; height: 10px; border-radius: 2px; flex-shrink: 0; }
+.rt-legend-sep { color: var(--border); margin: 0 .15rem; }
+
+/* ── H2H & Win Probability ── */
+.md-h2h { background: var(--bg2); border: 1px solid var(--border); border-radius: 4px; margin: 1.25rem 0; overflow: hidden; transition: border-color .2s; }
+.md-h2h:hover { border-color: var(--accent); }
+.md-h2h-loading { text-align: center; padding: 1.5rem; color: var(--text3); font-size: .85rem; }
+.md-h2h-prob { padding: 1rem 1.25rem; }
+.md-h2h-prob-header { font-size: .75rem; font-weight: 700; text-transform: uppercase; color: var(--text3); letter-spacing: .04em; margin-bottom: .6rem; }
+.md-h2h-bar-labels { display: flex; justify-content: space-between; margin-bottom: .35rem; }
+.md-h2h-bar-team { font-size: .85rem; color: var(--text2); }
+.md-h2h-bar-team strong { color: var(--text1); font-weight: 800; font-family: 'Montserrat', sans-serif; }
+.md-h2h-bar { height: 8px; background: var(--bg3); border-radius: 4px; overflow: hidden; position: relative; }
+.md-h2h-bar-fill { height: 100%; background: var(--accent); border-radius: 4px; transition: width .6s ease; }
+
+/* Odds Breakdown */
+.md-odds-breakdown { margin-top: .6rem; }
+.md-odds-breakdown summary { font-size: .78rem; font-weight: 600; color: var(--text2); cursor: pointer; padding: .3rem 0; user-select: none; list-style: none; }
+.md-odds-breakdown summary::-webkit-details-marker { display: none; }
+.md-odds-breakdown summary::before { content: '▸ '; }
+.md-odds-breakdown[open] summary::before { content: '▾ '; }
+.md-odds-breakdown summary:hover { color: var(--accent); }
+.md-odds-factors { padding: .4rem 0; }
+.md-odds-factor { display: flex; align-items: center; gap: .5rem; padding: .25rem 0; font-size: .78rem; border-bottom: 1px solid rgba(255,255,255,.03); }
+.md-odds-factor:last-child { border-bottom: none; }
+.md-odds-factor-name { color: var(--text3); min-width: 5.5rem; font-weight: 600; font-size: .72rem; text-transform: uppercase; }
+.md-odds-factor-detail { color: var(--text2); flex: 1; font-size: .76rem; }
+.md-odds-factor-impact { font-weight: 700; font-family: 'Montserrat', sans-serif; font-size: .72rem; min-width: 4rem; text-align: right; white-space: nowrap; }
+.md-odds-factor-impact.t1 { color: var(--accent); }
+.md-odds-factor-impact.t2 { color: #e74c3c; }
+.md-odds-factor-impact.even { color: var(--text3); }
+
+/* Previous Meetings */
+.md-h2h-meetings { padding: .75rem 1.25rem; border-top: 1px solid var(--border); }
+.md-h2h-meetings-header { font-size: .75rem; font-weight: 700; text-transform: uppercase; color: var(--text3); letter-spacing: .04em; margin-bottom: .5rem; }
+.md-h2h-match { display: flex; align-items: center; gap: .5rem; padding: .4rem 0; border-bottom: 1px solid rgba(255,255,255,.04); font-size: .82rem; }
+.md-h2h-match:last-child { border-bottom: none; }
+.md-h2h-match-date { color: var(--text3); font-size: .72rem; min-width: 3rem; }
+.md-h2h-match-team { color: var(--text2); font-weight: 600; min-width: 2.5rem; text-align: center; }
+.md-h2h-match-team.winner { color: var(--accent); }
+.md-h2h-match-score { font-family: 'Montserrat', sans-serif; font-weight: 700; color: var(--text1); min-width: 2.5rem; text-align: center; }
+.md-h2h-match-event { color: var(--text3); font-size: .72rem; flex: 1; text-align: right; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.md-h2h-empty { text-align: center; padding: .75rem; color: var(--text3); font-size: .82rem; }
+
 /* ── Responsive ── */
 @media (max-width: 600px) {
   .scoreboard { flex-direction: column; gap: 1rem; }
@@ -195,6 +243,11 @@ import Base from '../layouts/Base.astro';
   .gps-table th, .gps-table td { padding: .25rem .35rem; }
   .auto-refresh-badge { display: flex; margin-left: 0; margin-top: .35rem; }
   .auto-refresh-ts { display: block; margin-left: 0; margin-top: .2rem; }
+  .md-h2h-match { font-size: .75rem; gap: .3rem; }
+  .md-h2h-match-event { display: none; }
+  .md-odds-factor { flex-wrap: wrap; }
+  .md-odds-factor-detail { min-width: 100%; font-size: .72rem; }
+  .rt-legend { font-size: .6rem; gap: .3rem; }
 }
 </style>
 
@@ -477,7 +530,17 @@ import Base from '../layouts/Base.astro';
                   const sideCls = side === 'ct' ? 'rt-ct' : 'rt-t';
                   html += '<span class="rt-dot ' + cls + ' ' + sideCls + '" title="R' + (i+1) + ' ' + side.toUpperCase() + ' ' + r.outcome + '"></span>';
                 });
-                html += '</div></div>';
+                html += '</div>';
+                html += '<div class="rt-legend">';
+                html += '<span class="rt-legend-team">' + escapeHtml(t1.acronym || t1.name || 'T1') + '</span>';
+                html += '<span class="rt-legend-item"><span class="rt-swatch rt-t1 rt-ct"></span>CT</span>';
+                html += '<span class="rt-legend-item"><span class="rt-swatch rt-t1 rt-t"></span>T</span>';
+                html += '<span class="rt-legend-sep">|</span>';
+                html += '<span class="rt-legend-team">' + escapeHtml(t2.acronym || t2.name || 'T2') + '</span>';
+                html += '<span class="rt-legend-item"><span class="rt-swatch rt-t2 rt-ct"></span>CT</span>';
+                html += '<span class="rt-legend-item"><span class="rt-swatch rt-t2 rt-t"></span>T</span>';
+                html += '</div>';
+                html += '</div>';
                 return html;
               })()}
               ${gameDuration ? `<div class="game-duration">Duration: ${gameDuration}</div>` : ''}
@@ -588,9 +651,8 @@ import Base from '../layouts/Base.astro';
           ${metaItems.join('<span class="meta-sep">·</span>')}
         </div>
 
-        ${(t1.id && t2.id) ? `<div class="meta-row" style="border-top:none;margin-top:.25rem;padding-top:0">
-          <a href="/h2h/?team1=${t1.id}&team2=${t2.id}" style="font-size:.8rem;color:var(--accent);text-decoration:none;font-weight:600">⚔️ H2H History</a>
-          ${match.tournament?.id ? `<span class="meta-sep">·</span><a href="/tournament-detail/?id=${match.tournament.id}" style="font-size:.8rem;color:var(--accent);text-decoration:none;font-weight:600">🏆 Tournament</a>` : ''}
+        ${match.tournament?.id ? `<div class="meta-row" style="border-top:none;margin-top:.25rem;padding-top:0">
+          <a href="/tournament-detail/?id=${match.tournament.id}" style="font-size:.8rem;color:var(--accent);text-decoration:none;font-weight:600">🏆 Tournament</a>
         </div>` : ''}
       </div>
 
@@ -600,6 +662,8 @@ import Base from '../layouts/Base.astro';
           <a href="https://csgoluck.com/r/WIKIPEDIA" target="_blank" rel="noopener" class="betting-cta-btn">Bet on This Match &rarr;</a>
         </div>
       </div>
+
+      <div id="h2h-section"><div class="md-h2h-loading"><div class="spinner"></div> Loading head-to-head…</div></div>
 
       ${gamesHTML}
       ${streamsHTML}
@@ -651,6 +715,260 @@ import Base from '../layouts/Base.astro';
         }
       }, 30000);
     }
+
+    // ── Fetch H2H & Team Stats for probability ──
+    if (t1.id && t2.id) {
+      if (window.__h2hData) {
+        // Use cached data on re-render (auto-refresh)
+        renderH2HSection(window.__h2hData, window.__t1Stats, window.__t2Stats, match, t1, t2);
+      } else {
+        Promise.all([
+          fetch('/api/h2h-matches?team1=' + t1.id + '&team2=' + t2.id + '&per_page=10').then(function(r) { return r.ok ? r.json() : null; }),
+          fetch('/api/team-competitive-stats?id=' + t1.id).then(function(r) { return r.ok ? r.json() : null; }),
+          fetch('/api/team-competitive-stats?id=' + t2.id).then(function(r) { return r.ok ? r.json() : null; }),
+        ]).then(function(results) {
+          window.__h2hData = results[0];
+          window.__t1Stats = results[1];
+          window.__t2Stats = results[2];
+          renderH2HSection(results[0], results[1], results[2], match, t1, t2);
+        }).catch(function() {
+          var sec = document.getElementById('h2h-section');
+          if (sec) sec.innerHTML = '';
+        });
+      }
+    } else {
+      var sec = document.getElementById('h2h-section');
+      if (sec) sec.innerHTML = '';
+    }
+  }
+
+  // ── H2H & Win Probability ──
+  window.__h2hData = null;
+  window.__t1Stats = null;
+  window.__t2Stats = null;
+
+  function calcWinProb(h2hData, t1Stats, t2Stats, match, t1, t2) {
+    var isLive = match.status === 'running';
+    var isFinished = match.status === 'finished';
+    var factors = [];
+
+    // Finished → show actual result
+    if (isFinished) {
+      if (match.winnerId === t1.id) return { t1Pct: 100, t2Pct: 0, factors: [{ name: 'Result', detail: escapeHtml(t1.acronym||t1.name) + ' won the match', value: 1 }] };
+      if (match.winnerId === t2.id) return { t1Pct: 0, t2Pct: 100, factors: [{ name: 'Result', detail: escapeHtml(t2.acronym||t2.name) + ' won the match', value: 0 }] };
+      return { t1Pct: 50, t2Pct: 50, factors: [{ name: 'Result', detail: 'Draw', value: 0.50 }] };
+    }
+
+    var record = h2hData ? h2hData.record : null;
+
+    // Factor 1: H2H Record
+    var h2hRate = 0.50;
+    if (record && record.total > 0) {
+      h2hRate = record.team1Wins / record.total;
+      factors.push({ name: 'H2H Record', detail: escapeHtml(t1.acronym||t1.name) + ' leads ' + record.team1Wins + '-' + record.team2Wins + (record.total > 2 ? ' (' + record.total + ' played)' : ''), value: h2hRate });
+    } else {
+      factors.push({ name: 'H2H Record', detail: 'No previous meetings', value: 0.50 });
+    }
+
+    // Factor 2: Recent Form (from team-competitive-stats)
+    var formRate = 0.50;
+    if (t1Stats && t2Stats) {
+      var t1WR = (t1Stats.record && t1Stats.record.matchWinRate != null) ? t1Stats.record.matchWinRate / 100 : 0.50;
+      var t2WR = (t2Stats.record && t2Stats.record.matchWinRate != null) ? t2Stats.record.matchWinRate / 100 : 0.50;
+      if (t1WR + t2WR > 0) formRate = t1WR / (t1WR + t2WR);
+      var t1Pct = (t1WR * 100).toFixed(0);
+      var t2Pct = (t2WR * 100).toFixed(0);
+      factors.push({ name: 'Form', detail: escapeHtml(t1.acronym||t1.name) + ' ' + t1Pct + '% match WR, ' + escapeHtml(t2.acronym||t2.name) + ' ' + t2Pct + '% match WR', value: formRate });
+    }
+
+    // Factor 3: Map Pool Strength
+    var mapRate = 0.50;
+    var games = match.games || [];
+    var mapsInSeries = [];
+    games.forEach(function(g) { if (g.map && g.map.name && mapsInSeries.indexOf(g.map.name) === -1) mapsInSeries.push(g.map.name); });
+
+    if (mapsInSeries.length > 0 && t1Stats && t2Stats) {
+      var mapAdvantages = [];
+      var mapDetailParts = [];
+      mapsInSeries.forEach(function(mapName) {
+        var t1Map = (t1Stats.maps || []).find(function(m) { return m.name && m.name.toLowerCase() === mapName.toLowerCase(); });
+        var t2Map = (t2Stats.maps || []).find(function(m) { return m.name && m.name.toLowerCase() === mapName.toLowerCase(); });
+        var t1wr = t1Map ? t1Map.winRate / 100 : 0.50;
+        var t2wr = t2Map ? t2Map.winRate / 100 : 0.50;
+        if (t1wr + t2wr > 0) mapAdvantages.push(t1wr / (t1wr + t2wr));
+        mapDetailParts.push(mapName + ': ' + (t1Map ? t1Map.winRate.toFixed(0) : '?') + '% vs ' + (t2Map ? t2Map.winRate.toFixed(0) : '?') + '%');
+      });
+      if (mapAdvantages.length > 0) {
+        mapRate = mapAdvantages.reduce(function(a, b) { return a + b; }, 0) / mapAdvantages.length;
+        factors.push({ name: 'Map Pool', detail: mapDetailParts.join(', '), value: mapRate });
+      }
+    }
+
+    // Factor 4: Map-specific H2H (from h2h matches games data)
+    var mapH2HRate = h2hRate; // default to overall H2H if no map data
+    if (h2hData && h2hData.matches && mapsInSeries.length > 0) {
+      var t1MapWins = 0, t2MapWins = 0;
+      var t1Id = h2hData.team1Id, t2Id = h2hData.team2Id;
+      h2hData.matches.forEach(function(m) {
+        (m.games || []).forEach(function(g) {
+          if (!g.map) return;
+          var isSeriesMap = mapsInSeries.some(function(mn) { return mn.toLowerCase() === g.map.toLowerCase(); });
+          if (isSeriesMap) {
+            if (g.winnerId === t1Id) t1MapWins++;
+            else if (g.winnerId === t2Id) t2MapWins++;
+          }
+        });
+      });
+      if (t1MapWins + t2MapWins > 0) {
+        mapH2HRate = t1MapWins / (t1MapWins + t2MapWins);
+        factors.push({ name: 'Map H2H', detail: escapeHtml(t1.acronym||t1.name) + ' ' + t1MapWins + '-' + t2MapWins + ' on series maps', value: mapH2HRate });
+      }
+    }
+
+    // Factor 5: Series Score (live/in-progress)
+    var seriesProb = 0.50;
+    var mapsToWin = Math.ceil((match.numberOfGames || 1) / 2);
+    var r1 = 0, r2 = 0;
+    if (match.results) {
+      var res1 = match.results.find(function(r) { return r.team_id === t1.id; });
+      var res2 = match.results.find(function(r) { return r.team_id === t2.id; });
+      r1 = res1 ? res1.score : 0;
+      r2 = res2 ? res2.score : 0;
+    }
+    if (isLive || r1 > 0 || r2 > 0) {
+      if (r1 >= mapsToWin) seriesProb = 0.95;
+      else if (r2 >= mapsToWin) seriesProb = 0.05;
+      else {
+        var t1Need = mapsToWin - r1;
+        var t2Need = mapsToWin - r2;
+        seriesProb = t2Need / (t1Need + t2Need);
+      }
+      if (r1 !== r2) {
+        factors.push({ name: 'Series', detail: escapeHtml(t1.acronym||t1.name) + ' ' + r1 + '-' + r2 + ' ' + escapeHtml(t2.acronym||t2.name) + ' (BO' + (match.numberOfGames || 1) + ')', value: seriesProb });
+      }
+    }
+
+    // Factor 6: Live Map Score
+    var mapProb = 0.50;
+    var hasLiveMap = false;
+    var liveGame = (match.games || []).find(function(g) { return g.status === 'running'; });
+    if (liveGame && isLive) {
+      var gT1 = (liveGame.teams || []).find(function(t) { return t.id === t1.id; }) || (liveGame.teams || [])[0] || {};
+      var gT2 = (liveGame.teams || []).find(function(t) { return t.id === t2.id; }) || (liveGame.teams || [])[1] || {};
+      var s1 = gT1.score != null ? gT1.score : ((gT1.firstHalfScore||0) + (gT1.secondHalfScore||0) + (gT1.overtimeScore||0));
+      var s2 = gT2.score != null ? gT2.score : ((gT2.firstHalfScore||0) + (gT2.secondHalfScore||0) + (gT2.overtimeScore||0));
+      var roundDiff = s1 - s2;
+      mapProb = 1 / (1 + Math.exp(-0.15 * roundDiff));
+      hasLiveMap = true;
+      factors.push({ name: 'Map Score', detail: s1 + '-' + s2 + ' on ' + (liveGame.map && liveGame.map.name ? liveGame.map.name : 'current map'), value: mapProb });
+    }
+
+    // Combine with weights (pro trader style)
+    var winProb;
+    if (isLive) {
+      if (hasLiveMap) {
+        // Live with active map: match state dominates
+        winProb = 0.05 * h2hRate + 0.05 * formRate + 0.05 * mapRate + 0.10 * mapH2HRate + 0.40 * seriesProb + 0.35 * mapProb;
+      } else {
+        // Live between maps: series score dominates
+        winProb = 0.08 * h2hRate + 0.07 * formRate + 0.05 * mapRate + 0.10 * mapH2HRate + 0.70 * seriesProb;
+      }
+    } else {
+      // Upcoming: form and map pool matter most
+      winProb = 0.20 * h2hRate + 0.30 * formRate + 0.25 * mapRate + 0.25 * mapH2HRate;
+    }
+
+    // Clamp between 5% and 95%
+    var finalT1 = Math.round(Math.min(95, Math.max(5, winProb * 100)));
+    return { t1Pct: finalT1, t2Pct: 100 - finalT1, factors: factors };
+  }
+
+  function renderH2HSection(h2hData, t1Stats, t2Stats, match, t1, t2) {
+    var section = document.getElementById('h2h-section');
+    if (!section) return;
+
+    var prob = calcWinProb(h2hData, t1Stats, t2Stats, match, t1, t2);
+    var html = '<div class="md-h2h">';
+
+    // Win probability bar
+    html += '<div class="md-h2h-prob">';
+    html += '<div class="md-h2h-prob-header">Win Probability</div>';
+    html += '<div class="md-h2h-bar-labels">';
+    html += '<span class="md-h2h-bar-team">' + escapeHtml(t1.acronym || t1.name || 'T1') + ' <strong>' + prob.t1Pct + '%</strong></span>';
+    html += '<span class="md-h2h-bar-team"><strong>' + prob.t2Pct + '%</strong> ' + escapeHtml(t2.acronym || t2.name || 'T2') + '</span>';
+    html += '</div>';
+    html += '<div class="md-h2h-bar"><div class="md-h2h-bar-fill" style="width:' + prob.t1Pct + '%"></div></div>';
+
+    // Odds breakdown dropdown
+    if (prob.factors.length > 0 && !(match.status === 'finished')) {
+      html += '<details class="md-odds-breakdown">';
+      html += '<summary>Why these odds?</summary>';
+      html += '<div class="md-odds-factors">';
+      prob.factors.forEach(function(f) {
+        var impact = f.value !== undefined ? f.value - 0.50 : 0;
+        var impactStr, impactCls;
+        if (Math.abs(impact) < 0.03) {
+          impactStr = 'Even';
+          impactCls = 'even';
+        } else if (impact > 0) {
+          impactStr = '\u2192 ' + escapeHtml(t1.acronym || t1.name);
+          impactCls = 't1';
+        } else {
+          impactStr = '\u2192 ' + escapeHtml(t2.acronym || t2.name);
+          impactCls = 't2';
+        }
+        html += '<div class="md-odds-factor">';
+        html += '<span class="md-odds-factor-name">' + f.name + '</span>';
+        html += '<span class="md-odds-factor-detail">' + f.detail + '</span>';
+        html += '<span class="md-odds-factor-impact ' + impactCls + '">' + impactStr + '</span>';
+        html += '</div>';
+      });
+      html += '</div></details>';
+    }
+
+    html += '</div>'; // close md-h2h-prob
+
+    // Previous meetings
+    var record = h2hData ? h2hData.record : { total: 0 };
+    var matches = h2hData ? (h2hData.matches || []).slice(0, 5) : [];
+
+    html += '<div class="md-h2h-meetings">';
+    html += '<div class="md-h2h-meetings-header">Previous Meetings' + (record.total > 0 ? ' (' + record.total + ' total)' : '') + '</div>';
+
+    if (matches.length === 0) {
+      html += '<div class="md-h2h-empty">No previous meetings found</div>';
+    } else {
+      matches.forEach(function(m) {
+        var date = m.beginAt ? new Date(m.beginAt) : null;
+        var dateStr = date ? date.toLocaleDateString(undefined, { day: 'numeric', month: 'short' }) : '\u2014';
+        var opp1 = m.opponents && m.opponents[0] ? m.opponents[0] : {};
+        var opp2 = m.opponents && m.opponents[1] ? m.opponents[1] : {};
+        var s1 = '?', s2 = '?';
+        if (m.results) {
+          var mr1 = m.results.find(function(r) { return r.team_id === opp1.id; });
+          var mr2 = m.results.find(function(r) { return r.team_id === opp2.id; });
+          if (mr1) s1 = mr1.score;
+          if (mr2) s2 = mr2.score;
+        }
+        var w1 = m.winnerId === opp1.id;
+        var w2 = m.winnerId === opp2.id;
+        var tier = m.tournament ? m.tournament.tier : null;
+
+        html += '<div class="md-h2h-match">';
+        html += '<span class="md-h2h-match-date">' + dateStr + '</span>';
+        html += '<span class="md-h2h-match-team ' + (w1 ? 'winner' : '') + '">' + escapeHtml(opp1.acronym || opp1.name || '?') + '</span>';
+        html += '<span class="md-h2h-match-score">' + s1 + ':' + s2 + '</span>';
+        html += '<span class="md-h2h-match-team ' + (w2 ? 'winner' : '') + '">' + escapeHtml(opp2.acronym || opp2.name || '?') + '</span>';
+        html += '<span class="md-h2h-match-event">' + escapeHtml(m.tournament ? m.tournament.name : (m.league ? m.league.name : '')) + '</span>';
+        if (tier) html += '<span class="match-tier ' + tierClass(tier) + '" style="font-size:.6rem;padding:.1rem .3rem">' + tier.toUpperCase() + '</span>';
+        html += '</div>';
+      });
+    }
+
+    html += '</div>'; // close md-h2h-meetings
+    html += '</div>'; // close md-h2h
+
+    section.innerHTML = html;
   }
 
   // ── Player Stats per Map ──

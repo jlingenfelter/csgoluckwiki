@@ -82,6 +82,10 @@ export async function onRequestGet(context) {
           image: o.opponent?.image_url,
         })),
         results: m.results || [],
+        games: (m.games || []).map(g => ({
+          map: g.map?.name,
+          winnerId: g.winner?.id,
+        })),
         tournament: {
           name: m.tournament?.name,
           tier: m.tournament?.tier,
