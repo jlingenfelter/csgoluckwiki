@@ -33,9 +33,15 @@ export async function onRequestGet(context) {
       return new Response(JSON.stringify({ error: 'Invalid type. Use: running, upcoming, past' }), { status: 400, headers });
     }
 
-    // Build PandaScore URL — use /csgo/ prefix for list endpoints (running/upcoming/past).
-    // Generic /matches with filter[videogame] returns empty results for list queries.
-    const apiUrl = `https://api.pandascore.co/csgo/matches/${type}?per_page=${perPage}&page=${page}&sort=${type === 'past' ? '-end_at' : 'begin_at'}&token=${apiKey}`;
+    // Build PandaScore URL — use /csgo/ prefix for list endpoints.
+    // For past matches, use filter[status]=finished instead of /past endpoint
+    // because /past returns canceled matches with null end_at that sort to the top.
+    let apiUrl;
+    if (type === 'past') {
+      apiUrl = `https://api.pandascore.co/csgo/matches?filter[status]=finished&per_page=${perPage}&page=${page}&sort=-scheduled_at&token=${apiKey}`;
+    } else {
+      apiUrl = `https://api.pandascore.co/csgo/matches/${type}?per_page=${perPage}&page=${page}&sort=begin_at&token=${apiKey}`;
+    }
 
     const res = await fetch(apiUrl, {
       headers: { 'Accept': 'application/json' },
