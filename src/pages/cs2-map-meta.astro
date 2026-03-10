@@ -1,0 +1,223 @@
+---
+import Base from '../layouts/Base.astro';
+import { breadcrumbSchema } from '../lib/weapons';
+
+const title = 'CS2 Map Meta Stats — Pick Rates, Win Rates & Side Balance | CSGOLuck Wiki';
+const description = 'Live CS2 competitive map statistics: pick rates, ban rates, CT vs T win rates, and pistol round data aggregated from professional matches.';
+
+const breadcrumbs = [
+  { name: 'Home', url: '/' },
+  { name: 'Esports', url: '/esports/' },
+  { name: 'Map Meta Stats', url: '/cs2-map-meta/' },
+];
+---
+
+<Base {title} {description} currentNav="/esports/">
+<Fragment slot="head">
+<script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema(breadcrumbs))} />
+</Fragment>
+
+<nav class="breadcrumb">
+  <a href="/">Home</a> <span>/</span>
+  <a href="/esports/">Esports</a> <span>/</span>
+  <span>Map Meta Stats</span>
+</nav>
+
+<header class="mm-header">
+  <h1>CS2 Map Meta Stats</h1>
+  <p class="mm-subtitle">Competitive map statistics aggregated from professional teams — pick rates, ban rates, side balance, and more.</p>
+</header>
+
+<div id="mapMetaContent">
+  <div class="mm-loading"><div class="mm-spinner"></div> Analyzing map data from pro teams…</div>
+</div>
+
+<style>
+.mm-header { margin-bottom: 1.5rem; }
+.mm-header h1 { font-size: 1.8rem; font-weight: 800; margin: 0 0 .5rem; }
+.mm-subtitle { color: var(--text2); font-size: .95rem; margin: 0; }
+
+.mm-loading { text-align: center; padding: 3rem; color: var(--text2); font-size: .9rem; }
+.mm-spinner { display: inline-block; width: 18px; height: 18px; border: 2px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: mm-spin .6s linear infinite; margin-right: .5rem; vertical-align: middle; }
+@keyframes mm-spin { to { transform: rotate(360deg); } }
+.mm-error { text-align: center; padding: 2rem; color: var(--text3); font-size: .85rem; background: var(--bg2); border: 1px solid var(--border); border-radius: 4px; }
+</style>
+
+<style is:global>
+/* ── Overview Cards ── */
+.mm-overview { display: grid; grid-template-columns: repeat(4, 1fr); gap: .5rem; margin-bottom: 1.5rem; }
+.mm-ov-card { background: var(--bg2); border: 1px solid var(--border); border-left: 3px solid var(--accent); border-radius: 4px; padding: .6rem .75rem; text-align: center; }
+.mm-ov-val { display: block; font-size: 1.4rem; font-weight: 800; color: var(--accent); font-family: 'Montserrat', sans-serif; }
+.mm-ov-lbl { display: block; font-size: .6rem; color: var(--text2); text-transform: uppercase; margin-top: .15rem; letter-spacing: .03em; }
+
+/* ── Section Titles ── */
+.mm-section-title { font-size: 1.1rem; font-weight: 700; font-family: 'Montserrat', sans-serif; margin: 1.5rem 0 .75rem; color: var(--text); }
+
+/* ── Map Cards Grid ── */
+.mm-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: .75rem; margin-bottom: 1.5rem; }
+.mm-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 4px; overflow: hidden; transition: border-color .2s; }
+.mm-card:hover { border-color: var(--accent); }
+
+.mm-card-head { display: flex; align-items: center; gap: .75rem; padding: .75rem 1rem; background: linear-gradient(135deg, var(--bg3) 0%, rgba(46,204,113,.03) 100%); border-bottom: 1px solid var(--border); }
+.mm-card-img { width: 56px; height: 36px; border-radius: 4px; object-fit: cover; border: 1px solid var(--border); flex-shrink: 0; }
+.mm-card-name { font-size: 1.05rem; font-weight: 800; font-family: 'Montserrat', sans-serif; flex: 1; }
+.mm-card-rank { font-size: .65rem; font-weight: 700; color: var(--text3); background: var(--bg); padding: .15rem .4rem; border-radius: 3px; text-transform: uppercase; }
+
+.mm-card-body { padding: .85rem 1rem; }
+.mm-card-stats { display: grid; grid-template-columns: 1fr 1fr; gap: .5rem; margin-bottom: .75rem; }
+.mm-stat { text-align: center; }
+.mm-stat-val { font-size: 1.15rem; font-weight: 800; font-family: 'Montserrat', sans-serif; }
+.mm-stat-lbl { font-size: .6rem; color: var(--text2); text-transform: uppercase; letter-spacing: .02em; }
+
+/* Side balance bar */
+.mm-side-bar { margin-top: .5rem; }
+.mm-side-label { font-size: .65rem; color: var(--text3); text-transform: uppercase; margin-bottom: .25rem; font-weight: 600; }
+.mm-side-track { display: flex; height: 20px; border-radius: 4px; overflow: hidden; border: 1px solid var(--border); }
+.mm-side-ct { background: #5b9bd5; display: flex; align-items: center; justify-content: center; font-size: .65rem; font-weight: 700; color: #fff; min-width: 30px; }
+.mm-side-t { background: #e8c44a; display: flex; align-items: center; justify-content: center; font-size: .65rem; font-weight: 700; color: #000; min-width: 30px; }
+.mm-side-legend { display: flex; justify-content: space-between; margin-top: .25rem; font-size: .65rem; color: var(--text3); }
+
+/* Pick/Ban bars */
+.mm-pb-row { display: flex; align-items: center; gap: .5rem; margin-top: .5rem; }
+.mm-pb-label { font-size: .65rem; color: var(--text3); min-width: 32px; text-transform: uppercase; font-weight: 600; }
+.mm-pb-track { flex: 1; height: 8px; background: var(--bg); border: 1px solid var(--border); border-radius: 4px; overflow: hidden; }
+.mm-pb-fill { height: 100%; border-radius: 4px 0 0 4px; }
+.mm-pb-fill.pick { background: var(--accent); }
+.mm-pb-fill.ban { background: #e74c3c; }
+.mm-pb-val { font-size: .72rem; font-weight: 700; min-width: 32px; }
+
+/* ── Comparison Table ── */
+.mm-table-wrap { overflow-x: auto; border: 1px solid var(--border); border-radius: 4px; margin-bottom: 1.5rem; }
+.mm-table { width: 100%; border-collapse: collapse; background: var(--bg2); font-size: .82rem; }
+.mm-table thead { background: var(--bg3); }
+.mm-table th { padding: .65rem .5rem; text-align: center; font-weight: 700; color: var(--text); text-transform: uppercase; font-size: .62rem; letter-spacing: .04em; white-space: nowrap; }
+.mm-table th:first-child { text-align: left; }
+.mm-table td { padding: .55rem .5rem; border-bottom: 1px solid var(--border); text-align: center; white-space: nowrap; }
+.mm-table tbody tr:hover td { background: var(--bg3); }
+.mm-table td:first-child { text-align: left; }
+.mm-table-map { display: flex; align-items: center; gap: .5rem; }
+.mm-table-img { width: 32px; height: 21px; border-radius: 3px; object-fit: cover; border: 1px solid var(--border); }
+.mm-table-map strong { color: var(--text); font-weight: 700; }
+
+/* Responsive */
+@media (max-width: 768px) {
+  .mm-overview { grid-template-columns: repeat(2, 1fr); }
+  .mm-cards { grid-template-columns: 1fr; }
+  .mm-table { font-size: .75rem; }
+  .mm-table th, .mm-table td { padding: .4rem .3rem; }
+  .mm-header h1 { font-size: 1.4rem; }
+}
+</style>
+
+<script is:inline>
+(function() {
+  var container = document.getElementById('mapMetaContent');
+  if (!container) return;
+
+  fetch('/api/map-meta')
+    .then(function(r) { return r.ok ? r.json() : null; })
+    .then(function(data) {
+      if (!data || data.error || !data.maps || data.maps.length === 0) {
+        container.innerHTML = '<div class="mm-error">Map meta data is currently unavailable. Please try again later.</div>';
+        return;
+      }
+
+      var maps = data.maps;
+      var html = '';
+
+      // ── Overview Cards ──
+      html += '<div class="mm-overview">';
+      html += '<div class="mm-ov-card"><span class="mm-ov-val">' + maps.length + '</span><span class="mm-ov-lbl">Maps Tracked</span></div>';
+      html += '<div class="mm-ov-card"><span class="mm-ov-val">' + data.totalGames.toLocaleString() + '</span><span class="mm-ov-lbl">Total Maps Played</span></div>';
+      html += '<div class="mm-ov-card"><span class="mm-ov-val">' + data.teamsAnalyzed + '</span><span class="mm-ov-lbl">Teams Analyzed</span></div>';
+      html += '<div class="mm-ov-card"><span class="mm-ov-val">' + data.totalRounds.toLocaleString() + '</span><span class="mm-ov-lbl">Total Rounds</span></div>';
+      html += '</div>';
+
+      // ── Map Cards ──
+      html += '<h2 class="mm-section-title">Map Breakdown</h2>';
+      html += '<div class="mm-cards">';
+
+      maps.forEach(function(m, idx) {
+        var ctPct = m.ctWinRate;
+        var tPct = m.tWinRate;
+        // Normalize so they add to ~100 for the bar display
+        var ctBar = Math.round(ctPct / (ctPct + tPct) * 100);
+        var tBar = 100 - ctBar;
+        var imgTag = m.image ? '<img src="' + m.image + '" alt="' + m.name + '" class="mm-card-img" loading="lazy" onerror="this.style.display=\'none\'" />' : '';
+
+        html += '<div class="mm-card">';
+        html += '<div class="mm-card-head">' + imgTag + '<span class="mm-card-name">' + m.name + '</span><span class="mm-card-rank">#' + (idx + 1) + ' played</span></div>';
+        html += '<div class="mm-card-body">';
+
+        // Core stats grid
+        html += '<div class="mm-card-stats">';
+        html += '<div class="mm-stat"><div class="mm-stat-val" style="color:var(--text)">' + m.totalPlayed.toLocaleString() + '</div><div class="mm-stat-lbl">Maps Played</div></div>';
+        html += '<div class="mm-stat"><div class="mm-stat-val" style="color:var(--accent)">' + m.pistolWinRate + '%</div><div class="mm-stat-lbl">Pistol Win Rate</div></div>';
+        html += '</div>';
+
+        // CT/T side balance bar
+        html += '<div class="mm-side-bar">';
+        html += '<div class="mm-side-label">Round Win Rate by Side</div>';
+        html += '<div class="mm-side-track">';
+        html += '<div class="mm-side-ct" style="width:' + ctBar + '%">CT ' + ctPct + '%</div>';
+        html += '<div class="mm-side-t" style="width:' + tBar + '%">T ' + tPct + '%</div>';
+        html += '</div>';
+        html += '<div class="mm-side-legend"><span>CT-sided ←</span><span>→ T-sided</span></div>';
+        html += '</div>';
+
+        // Pick/Ban rates
+        html += '<div class="mm-pb-row">';
+        html += '<span class="mm-pb-label">Pick</span>';
+        html += '<div class="mm-pb-track"><div class="mm-pb-fill pick" style="width:' + Math.min(m.avgPickRate * 3, 100) + '%"></div></div>';
+        html += '<span class="mm-pb-val" style="color:var(--accent)">' + m.avgPickRate + '%</span>';
+        html += '</div>';
+        html += '<div class="mm-pb-row">';
+        html += '<span class="mm-pb-label">Ban</span>';
+        html += '<div class="mm-pb-track"><div class="mm-pb-fill ban" style="width:' + Math.min(m.avgBanRate * 3, 100) + '%"></div></div>';
+        html += '<span class="mm-pb-val" style="color:#e74c3c">' + m.avgBanRate + '%</span>';
+        html += '</div>';
+
+        html += '</div></div>';
+      });
+
+      html += '</div>';
+
+      // ── Comparison Table ──
+      html += '<h2 class="mm-section-title">Full Comparison</h2>';
+      html += '<div class="mm-table-wrap"><table class="mm-table"><thead><tr>';
+      html += '<th>#</th><th>Map</th><th>Played</th><th>Avg Pick%</th><th>Avg Ban%</th><th>CT WR</th><th>T WR</th><th>Balance</th><th>Pistol WR</th><th>Teams</th>';
+      html += '</tr></thead><tbody>';
+
+      maps.forEach(function(m, idx) {
+        var diff = Math.abs(m.ctWinRate - m.tWinRate);
+        var balance = diff < 3 ? '⚖️ Even' : (m.ctWinRate > m.tWinRate ? '🛡️ CT +' + diff.toFixed(1) : '💣 T +' + diff.toFixed(1));
+        var imgTag = m.image ? '<img src="' + m.image + '" alt="' + m.name + '" class="mm-table-img" loading="lazy" onerror="this.style.display=\'none\'" />' : '';
+
+        html += '<tr>';
+        html += '<td>' + (idx + 1) + '</td>';
+        html += '<td><div class="mm-table-map">' + imgTag + '<strong>' + m.name + '</strong></div></td>';
+        html += '<td>' + m.totalPlayed.toLocaleString() + '</td>';
+        html += '<td style="color:var(--accent);font-weight:600">' + m.avgPickRate + '%</td>';
+        html += '<td style="color:#e74c3c;font-weight:600">' + m.avgBanRate + '%</td>';
+        html += '<td style="color:#5b9bd5;font-weight:700">' + m.ctWinRate + '%</td>';
+        html += '<td style="color:#e8c44a;font-weight:700">' + m.tWinRate + '%</td>';
+        html += '<td style="font-size:.75rem">' + balance + '</td>';
+        html += '<td>' + m.pistolWinRate + '%</td>';
+        html += '<td style="color:var(--text3)">' + m.teamsTracked + '</td>';
+        html += '</tr>';
+      });
+
+      html += '</tbody></table></div>';
+
+      // ── Methodology note ──
+      html += '<p style="font-size:.75rem;color:var(--text3);text-align:center;margin-top:1rem">Data aggregated from ' + data.teamsAnalyzed + ' professional teams via PandaScore. Statistics include all competitive matches tracked for each team.</p>';
+
+      container.innerHTML = html;
+    })
+    .catch(function() {
+      container.innerHTML = '<div class="mm-error">Could not load map meta data. Please try again later.</div>';
+    });
+})();
+</script>
+
+</Base>
