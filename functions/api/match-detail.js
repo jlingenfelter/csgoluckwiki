@@ -92,6 +92,7 @@ export async function onRequestGet(context) {
         position: g.position,
         status: g.status,
         complete: g.complete,
+        detailedStats: g.detailed_stats || false,
         map: g.map ? { id: g.map.id, name: g.map.name, image: g.map.image_url } : null,
         winnerId: g.winner?.id,
         winnerName: g.winner?.name,

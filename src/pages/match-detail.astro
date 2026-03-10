@@ -160,6 +160,14 @@ import Base from '../layouts/Base.astro';
 .gps-loading { text-align: center; padding: 1rem; color: var(--text3); font-size: .8rem; }
 .gps-error { text-align: center; padding: .75rem; color: #e74c3c; font-size: .8rem; }
 
+/* ── Inline MVP Preview ── */
+.game-mvp-row { display: flex; align-items: center; gap: .4rem; margin-top: .6rem; padding: .5rem .75rem; background: rgba(46,204,113,.05); border: 1px solid rgba(46,204,113,.15); border-radius: 4px; font-size: .8rem; flex-wrap: wrap; }
+.mvp-star { color: #f1c40f; font-size: .9rem; flex-shrink: 0; }
+.mvp-label { font-size: .65rem; font-weight: 700; text-transform: uppercase; color: var(--accent); background: rgba(46,204,113,.12); padding: .1rem .35rem; border-radius: 2px; letter-spacing: .03em; }
+.mvp-name { color: var(--text1); font-weight: 700; font-family: 'Montserrat', sans-serif; }
+.mvp-team { color: var(--text3); font-size: .75rem; }
+.mvp-stats { color: var(--text2); font-size: .75rem; }
+
 /* ── Auto-Refresh Badge ── */
 .auto-refresh-badge { display: inline-flex; align-items: center; gap: .35rem; font-size: .7rem; font-weight: 600; color: #e74c3c; background: rgba(231,76,60,.08); border: 1px solid rgba(231,76,60,.2); border-radius: 3px; padding: .15rem .45rem; margin-left: .5rem; vertical-align: middle; }
 .auto-refresh-badge .ar-dot { display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: #e74c3c; animation: ar-pulse 1.5s ease-in-out infinite; }
@@ -465,11 +473,46 @@ import Base from '../layouts/Base.astro';
                 return html;
               })()}
               ${gameDuration ? `<div class="game-duration">Duration: ${gameDuration}</div>` : ''}
-              ${game.id ? `<button class="gps-toggle" data-game-id="${game.id}" onclick="window.__togglePlayerStats(this, ${game.id})">Show Player Stats ▾</button><div class="gps-table-wrap" id="gps-wrap-${game.id}" style="display:none"></div>` : ''}
+              <div class="game-mvp-row" id="mvp-row-${game.id}" style="display:none"></div>
+              ${game.id && game.detailedStats ? `<button class="gps-toggle" data-game-id="${game.id}" onclick="window.__togglePlayerStats(this, ${game.id})">Show Player Stats ▾</button><div class="gps-table-wrap" id="gps-wrap-${game.id}" style="display:none"></div>` : ''}
             </div>
           </div>`;
       });
     }
+
+    // Auto-fetch MVP previews for games with detailed stats
+    const detailedGames = playableGames.filter(g => g.id && g.detailedStats && g.status === 'finished');
+    detailedGames.forEach(function(game) {
+      fetch('/api/game-stats?id=' + encodeURIComponent(game.id))
+        .then(function(r) { return r.ok ? r.json() : null; })
+        .then(function(data) {
+          if (!data || !data.teams || data.teams.length === 0) return;
+          window.__gpsCache[game.id] = data;
+          const allPlayers = [];
+          data.teams.forEach(function(team) {
+            (team.players || []).forEach(function(p) {
+              allPlayers.push({ ...p, teamName: team.name || team.acronym });
+            });
+          });
+          if (allPlayers.length === 0) return;
+          allPlayers.sort(function(a, b) { return (b.rating || 0) - (a.rating || 0); });
+          const mvp = allPlayers[0];
+          const mvpRow = document.getElementById('mvp-row-' + game.id);
+          if (!mvpRow) return;
+          const kd = (mvp.kills || 0) - (mvp.deaths || 0);
+          const kdStr = kd >= 0 ? '+' + kd : '' + kd;
+          mvpRow.innerHTML = '<span class="mvp-star">★</span> <span class="mvp-label">MVP</span> '
+            + '<strong class="mvp-name">' + escapeHtml(mvp.name) + '</strong>'
+            + ' <span class="mvp-team">(' + escapeHtml(mvp.teamName) + ')</span>'
+            + ' <span class="mvp-stats">' + (mvp.rating != null ? mvp.rating.toFixed(2) + ' rating' : '')
+            + ' · ' + (mvp.kills || 0) + '-' + (mvp.deaths || 0) + '-' + (mvp.assists || 0)
+            + ' (' + kdStr + ')'
+            + (mvp.adr != null ? ' · ' + mvp.adr.toFixed(0) + ' ADR' : '')
+            + '</span>';
+          mvpRow.style.display = 'flex';
+        })
+        .catch(function() {});
+    });
 
     // Streams
     let streamsHTML = '';
