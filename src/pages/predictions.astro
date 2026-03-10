@@ -722,6 +722,53 @@ const explore = [
   async function getStats(id) { if (!id) return null; if (statsCache[id]) return statsCache[id]; var d = await fetchJSON('/api/team-competitive-stats?id=' + id); if (d) statsCache[id] = d; return d; }
   async function getH2H(a, b) { var k = a + '-' + b; if (h2hCache[k]) return h2hCache[k]; var d = await fetchJSON('/api/h2h-matches?team1=' + a + '&team2=' + b + '&per_page=20'); if (d) h2hCache[k] = d; return d; }
 
+  // Normalize API response to the field names used by the pricing model.
+  // Our /api/matches proxy returns camelCase + flat opponent arrays,
+  // but the pricing model was written expecting PandaScore's raw format.
+  function normalizeMatch(m) {
+    if (!m) return null;
+    return {
+      id: m.id,
+      name: m.name,
+      slug: m.slug,
+      status: m.status,
+      match_type: m.matchType || m.match_type,
+      number_of_games: m.numberOfGames || m.number_of_games || 1,
+      begin_at: m.beginAt || m.begin_at,
+      end_at: m.endAt || m.end_at,
+      forfeit: m.forfeit,
+      draw: m.draw,
+      winner_id: m.winnerId != null ? m.winnerId : m.winner_id,
+      opponents: (m.opponents || []).map(function(o) {
+        var opp = o.opponent || o;
+        return { opponent: { id: opp.id, name: opp.name, acronym: opp.acronym, location: opp.location, image_url: opp.image || opp.image_url || opp.imageDark } };
+      }),
+      results: m.results || [],
+      tournament: m.tournament || {},
+      league: { id: (m.league || {}).id, name: (m.league || {}).name, image_url: (m.league || {}).image || (m.league || {}).image_url },
+      serie: m.serie || {},
+      streams_list: m.streams || m.streams_list || [],
+      games: (m.games || []).map(function(g) {
+        return {
+          id: g.id,
+          status: g.status,
+          map: typeof g.map === 'string' ? { name: g.map } : g.map,
+          winner: g.winnerId != null ? { id: g.winnerId } : (g.winner || null),
+          position: g.position,
+          teams: g.teams || []
+        };
+      })
+    };
+  }
+
+  // Extract matches array from API response (could be {matches:[]} or raw array)
+  function extractMatches(res) {
+    if (!res) return [];
+    if (Array.isArray(res)) return res;
+    if (res.matches && Array.isArray(res.matches)) return res.matches;
+    return [];
+  }
+
   async function processBatch(matches, size) {
     var results = [];
     for (var i = 0; i < matches.length; i += size) {
@@ -747,7 +794,7 @@ const explore = [
       fetchJSON('/api/matches?type=running&per_page=15'),
       fetchJSON('/api/matches?type=past&per_page=15')
     ]);
-    var all = [].concat(live || [], upcoming || [], past || []).flat();
+    var all = [].concat(extractMatches(live), extractMatches(upcoming), extractMatches(past)).map(normalizeMatch).filter(Boolean);
     if (!all.length) { container.innerHTML = '<div class="empty-state"><p>No matches found.</p></div>'; return; }
     container.innerHTML = '<div class="loading-state"><div class="spinner"></div> Pricing ' + all.length + ' matches…</div>';
     allPredictions = await processBatch(all, 4);
