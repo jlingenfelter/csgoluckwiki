@@ -35,7 +35,7 @@ export async function onRequestGet(context) {
       if (teamSlug) {
         lookupUrl = `https://api.pandascore.co/teams?filter[slug]=${encodeURIComponent(teamSlug)}&per_page=1&token=${apiKey}`;
       } else if (teamName) {
-        lookupUrl = `https://api.pandascore.co/teams?search[name]=${encodeURIComponent(teamName)}&per_page=5&token=${apiKey}`;
+        lookupUrl = `https://api.pandascore.co/teams?search[name]=${encodeURIComponent(teamName)}&per_page=25&token=${apiKey}`;
       } else {
         return new Response(JSON.stringify({ error: 'Provide ?id=, ?slug=, or ?name= parameter' }), { status: 400, headers: errorHeaders });
       }

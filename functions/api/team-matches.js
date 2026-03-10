@@ -64,17 +64,22 @@ export async function onRequestGet(context) {
         const searchName = teamName || (teamSlug ? teamSlug.replace(/-/g, ' ') : '');
         if (searchName) {
           const nameRes = await fetch(
-            `https://api.pandascore.co/teams?search[name]=${encodeURIComponent(searchName)}&per_page=5&token=${apiKey}`,
+            `https://api.pandascore.co/teams?search[name]=${encodeURIComponent(searchName)}&per_page=25&token=${apiKey}`,
             { cf: { cacheTtl: 3600 } }
           );
           if (nameRes.ok) {
             const teams = await nameRes.json();
             if (teams.length > 0) {
-              const exact = teams.find(t => t.name.toLowerCase() === searchName.toLowerCase());
-              const matched = exact || teams[0];
-              teamId = matched.id;
-              teamImage = matched.image_url;
-              teamName_ = matched.name;
+              // Prefer CS:GO/CS2 team with exact name match
+              const csTeam = teams.find(t =>
+                t.name.toLowerCase() === searchName.toLowerCase() &&
+                (t.current_videogame?.slug === 'cs-go' || t.current_videogame?.slug === 'cs2')
+              ) || teams.find(t =>
+                t.current_videogame?.slug === 'cs-go' || t.current_videogame?.slug === 'cs2'
+              ) || teams.find(t => t.name.toLowerCase() === searchName.toLowerCase()) || teams[0];
+              teamId = csTeam.id;
+              teamImage = csTeam.image_url;
+              teamName_ = csTeam.name;
             }
           }
         }
