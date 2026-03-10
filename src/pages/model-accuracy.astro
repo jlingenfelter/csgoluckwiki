@@ -1,0 +1,356 @@
+---
+import Base from '../layouts/Base.astro';
+import ExploreMore from '../components/ExploreMore.astro';
+
+const explore = [
+  { title: 'Predictions', href: '/predictions/', desc: 'Trading-grade win probabilities for upcoming matches' },
+  { title: 'Hot Picks', href: '/hot-picks/', desc: "Today's best value bets" },
+  { title: 'H2H Comparator', href: '/h2h/', desc: 'Compare any two teams head-to-head' },
+  { title: 'Live Matches', href: '/matches/', desc: 'Real-time CS2 match tracker' },
+];
+---
+<Base title="Model Accuracy Tracker — CS2 Prediction Streaks | CSGOLuck Wiki" description="Track the accuracy of our CS2 match prediction model. Win/loss streaks, calibration data, and performance breakdowns by tier and confidence level." currentNav="/predictions/">
+
+<nav class="breadcrumb" aria-label="Breadcrumb">
+<a href="/">Home</a> <span class="sep">›</span> <a href="/esports/">Esports</a> <span class="sep">›</span> <a href="/predictions/">Predictions</a> <span class="sep">›</span> <span>Model Accuracy</span>
+</nav>
+
+<h1>Model Accuracy Tracker</h1>
+<p class="page-intro">Transparent tracking of our prediction model's performance. We retroactively price recent matches and check whether the favoured team won. No cherry-picking — every match with sufficient data is included.</p>
+
+<!-- Key Metrics -->
+<div class="ma-metrics" id="maMetrics" style="display:none">
+  <div class="ma-metric ma-metric-primary">
+    <span class="ma-metric-val" id="maAccuracy">—</span>
+    <span class="ma-metric-label">Overall Accuracy</span>
+  </div>
+  <div class="ma-metric">
+    <span class="ma-metric-val" id="maStreak">—</span>
+    <span class="ma-metric-label">Current Streak</span>
+  </div>
+  <div class="ma-metric">
+    <span class="ma-metric-val" id="maBestStreak">—</span>
+    <span class="ma-metric-label">Best Streak</span>
+  </div>
+  <div class="ma-metric">
+    <span class="ma-metric-val" id="maHighConf">—</span>
+    <span class="ma-metric-label">High Conf Accuracy</span>
+  </div>
+  <div class="ma-metric">
+    <span class="ma-metric-val" id="maMatches">—</span>
+    <span class="ma-metric-label">Matches Tracked</span>
+  </div>
+</div>
+
+<!-- Streak Visual -->
+<div class="ma-streak-visual" id="streakVisual" style="display:none">
+  <h3>Recent Predictions <span class="ma-streak-sub">(newest first)</span></h3>
+  <div class="ma-streak-dots" id="streakDots"></div>
+</div>
+
+<!-- Calibration Chart -->
+<div class="ma-calibration" id="maCalibration" style="display:none">
+  <h3>Calibration Check</h3>
+  <p class="ma-cal-desc">Does a 70% prediction win 70% of the time? Perfect calibration means the bars match the expected line.</p>
+  <div class="ma-cal-chart" id="calChart"></div>
+</div>
+
+<!-- Breakdown by Tier -->
+<div class="ma-breakdown" id="maBreakdown" style="display:none">
+  <h3>Performance by Tier</h3>
+  <div class="ma-breakdown-grid" id="breakdownGrid"></div>
+</div>
+
+<!-- Recent Results List -->
+<div class="ma-results" id="maResults">
+  <div class="loading-state"><div class="spinner"></div> Retroactively pricing recent matches…</div>
+</div>
+
+<ExploreMore items={explore} />
+
+<style is:global>
+.page-intro { color: var(--text2); margin-bottom: 1.5rem; font-size: .95rem; line-height: 1.5; }
+
+/* Key Metrics */
+.ma-metrics { display: grid; grid-template-columns: repeat(5, 1fr); gap: .6rem; margin-bottom: 1.5rem; }
+.ma-metric { background: var(--bg2); border: 1px solid var(--border); border-radius: 4px; padding: .6rem .5rem; text-align: center; }
+.ma-metric.ma-metric-primary { border-left: 3px solid var(--accent); }
+.ma-metric-val { display: block; font-size: 1.3rem; font-weight: 800; font-family: 'Montserrat', sans-serif; color: var(--text1); }
+.ma-metric.ma-metric-primary .ma-metric-val { color: var(--accent); }
+.ma-metric-label { font-size: .68rem; color: var(--text3); }
+
+/* Streak Visual */
+.ma-streak-visual { margin-bottom: 1.5rem; }
+.ma-streak-visual h3 { font-size: .95rem; font-weight: 700; margin: 0 0 .5rem; display: flex; align-items: baseline; gap: .4rem; }
+.ma-streak-sub { font-size: .72rem; color: var(--text3); font-weight: 500; }
+.ma-streak-dots { display: flex; flex-wrap: wrap; gap: 4px; }
+.ma-dot { width: 18px; height: 18px; border-radius: 3px; display: flex; align-items: center; justify-content: center; font-size: .55rem; font-weight: 800; cursor: default; position: relative; }
+.ma-dot.win { background: var(--accent); color: #000; }
+.ma-dot.loss { background: #e74c3c; color: #fff; }
+.ma-dot.draw { background: #f1c40f; color: #000; }
+.ma-dot[title] { cursor: help; }
+
+/* Calibration */
+.ma-calibration { margin-bottom: 1.5rem; }
+.ma-calibration h3 { font-size: .95rem; font-weight: 700; margin: 0 0 .3rem; }
+.ma-cal-desc { font-size: .8rem; color: var(--text3); margin: 0 0 .75rem; }
+.ma-cal-chart { display: flex; align-items: flex-end; gap: .5rem; height: 120px; padding-bottom: 1.5rem; position: relative; }
+.ma-cal-bucket { flex: 1; display: flex; flex-direction: column; align-items: center; gap: .2rem; height: 100%; justify-content: flex-end; position: relative; }
+.ma-cal-bar-wrap { width: 100%; display: flex; gap: 2px; height: 100%; align-items: flex-end; justify-content: center; }
+.ma-cal-bar { width: 14px; border-radius: 2px 2px 0 0; transition: height .4s; }
+.ma-cal-bar.expected { background: var(--bg3); border: 1px solid var(--border); }
+.ma-cal-bar.actual { background: var(--accent); }
+.ma-cal-label { font-size: .62rem; color: var(--text3); font-weight: 600; white-space: nowrap; }
+.ma-cal-pct { font-size: .58rem; color: var(--text2); font-weight: 700; }
+.ma-cal-legend { display: flex; gap: 1rem; margin-top: .5rem; }
+.ma-cal-leg-item { display: flex; align-items: center; gap: .3rem; font-size: .7rem; color: var(--text3); }
+.ma-cal-leg-swatch { width: 10px; height: 10px; border-radius: 2px; }
+.ma-cal-leg-swatch.expected { background: var(--bg3); border: 1px solid var(--border); }
+.ma-cal-leg-swatch.actual { background: var(--accent); }
+
+/* Breakdown */
+.ma-breakdown { margin-bottom: 1.5rem; }
+.ma-breakdown h3 { font-size: .95rem; font-weight: 700; margin: 0 0 .5rem; }
+.ma-breakdown-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: .5rem; }
+.ma-bd-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 4px; padding: .55rem .65rem; text-align: center; }
+.ma-bd-tier { font-size: .7rem; font-weight: 700; text-transform: uppercase; margin-bottom: .15rem; }
+.ma-bd-val { font-size: 1.1rem; font-weight: 800; font-family: 'Montserrat', sans-serif; }
+.ma-bd-val.good { color: var(--accent); } .ma-bd-val.ok { color: #f1c40f; } .ma-bd-val.bad { color: #e74c3c; }
+.ma-bd-sub { font-size: .62rem; color: var(--text3); }
+.tier-s { background: #f1c40f; color: #000; } .tier-a { background: #e67e22; color: #000; } .tier-b { background: #3498db; color: #fff; } .tier-c { background: #7f8c8d; color: #fff; }
+
+/* Results List */
+.ma-results { margin-bottom: 1.5rem; }
+.ma-results h3 { font-size: .95rem; font-weight: 700; margin: 0 0 .5rem; }
+.ma-result-row { display: flex; align-items: center; gap: .5rem; padding: .4rem .6rem; background: var(--bg2); border: 1px solid var(--border); border-radius: 3px; margin-bottom: .3rem; font-size: .78rem; }
+.ma-result-row.correct { border-left: 3px solid var(--accent); }
+.ma-result-row.incorrect { border-left: 3px solid #e74c3c; }
+.ma-r-icon { font-size: .65rem; font-weight: 800; width: 16px; height: 16px; border-radius: 3px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.ma-r-icon.win { background: var(--accent); color: #000; }
+.ma-r-icon.loss { background: #e74c3c; color: #fff; }
+.ma-r-teams { flex: 1; min-width: 0; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ma-r-pred { color: var(--text3); font-weight: 600; min-width: 50px; text-align: right; }
+.ma-r-result { font-weight: 700; min-width: 40px; text-align: center; }
+.ma-r-conf { font-size: .7rem; color: var(--text3); min-width: 35px; text-align: right; }
+
+.loading-state { text-align: center; padding: 2rem; color: var(--text2); font-size: .9rem; }
+.spinner { display: inline-block; width: 20px; height: 20px; border: 2px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin .6s linear infinite; margin-right: .5rem; vertical-align: middle; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+@media (max-width: 768px) {
+  .ma-metrics { grid-template-columns: repeat(3, 1fr); }
+}
+@media (max-width: 500px) {
+  .ma-metrics { grid-template-columns: repeat(2, 1fr); }
+  .ma-cal-chart { height: 80px; }
+}
+</style>
+
+<script>
+(function() {
+  function esc(s) { return s ? String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;') : ''; }
+
+  // Simplified pricing model for retroactive analysis (no live factors)
+  function retroPrice(h2h, t1S, t2S, match, t1, t2) {
+    var record = h2h ? h2h.record : null;
+    var bo = match.number_of_games || 1;
+    var fmtVar = bo === 1 ? 1.25 : bo === 3 ? 1.0 : 0.85;
+    var h2hRate = 0.50;
+    if (record && record.total > 0) {
+      if (h2h.matches && h2h.matches.length > 0) {
+        var wt1 = 0, wtT = 0;
+        h2h.matches.forEach(function(m, i) { var w = Math.pow(0.8, i); wtT += w; if (m.winnerId === h2h.team1Id) wt1 += w; else if (m.draw) wt1 += w * 0.5; });
+        h2hRate = wtT > 0 ? wt1 / wtT : 0.50;
+      } else { h2hRate = record.team1Wins / record.total; }
+    }
+    var formRate = 0.50;
+    if (t1S && t2S) {
+      var t1WR = (t1S.record || {}).matchWinRate != null ? t1S.record.matchWinRate / 100 : 0.50;
+      var t2WR = (t2S.record || {}).matchWinRate != null ? t2S.record.matchWinRate / 100 : 0.50;
+      if (t1WR + t2WR > 0) formRate = t1WR / (t1WR + t2WR);
+    }
+    var mapRate = 0.50;
+    if (t1S && t2S && t1S.maps && t2S.maps) {
+      var t1M = t1S.maps.filter(function(m) { return m.played >= 3; });
+      var t2M = t2S.maps.filter(function(m) { return m.played >= 3; });
+      if (t1M.length > 0 && t2M.length > 0) {
+        var t1W = 0, t1T = 0; t1M.forEach(function(m) { t1W += m.winRate * m.played; t1T += m.played; });
+        var t2W = 0, t2T = 0; t2M.forEach(function(m) { t2W += m.winRate * m.played; t2T += m.played; });
+        var t1A = t1T > 0 ? t1W / t1T : 50, t2A = t2T > 0 ? t2W / t2T : 50;
+        if ((t1A / 100) + (t2A / 100) > 0) mapRate = (t1A / 100) / ((t1A / 100) + (t2A / 100));
+      }
+    }
+    var mapH2HRate = h2hRate;
+    if (h2h && h2h.matches) {
+      var mw1 = 0, mw2 = 0;
+      h2h.matches.forEach(function(m) { (m.games || []).forEach(function(g) { if (g.winnerId === h2h.team1Id) mw1++; else if (g.winnerId === h2h.team2Id) mw2++; }); });
+      if (mw1 + mw2 > 0) mapH2HRate = mw1 / (mw1 + mw2);
+    }
+    var winProb = 0.15 * h2hRate + 0.30 * formRate + 0.30 * mapRate + 0.25 * mapH2HRate;
+    winProb = 0.50 + (winProb - 0.50) / fmtVar;
+    var t1Pct = Math.round(Math.min(95, Math.max(5, winProb * 100)));
+
+    var tier = (match.tournament && match.tournament.tier) || '';
+    var confidence = 5;
+    if (record && record.total >= 5) confidence += 1;
+    if (t1S && t2S) { var mp1 = (t1S.record || {}).matchesPlayed || 0, mp2 = (t2S.record || {}).matchesPlayed || 0; if (mp1 >= 10 && mp2 >= 10) confidence += 1; }
+    if (tier === 's') confidence += 1; else if (tier === 'a') confidence += 0.5; else if (!tier || tier === 'd') confidence -= 1;
+    if (Math.abs(t1Pct - 50) >= 15) confidence += 1; else if (Math.abs(t1Pct - 50) < 5) confidence -= 1;
+    if (bo === 1) confidence -= 1;
+    confidence = Math.round(Math.min(10, Math.max(1, confidence)));
+
+    return { t1Pct: t1Pct, t2Pct: 100 - t1Pct, confidence: confidence, tier: tier };
+  }
+
+  var container = document.getElementById('maResults');
+  var statsCache = {}, h2hCache = {};
+  async function fetchJSON(url) { try { var r = await fetch(url); return r.ok ? await r.json() : null; } catch(e) { return null; } }
+  async function getStats(id) { if (!id) return null; if (statsCache[id]) return statsCache[id]; var d = await fetchJSON('/api/team-competitive-stats?id=' + id); if (d) statsCache[id] = d; return d; }
+  async function getH2H(a, b) { var k = a + '-' + b; if (h2hCache[k]) return h2hCache[k]; var d = await fetchJSON('/api/h2h-matches?team1=' + a + '&team2=' + b + '&per_page=20'); if (d) h2hCache[k] = d; return d; }
+
+  async function load() {
+    var past = await fetchJSON('/api/matches?type=past&per_page=50');
+    if (!past || !past.length) { container.innerHTML = '<div class="loading-state">No recent matches found.</div>'; return; }
+
+    var finished = past.filter(function(m) { return m.status === 'finished' && !m.forfeit && m.winner_id; });
+    container.innerHTML = '<div class="loading-state"><div class="spinner"></div> Retroactively pricing ' + finished.length + ' matches…</div>';
+
+    var results = [];
+    for (var i = 0; i < finished.length; i += 4) {
+      var batch = finished.slice(i, i + 4);
+      var br = await Promise.all(batch.map(async function(m) {
+        var opps = m.opponents || []; if (opps.length < 2) return null;
+        var t1 = opps[0].opponent || {}, t2 = opps[1].opponent || {};
+        if (!t1.id || !t2.id) return null;
+        var [h, s1, s2] = await Promise.all([getH2H(t1.id, t2.id), getStats(t1.id), getStats(t2.id)]);
+        var price = retroPrice(h, s1, s2, m, t1, t2);
+        var predictedWinner = price.t1Pct >= 50 ? t1.id : t2.id;
+        var correct = predictedWinner === m.winner_id;
+        return {
+          match: m, t1: t1, t2: t2, price: price, correct: correct,
+          predictedPct: Math.max(price.t1Pct, price.t2Pct),
+          predictedTeam: price.t1Pct >= 50 ? t1 : t2,
+          actualWinner: m.winner_id === t1.id ? t1 : t2
+        };
+      }));
+      results = results.concat(br.filter(Boolean));
+    }
+
+    if (!results.length) { container.innerHTML = '<div class="loading-state">Not enough data to evaluate.</div>'; return; }
+
+    // Calculate stats
+    var correct = results.filter(function(r) { return r.correct; }).length;
+    var total = results.length;
+    var accuracy = (correct / total * 100).toFixed(1);
+
+    // Current streak
+    var streak = 0, streakType = results[0] ? (results[0].correct ? 'W' : 'L') : '';
+    for (var j = 0; j < results.length; j++) {
+      if ((results[j].correct && streakType === 'W') || (!results[j].correct && streakType === 'L')) streak++;
+      else break;
+    }
+
+    // Best win streak
+    var bestStreak = 0, curWinStreak = 0;
+    results.forEach(function(r) {
+      if (r.correct) { curWinStreak++; if (curWinStreak > bestStreak) bestStreak = curWinStreak; }
+      else curWinStreak = 0;
+    });
+
+    // High confidence accuracy (7+)
+    var highConf = results.filter(function(r) { return r.price.confidence >= 7; });
+    var highConfAcc = highConf.length > 0 ? (highConf.filter(function(r) { return r.correct; }).length / highConf.length * 100).toFixed(1) + '%' : '—';
+
+    // Display metrics
+    document.getElementById('maMetrics').style.display = 'grid';
+    document.getElementById('maAccuracy').textContent = accuracy + '%';
+    document.getElementById('maStreak').textContent = streak + streakType;
+    document.getElementById('maBestStreak').textContent = bestStreak + 'W';
+    document.getElementById('maHighConf').textContent = highConfAcc;
+    document.getElementById('maMatches').textContent = total;
+
+    // Streak dots
+    document.getElementById('streakVisual').style.display = 'block';
+    var dotsHtml = results.slice(0, 50).map(function(r) {
+      var cls = r.correct ? 'win' : 'loss';
+      var sym = r.correct ? '✓' : '✕';
+      var tip = esc(r.predictedTeam.name) + ' ' + r.predictedPct + '% → ' + (r.correct ? 'Correct' : 'Wrong');
+      return '<div class="ma-dot ' + cls + '" title="' + tip + '">' + sym + '</div>';
+    }).join('');
+    document.getElementById('streakDots').innerHTML = dotsHtml;
+
+    // Calibration chart
+    document.getElementById('maCalibration').style.display = 'block';
+    var buckets = [
+      { label: '50-55%', min: 50, max: 55, total: 0, correct: 0 },
+      { label: '55-60%', min: 55, max: 60, total: 0, correct: 0 },
+      { label: '60-65%', min: 60, max: 65, total: 0, correct: 0 },
+      { label: '65-70%', min: 65, max: 70, total: 0, correct: 0 },
+      { label: '70-80%', min: 70, max: 80, total: 0, correct: 0 },
+      { label: '80%+', min: 80, max: 100, total: 0, correct: 0 }
+    ];
+    results.forEach(function(r) {
+      var pct = r.predictedPct;
+      buckets.forEach(function(b) { if (pct >= b.min && pct < b.max) { b.total++; if (r.correct) b.correct++; } });
+    });
+
+    var calHtml = buckets.map(function(b) {
+      var expected = (b.min + b.max) / 2;
+      var actual = b.total > 0 ? (b.correct / b.total * 100) : 0;
+      var expH = Math.round(expected * 1.0); // % of max height
+      var actH = Math.round(actual * 1.0);
+      return '<div class="ma-cal-bucket">' +
+        '<div class="ma-cal-bar-wrap">' +
+          '<div class="ma-cal-bar expected" style="height:' + expH + '%" title="Expected: ' + expected.toFixed(0) + '%"></div>' +
+          '<div class="ma-cal-bar actual" style="height:' + actH + '%" title="Actual: ' + actual.toFixed(0) + '% (' + b.correct + '/' + b.total + ')"></div>' +
+        '</div>' +
+        '<div class="ma-cal-label">' + b.label + '</div>' +
+        '<div class="ma-cal-pct">' + (b.total > 0 ? actual.toFixed(0) + '%' : '—') + ' (' + b.total + ')</div>' +
+      '</div>';
+    }).join('');
+    calHtml += '<div class="ma-cal-legend"><div class="ma-cal-leg-item"><span class="ma-cal-leg-swatch expected"></span> Expected</div><div class="ma-cal-leg-item"><span class="ma-cal-leg-swatch actual"></span> Actual</div></div>';
+    document.getElementById('calChart').innerHTML = calHtml;
+
+    // Breakdown by tier
+    document.getElementById('maBreakdown').style.display = 'block';
+    var tiers = {};
+    results.forEach(function(r) {
+      var t = r.price.tier || 'other';
+      if (!tiers[t]) tiers[t] = { total: 0, correct: 0 };
+      tiers[t].total++;
+      if (r.correct) tiers[t].correct++;
+    });
+    var bdHtml = Object.keys(tiers).sort().map(function(t) {
+      var d = tiers[t];
+      var acc = (d.correct / d.total * 100).toFixed(0);
+      var cls = acc >= 60 ? 'good' : acc >= 50 ? 'ok' : 'bad';
+      var tierBadge = t !== 'other' ? '<span class="pred-tier tier-' + t + '" style="font-size:.6rem;padding:.1rem .3rem;border-radius:3px">' + t.toUpperCase() + '-Tier</span>' : '<span style="font-size:.72rem;color:var(--text3)">Other</span>';
+      return '<div class="ma-bd-card"><div class="ma-bd-tier">' + tierBadge + '</div><div class="ma-bd-val ' + cls + '">' + acc + '%</div><div class="ma-bd-sub">' + d.correct + '/' + d.total + ' correct</div></div>';
+    }).join('');
+    document.getElementById('breakdownGrid').innerHTML = bdHtml;
+
+    // Results list
+    var listHtml = '<h3>Recent Predictions vs Results</h3>' + results.slice(0, 30).map(function(r) {
+      var cls = r.correct ? 'correct' : 'incorrect';
+      var icon = r.correct ? 'win' : 'loss';
+      var t1n = esc(r.t1.acronym || r.t1.name);
+      var t2n = esc(r.t2.acronym || r.t2.name);
+      var res1 = (r.match.results || []).find(function(x) { return x.team_id === r.t1.id; });
+      var res2 = (r.match.results || []).find(function(x) { return x.team_id === r.t2.id; });
+      var score = (res1 ? res1.score : 0) + ':' + (res2 ? res2.score : 0);
+      return '<div class="ma-result-row ' + cls + '">' +
+        '<span class="ma-r-icon ' + icon + '">' + (r.correct ? '✓' : '✕') + '</span>' +
+        '<span class="ma-r-teams">' + t1n + ' vs ' + t2n + '</span>' +
+        '<span class="ma-r-pred">Pred: ' + esc(r.predictedTeam.acronym || r.predictedTeam.name) + ' ' + r.predictedPct + '%</span>' +
+        '<span class="ma-r-result">' + score + '</span>' +
+        '<span class="ma-r-conf">' + r.price.confidence + '/10</span>' +
+      '</div>';
+    }).join('');
+    container.innerHTML = listHtml;
+  }
+
+  load();
+})();
+</script>
+
+</Base>
