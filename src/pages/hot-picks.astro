@@ -1,0 +1,348 @@
+---
+import Base from '../layouts/Base.astro';
+import ExploreMore from '../components/ExploreMore.astro';
+import BettingCTA from '../components/BettingCTA.astro';
+
+const explore = [
+  { title: 'Full Predictions', href: '/predictions/', desc: 'All upcoming matches with win probabilities' },
+  { title: 'H2H Comparator', href: '/h2h/', desc: 'Compare any two teams head-to-head' },
+  { title: 'Veto Simulator', href: '/veto-simulator/', desc: 'Simulate the map ban/pick process' },
+  { title: 'Live Matches', href: '/matches/', desc: 'Real-time CS2 match tracker' },
+];
+---
+<Base title="CS2 Hot Picks — Today's Best Betting Edges | CSGOLuck Wiki" description="Today's top CS2 match picks with the strongest model edges. Curated from our trading-grade pricing model — only matches where data-driven analysis identifies genuine value." currentNav="/predictions/">
+
+<nav class="breadcrumb" aria-label="Breadcrumb">
+<a href="/">Home</a> <span class="sep">›</span> <a href="/esports/">Esports</a> <span class="sep">›</span> <a href="/predictions/">Predictions</a> <span class="sep">›</span> <span>Hot Picks</span>
+</nav>
+
+<h1>Today's Hot Picks</h1>
+<p class="page-intro">Curated value picks surfaced by our pricing model. Only matches where the model identifies a genuine edge with high confidence make this list. Updated continuously as new matches and data come in.</p>
+
+<BettingCTA text="Found value? Act before the line moves." cta="Bet on CS2 Matches" variant="matches" />
+
+<!-- Date Display -->
+<div class="hp-date" id="hpDate"></div>
+
+<!-- Hot Picks Container -->
+<div id="hotPicksContainer">
+  <div class="loading-state"><div class="spinner"></div> Scanning matches for value…</div>
+</div>
+
+<!-- No Picks Message -->
+<div id="noPicksMsg" style="display:none" class="hp-no-picks">
+  <div class="hp-no-picks-icon">🔍</div>
+  <h3>No Hot Picks Right Now</h3>
+  <p>Our model hasn't found any high-confidence edges in today's matches. This is normal — forcing picks when there's no edge is how you lose money.</p>
+  <p>Check back later as more matches are added, or browse <a href="/predictions/">all predictions</a> for the full list.</p>
+</div>
+
+<!-- Model Stats -->
+<div class="hp-stats" id="hpStats" style="display:none">
+  <div class="hp-stats-header">
+    <h3>Today's Model Summary</h3>
+  </div>
+  <div class="hp-stats-grid">
+    <div class="hp-stat"><span class="hp-stat-val" id="hpScanned">0</span><span class="hp-stat-label">Matches Scanned</span></div>
+    <div class="hp-stat"><span class="hp-stat-val" id="hpPicked">0</span><span class="hp-stat-label">Picks Surfaced</span></div>
+    <div class="hp-stat"><span class="hp-stat-val" id="hpAvgConf">—</span><span class="hp-stat-label">Avg Confidence</span></div>
+    <div class="hp-stat"><span class="hp-stat-val" id="hpAvgEdge">—</span><span class="hp-stat-label">Avg Edge</span></div>
+  </div>
+</div>
+
+<ExploreMore items={explore} />
+
+<style is:global>
+.page-intro { color: var(--text2); margin-bottom: 1.25rem; font-size: .95rem; line-height: 1.5; }
+.hp-date { font-size: .82rem; color: var(--text3); font-weight: 600; margin-bottom: 1rem; }
+
+/* Hot Pick Card */
+.hp-card { background: var(--bg2); border: 1px solid var(--border); border-left: 4px solid var(--accent); border-radius: 4px; margin-bottom: 1rem; overflow: hidden; }
+.hp-card-rank { display: flex; align-items: center; gap: .5rem; padding: .5rem 1rem; background: rgba(46,204,113,.06); border-bottom: 1px solid var(--border); }
+.hp-rank-badge { background: var(--accent); color: #000; font-size: .7rem; font-weight: 800; padding: .15rem .45rem; border-radius: 3px; }
+.hp-rank-label { font-size: .78rem; font-weight: 700; color: var(--accent); }
+.hp-rank-tier { font-size: .62rem; font-weight: 700; text-transform: uppercase; padding: .1rem .3rem; border-radius: 3px; margin-left: auto; }
+
+.hp-card-body { padding: 1rem; }
+
+/* Match Row */
+.hp-match { display: flex; align-items: center; gap: .75rem; margin-bottom: .75rem; }
+.hp-team { display: flex; align-items: center; gap: .4rem; flex: 1; min-width: 0; }
+.hp-team.right { justify-content: flex-end; flex-direction: row-reverse; text-align: right; }
+.hp-team-logo { width: 28px; height: 28px; border-radius: 4px; object-fit: contain; background: var(--bg3); flex-shrink: 0; }
+.hp-team-name { font-size: .88rem; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.hp-team-name.fav { color: var(--accent); }
+.hp-vs { font-size: .72rem; font-weight: 700; color: var(--text3); flex-shrink: 0; }
+
+/* Probability */
+.hp-prob { margin-bottom: .65rem; }
+.hp-prob-row { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: .2rem; }
+.hp-pct { font-size: 1.15rem; font-weight: 800; font-family: 'Montserrat', sans-serif; }
+.hp-pct.t1 { color: var(--accent); } .hp-pct.t2 { color: var(--text2); }
+.hp-prob-label { font-size: .68rem; color: var(--text3); text-transform: uppercase; font-weight: 600; }
+.hp-bar { height: 6px; border-radius: 3px; background: var(--bg3); overflow: hidden; display: flex; }
+.hp-bar-fill.t1 { height: 100%; background: var(--accent); border-radius: 3px 0 0 3px; transition: width .5s; }
+.hp-bar-fill.t2 { height: 100%; background: var(--text3); border-radius: 0 3px 3px 0; flex: 1; }
+
+/* Trading View */
+.hp-trading { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: .5rem; margin-bottom: .65rem; }
+.hp-trade-item { background: var(--bg3); border-radius: 3px; padding: .4rem .55rem; text-align: center; }
+.hp-trade-label { font-size: .62rem; color: var(--text3); font-weight: 600; text-transform: uppercase; display: block; }
+.hp-trade-val { font-size: .85rem; font-weight: 800; }
+.hp-trade-val.green { color: var(--accent); } .hp-trade-val.yellow { color: #f1c40f; }
+
+/* Action */
+.hp-action { display: inline-flex; align-items: center; gap: .3rem; font-size: .78rem; font-weight: 700; padding: .25rem .6rem; border-radius: 4px; background: rgba(46,204,113,.12); color: var(--accent); margin-bottom: .5rem; }
+
+/* Analysis */
+.hp-analysis { border-top: 1px solid var(--border); padding-top: .6rem; }
+.hp-analysis h4 { font-size: .75rem; font-weight: 700; color: var(--text2); margin: 0 0 .3rem; text-transform: uppercase; }
+.hp-edge-list { margin: 0; padding: 0 0 0 1rem; }
+.hp-edge-list li { font-size: .78rem; color: var(--text2); margin-bottom: .15rem; line-height: 1.35; }
+.hp-edge-list.edge li::marker { color: var(--accent); }
+.hp-edge-list.risk li::marker { color: #e74c3c; }
+.hp-risk-section { margin-top: .4rem; }
+.hp-sample-warn { font-size: .72rem; color: #f1c40f; font-style: italic; margin-top: .25rem; }
+
+/* Card Footer */
+.hp-card-footer { display: flex; justify-content: space-between; align-items: center; padding: .5rem 1rem; border-top: 1px solid var(--border); background: rgba(255,255,255,.01); }
+.hp-detail-link { font-size: .78rem; color: var(--accent); font-weight: 600; text-decoration: none; }
+.hp-detail-link:hover { text-decoration: underline; }
+.hp-bet-btn { font-size: .75rem; color: #000; background: var(--accent); padding: .3rem .75rem; border-radius: 4px; font-weight: 700; text-decoration: none; transition: opacity .2s; }
+.hp-bet-btn:hover { opacity: .85; }
+
+/* Match Time */
+.hp-time { font-size: .75rem; color: var(--text2); margin-bottom: .5rem; }
+.hp-time-accent { color: var(--accent); font-weight: 600; }
+
+/* No Picks */
+.hp-no-picks { text-align: center; padding: 2.5rem 1rem; }
+.hp-no-picks-icon { font-size: 2rem; margin-bottom: .5rem; }
+.hp-no-picks h3 { font-size: 1.1rem; font-weight: 700; margin: 0 0 .5rem; }
+.hp-no-picks p { font-size: .85rem; color: var(--text2); max-width: 500px; margin: .3rem auto; line-height: 1.5; }
+.hp-no-picks a { color: var(--accent); }
+
+/* Stats */
+.hp-stats { margin: 1.5rem 0; }
+.hp-stats-header h3 { font-size: .95rem; font-weight: 700; margin: 0 0 .5rem; }
+.hp-stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: .5rem; }
+.hp-stat { background: var(--bg2); border: 1px solid var(--border); border-left: 3px solid var(--accent); border-radius: 4px; padding: .5rem .6rem; text-align: center; }
+.hp-stat-val { display: block; font-size: 1.1rem; font-weight: 800; color: var(--accent); font-family: 'Montserrat', sans-serif; }
+.hp-stat-label { font-size: .68rem; color: var(--text3); }
+
+.loading-state { text-align: center; padding: 2rem; color: var(--text2); font-size: .9rem; }
+.spinner { display: inline-block; width: 20px; height: 20px; border: 2px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin .6s linear infinite; margin-right: .5rem; vertical-align: middle; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.tier-s { background: #f1c40f; color: #000; } .tier-a { background: #e67e22; color: #000; } .tier-b { background: #3498db; color: #fff; } .tier-c { background: #7f8c8d; color: #fff; }
+
+@media (max-width: 600px) {
+  .hp-trading { grid-template-columns: 1fr 1fr; }
+  .hp-stats-grid { grid-template-columns: repeat(2, 1fr); }
+  .hp-match { flex-direction: column; gap: .3rem; }
+  .hp-team, .hp-team.right { justify-content: center; flex-direction: row; text-align: left; }
+}
+</style>
+
+<script>
+(function() {
+  function esc(s) { return s ? String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;') : ''; }
+  function tierClass(t) { return t ? 'tier-' + t : ''; }
+  function tierLabel(t) { var m = { s:'S-Tier', a:'A-Tier', b:'B-Tier', c:'C-Tier' }; return m[t] || ''; }
+  function probToOdds(p) { return p > 0 ? (1 / (p / 100)).toFixed(2) : '—'; }
+  function formatTime(iso) { if (!iso) return ''; return new Date(iso).toLocaleString(undefined, { month:'short', day:'numeric', hour:'2-digit', minute:'2-digit' }); }
+  function timeFromNow(iso) {
+    if (!iso) return '';
+    var diff = new Date(iso) - Date.now();
+    if (diff < 0) return 'Starting soon';
+    var h = Math.floor(diff / 3600000), m = Math.floor((diff % 3600000) / 60000);
+    if (h > 24) return Math.floor(h / 24) + 'd ' + (h % 24) + 'h';
+    return h > 0 ? h + 'h ' + m + 'm' : m + 'm';
+  }
+
+  // Date header
+  document.getElementById('hpDate').textContent = new Date().toLocaleDateString(undefined, { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+
+  // Reuse the pricing model from predictions page
+  function priceMatch(h2h, t1S, t2S, match, t1, t2) {
+    var factors = [], edgeReasons = [], riskFactors = [], sampleWarnings = [];
+    var record = h2h ? h2h.record : null;
+    var bo = match.number_of_games || 1;
+    var tier = (match.tournament && match.tournament.tier) || '';
+    var fmtVar = bo === 1 ? 1.25 : bo === 3 ? 1.0 : 0.85;
+
+    if (bo === 1) riskFactors.push('BO1 — high variance');
+    if (tier === 's') edgeReasons.push('S-Tier event — peak motivation');
+    else if (!tier || tier === 'c' || tier === 'd') riskFactors.push('Lower-tier event');
+
+    var h2hRate = 0.50, h2hSample = 0;
+    if (record && record.total > 0) {
+      h2hSample = record.total;
+      if (h2h.matches && h2h.matches.length > 0) {
+        var wt1 = 0, wtT = 0;
+        h2h.matches.forEach(function(m, i) { var w = Math.pow(0.8, i); wtT += w; if (m.winnerId === h2h.team1Id) wt1 += w; else if (m.draw) wt1 += w * 0.5; });
+        h2hRate = wtT > 0 ? wt1 / wtT : 0.50;
+      } else { h2hRate = record.team1Wins / record.total; }
+      if (h2hRate > 0.65) edgeReasons.push(esc(t1.acronym || t1.name) + ' dominates H2H ' + record.team1Wins + '-' + record.team2Wins);
+      else if (h2hRate < 0.35) edgeReasons.push(esc(t2.acronym || t2.name) + ' dominates H2H');
+      if (record.total <= 2) sampleWarnings.push('H2H only ' + record.total + ' matches');
+    } else { riskFactors.push('No H2H data'); }
+
+    var formRate = 0.50;
+    if (t1S && t2S) {
+      var t1WR = (t1S.record || {}).matchWinRate != null ? t1S.record.matchWinRate / 100 : 0.50;
+      var t2WR = (t2S.record || {}).matchWinRate != null ? t2S.record.matchWinRate / 100 : 0.50;
+      if (t1WR + t2WR > 0) formRate = t1WR / (t1WR + t2WR);
+      if (Math.abs(t1WR - t2WR) > 0.20) {
+        var str = t1WR > t2WR ? t1 : t2;
+        edgeReasons.push(esc(str.acronym || str.name) + ' in much better form');
+      }
+    }
+
+    var mapRate = 0.50;
+    if (t1S && t2S && t1S.maps && t2S.maps) {
+      var t1M = t1S.maps.filter(function(m) { return m.played >= 3; });
+      var t2M = t2S.maps.filter(function(m) { return m.played >= 3; });
+      if (t1M.length > 0 && t2M.length > 0) {
+        var t1W = 0, t1T = 0; t1M.forEach(function(m) { t1W += m.winRate * m.played; t1T += m.played; });
+        var t2W = 0, t2T = 0; t2M.forEach(function(m) { t2W += m.winRate * m.played; t2T += m.played; });
+        var t1A = t1T > 0 ? t1W / t1T : 50, t2A = t2T > 0 ? t2W / t2T : 50;
+        if ((t1A / 100) + (t2A / 100) > 0) mapRate = (t1A / 100) / ((t1A / 100) + (t2A / 100));
+        var d1 = t1M.filter(function(m) { return m.winRate >= 45; }).length;
+        var d2 = t2M.filter(function(m) { return m.winRate >= 45; }).length;
+        if (Math.abs(d1 - d2) >= 2) edgeReasons.push((d1 > d2 ? esc(t1.acronym || t1.name) : esc(t2.acronym || t2.name)) + ' deeper map pool');
+      }
+    }
+
+    var mapH2HRate = h2hRate;
+    if (h2h && h2h.matches) {
+      var mw1 = 0, mw2 = 0;
+      h2h.matches.forEach(function(m) { (m.games || []).forEach(function(g) { if (g.winnerId === h2h.team1Id) mw1++; else if (g.winnerId === h2h.team2Id) mw2++; }); });
+      if (mw1 + mw2 > 0) mapH2HRate = mw1 / (mw1 + mw2);
+    }
+
+    var winProb = 0.15 * h2hRate + 0.30 * formRate + 0.30 * mapRate + 0.25 * mapH2HRate;
+    winProb = 0.50 + (winProb - 0.50) / fmtVar;
+    var finalT1 = Math.round(Math.min(95, Math.max(5, winProb * 100))), finalT2 = 100 - finalT1;
+
+    var confidence = 5;
+    if (h2hSample >= 5) confidence += 1; if (h2hSample >= 10) confidence += 0.5;
+    if (t1S && t2S) { var mp1 = (t1S.record || {}).matchesPlayed || 0, mp2 = (t2S.record || {}).matchesPlayed || 0; if (mp1 >= 10 && mp2 >= 10) confidence += 1; if (mp1 >= 20 && mp2 >= 20) confidence += 0.5; }
+    if (tier === 's') confidence += 1; else if (tier === 'a') confidence += 0.5; else if (!tier || tier === 'd') confidence -= 1;
+    if (Math.abs(finalT1 - 50) >= 15) confidence += 1; else if (Math.abs(finalT1 - 50) < 5) confidence -= 1;
+    if (bo === 1) confidence -= 1;
+    confidence = Math.round(Math.min(10, Math.max(1, confidence)));
+
+    var maxPct = Math.max(finalT1, finalT2), favTeam = finalT1 >= finalT2 ? t1 : t2;
+    var action = maxPct >= 62 && confidence >= 6 ? 'back' : maxPct >= 55 && confidence >= 4 ? 'lean' : 'nobet';
+    var actionLabel = action === 'back' ? 'Back ' + esc(favTeam.acronym || favTeam.name) : action === 'lean' ? 'Lean ' + esc(favTeam.acronym || favTeam.name) : 'No Bet';
+
+    return { t1Pct: finalT1, t2Pct: finalT2, confidence: confidence, action: action, actionLabel: actionLabel,
+      edgeReasons: edgeReasons.slice(0, 5), riskFactors: riskFactors.slice(0, 5), sampleWarnings: sampleWarnings,
+      t1Odds: probToOdds(finalT1), t2Odds: probToOdds(finalT2) };
+  }
+
+  function renderHotPick(pred, rank) {
+    var m = pred.match, t1 = pred.t1, t2 = pred.t2, pr = pred.prob;
+    var tier = (m.tournament && m.tournament.tier) || '';
+    var fav = pr.t1Pct >= pr.t2Pct ? 't1' : 't2';
+    var maxPct = Math.max(pr.t1Pct, pr.t2Pct);
+    var edge = maxPct - 50;
+
+    return '<div class="hp-card">' +
+      '<div class="hp-card-rank">' +
+        '<span class="hp-rank-badge">#' + rank + '</span>' +
+        '<span class="hp-rank-label">' + pr.actionLabel + '</span>' +
+        (tier ? '<span class="hp-rank-tier ' + tierClass(tier) + '">' + tierLabel(tier) + '</span>' : '') +
+      '</div>' +
+      '<div class="hp-card-body">' +
+        '<div class="hp-time"><span class="hp-time-accent">' + timeFromNow(m.begin_at) + '</span> · ' + formatTime(m.begin_at) + ' · BO' + (m.number_of_games || 1) + ' · ' + esc((m.tournament || {}).name || (m.league || {}).name || '') + '</div>' +
+        '<div class="hp-match">' +
+          '<div class="hp-team">' + (t1.image ? '<img class="hp-team-logo" src="' + esc(t1.image) + '" alt="" loading="lazy">' : '') + '<span class="hp-team-name' + (fav === 't1' ? ' fav' : '') + '">' + esc(t1.acronym || t1.name) + '</span></div>' +
+          '<span class="hp-vs">vs</span>' +
+          '<div class="hp-team right">' + (t2.image ? '<img class="hp-team-logo" src="' + esc(t2.image) + '" alt="" loading="lazy">' : '') + '<span class="hp-team-name' + (fav === 't2' ? ' fav' : '') + '">' + esc(t2.acronym || t2.name) + '</span></div>' +
+        '</div>' +
+        '<div class="hp-prob"><div class="hp-prob-row"><span class="hp-pct t1">' + pr.t1Pct + '%</span><span class="hp-prob-label">Fair Probability</span><span class="hp-pct t2">' + pr.t2Pct + '%</span></div>' +
+        '<div class="hp-bar"><div class="hp-bar-fill t1" style="width:' + pr.t1Pct + '%"></div><div class="hp-bar-fill t2"></div></div></div>' +
+        '<div class="hp-trading">' +
+          '<div class="hp-trade-item"><span class="hp-trade-label">Fair Odds</span><span class="hp-trade-val">' + pr.t1Odds + ' / ' + pr.t2Odds + '</span></div>' +
+          '<div class="hp-trade-item"><span class="hp-trade-label">Confidence</span><span class="hp-trade-val ' + (pr.confidence >= 7 ? 'green' : 'yellow') + '">' + pr.confidence + '/10</span></div>' +
+          '<div class="hp-trade-item"><span class="hp-trade-label">Edge</span><span class="hp-trade-val green">+' + edge.toFixed(0) + 'pp</span></div>' +
+        '</div>' +
+        '<span class="hp-action">' + pr.actionLabel + '</span>' +
+        '<div class="hp-analysis">' +
+          '<h4>Why This Pick</h4>' +
+          (pr.edgeReasons.length ? '<ul class="hp-edge-list edge">' + pr.edgeReasons.map(function(r) { return '<li>' + r + '</li>'; }).join('') + '</ul>' : '<p style="font-size:.78rem;color:var(--text3)">Edge derived from aggregate factor weighting</p>') +
+          (pr.riskFactors.length ? '<div class="hp-risk-section"><h4>Risks</h4><ul class="hp-edge-list risk">' + pr.riskFactors.map(function(r) { return '<li>' + r + '</li>'; }).join('') + '</ul></div>' : '') +
+          (pr.sampleWarnings.length ? '<div class="hp-sample-warn">' + pr.sampleWarnings.join(' · ') + '</div>' : '') +
+        '</div>' +
+      '</div>' +
+      '<div class="hp-card-footer">' +
+        '<a href="/match-detail/?id=' + m.id + '" class="hp-detail-link">Match Details →</a>' +
+        '<a href="https://csgoluck.com/r/WIKIPEDIA" target="_blank" rel="noopener" class="hp-bet-btn">Place Bet →</a>' +
+      '</div></div>';
+  }
+
+  // Load data
+  var container = document.getElementById('hotPicksContainer');
+  var statsCache = {}, h2hCache = {};
+  async function fetchJSON(url) { try { var r = await fetch(url); return r.ok ? await r.json() : null; } catch(e) { return null; } }
+  async function getStats(id) { if (!id) return null; if (statsCache[id]) return statsCache[id]; var d = await fetchJSON('/api/team-competitive-stats?id=' + id); if (d) statsCache[id] = d; return d; }
+  async function getH2H(a, b) { var k = a + '-' + b; if (h2hCache[k]) return h2hCache[k]; var d = await fetchJSON('/api/h2h-matches?team1=' + a + '&team2=' + b + '&per_page=20'); if (d) h2hCache[k] = d; return d; }
+
+  async function load() {
+    var [upcoming, live] = await Promise.all([
+      fetchJSON('/api/matches?type=upcoming&per_page=30'),
+      fetchJSON('/api/matches?type=running&per_page=10')
+    ]);
+    var all = [].concat(live || [], upcoming || []).flat().filter(function(m) { return m.status === 'not_started' || m.status === 'running'; });
+    if (!all.length) { container.style.display = 'none'; document.getElementById('noPicksMsg').style.display = 'block'; return; }
+
+    container.innerHTML = '<div class="loading-state"><div class="spinner"></div> Analysing ' + all.length + ' matches…</div>';
+
+    var predictions = [];
+    for (var i = 0; i < all.length; i += 4) {
+      var batch = all.slice(i, i + 4);
+      var br = await Promise.all(batch.map(async function(m) {
+        var opps = m.opponents || []; if (opps.length < 2) return null;
+        var t1 = opps[0].opponent || {}, t2 = opps[1].opponent || {};
+        if (!t1.id || !t2.id) return null;
+        var [h, s1, s2] = await Promise.all([getH2H(t1.id, t2.id), getStats(t1.id), getStats(t2.id)]);
+        var prob = priceMatch(h, s1, s2, m, t1, t2);
+        return { match: m, t1: { id: t1.id, name: t1.name, acronym: t1.acronym, image: t1.image_url }, t2: { id: t2.id, name: t2.name, acronym: t2.acronym, image: t2.image_url }, prob: prob };
+      }));
+      predictions = predictions.concat(br.filter(Boolean));
+    }
+
+    // Filter to only "back" picks, sorted by confidence + edge
+    var hotPicks = predictions.filter(function(p) { return p.prob.action === 'back'; })
+      .sort(function(a, b) {
+        if (b.prob.confidence !== a.prob.confidence) return b.prob.confidence - a.prob.confidence;
+        return Math.max(b.prob.t1Pct, b.prob.t2Pct) - Math.max(a.prob.t1Pct, a.prob.t2Pct);
+      }).slice(0, 5);
+
+    if (hotPicks.length === 0) {
+      container.style.display = 'none';
+      document.getElementById('noPicksMsg').style.display = 'block';
+    } else {
+      container.innerHTML = hotPicks.map(function(p, i) { return renderHotPick(p, i + 1); }).join('');
+    }
+
+    // Stats
+    var statsEl = document.getElementById('hpStats');
+    statsEl.style.display = 'block';
+    document.getElementById('hpScanned').textContent = predictions.length;
+    document.getElementById('hpPicked').textContent = hotPicks.length;
+    if (hotPicks.length > 0) {
+      var avgC = hotPicks.reduce(function(s, p) { return s + p.prob.confidence; }, 0) / hotPicks.length;
+      var avgE = hotPicks.reduce(function(s, p) { return s + (Math.max(p.prob.t1Pct, p.prob.t2Pct) - 50); }, 0) / hotPicks.length;
+      document.getElementById('hpAvgConf').textContent = avgC.toFixed(1) + '/10';
+      document.getElementById('hpAvgEdge').textContent = '+' + avgE.toFixed(0) + 'pp';
+    }
+  }
+
+  load();
+})();
+</script>
+
+</Base>
