@@ -252,6 +252,102 @@ import Base from '../layouts/Base.astro';
   .md-odds-factor-detail { min-width: 100%; font-size: .72rem; }
   .rt-legend { font-size: .6rem; gap: .3rem; }
 }
+
+/* ── Stream Embed ── */
+.md-stream-embed { margin-bottom: 1.25rem; border-radius: 4px; overflow: hidden; background: #000; }
+.md-stream-embed iframe { width: 100%; aspect-ratio: 16/9; border: none; display: block; }
+.md-stream-embed-label { font-size: .75rem; color: var(--text3); padding: .4rem .75rem; background: var(--bg2); border: 1px solid var(--border); border-top: none; border-radius: 0 0 4px 4px; display: flex; align-items: center; gap: .4rem; }
+
+/* ── Analytics Insights ── */
+.md-insights { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.25rem; }
+.md-insight-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 4px; padding: 1rem 1.25rem; transition: border-color .2s; }
+.md-insight-card:hover { border-color: var(--accent); }
+.md-insight-header { display: flex; align-items: center; gap: .5rem; margin-bottom: .75rem; font-weight: 700; font-family: 'Montserrat', sans-serif; font-size: .9rem; }
+.md-insight-header img { width: 24px; height: 24px; border-radius: 3px; object-fit: contain; background: rgba(255,255,255,.08); padding: 2px; }
+.md-insight-list { list-style: none; padding: 0; margin: 0; }
+.md-insight-item { display: flex; align-items: flex-start; gap: .4rem; padding: .35rem 0; font-size: .8rem; color: var(--text2); line-height: 1.45; border-bottom: 1px solid rgba(255,255,255,.03); }
+.md-insight-item:last-child { border-bottom: none; }
+.md-insight-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; margin-top: .35rem; }
+.md-insight-dot.positive { background: var(--accent); }
+.md-insight-dot.negative { background: #e74c3c; }
+.md-insight-dot.neutral { background: #f39c12; }
+
+/* ── Team Lineups ── */
+.md-lineups { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.25rem; }
+.md-lineup-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 4px; overflow: hidden; transition: border-color .2s; }
+.md-lineup-card:hover { border-color: var(--accent); }
+.md-lineup-header { display: flex; align-items: center; gap: .5rem; padding: .75rem 1rem; background: var(--bg3); border-bottom: 1px solid var(--border); font-weight: 700; font-family: 'Montserrat', sans-serif; font-size: .85rem; }
+.md-lineup-header img { width: 22px; height: 22px; border-radius: 3px; object-fit: contain; background: rgba(255,255,255,.08); padding: 2px; }
+.md-lineup-players { padding: .5rem; }
+.md-player-row { display: flex; align-items: center; gap: .6rem; padding: .4rem .5rem; border-radius: 3px; transition: background .15s; }
+.md-player-row:hover { background: rgba(255,255,255,.03); }
+.md-player-img { width: 32px; height: 32px; border-radius: 50%; object-fit: cover; background: rgba(255,255,255,.08); flex-shrink: 0; }
+.md-player-img-placeholder { width: 32px; height: 32px; border-radius: 50%; background: rgba(255,255,255,.08); display: flex; align-items: center; justify-content: center; font-size: .65rem; font-weight: 700; color: var(--text3); flex-shrink: 0; }
+.md-player-info { flex: 1; min-width: 0; }
+.md-player-name { font-weight: 700; font-size: .82rem; color: var(--text1); }
+.md-player-name a { color: var(--accent); text-decoration: none; }
+.md-player-name a:hover { text-decoration: underline; }
+.md-player-real { font-size: .7rem; color: var(--text3); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.md-player-flag { font-size: .8rem; flex-shrink: 0; }
+.md-player-role { font-size: .65rem; font-weight: 600; text-transform: uppercase; color: var(--text3); background: var(--bg3); padding: .1rem .35rem; border-radius: 2px; flex-shrink: 0; }
+
+/* ── Map Pool Comparison ── */
+.md-map-pool { background: var(--bg2); border: 1px solid var(--border); border-radius: 4px; margin-bottom: 1.25rem; overflow: hidden; transition: border-color .2s; }
+.md-map-pool:hover { border-color: var(--accent); }
+.md-map-pool-table { width: 100%; border-collapse: collapse; font-size: .8rem; }
+.md-map-pool-table th { padding: .6rem .75rem; font-size: .72rem; font-weight: 600; text-transform: uppercase; color: var(--text3); border-bottom: 1px solid var(--border); text-align: center; white-space: nowrap; }
+.md-map-pool-table th:first-child { text-align: left; }
+.md-map-pool-table th.t1-col { background: rgba(46,204,113,.04); }
+.md-map-pool-table th.t2-col { background: rgba(231,76,60,.04); }
+.md-map-pool-table td { padding: .5rem .75rem; border-bottom: 1px solid var(--border); text-align: center; white-space: nowrap; }
+.md-map-pool-table td:first-child { text-align: left; }
+.md-map-pool-table tr:last-child td { border-bottom: none; }
+.md-map-pool-table tr:hover { background: rgba(255,255,255,.02); }
+.md-map-name-cell { display: flex; align-items: center; gap: .5rem; }
+.md-map-name-cell img { width: 36px; height: 24px; border-radius: 3px; object-fit: cover; background: var(--bg); border: 1px solid var(--border); }
+.md-map-wr { font-weight: 700; font-family: 'Montserrat', sans-serif; }
+.md-map-wr.high { color: var(--accent); }
+.md-map-wr.mid { color: #f39c12; }
+.md-map-wr.low { color: #e74c3c; }
+
+/* ── Team Stats Comparison ── */
+.md-player-comp { background: var(--bg2); border: 1px solid var(--border); border-radius: 4px; margin-bottom: 1.25rem; overflow: hidden; transition: border-color .2s; }
+.md-player-comp:hover { border-color: var(--accent); }
+.md-player-comp-table { width: 100%; border-collapse: collapse; font-size: .8rem; }
+.md-player-comp-table th { padding: .6rem .75rem; font-size: .72rem; font-weight: 600; text-transform: uppercase; color: var(--text3); border-bottom: 1px solid var(--border); text-align: center; white-space: nowrap; }
+.md-player-comp-table th:first-child { text-align: left; }
+.md-player-comp-table td { padding: .45rem .75rem; border-bottom: 1px solid var(--border); text-align: center; font-size: .82rem; }
+.md-player-comp-table td:first-child { text-align: left; font-weight: 600; }
+.md-player-comp-table tr:last-child td { border-bottom: none; }
+.md-player-comp-table tr:hover { background: rgba(255,255,255,.02); }
+.md-comp-best { color: var(--accent); font-weight: 700; }
+
+/* ── Recent Form ── */
+.md-form { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.25rem; }
+.md-form-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 4px; overflow: hidden; transition: border-color .2s; }
+.md-form-card:hover { border-color: var(--accent); }
+.md-form-header { display: flex; align-items: center; gap: .5rem; padding: .75rem 1rem; background: var(--bg3); border-bottom: 1px solid var(--border); font-weight: 700; font-family: 'Montserrat', sans-serif; font-size: .85rem; }
+.md-form-header img { width: 22px; height: 22px; border-radius: 3px; object-fit: contain; background: rgba(255,255,255,.08); padding: 2px; }
+.md-form-list { padding: .25rem 0; }
+.md-form-match { display: flex; align-items: center; gap: .5rem; padding: .4rem .75rem; font-size: .8rem; border-bottom: 1px solid rgba(255,255,255,.03); }
+.md-form-match:last-child { border-bottom: none; }
+.md-form-result { width: 20px; height: 20px; border-radius: 3px; display: flex; align-items: center; justify-content: center; font-size: .65rem; font-weight: 800; flex-shrink: 0; }
+.md-form-result.win { background: rgba(46,204,113,.15); color: #2ecc71; border: 1px solid rgba(46,204,113,.3); }
+.md-form-result.loss { background: rgba(231,76,60,.12); color: #e74c3c; border: 1px solid rgba(231,76,60,.25); }
+.md-form-opp { flex: 1; color: var(--text2); font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.md-form-score { font-weight: 700; font-family: 'Montserrat', sans-serif; color: var(--text1); min-width: 2rem; text-align: center; }
+.md-form-map { font-size: .72rem; color: var(--text3); min-width: 3.5rem; text-align: right; }
+.md-form-empty { text-align: center; padding: .75rem; color: var(--text3); font-size: .82rem; }
+
+/* ── New sections responsive ── */
+@media (max-width: 600px) {
+  .md-insights, .md-lineups, .md-form { grid-template-columns: 1fr; }
+  .md-map-pool-table, .md-player-comp-table { font-size: .72rem; }
+  .md-map-pool-table th, .md-map-pool-table td,
+  .md-player-comp-table th, .md-player-comp-table td { padding: .35rem .4rem; }
+  .md-map-name-cell img { display: none; }
+  .md-stream-embed iframe { aspect-ratio: 16/10; }
+}
 </style>
 
 <script>
@@ -606,6 +702,19 @@ import Base from '../layouts/Base.astro';
         </div>`;
     }
 
+    // Stream embed (Twitch/Kick for live or upcoming matches)
+    let streamEmbedHTML = '';
+    if ((isLive || !isFinished) && validStreams.length > 0) {
+      const twitchStream = validStreams.find(function(s) { return s.url && s.url.indexOf('twitch.tv') !== -1; });
+      if (twitchStream) {
+        const twitchMatch = twitchStream.url.match(/twitch\.tv\/([^/?#]+)/);
+        if (twitchMatch) {
+          const channel = twitchMatch[1];
+          streamEmbedHTML = '<div class="md-stream-embed"><iframe src="https://player.twitch.tv/?channel=' + encodeURIComponent(channel) + '&parent=' + window.location.hostname + '&muted=true" allowfullscreen></iframe><div class="md-stream-embed-label">▶ Live on Twitch · ' + escapeHtml(channel) + '</div></div>';
+        }
+      }
+    }
+
     // Build full HTML
     const html = `
       <a href="/matches/" class="back-link">← Back to Matches</a>
@@ -659,6 +768,8 @@ import Base from '../layouts/Base.astro';
         </div>` : ''}
       </div>
 
+      ${streamEmbedHTML}
+
       <div class="betting-cta">
         <div class="betting-cta-body">
           <span class="betting-cta-text">Like what you see? Place your bets on live CS2 matches.</span>
@@ -668,7 +779,14 @@ import Base from '../layouts/Base.astro';
 
       <div id="h2h-section"><div class="md-h2h-loading"><div class="spinner"></div> Loading head-to-head…</div></div>
 
+      <div id="insights-section"></div>
+      <div id="lineups-section"></div>
+      <div id="map-pool-section"></div>
+      <div id="player-comp-section"></div>
+
       ${gamesHTML}
+
+      <div id="form-section"></div>
       ${streamsHTML}
     `;
 
@@ -724,17 +842,32 @@ import Base from '../layouts/Base.astro';
       if (window.__h2hData) {
         // Use cached data on re-render (auto-refresh)
         renderH2HSection(window.__h2hData, window.__t1Stats, window.__t2Stats, match, t1, t2);
+        renderAnalyticsInsights(window.__t1Stats, window.__t2Stats, match, t1, t2);
+        renderTeamLineups(window.__t1Roster, window.__t2Roster, t1, t2);
+        renderMapPool(window.__t1Stats, window.__t2Stats, t1, t2);
+        renderTeamStatsComparison(window.__t1Stats, window.__t2Stats, t1, t2);
+        renderTeamForm(window.__t1Stats, window.__t2Stats, t1, t2);
       } else {
         Promise.all([
           fetch('/api/h2h-matches?team1=' + t1.id + '&team2=' + t2.id + '&per_page=10').then(function(r) { return r.ok ? r.json() : null; }),
           fetch('/api/team-competitive-stats?id=' + t1.id).then(function(r) { return r.ok ? r.json() : null; }),
           fetch('/api/team-competitive-stats?id=' + t2.id).then(function(r) { return r.ok ? r.json() : null; }),
+          fetch('/api/team-stats?id=' + t1.id).then(function(r) { return r.ok ? r.json() : null; }),
+          fetch('/api/team-stats?id=' + t2.id).then(function(r) { return r.ok ? r.json() : null; }),
         ]).then(function(results) {
           window.__h2hData = results[0];
           window.__t1Stats = results[1];
           window.__t2Stats = results[2];
+          window.__t1Roster = results[3];
+          window.__t2Roster = results[4];
           renderH2HSection(results[0], results[1], results[2], match, t1, t2);
-        }).catch(function() {
+          renderAnalyticsInsights(results[1], results[2], match, t1, t2);
+          renderTeamLineups(results[3], results[4], t1, t2);
+          renderMapPool(results[1], results[2], t1, t2);
+          renderTeamStatsComparison(results[1], results[2], t1, t2);
+          renderTeamForm(results[1], results[2], t1, t2);
+        }).catch(function(err) {
+          console.error('Failed to load supplementary data:', err);
           var sec = document.getElementById('h2h-section');
           if (sec) sec.innerHTML = '';
         });
@@ -749,6 +882,8 @@ import Base from '../layouts/Base.astro';
   window.__h2hData = null;
   window.__t1Stats = null;
   window.__t2Stats = null;
+  window.__t1Roster = null;
+  window.__t2Roster = null;
 
   function calcWinProb(h2hData, t1Stats, t2Stats, match, t1, t2) {
     var isLive = match.status === 'running';
@@ -1168,6 +1303,309 @@ import Base from '../layouts/Base.astro';
     });
 
     wrap.innerHTML = html;
+  }
+
+  // ── Country flag emoji from 2-letter code ──
+  function countryFlag(code) {
+    if (!code || code.length !== 2) return '';
+    var cc = code.toUpperCase();
+    return String.fromCodePoint(0x1F1E6 + cc.charCodeAt(0) - 65) + String.fromCodePoint(0x1F1E6 + cc.charCodeAt(1) - 65);
+  }
+
+  // ── Analytics Insights ──
+  function renderAnalyticsInsights(t1Stats, t2Stats, match, t1, t2) {
+    var section = document.getElementById('insights-section');
+    if (!section || !t1Stats || !t2Stats) return;
+    if (match.status === 'finished') return; // skip for finished matches
+
+    var t1Name = escapeHtml(t1.acronym || t1.name || 'T1');
+    var t2Name = escapeHtml(t2.acronym || t2.name || 'T2');
+
+    function generateInsights(stats) {
+      var insights = [];
+      var record = stats.record || {};
+      var maps = stats.maps || [];
+      var rounds = stats.rounds || {};
+      var fragging = stats.fragging || {};
+
+      var wr = record.matchWinRate || 0;
+      if (wr >= 60) {
+        insights.push({ type: 'positive', text: 'Strong ' + wr + '% match win rate across ' + (record.matchesPlayed || 0) + ' matches' });
+      } else if (wr >= 45) {
+        insights.push({ type: 'neutral', text: wr + '% match win rate across ' + (record.matchesPlayed || 0) + ' matches' });
+      } else {
+        insights.push({ type: 'negative', text: 'Struggling with only ' + wr + '% match win rate' });
+      }
+
+      var sortedMaps = maps.filter(function(m) { return m.played >= 3; }).sort(function(a, b) { return b.winRate - a.winRate; });
+      if (sortedMaps.length > 0) {
+        var bestMap = sortedMaps[0];
+        if (bestMap.winRate >= 60) {
+          insights.push({ type: 'positive', text: 'Dominant on ' + bestMap.name + ': ' + bestMap.winRate + '% win rate (' + bestMap.played + ' maps)' });
+        } else {
+          insights.push({ type: 'neutral', text: 'Best map is ' + bestMap.name + ' at ' + bestMap.winRate + '% (' + bestMap.played + ' maps)' });
+        }
+      }
+
+      if (sortedMaps.length > 1) {
+        var worstMap = sortedMaps[sortedMaps.length - 1];
+        if (worstMap.winRate < 40) {
+          insights.push({ type: 'negative', text: 'Weak on ' + worstMap.name + ': only ' + worstMap.winRate + '% win rate across ' + worstMap.played + ' maps' });
+        }
+      }
+
+      var ctWR = rounds.ctWinRate || 50;
+      var tWR = rounds.tWinRate || 50;
+      if (Math.abs(ctWR - tWR) > 8) {
+        if (ctWR > tWR) {
+          insights.push({ type: 'neutral', text: 'CT-sided: ' + ctWR + '% CT round WR vs ' + tWR + '% T-side' });
+        } else {
+          insights.push({ type: 'neutral', text: 'T-sided: ' + tWR + '% T round WR vs ' + ctWR + '% CT-side' });
+        }
+      }
+
+      var pistolWR = rounds.pistolWinRate || 50;
+      if (pistolWR >= 55) {
+        insights.push({ type: 'positive', text: 'Strong pistol rounds at ' + pistolWR + '% win rate' });
+      } else if (pistolWR < 40) {
+        insights.push({ type: 'negative', text: 'Weak pistol rounds at only ' + pistolWR + '% win rate' });
+      }
+
+      var hsRate = fragging.hsRate || 0;
+      if (hsRate >= 52) {
+        insights.push({ type: 'positive', text: 'Excellent ' + hsRate + '% headshot rate' });
+      } else if (hsRate < 42) {
+        insights.push({ type: 'negative', text: 'Below-average ' + hsRate + '% headshot rate' });
+      }
+
+      return insights.slice(0, 4);
+    }
+
+    var t1Insights = generateInsights(t1Stats);
+    var t2Insights = generateInsights(t2Stats);
+    if (t1Insights.length === 0 && t2Insights.length === 0) return;
+
+    var html = '<h2 class="section-title">Analytics Insights</h2><div class="md-insights">';
+
+    html += '<div class="md-insight-card"><div class="md-insight-header">';
+    if (t1.image) html += '<img src="' + t1.image + '" alt="" onerror="this.style.display=\'none\'" />';
+    html += t1Name + '</div><ul class="md-insight-list">';
+    t1Insights.forEach(function(i) {
+      html += '<li class="md-insight-item"><span class="md-insight-dot ' + i.type + '"></span>' + i.text + '</li>';
+    });
+    html += '</ul></div>';
+
+    html += '<div class="md-insight-card"><div class="md-insight-header">';
+    if (t2.image) html += '<img src="' + t2.image + '" alt="" onerror="this.style.display=\'none\'" />';
+    html += t2Name + '</div><ul class="md-insight-list">';
+    t2Insights.forEach(function(i) {
+      html += '<li class="md-insight-item"><span class="md-insight-dot ' + i.type + '"></span>' + i.text + '</li>';
+    });
+    html += '</ul></div>';
+
+    html += '</div>';
+    section.innerHTML = html;
+  }
+
+  // ── Team Lineups ──
+  function renderTeamLineups(t1Roster, t2Roster, t1, t2) {
+    var section = document.getElementById('lineups-section');
+    if (!section) return;
+
+    var t1Players = [];
+    var t2Players = [];
+    if (t1Roster) {
+      t1Players = t1Roster.players || (t1Roster.teams && t1Roster.teams[0] ? t1Roster.teams[0].players : []);
+    }
+    if (t2Roster) {
+      t2Players = t2Roster.players || (t2Roster.teams && t2Roster.teams[0] ? t2Roster.teams[0].players : []);
+    }
+    t1Players = (t1Players || []).filter(function(p) { return p.active !== false; });
+    t2Players = (t2Players || []).filter(function(p) { return p.active !== false; });
+    if (t1Players.length === 0 && t2Players.length === 0) return;
+
+    var t1Name = escapeHtml(t1.acronym || t1.name || 'T1');
+    var t2Name = escapeHtml(t2.acronym || t2.name || 'T2');
+
+    function renderPlayerRow(p) {
+      var img = p.image
+        ? '<img src="' + p.image + '" alt="' + escapeHtml(p.name) + '" class="md-player-img" loading="lazy" onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'flex\'" /><div class="md-player-img-placeholder" style="display:none">' + escapeHtml(p.name ? p.name[0] : '?') + '</div>'
+        : '<div class="md-player-img-placeholder">' + escapeHtml(p.name ? p.name[0] : '?') + '</div>';
+      var realName = (p.firstName && p.lastName) ? escapeHtml(p.firstName) + ' ' + escapeHtml(p.lastName) : '';
+      var role = p.role ? '<span class="md-player-role">' + escapeHtml(p.role) + '</span>' : '';
+      var flag = p.nationality ? '<span class="md-player-flag" title="' + escapeHtml(p.nationality) + '">' + countryFlag(p.nationality) + '</span>' : '';
+      var nameLink = p.slug ? '<a href="/pro-players/' + encodeURIComponent(p.slug) + '/">' + escapeHtml(p.name) + '</a>' : escapeHtml(p.name);
+      return '<div class="md-player-row">' + img + '<div class="md-player-info"><div class="md-player-name">' + nameLink + '</div>' + (realName ? '<div class="md-player-real">' + realName + '</div>' : '') + '</div>' + flag + role + '</div>';
+    }
+
+    var html = '<h2 class="section-title">Team Lineups</h2><div class="md-lineups">';
+
+    html += '<div class="md-lineup-card"><div class="md-lineup-header">';
+    if (t1.image) html += '<img src="' + t1.image + '" alt="" onerror="this.style.display=\'none\'" />';
+    html += t1Name + ' Lineup</div><div class="md-lineup-players">';
+    t1Players.forEach(function(p) { html += renderPlayerRow(p); });
+    if (t1Players.length === 0) html += '<div class="md-form-empty">Roster unavailable</div>';
+    html += '</div></div>';
+
+    html += '<div class="md-lineup-card"><div class="md-lineup-header">';
+    if (t2.image) html += '<img src="' + t2.image + '" alt="" onerror="this.style.display=\'none\'" />';
+    html += t2Name + ' Lineup</div><div class="md-lineup-players">';
+    t2Players.forEach(function(p) { html += renderPlayerRow(p); });
+    if (t2Players.length === 0) html += '<div class="md-form-empty">Roster unavailable</div>';
+    html += '</div></div>';
+
+    html += '</div>';
+    section.innerHTML = html;
+  }
+
+  // ── Map Pool Comparison ──
+  function renderMapPool(t1Stats, t2Stats, t1, t2) {
+    var section = document.getElementById('map-pool-section');
+    if (!section || !t1Stats || !t2Stats) return;
+
+    var t1Maps = t1Stats.maps || [];
+    var t2Maps = t2Stats.maps || [];
+    if (t1Maps.length === 0 && t2Maps.length === 0) return;
+
+    var t1Name = escapeHtml(t1.acronym || t1.name || 'T1');
+    var t2Name = escapeHtml(t2.acronym || t2.name || 'T2');
+
+    var allMaps = {};
+    t1Maps.forEach(function(m) { allMaps[m.name] = allMaps[m.name] || {}; allMaps[m.name].t1 = m; });
+    t2Maps.forEach(function(m) { allMaps[m.name] = allMaps[m.name] || {}; allMaps[m.name].t2 = m; });
+
+    var mapNames = Object.keys(allMaps).sort(function(a, b) {
+      var aTotal = (allMaps[a].t1 ? allMaps[a].t1.played : 0) + (allMaps[a].t2 ? allMaps[a].t2.played : 0);
+      var bTotal = (allMaps[b].t1 ? allMaps[b].t1.played : 0) + (allMaps[b].t2 ? allMaps[b].t2.played : 0);
+      return bTotal - aTotal;
+    });
+
+    function wrClass(wr) {
+      if (wr >= 55) return 'high';
+      if (wr >= 45) return 'mid';
+      return 'low';
+    }
+
+    var html = '<h2 class="section-title">Map Pool Comparison</h2>';
+    html += '<div class="md-map-pool"><table class="md-map-pool-table"><thead><tr>';
+    html += '<th>Map</th>';
+    html += '<th class="t1-col">' + t1Name + ' WR</th><th class="t1-col">W-L</th>';
+    html += '<th class="t2-col">' + t2Name + ' WR</th><th class="t2-col">W-L</th>';
+    html += '</tr></thead><tbody>';
+
+    mapNames.forEach(function(name) {
+      var d = allMaps[name];
+      var m1 = d.t1;
+      var m2 = d.t2;
+      var wr1 = m1 ? m1.winRate : 0;
+      var wr2 = m2 ? m2.winRate : 0;
+      var mapImg = (m1 && m1.image) ? m1.image : (m2 && m2.image ? m2.image : '');
+      var imgTag = mapImg ? '<img src="' + mapImg + '" alt="" loading="lazy" onerror="this.style.display=\'none\'" />' : '';
+
+      html += '<tr>';
+      html += '<td><div class="md-map-name-cell">' + imgTag + '<span>' + escapeHtml(name) + '</span></div></td>';
+      html += '<td><span class="md-map-wr ' + wrClass(wr1) + '">' + (m1 ? wr1 + '%' : '\u2014') + '</span></td>';
+      html += '<td>' + (m1 ? m1.wins + '-' + m1.losses : '\u2014') + '</td>';
+      html += '<td><span class="md-map-wr ' + wrClass(wr2) + '">' + (m2 ? wr2 + '%' : '\u2014') + '</span></td>';
+      html += '<td>' + (m2 ? m2.wins + '-' + m2.losses : '\u2014') + '</td>';
+      html += '</tr>';
+    });
+
+    html += '</tbody></table></div>';
+    section.innerHTML = html;
+  }
+
+  // ── Team Stats Comparison ──
+  function renderTeamStatsComparison(t1Stats, t2Stats, t1, t2) {
+    var section = document.getElementById('player-comp-section');
+    if (!section || !t1Stats || !t2Stats) return;
+
+    var t1Name = escapeHtml(t1.acronym || t1.name || 'T1');
+    var t2Name = escapeHtml(t2.acronym || t2.name || 'T2');
+
+    var stats = [
+      { label: 'Match Win Rate', t1: (t1Stats.record || {}).matchWinRate, t2: (t2Stats.record || {}).matchWinRate, suffix: '%' },
+      { label: 'Map Win Rate', t1: (t1Stats.record || {}).gameWinRate, t2: (t2Stats.record || {}).gameWinRate, suffix: '%' },
+      { label: 'Round Win Rate', t1: (t1Stats.rounds || {}).winRate, t2: (t2Stats.rounds || {}).winRate, suffix: '%' },
+      { label: 'CT Win Rate', t1: (t1Stats.rounds || {}).ctWinRate, t2: (t2Stats.rounds || {}).ctWinRate, suffix: '%' },
+      { label: 'T Win Rate', t1: (t1Stats.rounds || {}).tWinRate, t2: (t2Stats.rounds || {}).tWinRate, suffix: '%' },
+      { label: 'Pistol Win Rate', t1: (t1Stats.rounds || {}).pistolWinRate, t2: (t2Stats.rounds || {}).pistolWinRate, suffix: '%' },
+      { label: 'HS Rate', t1: (t1Stats.fragging || {}).hsRate, t2: (t2Stats.fragging || {}).hsRate, suffix: '%' },
+      { label: 'Avg ADR / Map', t1: (t1Stats.averages || {}).adrPerGame, t2: (t2Stats.averages || {}).adrPerGame, suffix: '', decimal: 1 },
+      { label: 'Avg Kills / Map', t1: (t1Stats.averages || {}).killsPerGame, t2: (t2Stats.averages || {}).killsPerGame, suffix: '', decimal: 1 },
+    ];
+
+    stats = stats.filter(function(s) { return s.t1 != null || s.t2 != null; });
+    if (stats.length === 0) return;
+
+    var html = '<h2 class="section-title">Team Stats Comparison</h2>';
+    html += '<div class="md-player-comp"><table class="md-player-comp-table"><thead><tr>';
+    html += '<th>Stat</th><th>' + t1Name + '</th><th>' + t2Name + '</th>';
+    html += '</tr></thead><tbody>';
+
+    stats.forEach(function(s) {
+      var v1 = s.t1 != null ? (s.decimal != null ? (+s.t1).toFixed(s.decimal) : s.t1) : '\u2014';
+      var v2 = s.t2 != null ? (s.decimal != null ? (+s.t2).toFixed(s.decimal) : s.t2) : '\u2014';
+      var cls1 = '', cls2 = '';
+      if (s.t1 != null && s.t2 != null) {
+        if (+s.t1 > +s.t2) cls1 = ' class="md-comp-best"';
+        else if (+s.t2 > +s.t1) cls2 = ' class="md-comp-best"';
+      }
+      html += '<tr><td>' + s.label + '</td><td' + cls1 + '>' + v1 + s.suffix + '</td><td' + cls2 + '>' + v2 + s.suffix + '</td></tr>';
+    });
+
+    html += '</tbody></table></div>';
+    section.innerHTML = html;
+  }
+
+  // ── Recent Team Form ──
+  function renderTeamForm(t1Stats, t2Stats, t1, t2) {
+    var section = document.getElementById('form-section');
+    if (!section) return;
+
+    var t1Games = (t1Stats && t1Stats.lastGames) ? t1Stats.lastGames.slice(0, 5) : [];
+    var t2Games = (t2Stats && t2Stats.lastGames) ? t2Stats.lastGames.slice(0, 5) : [];
+    if (t1Games.length === 0 && t2Games.length === 0) return;
+
+    var t1Id = t1Stats ? t1Stats.id : t1.id;
+    var t2Id = t2Stats ? t2Stats.id : t2.id;
+
+    function renderFormCard(games, team, teamId) {
+      var teamName = escapeHtml(team.acronym || team.name || '?');
+      var html = '<div class="md-form-card"><div class="md-form-header">';
+      if (team.image) html += '<img src="' + team.image + '" alt="" onerror="this.style.display=\'none\'" />';
+      html += teamName + ' Recent Form</div><div class="md-form-list">';
+
+      if (games.length === 0) {
+        html += '<div class="md-form-empty">No recent matches</div>';
+      } else {
+        games.forEach(function(g) {
+          var isWin = g.winnerId === teamId;
+          var resultCls = isWin ? 'win' : 'loss';
+          var resultTxt = isWin ? 'W' : 'L';
+          var teams = g.teams || [];
+          var opp = teams.find(function(t) { return t.id !== teamId; }) || teams[1] || {};
+          var us = teams.find(function(t) { return t.id === teamId; }) || teams[0] || {};
+          var score = (us.score != null && opp.score != null) ? us.score + ':' + opp.score : '\u2014';
+
+          html += '<div class="md-form-match">';
+          html += '<span class="md-form-result ' + resultCls + '">' + resultTxt + '</span>';
+          html += '<span class="md-form-opp">' + escapeHtml(opp.name || '?') + '</span>';
+          html += '<span class="md-form-score">' + score + '</span>';
+          html += '<span class="md-form-map">' + escapeHtml(g.map || '') + '</span>';
+          html += '</div>';
+        });
+      }
+
+      html += '</div></div>';
+      return html;
+    }
+
+    var html = '<h2 class="section-title">Recent Form</h2><div class="md-form">';
+    html += renderFormCard(t1Games, t1, t1Id);
+    html += renderFormCard(t2Games, t2, t2Id);
+    html += '</div>';
+    section.innerHTML = html;
   }
 
   function escapeHtml(str) {
