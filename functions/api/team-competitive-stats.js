@@ -36,48 +36,72 @@ export async function onRequestGet(context) {
 
     // Step 1: Resolve team ID if not provided directly
     if (!teamId) {
-      let lookupUrl;
-      if (teamSlug) {
-        lookupUrl = `https://api.pandascore.co/teams?filter[slug]=${encodeURIComponent(teamSlug)}&per_page=10&token=${apiKey}`;
-      } else if (teamName) {
-        lookupUrl = `https://api.pandascore.co/teams?search[name]=${encodeURIComponent(teamName)}&per_page=25&token=${apiKey}`;
-      } else {
+      if (!teamSlug && !teamName) {
         return new Response(JSON.stringify({ error: 'Provide ?id=, ?slug=, or ?name= parameter' }), { status: 400, headers: errorHeaders });
       }
 
-      const lookupRes = await fetch(lookupUrl, {
-        headers: { 'Accept': 'application/json' },
-        cf: { cacheTtl: 3600 },
-      });
+      // Strategy 1: CSGO-specific search first (most accurate for CS teams)
+      const searchTerm = teamName || (teamSlug ? teamSlug.replace(/-/g, ' ') : '');
+      if (searchTerm) {
+        const csgoRes = await fetch(
+          `https://api.pandascore.co/csgo/teams?search[name]=${encodeURIComponent(searchTerm)}&per_page=10&token=${apiKey}`,
+          { cf: { cacheTtl: 3600 } }
+        );
+        if (csgoRes.ok) {
+          const teams = await csgoRes.json();
+          if (teams.length > 0) {
+            const exact = teams.find(t => t.slug === teamSlug) ||
+                          teams.find(t => t.name.toLowerCase() === searchTerm.toLowerCase());
+            teamId = (exact || teams[0]).id;
+          }
+        }
 
-      if (!lookupRes.ok) {
-        return new Response(JSON.stringify({ error: 'Team lookup failed', status: lookupRes.status }), { status: lookupRes.status, headers: errorHeaders });
-      }
-
-      const results = await lookupRes.json();
-      if (!Array.isArray(results) || results.length === 0) {
-        return new Response(JSON.stringify({ error: 'Team not found' }), { status: 404, headers: errorHeaders });
-      }
-
-      // Prefer CS:GO/CS2 teams
-      let csTeam = results.find(isCSTeam);
-
-      // Fallback: if slug resolved to a non-CS team (e.g. Dota 2 "team-spirit"),
-      // use its org name to search again for the CS team
-      if (!csTeam && teamSlug && results.length > 0) {
-        const orgName = results[0].name;
-        const nameUrl = `https://api.pandascore.co/teams?search[name]=${encodeURIComponent(orgName)}&per_page=25&token=${apiKey}`;
-        const nameRes = await fetch(nameUrl, {
-          headers: { 'Accept': 'application/json' },
-          cf: { cacheTtl: 3600 },
-        });
-        if (nameRes.ok) {
-          const nameResults = await nameRes.json();
-          csTeam = (nameResults || []).find(isCSTeam);
+        // Also try stripping "Team " prefix (e.g. "Team Spirit" → "Spirit")
+        if (!teamId) {
+          const altNames = [];
+          if (searchTerm.toLowerCase().startsWith('team ')) altNames.push(searchTerm.slice(5));
+          if (searchTerm.toLowerCase().startsWith('org ')) altNames.push(searchTerm.slice(4));
+          for (const alt of altNames) {
+            if (!alt) continue;
+            const altRes = await fetch(
+              `https://api.pandascore.co/csgo/teams?search[name]=${encodeURIComponent(alt)}&per_page=10&token=${apiKey}`,
+              { cf: { cacheTtl: 3600 } }
+            );
+            if (altRes.ok) {
+              const teams = await altRes.json();
+              const match = teams.find(t => t.name.toLowerCase() === alt.toLowerCase()) ||
+                            teams.find(t => t.name.toLowerCase().includes(alt.toLowerCase()));
+              if (match) {
+                teamId = match.id;
+                break;
+              }
+            }
+          }
         }
       }
 
-      teamId = csTeam ? csTeam.id : results[0].id;
+      // Strategy 2: Generic slug/name lookup fallback
+      if (!teamId) {
+        let lookupUrl;
+        if (teamSlug) {
+          lookupUrl = `https://api.pandascore.co/teams?filter[slug]=${encodeURIComponent(teamSlug)}&per_page=10&token=${apiKey}`;
+        } else {
+          lookupUrl = `https://api.pandascore.co/teams?search[name]=${encodeURIComponent(teamName)}&per_page=25&token=${apiKey}`;
+        }
+
+        const lookupRes = await fetch(lookupUrl, { cf: { cacheTtl: 3600 } });
+        if (lookupRes.ok) {
+          const results = await lookupRes.json();
+          if (Array.isArray(results) && results.length > 0) {
+            const csTeam = results.find(isCSTeam);
+            teamId = csTeam ? csTeam.id : results[0].id;
+          }
+        }
+      }
+
+      if (!teamId) {
+        return new Response(JSON.stringify({ error: 'Team not found' }), { status: 404, headers: errorHeaders });
+      }
     }
 
     // Step 2: Fetch team stats from the dedicated stats endpoint
