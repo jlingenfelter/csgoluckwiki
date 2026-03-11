@@ -55,4 +55,5 @@ jobs:
 
           Automated daily resolution check detected stale team assignments
           and updated them to match current PandaScore data."
+          git pull --rebase
           git push
