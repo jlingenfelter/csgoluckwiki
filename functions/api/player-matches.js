@@ -31,30 +31,71 @@ export async function onRequestGet(context) {
     const page = url.searchParams.get('page') || '1';
     const perPage = Math.min(parseInt(url.searchParams.get('per_page') || '15', 10), 50);
 
+    const playerTeam = url.searchParams.get('team');
+    const playerCountry = url.searchParams.get('country');
+
     if (!playerId && !playerSlug && !playerName) {
       return new Response(JSON.stringify({ error: 'Provide ?id=, ?slug=, or ?name= parameter' }), { status: 400, headers });
     }
 
+    // Helper: check if a PandaScore player is CS:GO / CS2
+    const isCSPlayer = (p) =>
+      p.current_videogame?.slug === 'cs-go' || p.current_videogame?.slug === 'cs-2' ||
+      p.current_videogame?.id === 3 || p.current_videogame?.id === 14;
+
+    // Helper: score a candidate player for best match quality
+    const scorePlayer = (p) => {
+      let score = 0;
+      if (isCSPlayer(p)) score += 50;
+      if (p.current_team) score += 20;
+      if (playerTeam && p.current_team?.name?.toLowerCase().includes(playerTeam.toLowerCase())) score += 30;
+      if (playerCountry && p.nationality) {
+        const country = playerCountry.toLowerCase();
+        const nat = p.nationality.toLowerCase();
+        if (nat === country || nat.includes(country) || country.includes(nat)) score += 25;
+      }
+      if (p.slug === playerSlug) score += 10;
+      return score;
+    };
+
+    const pickBest = (players) => {
+      if (!players || players.length === 0) return null;
+      if (players.length === 1) return players[0];
+      return players.sort((a, b) => scorePlayer(b) - scorePlayer(a))[0];
+    };
+
     // Resolve to player ID using multiple strategies
     if (!playerId) {
-      // Strategy 1: Exact slug lookup with CS2/CSGO preference
-      if (playerSlug) {
+      // Strategy 1: CSGO-specific search first (most accurate for CS players)
+      const csgoUrl = `https://api.pandascore.co/csgo/players?search[name]=${encodeURIComponent(playerName || playerSlug)}&per_page=10&token=${apiKey}`;
+      const csgoRes = await fetch(csgoUrl, { cf: { cacheTtl: 3600 } });
+      if (csgoRes.ok) {
+        const players = await csgoRes.json();
+        if (players.length > 0) {
+          const exact = players.find(p => p.slug === playerSlug) ||
+                        players.find(p => p.name.toLowerCase() === (playerName || playerSlug).toLowerCase());
+          if (exact) playerId = exact.id;
+          else {
+            const best = pickBest(players);
+            if (best) playerId = best.id;
+          }
+        }
+      }
+
+      // Strategy 2: Slug filter on generic endpoint
+      if (!playerId && playerSlug) {
         const slugRes = await fetch(
-          `https://api.pandascore.co/players?filter[slug]=${encodeURIComponent(playerSlug)}&per_page=5&token=${apiKey}`,
+          `https://api.pandascore.co/players?filter[slug]=${encodeURIComponent(playerSlug)}&per_page=10&token=${apiKey}`,
           { cf: { cacheTtl: 3600 } }
         );
         if (slugRes.ok) {
           const players = await slugRes.json();
-          const csPlayer = players.find(p =>
-            p.current_videogame?.slug === 'cs-go' || p.current_videogame?.slug === 'cs-2' ||
-            p.current_videogame?.id === 3 || p.current_videogame?.id === 14
-          );
-          if (csPlayer) playerId = csPlayer.id;
-          else if (players.length > 0) playerId = players[0].id;
+          const best = pickBest(players);
+          if (best) playerId = best.id;
         }
       }
 
-      // Strategy 2: Name-based search with CS2/CSGO preference
+      // Strategy 3: Name-based search fallback
       if (!playerId) {
         const searchName = playerName || (playerSlug ? playerSlug.replace(/-/g, ' ') : '');
         if (searchName) {
@@ -64,34 +105,8 @@ export async function onRequestGet(context) {
           );
           if (nameRes.ok) {
             const players = await nameRes.json();
-            if (players.length > 0) {
-              const csPlayers = players.filter(p =>
-                p.current_videogame?.slug === 'cs-go' || p.current_videogame?.slug === 'cs-2' ||
-                p.current_videogame?.id === 3 || p.current_videogame?.id === 14
-              );
-              if (csPlayers.length > 0) {
-                const exact = csPlayers.find(p => p.name.toLowerCase() === searchName.toLowerCase());
-                playerId = exact ? exact.id : csPlayers[0].id;
-              } else {
-                const exact = players.find(p => p.name.toLowerCase() === searchName.toLowerCase());
-                playerId = exact ? exact.id : players[0].id;
-              }
-            }
-          }
-        }
-      }
-
-      // Strategy 3: CSGO-specific player search
-      if (!playerId && playerName) {
-        const csgoRes = await fetch(
-          `https://api.pandascore.co/csgo/players?search[name]=${encodeURIComponent(playerName)}&per_page=5&token=${apiKey}`,
-          { cf: { cacheTtl: 3600 } }
-        );
-        if (csgoRes.ok) {
-          const players = await csgoRes.json();
-          if (players.length > 0) {
-            const exact = players.find(p => p.name.toLowerCase() === playerName.toLowerCase());
-            playerId = exact ? exact.id : players[0].id;
+            const best = pickBest(players);
+            if (best) playerId = best.id;
           }
         }
       }

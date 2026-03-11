@@ -825,14 +825,17 @@ const faqs = [
 }
 </style>
 
-<script is:inline define:vars={{ playerSlug: player.slug, playerDisplayName: player.name }}>
+<script is:inline define:vars={{ playerSlug: player.slug, playerDisplayName: player.name, playerTeam: player.team || '', playerCountry: player.country || '' }}>
 (function(){
   // Share player-stats data globally so match history can use lastGames as fallback
   window.__playerStatsData = null;
   var container = document.getElementById('liveStatsContent');
   if (!container) return;
 
-  fetch('/api/player-stats?slug=' + encodeURIComponent(playerSlug) + '&name=' + encodeURIComponent(playerDisplayName))
+  var statsUrl = '/api/player-stats?slug=' + encodeURIComponent(playerSlug) + '&name=' + encodeURIComponent(playerDisplayName);
+  if (playerTeam) statsUrl += '&team=' + encodeURIComponent(playerTeam);
+  if (playerCountry) statsUrl += '&country=' + encodeURIComponent(playerCountry);
+  fetch(statsUrl)
     .then(function(res) {
       if (!res.ok) throw new Error('HTTP ' + res.status);
       return res.json();
@@ -930,12 +933,15 @@ const faqs = [
 })();
 </script>
 
-<script is:inline define:vars={{ playerSlug: player.slug, playerIGN: player.name }}>
+<script is:inline define:vars={{ playerSlug: player.slug, playerIGN: player.name, playerTeamMH: player.team || '', playerCountryMH: player.country || '' }}>
 (function(){
   var container = document.getElementById('matchHistoryContent');
   if (!container) return;
 
-  fetch('/api/player-matches?slug=' + encodeURIComponent(playerSlug) + '&name=' + encodeURIComponent(playerIGN))
+  var mhUrl = '/api/player-matches?slug=' + encodeURIComponent(playerSlug) + '&name=' + encodeURIComponent(playerIGN);
+  if (playerTeamMH) mhUrl += '&team=' + encodeURIComponent(playerTeamMH);
+  if (playerCountryMH) mhUrl += '&country=' + encodeURIComponent(playerCountryMH);
+  fetch(mhUrl)
     .then(function(res) {
       if (!res.ok) throw new Error('HTTP ' + res.status);
       return res.json();
