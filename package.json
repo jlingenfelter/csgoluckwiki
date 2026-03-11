@@ -8,7 +8,9 @@
     "fetch-case-prices": "node scripts/fetch-case-prices.mjs",
     "build:fresh": "node scripts/fetch-prices.mjs && node scripts/fetch-case-prices.mjs && astro build",
     "preview": "astro preview",
-    "submit-index": "node scripts/submit-indexnow.mjs"
+    "submit-index": "node scripts/submit-indexnow.mjs",
+    "check-resolution": "node scripts/check-player-resolution.mjs",
+    "check-resolution:all": "node scripts/check-player-resolution.mjs --all"
   },
   "dependencies": {
     "astro": "^4.16.18",
