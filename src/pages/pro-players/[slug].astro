@@ -551,15 +551,17 @@ const faqs = [
 </div><!-- /pp-main -->
 </div><!-- /pp-layout -->
 
-<!-- Team Info: Sidebar-style box -->
+<!-- Teammates -->
 {isRealTeam && teammates.length > 0 && (
-<section class="pp-team-box" id="teammates">
-  <div class="pp-team-header">{player.team}</div>
-  <div class="pp-team-roster">
+<section class="pp-section" id="teammates">
+  <h2 class="pp-section-title">{player.team} Roster</h2>
+  <div class="pp-similar-strip">
     {teammates.map(t => (
-      <a href={`/pro-players/${t.slug}/`} class="pp-team-member">
-        <span class="pp-team-member-name">{t.flag} {t.name}</span>
-        <span class="pp-team-member-edpi">{t.edpi} eDPI</span>
+      <a href={`/pro-players/${t.slug}/`} class="pp-similar-card">
+        {t.image && <img class="pp-similar-img" src={t.image} alt={t.name} width="40" height="40" loading="lazy" onerror="this.style.display='none'" />}
+        <span class="pp-similar-name">{t.flag} {t.name}</span>
+        <span class="pp-similar-detail">{t.role}</span>
+        <span class="pp-similar-edpi">{t.edpi} eDPI</span>
       </a>
     ))}
   </div>
@@ -829,14 +831,7 @@ const faqs = [
 .pp-config-preview pre{padding:.6rem;margin:0;font-size:.72rem;color:var(--text2);line-height:1.6;overflow-x:auto;max-height:200px;overflow-y:auto}
 
 /* ── Team Box: Sidebar-style ─────────────────────────────────────────────── */
-.pp-team-box{margin-bottom:2rem;background:var(--bg2);border:1px solid var(--border);border-radius:4px;overflow:hidden;max-width:400px}
-.pp-team-header{padding:.65rem 1rem;background:var(--bg3);font-weight:700;font-size:.9rem;color:var(--accent);border-bottom:2px solid var(--accent)}
-.pp-team-roster{display:flex;flex-direction:column}
-.pp-team-member{display:flex;justify-content:space-between;align-items:center;padding:.5rem 1rem;text-decoration:none;color:inherit;border-bottom:1px solid var(--border);border-left:3px solid transparent;transition:border-left-color .15s}
-.pp-team-member:last-child{border-bottom:none}
-.pp-team-member:hover{border-left-color:var(--accent);background:var(--bg3)}
-.pp-team-member-name{font-weight:700;font-size:.85rem;color:var(--text)}
-.pp-team-member-edpi{font-size:.78rem;color:var(--text2)}
+/* old .pp-team-box styles removed — teammates now use .pp-similar-card layout */
 
 /* (section styles defined above in layout block) */
 
@@ -891,7 +886,7 @@ const faqs = [
   .pp-config-btn{justify-content:center}
   .pp-code-box{flex-direction:column;align-items:stretch}
   .pp-loadout-grid{grid-template-columns:1fr 1fr}
-  .pp-team-box{max-width:100%}
+  /* old .pp-team-box mobile override removed */
 }
 </style>
 
