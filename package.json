@@ -10,7 +10,8 @@
     "preview": "astro preview",
     "submit-index": "node scripts/submit-indexnow.mjs",
     "check-resolution": "node scripts/check-player-resolution.mjs",
-    "check-resolution:all": "node scripts/check-player-resolution.mjs --all"
+    "check-resolution:all": "node scripts/check-player-resolution.mjs --all",
+    "check-resolution:fix": "node scripts/check-player-resolution.mjs --fix"
   },
   "dependencies": {
     "astro": "^4.16.18",

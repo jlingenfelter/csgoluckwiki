@@ -10,6 +10,7 @@
  *   node scripts/check-player-resolution.mjs --failing      # Re-check previous failures only
  *   node scripts/check-player-resolution.mjs --teams-only   # Only check team resolution
  *   node scripts/check-player-resolution.mjs --api-only     # Only check API endpoint availability
+ *   node scripts/check-player-resolution.mjs --fix          # Auto-fix team mismatches in player JSON files
  */
 
 import { readFileSync, writeFileSync, existsSync, mkdirSync, readdirSync } from 'fs';
@@ -470,6 +471,7 @@ async function main() {
   const flagTeamsOnly = args.includes('--teams-only');
   const flagApiOnly = args.includes('--api-only');
   const flagFailing = args.includes('--failing');
+  const flagFix = args.includes('--fix');
   const batchIdx = args.indexOf('--batch');
   const batchNum = batchIdx !== -1 ? parseInt(args[batchIdx + 1], 10) : 0;
 
@@ -480,6 +482,7 @@ async function main() {
     players: { checked: 0, passed: 0, warnings: 0, failed: 0, details: [] },
     teams: { checked: 0, passed: 0, warnings: 0, failed: 0, details: [] },
     apis: [],
+    fixes: [],
     totalApiCalls: 0,
     durationMs: 0,
   };
@@ -571,6 +574,34 @@ async function main() {
 
       report.players.checked++;
       printPlayerResult(i + 1, playerSlugs.length, result);
+
+      // Auto-fix: update player JSON when --fix flag is set
+      if (flagFix && ps) {
+        let fixed = false;
+        const playerJson = JSON.parse(readFileSync(filePath, 'utf-8'));
+
+        for (const issue of issues) {
+          if (issue.startsWith('TEAM_MISMATCH')) {
+            // Update team to match PandaScore
+            const oldTeam = playerJson.team;
+            playerJson.team = ps.team || 'Free Agent';
+            console.log(`    \x1b[36mFIX: ${slug} team "${oldTeam}" -> "${playerJson.team}"\x1b[0m`);
+            report.fixes.push({ slug, field: 'team', old: oldTeam, new: playerJson.team });
+            fixed = true;
+          } else if (issue === 'NO_TEAM') {
+            // Player no longer has a team
+            const oldTeam = playerJson.team;
+            playerJson.team = 'Free Agent';
+            console.log(`    \x1b[36mFIX: ${slug} team "${oldTeam}" -> "Free Agent"\x1b[0m`);
+            report.fixes.push({ slug, field: 'team', old: oldTeam, new: 'Free Agent' });
+            fixed = true;
+          }
+        }
+
+        if (fixed) {
+          writeFileSync(filePath, JSON.stringify(playerJson, null, 2) + '\n');
+        }
+      }
     }
   }
 
@@ -620,6 +651,9 @@ async function main() {
   console.log(`  APIs:     ${apiOk}/${apiTotal} reachable`);
   console.log(`  API calls used: ${report.totalApiCalls}`);
   console.log(`  Duration: ${(report.durationMs / 1000).toFixed(1)}s`);
+  if (report.fixes.length > 0) {
+    console.log(`  \x1b[36mAuto-fixes applied: ${report.fixes.length}\x1b[0m`);
+  }
 
   // Print failures and warnings
   const playerFails = report.players.details.filter(d => d.status === 'fail');

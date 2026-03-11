@@ -152,7 +152,7 @@ const playerModules = import.meta.glob<ProPlayer>('../data/players/*.json', { ea
 // Curated top players by popularity/fame — shown first on listing pages
 const TOP_PLAYERS = [
   'donk', 's1mple', 'zywoo', 'niko', 'm0nesy', 'ropz', 'device', 'electronic',
-  'bit', 'ax1le', 'twistzz', 'rain', 'frozen', 'broky', 'hunter-', 'jl',
+  'b1t', 'ax1le', 'twistzz', 'rain', 'frozen', 'broky', 'hunter', 'jl',
   'w0nderful', 'im', 'brollan', 'xantares', 'jks', 'magisk', 'gla1ve',
   'karrigan', 'aleksib', 'cadiaN', 'tabsen', 'blameF', 'spinx', 'mezii',
   'degster', 'hooxi', 'nexa', 'syrson', 'flamez', 'stavn', 'jabbi',
