@@ -140,15 +140,13 @@ export async function onRequestGet(context) {
       detailedStats: g.detailed_stats,
       beginAt: g.begin_at,
       teams: (g.teams || []).map(t => ({
-        id: t.team?.id ?? t.team_id,
-        name: t.team?.name ?? t.team?.acronym,
-        score: t.score ?? t.points,
+        id: t.team?.id,
+        name: t.team?.name,
+        score: t.score,
         firstHalf: t.first_half_score,
         secondHalf: t.second_half_score,
       })),
-      winnerId: g.winner?.id ?? g.winner_id,
-      _rawTeamKeys: g.teams ? Object.keys(g.teams[0] || {}) : [],
-      _rawWinnerKeys: g.winner ? Object.keys(g.winner) : (g.winner_id ? ['winner_id_field'] : []),
+      winnerId: g.winner?.id,
     }));
 
     // Build response

@@ -846,7 +846,7 @@ import Base from '../layouts/Base.astro';
         renderTeamLineups(window.__t1Roster, window.__t2Roster, t1, t2);
         renderMapPool(window.__t1Stats, window.__t2Stats, t1, t2);
         renderTeamStatsComparison(window.__t1Stats, window.__t2Stats, t1, t2);
-        renderTeamForm(window.__t1Stats, window.__t2Stats, t1, t2);
+        renderTeamForm(window.__t1Matches, window.__t2Matches, t1, t2);
       } else {
         Promise.all([
           fetch('/api/h2h-matches?team1=' + t1.id + '&team2=' + t2.id + '&per_page=10').then(function(r) { return r.ok ? r.json() : null; }),
@@ -854,18 +854,22 @@ import Base from '../layouts/Base.astro';
           fetch('/api/team-competitive-stats?id=' + t2.id).then(function(r) { return r.ok ? r.json() : null; }),
           fetch('/api/team-stats?id=' + t1.id).then(function(r) { return r.ok ? r.json() : null; }),
           fetch('/api/team-stats?id=' + t2.id).then(function(r) { return r.ok ? r.json() : null; }),
+          fetch('/api/team-matches?id=' + t1.id + '&per_page=10').then(function(r) { return r.ok ? r.json() : null; }),
+          fetch('/api/team-matches?id=' + t2.id + '&per_page=10').then(function(r) { return r.ok ? r.json() : null; }),
         ]).then(function(results) {
           window.__h2hData = results[0];
           window.__t1Stats = results[1];
           window.__t2Stats = results[2];
           window.__t1Roster = results[3];
           window.__t2Roster = results[4];
+          window.__t1Matches = results[5];
+          window.__t2Matches = results[6];
           renderH2HSection(results[0], results[1], results[2], match, t1, t2);
           renderAnalyticsInsights(results[1], results[2], match, t1, t2);
           renderTeamLineups(results[3], results[4], t1, t2);
           renderMapPool(results[1], results[2], t1, t2);
           renderTeamStatsComparison(results[1], results[2], t1, t2);
-          renderTeamForm(results[1], results[2], t1, t2);
+          renderTeamForm(results[5], results[6], t1, t2);
         }).catch(function(err) {
           console.error('Failed to load supplementary data:', err);
           var sec = document.getElementById('h2h-section');
@@ -884,6 +888,8 @@ import Base from '../layouts/Base.astro';
   window.__t2Stats = null;
   window.__t1Roster = null;
   window.__t2Roster = null;
+  window.__t1Matches = null;
+  window.__t2Matches = null;
 
   function calcWinProb(h2hData, t1Stats, t2Stats, match, t1, t2) {
     var isLive = match.status === 'running';
@@ -1422,7 +1428,7 @@ import Base from '../layouts/Base.astro';
     }
     t1Players = (t1Players || []).filter(function(p) { return p.active !== false; });
     t2Players = (t2Players || []).filter(function(p) { return p.active !== false; });
-    if (t1Players.length === 0 && t2Players.length === 0) return;
+    if (!t1Roster && !t2Roster) return;
 
     var t1Name = escapeHtml(t1.acronym || t1.name || 'T1');
     var t2Name = escapeHtml(t2.acronym || t2.name || 'T2');
@@ -1559,40 +1565,43 @@ import Base from '../layouts/Base.astro';
   }
 
   // ── Recent Team Form ──
-  function renderTeamForm(t1Stats, t2Stats, t1, t2) {
+  function renderTeamForm(t1Matches, t2Matches, t1, t2) {
     var section = document.getElementById('form-section');
     if (!section) return;
 
-    var t1Games = (t1Stats && t1Stats.lastGames) ? t1Stats.lastGames.slice(0, 5) : [];
-    var t2Games = (t2Stats && t2Stats.lastGames) ? t2Stats.lastGames.slice(0, 5) : [];
-    if (t1Games.length === 0 && t2Games.length === 0) return;
+    var t1Past = (t1Matches && t1Matches.past) ? t1Matches.past.slice(0, 5) : [];
+    var t2Past = (t2Matches && t2Matches.past) ? t2Matches.past.slice(0, 5) : [];
+    if (t1Past.length === 0 && t2Past.length === 0) return;
 
-    var t1Id = t1Stats ? t1Stats.id : t1.id;
-    var t2Id = t2Stats ? t2Stats.id : t2.id;
+    var t1Id = t1Matches ? t1Matches.teamId : t1.id;
+    var t2Id = t2Matches ? t2Matches.teamId : t2.id;
 
-    function renderFormCard(games, team, teamId) {
+    function renderFormCard(matches, team, teamId) {
       var teamName = escapeHtml(team.acronym || team.name || '?');
       var html = '<div class="md-form-card"><div class="md-form-header">';
       if (team.image) html += '<img src="' + team.image + '" alt="" onerror="this.style.display=\'none\'" />';
       html += teamName + ' Recent Form</div><div class="md-form-list">';
 
-      if (games.length === 0) {
+      if (matches.length === 0) {
         html += '<div class="md-form-empty">No recent matches</div>';
       } else {
-        games.forEach(function(g) {
-          var isWin = g.winnerId === teamId;
+        matches.forEach(function(m) {
+          var isWin = m.winnerId === teamId;
           var resultCls = isWin ? 'win' : 'loss';
           var resultTxt = isWin ? 'W' : 'L';
-          var teams = g.teams || [];
-          var opp = teams.find(function(t) { return t.id !== teamId; }) || teams[1] || {};
-          var us = teams.find(function(t) { return t.id === teamId; }) || teams[0] || {};
-          var score = (us.score != null && opp.score != null) ? us.score + ':' + opp.score : '\u2014';
+          var opponents = m.opponents || [];
+          var opp = opponents.find(function(o) { return o.id !== teamId; }) || opponents[1] || {};
+          var results = m.results || [];
+          var usResult = results.find(function(r) { return r.team_id === teamId; }) || {};
+          var oppResult = results.find(function(r) { return r.team_id !== teamId; }) || {};
+          var score = (usResult.score != null && oppResult.score != null) ? usResult.score + ':' + oppResult.score : '\u2014';
+          var tourney = (m.tournament && m.tournament.name) ? m.tournament.name : '';
 
           html += '<div class="md-form-match">';
           html += '<span class="md-form-result ' + resultCls + '">' + resultTxt + '</span>';
-          html += '<span class="md-form-opp">' + escapeHtml(opp.name || '?') + '</span>';
+          html += '<span class="md-form-opp">' + escapeHtml(opp.name || opp.acronym || '?') + '</span>';
           html += '<span class="md-form-score">' + score + '</span>';
-          html += '<span class="md-form-map">' + escapeHtml(g.map || '') + '</span>';
+          html += '<span class="md-form-map">' + escapeHtml(tourney) + '</span>';
           html += '</div>';
         });
       }
@@ -1602,8 +1611,8 @@ import Base from '../layouts/Base.astro';
     }
 
     var html = '<h2 class="section-title">Recent Form</h2><div class="md-form">';
-    html += renderFormCard(t1Games, t1, t1Id);
-    html += renderFormCard(t2Games, t2, t2Id);
+    html += renderFormCard(t1Past, t1, t1Id);
+    html += renderFormCard(t2Past, t2, t2Id);
     html += '</div>';
     section.innerHTML = html;
   }
