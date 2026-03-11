@@ -72,12 +72,22 @@ export async function onRequestGet(context) {
       if (csgoRes.ok) {
         const players = await csgoRes.json();
         if (players.length > 0) {
-          const exact = players.find(p => p.slug === playerSlug) ||
-                        players.find(p => p.name.toLowerCase() === (playerName || playerSlug).toLowerCase());
-          if (exact) playerId = exact.id;
-          else {
-            const best = pickBest(players);
-            if (best) playerId = best.id;
+          // Check exact slug match first (highest confidence)
+          const slugMatch = players.find(p => p.slug === playerSlug);
+          if (slugMatch) {
+            playerId = slugMatch.id;
+          } else {
+            // Collect ALL exact name matches, then score them to pick best
+            const searchLower = (playerName || playerSlug).toLowerCase();
+            const nameMatches = players.filter(p => p.name.toLowerCase() === searchLower);
+            if (nameMatches.length > 0) {
+              const best = pickBest(nameMatches);
+              if (best) playerId = best.id;
+            } else {
+              // No exact match — score all candidates
+              const best = pickBest(players);
+              if (best) playerId = best.id;
+            }
           }
         }
       }

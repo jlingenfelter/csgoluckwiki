@@ -71,14 +71,22 @@ export async function onRequestGet(context) {
       if (csgoRes.ok) {
         const players = await csgoRes.json();
         if (players.length > 0) {
-          // Exact slug or name match, with team/country scoring
-          const exact = players.find(p => p.slug === playerSlug) ||
-                        players.find(p => p.name.toLowerCase() === (playerName || playerSlug).toLowerCase());
-          if (exact) {
-            pid = exact.id;
+          // Check exact slug match first (highest confidence)
+          const slugMatch = players.find(p => p.slug === playerSlug);
+          if (slugMatch) {
+            pid = slugMatch.id;
           } else {
-            const best = pickBest(players);
-            if (best) pid = best.id;
+            // Collect ALL exact name matches, then score to pick best
+            const searchLower = (playerName || playerSlug).toLowerCase();
+            const nameMatches = players.filter(p => p.name.toLowerCase() === searchLower);
+            if (nameMatches.length > 0) {
+              const best = pickBest(nameMatches);
+              if (best) pid = best.id;
+            } else {
+              // No exact match — score all candidates
+              const best = pickBest(players);
+              if (best) pid = best.id;
+            }
           }
         }
       }
