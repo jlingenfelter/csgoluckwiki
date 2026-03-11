@@ -139,11 +139,11 @@ export async function onRequestGet(context) {
 
     const currentTeamId = player.current_team?.id;
 
-    // Fetch past matches for the player's current team
+    // Fetch past matches for the player's current team (only finished, non-forfeit matches)
     let pastMatches = [];
     if (currentTeamId) {
       const matchesRes = await fetch(
-        `https://api.pandascore.co/csgo/matches/past?filter[opponent_id]=${currentTeamId}&sort=-begin_at&page=${page}&per_page=${perPage}&token=${apiKey}`,
+        `https://api.pandascore.co/csgo/matches/past?filter[opponent_id]=${currentTeamId}&filter[status]=finished&filter[forfeit]=false&sort=-begin_at&page=${page}&per_page=${perPage}&token=${apiKey}`,
         { cf: { cacheTtl: 600 } }
       );
       if (matchesRes.ok) {
@@ -152,6 +152,29 @@ export async function onRequestGet(context) {
     }
 
     function slimMatch(m) {
+      // Compute scores: prefer results[].score, fall back to counting game wins
+      let results = m.results || [];
+      const hasValidScores = results.length === 2 && results.some(r => r.score > 0);
+
+      if (!hasValidScores && Array.isArray(m.games) && m.games.length > 0) {
+        // Count game wins per team from the games array
+        const winCounts = {};
+        for (const g of m.games) {
+          const gWinner = g.winner?.id || g.winner_id;
+          if (gWinner) {
+            winCounts[gWinner] = (winCounts[gWinner] || 0) + 1;
+          }
+        }
+        // Build results from win counts
+        const opponents = (m.opponents || []).map(o => o.opponent?.id).filter(Boolean);
+        if (opponents.length === 2) {
+          results = opponents.map(id => ({
+            team_id: id,
+            score: winCounts[id] || 0,
+          }));
+        }
+      }
+
       return {
         id: m.id,
         name: m.name,
@@ -167,7 +190,7 @@ export async function onRequestGet(context) {
           acronym: o.opponent?.acronym,
           image: o.opponent?.image_url,
         })),
-        results: m.results || [],
+        results,
         tournament: {
           name: m.tournament?.name,
           tier: m.tournament?.tier,
