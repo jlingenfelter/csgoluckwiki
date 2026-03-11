@@ -121,6 +121,7 @@ const hasCrosshairSettings = player.crosshairSettings && Object.keys(player.cros
 
 // Sidebar sections
 const sections: { id: string; label: string }[] = [
+  { id: 'upcoming', label: 'Upcoming Matches' },
   { id: 'sensitivity', label: 'Mouse & Sensitivity' },
   { id: 'crosshair', label: 'Crosshair' },
   { id: 'video', label: 'Video & Display' },
@@ -134,7 +135,6 @@ if (hasLoadout) sections.push({ id: 'loadout', label: 'Weapon Skins' });
 sections.push({ id: 'config', label: 'Config & Download' });
 if (player.launchOptions) sections.push({ id: 'launch', label: 'Launch Options' });
 sections.push({ id: 'livestats', label: 'Performance Stats' });
-sections.push({ id: 'upcoming', label: 'Upcoming Matches' });
 sections.push({ id: 'matchhistory', label: 'Match History' });
 if (teammates.length > 0) sections.push({ id: 'teammates', label: 'Teammates' });
 sections.push({ id: 'similar', label: 'Similar Players' });
@@ -214,6 +214,15 @@ const faqs = [
 </nav>
 
 <div class="pp-main">
+
+<!-- Upcoming Matches (loaded client-side) -->
+<section class="pp-section pp-match-history" id="upcoming">
+  <h2 class="pp-section-title">Upcoming Matches</h2>
+  <p class="pp-match-history-sub">Scheduled matches and tournaments for this player's team.</p>
+  <div id="upcomingMatchesContent">
+    <div class="pp-mh-loading"><div class="pp-mh-spinner"></div> Loading upcoming matches…</div>
+  </div>
+</section>
 
   <!-- MOUSE & SENSITIVITY -->
   <section class="pp-section" id="sensitivity">
@@ -491,15 +500,6 @@ const faqs = [
   <p class="pp-live-stats-sub">Live stats from professional matches, powered by PandaScore.</p>
   <div id="liveStatsContent">
     <div class="pp-ls-loading"><div class="pp-ls-spinner"></div> Loading performance data…</div>
-  </div>
-</section>
-
-<!-- Upcoming Matches (loaded client-side) -->
-<section class="pp-section pp-match-history" id="upcoming">
-  <h2 class="pp-section-title">Upcoming Matches</h2>
-  <p class="pp-match-history-sub">Scheduled matches and tournaments for this player's team.</p>
-  <div id="upcomingMatchesContent">
-    <div class="pp-mh-loading"><div class="pp-mh-spinner"></div> Loading upcoming matches…</div>
   </div>
 </section>
 
