@@ -718,7 +718,13 @@ const explore = [
 
   // ─── Data Loading ─────────────────────────────────────────
   var statsCache = {}, h2hCache = {};
-  async function fetchJSON(url) { try { var r = await fetch(url); return r.ok ? await r.json() : null; } catch(e) { return null; } }
+  function fetchJSON(url, ms) {
+    ms = ms || 12000;
+    return Promise.race([
+      fetch(url).then(function(r) { return r.ok ? r.json() : null; }),
+      new Promise(function(_, rej) { setTimeout(function() { rej(new Error('timeout')); }, ms); })
+    ]).catch(function() { return null; });
+  }
   async function getStats(id) { if (!id) return null; if (statsCache[id]) return statsCache[id]; var d = await fetchJSON('/api/team-competitive-stats?id=' + id); if (d) statsCache[id] = d; return d; }
   async function getH2H(a, b) { var k = a + '-' + b; if (h2hCache[k]) return h2hCache[k]; var d = await fetchJSON('/api/h2h-matches?team1=' + a + '&team2=' + b + '&per_page=20'); if (d) h2hCache[k] = d; return d; }
 
@@ -769,7 +775,7 @@ const explore = [
     return [];
   }
 
-  async function processBatch(matches, size) {
+  async function processBatch(matches, size, onProgress) {
     var results = [];
     for (var i = 0; i < matches.length; i += size) {
       var batch = matches.slice(i, i + size);
@@ -782,7 +788,9 @@ const explore = [
         var prob = priceMatch(h, s1, s2, m, t1, t2);
         return { match: m, t1: { id: t1.id, name: t1.name, acronym: t1.acronym, image: t1.image_url }, t2: { id: t2.id, name: t2.name, acronym: t2.acronym, image: t2.image_url }, t1Stats: s1, t2Stats: s2, h2hData: h, prob: prob };
       }));
-      results = results.concat(br.filter(Boolean));
+      var newResults = br.filter(Boolean);
+      results = results.concat(newResults);
+      if (onProgress) onProgress(results, i + batch.length, matches.length);
     }
     return results;
   }
@@ -790,14 +798,17 @@ const explore = [
   async function loadAll() {
     container.innerHTML = '<div class="loading-state"><div class="spinner"></div> Loading match data…</div>';
     var [upcoming, live, past] = await Promise.all([
-      fetchJSON('/api/matches?type=upcoming&per_page=30'),
-      fetchJSON('/api/matches?type=running&per_page=15'),
-      fetchJSON('/api/matches?type=past&per_page=15')
+      fetchJSON('/api/matches?type=upcoming&per_page=25'),
+      fetchJSON('/api/matches?type=running&per_page=10'),
+      fetchJSON('/api/matches?type=past&per_page=10')
     ]);
     var all = [].concat(extractMatches(live), extractMatches(upcoming), extractMatches(past)).map(normalizeMatch).filter(Boolean);
     if (!all.length) { container.innerHTML = '<div class="empty-state"><p>No matches found.</p></div>'; return; }
     container.innerHTML = '<div class="loading-state"><div class="spinner"></div> Pricing ' + all.length + ' matches…</div>';
-    allPredictions = await processBatch(all, 4);
+    allPredictions = await processBatch(all, 5, function(resultsSoFar, done, total) {
+      allPredictions = resultsSoFar;
+      applyFilters();
+    });
     if (!allPredictions.length) { container.innerHTML = '<div class="empty-state"><p>No matches with enough data to price.</p></div>'; return; }
     applyFilters();
   }

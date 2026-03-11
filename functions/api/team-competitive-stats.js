@@ -29,11 +29,16 @@ export async function onRequestGet(context) {
     const teamSlug = url.searchParams.get('slug');
     const teamName = url.searchParams.get('name');
 
+    // Helper: check if a PandaScore team object is CS:GO / CS2
+    const isCSTeam = (t) =>
+      t.current_videogame?.slug === 'cs-go' || t.current_videogame?.slug === 'cs-2' ||
+      t.current_videogame?.id === 3 || t.current_videogame?.id === 14;
+
     // Step 1: Resolve team ID if not provided directly
     if (!teamId) {
       let lookupUrl;
       if (teamSlug) {
-        lookupUrl = `https://api.pandascore.co/teams?filter[slug]=${encodeURIComponent(teamSlug)}&per_page=1&token=${apiKey}`;
+        lookupUrl = `https://api.pandascore.co/teams?filter[slug]=${encodeURIComponent(teamSlug)}&per_page=10&token=${apiKey}`;
       } else if (teamName) {
         lookupUrl = `https://api.pandascore.co/teams?search[name]=${encodeURIComponent(teamName)}&per_page=25&token=${apiKey}`;
       } else {
@@ -54,11 +59,25 @@ export async function onRequestGet(context) {
         return new Response(JSON.stringify({ error: 'Team not found' }), { status: 404, headers: errorHeaders });
       }
 
-      // For name search, prefer CS:GO/CS2 teams
-      const csTeam = results.find(t =>
-        t.current_videogame?.slug === 'cs-go' || t.current_videogame?.slug === 'cs2'
-      ) || results[0];
-      teamId = csTeam.id;
+      // Prefer CS:GO/CS2 teams
+      let csTeam = results.find(isCSTeam);
+
+      // Fallback: if slug resolved to a non-CS team (e.g. Dota 2 "team-spirit"),
+      // use its org name to search again for the CS team
+      if (!csTeam && teamSlug && results.length > 0) {
+        const orgName = results[0].name;
+        const nameUrl = `https://api.pandascore.co/teams?search[name]=${encodeURIComponent(orgName)}&per_page=25&token=${apiKey}`;
+        const nameRes = await fetch(nameUrl, {
+          headers: { 'Accept': 'application/json' },
+          cf: { cacheTtl: 3600 },
+        });
+        if (nameRes.ok) {
+          const nameResults = await nameRes.json();
+          csTeam = (nameResults || []).find(isCSTeam);
+        }
+      }
+
+      teamId = csTeam ? csTeam.id : results[0].id;
     }
 
     // Step 2: Fetch team stats from the dedicated stats endpoint

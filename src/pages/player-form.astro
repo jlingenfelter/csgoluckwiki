@@ -680,7 +680,7 @@ const explore = [
           <div class="pf-record-label">Wins</div>
         </div>
         <div class="pf-record-item">
-          <div class="pf-record-val" style="color:${(record.matchWinRate || 0) >= 0.5 ? '#2ecc71' : '#e74c3c'}">${record.matchWinRate ? Math.round(record.matchWinRate * 100) + '%' : '—'}</div>
+          <div class="pf-record-val" style="color:${(record.matchWinRate || 0) >= 50 ? '#2ecc71' : '#e74c3c'}">${record.matchWinRate ? Math.round(record.matchWinRate) + '%' : '—'}</div>
           <div class="pf-record-label">Win Rate</div>
         </div>
       </div>
