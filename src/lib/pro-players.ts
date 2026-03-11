@@ -184,6 +184,30 @@ export function getAverageEdpi(): number {
   if (PRO_PLAYERS.length === 0) return 0;
   return Math.round(PRO_PLAYERS.reduce((s, p) => s + p.edpi, 0) / PRO_PLAYERS.length);
 }
+
+/** Get eDPI distribution data for histogram visualization */
+export function getEdpiDistribution(): { buckets: { min: number; max: number; count: number; pct: number }[]; total: number; median: number } {
+  if (PRO_PLAYERS.length === 0) return { buckets: [], total: 0, median: 0 };
+  const sorted = PRO_PLAYERS.map(p => p.edpi).sort((a, b) => a - b);
+  const total = sorted.length;
+  const median = sorted[Math.floor(total / 2)];
+  // Use 200-width buckets from 0-2000+ for a compact histogram
+  const ranges = [
+    [0, 399], [400, 599], [600, 799], [800, 999], [1000, 1199], [1200, 1599], [1600, 2000]
+  ] as const;
+  const buckets = ranges.map(([min, max]) => {
+    const count = sorted.filter(e => e >= min && e <= max).length;
+    return { min, max, count, pct: Math.round((count / total) * 100) };
+  });
+  return { buckets, total, median };
+}
+
+/** Get the percentile ranking of a given eDPI value (0-100, lower eDPI = lower percentile) */
+export function getEdpiPercentile(edpi: number): number {
+  if (PRO_PLAYERS.length === 0) return 50;
+  const below = PRO_PLAYERS.filter(p => p.edpi < edpi).length;
+  return Math.round((below / PRO_PLAYERS.length) * 100);
+}
 export function getMostCommonRes(): string {
   if (PRO_PLAYERS.length === 0) return 'N/A';
   const c: Record<string, number> = {};

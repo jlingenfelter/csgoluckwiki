@@ -1,7 +1,7 @@
 ---
 import Base from '../../layouts/Base.astro';
 import ExploreMore from '../../components/ExploreMore.astro';
-import { PRO_PLAYERS, getAverageEdpi, getGearImageUrl, type ProPlayer } from '../../lib/pro-players';
+import { PRO_PLAYERS, getAverageEdpi, getEdpiDistribution, getEdpiPercentile, getGearImageUrl, type ProPlayer } from '../../lib/pro-players';
 import { breadcrumbSchema, faqSchema } from '../../lib/weapons';
 import { getSkinBySlug, RARITY_COLORS } from '../../lib/skins';
 
@@ -15,6 +15,16 @@ export function getStaticPaths() {
 const { player } = Astro.props as { player: ProPlayer };
 const avgEdpi = getAverageEdpi();
 const cm360 = Math.round((2.54 * 360) / (player.edpi * 0.022));
+const edpiDist = getEdpiDistribution();
+const edpiPercentile = getEdpiPercentile(player.edpi);
+const edpiPctLabel = edpiPercentile < 50 ? `lower than ${100 - edpiPercentile}%` : `higher than ${edpiPercentile}%`;
+const maxBucketPct = Math.max(...edpiDist.buckets.map(x => x.pct));
+const edpiHistBars = edpiDist.buckets.map(b => ({
+  pct: b.pct,
+  height: Math.max(4, Math.round((b.pct / (maxBucketPct || 1)) * 48)),
+  active: player.edpi >= b.min && player.edpi <= b.max,
+  label: b.max >= 1600 ? '1600+' : b.min < 400 ? '<400' : `${b.min}`,
+}));
 
 // Find similar players (same role or close eDPI)
 const similar = PRO_PLAYERS
@@ -172,18 +182,25 @@ const faqs = [
 <!-- Hero: Two-column (player image + team left, name + stats table right) -->
 <section class="pp-hero">
   <div class="pp-hero-left">
-    {player.image && <img class="pp-hero-img" src={player.image} alt={player.name} width="120" height="120" loading="eager" onerror="this.style.display='none'" />}
+    <div class="pp-hero-img-wrap">
+      {player.image && <img class="pp-hero-img" src={player.image} alt={player.name} width="120" height="120" loading="eager" onerror="this.style.display='none'" />}
+      <span class="pp-hero-flag">{player.flag}</span>
+    </div>
     <div class="pp-hero-badge">
-      <span class="pp-hero-team">{player.team}</span>
+      {isRealTeam && <a href={`/pro-teams/${player.team.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')}/`} class="pp-hero-team-link">
+        <span class="pp-hero-team-logo" id="heroTeamLogo"></span>
+        <span class="pp-hero-team">{player.team}</span>
+      </a>}
+      {!isRealTeam && <span class="pp-hero-team">{player.team}</span>}
       <span class="pp-hero-role" data-r={player.role.toLowerCase().replace(/\s/g,'-')}>{player.role}</span>
     </div>
   </div>
   <div class="pp-hero-right">
-    <h1 class="pp-hero-name">{player.flag} {player.name} Settings, Crosshair, Team & Stats</h1>
+    <h1 class="pp-hero-name">{player.name} <span class="pp-hero-name-sub">Settings, Crosshair & Stats</span></h1>
     <div class="pp-hero-meta">
       <span class="pp-hero-country">{player.country}</span>
       {player.age && <span class="pp-hero-age">Age {player.age}</span>}
-      {player.realName && <span class="pp-hero-realname">({player.realName})</span>}
+      {player.realName && <span class="pp-hero-realname">{player.realName}</span>}
     </div>
     <table class="pp-hero-table">
       <tbody>
@@ -245,6 +262,21 @@ const faqs = [
         </div>
       </div>
       <div class="pp-edpi-labels"><span>Low</span><span>Medium</span><span>High</span></div>
+    </div>
+    <div class="pp-edpi-dist">
+      <div class="pp-edpi-dist-header">
+        <span class="pp-edpi-dist-title">Pro eDPI Distribution</span>
+        <span class="pp-edpi-dist-pctl">{player.name}: {edpiPctLabel} of pros</span>
+      </div>
+      <div class="pp-edpi-hist">
+        {edpiHistBars.map(b => (
+          <div class={`pp-edpi-hist-col ${b.active ? 'active' : ''}`}>
+            <span class="pp-edpi-hist-pct">{b.pct}%</span>
+            <div class="pp-edpi-hist-bar" style={`height:${b.height}px`}></div>
+            <span class="pp-edpi-hist-label">{b.label}</span>
+          </div>
+        ))}
+      </div>
     </div>
     <h3 class="pp-sub">Mouse & Mousepad</h3>
     <div class="pp-kv-grid">
@@ -589,8 +621,13 @@ const faqs = [
 /* ── Hero: Two-column layout ─────────────────────────────────────────────── */
 .pp-hero{display:flex;gap:1.5rem;align-items:flex-start;padding:1.25rem 0;margin-bottom:1.5rem;border-bottom:1px solid var(--border)}
 .pp-hero-left{display:flex;flex-direction:column;align-items:center;gap:.6rem;flex-shrink:0}
+.pp-hero-img-wrap{position:relative;display:inline-block}
 .pp-hero-img{width:120px;height:120px;border-radius:4px;object-fit:cover;border:2px solid var(--border);background:var(--bg3)}
+.pp-hero-flag{position:absolute;bottom:-4px;right:-4px;font-size:1.3rem;line-height:1;filter:drop-shadow(0 1px 3px rgba(0,0,0,.5))}
 .pp-hero-badge{display:flex;flex-direction:column;align-items:center;gap:.3rem}
+.pp-hero-team-link{display:flex;align-items:center;gap:.35rem;text-decoration:none;color:var(--accent);transition:opacity .15s}
+.pp-hero-team-link:hover{opacity:.8}
+.pp-hero-team-logo img{width:18px;height:18px;object-fit:contain}
 .pp-hero-team{color:var(--accent);font-weight:700;font-size:.85rem;text-align:center}
 .pp-hero-role{font-size:.62rem;font-weight:700;padding:.15rem .5rem;border-radius:4px;text-transform:uppercase;letter-spacing:.04em;background:var(--bg3);color:var(--text2);border:1px solid var(--border)}
 .pp-hero-role[data-r="awper"]{background:rgba(239,83,80,.12);color:var(--red);border-color:var(--red)}
@@ -601,8 +638,10 @@ const faqs = [
 
 .pp-hero-right{flex:1;min-width:0}
 .pp-hero-name{font-size:1.8rem;font-weight:800;margin:0 0 .3rem;letter-spacing:-.02em}
+.pp-hero-name-sub{font-size:.85rem;font-weight:500;color:var(--text2);letter-spacing:0;display:block;margin-top:.1rem}
 .pp-hero-meta{display:flex;gap:.6rem;flex-wrap:wrap;align-items:center;margin-bottom:.75rem}
 .pp-hero-country,.pp-hero-age,.pp-hero-realname{color:var(--text2);font-size:.82rem}
+.pp-hero-realname{font-style:italic}
 
 .pp-hero-table{width:100%;border-collapse:collapse;font-size:.82rem}
 .pp-hero-table td{padding:.35rem .5rem;border-bottom:1px solid var(--border)}
@@ -647,6 +686,20 @@ const faqs = [
 .pp-edpi-avg{position:absolute;bottom:-7px;transform:translateX(-50%);z-index:1}
 .pp-edpi-avg span{font-size:.56rem;color:var(--text2);font-weight:600;white-space:nowrap}
 .pp-edpi-labels{display:flex;justify-content:space-between;margin-top:.4rem;font-size:.65rem;color:var(--text2)}
+
+/* ── eDPI Distribution Histogram ─────────────────────────────────────────── */
+.pp-edpi-dist{margin-top:1rem;padding:.8rem;background:var(--bg);border:1px solid var(--border);border-radius:4px}
+.pp-edpi-dist-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:.6rem;flex-wrap:wrap;gap:.3rem}
+.pp-edpi-dist-title{font-size:.72rem;font-weight:700;color:var(--text)}
+.pp-edpi-dist-pctl{font-size:.68rem;color:var(--accent);font-weight:600}
+.pp-edpi-hist{display:flex;align-items:flex-end;gap:2px;justify-content:space-between}
+.pp-edpi-hist-col{display:flex;flex-direction:column;align-items:center;flex:1;min-width:0}
+.pp-edpi-hist-pct{font-size:.56rem;color:var(--text2);margin-bottom:2px;font-weight:600}
+.pp-edpi-hist-bar{width:100%;background:var(--bg3);border-radius:2px 2px 0 0;transition:background .2s}
+.pp-edpi-hist-col.active .pp-edpi-hist-bar{background:var(--accent)}
+.pp-edpi-hist-col.active .pp-edpi-hist-pct{color:var(--accent);font-weight:700}
+.pp-edpi-hist-col.active .pp-edpi-hist-label{color:var(--accent);font-weight:700}
+.pp-edpi-hist-label{font-size:.52rem;color:var(--text2);margin-top:2px;white-space:nowrap}
 
 /* ── Crosshair Preview ──────────────────────────────────────────────────── */
 .pp-xhair-preview{width:100%;max-width:360px;height:170px;background:linear-gradient(135deg,#2a2a2a 0%,#1a1a1a 50%,#2a2a2a 100%);border-radius:4px;position:relative;overflow:hidden;border:1px solid var(--border);margin-bottom:.4rem}
@@ -745,8 +798,12 @@ const faqs = [
   .pp-hero{flex-direction:column;align-items:flex-start;gap:.75rem}
   .pp-hero-left{flex-direction:row;align-items:center;gap:.75rem}
   .pp-hero-img{width:72px;height:72px}
+  .pp-hero-flag{font-size:1rem}
   .pp-hero-name{font-size:1.35rem}
+  .pp-hero-name-sub{font-size:.75rem}
   .pp-hero-table{font-size:.75rem}
+  .pp-edpi-hist-pct{font-size:.48rem}
+  .pp-edpi-hist-label{font-size:.44rem}
   .pp-sidebar{display:none}
   .pp-layout{flex-direction:column}
   .pp-kv-grid{grid-template-columns:1fr}
@@ -967,6 +1024,14 @@ const faqs = [
       var upcoming = (data.upcoming || []).slice(0, 10);
       var currentTeam = data.currentTeam;
       var currentTeamId = currentTeam ? currentTeam.id : null;
+
+      // Load team logo into hero
+      if (currentTeam && currentTeam.image) {
+        var logoEl = document.getElementById('heroTeamLogo');
+        if (logoEl) {
+          logoEl.innerHTML = '<img src="' + currentTeam.image + '" alt="' + (currentTeam.name || '') + '" onerror="this.style.display=\'none\'" />';
+        }
+      }
 
       // --- Render upcoming matches ---
       var upContainer = document.getElementById('upcomingMatchesContent');
