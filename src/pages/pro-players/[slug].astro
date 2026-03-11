@@ -120,21 +120,22 @@ const hasMonitorSettings = player.monitorSettings && Object.keys(player.monitorS
 const hasCrosshairSettings = player.crosshairSettings && Object.keys(player.crosshairSettings).length > 0;
 
 // Sidebar sections
-const sections = [
+const sections: { id: string; label: string }[] = [
   { id: 'sensitivity', label: 'Mouse & Sensitivity' },
   { id: 'crosshair', label: 'Crosshair' },
   { id: 'video', label: 'Video & Display' },
   { id: 'viewmodel', label: 'Viewmodel' },
-  { id: 'livestats', label: 'Performance Stats' },
-  { id: 'matchhistory', label: 'Match History' },
 ];
 if (hasRadarSettings || hasHudSettings) sections.push({ id: 'gamehud', label: 'Radar & HUD' });
 if (hasMonitorSettings) sections.push({ id: 'monitorsettings', label: 'Monitor Settings' });
-sections.push({ id: 'config', label: 'Config & Download' });
 sections.push({ id: 'gear', label: 'Gear & Peripherals' });
-if (hasLoadout) sections.push({ id: 'loadout', label: 'Weapon Skins' });
 if (player.gpu) sections.push({ id: 'pcspecs', label: 'PC Specs' });
+if (hasLoadout) sections.push({ id: 'loadout', label: 'Weapon Skins' });
+sections.push({ id: 'config', label: 'Config & Download' });
 if (player.launchOptions) sections.push({ id: 'launch', label: 'Launch Options' });
+sections.push({ id: 'livestats', label: 'Performance Stats' });
+sections.push({ id: 'upcoming', label: 'Upcoming Matches' });
+sections.push({ id: 'matchhistory', label: 'Match History' });
 if (teammates.length > 0) sections.push({ id: 'teammates', label: 'Teammates' });
 sections.push({ id: 'similar', label: 'Similar Players' });
 sections.push({ id: 'faq', label: 'FAQ' });
@@ -326,7 +327,7 @@ const faqs = [
     )}
 
     <!-- Viewmodel -->
-    <h3 class="pp-sub">Viewmodel{hasBobSettings ? ' & Bob' : ''}</h3>
+    <h3 class="pp-sub" id="viewmodel">Viewmodel{hasBobSettings ? ' & Bob' : ''}</h3>
     <div class="pp-kv-grid">
       <div class="pp-kv"><span class="pp-kv-key">viewmodel_fov</span><span class="pp-kv-val">{player.vmFov}</span></div>
       <div class="pp-kv"><span class="pp-kv-key">viewmodel_offset_x</span><span class="pp-kv-val">{player.vmX}</span></div>
@@ -353,7 +354,7 @@ const faqs = [
     <!-- Radar & HUD -->
     {(hasRadarSettings || hasHudSettings) && (
     <>
-    <h3 class="pp-sub">Radar & HUD</h3>
+    <h3 class="pp-sub" id="gamehud">Radar & HUD</h3>
     <div class="pp-kv-grid">
       {hasRadarSettings && (
       <>
@@ -377,7 +378,7 @@ const faqs = [
     <!-- Monitor Settings -->
     {hasMonitorSettings && (
     <>
-    <h3 class="pp-sub">Monitor Settings</h3>
+    <h3 class="pp-sub" id="monitorsettings">Monitor Settings</h3>
     <div class="pp-kv-grid">
       {player.monitorSettings!.dyac && <div class="pp-kv"><span class="pp-kv-key">DyAc</span><span class="pp-kv-val">{player.monitorSettings!.dyac}</span></div>}
       {player.monitorSettings!.blackEqualizer && <div class="pp-kv"><span class="pp-kv-key">Black eQualizer</span><span class="pp-kv-val">{player.monitorSettings!.blackEqualizer}</span></div>}
@@ -404,19 +405,22 @@ const faqs = [
         { key: 'keyboard' as const, label: 'Keyboard', value: player.keyboard },
         { key: 'headset' as const, label: 'Headset', value: player.headset },
         { key: 'mousepad' as const, label: 'Mousepad', value: player.mousepad },
-      ].map(g => (
-        <div class="pp-gear-item">
+      ].map(g => {
+        const gearSlug = `${g.key}-${g.value.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')}`;
+        return (
+        <a href={`/pro-gaming-gear/${gearSlug}/`} class="pp-gear-item">
           {getGearImageUrl(g.value) && <img class="pp-gear-img" src={getGearImageUrl(g.value)} alt={g.value} width="36" height="36" loading="lazy" onerror="this.style.display='none'" />}
           <span class="pp-gear-label">{g.label}</span>
           <span class="pp-gear-value">{g.value}</span>
-        </div>
-      ))}
+        </a>
+        );
+      })}
     </div>
 
     {/* PC Specs */}
     {player.gpu && (
     <>
-    <h3 class="pp-sub">PC Specs</h3>
+    <h3 class="pp-sub" id="pcspecs">PC Specs</h3>
     <div class="pp-gear-list">
       <div class="pp-gear-item"><span class="pp-gear-label">GPU</span><span class="pp-gear-value">{player.gpu}</span></div>
     </div>
@@ -426,7 +430,7 @@ const faqs = [
     {/* Loadout */}
     {hasLoadout && (
     <>
-    <h3 class="pp-sub">{player.name}'s Weapon Skins</h3>
+    <h3 class="pp-sub" id="loadout">{player.name}'s Weapon Skins</h3>
     <div class="pp-loadout-grid">
       {resolvedLoadout.map(item => (
         <a href={item.skin ? `/cs2-skins/${item.slug}/` : '#'} class={`pp-loadout-card${item.skin ? '' : ' pp-loadout-nolink'}`} style={item.rarityColor ? `border-color:${item.rarityColor}` : ''}>
@@ -472,7 +476,7 @@ const faqs = [
     {/* Launch Options */}
     {player.launchOptions && (
     <>
-    <h3 class="pp-sub">Launch Options</h3>
+    <h3 class="pp-sub" id="launch">Launch Options</h3>
     <div class="pp-cmd-row">
       <code id="launchOpts">{player.launchOptions}</code>
       <button class="pp-copy-btn pp-copy-sm" id="copyLaunch">Copy</button>
@@ -487,6 +491,15 @@ const faqs = [
   <p class="pp-live-stats-sub">Live stats from professional matches, powered by PandaScore.</p>
   <div id="liveStatsContent">
     <div class="pp-ls-loading"><div class="pp-ls-spinner"></div> Loading performance data…</div>
+  </div>
+</section>
+
+<!-- Upcoming Matches (loaded client-side) -->
+<section class="pp-section pp-match-history" id="upcoming">
+  <h2 class="pp-section-title">Upcoming Matches</h2>
+  <p class="pp-match-history-sub">Scheduled matches and tournaments for this player's team.</p>
+  <div id="upcomingMatchesContent">
+    <div class="pp-mh-loading"><div class="pp-mh-spinner"></div> Loading upcoming matches…</div>
   </div>
 </section>
 
@@ -615,7 +628,7 @@ const faqs = [
 /* ── Section blocks ─────────────────────────────────────────────────────── */
 .pp-section{margin-bottom:2rem;scroll-margin-top:70px;background:var(--bg2);border:1px solid var(--border);border-radius:4px;padding:1.5rem}
 .pp-section-title{font-size:1.1rem;margin:0 0 .75rem;font-weight:700}
-.pp-sub{font-size:.92rem;font-weight:700;color:var(--text);margin:1.25rem 0 .5rem;padding-top:1rem;border-top:1px solid var(--border)}
+.pp-sub{font-size:.92rem;font-weight:700;color:var(--text);margin:1.25rem 0 .5rem;padding-top:1rem;border-top:1px solid var(--border);scroll-margin-top:80px}
 
 /* ── Key-Value Grid (settings rows) ──────────────────────────────────────── */
 .pp-kv-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:.3rem}
@@ -663,7 +676,7 @@ const faqs = [
 
 /* ── Gear: Horizontal row items with green left border ───────────────────── */
 .pp-gear-list{display:flex;flex-direction:column;gap:.35rem}
-.pp-gear-item{display:flex;align-items:center;gap:.65rem;padding:.5rem .75rem;background:var(--bg);border:1px solid var(--border);border-left:3px solid var(--accent);border-radius:4px;font-size:.85rem}
+.pp-gear-item{display:flex;align-items:center;gap:.65rem;padding:.5rem .75rem;background:var(--bg);border:1px solid var(--border);border-left:3px solid var(--accent);border-radius:4px;font-size:.85rem;text-decoration:none;color:inherit}
 .pp-gear-item:hover{background:var(--bg3)}
 .pp-gear-img{width:36px;height:36px;object-fit:contain;border-radius:4px;flex-shrink:0}
 .pp-gear-label{color:var(--text2);font-weight:600;font-size:.78rem;min-width:70px}
@@ -815,6 +828,7 @@ const faqs = [
 .pp-mh-badge{display:inline-block;font-size:.65rem;font-weight:800;padding:.12rem .4rem;border-radius:4px;text-transform:uppercase;letter-spacing:.03em;line-height:1}
 .pp-mh-win{background:rgba(46,204,113,.15);color:#2ecc71;border:1px solid rgba(46,204,113,.3)}
 .pp-mh-loss{background:rgba(231,76,60,.15);color:#e74c3c;border:1px solid rgba(231,76,60,.3)}
+.pp-mh-upcoming{background:rgba(52,152,219,.15);color:#3498db;border:1px solid rgba(52,152,219,.3)}
 .pp-mh-tournament{color:var(--text2);font-size:.72rem;flex:1;text-align:right;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 
 @media(max-width:768px){
@@ -950,9 +964,51 @@ const faqs = [
       if (data.error) throw new Error(data.error);
 
       var matches = (data.matches || []).slice(0, 10);
+      var upcoming = (data.upcoming || []).slice(0, 10);
       var currentTeam = data.currentTeam;
       var currentTeamId = currentTeam ? currentTeam.id : null;
 
+      // --- Render upcoming matches ---
+      var upContainer = document.getElementById('upcomingMatchesContent');
+      if (upContainer) {
+        if (upcoming.length === 0) {
+          upContainer.innerHTML = '<div class="pp-mh-empty">No upcoming matches scheduled.</div>';
+        } else {
+          var uh = '<div class="pp-mh-list">';
+          upcoming.forEach(function(m) {
+            var date = m.beginAt ? new Date(m.beginAt) : null;
+            var dateStr = date ? date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : 'TBD';
+            var timeStr = date ? date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }) : '';
+
+            var opponent = null;
+            if (m.opponents && m.opponents.length === 2) {
+              m.opponents.forEach(function(o) {
+                if (o.id !== currentTeamId) opponent = o;
+              });
+            }
+            if (!opponent && m.opponents && m.opponents.length > 0) {
+              opponent = m.opponents.find(function(o) { return o.id !== currentTeamId; }) || m.opponents[0];
+            }
+
+            var oppImg = opponent && opponent.image ? '<img src="' + opponent.image + '" alt="" class="pp-mh-opp-img" />' : '';
+            var oppName = opponent ? (opponent.acronym || opponent.name) : 'TBD';
+            var tournamentName = m.tournament ? m.tournament.name : (m.league ? m.league.name : '');
+            var matchType = m.matchType === 'best_of' ? 'BO' + m.numberOfGames : '';
+
+            uh += '<a href="/match-detail/?id=' + m.id + '" class="pp-mh-row">';
+            uh += '<span class="pp-mh-date">' + dateStr + (timeStr ? '<br><span style="font-size:.7rem;color:var(--text3)">' + timeStr + '</span>' : '') + '</span>';
+            uh += '<span class="pp-mh-vs">vs</span>';
+            uh += '<span class="pp-mh-opponent">' + oppImg + '<span>' + oppName + '</span></span>';
+            uh += '<span class="pp-mh-score"><span class="pp-mh-badge pp-mh-upcoming">' + (matchType || '—') + '</span></span>';
+            uh += '<span class="pp-mh-tournament">' + tournamentName + '</span>';
+            uh += '</a>';
+          });
+          uh += '</div>';
+          upContainer.innerHTML = uh;
+        }
+      }
+
+      // --- Render recent matches ---
       if (matches.length === 0) {
         container.innerHTML = '<div class="pp-mh-empty">No recent match data available.</div>';
         return;

@@ -141,13 +141,23 @@ export async function onRequestGet(context) {
 
     // Fetch past matches for the player's current team (only finished, non-forfeit matches)
     let pastMatches = [];
+    let upcomingMatches = [];
     if (currentTeamId) {
-      const matchesRes = await fetch(
-        `https://api.pandascore.co/csgo/matches/past?filter[opponent_id]=${currentTeamId}&filter[status]=finished&filter[forfeit]=false&sort=-begin_at&page=${page}&per_page=${perPage}&token=${apiKey}`,
-        { cf: { cacheTtl: 600 } }
-      );
-      if (matchesRes.ok) {
-        pastMatches = await matchesRes.json();
+      const [pastRes, upcomingRes] = await Promise.all([
+        fetch(
+          `https://api.pandascore.co/csgo/matches/past?filter[opponent_id]=${currentTeamId}&filter[status]=finished&filter[forfeit]=false&sort=-begin_at&page=${page}&per_page=${perPage}&token=${apiKey}`,
+          { cf: { cacheTtl: 600 } }
+        ),
+        fetch(
+          `https://api.pandascore.co/csgo/matches/upcoming?filter[opponent_id]=${currentTeamId}&sort=begin_at&per_page=10&token=${apiKey}`,
+          { cf: { cacheTtl: 300 } }
+        ),
+      ]);
+      if (pastRes.ok) {
+        pastMatches = await pastRes.json();
+      }
+      if (upcomingRes.ok) {
+        upcomingMatches = await upcomingRes.json();
       }
     }
 
@@ -211,6 +221,7 @@ export async function onRequestGet(context) {
         image: player.current_team.image_url,
       } : null,
       matches: pastMatches.map(slimMatch),
+      upcoming: upcomingMatches.map(slimMatch),
     };
 
     return new Response(JSON.stringify(result), { status: 200, headers });
