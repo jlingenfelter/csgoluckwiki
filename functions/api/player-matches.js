@@ -66,27 +66,47 @@ export async function onRequestGet(context) {
 
     // Resolve to player ID using multiple strategies
     if (!playerId) {
-      // Strategy 1: CSGO-specific search first (most accurate for CS players)
-      const csgoUrl = `https://api.pandascore.co/csgo/players?search[name]=${encodeURIComponent(playerName || playerSlug)}&per_page=10&token=${apiKey}`;
-      const csgoRes = await fetch(csgoUrl, { cf: { cacheTtl: 3600 } });
-      if (csgoRes.ok) {
-        const players = await csgoRes.json();
-        if (players.length > 0) {
-          // Check exact slug match first (highest confidence)
-          const slugMatch = players.find(p => p.slug === playerSlug);
-          if (slugMatch) {
-            playerId = slugMatch.id;
-          } else {
-            // Collect ALL exact name matches, then score them to pick best
-            const searchLower = (playerName || playerSlug).toLowerCase();
-            const nameMatches = players.filter(p => p.name.toLowerCase() === searchLower);
-            if (nameMatches.length > 0) {
-              const best = pickBest(nameMatches);
-              if (best) playerId = best.id;
+      // Strategy 0: Team roster lookup (most reliable for common short names like "rain", "alex")
+      // When we know the team, search for the team and find the player in its roster
+      if (!playerId && playerTeam) {
+        const teamSearchName = playerTeam;
+        const teamSearchUrl = `https://api.pandascore.co/csgo/teams?search[name]=${encodeURIComponent(teamSearchName)}&per_page=5&token=${apiKey}`;
+        const teamRes = await fetch(teamSearchUrl, { cf: { cacheTtl: 3600 } });
+        if (teamRes.ok) {
+          const teams = await teamRes.json();
+          for (const team of teams) {
+            if (team.players && team.players.length > 0) {
+              const searchLower = (playerName || playerSlug).toLowerCase();
+              const match = team.players.find(p => p.name.toLowerCase() === searchLower);
+              if (match) {
+                playerId = match.id;
+                break;
+              }
+            }
+          }
+        }
+      }
+
+      // Strategy 1: CSGO-specific search (most accurate for CS players)
+      if (!playerId) {
+        const csgoUrl = `https://api.pandascore.co/csgo/players?search[name]=${encodeURIComponent(playerName || playerSlug)}&per_page=10&token=${apiKey}`;
+        const csgoRes = await fetch(csgoUrl, { cf: { cacheTtl: 3600 } });
+        if (csgoRes.ok) {
+          const players = await csgoRes.json();
+          if (players.length > 0) {
+            const slugMatch = players.find(p => p.slug === playerSlug);
+            if (slugMatch) {
+              playerId = slugMatch.id;
             } else {
-              // No exact match — score all candidates
-              const best = pickBest(players);
-              if (best) playerId = best.id;
+              const searchLower = (playerName || playerSlug).toLowerCase();
+              const nameMatches = players.filter(p => p.name.toLowerCase() === searchLower);
+              if (nameMatches.length > 0) {
+                const best = pickBest(nameMatches);
+                if (best) playerId = best.id;
+              } else {
+                const best = pickBest(players);
+                if (best) playerId = best.id;
+              }
             }
           }
         }
