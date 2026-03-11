@@ -25,16 +25,16 @@ const REPORTS_DIR = join(PROJECT_ROOT, 'reports', 'resolution');
 // Ensure reports directory exists
 if (!existsSync(REPORTS_DIR)) mkdirSync(REPORTS_DIR, { recursive: true });
 
-// Load API key from .dev.vars
+// Load API keys: prefer environment variables (GitHub Actions), fallback to .dev.vars (local)
 const devVarsPath = join(PROJECT_ROOT, '.dev.vars');
-let API_KEY = '';
-let PRICEMPIRE_KEY = '';
-let STEAM_KEY = '';
-if (existsSync(devVarsPath)) {
+let API_KEY = process.env.PANDASCORE_API_KEY || '';
+let PRICEMPIRE_KEY = process.env.PRICEMPIRE_API_KEY || '';
+let STEAM_KEY = process.env.STEAM_API_KEY || '';
+if (!API_KEY && existsSync(devVarsPath)) {
   const vars = readFileSync(devVarsPath, 'utf-8');
-  API_KEY = vars.match(/PANDASCORE_API_KEY=(.+)/)?.[1]?.trim() || '';
-  PRICEMPIRE_KEY = vars.match(/PRICEMPIRE_API_KEY=(.+)/)?.[1]?.trim() || '';
-  STEAM_KEY = vars.match(/STEAM_API_KEY=(.+)/)?.[1]?.trim() || '';
+  API_KEY = API_KEY || vars.match(/PANDASCORE_API_KEY=(.+)/)?.[1]?.trim() || '';
+  PRICEMPIRE_KEY = PRICEMPIRE_KEY || vars.match(/PRICEMPIRE_API_KEY=(.+)/)?.[1]?.trim() || '';
+  STEAM_KEY = STEAM_KEY || vars.match(/STEAM_API_KEY=(.+)/)?.[1]?.trim() || '';
 }
 
 if (!API_KEY) {
