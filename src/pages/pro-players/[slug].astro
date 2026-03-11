@@ -210,6 +210,10 @@ const faqs = [
         <tr><td class="pp-hero-tl">cm/360</td><td class="pp-hero-tv">{cm360}cm</td><td class="pp-hero-tl">Mouse</td><td class="pp-hero-tv">{player.mouse}</td></tr>
       </tbody>
     </table>
+    <button class="pp-share-btn" id="shareBtn" title="Share settings">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>
+      Share Settings
+    </button>
   </div>
 </section>
 
@@ -687,7 +691,8 @@ const faqs = [
 .pp-hero-badge{display:flex;flex-direction:column;align-items:center;gap:.3rem}
 .pp-hero-team-link{display:flex;align-items:center;gap:.35rem;text-decoration:none;color:var(--accent);transition:opacity .15s}
 .pp-hero-team-link:hover{opacity:.8}
-.pp-hero-team-logo img{width:18px;height:18px;object-fit:contain}
+.pp-hero-team-logo{display:inline-block;width:18px;height:18px;flex-shrink:0;overflow:hidden}
+.pp-hero-team-logo img{width:18px;height:18px;max-width:18px;max-height:18px;object-fit:contain;display:block}
 .pp-hero-team{color:var(--accent);font-weight:700;font-size:.85rem;text-align:center}
 .pp-hero-role{font-size:.62rem;font-weight:700;padding:.15rem .5rem;border-radius:4px;text-transform:uppercase;letter-spacing:.04em;background:var(--bg3);color:var(--text2);border:1px solid var(--border)}
 .pp-hero-role[data-r="awper"]{background:rgba(239,83,80,.12);color:var(--red);border-color:var(--red)}
@@ -702,6 +707,9 @@ const faqs = [
 .pp-hero-meta{display:flex;gap:.6rem;flex-wrap:wrap;align-items:center;margin-bottom:.75rem}
 .pp-hero-country,.pp-hero-age,.pp-hero-realname{color:var(--text2);font-size:.82rem}
 .pp-hero-realname{font-style:italic}
+.pp-share-btn{display:inline-flex;align-items:center;gap:.35rem;margin-top:.5rem;padding:.35rem .7rem;background:var(--bg3);border:1px solid var(--border);border-radius:4px;color:var(--text2);font-size:.72rem;font-weight:600;cursor:pointer;font-family:inherit;transition:all .15s}
+.pp-share-btn:hover{border-color:var(--accent);color:var(--accent)}
+.pp-share-btn.shared{border-color:var(--accent);color:var(--accent);background:rgba(46,204,113,.08)}
 
 .pp-hero-table{width:100%;border-collapse:collapse;font-size:.82rem}
 .pp-hero-table td{padding:.35rem .5rem;border-bottom:1px solid var(--border)}
@@ -968,6 +976,35 @@ const faqs = [
 }
 </style>
 
+<script is:inline define:vars={{ shareName: player.name, shareTeam: player.team || '', shareEdpi: player.edpi, shareDpi: player.dpi, shareSens: player.sens, shareRes: player.res, shareAspect: player.aspect, shareStretch: player.stretch, shareMouse: player.mouse, shareSlug: player.slug }}>
+(function(){
+  var btn = document.getElementById('shareBtn');
+  if (!btn) return;
+  var text = shareName + "'s CS2 Settings" +
+    (shareTeam ? ' (' + shareTeam + ')' : '') +
+    '\n\n' +
+    shareEdpi + ' eDPI (' + shareDpi + ' DPI × ' + shareSens + ' sens)\n' +
+    shareRes + ' ' + shareAspect + ' ' + shareStretch + '\n' +
+    shareMouse + '\n\n' +
+    'Full settings: https://wiki.csgoluck.com/pro-players/' + shareSlug + '/';
+
+  btn.addEventListener('click', function() {
+    if (navigator.share) {
+      navigator.share({ title: shareName + "'s CS2 Settings", text: text, url: 'https://wiki.csgoluck.com/pro-players/' + shareSlug + '/' }).catch(function(){});
+    } else if (navigator.clipboard) {
+      navigator.clipboard.writeText(text).then(function() {
+        btn.classList.add('shared');
+        btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Copied!';
+        setTimeout(function() {
+          btn.classList.remove('shared');
+          btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg> Share Settings';
+        }, 2000);
+      });
+    }
+  });
+})();
+</script>
+
 <script is:inline define:vars={{ playerSlug: player.slug, playerDisplayName: player.name, playerTeam: player.team || '', playerCountry: player.country || '' }}>
 (function(){
   // Share player-stats data globally so match history can use lastGames as fallback
@@ -1101,7 +1138,7 @@ const faqs = [
       if (currentTeam && currentTeam.image) {
         var logoEl = document.getElementById('heroTeamLogo');
         if (logoEl) {
-          logoEl.innerHTML = '<img src="' + currentTeam.image + '" alt="' + (currentTeam.name || '') + '" onerror="this.style.display=\'none\'" />';
+          logoEl.innerHTML = '<img src="' + currentTeam.image + '" alt="' + (currentTeam.name || '') + '" width="18" height="18" style="width:18px;height:18px;max-width:18px;max-height:18px;object-fit:contain" onerror="this.style.display=\'none\'" />';
         }
       }
 
