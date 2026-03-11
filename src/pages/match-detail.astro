@@ -710,7 +710,7 @@ import Base from '../layouts/Base.astro';
         const twitchMatch = twitchStream.url.match(/twitch\.tv\/([^/?#]+)/);
         if (twitchMatch) {
           const channel = twitchMatch[1];
-          streamEmbedHTML = '<div class="md-stream-embed"><iframe src="https://player.twitch.tv/?channel=' + encodeURIComponent(channel) + '&parent=' + window.location.hostname + '&muted=true" allowfullscreen></iframe><div class="md-stream-embed-label">▶ Live on Twitch · ' + escapeHtml(channel) + '</div></div>';
+          streamEmbedHTML = '<div id="stream-embed" class="md-stream-embed"><iframe src="https://player.twitch.tv/?channel=' + encodeURIComponent(channel) + '&parent=' + window.location.hostname + '&muted=true" allowfullscreen></iframe><div class="md-stream-embed-label">▶ Live on Twitch · ' + escapeHtml(channel) + '</div></div>';
         }
       }
     }
@@ -768,7 +768,7 @@ import Base from '../layouts/Base.astro';
         </div>` : ''}
       </div>
 
-      ${streamEmbedHTML}
+      <div id="stream-embed-slot"></div>
 
       <div class="betting-cta">
         <div class="betting-cta-body">
@@ -793,6 +793,15 @@ import Base from '../layouts/Base.astro';
     loadingEl.style.display = 'none';
     container.insertAdjacentHTML('beforeend', html);
 
+    // Insert stream embed into its slot (first render only)
+    if (streamEmbedHTML) {
+      const slot = document.getElementById('stream-embed-slot');
+      if (slot && !document.getElementById('stream-embed')) {
+        slot.insertAdjacentHTML('afterend', streamEmbedHTML);
+        slot.remove();
+      }
+    }
+
     // ── Auto-refresh for live matches ──
     if (match.status === 'running') {
       function updateTimestamp() {
@@ -813,6 +822,9 @@ import Base from '../layouts/Base.astro';
           if (!freshData || freshData.error) return;
 
           // Clear existing rendered content (keep loading/error elements)
+          // Detach stream embed temporarily to preserve Twitch player state
+          const existingStream = document.getElementById('stream-embed');
+          if (existingStream) existingStream.remove();
           const children = Array.from(container.children);
           children.forEach(function(child) {
             if (child.id !== 'loading' && child.id !== 'error-state') {
@@ -825,6 +837,12 @@ import Base from '../layouts/Base.astro';
 
           // Re-render with fresh data
           render(freshData);
+
+          // Re-insert preserved stream embed into its slot
+          if (existingStream) {
+            const slot = document.getElementById('stream-embed-slot');
+            if (slot) slot.replaceWith(existingStream);
+          }
 
           // Stop polling if match is finished
           if (freshData.status === 'finished') {
